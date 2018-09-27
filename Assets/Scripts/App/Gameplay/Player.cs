@@ -515,7 +515,7 @@ namespace Loom.ZombieBattleground
 
                 if(!IsLocalPlayer)
                 {
-                    GameClient.Get<IOverlordManager>().ReportXPAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.XPActionType.KillOverlord);
+                    GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
                 }
             }
         }

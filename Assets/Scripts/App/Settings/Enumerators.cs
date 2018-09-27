@@ -483,7 +483,7 @@ namespace Loom.ZombieBattleground.Common
             Low
         }
 
-        public enum XPActionType
+        public enum ExperienceActionType
         {
             KillOverlord,
             KillMinion,

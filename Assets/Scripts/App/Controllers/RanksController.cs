@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             {
                 DoRankUpgrades(filter, card.CardSetType, card.CardRank);
 
-                GameClient.Get<IOverlordManager>().ReportXPAction(filter[0].OwnerPlayer.SelfHero, Common.Enumerators.XPActionType.ActivateRankAbility);
+                GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.ActivateRankAbility);
             }
         }
 

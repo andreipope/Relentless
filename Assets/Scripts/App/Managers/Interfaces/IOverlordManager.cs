@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
     public interface IOverlordManager
     {
         void ChangeExperience(Hero hero, int value);
-        int GetRequiredXPForNewLevel(Hero hero);
-        void ReportXPAction(Hero hero, Enumerators.XPActionType actionType);
+        int GetRequiredExperienceForNewLevel(Hero hero);
+        void ReportExperienceAction(Hero hero, Enumerators.ExperienceActionType actionType);
     }
 }

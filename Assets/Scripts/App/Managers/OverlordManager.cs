@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
 
-        private OvelordXPInfo _ovelordXPInfo;
+        private OvelordExperienceInfo _ovelordXPInfo;
 
         public void Init()
         {
@@ -20,8 +20,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
 
-            _ovelordXPInfo = JsonConvert.DeserializeObject<OvelordXPInfo>(
-                            _loadObjectsManager.GetObjectByPath<TextAsset>("Data/overlord_xp_system_data").text);
+            _ovelordXPInfo = JsonConvert.DeserializeObject<OvelordExperienceInfo>(
+                            _loadObjectsManager.GetObjectByPath<TextAsset>("Data/overlord_experience_data").text);
         }
 
         public void Dispose()
@@ -32,9 +32,9 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public int GetRequiredXPForNewLevel(Hero hero)
+        public int GetRequiredExperienceForNewLevel(Hero hero)
         {
-            return _ovelordXPInfo.Fixed + _ovelordXPInfo.XPStep * (hero.Level + 1);
+            return _ovelordXPInfo.Fixed + _ovelordXPInfo.ExperienceStep * (hero.Level + 1);
         }
 
         public void ChangeExperience(Hero hero, int value)
@@ -43,16 +43,16 @@ namespace Loom.ZombieBattleground
             CheckLevel(hero);
         }
 
-        public void ReportXPAction(Hero hero, Enumerators.XPActionType actionType)
+        public void ReportExperienceAction(Hero hero, Enumerators.ExperienceActionType actionType)
         {
-            ActionsXP action = _ovelordXPInfo.ActionsXP.Find(x => x.Action == actionType);
+            ExperienceAction action = _ovelordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
 
-            ChangeExperience(hero, action.XP);
+            ChangeExperience(hero, action.Experience);
         }
 
         private void CheckLevel(Hero hero)
         {
-            if (hero.Experience >= GetRequiredXPForNewLevel(hero))
+            if (hero.Experience >= GetRequiredExperienceForNewLevel(hero))
             {
                 LevelUp(hero);
             }
@@ -123,17 +123,17 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public class ActionsXP
+        public class ExperienceAction
         {
-            public Enumerators.XPActionType Action;
-            public int XP;
+            public Enumerators.ExperienceActionType Action;
+            public int Experience;
         }
-        public class OvelordXPInfo
+        public class OvelordExperienceInfo
         {
             public List<LevelReward> Rewards;
-            public List<ActionsXP> ActionsXP;
+            public List<ExperienceAction> ExperienceActions;
             public int Fixed;
-            public int XPStep;
+            public int ExperienceStep;
             public int GooRewardStep;
         }
     }

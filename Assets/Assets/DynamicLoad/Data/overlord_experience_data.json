@@ -108,29 +108,29 @@
       }
     }
   ],
-  "ActionsXP": [
+  "ExperienceActions": [
     {
       "Action": "KillOverlord",
-      "XP": 100
+      "Experience": 100
     },
     {
       "Action": "KillMinion",
-      "XP": 7
+      "Experience": 7
     },
     {
       "Action": "PlayCard",
-      "XP": 7
+      "Experience": 7
     },
     {
       "Action": "ActivateRankAbility",
-      "XP": 7
+      "Experience": 7
     },
     {
       "Action": "UseOverlordAbility",
-      "XP": 7
+      "Experience": 7
     }
   ],
   "Fixed": 100,
-  "XPStep": 40,
+  "ExperienceStep": 40,
   "GooRewardStep": 10
 }
