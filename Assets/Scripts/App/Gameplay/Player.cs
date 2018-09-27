@@ -121,7 +121,6 @@ namespace Loom.ZombieBattleground
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
             _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
-            Debug.LogError(11111);
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
             _deathAnimator = _overlordDeathObject.GetComponent<Animator>();
@@ -130,7 +129,7 @@ namespace Loom.ZombieBattleground
             _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject;
 
             string name = Utilites.FirstCharToUpper(SelfHero.HeroElement.ToString()) + "HeroFrame";
-            _avatarHeroHighlightAfterDead = playerObject.transform.Find("Avatar/HeroHighlightAnim").gameObject;
+            _avatarHeroHighlightAfterDead = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
             _avatarHeroHighlightAfterDead.SetActive(false);
             _avatarAnimator.enabled = false;
             _deathAnimator.enabled = false;
