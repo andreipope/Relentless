@@ -40,7 +40,6 @@ namespace Loom.ZombieBattleground
         private int _cooldown;
 
         private bool _usedInThisTurn;
-        private bool _isOpen;
 
         private OnBehaviourHandler _behaviourHandler;
 
@@ -95,8 +94,6 @@ namespace Loom.ZombieBattleground
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
-
-            _isOpen = false;
         }
 
         public bool IsSkillReady => _cooldown == 0;

@@ -353,7 +353,7 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public void CallAbility(
+        public async void CallAbility(
             Card libraryCard,
             BoardCard card,
             WorkingCard workingCard,
@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground
 
                     if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                     {
-                        _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
+                        await _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
                     }
 
                     onCompleteCallback?.Invoke();
@@ -431,7 +431,7 @@ namespace Loom.ZombieBattleground
                     if (isPlayer)
                     {
                         activeAbility.Ability.ActivateSelectTarget(
-                            callback: () =>
+                            callback: async () =>
                             {
                                 if (kind == Enumerators.CardKind.SPELL && isPlayer)
                                 {
@@ -467,7 +467,7 @@ namespace Loom.ZombieBattleground
 
                                 if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                                 {
-                                    _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
+                                    await _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
                                 }
 
                                 action?.Invoke(card);
