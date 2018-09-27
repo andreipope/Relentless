@@ -4,7 +4,7 @@ using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class HandBoardCard : BoardObject
+public class HandBoardCard : OwnableBoardObject
 {
     public GameObject BoardZone;
 

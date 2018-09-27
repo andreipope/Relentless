@@ -482,5 +482,15 @@ namespace Loom.ZombieBattleground.Common
             Medium,
             Low
         }
+
+        public enum PlayerAction
+        {
+            DrawCard,
+            Mulligan,
+            UseCardAbility,
+            UseOverlordSkill,
+            CardAttack,
+            EndTurn
+        }
     }
 }
