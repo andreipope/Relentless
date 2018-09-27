@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground
 {
     public class VfxController : IController
     {
+        private const string TagZoneForTouching = "ZoneForTouching";
+
         private ISoundManager _soundManager;
 
         private ITimerManager _timerManager;
@@ -21,9 +23,8 @@ namespace Loom.ZombieBattleground
 
         private ParticlesController _particlesController;
 
-		private GameObject _battlegroundTouchPrefab;
+        private GameObject _battlegroundTouchPrefab;
 
-        private List<string>_allPossibleZoneForTouch;
 		
         public void Init()
         {
@@ -32,13 +33,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
-			
-			_battlegroundTouchPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/TouchingBattleground/ZB_ANM_touching_battleground");
 
-            _allPossibleZoneForTouch = new List<string>();
-            _allPossibleZoneForTouch.Add("PlayerBoard");
-            _allPossibleZoneForTouch.Add("OpponentBoard");
-            _allPossibleZoneForTouch.Add("BattlegroundTouchZona");
+            _battlegroundTouchPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/TouchingBattleground/ZB_ANM_touching_battleground");
         }
 
         public void Dispose()
@@ -47,8 +43,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-			if (_gameplayManager.IsGameStarted)
+            if (_gameplayManager.IsGameStarted)
+            {
                 ChechTouchOnBattleground();
+            }
         }
 
         public void ResetAll()
@@ -275,14 +273,8 @@ namespace Loom.ZombieBattleground
                 {
                     if (hit.collider != null)
                     {
-                        Debug.LogError(hit.collider.name);
-                        for (int i = 0; i < _allPossibleZoneForTouch.Count; i++)
-                        {
-                            if (!_allPossibleZoneForTouch.Exists((x) => x == hit.collider.name))
-							{
-                                return;
-							}
-                        }
+                        if (hit.collider.tag != TagZoneForTouching)
+                            return;
                     }
                 }
                 if (hits.Length > 0)
