@@ -4,12 +4,15 @@ using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
     public class VfxController : IController
     {
+        private const string TagZoneForTouching = "BattlegroundTouchingArea";
+
         private ISoundManager _soundManager;
 
         private ITimerManager _timerManager;
@@ -20,6 +23,9 @@ namespace Loom.ZombieBattleground
 
         private ParticlesController _particlesController;
 
+        private GameObject _battlegroundTouchPrefab;
+
+		
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
@@ -27,6 +33,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
+
+            _battlegroundTouchPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/TouchingBattleground/ZB_ANM_touching_battleground");
         }
 
         public void Dispose()
@@ -35,6 +43,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (_gameplayManager.IsGameStarted)
+            {
+                ChechTouchOnBattleground();
+            }
         }
 
         public void ResetAll()
@@ -249,5 +261,34 @@ namespace Loom.ZombieBattleground
             _particlesController.RegisterParticleSystem(effect, true, 8f);
             effect.SetActive(true);
         }
+
+        private void ChechTouchOnBattleground()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider != null)
+                    {
+                        if (hit.collider.tag != TagZoneForTouching)
+                            return;
+                    }
+                }
+                if (hits.Length > 0)
+				{
+                    CreateBattlegroundTouchEffect(mousePos);
+				}
+            }
+        }
+
+        private void CreateBattlegroundTouchEffect(Vector3 position)
+        {
+            GameObject effect = Object.Instantiate(_battlegroundTouchPrefab);
+            effect.transform.position = Utilites.CastVfxPosition(position);
+            _particlesController.RegisterParticleSystem(effect, true, 5f);
+		}
     }
 }
