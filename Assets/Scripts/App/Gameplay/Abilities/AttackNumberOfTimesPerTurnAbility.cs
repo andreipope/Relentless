@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilityUnitOwner.AttackInfoType = AttackInfo;
+            AbilityUnitViewOwner.Model.AttackInfoType = AttackInfo;
         }
 
         protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             if (_numberOfAttacksWas < Value)
             {
-                AbilityUnitOwner.ForceSetCreaturePlayable();
+                AbilityUnitViewOwner.Model.ForceSetCreaturePlayable();
             }
         }
 

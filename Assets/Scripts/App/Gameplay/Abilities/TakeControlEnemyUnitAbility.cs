@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, TargetUnit);
+                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, TargetUnitView);
             }
         }
     }

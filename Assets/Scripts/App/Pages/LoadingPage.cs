@@ -236,7 +236,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception)
             {
-                OpenAlertDialog("Not Able to Create Account..");
+                OpenAlertDialog("Not Able to Create Account.");
             }
         }
 

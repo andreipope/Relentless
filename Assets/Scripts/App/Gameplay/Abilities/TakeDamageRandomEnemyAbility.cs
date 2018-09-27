@@ -41,15 +41,16 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < allies.Count; i++)
             {
-                if (allies[i] is Player)
+                switch (allies[i])
                 {
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allies[i] as Player);
-                    CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
-                }
-                else if (allies[i] is BoardUnit)
-                {
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allies[i] as BoardUnit);
-                    CreateVfx((allies[i] as BoardUnit).Transform.position, true, 5f);
+                    case Player allyPlayer:
+                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
+                        CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
+                        break;
+                    case BoardUnitView allyUnit:
+                        BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit.Model);
+                        CreateVfx((allies[i] as BoardUnitView).Transform.position, true, 5f);
+                        break;
                 }
             }
         }

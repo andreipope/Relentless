@@ -80,7 +80,6 @@ namespace Loom.ZombieBattleground
                         Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
                         RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
-                        Debug.Log(hits.Length);
                         if (hits.Length > 0)
                         {
                             foreach (RaycastHit2D hit in hits)
@@ -324,7 +323,7 @@ namespace Loom.ZombieBattleground
 
                 _createdBoardCards.Add(boardCard);
 
-                if (boardCard.LibraryCard.Id == _highlightingVFXItem.cardId)
+                if (boardCard.LibraryCard.Id == _highlightingVFXItem.CardId)
                 {
                     _highlightingVFXItem.ChangeState(true);
                 }

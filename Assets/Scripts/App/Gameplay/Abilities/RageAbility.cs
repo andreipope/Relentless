@@ -21,19 +21,19 @@ namespace Loom.ZombieBattleground
 
             if (!_wasChanged)
             {
-                if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
+                if (AbilityUnitViewOwner.Model.CurrentHp < AbilityUnitViewOwner.Model.MaxCurrentHp)
                 {
                     _wasChanged = true;
-                    AbilityUnitOwner.BuffedDamage += Value;
-                    AbilityUnitOwner.CurrentDamage += Value;
+                    AbilityUnitViewOwner.Model.BuffedDamage += Value;
+                    AbilityUnitViewOwner.Model.CurrentDamage += Value;
                 }
             }
             else
             {
-                if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
+                if (AbilityUnitViewOwner.Model.CurrentHp >= AbilityUnitViewOwner.Model.MaxCurrentHp)
                 {
-                    AbilityUnitOwner.BuffedDamage -= Value;
-                    AbilityUnitOwner.CurrentDamage -= Value;
+                    AbilityUnitViewOwner.Model.BuffedDamage -= Value;
+                    AbilityUnitViewOwner.Model.CurrentDamage -= Value;
                     _wasChanged = false;
                 }
             }

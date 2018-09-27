@@ -34,9 +34,9 @@ namespace Loom.ZombieBattleground
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
 
-            foreach (BoardUnit unit in opponent.BoardCards)
+            foreach (BoardUnitView unit in opponent.BoardCards)
             {
-                unit.Stun(Enumerators.StunType.FREEZE, Value);
+                unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
                 CreateVfx(unit.Transform.position, true, 5f);
             }
         }

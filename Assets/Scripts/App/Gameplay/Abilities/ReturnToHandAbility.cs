@@ -33,11 +33,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Vector3 unitPosition = TargetUnit.Transform.position;
+            Vector3 unitPosition = TargetUnitView.Transform.position;
 
             CreateVfx(unitPosition, true, 3f, true);
 
-            CardsController.ReturnCardToHand(TargetUnit);
+            CardsController.ReturnCardToHand(TargetUnitView);
         }
 
         protected override void InputEndedHandler()

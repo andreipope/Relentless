@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground
 
             switch (target)
             {
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     position = unit.Transform.position;
                     break;
                 case Player player:
@@ -209,7 +209,7 @@ namespace Loom.ZombieBattleground
                                 }
                             });
                     break;
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     particleSystem.transform.DOMove(Utilites.CastVfxPosition(unit.Transform.position), .5f).OnComplete(
                         () =>
                         {
@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground
 
             switch (onObject)
             {
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     target = unit.Transform;
                     break;
                 case Player _:
@@ -248,9 +248,9 @@ namespace Loom.ZombieBattleground
             Object.Destroy(effect, 2.5f);
         }
 
-        public void CreateDeathZombieAnimation(BoardUnit cardToDestroy)
+        public void CreateDeathZombieAnimation(BoardUnitView cardToDestroy)
         {
-            string type = cardToDestroy.LastAttackingSetType.ToString();
+            string type = cardToDestroy.Model.LastAttackingSetType.ToString();
             type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
             var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
             GameObject effect = MonoBehaviour.Instantiate(prefab);

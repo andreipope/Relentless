@@ -42,16 +42,16 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void AttackPlayerByUnit(BoardUnit attackingUnit, Player attackedPlayer)
+        public void AttackPlayerByUnit(BoardUnitModel attackingUnitModel, Player attackedPlayer)
         {
-            int damageAttacking = attackingUnit.CurrentDamage;
+            int damageAttacking = attackingUnitModel.CurrentDamage;
 
-            if (attackingUnit != null && attackedPlayer != null)
+            if (attackingUnitModel != null && attackedPlayer != null)
             {
                 attackedPlayer.Health -= damageAttacking;
             }
 
-            attackingUnit.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
+            attackingUnitModel.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
 
             _vfxController.SpawnGotDamageEffect(attackedPlayer, -damageAttacking);
 
@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAttackOverlord,
-                Caller = attackingUnit,
+                Caller = attackingUnitModel,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -72,65 +72,63 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        public void AttackUnitByUnit(BoardUnit attackingUnit, BoardUnit attackedUnit, int additionalDamage = 0)
+        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0)
         {
             int damageAttacked = 0;
             int damageAttacking;
 
-            if (attackingUnit != null && attackedUnit != null)
+            if (attackingUnitModel != null && attackedUnitModel != null)
             {
                 int additionalDamageAttacker =
-                    _abilitiesController.GetStatModificatorByAbility(attackingUnit, attackedUnit, true);
+                    _abilitiesController.GetStatModificatorByAbility(attackingUnitModel, attackedUnitModel, true);
                 int additionalDamageAttacked =
-                    _abilitiesController.GetStatModificatorByAbility(attackedUnit, attackingUnit, false);
+                    _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
 
-                damageAttacking = attackingUnit.CurrentDamage + additionalDamageAttacker + additionalDamage;
+                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
-                if (damageAttacking > 0 && attackedUnit.HasBuffShield)
+                if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damageAttacking = 0;
-                    attackedUnit.HasUsedBuffShield = true;
+                    attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnit.LastAttackingSetType = attackingUnit.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
-                attackedUnit.CurrentHp -= damageAttacking;
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
+                attackedUnitModel.CurrentHp -= damageAttacking;
 
-                CheckOnKillEnemyZombie(attackedUnit);
+                CheckOnKillEnemyZombie(attackedUnitModel);
+                _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damageAttacking);
 
-                _vfxController.SpawnGotDamageEffect(attackedUnit, -damageAttacking);
+                attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
+                attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
 
-                attackedUnit.InvokeUnitDamaged(attackingUnit);
-                attackingUnit.InvokeUnitAttacked(attackedUnit, damageAttacking, true);
-
-                if (attackedUnit.CurrentHp > 0 && attackingUnit.AttackAsFirst || !attackingUnit.AttackAsFirst)
+                if (attackedUnitModel.CurrentHp > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
                 {
-                    damageAttacked = attackedUnit.CurrentDamage + additionalDamageAttacked;
+                    damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
 
-                    if (damageAttacked > 0 && attackingUnit.HasBuffShield)
+                    if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
                     {
                         damageAttacked = 0;
-                        attackingUnit.HasUsedBuffShield = true;
                     }
 
-                    attackingUnit.LastAttackingSetType = attackedUnit.Card.LibraryCard.CardSetType;
-                    attackingUnit.CurrentHp -= damageAttacked;
+                    attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
+                    attackingUnitModel.CurrentHp -= damageAttacked;
 
-                    _vfxController.SpawnGotDamageEffect(attackingUnit, -damageAttacked);
+                    _vfxController.SpawnGotDamageEffect(attackingUnitModel, -damageAttacked);
 
-                    attackingUnit.InvokeUnitDamaged(attackedUnit);
-                    attackedUnit.InvokeUnitAttacked(attackingUnit, damageAttacked, false);
+                    attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
+                    attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
                 }
 
                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                {
+                    {
                     ActionType = Enumerators.ActionType.CardAttackCard,
-                    Caller = attackingUnit,
+                    Caller = attackingUnitModel,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                            Target = attackedUnit
+                            Target = attackedUnitModel
                         }
                     }
                 });
@@ -139,23 +137,23 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, BoardUnit attackedUnit, int modifier)
+        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, BoardUnitModel attackedUnitModel, int modifier)
         {
             int damage = skill.Skill.Value + modifier;
 
-            if (attackedUnit != null)
+            if (attackedUnitModel != null)
             {
-                if (damage > 0 && attackedUnit.HasBuffShield)
+                if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnit.UseShieldFromBuff();
+                    attackedUnitModel.UseShieldFromBuff();
                 }
-                attackedUnit.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
-                attackedUnit.CurrentHp -= damage;
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
+                attackedUnitModel.CurrentHp -= damage;
 
-                CheckOnKillEnemyZombie(attackedUnit);
+                CheckOnKillEnemyZombie(attackedUnitModel);
 
-                _vfxController.SpawnGotDamageEffect(attackedUnit, -damage);
+                _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damage);
             }
         }
 
@@ -188,7 +186,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, BoardUnit healedCreature)
+        public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, BoardUnitModel healedCreature)
         {
             if (healedCreature != null)
             {
@@ -201,7 +199,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void AttackUnitByAbility(
-            object attacker, AbilityData ability, BoardUnit attackedUnit, int damageOverride = -1)
+            object attacker, AbilityData ability, BoardUnitModel attackedUnitModel, int damageOverride = -1)
         {
             int damage = ability.Value;
 
@@ -210,21 +208,25 @@ namespace Loom.ZombieBattleground
                 damage = damageOverride;
             }
 
-            if (attackedUnit != null)
+            if (attackedUnitModel != null)
             {
-                if (damage > 0 && attackedUnit.HasBuffShield)
+                if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnit.UseShieldFromBuff();
+                    attackedUnitModel.UseShieldFromBuff();
                 }
-                if (attacker is BoardUnit)
-                    attackedUnit.LastAttackingSetType = (attacker as BoardUnit).Card.LibraryCard.CardSetType;
-                else if(attacker is BoardSpell)
-                    attackedUnit.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
 
-                attackedUnit.CurrentHp -= damage;
+                if (attacker is BoardUnitModel)
+                {
+                    attackedUnitModel.LastAttackingSetType = (attacker as BoardUnitModel).Card.LibraryCard.CardSetType;
+                }
+                else if (attacker is BoardSpell)
+                {
+                    attackedUnitModel.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
+                }
 
-                 CheckOnKillEnemyZombie(attackedUnit);
+                attackedUnitModel.CurrentHp -= damage;
+                CheckOnKillEnemyZombie(attackedUnitModel);
             }
         }
 
@@ -257,7 +259,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnit healedCreature, int value = -1)
+        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnitModel healedCreature, int value = -1)
         {
             int healValue = ability.Value;
 
@@ -274,7 +276,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CheckOnKillEnemyZombie(BoardUnit attackedUnit)
+        public void CheckOnKillEnemyZombie(BoardUnitModel attackedUnit)
         {
             if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentHp == 0)
             {

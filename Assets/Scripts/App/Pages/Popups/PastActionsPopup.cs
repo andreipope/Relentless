@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
             {
                 _leftBlockOverlordSkillElement.Init(skill);
             }
-            else if(pastActionParam.Caller is BoardUnit unit)
+            else if(pastActionParam.Caller is BoardUnitModel unit)
             {
                 _leftBlockCardUnitElement.Init(unit.Card);
             }
@@ -192,7 +192,7 @@ namespace Loom.ZombieBattleground
                                         actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
                                     }
                                 }
-                                else if (targetEffect.Target is BoardUnit unt)
+                                else if (targetEffect.Target is BoardUnitModel unt)
                                 {
                                     actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                                     actionElement.Init(unt.Card, targetEffect.ActionEffectType);
@@ -225,7 +225,7 @@ namespace Loom.ZombieBattleground
                                     actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
                                 }
                             }
-                            else if (targetEffect.Target is BoardUnit unt)
+                            else if (targetEffect.Target is BoardUnitModel unt)
                             {
                                 actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                                 actionElement.Init(unt.Card, targetEffect.ActionEffectType);
@@ -259,7 +259,7 @@ namespace Loom.ZombieBattleground
                             _rightBlockCardUnitElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
                         }
                     }
-                    else if(targetEffect.Target is BoardUnit unt)
+                    else if(targetEffect.Target is BoardUnitModel unt)
                     {
                         _rightBlockCardUnitElement.Init(unt.Card, targetEffect.ActionEffectType);
                     }

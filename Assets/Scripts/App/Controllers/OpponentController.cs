@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
             await _backendFacade.SendDrawCard(_backendDataControlMediator.UserDataModel.UserId, model);
         }
 
-        public async Task ActionCardAttack(Player player, BoardUnit attacker, BoardObject target, Enumerators.AffectObjectType affectObjectType)
+        public async Task ActionCardAttack(Player player, BoardUnitModel attacker, BoardObject target, Enumerators.AffectObjectType affectObjectType)
         {
             if (!_backendFacade.IsConnected)
                 return;
@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
         public void GotActionCardAttack(CardAttackModel model)
         {
             Player caller = _gameplayManager.GetPlayerById(model.CallerId);
-            BoardUnit attackerUnit = _battlegroundController.GetBoardUnitById(caller, model.CardId);
+            BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(caller, model.CardId);
             object target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             Action callback = () =>
@@ -261,7 +261,8 @@ namespace Loom.ZombieBattleground
                 attackerUnit.DoCombat(target);
             };
 
-            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnit.Transform, target, action: callback);
+            BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitView(attackerUnit);
+            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
         }
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
@@ -269,9 +270,10 @@ namespace Loom.ZombieBattleground
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
             Card libraryCard = _dataManager.CachedCardsLibraryData.Cards.Find(card => card.Id == model.CardId);
             BoardObject boardObject = _battlegroundController.GetBoardObjectById(model.BoardObjectId);
+            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitView(boardObject as BoardUnitModel);
 
             Transform transform = model.CardKind == Enumerators.CardKind.SPELL ?
-                                 _gameplayManager.OpponentPlayer.AvatarObject.transform : (boardObject as BoardUnit).Transform;
+                                 _gameplayManager.OpponentPlayer.AvatarObject.transform : boardUnitView.Transform;
 
             WorkingCard workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
 
@@ -304,7 +306,7 @@ namespace Loom.ZombieBattleground
                 }
                 else if (model.AffectObjectType == Enumerators.AffectObjectType.CHARACTER)
                 {
-                    skill.FightTargetingArrow.SelectedCard = target as BoardUnit;
+                    skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitView(target as BoardUnitModel);
                 }
 
                 skill.EndDoSkill();

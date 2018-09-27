@@ -93,13 +93,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnit unit)
+        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnitView unit)
         {
-            return _activeAbilities.FindAll(x => x.Ability.TargetUnit == unit).Select(y => y.Ability).ToList();
+            return _activeAbilities.FindAll(x => x.Ability.TargetUnitView == unit).Select(y => y.Ability).ToList();
         }
 
         public ActiveAbility CreateActiveAbility(
-            AbilityData ability,
+            AbilityData abilityData,
             Enumerators.CardKind kind,
             object boardObject,
             Player caller,
@@ -108,10 +108,12 @@ namespace Loom.ZombieBattleground
         {
             lock (_lock)
             {
+                CreateAbilityByType(kind, abilityData, out AbilityBase ability, out AbilityViewBase abilityView);
                 ActiveAbility activeAbility = new ActiveAbility
                 {
                     Id = _castedAbilitiesIds++,
-                    Ability = CreateAbilityByType(kind, ability)
+                    Ability = ability,
+                    AbilityView = abilityView
                 };
 
                 activeAbility.Ability.ActivityId = activeAbility.Id;
@@ -129,7 +131,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (kind == Enumerators.CardKind.CREATURE)
                         {
-                            activeAbility.Ability.AbilityUnitOwner = boardObject as BoardUnit;
+                            activeAbility.Ability.AbilityUnitViewOwner = boardObject as BoardUnitView;
                         }
                         else
                         {
@@ -228,7 +230,7 @@ namespace Loom.ZombieBattleground
             return available;
         }
 
-        public int GetStatModificatorByAbility(BoardUnit attacker, BoardUnit attacked, bool isAttackking)
+        public int GetStatModificatorByAbility(BoardUnitModel attacker, BoardUnitModel attacked, bool isAttackking)
         {
             int value = 0;
 
@@ -256,7 +258,7 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < abilities.Count; i++)
             {
-                if (attacked.IsHeavyUnit())
+                if (attacked.IsHeavyUnit)
                 {
                     value += abilities[i].Value;
                 }
@@ -283,10 +285,10 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        List<BoardUnit> units =
+                        List<BoardUnitView> units =
                             player.BoardCards.FindAll(x =>
-                                x.InitialUnitType == ability.TargetCardType &&
-                                x.UnitStatus == ability.TargetUnitStatusType);
+                                x.Model.InitialUnitType == ability.TargetCardType &&
+                                x.Model.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
                             return true;
 
@@ -294,10 +296,10 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        List<BoardUnit> units =
+                        List<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x =>
-                                x.InitialUnitType == ability.TargetCardType &&
-                                x.UnitStatus == ability.TargetUnitStatusType);
+                                x.Model.InitialUnitType == ability.TargetCardType &&
+                                x.Model.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
                             return true;
 
@@ -327,8 +329,8 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        List<BoardUnit> units =
-                            player.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                        List<BoardUnitView> units =
+                            player.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
@@ -337,8 +339,8 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        List<BoardUnit> units =
-                            opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                        List<BoardUnitView> units =
+                            opponent.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
@@ -490,7 +492,7 @@ namespace Loom.ZombieBattleground
                                 }
                                 else
                                 {
-                                    Debug.Log("RETURN CARD TO HAND MAYBE.. SHOULD BE CASE !!!!!");
+                                    Debug.Log("RETURN CARD TO HAND MAYBE. SHOULD BE CASE !!!!!");
                                     action?.Invoke(card);
                                 }
 
@@ -503,8 +505,8 @@ namespace Loom.ZombieBattleground
                     {
                         switch (target)
                         {
-                            case BoardUnit unit:
-                                activeAbility.Ability.TargetUnit = unit;
+                            case BoardUnitView unit:
+                                activeAbility.Ability.TargetUnitView = unit;
                                 break;
                             case Player player:
                                 activeAbility.Ability.TargetPlayer = player;
@@ -557,9 +559,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private AbilityBase CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData)
+        private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
         {
-            AbilityBase ability = null;
+            ability = null;
+            abilityView = null;
             switch (abilityData.AbilityType)
             {
                 case Enumerators.AbilityType.HEAL:
@@ -579,6 +582,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.MASSIVE_DAMAGE:
                     ability = new MassiveDamageAbility(cardKind, abilityData);
+                    abilityView = new MassiveDamageAbilityView((MassiveDamageAbility) ability);
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT:
                     ability = new ChangeStatAbility(cardKind, abilityData);
@@ -734,15 +738,13 @@ namespace Loom.ZombieBattleground
                     ability = new RestoreDefRandomlySplitAbility(cardKind, abilityData);
                     break;       
             }
-
-            return ability;
         }
 
         public void ResolveAllAbilitiesOnUnit(object boardObject, bool status = true)
         {
-            if (boardObject is BoardUnit unit)
+            if (boardObject is BoardUnitView unit)
             {
-                unit.IsAllAbilitiesResolvedAtStart = status;
+                unit.Model.IsAllAbilitiesResolvedAtStart = status;
             }
 
             _gameplayManager.CanDoDragActions = status;
@@ -800,8 +802,8 @@ namespace Loom.ZombieBattleground
 
                 switch (target)
                 {
-                    case BoardUnit unit:
-                        activeAbility.Ability.TargetUnit = unit;
+                    case BoardUnitView unit:
+                        activeAbility.Ability.TargetUnitView = unit;
                         break;
                     case Player player:
                         activeAbility.Ability.TargetPlayer = player;
@@ -847,6 +849,8 @@ namespace Loom.ZombieBattleground
             public ulong Id;
 
             public AbilityBase Ability;
+
+            public AbilityViewBase AbilityView;
         }
     }
 }

@@ -46,14 +46,14 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnit unit = info as BoardUnit;
+            BoardUnitView unit = info as BoardUnitView;
 
-            Player playerOwner = unit.OwnerPlayer;
+            Player playerOwner = unit.Model.OwnerPlayer;
 
-            BoardUnit leftAdjustment = null, rightAdjastment = null;
+            BoardUnitView leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
-            List<BoardUnit> list = null;
+            List<BoardUnitView> list = null;
             for (int i = 0; i < playerOwner.BoardCards.Count; i++)
             {
                 if (playerOwner.BoardCards[i] == unit)
@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
+            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
                 CreateAndMoveParticle(
                     () =>
                     {
-                        BattleController.AttackUnitByAbility(caller, AbilityData, leftAdjustment);
+                        BattleController.AttackUnitByAbility(caller, AbilityData, leftAdjustment.Model);
                     },
                     leftAdjustment.Transform.position);
             }
@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
                 CreateAndMoveParticle(
                     () =>
                     {
-                        BattleController.AttackUnitByAbility(caller, AbilityData, rightAdjastment);
+                        BattleController.AttackUnitByAbility(caller, AbilityData, rightAdjastment.Model);
                     },
                     rightAdjastment.Transform.position);
             }
@@ -103,20 +103,20 @@ namespace Loom.ZombieBattleground
         {
             base.InputEndedHandler();
 
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
+            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
 
             if (IsAbilityResolved)
             {
                 switch (AffectObjectType)
                 {
                     case Enumerators.AffectObjectType.CHARACTER:
-                        Action(TargetUnit);
+                        Action(TargetUnitView);
                         CreateAndMoveParticle(
                             () =>
                             {
-                                BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
+                                BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnitView.Model);
                             },
-                            TargetUnit.Transform.position);
+                            TargetUnitView.Transform.position);
 
                         break;
                 }
@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
             Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE ?
-                AbilityUnitOwner.Transform.position :
+                AbilityUnitViewOwner.Transform.position :
                 SelectedPlayer.Transform.position;
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                CreateVfx(Utilites.CastVfxPosition(TargetUnit.Transform.position));
+                CreateVfx(Utilites.CastVfxPosition(TargetUnitView.Transform.position));
                 callback();
             }
 

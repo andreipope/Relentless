@@ -25,8 +25,6 @@ namespace Loom.ZombieBattleground
 
         public Card LibraryCard;
 
-        public SpriteRenderer PictureSprite;
-
         protected ILoadObjectsManager LoadObjectsManager;
 
         protected ISoundManager SoundManager;
@@ -126,6 +124,8 @@ namespace Loom.ZombieBattleground
 
             BehaviourHandler.Destroying += DestroyingHandler;
         }
+
+        public SpriteRenderer PictureSprite { get; protected set; }
 
         public int ManaCost { get; protected set; }
 
@@ -465,7 +465,7 @@ namespace Loom.ZombieBattleground
             InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY, isArmy);
         }
 
-        public void DrawTooltipInfoOfUnit(BoardUnit unit)
+        public void DrawTooltipInfoOfUnit(BoardUnitView unit)
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
@@ -479,14 +479,14 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (unit.Card.LibraryCard.CardRank != Enumerators.CardRank.MINION)
+            if (unit.Model.Card.LibraryCard.CardRank != Enumerators.CardRank.MINION)
             {
                 TooltipContentData.RankInfo rankInfo =
-                    DataManager.GetRankInfoByType(unit.Card.LibraryCard.CardRank.ToString());
+                    DataManager.GetRankInfoByType(unit.Model.Card.LibraryCard.CardRank.ToString());
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
-                        y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Card.LibraryCard).ToLower()));
+                        y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Model.Card.LibraryCard).ToLower()));
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -499,10 +499,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.InitialUnitType != Enumerators.CardType.WALKER &&
-                unit.InitialUnitType != Enumerators.CardType.NONE)
+            if (unit.Model.InitialUnitType != Enumerators.CardType.WALKER &&
+                unit.Model.InitialUnitType != Enumerators.CardType.NONE)
             {
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(unit.InitialUnitType.ToString());
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(unit.Model.InitialUnitType.ToString());
                 if (buffInfo != null)
                 {
                     buffs.Add(
@@ -516,9 +516,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Card.LibraryCard.Abilities != null)
+            if (unit.Model.Card.LibraryCard.Abilities != null)
             {
-                foreach (AbilityData abil in unit.Card.LibraryCard.Abilities)
+                foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
                     TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.BuffType);
                     if (buffInfo != null)
@@ -587,7 +587,7 @@ namespace Loom.ZombieBattleground
             }
 
             // IMPROVE!!!
-            foreach (Enumerators.BuffType buffOnUnit in unit.BuffsOnUnit)
+            foreach (Enumerators.BuffType buffOnUnit in unit.Model.BuffsOnUnit)
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(buffOnUnit.ToString());
                 if (buffInfo != null)

@@ -25,12 +25,12 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnit unit = info as BoardUnit;
+            BoardUnitView unit = info as BoardUnitView;
 
             int targetIndex = -1;
-            for (int i = 0; i < unit.OwnerPlayer.BoardCards.Count; i++)
+            for (int i = 0; i < unit.Model.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (unit.OwnerPlayer.BoardCards[i] == unit)
+                if (unit.Model.OwnerPlayer.BoardCards[i] == unit)
                 {
                     targetIndex = i;
                     break;
@@ -41,12 +41,12 @@ namespace Loom.ZombieBattleground
             {
                 if (targetIndex - 1 > -1)
                 {
-                    TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex - 1]);
+                    TakeDamageToUnit(unit.Model.OwnerPlayer.BoardCards[targetIndex - 1]);
                 }
 
-                if (targetIndex + 1 < unit.OwnerPlayer.BoardCards.Count)
+                if (targetIndex + 1 < unit.Model.OwnerPlayer.BoardCards.Count)
                 {
-                    TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex + 1]);
+                    TakeDamageToUnit(unit.Model.OwnerPlayer.BoardCards[targetIndex + 1]);
                 }
             }
         }
@@ -58,15 +58,15 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnit)
+            if (info is BoardUnitView)
             {
                 Action(info);
             }
         }
 
-        private void TakeDamageToUnit(BoardUnit unit)
+        private void TakeDamageToUnit(BoardUnitView unit)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+            BattleController.AttackUnitByAbility(AbilityUnitViewOwner, AbilityData, unit.Model);
             CreateVfx(unit.Transform.position, true, 5f);
         }
     }
