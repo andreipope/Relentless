@@ -183,10 +183,15 @@ namespace Loom.ZombieBattleground
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
                         targetPlayer,
-                        x =>
+                        async (x) =>
                         {
                             DoActionByType(skill, targetPlayer);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+
+                            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                            {
+                                await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer, skill, targetPlayer, Enumerators.AffectObjectType.PLAYER);
+                            }
                         });
 
 
@@ -209,6 +214,11 @@ namespace Loom.ZombieBattleground
                         {
                             DoActionByType(skill, targetUnit);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+
+                            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                            {
+                                await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer, skill, targetUnit, Enumerators.AffectObjectType.CHARACTER);
+                            }
                         });
                 }
 
