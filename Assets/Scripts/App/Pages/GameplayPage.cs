@@ -312,7 +312,7 @@ namespace Loom.ZombieBattleground
 
             string name = Utilites.FirstCharToUpper(hero.HeroElement.ToString()) + "HeroFrame";
             var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
-            var avatarHeroHighlight = MonoBehaviour.Instantiate(prefab, GameObject.Find(objectName + "/Avatar/HeroHighlightAnim").transform, false);
+            var avatarHeroHighlight = MonoBehaviour.Instantiate(prefab, GameObject.Find(objectName + "/Avatar/HeroHighlight").transform, false);
             //avatarHeroHighlight.transform.localPosition = Vector3.zero;
             avatarHeroHighlight.name = name;
             avatarHeroHighlight.transform.parent.gameObject.SetActive(false);
