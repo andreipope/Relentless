@@ -823,6 +823,8 @@ namespace Loom.ZombieBattleground
 
         public void DestroyBoardUnit(BoardUnit unit)
         {
+            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
+
             unit?.Die();
         }
 
