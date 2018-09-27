@@ -86,9 +86,9 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(SetStatusZoomingFalse);
         }
 
-        public void InitializePlayer()
+        public void InitializePlayer(int playerId)
         {
-            _gameplayManager.CurrentPlayer = new Player(GameObject.Find("Player"), false);
+            _gameplayManager.CurrentPlayer = new Player(playerId, GameObject.Find("Player"), false);
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {

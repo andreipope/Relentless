@@ -12,7 +12,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitModel
+    public class BoardUnitModel : OwnableBoardObject
     {
         public bool AttackedThisTurn;
 
@@ -27,8 +27,6 @@ namespace Loom.ZombieBattleground
         public int InitialHp;
 
         public bool HasUsedBuffShield;
-
-        public Player OwnerPlayer;
 
         public List<object> AttackedBoardObjectsThisTurn;
 
@@ -446,9 +444,13 @@ namespace Loom.ZombieBattleground
                             FightSequenceHandler.HandleAttackPlayer(
                                 completeCallback,
                                 targetPlayer,
-                                () =>
+                                async () =>
                                 {
                                     _battleController.AttackPlayerByUnit(this, targetPlayer);
+                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                                    {
+                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetPlayer, Enumerators.AffectObjectType.PLAYER);
+                                    }
                                 },
                                 () =>
                                 {
@@ -468,9 +470,14 @@ namespace Loom.ZombieBattleground
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
                                 targetCardModel,
-                                () =>
+                                async () =>
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
+
+                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                                    {
+                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetCardModel, Enumerators.AffectObjectType.PLAYER);
+                                    }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {

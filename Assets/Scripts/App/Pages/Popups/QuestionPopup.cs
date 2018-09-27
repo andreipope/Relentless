@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/QuestionPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _buttonYes = Self.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
             _buttonNo = Self.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();

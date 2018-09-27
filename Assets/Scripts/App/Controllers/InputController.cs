@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -105,6 +106,7 @@ namespace Loom.ZombieBattleground
             Vector3 point = _raysCamera.ScreenToWorldPoint(origin);
 
             RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, layerMask);
+            hits = hits.Where(hit => !hit.collider.name.Equals(Constants.BattlegroundTouchZone)).ToArray();
 
             if (hits.Length > 0)
             {
@@ -121,7 +123,8 @@ namespace Loom.ZombieBattleground
 
         private void CheckColliders(Collider2D collider, bool permanent = false)
         {
-            if (collider.name.Equals(Constants.PlayerBoard) || collider.name.Equals(Constants.OpponentBoard))
+            if (collider.name.Equals(Constants.PlayerBoard) ||
+                collider.name.Equals(Constants.OpponentBoard))
             {
                 NoObjectsSelectedEvent?.Invoke();
                 return;

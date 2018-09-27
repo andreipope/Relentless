@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         private SkillsController _skillsController;
 
+        private BoardArrowController _boardArrowController;
+
         private Enumerators.AiType _aiType;
 
         private List<BoardUnitView> _attackedUnitTargets;
@@ -62,6 +64,7 @@ namespace Loom.ZombieBattleground
             _cardsController = _gameplayManager.GetController<CardsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
             _gameplayManager.GameStarted += GameStartedHandler;
@@ -83,9 +86,9 @@ namespace Loom.ZombieBattleground
             _aiBrainCancellationTokenSource?.Cancel();
         }
 
-        public void InitializePlayer()
+        public void InitializePlayer(int playerId)
         {
-            _gameplayManager.OpponentPlayer = new Player(GameObject.Find("Opponent"), true);
+            _gameplayManager.OpponentPlayer = new Player(playerId, GameObject.Find("Opponent"), true);
 
             _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 
@@ -591,15 +594,15 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardKind.CREATURE:
                 {
                     BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
-                    GameObject boardCreature = boardUnitViewElement.GameObject;
-                    boardCreature.tag = SRTags.OpponentOwned;
-                    boardCreature.transform.position = Vector3.zero;
+                    GameObject boardUnit = boardUnitViewElement.GameObject;
+                    boardUnit.tag = SRTags.OpponentOwned;
+                    boardUnit.transform.position = Vector3.zero;
                     boardUnitViewElement.Model.OwnerPlayer = card.Owner;
 
                     boardUnitViewElement.SetObjectInfo(workingCard);
                     _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
 
-                    boardCreature.transform.position +=
+                    boardUnit.transform.position +=
                         Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
                     _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
@@ -627,16 +630,12 @@ namespace Loom.ZombieBattleground
 
                             if (target != null)
                             {
-                                CreateOpponentTarget(
-                                    createTargetArrow,
-                                    false,
-                                    boardCreature.gameObject,
-                                    target,
-                                    () =>
-                                    {
-                                        _abilitiesController.CallAbility(card.LibraryCard, null, workingCard,
-                                            Enumerators.CardKind.CREATURE, boardUnitViewElement, null, false, null, target);
-                                    });
+                                Action callback = () =>
+                                {
+                                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement, null, false, null, target);
+                                };
+
+                                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
                             }
                             else
                             {
@@ -648,7 +647,7 @@ namespace Loom.ZombieBattleground
                 }
                 case Enumerators.CardKind.SPELL:
                 {
-                    GameObject spellCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
+                    GameObject spellCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 
                     CurrentSpellCard = new SpellBoardCard(spellCard);
@@ -670,16 +669,12 @@ namespace Loom.ZombieBattleground
 
                     if (target != null)
                     {
-                        CreateOpponentTarget(
-                            createTargetArrow,
-                            false,
-                            _gameplayManager.OpponentPlayer.AvatarObject,
-                            target,
-                            () =>
-                            {
-                                _abilitiesController.CallAbility(card.LibraryCard, null, workingCard,
-                                    Enumerators.CardKind.SPELL, boardSpell, null, false, null, target);
-                            });
+                        Action callback = () =>
+                        {
+                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target);
+                        };
+
+                        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
                     }
                     else
                     {
@@ -1183,68 +1178,21 @@ namespace Loom.ZombieBattleground
 
             skill.StartDoSkill();
 
-            if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
+            Action callback = () =>
             {
-                skill.FightTargetingArrow = CreateOpponentTarget(
-                    true,
-                    skill.IsPrimary,
-                    skill.SelfObject,
-                    target as Player,
-                    () =>
-                    {
-                        skill.FightTargetingArrow.SelectedPlayer = target as Player;
-                        skill.EndDoSkill();
-                    });
-            }
-            else
-            {
-                if (target != null)
+                if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
                 {
-                    BoardUnitView unit = target as BoardUnitView;
-
-                    skill.FightTargetingArrow = CreateOpponentTarget(
-                        true,
-                        skill.IsPrimary,
-                        skill.SelfObject,
-                        unit,
-                        () =>
-                        {
-                            skill.FightTargetingArrow.SelectedCard = unit;
-                            skill.EndDoSkill();
-                        });
+                    skill.FightTargetingArrow.SelectedPlayer = target as Player;
                 }
-            }
-        }
+                else if (selectedObjectType == Enumerators.AffectObjectType.CHARACTER)
+                {
+                    skill.FightTargetingArrow.SelectedCard = target as BoardUnitView;
+                }
 
-        // rewrite
-        private OpponentBoardArrow CreateOpponentTarget(
-            bool createTargetArrow, bool isReverseArrow, GameObject startObj, object target, Action action)
-        {
-            if (!createTargetArrow)
-            {
-                action?.Invoke();
-                return null;
-            }
+                skill.EndDoSkill();
+            };
 
-            OpponentBoardArrow targetingArrow =
-                Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<OpponentBoardArrow>();
-            targetingArrow.Begin(startObj.transform.position);
-
-            targetingArrow.SetTarget(target);
-
-            MainApp.Instance.StartCoroutine(RemoveOpponentTargetingArrow(targetingArrow, action));
-
-            return targetingArrow;
-        }
-
-        // rewrite
-        private IEnumerator RemoveOpponentTargetingArrow(OpponentBoardArrow arrow, Action action)
-        {
-            yield return new WaitForSeconds(1f);
-            arrow.Dispose();
-            Object.Destroy(arrow.gameObject);
-
-            action?.Invoke();
+            skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
         }
     }
 }

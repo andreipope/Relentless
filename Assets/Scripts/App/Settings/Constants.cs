@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string OpponentBoard = "OpponentBoard";
 
+        internal const string BattlegroundTouchZone = "BattlegroundTouchZona";
+
         internal const string ContentFolderName = "SpreadsheetsData/";
 
         internal const string CardSoundPlay = "P";

@@ -154,6 +154,11 @@ namespace Loom.ZombieBattleground
             return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
         }
 
+        public Player GetPlayerById(int id)
+        {
+            return CurrentPlayer.Id == id ? CurrentPlayer : OpponentPlayer;
+        }
+
         public void ResetWholeGameplayScene()
         {
             foreach (IController controller in _controllers)
@@ -218,7 +223,8 @@ namespace Loom.ZombieBattleground
                 new BoardArrowController(),
                 new SkillsController(),
                 new RanksController(),
-                new InputController()
+                new InputController(),
+                new OpponentController()
             };
 
             foreach (IController controller in _controllers)
@@ -229,17 +235,21 @@ namespace Loom.ZombieBattleground
 
 		private void StartInitializeGame()
         {
-            GetController<PlayerController>().InitializePlayer();
+            GetController<PlayerController>().InitializePlayer(0);
 
             if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
             {
-                GetController<AIController>().InitializePlayer();
+                GetController<AIController>().InitializePlayer(1);
+            }
+            else if(_matchManager.MatchType == Enumerators.MatchType.PVP)
+            {
+                GetController<OpponentController>().InitializePlayer(1);
             }
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
 
-            if(IsTutorial)
+            if (IsTutorial)
             {
                 IsSpecificGameplayBattleground = true;
 
@@ -252,7 +262,16 @@ namespace Loom.ZombieBattleground
             {
                 IsSpecificGameplayBattleground = false;
 
-                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
+                {
+                    CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                }
+                else if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+                {
+                    //todo implement logic from server
+
+                    CurrentTurnPlayer = CurrentPlayer;
+                }
 
                 OpponentPlayer.SetFirstHand(false);
 

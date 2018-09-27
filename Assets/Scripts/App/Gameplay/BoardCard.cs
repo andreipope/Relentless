@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
 
         protected TextMeshPro AmountText;
 
+        protected TextMeshPro AmountTextForArmy;
+
         protected Animator CardAnimator;
 
         protected Vector3 PositionOnHand;
@@ -102,6 +104,7 @@ namespace Loom.ZombieBattleground
             NameText = Transform.Find("TitleText").GetComponent<TextMeshPro>();
             BodyText = Transform.Find("BodyText").GetComponent<TextMeshPro>();
             AmountText = Transform.Find("Amount/Text").GetComponent<TextMeshPro>();
+            AmountTextForArmy = Transform.Find("AmountForArmy/Text").GetComponent<TextMeshPro>();
 
             RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
@@ -172,6 +175,7 @@ namespace Loom.ZombieBattleground
                 WorkingCard.LibraryCard.Picture.ToLower()));
 
             AmountText.transform.parent.gameObject.SetActive(false);
+            AmountTextForArmy.transform.parent.gameObject.SetActive(false);
             DistibuteCardObject.SetActive(false);
 
             if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
@@ -398,11 +402,13 @@ namespace Loom.ZombieBattleground
         }
 
         // editing deck page
-        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount)
+        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount, bool isArmy = false)
         {
             CardsAmountDeckEditing = amount;
             if (init)
             {
+                AmountTextForArmy.transform.parent.gameObject.SetActive(isArmy);
+
                 foreach (Transform child in ParentOfEditingGroupUI)
                 {
                     Object.Destroy(child.gameObject);
@@ -432,6 +438,8 @@ namespace Loom.ZombieBattleground
             }
 
             float offset = 0.5f;
+            float spacing = 2f;
+            float offsetY = 0f;
 
             if (maxCopies > 3)
             {
@@ -446,7 +454,15 @@ namespace Loom.ZombieBattleground
                 offset = 0.7f;
             }
 
-            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, 2f);
+
+            if (isArmy)
+            {
+                spacing = 1.4f;
+                offset = -0.55f;
+                offsetY = -0.5f;
+                AmountTextForArmy.text = amount.ToString();
+            }
+            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY, isArmy);
         }
 
         public void DrawTooltipInfoOfUnit(BoardUnitView unit)

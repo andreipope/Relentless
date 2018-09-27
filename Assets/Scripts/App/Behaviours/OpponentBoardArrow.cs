@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
     {
         private object _target;
 
-        public void SetTarget(object target)
+        public override void SetTarget(object target)
         {
             _target = target;
 

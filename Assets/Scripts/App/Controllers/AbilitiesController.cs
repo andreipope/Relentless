@@ -413,6 +413,11 @@ namespace Loom.ZombieBattleground
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
 
+                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                    {
+                        _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
+                    }
+
                     onCompleteCallback?.Invoke();
 
                     ResolveAllAbilitiesOnUnit(boardObject);
@@ -432,7 +437,7 @@ namespace Loom.ZombieBattleground
                                 {
                                     card.WorkingCard.Owner.Goo -= card.ManaCost;
                                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-
+                                    GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
                                     handCard.GameObject.SetActive(true);
                                     card.RemoveCardParticle.Play(); // move it when card should call hide action
 
@@ -458,6 +463,11 @@ namespace Loom.ZombieBattleground
                                         },
                                         null,
                                         1.5f);
+                                }
+
+                                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                                {
+                                    _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
                                 }
 
                                 action?.Invoke(card);
@@ -754,6 +764,7 @@ namespace Loom.ZombieBattleground
                 {
                     card.WorkingCard.Owner.Goo -= card.ManaCost;
                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                    GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                     card.GameObject.SetActive(true);
                     card.RemoveCardParticle.Play(); // move it when card should call hide action

@@ -95,6 +95,7 @@ namespace Loom.ZombieBattleground
                 attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
                 attackedUnitModel.CurrentHp -= damageAttacking;
 
+                CheckOnKillEnemyZombie(attackedUnitModel);
                 _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
@@ -149,6 +150,8 @@ namespace Loom.ZombieBattleground
                 }
                 attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
                 attackedUnitModel.CurrentHp -= damage;
+
+                CheckOnKillEnemyZombie(attackedUnitModel);
 
                 _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damage);
             }
@@ -212,12 +215,18 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnitModel.UseShieldFromBuff();
                 }
+
                 if (attacker is BoardUnitModel)
+                {
                     attackedUnitModel.LastAttackingSetType = (attacker as BoardUnitModel).Card.LibraryCard.CardSetType;
-                else if(attacker is BoardSpell)
+                }
+                else if (attacker is BoardSpell)
+                {
                     attackedUnitModel.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
+                }
 
                 attackedUnitModel.CurrentHp -= damage;
+                CheckOnKillEnemyZombie(attackedUnitModel);
             }
         }
 
@@ -264,6 +273,14 @@ namespace Loom.ZombieBattleground
                 {
                     healedCreature.CurrentHp = healedCreature.MaxCurrentHp;
                 }
+            }
+        }
+
+        public void CheckOnKillEnemyZombie(BoardUnitModel attackedUnit)
+        {
+            if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentHp == 0)
+            {
+                GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillMinion);
             }
         }
 

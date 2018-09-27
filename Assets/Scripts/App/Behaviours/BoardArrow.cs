@@ -81,8 +81,11 @@ public class BoardArrow : MonoBehaviour
         ArrowObject.transform.localScale = new Vector3(scaleX, scaleY, ArrowObject.transform.localScale.z);
     }
 
-    public virtual void OnCardSelected(BoardUnitView creature)
+    public virtual void SetTarget(object target)
     {
+    }
+
+    public virtual void OnCardSelected(BoardUnitView creature)    {
     }
 
     public virtual void OnCardUnselected(BoardUnitView creature)

@@ -47,6 +47,8 @@ namespace Loom.ZombieBattleground
 
         private CardsController _cardsController;
 
+        private SkillsController _skillsController;
+
         private IDataManager _dataManager;
 
         private IGameplayManager _gameplayManager;
@@ -91,6 +93,7 @@ namespace Loom.ZombieBattleground
             _vfxController = _gameplayManager.GetController<VfxController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _aiController = _gameplayManager.GetController<AIController>();
+            _skillsController = _gameplayManager.GetController<SkillsController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
 
@@ -348,7 +351,7 @@ namespace Loom.ZombieBattleground
             TurnStarted?.Invoke();
         }
 
-        public void EndTurn()
+        public async void EndTurn()
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -360,6 +363,11 @@ namespace Loom.ZombieBattleground
                 foreach (BoardUnitView card in PlayerBoardCards)
                 {
                     card.Model.OnEndTurn();
+                }
+
+                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    await _gameplayManager.GetController<OpponentController>().ActionEndTurn(_gameplayManager.CurrentPlayer);
                 }
             }
             else
@@ -398,7 +406,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 StartTurn();
-            }
+            }            
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
@@ -603,7 +611,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new UnitBoardCard(CurrentBoardCard);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    CurrentBoardCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
+                    CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     boardCard = new SpellBoardCard(CurrentBoardCard);
                     break;
                 default:
@@ -834,6 +842,8 @@ namespace Loom.ZombieBattleground
 
         public void DestroyBoardUnit(BoardUnitView unit)
         {
+            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit.Model);
+
             unit?.Model.Die();
         }
 
@@ -858,6 +868,70 @@ namespace Loom.ZombieBattleground
             return boardUnitView;
         }
 
+
+        public BoardObject GetTargetById(int id, Enumerators.AffectObjectType affectObjectType)
+        {
+            switch(affectObjectType)
+            {
+                case Enumerators.AffectObjectType.PLAYER:
+                    return _gameplayManager.OpponentPlayer.Id == id ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
+                case Enumerators.AffectObjectType.CHARACTER:
+                    {
+                        List<BoardUnitView> units = new List<BoardUnitView>();
+                        units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+                        units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+
+                        BoardUnitView unit = units.Find(u => u.Model.Id == id);
+
+                        units.Clear();
+
+                        if (unit != null)
+                            return unit.Model;
+                    }
+                    break;
+                default: break;
+            }
+
+            return null;
+        }
+
+        public BoardSkill GetSkillById(Player owner, int id)
+        {
+            if (!owner.IsLocalPlayer)
+            {
+                if (_skillsController.OpponentPrimarySkill.Id == id)
+                    return _skillsController.OpponentPrimarySkill;
+                else if (_skillsController.OpponentSecondarySkill.Id == id)
+                    return _skillsController.OpponentSecondarySkill;
+            }
+            else
+            {
+                if (_skillsController.PlayerPrimarySkill.Id == id)
+                    return _skillsController.PlayerPrimarySkill;
+                else if (_skillsController.PlayerSecondarySkill.Id == id)
+                    return _skillsController.PlayerSecondarySkill;
+            }
+
+            return null;
+        }
+
+        public BoardUnitModel GetBoardUnitById(Player owner, int id)
+        {
+            return owner.BoardCards.Find(u => u.Model.Id == id).Model;
+        }
+
+        public BoardObject GetBoardObjectById(int id)
+        {
+            List<BoardUnitView> units = new List<BoardUnitView>();
+            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+
+            BoardUnitModel unit = units.Find(u => u.Model.Id == id).Model;
+
+            units.Clear();
+
+            return unit;
+        }
 
         #region specific setup of battleground
 
