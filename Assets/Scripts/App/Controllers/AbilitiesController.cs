@@ -123,9 +123,9 @@ namespace Loom.ZombieBattleground
 
                 if (boardObject != null)
                 {
-                    if (boardObject is BoardCard)
+                    if (boardObject is BoardCard card)
                     {
-                        activeAbility.Ability.BoardCard = boardObject as BoardCard;
+                        activeAbility.Ability.BoardCard = card;
                     }
                     else
                     {
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            activeAbility.Ability.BoardSpell = boardObject as BoardSpell;
+                            activeAbility.Ability.BoardSpell = (BoardSpell) boardObject;
                         }
                     }
                 }
@@ -378,8 +378,7 @@ namespace Loom.ZombieBattleground
             foreach (AbilityData item in libraryCard.Abilities)
             {
                 // todo improve it bcoz can have queue of abilities with targets
-                activeAbility =
-                    CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
+                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
 
                 if (IsAbilityCanActivateTargetAtStart(item))
                 {

@@ -38,9 +38,8 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitView)
+            if (info is BoardUnitView creature)
             {
-                BoardUnitView creature = info as BoardUnitView;
                 CreateVfx(creature.Transform.position);
             }
         }

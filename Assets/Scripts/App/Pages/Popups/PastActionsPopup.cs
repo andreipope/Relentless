@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground
 
                     if (actionWithPlayer != null)
                     {
-                        _rightBlockOverlordElement.Init(actionWithPlayer.Target as Player, actionWithPlayer.ActionEffectType);
+                        _rightBlockOverlordElement.Init((Player) actionWithPlayer.Target, actionWithPlayer.ActionEffectType);
 
                         ActionElement actionElement = null;
                         foreach (TargetEffectParam targetEffect in pastActionParam.TargetEffects)

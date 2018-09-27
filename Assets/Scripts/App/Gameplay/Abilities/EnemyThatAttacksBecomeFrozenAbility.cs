@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
                 return;
 
-            (from as BoardUnitView)?.Model.Stun(Enumerators.StunType.FREEZE, Value);
+            ((BoardUnitView) from)?.Model.Stun(Enumerators.StunType.FREEZE, Value);
         }
     }
 }

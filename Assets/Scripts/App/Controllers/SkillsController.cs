@@ -497,7 +497,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                BoardUnitModel creature = target as BoardUnitModel;
+                BoardUnitModel creature = (BoardUnitModel) target;
                 int attackModifier = 0;
                 _battleController.AttackUnitBySkill(owner, boardSkill, creature, attackModifier);
             }
@@ -512,7 +512,7 @@ namespace Loom.ZombieBattleground
 
             owner.Goo -= goo;
 
-            BoardUnitView targetUnitView = target as BoardUnitView;
+            BoardUnitView targetUnitView = (BoardUnitView) target;
             Player unitOwner = targetUnitView.Model.OwnerPlayer;
             WorkingCard returningCard = targetUnitView.Model.Card;
 
@@ -630,9 +630,8 @@ namespace Loom.ZombieBattleground
 
         private void ToxicPowerAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnitView)
+            if (target != null && target is BoardUnitView unit)
             {
-                BoardUnitView unit = target as BoardUnitView;
                 _battleController.AttackUnitBySkill(owner, boardSkill, unit.Model, 0);
 
                 unit.Model.BuffedDamage += skill.Attack;
@@ -772,10 +771,8 @@ namespace Loom.ZombieBattleground
 
         private void HealingTouchAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target is Player)
+            if (target is Player player)
             {
-                Player player = target as Player;
-
                 _battleController.HealPlayerBySkill(owner, boardSkill, player);
 
                 _vfxController.CreateVfx(
@@ -785,7 +782,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                BoardUnitModel unit = target as BoardUnitModel;
+                BoardUnitModel unit = (BoardUnitModel) target;
 
                 _battleController.HealUnitBySkill(owner, boardSkill, unit);
 
@@ -925,15 +922,13 @@ namespace Loom.ZombieBattleground
 
         private void IceBoltAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnitView)
+            if (target != null && target is BoardUnitView unit)
             {
-                BoardUnitModel unit = target as BoardUnitModel;
+                _battleController.AttackUnitBySkill(owner, boardSkill, unit.Model, 0);
 
-                _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
-
-                if (unit.CurrentHp > 0)
+                if (unit.Model.CurrentHp > 0)
                 {
-                    unit.Stun(Enumerators.StunType.FREEZE, 1);
+                    unit.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
 
                 _vfxController.CreateVfx(
@@ -975,7 +970,7 @@ namespace Loom.ZombieBattleground
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            _battlegroundController.DestroyBoardUnit(target as BoardUnitView);
+            _battlegroundController.DestroyBoardUnit((BoardUnitView) target);
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -1046,10 +1041,8 @@ namespace Loom.ZombieBattleground
 
         private void RabiesAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnitView)
+            if (target != null && target is BoardUnitView unit)
             {
-                BoardUnitView unit = target as BoardUnitView;
-
                 unit.Model.SetAsFeralUnit();
 
                 _vfxController.CreateVfx(
@@ -1131,10 +1124,8 @@ namespace Loom.ZombieBattleground
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnitView)
+            if (target != null && target is BoardUnitView unit)
             {
-                BoardUnitView unit = target as BoardUnitView;
-
                 unit.Model.BuffedHp += skill.Value;
                 unit.Model.CurrentHp += skill.Value;
 
@@ -1186,10 +1177,8 @@ namespace Loom.ZombieBattleground
 
         private void FortifyAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target != null && target is BoardUnitView)
+            if (target != null && target is BoardUnitView unit)
             {
-                BoardUnitView unit = target as BoardUnitView;
-
                 unit.Model.SetAsHeavyUnit();
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortifyVFX"), unit);

@@ -34,13 +34,16 @@ namespace Loom.ZombieBattleground
         {
             if (_target != null)
             {
-                if (_target is Player)
+                switch (_target)
                 {
-                    (_target as Player).SetGlowStatus(false);
-                }
-                else
-                {
-                    (_target as BoardUnitView)?.SetSelectedUnit(false);
+                    case Player player:
+                        player.SetGlowStatus(false);
+                        break;
+                    case BoardUnitView boardUnitView:
+                        boardUnitView.SetSelectedUnit(false);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(_target), _target, null);
                 }
 
                 _target = null;

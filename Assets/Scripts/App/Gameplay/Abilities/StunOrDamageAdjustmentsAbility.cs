@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitView creature = info as BoardUnitView;
+            BoardUnitView creature = (BoardUnitView) info;
 
             CreateVfx(creature.Transform.position);
 

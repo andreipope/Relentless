@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitView unit = info as BoardUnitView;
+            BoardUnitView unit = (BoardUnitView) info;
 
             Player playerOwner = unit.Model.OwnerPlayer;
 
@@ -194,7 +194,7 @@ namespace Loom.ZombieBattleground
 
         private void DestroyParticle(object[] param)
         {
-            GameObject particleObj = param[0] as GameObject;
+            GameObject particleObj = (GameObject) param[0];
             Object.Destroy(particleObj);
         }
     }

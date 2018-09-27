@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitView unit = info as BoardUnitView;
+            BoardUnitView unit = (BoardUnitView) info;
 
             int targetIndex = -1;
             for (int i = 0; i < unit.Model.OwnerPlayer.BoardCards.Count; i++)

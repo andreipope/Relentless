@@ -538,7 +538,7 @@ namespace Loom.ZombieBattleground
 
         private void DestroyParticle(object[] param)
         {
-            GameObject particleObj = param[0] as GameObject;
+            GameObject particleObj = (GameObject) param[0];
             Object.Destroy(particleObj);
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -216,13 +217,16 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.UseShieldFromBuff();
                 }
 
-                if (attacker is BoardUnitModel)
+                switch (attacker)
                 {
-                    attackedUnitModel.LastAttackingSetType = (attacker as BoardUnitModel).Card.LibraryCard.CardSetType;
-                }
-                else if (attacker is BoardSpell)
-                {
-                    attackedUnitModel.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
+                    case BoardUnitModel model:
+                        attackedUnitModel.LastAttackingSetType = model.Card.LibraryCard.CardSetType;
+                        break;
+                    case BoardSpell spell:
+                        attackedUnitModel.LastAttackingSetType = spell.Card.LibraryCard.CardSetType;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
                 attackedUnitModel.CurrentHp -= damage;
