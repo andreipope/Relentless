@@ -73,7 +73,10 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
+            if (Self == null)
+            {
+                Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
+            }
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _betaGroup = Self.transform.Find("Beta_Group");
@@ -142,16 +145,12 @@ namespace Loom.ZombieBattleground
 
                     UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
                     {
-                        // HACK
-                        IsValid = true
-
-                        // IsValid = false
+                        IsValid = false
                     };
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
                     await _backendDataControlMediator.LoginAndLoadData();
 
-                    // HACK
-                    // userDataModel.IsValid = true;
+                    userDataModel.IsValid = true;
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
 
                     SuccessfulLogin();

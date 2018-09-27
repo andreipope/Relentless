@@ -38,10 +38,13 @@ namespace Loom.ZombieBattleground
         private GameObject _selfPage;
 
         private Button _buttonBack;
+        private Button _settingsButton;
 
         private ButtonShiftingContent _buttonKeep;
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
+
+        private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
 
@@ -61,7 +64,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isPlayerInited;
 
-        private ReportPanelItem _reportGameActionsPanel;
+        private PastActionReportPanel _reportGameActionsPanel;
 
         private GameObject _endTurnButton;
 
@@ -101,6 +104,9 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_bunch"), 75));
             _graveyardStatus.Add(new CardZoneOnBoardStatus(
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/BoardCardsStatuses/graveyard_full"), 100));
+
+            _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
+            _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
         }
 
         public void Hide()
@@ -123,8 +129,12 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (_selfPage == null || !_selfPage.activeSelf)
+            if (_selfPage != null && _selfPage.activeInHierarchy)
             {
+                if (_reportGameActionsPanel != null)
+                {
+                    _reportGameActionsPanel.Update();
+                }
             }
         }
 
@@ -135,17 +145,30 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonBack = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
+            _settingsButton = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
             _buttonKeep = _selfPage.transform.Find("Button_Keep").GetComponent<ButtonShiftingContent>();
 
             _buttonBack.onClick.AddListener(BackButtonOnClickHandler);
+            _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
 
-            _reportGameActionsPanel = new ReportPanelItem(_selfPage.transform.Find("ActionReportPanel").gameObject);
+            _reportGameActionsPanel = new PastActionReportPanel(_selfPage.transform.Find("ActionReportPanel").gameObject);
 
             if (_zippingVfx == null)
             {
                 _zippingVfx = GameObject.Find("Background/Zapping").gameObject;
                 _zippingVfx.SetActive(false);
+            }
+
+            if(Application.isMobilePlatform)
+            {
+                _buttonBack.gameObject.SetActive(true);
+                _settingsButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                _settingsButton.gameObject.SetActive(true);
+                _buttonBack.gameObject.SetActive(false);
             }
 
             if (_gameplayManager.IsTutorial)
@@ -212,11 +235,6 @@ namespace Loom.ZombieBattleground
             _opponentHealthText =
                 GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
 
-            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
-                new Vector3(-3.55f, 0, -6.07f));
-            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
-                new Vector3(9.77f, 0, 4.75f));
-
             // improve find to get it from OBJECTS ON BOARD!!
             _playerNameText = GameObject.Find("Player/NameBoard/NameText").GetComponent<TextMeshPro>();
             _opponentNameText = GameObject.Find("Opponent/NameBoard/NameText").GetComponent<TextMeshPro>();
@@ -256,6 +274,11 @@ namespace Loom.ZombieBattleground
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
+			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
+                _playerManaBarsPosition, _playerNameText.text);
+            _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
+                _opponentManaBarsPosition, _opponentNameText.text);
+			
             _isPlayerInited = true;
         }
 
@@ -535,6 +558,7 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
 
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
@@ -543,21 +567,31 @@ namespace Loom.ZombieBattleground
                 _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
             };
-            actions[1] = () => { };
+            actions[1] = () => {
+                GameClient.Get<IAppStateManager>().SetPausingApp(false);
+            };
 
             _uiManager.DrawPopup<ConfirmationPopup>(actions);
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IAppStateManager>().SetPausingApp(true);
         }
 
         public void KeepButtonOnClickHandler()
         {
             _gameplayManager.GetController<CardsController>().EndCardDistribution();
             KeepButtonVisibility(false);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void KeepButtonVisibility(bool visible)
         {
             _buttonKeep.gameObject.SetActive(visible);
+        }
+
+        public void SettingsButtonOnClickHandler()
+        {
+            _uiManager.DrawPopup<SettingsPopup>();
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         #endregion

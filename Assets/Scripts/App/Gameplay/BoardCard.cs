@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         public Card LibraryCard;
 
+        public SpriteRenderer PictureSprite;
+
         protected ILoadObjectsManager LoadObjectsManager;
 
         protected ISoundManager SoundManager;
@@ -42,8 +44,6 @@ namespace Loom.ZombieBattleground
         protected BattlegroundController BattlegroundController;
 
         protected SpriteRenderer GlowSprite;
-
-        protected SpriteRenderer PictureSprite;
 
         protected SpriteRenderer BackgroundSprite;
 

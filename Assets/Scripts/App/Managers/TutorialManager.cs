@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            string tutorialSkipQuestion = "Are you sure you want back to Main Menu?";
+            string tutorialSkipQuestion = "Are you sure you want to go back to Main Menu?";
             QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
             if (state == Enumerators.AppState.MAIN_MENU)
             {
@@ -131,28 +131,14 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                tutorialSkipQuestion = "Do you really want skip \nBasic Tutorial?";
+                tutorialSkipQuestion = "Do you really want to skip \nBasic Tutorial?";
                 if (_dataManager.CachedUserLocalData.CurrentTutorialId > 0)
-                    tutorialSkipQuestion = "Do you really want skip \nAdvanced Tutorial?";
+                    tutorialSkipQuestion = "Do you really want to skip \nAdvanced Tutorial?";
                 questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
             }
 
-
-            GameClient.Get<IAppStateManager>().SetPausingApp(true);
-
-            Action[] callbacks = new Action[2];
-            callbacks[0] = () =>
-            {
-                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(state);
-                GameClient.Get<IAppStateManager>().SetPausingApp(false);
-            };
-            callbacks[1] = () =>
-            {
-                GameClient.Get<IAppStateManager>().SetPausingApp(false);
-            };
-            
             _uiManager.DrawPopup<QuestionPopup>(new object[]{tutorialSkipQuestion, false});
+            GameClient.Get<IAppStateManager>().SetPausingApp(true);
         }
 
         private void ConfirmSkipReceivedHandler(bool status)
@@ -161,8 +147,9 @@ namespace Loom.ZombieBattleground
             if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HORDE_SELECTION);
             }
+            GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
 
         private void ConfirmQuitReceivedHandler(bool status)
@@ -170,9 +157,12 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmQuitReceivedHandler;
             if (status)
             {
+                _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
             }
+            GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
 
 

@@ -1,7 +1,4 @@
 using System;
-using System.Threading.Tasks;
-using App.Utilites;
-using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
@@ -25,10 +22,6 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
-        private BackendFacade _backendFacade;
-
-        private BackendDataControlMediator _backendDataControlMediator;
-
         private GameObject _selfPage;
 
         private MenuButtonNoGlow _buttonArmy;
@@ -43,16 +36,6 @@ namespace Loom.ZombieBattleground
 
         private Animator _logoAnimator;
 
-        private TextMeshProUGUI _connectionStatusText;
-
-        private Button _buttonReconnect;
-
-        private Button _buttonLogout;
-
-        private GameObject _markerOffline;
-
-        private GameObject _markerOnline;
-
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -61,10 +44,6 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _dataManager = GameClient.Get<IDataManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-
-            _backendFacade.ContractCreated += LoomManagerOnContractCreated;
         }
 
         public void Update()
@@ -92,13 +71,6 @@ namespace Loom.ZombieBattleground
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
-            _connectionStatusText = _selfPage.transform.Find("ConnectionPanel/ConnectionStatusText")
-                .GetComponent<TextMeshProUGUI>();
-            _buttonReconnect = _selfPage.transform.Find("ConnectionPanel/Button_Reconnect").GetComponent<Button>();
-            _buttonLogout = _selfPage.transform.Find("ConnectionPanel/Button_Logout").GetComponent<Button>();
-            _markerOffline = _selfPage.transform.Find("ConnectionPanel/Marker_Status_Offline").gameObject;
-            _markerOnline = _selfPage.transform.Find("ConnectionPanel/Marker_Status_Online").gameObject;
-
             _buttonPlay.onClick.AddListener(OnClickPlay);
             _buttonDeck.onClick.AddListener(OnClickPlay);
             _buttonArmy.Clicked.AddListener(OnClickCollection);
@@ -107,8 +79,6 @@ namespace Loom.ZombieBattleground
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
             _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
-            _buttonReconnect.onClick.AddListener(ReconnectButtonOnClickHandler);
-            _buttonLogout.onClick.AddListener(LogoutButtonOnClickHandler);
             _buttonMusic.ValueChanged.AddListener(OnValueChangedEventMusic);
             _buttonSfx.ValueChanged.AddListener(OnValueChangedEventSfx);
 
@@ -127,18 +97,10 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.DrawPopup<TermsPopup>();
             }
-
-            UpdateConnectionStateUI();
         }
 
         public void Hide()
         {
-            if (_backendFacade.Contract != null)
-            {
-                _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-                _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-            }
-
             if (_selfPage == null)
                 return;
 
@@ -149,40 +111,6 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-        }
-
-        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
-        {
-            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStateUI(), null);
-        }
-
-        private void UpdateConnectionStateUI()
-        {
-            if (_selfPage == null)
-                return;
-
-            _connectionStatusText.text = _backendFacade.IsConnected ?
-                "<color=green>Online</color>" :
-                "<color=red>Offline</color>";
-
-            _buttonReconnect.gameObject.SetActive(!_backendFacade.IsConnected);
-            _markerOffline.gameObject.SetActive(_buttonReconnect.gameObject.activeSelf);
-            _buttonLogout.gameObject.SetActive(!_buttonReconnect.gameObject.activeSelf);
-            _markerOnline.gameObject.SetActive(!_buttonReconnect.gameObject.activeSelf);
-        }
-
-        private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)
-        {
-            if (oldContract != null)
-            {
-                oldContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-                oldContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-            }
-
-            newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-            newContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-
-            UpdateConnectionStateUI();
         }
 
         private void OpenAlertDialog(string msg)
@@ -203,7 +131,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _stateManager.ChangeAppState(Enumerators.AppState.DECK_SELECTION);
+                _stateManager.ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
             }
         }
 
@@ -221,7 +149,7 @@ namespace Loom.ZombieBattleground
         private void OnClickCollection()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.COLLECTION);
+            _stateManager.ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void BuyButtonHandler()
@@ -252,57 +180,6 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.PACK_OPENER);
-        }
-
-        private async void ReconnectButtonOnClickHandler()
-        {
-            try
-            {
-                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-
-                Func<Task> connectFunc = async () =>
-                {
-                    bool success = true;
-                    try
-                    {
-                        await _backendDataControlMediator.LoginAndLoadData();
-                    }
-                    catch (Exception)
-                    {
-                        // HACK: ignore to allow offline mode
-                    }
-
-                    if (!_backendFacade.IsConnected)
-                    {
-                        success = false;
-                    }
-
-                    if (success)
-                    {
-                        connectionPopup.Hide();
-                    }
-                    else
-                    {
-                        connectionPopup.ShowFailedOnMenu();
-                    }
-                };
-                _uiManager.DrawPopup<ConnectionPopup>();
-                connectionPopup.ConnectFunc = connectFunc;
-                await connectionPopup.ExecuteConnection();
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                OpenAlertDialog(
-                    $"Reconnect failed. Please check your Internet connection.\n\nAdditional info: {e.GetType().Name} [{e.Message}]");
-            }
-        }
-
-        private void LogoutButtonOnClickHandler()
-        {
-            _dataManager.DeleteData();
-            _backendDataControlMediator.UserDataModel = null;
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
         }
 
         private void OnValueChangedEventMusic(bool value)

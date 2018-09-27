@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
 
         private readonly BoardArrowController _boardArrowController;
 
-        private readonly SpriteRenderer _glowObjectSprite;
+        private readonly GameObject _glowObject;
 
         private readonly TextMeshPro _cooldownText;
 
@@ -48,6 +48,7 @@ namespace Loom.ZombieBattleground
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
 
+        private SkillCoolDownTimer _coolDownTimer;
 
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
@@ -59,6 +60,8 @@ namespace Loom.ZombieBattleground
             _initialCooldown = skillInfo.InitialCooldown;
             _cooldown = skillInfo.Cooldown;
 
+            _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
+
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -67,8 +70,8 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
-            _glowObjectSprite = SelfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
-            _glowObjectSprite.gameObject.SetActive(false);
+            _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
+            _glowObject.SetActive(false);
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
@@ -90,6 +93,7 @@ namespace Loom.ZombieBattleground
             }
 
             _cooldownText.text = _cooldown.ToString();
+            _coolDownTimer.SetAngle(_cooldown);
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
@@ -158,12 +162,13 @@ namespace Loom.ZombieBattleground
             IsUsing = false;
         }
 
-        public void UseSkill(object target)
+        private void UseSkill()
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
             _usedInThisTurn = true;
             _cooldownText.text = _cooldown.ToString();
+            _coolDownTimer.SetAngle(_cooldown, true);
         }
 
         public void Hide()
@@ -193,7 +198,7 @@ namespace Loom.ZombieBattleground
 
         public void OnMouseDownEventHandler()
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
                 return;
 
             if (!_gameplayManager.IsGameplayReady())
@@ -270,6 +275,7 @@ namespace Loom.ZombieBattleground
             }
 
             _cooldownText.text = _cooldown.ToString();
+            _coolDownTimer.SetAngle(_cooldown);
         }
 
         private void TurnEndedHandler()
@@ -294,18 +300,11 @@ namespace Loom.ZombieBattleground
 
         private void SetHighlightingEnabled(bool isActive)
         {
-            _glowObjectSprite.gameObject.SetActive(isActive);
+            _glowObject.SetActive(isActive);
 
-            //_shutterAnimator.enabled = isActive ? true : false;
-            //_shutterAnimator.speed = isActive ? 1 : -1;
-            if (_isOpen != isActive)
-            {
-                _isOpen = isActive;
-                string state = isActive ? "Open" : "Close";
-                _shutterAnimator.SetTrigger(state);
-                if (Owner.IsLocalPlayer)
-                    Debug.LogError(state);
-            }
+            _shutterAnimator.enabled = isActive ? true : false;
+            _shutterAnimator.speed = isActive ? 1 : -1;
+            _shutterAnimator.StartPlayback();
         }
 
         private void DoOnUpSkillAction()
@@ -317,6 +316,7 @@ namespace Loom.ZombieBattleground
 
             if (Skill.SkillTargetTypes.Count == 0)
             {
+                UseSkill();
                 _skillsController.DoSkillAction(this, Owner);
             }
             else
@@ -325,12 +325,14 @@ namespace Loom.ZombieBattleground
                 {
                     if (FightTargetingArrow != null)
                     {
+                        UseSkill();
                         _skillsController.DoSkillAction(this);
                         _playerController.IsCardSelected = false;
                     }
                 }
                 else
                 {
+                    UseSkill();
                     _skillsController.DoSkillAction(this);
                 }
             }

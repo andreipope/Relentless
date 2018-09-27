@@ -4,6 +4,7 @@ using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -44,8 +45,13 @@ namespace Loom.ZombieBattleground
         {
             GameObject effect;
             GameObject vfxPrefab;
-            target = Utilites.CastVfxPosition(target);
-            Vector3 offset = Vector3.forward * 1;
+
+            Vector3 offset = Vector3.zero;
+            if (type == Enumerators.CardType.FERAL || type == Enumerators.CardType.HEAVY)
+            {
+                target = Utilites.CastVfxPosition(target);
+                offset = Vector3.forward * 1;
+            }
 
             switch (type)
             {
@@ -228,6 +234,20 @@ namespace Loom.ZombieBattleground
             effect.transform.localPosition = Vector3.zero;
 
             Object.Destroy(effect, 2.5f);
+        }
+
+        public void CreateDeathZombieAnimation(BoardUnit cardToDestroy)
+        {
+            string type = cardToDestroy.LastAttackingSetType.ToString();
+            type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
+            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
+            GameObject effect = MonoBehaviour.Instantiate(prefab);
+            effect.transform.position = cardToDestroy.Transform.position;
+            effect.SetActive(false);
+            cardToDestroy.Transform.SetParent(effect.transform, true);
+            cardToDestroy.Transform.position = effect.transform.position;
+            _particlesController.RegisterParticleSystem(effect, true, 8f);
+            effect.SetActive(true);
         }
     }
 }

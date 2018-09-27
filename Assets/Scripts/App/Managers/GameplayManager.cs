@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         public bool CanDoDragActions { get; set; }
 
+        public bool IsGameplayInputBlocked { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -145,6 +147,11 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayerTurn()
         {
             return CurrentTurnPlayer.Equals(CurrentPlayer);
+        }
+
+        public Player GetOpponentByPlayer(Player player)
+        {
+            return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
         }
 
         public void ResetWholeGameplayScene()

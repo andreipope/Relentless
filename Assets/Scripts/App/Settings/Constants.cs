@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.3";
+        internal const string CurrentVersionBase = "0.1.4";
 
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
@@ -122,5 +122,7 @@ namespace Loom.ZombieBattleground.Common
         internal const string AssetBundleMain = "main";
 
         internal const string AssetBundleLoadingScreen = "loadingscreen";
+
+        internal const string Space = " ";
     }
 }
