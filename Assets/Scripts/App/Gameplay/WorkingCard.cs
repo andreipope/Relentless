@@ -5,6 +5,8 @@ namespace Loom.ZombieBattleground
 {
     public class WorkingCard
     {
+        public int Id;
+
         public int CardId;
 
         public Card LibraryCard;
