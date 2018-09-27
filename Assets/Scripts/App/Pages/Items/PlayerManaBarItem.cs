@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         private GameObject _overflowObject;
 
         private TextMeshPro _overflowGooAmountText;
-		
+        
 		private TextMeshPro _nameText;
 
         private Transform _overflowBottleContainer;
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private string _name;
 
-        private bool _isInOverflow;
+        private bool _isInOverflow, _isAfterOverflow;
 
         public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos, string name)
         {
@@ -57,6 +57,7 @@ namespace Loom.ZombieBattleground
             }
 
             _isInOverflow = false;
+            _isAfterOverflow = false;
             _name = name;
             _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
 
@@ -81,7 +82,7 @@ namespace Loom.ZombieBattleground
                     Disactive(_gooBottles[i]);
                 }
             }
-
+            _isAfterOverflow = false;
             UpdateGooMeter();
         }
 
@@ -99,14 +100,17 @@ namespace Loom.ZombieBattleground
 
         public void Active(GooBottleItem item)
         {
-            item.FullBoottle.DOFade(1.0f, 0.5f);
-            item.GlowBottle.DOFade(1.0f, 0.5f);
+            item.selfAnimator.SetBool("IsFull", true);
+            if(_isAfterOverflow)
+            {
+                item.selfAnimator.Play("gooFilling", 0, 1);
+            }
+            item.glow.Play();
         }
 
         public void Disactive(GooBottleItem item)
         {
-            item.FullBoottle.DOFade(0.0f, 0.5f);
-            item.GlowBottle.DOFade(0.0f, 0.5f);
+			item.selfAnimator.SetBool("IsFull", false);
         }
 
         private void UpdateGooOVerflow()
@@ -120,7 +124,7 @@ namespace Loom.ZombieBattleground
             else if (_currentValue <= _maxValue && _isInOverflow)
             {
                 DestroyOverflow();
-
+                _isAfterOverflow = true;
                 _isInOverflow = false;
             }
 
@@ -209,15 +213,17 @@ namespace Loom.ZombieBattleground
 
         public struct GooBottleItem
         {
-            public SpriteRenderer FullBoottle, GlowBottle;
-
             public GameObject Self;
+                
+			public Animator selfAnimator;
+
+            public ParticleSystem glow;
 
             public GooBottleItem(GameObject gameObject)
             {
                 Self = gameObject;
-                FullBoottle = Self.transform.Find("Goo").GetComponent<SpriteRenderer>();
-                GlowBottle = Self.transform.Find("BottleGlow").GetComponent<SpriteRenderer>();
+                selfAnimator = Self.GetComponent<Animator>();
+                glow = Self.transform.Find("GlowBottle").GetComponent<ParticleSystem>();
             }
         }
     }

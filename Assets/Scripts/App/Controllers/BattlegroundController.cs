@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
             CurrentTurn = Constants.FirstGameTurnIndex;
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.Health = 99;
+            _gameplayManager.OpponentPlayer.Health = 1;
             _gameplayManager.CurrentPlayer.Health = 99;
 #endif
 
@@ -608,7 +608,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new UnitBoardCard(CurrentBoardCard);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    CurrentBoardCard = Object.Instantiate(_cardsController.SpellCardViewPrefab);
+                    CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     boardCard = new SpellBoardCard(CurrentBoardCard);
                     break;
                 default:

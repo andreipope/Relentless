@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
 {
     public class CardsController : IController
     {
-        public GameObject CreatureCardViewPrefab, OpponentCardPrefab, SpellCardViewPrefab;
+        public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
 
         private IGameplayManager _gameplayManager;
 
@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
 
             CreatureCardViewPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
-            SpellCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
+            ItemCardViewPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             OpponentCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/OpponentCard");
 
             _gameplayManager.GameStarted += GameStartedHandler;
@@ -435,7 +435,7 @@ namespace Loom.ZombieBattleground
         public void HoverPlayerCardOnBattleground(Player player, BoardCard card, HandBoardCard handCard)
         {
             Card libraryCard = card.WorkingCard.LibraryCard;
-            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE && _gameplayManager.CurrentPlayer.BoardCards.Count < Constants.MaxBoardUnits)
             {
                 int newIndexOfCard = 0;
                 float newCreatureCardPosition = card.Transform.position.x;
@@ -678,7 +678,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(
-                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard"));
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
                     boardCard = new SpellBoardCard(go);
                     break;
                 default:
@@ -887,7 +887,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new UnitBoardCard(go);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    go = Object.Instantiate(SpellCardViewPrefab);
+                    go = Object.Instantiate(ItemCardViewPrefab);
                     boardCard = new SpellBoardCard(go);
                     break;
                 default:

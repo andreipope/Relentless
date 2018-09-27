@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardCreaturePrefab;
 
-        private GameObject _cardSpellPrefab;
+        private GameObject _cardItemPrefab;
 
         private GameObject _packOpenVfx;
 
@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
 
             _cardCreaturePrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
-            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
+            _cardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
 
             _cardPlaceholdersPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground
                         go = Object.Instantiate(_cardCreaturePrefab);
                         break;
                     case Enumerators.CardKind.SPELL:
-                        go = Object.Instantiate(_cardSpellPrefab);
+                        go = Object.Instantiate(_cardItemPrefab);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

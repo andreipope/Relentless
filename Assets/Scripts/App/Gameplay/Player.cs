@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ISoundManager _soundManager;
 
+        private readonly ILoadObjectsManager _loadObjectsManager;
+
         private readonly CardsController _cardsController;
 
         private readonly BattlegroundController _battlegroundController;
@@ -42,6 +44,8 @@ namespace Loom.ZombieBattleground
         private readonly GameObject _overlordDeathObject;
 
         private readonly GameObject _avatarHeroHighlight;
+
+        private readonly GameObject _avatarHeroHighlightAfterDead;
 
         private readonly GameObject _avatarSelectedHighlight;
 
@@ -124,6 +128,9 @@ namespace Loom.ZombieBattleground
 
             _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject;
 
+            string name = Utilites.FirstCharToUpper(SelfHero.HeroElement.ToString()) + "HeroFrame";
+            _avatarHeroHighlightAfterDead = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
+            _avatarHeroHighlightAfterDead.SetActive(false);
             _avatarAnimator.enabled = false;
             _deathAnimator.enabled = false;
             _deathAnimator.StopPlayback();
@@ -444,6 +451,7 @@ namespace Loom.ZombieBattleground
             _avatarAnimator.enabled = true;
             _deathAnimator.enabled = true;
             _avatarHeroHighlight.SetActive(false);
+            _avatarHeroHighlightAfterDead.SetActive(true);
             _avatarAnimator.Play(0);
             _deathAnimator.Play(0);
 
