@@ -501,6 +501,6 @@ namespace Loom.ZombieBattleground.Common
             ActivateRankAbility,
             UseOverlordAbility
 
-        }        }
+        }
     }
 }

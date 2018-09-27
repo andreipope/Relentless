@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.OpponentPlayer, secondary, false);
         }
 
-        public void DoSkillAction(BoardSkill skill, object target = null)
+        public void DoSkillAction(BoardSkill skill, BoardObject target = null)
         {
             if (skill == null)
                 return;

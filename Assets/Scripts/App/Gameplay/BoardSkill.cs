@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
             _cooldownText.text = _cooldown.ToString();
             _coolDownTimer.SetAngle(_cooldown, true);
 
-            GameClient.Get<IOverlordManager>().ReportExperienceAction(Owner.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+            GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
         }
 
         public void Hide()
