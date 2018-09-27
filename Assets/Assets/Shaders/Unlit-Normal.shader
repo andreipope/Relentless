@@ -12,9 +12,9 @@ Properties {
 }
 
 SubShader {
-    Tags { "Queue"="Opaque" }
+    Tags { "Queue"="Geometry" }
     LOD 100
-		
+        
     Pass {
         CGPROGRAM
             #pragma vertex vert
@@ -37,7 +37,7 @@ SubShader {
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-			fixed4 _Color;
+            fixed4 _Color;
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
@@ -55,13 +55,13 @@ SubShader {
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.texcoord);
-				fixed4 colorTexture = _Color;
-				
-				col = col * colorTexture;
-				
+                fixed4 colorTexture = _Color;
+                
+                col = col * colorTexture;
+                
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 UNITY_OPAQUE_ALPHA(col.a);
-				
+                
                 return col;
             }
         ENDCG

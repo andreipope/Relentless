@@ -27,8 +27,6 @@ namespace Loom.ZombieBattleground
 
         private readonly ISoundManager _soundManager;
 
-        private readonly ILoadObjectsManager _loadObjectsManager;
-
         private readonly CardsController _cardsController;
 
         private readonly BattlegroundController _battlegroundController;
