@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
             else if (PastActionReport.Caller is BoardSkill skill)
             {
                 sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
-                                                                    skill.Owner.SelfHero.HeroElement + "_" +
+                                                                    skill.OwnerPlayer.SelfHero.HeroElement + "_" +
                                                                     skill.Skill.Skill.ToLower());
             }
 
