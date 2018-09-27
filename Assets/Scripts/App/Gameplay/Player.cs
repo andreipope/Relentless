@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
-    public class Player
+    public class Player : BoardObject
     {
         public int Turn;
 
@@ -67,8 +67,9 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-        public Player(GameObject playerObject, bool isOpponent)
+        public Player(int id, GameObject playerObject, bool isOpponent)
         {
+            Id = id;
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
 
@@ -121,7 +122,6 @@ namespace Loom.ZombieBattleground
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
             _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
-            Debug.LogError(11111);
 
             _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
             _deathAnimator = _overlordDeathObject.GetComponent<Animator>();
