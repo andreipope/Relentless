@@ -317,18 +317,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Player Actions
 
-        private const string EndTurnMethod = "EndTurn";
-
-        private const string DrawCardMethod = "DrawCard";
-
-        private const string CardAttackMethod = "CardAttack";
-
-        private const string UseCardAbilityMethod = "UseCardAbility";
-        
-        private const string UseOverlordSkillMethod = "UseOverlordSkill";
-
-        private const string MulliganMethod = "Mulligan";
-
         public async Task SendEndTurn(string userId, EndTurnModel model)
         {
          //  return await Contract.StaticCallAsync<EndTurnModel>(EndTurnMethod, request);
