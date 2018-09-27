@@ -7,6 +7,7 @@
 /[Ll]ogs/
 /Assets/AssetStoreTools*
 /Assets/StreamingAssets/AssetBundles/*
+!/Assets/StreamingAssets/AssetBundles/.dummy
 
 # Visual Studio 2015 cache directory
 /.vs/
