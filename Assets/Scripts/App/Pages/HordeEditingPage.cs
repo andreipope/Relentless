@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
-        private GameObject _cardCreaturePrefab, _cardSpellPrefab;
+        private GameObject _cardCreaturePrefab, _cardItemPrefab;
 
         private CollectionData _collectionData;
 
@@ -124,6 +124,7 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.PreviewCardInstantiated += boardCard =>
             {
                 boardCard.Transform.Find("Amount").gameObject.SetActive(false);
+                boardCard.Transform.Find("AmountForArmy").gameObject.SetActive(false);
                 boardCard.SetAmountOfCardsInEditingPage(true, 0, 0);
             };
 
@@ -132,7 +133,7 @@ namespace Loom.ZombieBattleground
 
             _cardCreaturePrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
-            _cardSpellPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/SpellCard");
+            _cardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
 
             _createdArmyCards = new List<BoardCard>();
             _createdHordeCards = new List<BoardCard>();
@@ -360,7 +361,7 @@ namespace Loom.ZombieBattleground
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
 
             ResetArmyCards();
-
+            CollectionCardData collectionCardData = null;
             for (int i = startIndex; i < endIndex; i++)
             {
                 if (i >= cards.Count)
@@ -377,6 +378,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 BoardCard boardCard = CreateCard(card, Vector3.zero, _armyCardsContainer);
+                boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
                 DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
                 deckBuilderCard.Scene = this;
@@ -389,6 +391,10 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdArmyCards.Add(boardCard);
+
+                collectionCardData = _collectionData.GetCardData(card.Name);
+                UpdateCardAmount(true, card.Name, collectionCardData.Amount);
+
             }
         }
 
@@ -403,7 +409,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new UnitBoardCard(go);
                     break;
                 case Enumerators.CardKind.SPELL:
-                    go = Object.Instantiate(_cardSpellPrefab);
+                    go = Object.Instantiate(_cardItemPrefab);
                     boardCard = new SpellBoardCard(go);
                     break;
                 default:
@@ -447,7 +453,6 @@ namespace Loom.ZombieBattleground
             foreach (DeckCardData card in deck.Cards)
             {
                 Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName);
-                UpdateCardAmount(card.CardName, card.Amount);
 
                 bool itemFound = false;
                 foreach (BoardCard item in _createdHordeCards)
@@ -487,7 +492,7 @@ namespace Loom.ZombieBattleground
                 Constants.SfxSoundVolume, false, false, true);
             CollectionCardData collectionCardData = _collectionData.GetCardData(card.Name);
             collectionCardData.Amount++;
-            UpdateCardAmount(card.Name, collectionCardData.Amount);
+            UpdateCardAmount(false, card.Name, collectionCardData.Amount);
             BoardCard boardCard = _createdHordeCards.Find(item => item.LibraryCard.Id == card.Id);
             boardCard.CardsAmountDeckEditing--;
             _currentDeck.RemoveCard(card.Name);
@@ -605,7 +610,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,
                 Constants.SfxSoundVolume, false, false, true);
             collectionCardData.Amount--;
-            UpdateCardAmount(card.Name, collectionCardData.Amount);
+            UpdateCardAmount(false, card.Name, collectionCardData.Amount);
 
             if (!itemFound)
             {
@@ -683,13 +688,13 @@ namespace Loom.ZombieBattleground
             return maxCopies;
         }
 
-        public void UpdateCardAmount(string cardId, int amount)
+        public void UpdateCardAmount(bool init, string cardId, int amount)
         {
             foreach (BoardCard card in _createdArmyCards)
             {
                 if (card.LibraryCard.Name == cardId)
                 {
-                    card.UpdateAmount(amount);
+                    card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.LibraryCard), amount, true);
                     break;
                 }
             }
@@ -792,7 +797,7 @@ namespace Loom.ZombieBattleground
                 {
                     MoveHordeToLeft();
                 }
-            }
+            }   
             else
             {
                 MoveCardsPage(Mathf.RoundToInt(scrollDelta.y));
@@ -989,6 +994,8 @@ namespace Loom.ZombieBattleground
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
             _draggingObject.transform.Find("Amount").gameObject.SetActive(false);
+            _draggingObject.transform.Find("AmountForArmy").gameObject.SetActive(false);
+            _draggingObject.transform.Find("DeckEditingGroupUI").gameObject.SetActive(false);
             _draggingObject.name = onOnject.GetInstanceID().ToString();
 
             _isDragging = true;
