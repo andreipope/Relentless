@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSkill : BoardObject
+    public class BoardSkill : OwnableBoardObject
     {
         public BattleBoardArrow FightTargetingArrow;
 
