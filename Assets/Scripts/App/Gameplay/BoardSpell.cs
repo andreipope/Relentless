@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSpell
+    public class BoardSpell : OwnableBoardObject
     {
         public GameObject GameObject;
 

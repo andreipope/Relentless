@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
-    public class Player
+    public class Player : BoardObject
     {
         public int Turn;
 
@@ -67,8 +67,9 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-        public Player(GameObject playerObject, bool isOpponent)
+        public Player(int id, GameObject playerObject, bool isOpponent)
         {
+            Id = id;
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
 

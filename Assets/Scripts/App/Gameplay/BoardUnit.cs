@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnit
+    public class BoardUnit : OwnableBoardObject
     {
         public bool AttackedThisTurn;
 
@@ -27,8 +27,6 @@ namespace Loom.ZombieBattleground
         public int InitialHp;
 
         public bool HasUsedBuffShield;
-
-        public Player OwnerPlayer;
 
         public List<object> AttackedBoardObjectsThisTurn;
 
@@ -824,13 +822,18 @@ namespace Loom.ZombieBattleground
                                 GameObject,
                                 targetPlayer.AvatarObject,
                                 0.1f,
-                                () =>
+                                async () =>
                                 {
                                     Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
                                     _vfxController.PlayAttackVfx(Card.LibraryCard.CardType, positionOfVfx,
                                         CurrentDamage);
 
                                     _battleController.AttackPlayerByUnit(this, targetPlayer);
+
+                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                                    {
+                                      await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetPlayer, Enumerators.AffectObjectType.PLAYER);
+                                    }
                                 },
                                 () =>
                                 {
@@ -863,12 +866,17 @@ namespace Loom.ZombieBattleground
                                 GameObject,
                                 targetCard.Transform.gameObject,
                                 0.5f,
-                                () =>
+                                async () =>
                                 {
                                     _vfxController.PlayAttackVfx(Card.LibraryCard.CardType,
                                         targetCard.Transform.position, CurrentDamage);
 
                                     _battleController.AttackUnitByUnit(this, targetCard, AdditionalDamage);
+
+                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                                    {
+                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetCard, Enumerators.AffectObjectType.PLAYER);
+                                    }
 
                                     if (TakeFreezeToAttacked && targetCard.CurrentHp > 0)
                                     {
