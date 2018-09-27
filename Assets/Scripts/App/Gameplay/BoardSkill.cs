@@ -257,7 +257,7 @@ namespace Loom.ZombieBattleground
 
         private void TurnStartedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (_gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 return;
 
             if (OwnerPlayer.IsStunned)
