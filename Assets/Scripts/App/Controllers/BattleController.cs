@@ -216,13 +216,13 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.UseShieldFromBuff();
                 }
 
-                if (attacker is BoardUnitModel)
+                if (attacker is BoardUnitModel unit)
                 {
-                    attackedUnitModel.LastAttackingSetType = (attacker as BoardUnitModel).Card.LibraryCard.CardSetType;
+                    attackedUnitModel.LastAttackingSetType = unit.Card.LibraryCard.CardSetType;
                 }
-                else if (attacker is BoardSpell)
+                else if (attacker is BoardSpell spell)
                 {
-                    attackedUnitModel.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
+                    attackedUnitModel.LastAttackingSetType = spell.Card.LibraryCard.CardSetType;
                 }
 
                 attackedUnitModel.CurrentHp -= damage;

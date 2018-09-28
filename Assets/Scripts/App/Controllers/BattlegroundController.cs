@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
 
                             cardToDestroy.Model.InvokeUnitDied();
                             cardToDestroy.Transform.DOKill();
-                            //Object.Destroy(cardToDestroy.GameObject);
+                            Object.Destroy(cardToDestroy.GameObject);
 
                             _timerManager.AddTimer(
                                 f =>
