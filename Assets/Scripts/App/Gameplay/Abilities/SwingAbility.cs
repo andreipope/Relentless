@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitView)
+            if (info is BoardUnitModel)
             {
                 Action(info);
             }
