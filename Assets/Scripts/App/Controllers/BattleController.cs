@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
         private ActionsQueueController _actionsQueueController;
 
         private AbilitiesController _abilitiesController;
+
+        private BattlegroundController _battlegroundController;
 
         private VfxController _vfxController;
 
@@ -30,6 +33,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             FillStrongersAndWeakers();
         }
@@ -96,7 +100,8 @@ namespace Loom.ZombieBattleground
                 attackedUnitModel.CurrentHp -= damageAttacking;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
-                _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damageAttacking);
+
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
@@ -113,7 +118,7 @@ namespace Loom.ZombieBattleground
                     attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
                     attackingUnitModel.CurrentHp -= damageAttacked;
 
-                    _vfxController.SpawnGotDamageEffect(attackingUnitModel, -damageAttacked);
+                    _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackingUnitModel), -damageAttacked);
 
                     attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                     attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
@@ -153,7 +158,7 @@ namespace Loom.ZombieBattleground
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damage);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damage);
             }
         }
 
@@ -216,13 +221,16 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.UseShieldFromBuff();
                 }
 
-                if (attacker is BoardUnitModel)
+                switch (attacker)
                 {
-                    attackedUnitModel.LastAttackingSetType = (attacker as BoardUnitModel).Card.LibraryCard.CardSetType;
-                }
-                else if (attacker is BoardSpell)
-                {
-                    attackedUnitModel.LastAttackingSetType = (attacker as BoardSpell).Card.LibraryCard.CardSetType;
+                    case BoardUnitModel model:
+                        attackedUnitModel.LastAttackingSetType = model.Card.LibraryCard.CardSetType;
+                        break;
+                    case BoardSpell spell:
+                        attackedUnitModel.LastAttackingSetType = spell.Card.LibraryCard.CardSetType;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
                 attackedUnitModel.CurrentHp -= damage;

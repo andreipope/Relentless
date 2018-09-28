@@ -163,6 +163,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return Task.CompletedTask;

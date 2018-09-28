@@ -102,8 +102,7 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            GameVersionMismatchException gameVersionMismatchException = data as GameVersionMismatchException;
-            if (gameVersionMismatchException != null)
+            if (data is GameVersionMismatchException gameVersionMismatchException)
             {
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(gameVersionMismatchException);
@@ -201,7 +200,7 @@ namespace Loom.ZombieBattleground
                     _versionMismatchGroup.gameObject.SetActive(true);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(_state), _state, null);
             }
         }
 

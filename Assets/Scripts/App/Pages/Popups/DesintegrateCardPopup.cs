@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            _cardData = data as CollectionCardData;
+            _cardData = (CollectionCardData) data;
             if (_cardData.Amount == 0)
             {
                 _yesButton.interactable = false;

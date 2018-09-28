@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
@@ -143,7 +144,7 @@ namespace Loom.ZombieBattleground
 
         public void KillBoardCard(BoardUnitModel cardToDestroyModel)
         {
-            BoardUnitView cardToDestroy = GetBoardUnitView(cardToDestroyModel);
+            BoardUnitView cardToDestroy = GetBoardUnitViewByModel(cardToDestroyModel);
             if (cardToDestroy == null)
                 return;
 
@@ -581,6 +582,8 @@ namespace Loom.ZombieBattleground
                     _lastBoardUntilOnPreview = unit;
                     CurrentPreviewedCardId = unit.Model.Card.InstanceId;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             CreatePreviewCoroutine = MainApp.Instance.StartCoroutine(CreateCardPreviewAsync(target, pos, highlight));
@@ -601,6 +604,8 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView unit:
                     card = unit.Model.Card;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             BoardCard boardCard;
@@ -637,6 +642,8 @@ namespace Loom.ZombieBattleground
                 case BoardCard tooltipCard:
                     boardCard.DrawTooltipInfoOfCard(tooltipCard);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             Vector3 newPos = pos;
@@ -810,10 +817,11 @@ namespace Loom.ZombieBattleground
         /// </summary>
         /// <param name="boardUnitModel"></param>
         /// <returns></returns>
-        public BoardUnitView GetBoardUnitView(BoardUnitModel boardUnitModel)
+        public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
         {
             BoardUnitView cardToDestroy =
                 OpponentBoardCards
+                    .Concat(OpponentBoardCards)
                     .Concat(OpponentGraveyardCards)
                     .Concat(PlayerBoardCards)
                     .Concat(PlayerGraveyardCards)
@@ -840,14 +848,14 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnitView unit)
+        public void DestroyBoardUnit(BoardUnitModel unit)
         {
-            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit.Model);
+            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
 
-            unit?.Model.Die();
+            unit?.Die();
         }
 
-        public void TakeControlUnit(Player to, BoardUnitView unit)
+        public void TakeControlUnit(Player to, BoardUnitModel unit)
         {
             // implement functionality of the take control
         }
@@ -889,7 +897,8 @@ namespace Loom.ZombieBattleground
                             return unit.Model;
                     }
                     break;
-                default: break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(affectObjectType), affectObjectType, null);
             }
 
             return null;

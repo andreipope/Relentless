@@ -5,7 +5,7 @@ namespace Loom.ZombieBattleground
 {
     public class BattleBoardArrow : BoardArrow
     {
-        public List<object> IgnoreBoardObjectsList;
+        public List<BoardObject> IgnoreBoardObjectsList;
 
         public List<BoardUnitView> BoardCards;
 
@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
-            creature.Model.DoCombat(SelectedCard?.Model ?? (object) SelectedPlayer);
+            creature.Model.DoCombat((BoardObject) SelectedCard?.Model ?? SelectedPlayer);
             Dispose();
         }
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
             if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnUnits)
                 return;
 
-            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit))
+            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
                 return;
 
             if (unit.Model.CurrentHp <= 0)

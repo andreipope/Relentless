@@ -31,20 +31,20 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitView unit in units)
             {
-                ReturnBoardUnitToDeck(unit);
+                ReturnBoardUnitToDeck(unit.Model);
             }
 
             units.Clear();
         }
 
-        private void ReturnBoardUnitToDeck(BoardUnitView unit)
+        private void ReturnBoardUnitToDeck(BoardUnitModel unit)
         {
-            if (AbilityUnitViewOwner != null && unit == AbilityUnitViewOwner || unit == null)
+            if (AbilityUnitOwner != null && unit == AbilityUnitOwner || unit == null)
                 return;
 
             // implement animation
-            unit.Model.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Model.Card.LibraryCard.Clone(), unit.Model.OwnerPlayer));
-            unit.Model.MoveUnitFromBoardToDeck();
+            unit.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Card.LibraryCard.Clone(), unit.OwnerPlayer));
+            unit.MoveUnitFromBoardToDeck();
         }
     }
 }

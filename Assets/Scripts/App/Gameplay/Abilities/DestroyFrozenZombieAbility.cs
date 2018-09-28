@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                TargetUnitView.Model.Die();
+                TargetUnit.Die();
             }
         }
     }

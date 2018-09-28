@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            AbilityUnitViewOwner.Model.AttackAsFirst = true;
+            AbilityUnitOwner.AttackAsFirst = true;
         }
     }
 }
