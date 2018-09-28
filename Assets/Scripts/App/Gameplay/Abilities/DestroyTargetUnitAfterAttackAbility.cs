@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -14,12 +15,19 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitView unit = (BoardUnitView) info;
-
-            BattlegroundController.DestroyBoardUnit(unit);
+            switch (info)
+            {
+                case BoardUnitModel boardUnitModel:
+                    BattlegroundController.DestroyBoardUnit(boardUnitModel);
+                    break;
+                case Player _ :
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(info), info, null);
+            }
         }
 
-        protected override void UnitAttackedHandler(object from, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject from, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(from, damage, isAttacker);
 

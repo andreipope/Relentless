@@ -5,13 +5,14 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardCard
+    public class BoardCard : IView
     {
         public int CardsAmountDeckEditing;
 
@@ -570,7 +571,7 @@ namespace Loom.ZombieBattleground
             // right block info ------------------------------------
 
             // IMPROVE!!!
-            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit))
+            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.AbilityData.BuffType);
                 if (buffInfo != null)

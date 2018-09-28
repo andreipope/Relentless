@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitView unit in unitsOnBoard)
             {
-                if (unit.Equals(AbilityUnitViewOwner))
+                if (unit.Model == AbilityUnitOwner)
                 {
                     continue;
                 }

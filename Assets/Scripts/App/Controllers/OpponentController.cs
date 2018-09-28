@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
                 attackerUnit.DoCombat(target);
             };
 
-            BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitView(attackerUnit);
+            BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel(attackerUnit);
             _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
         }
 
@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
             Card libraryCard = _dataManager.CachedCardsLibraryData.Cards.Find(card => card.Id == model.CardId);
             BoardObject boardObject = _battlegroundController.GetBoardObjectById(model.BoardObjectId);
-            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitView((BoardUnitModel) boardObject);
+            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) boardObject);
 
             Transform transform = model.CardKind == Enumerators.CardKind.SPELL ?
                                  _gameplayManager.OpponentPlayer.AvatarObject.transform : boardUnitView.Transform;
@@ -300,13 +300,16 @@ namespace Loom.ZombieBattleground
 
             Action callback = () =>
             {
-                if (model.AffectObjectType == Enumerators.AffectObjectType.PLAYER)
+                switch (model.AffectObjectType)
                 {
-                    skill.FightTargetingArrow.SelectedPlayer = (Player) target;
-                }
-                else if (model.AffectObjectType == Enumerators.AffectObjectType.CHARACTER)
-                {
-                    skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitView((BoardUnitModel) target);
+                    case Enumerators.AffectObjectType.PLAYER:
+                        skill.FightTargetingArrow.SelectedPlayer = (Player) target;
+                        break;
+                    case Enumerators.AffectObjectType.CHARACTER:
+                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(model.AffectObjectType), model.AffectObjectType, null);
                 }
 
                 skill.EndDoSkill();

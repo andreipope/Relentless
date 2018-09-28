@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         private AbilitiesController _abilitiesController;
 
+        private BattlegroundController _battlegroundController;
+
         private VfxController _vfxController;
 
         private Dictionary<Enumerators.SetType, Enumerators.SetType> _strongerElemental, _weakerElemental;
@@ -31,6 +33,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             FillStrongersAndWeakers();
         }
@@ -97,7 +100,8 @@ namespace Loom.ZombieBattleground
                 attackedUnitModel.CurrentHp -= damageAttacking;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
-                _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damageAttacking);
+
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
@@ -114,7 +118,7 @@ namespace Loom.ZombieBattleground
                     attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
                     attackingUnitModel.CurrentHp -= damageAttacked;
 
-                    _vfxController.SpawnGotDamageEffect(attackingUnitModel, -damageAttacked);
+                    _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackingUnitModel), -damageAttacked);
 
                     attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                     attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
@@ -154,7 +158,7 @@ namespace Loom.ZombieBattleground
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                _vfxController.SpawnGotDamageEffect(attackedUnitModel, -damage);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damage);
             }
         }
 

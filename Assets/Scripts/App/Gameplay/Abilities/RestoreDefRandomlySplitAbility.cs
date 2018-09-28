@@ -86,13 +86,16 @@ namespace Loom.ZombieBattleground
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)
         {
-            if(target is BoardUnitView unit)
+            switch (target)
             {
-                BattleController.HealUnitByAbility(AbilityUnitViewOwner, AbilityData, unit.Model, defenseValue);
-            }
-            else if(target is Player player)
-            {
-                BattleController.HealPlayerByAbility(AbilityUnitViewOwner, AbilityData, player, defenseValue);
+                case BoardUnitView unit:
+                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit.Model, defenseValue);
+                    break;
+                case Player player:
+                    BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
         }
     }
