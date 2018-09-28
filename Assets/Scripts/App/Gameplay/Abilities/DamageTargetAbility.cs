@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
         {
 
             // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
-            if (AbilityUnitViewOwner != null && AbilityUnitViewOwner.Model.Card.LibraryCard.Name == "Jetter")
+            if (AbilityUnitOwner != null && AbilityUnitOwner.Card.LibraryCard.Name == "Jetter")
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
             }
@@ -76,6 +76,7 @@ namespace Loom.ZombieBattleground
                         VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
                             "Prefabs/VFX/Spells/SpellTargetToxicAttack");
                         break;
+                }
             }
 
             Vector3 targetPosition =
@@ -93,6 +94,7 @@ namespace Loom.ZombieBattleground
             {
                 ParticleIds.Add(id);
             }
+
         }
 
         private void ActionCompleted()
@@ -116,7 +118,7 @@ namespace Loom.ZombieBattleground
             ClearParticles();
 
             // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
-            if (AbilityUnitViewOwner != null && AbilityUnitViewOwner.Model.Card.LibraryCard.Name == "Jetter")
+            if (AbilityUnitOwner != null && AbilityUnitOwner.Card.LibraryCard.Name == "Jetter")
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/IceBolt_Impact");
             }
