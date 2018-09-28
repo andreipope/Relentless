@@ -11,6 +11,7 @@ namespace Loom.ZombieBattleground
 {
     public class SettingsPopup : IUIPopup
     {
+#if !UNITY_ANDROID && !UNITY_IOS
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private IGameplayManager _gameplayManager;
@@ -23,25 +24,27 @@ namespace Loom.ZombieBattleground
                                       _settingsButton,
                                       _closeButton;
 
-        private TMP_Dropdown _qualityDropdown,
-                             _resolutionDropdown,
-                             _screenModeDropdown;
+        private TMP_Dropdown _resolutionDropdown;
+        private TMP_Dropdown _screenModeDropdown;
 
         private Slider _sfxVolumeDropdown,
                        _musicVolumeDropdown;
 
         private bool _initialInit = true;
+#endif
 
         public GameObject Self { get; private set; }
 
         public void Init()
         {
+#if !UNITY_ANDROID && !UNITY_IOS
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
             _applicationSettingsManager = GameClient.Get<IApplicationSettingsManager>();
+#endif
         }
 
         public void Dispose()
@@ -50,6 +53,7 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
+#if !UNITY_ANDROID && !UNITY_IOS
             if (Self == null)
                 return;
 
@@ -58,6 +62,7 @@ namespace Loom.ZombieBattleground
             Self = null;
 
             _gameplayManager.IsGameplayInputBlocked = false;
+#endif
         }
 
         public void SetMainPriority()
@@ -66,6 +71,7 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+#if !UNITY_ANDROID && !UNITY_IOS
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/SettingsPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
@@ -74,20 +80,17 @@ namespace Loom.ZombieBattleground
             _settingsButton = Self.transform.Find("Button_Settings").GetComponent<ButtonShiftingContent>();
             _closeButton = Self.transform.Find("Button_Close").GetComponent<ButtonShiftingContent>();
 
-            _qualityDropdown = Self.transform.Find("Dropdown_Quality").GetComponent<TMP_Dropdown>();
-            _resolutionDropdown = Self.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
-            _screenModeDropdown = Self.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
+            _resolutionDropdown = videoGroup.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
+            _screenModeDropdown = videoGroup.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
 
             _sfxVolumeDropdown = Self.transform.Find("Slider_SFXVolume").GetComponent<Slider>();
             _musicVolumeDropdown = Self.transform.Find("Slider_MusicVolume").GetComponent<Slider>();
-
 
             _quitToMenuButton.onClick.AddListener(QuitToMenuButtonHandler);
             _quitToDesktopButton.onClick.AddListener(QuitToDesktopButtonHandler);
             _settingsButton.onClick.AddListener(SettingsButtonHandler);
             _closeButton.onClick.AddListener(CloseButtonHandler);
 
-            _qualityDropdown.onValueChanged.AddListener(QualityChangedHandler);
             _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
             _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 
@@ -97,6 +100,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.IsGameplayInputBlocked = true;
 
             FillInfo();
+#endif
         }
 
         public void Show(object data)
@@ -108,23 +112,15 @@ namespace Loom.ZombieBattleground
         {
         }
 
+#if !UNITY_ANDROID && !UNITY_IOS
         private void FillInfo()
         {
-            _qualityDropdown.ClearOptions();
             _resolutionDropdown.ClearOptions();
             _screenModeDropdown.ClearOptions();
 
             List<string> data = new List<string>();
-            int length = Enum.GetNames(typeof(Enumerators.QualityLevel)).Length;
 
-            for(int i =0; i < length; i++)
-            {
-                data.Add(InternalTools.ProccesEnumToString(((Enumerators.QualityLevel)i).ToString()));
-            }
-            _qualityDropdown.AddOptions(data);
-
-            data.Clear();
-            length = Enum.GetNames(typeof(Enumerators.ScreenMode)).Length;
+            int length = Enum.GetNames(typeof(Enumerators.ScreenMode)).Length;
 
             for (int i = 0; i < length; i++)
             {
@@ -143,7 +139,6 @@ namespace Loom.ZombieBattleground
 
             _initialInit = true;
 
-            _qualityDropdown.value = (int)_applicationSettingsManager.CurrentQualityLevel;
             _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
             _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
 
@@ -197,16 +192,6 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<SettingsPopup>();
         }
 
-        private void QualityChangedHandler(int index)
-        {
-            if (!_initialInit)
-            {
-                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
-                _applicationSettingsManager.SetQuality((Enumerators.QualityLevel)index);
-            }
-        }
-
         private void ResolutionChangedHandler(int index)
         {
             if (!_initialInit)
@@ -236,5 +221,6 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.SetMusicVolume(value);
         }
+#endif
     }
 }

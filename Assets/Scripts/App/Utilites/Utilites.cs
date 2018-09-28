@@ -218,6 +218,9 @@ namespace Loom.ZombieBattleground
             string[] existingBundles = Directory.GetFiles(assetBundleStreamingRoot);
             foreach (string existingBundle in existingBundles)
             {
+                if (existingBundle == ".dummy")
+                    continue;
+
                 File.Delete(existingBundle);
             }
 

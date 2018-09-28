@@ -12,8 +12,6 @@ namespace Loom.ZombieBattleground
 
         public List<ResolutionInfo> Resolutions { get; private set; }
 
-        public Enumerators.QualityLevel CurrentQualityLevel { get; private set; }
-
         public Enumerators.ScreenMode CurrentScreenMode { get; private set; }
 
         public ResolutionInfo CurrentResolution { get; private set; }
@@ -26,30 +24,36 @@ namespace Loom.ZombieBattleground
         {
             _dataManager = GameClient.Get<IDataManager>();
 
+#if !UNITY_ANDROID && !UNITY_IOS
             FillResolutions();
+#endif
         }
 
         public void Update()
         {
+#if !UNITY_ANDROID && !UNITY_IOS
             HandleSpecificUserActions();
+#endif
         }
-
 
         public void ApplySettings()
         {
-            CurrentQualityLevel = _dataManager.CachedUserLocalData.AppQualityLevel;
+#if !UNITY_ANDROID && !UNITY_IOS
             CurrentScreenMode = _dataManager.CachedUserLocalData.AppScreenMode;
             CurrentResolution = Resolutions.Find(x => x.Resolution.x == _dataManager.CachedUserLocalData.AppResolution.x &&
-                                                      x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
+                x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
+#endif
         }
 
         public void SetDefaults()
         {
-            SetScreenMode(Enumerators.ScreenMode.Window);
-            SetQuality(Enumerators.QualityLevel.Ultra);
+#if !UNITY_ANDROID && !UNITY_IOS
             SetResolution(Resolutions[Resolutions.Count - 1]);
+            SetScreenMode(Enumerators.ScreenMode.Window);
+#endif
         }
 
+#if !UNITY_ANDROID && !UNITY_IOS
         public void SetResolution(ResolutionInfo info)
         {
             CurrentResolution = info;
@@ -61,6 +65,7 @@ namespace Loom.ZombieBattleground
             _dataManager.CachedUserLocalData.AppResolution = CurrentResolution.Resolution;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
+#endif
 
         public void SetScreenMode(Enumerators.ScreenMode screenMode)
         {
@@ -94,28 +99,7 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
-        public void SetQuality(Enumerators.QualityLevel qualityLevel)
-        {
-            CurrentQualityLevel = qualityLevel;
-
-            switch (qualityLevel)
-            {
-                case Enumerators.QualityLevel.Ultra:
-                    break;
-                case Enumerators.QualityLevel.High:
-                    break;
-                case Enumerators.QualityLevel.Medium:
-                    break;
-                case Enumerators.QualityLevel.Low:
-                    break;
-                default:
-                    throw new InvalidEnumArgumentException(nameof(qualityLevel), (int)qualityLevel, typeof(Enumerators.QualityLevel));
-            }
-
-            _dataManager.CachedUserLocalData.AppQualityLevel = CurrentQualityLevel;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-        }
-
+#if !UNITY_ANDROID && !UNITY_IOS
         private void FillResolutions()
         {
             Resolutions = new List<ResolutionInfo>();
@@ -153,6 +137,7 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
+#endif
     }
 
     public class ResolutionInfo
