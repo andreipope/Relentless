@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
