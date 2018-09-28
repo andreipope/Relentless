@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<CreditsPage>();
                     break;
                 default:
-                    throw new NotImplementedException("Not Implemented " + stateTo + " state!");
+                    throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);
             }
 
             _previousState = AppState != Enumerators.AppState.SHOP ? AppState : Enumerators.AppState.MAIN_MENU;

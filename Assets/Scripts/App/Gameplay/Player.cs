@@ -4,12 +4,13 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.View;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
-    public class Player : BoardObject
+    public class Player : BoardObject, IView
     {
         public int Turn;
 

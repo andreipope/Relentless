@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -42,7 +43,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            object caller = AbilityUnitViewOwner ?? (object) BoardSpell;
+            BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardSpell;
 
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
@@ -71,6 +72,8 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.PLAYER:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, PlayerCallerOfAbility);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
 
