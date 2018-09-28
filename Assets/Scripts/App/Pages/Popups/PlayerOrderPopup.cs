@@ -84,26 +84,26 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _selfAnimator = Self.GetComponent<Animator>();
+            _selfAnimator = Self.transform.Find("Root").GetComponent<Animator>();
 
-            _playerOverlordNameText = Self.transform.Find("Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
+            _playerOverlordNameText = Self.transform.Find("Root/Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
             _opponentOverlordNameText =
-                Self.transform.Find("Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
+                Self.transform.Find("Root/Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
 
-            _playerOverlordPicture = Self.transform.Find("Image_PlayerOverlord").GetComponent<Image>();
-            _opponentOverlordPicture = Self.transform.Find("Image_Mask_OpponentOverlord/Image_OpponentOverlord").GetComponent<Image>();
+            _playerOverlordPicture = Self.transform.Find("Root/Image_PlayerOverlord").GetComponent<Image>();
+            _opponentOverlordPicture = Self.transform.Find("Root/Image_Mask_OpponentOverlord/Image_OpponentOverlord").GetComponent<Image>();
 
-            _opponentTurnRootObject = Self.transform.Find("Item_OpponentOverlordTurn").gameObject;
-            _opponentFirstTurnObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_FirstTurn").gameObject;
-            _opponentSecondTurnObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_SecondTurn").gameObject;
-            _opponentCardBackObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_BackCard").gameObject;
-            _opponentCardFrontObject = Self.transform.Find("Item_OpponentOverlordTurn/Image_FrontCard").gameObject;
+            _opponentTurnRootObject = Self.transform.Find("Root/Item_OpponentOverlordTurn").gameObject;
+            _opponentFirstTurnObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_FirstTurn").gameObject;
+            _opponentSecondTurnObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_SecondTurn").gameObject;
+            _opponentCardBackObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_BackCard").gameObject;
+            _opponentCardFrontObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_FrontCard").gameObject;
 
-            _playerTurnRootObject = Self.transform.Find("Item_PlayerOverlordTurn").gameObject;
-            _playerFirstTurnObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_FirstTurn").gameObject;
-            _playerSecondTurnObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_SecondTurn").gameObject;
-            _playerCardBackObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_BackCard").gameObject;
-            _playerCardFrontObject = Self.transform.Find("Item_PlayerOverlordTurn/Image_FrontCard").gameObject;
+            _playerTurnRootObject = Self.transform.Find("Root/Item_PlayerOverlordTurn").gameObject;
+            _playerFirstTurnObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_FirstTurn").gameObject;
+            _playerSecondTurnObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_SecondTurn").gameObject;
+            _playerCardBackObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_BackCard").gameObject;
+            _playerCardFrontObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_FrontCard").gameObject;
 
             Self.SetActive(true);
             _selfAnimator.Play(0);
