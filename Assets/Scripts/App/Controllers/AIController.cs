@@ -1088,6 +1088,20 @@ namespace Loom.ZombieBattleground
 
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
+                    {
+                        List<BoardUnitModel> units = GetUnitsWithLowHp();
+
+                        if (units.Count > 0)
+                        {
+                            target = units[0];
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    break;
                 case Enumerators.OverlordSkill.MEND:
                 {
                     target = _gameplayManager.OpponentPlayer;
