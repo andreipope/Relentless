@@ -25,11 +25,11 @@ namespace Loom.ZombieBattleground.Data
 
         public bool SoundMuted = false;
 
-        public Enumerators.QualityLevel AppQualityLevel;
-
         public Enumerators.ScreenMode AppScreenMode;
 
+#if !UNITY_ANDROID && !UNITY_IOS
         public Vector2Int AppResolution;
+#endif
 
         public UserLocalData()
         {
@@ -46,11 +46,12 @@ namespace Loom.ZombieBattleground.Data
             SoundVolume = 1;
             MusicMuted = false;
             SoundMuted = false;
-            AppQualityLevel = Enumerators.QualityLevel.Ultra;
+#if !UNITY_ANDROID && !UNITY_IOS
             AppScreenMode = Enumerators.ScreenMode.FullScreen;
 
             Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
             AppResolution = new Vector2Int(resolution.width, resolution.height);
+#endif
         }
     }
 }
