@@ -106,14 +106,6 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            // check if it fine solution or not
-            if (Self != null && Self.activeInHierarchy)
-            {
-                if (Self.transform.GetSiblingIndex() != Self.transform.parent.childCount - 1)
-                {
-                    Self.transform.SetAsLastSibling();
-                }
-            }
         }
 
         private void FillInfo()

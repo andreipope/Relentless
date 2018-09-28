@@ -198,8 +198,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
             OpponentDeck randomOpponentDeck =
-                _dataManager.CachedOpponentDecksData.Decks[
-                    Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
+                _dataManager.CachedOpponentDecksData.Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
             _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
 
             //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo);

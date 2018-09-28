@@ -102,8 +102,7 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            GameVersionMismatchException gameVersionMismatchException = data as GameVersionMismatchException;
-            if (gameVersionMismatchException != null)
+            if (data is GameVersionMismatchException gameVersionMismatchException)
             {
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(gameVersionMismatchException);

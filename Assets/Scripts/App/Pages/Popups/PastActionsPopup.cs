@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -158,80 +159,77 @@ namespace Loom.ZombieBattleground
             }
 
             // setup right block
-         
-            if(pastActionParam.TargetEffects.Count > 0)
-            {
+
+            if (pastActionParam.TargetEffects.Count <= 0)
+                return;
+
                 if (pastActionParam.TargetEffects.Count > 1)
                 {
                     _rightBlockElements = new List<ActionElement>();
 
-                    var actionWithPlayer = pastActionParam.TargetEffects.Find(targ => targ.Target is Player);
+                    TargetEffectParam actionWithPlayer = pastActionParam.TargetEffects.Find(targ => targ.Target is Player);
 
                     if (actionWithPlayer != null)
                     {
-                        _rightBlockOverlordElement.Init(actionWithPlayer.Target as Player, actionWithPlayer.ActionEffectType);
+                        _rightBlockOverlordElement.Init((Player) actionWithPlayer.Target, actionWithPlayer.ActionEffectType);
 
-                        ActionElement actionElement = null;
                         foreach (TargetEffectParam targetEffect in pastActionParam.TargetEffects)
                         {
-                            if (targetEffect != actionWithPlayer)
+                            if (targetEffect == actionWithPlayer)
+                                continue;
+
+                            ActionElement actionElement;
+                            switch (targetEffect.Target)
                             {
-                                if (targetEffect.Target is BoardCard crd)
-                                {
-                                    if (crd is SpellBoardCard)
-                                    {
-                                        actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
-                                        actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                                    }
-                                    else if (crd is UnitBoardCard)
-                                    {
-                                        actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                                        actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                                    }
-                                }
-                                else if (targetEffect.Target is BoardUnitModel unt)
+                                case BoardCard crd when crd is SpellBoardCard:
+                                    actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
+                                    actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
+                                    break;
+                                case BoardCard crd when crd is UnitBoardCard:
                                 {
                                     actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                                    actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
+                                    break;
+                                }
+                                case BoardUnitModel unt:
+                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                                     actionElement.Init(unt.Card, targetEffect.ActionEffectType);
-                                }
-
-                                if (actionElement != null)
-                                {
-                                    _rightBlockElements.Add(actionElement);
-                                }
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                             }
+
+                            _rightBlockElements.Add(actionElement);
                         }
 
                         _parentOfRightBlockElements.GetComponent<RectTransform>().anchoredPosition = new Vector2(520f, 0f);
                     }
                     else
                     {
-                        ActionElement actionElement = null;
                         foreach (TargetEffectParam targetEffect in pastActionParam.TargetEffects)
                         {
-                            if (targetEffect.Target is BoardCard crd)
+                            ActionElement actionElement;
+                            switch (targetEffect.Target)
                             {
-                                if (crd is SpellBoardCard)
-                                {
+                                case BoardCard crd when crd is SpellBoardCard:
                                     actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
                                     actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                                }
-                                else if (crd is UnitBoardCard)
+                                    break;
+                                case BoardCard crd when crd is UnitBoardCard:
                                 {
                                     actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                                     actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
+                                    break;
                                 }
-                            }
-                            else if (targetEffect.Target is BoardUnitModel unt)
-                            {
-                                actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                                actionElement.Init(unt.Card, targetEffect.ActionEffectType);
+                                case BoardUnitModel unitModel:
+                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                                    actionElement.Init(unitModel.Card, targetEffect.ActionEffectType);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                             }
 
-                            if (actionElement != null)
-                            {
-                                _rightBlockElements.Add(actionElement);
-                            }
+                            _rightBlockElements.Add(actionElement);
                         }
 
                         _parentOfRightBlockElements.GetComponent<RectTransform>().anchoredPosition = new Vector2(20f, 0f);
@@ -241,27 +239,24 @@ namespace Loom.ZombieBattleground
                 {
                     TargetEffectParam targetEffect = pastActionParam.TargetEffects[0];
 
-                    if(targetEffect.Target is Player pl)
+                    switch (targetEffect.Target)
                     {
-                        _rightBlockOverlordElement.Init(pl, targetEffect.ActionEffectType);
-                    }
-                    else if(targetEffect.Target is BoardCard crd)
-                    {
-                        if (crd is SpellBoardCard)
-                        {
+                        case Player pl:
+                            _rightBlockOverlordElement.Init(pl, targetEffect.ActionEffectType);
+                            break;
+                        case BoardCard crd when crd is SpellBoardCard:
                             _rightBlockCardSpellElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                        }
-                        else if (crd is UnitBoardCard)
-                        {
+                            break;
+                        case BoardCard crd when crd is UnitBoardCard:
                             _rightBlockCardUnitElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                        }
-                    }
-                    else if(targetEffect.Target is BoardUnitModel unt)
-                    {
-                        _rightBlockCardUnitElement.Init(unt.Card, targetEffect.ActionEffectType);
+                            break;
+                        case BoardUnitModel unt:
+                            _rightBlockCardUnitElement.Init(unt.Card, targetEffect.ActionEffectType);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                     }
                 }
-            }
         }
 
         public class PastActionParam
@@ -337,7 +332,7 @@ namespace Loom.ZombieBattleground
 
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
-                var LibraryCard = workingCard.LibraryCard;
+                Card LibraryCard = workingCard.LibraryCard;
 
                 _titleText.text = LibraryCard.Name;
                 _bodyText.text = LibraryCard.Description;
@@ -414,7 +409,7 @@ namespace Loom.ZombieBattleground
 
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
-                var LibraryCard = workingCard.LibraryCard;
+                Card LibraryCard = workingCard.LibraryCard;
 
                 _titleText.text = LibraryCard.Name;
                 _bodyText.text = LibraryCard.Description;
@@ -586,7 +581,7 @@ namespace Loom.ZombieBattleground
 
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
-                var LibraryCard = workingCard.LibraryCard;
+                Card LibraryCard = workingCard.LibraryCard;
 
                 _titleText.text = LibraryCard.Name;
                 _bodyText.text = LibraryCard.Description;
@@ -669,7 +664,7 @@ namespace Loom.ZombieBattleground
 
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
-                var LibraryCard = workingCard.LibraryCard;
+                Card LibraryCard = workingCard.LibraryCard;
 
                 _titleText.text = LibraryCard.Name;
                 _bodyText.text = LibraryCard.Description;

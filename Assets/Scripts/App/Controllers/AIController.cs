@@ -204,7 +204,7 @@ namespace Loom.ZombieBattleground
 
             if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
             {
-                (_tutorialManager as TutorialManager).Paused = true;
+                ((TutorialManager) _tutorialManager).Paused = true;
             }
             else
             {
@@ -290,19 +290,14 @@ namespace Loom.ZombieBattleground
 
             unitsOnBoard.AddRange(GetUnitsOnBoard());
 
-            Debug.Log("UseUnitsOnBoard: 1");
             if (OpponentHasHeavyUnits())
             {
-                Debug.Log("UseUnitsOnBoard: 2");
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
-                    Debug.Log("UseUnitsOnBoard: 3");
                     while (UnitCanBeUsable(unit))
                     {
-                        Debug.Log("UseUnitsOnBoard: 4");
                         if (UnitCanBeUsable(unit))
                         {
-                            Debug.Log("UseUnitsOnBoard: 5");
                             BoardUnitModel attackedUnit = GetTargetOpponentUnit();
                             if (attackedUnit != null)
                             {
@@ -320,7 +315,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            Debug.Log("UseUnitsOnBoard: 6");
             foreach (BoardUnitModel creature in alreadyUsedUnits)
             {
                 unitsOnBoard.Remove(creature);
@@ -330,14 +324,9 @@ namespace Loom.ZombieBattleground
             if ((totalValue >= _gameplayManager.OpponentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
                 _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
-                Debug.Log("UseUnitsOnBoard: 7");
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
-                    Debug.Log("UseUnitsOnBoard: 8");
-                    while (UnitCanBeUsable(unit))
-                    {
-                        Debug.Log("UseUnitsOnBoard: 9");
-                      //  if (UnitCanBeUsable(unit))
+                    while (UnitCanBeUsable(unit)) {
                         {
                             unit.DoCombat(_gameplayManager.CurrentPlayer);
                             await LetsThink(cancellationToken);
@@ -347,34 +336,26 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                Debug.Log("UseUnitsOnBoard: 10");
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
-                    Debug.Log("UseUnitsOnBoard: 11");
                     while (UnitCanBeUsable(unit))
                     {
-                        Debug.Log("UseUnitsOnBoard: 12");
-                      //  if (UnitCanBeUsable(unit))
                         {
                             if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                             {
-                                Debug.Log("UseUnitsOnBoard: 13");
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
                                 await LetsThink(cancellationToken);
                             }
                             else
                             {
-                                Debug.Log("UseUnitsOnBoard: 14");
                                 BoardUnitModel attackedCreature = GetRandomOpponentUnit();
                                 if (attackedCreature != null)
                                 {
-                                    Debug.Log("UseUnitsOnBoard: 15");
                                     unit.DoCombat(attackedCreature);
                                     await LetsThink(cancellationToken);
                                 }
                                 else
                                 {
-                                    Debug.Log("UseUnitsOnBoard: 16");
                                     unit.DoCombat(_gameplayManager.CurrentPlayer);
                                     await LetsThink(cancellationToken);
                                 }
@@ -742,8 +723,6 @@ namespace Loom.ZombieBattleground
                             needsToSelectTarget = true;
                             abilitiesWithTarget.Add(ability);
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(item), item, null);
                     }
                 }
             }
@@ -836,14 +815,12 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
                         GetTargetByType(ability, ref target, false);
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(ability.AbilityType), ability.AbilityType, null);
                 }
 
                 return target; // hack to handle only one ability
             }
 
-            return target;
+            return null;
         }
 
         private void CheckAndAddTargets(AbilityData ability, ref BoardObject target)
@@ -1193,7 +1170,7 @@ namespace Loom.ZombieBattleground
                     {
                         target = units[0];
 
-                        _unitsToIgnoreThisTurn.Add(target as BoardUnitModel);
+                        _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
 
                         selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                     }
@@ -1205,7 +1182,7 @@ namespace Loom.ZombieBattleground
                         {
                             target = unit;
 
-                            _unitsToIgnoreThisTurn.Add(target as BoardUnitModel);
+                            _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
 
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
@@ -1225,14 +1202,19 @@ namespace Loom.ZombieBattleground
 
             Action callback = () =>
             {
-                if (selectedObjectType == Enumerators.AffectObjectType.PLAYER)
+                switch (selectedObjectType)
                 {
-                    skill.FightTargetingArrow.SelectedPlayer = target as Player;
-                }
-                else if (selectedObjectType == Enumerators.AffectObjectType.CHARACTER)
-                {
-                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitView(target as BoardUnitModel);
-                    skill.FightTargetingArrow.SelectedCard = selectedCardView;
+                    case Enumerators.AffectObjectType.PLAYER:
+                        skill.FightTargetingArrow.SelectedPlayer = (Player) target;
+                        break;
+                    case Enumerators.AffectObjectType.CHARACTER:
+                        BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
+                        skill.FightTargetingArrow.SelectedCard = selectedCardView;
+                        break;
+                    case Enumerators.AffectObjectType.NONE:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(selectedObjectType), selectedObjectType, null);
                 }
 
                 skill.EndDoSkill();

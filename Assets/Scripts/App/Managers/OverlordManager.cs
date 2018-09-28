@@ -99,6 +99,10 @@ namespace Loom.ZombieBattleground
                         hero.Skills[skillReward.SkillIndex].Unlocked = true;
                     }
                     break;
+                case LevelReward.ItemReward itemReward:
+                    break;
+                case null:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(reward.Reward), reward.Reward, null);
             }

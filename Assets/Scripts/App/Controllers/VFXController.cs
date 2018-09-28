@@ -6,6 +6,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.View;
 
 namespace Loom.ZombieBattleground
 {
@@ -23,9 +24,10 @@ namespace Loom.ZombieBattleground
 
         private ParticlesController _particlesController;
 
+        private BattlegroundController _battlegroundController;
+
         private GameObject _battlegroundTouchPrefab;
 
-		
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
@@ -33,6 +35,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _battlegroundTouchPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/TouchingBattleground/ZB_ANM_touching_battleground");
         }
@@ -173,6 +176,9 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView unit:
                     position = unit.Transform.position;
                     break;
+                case BoardUnitModel unit:
+                    position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    break;
                 case Player player:
                     position = player.AvatarObject.transform.position;
                     break;
@@ -196,39 +202,36 @@ namespace Loom.ZombieBattleground
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
 
+            Vector3 castVfxPosition;
             switch (target)
             {
                 case Player player:
-                    particleSystem.transform
-                        .DOMove(Utilites.CastVfxPosition(player.AvatarObject.transform.position), .5f).OnComplete(
-                            () =>
-                            {
-                                callbackComplete(target);
-
-                                if (particleSystem != null)
-                                {
-                                    Object.Destroy(particleSystem);
-                                }
-                            });
+                    castVfxPosition = player.AvatarObject.transform.position;
                     break;
                 case BoardUnitView unit:
-                    particleSystem.transform.DOMove(Utilites.CastVfxPosition(unit.Transform.position), .5f).OnComplete(
-                        () =>
-                        {
-                            callbackComplete(target);
-
-                            if (particleSystem != null)
-                            {
-                                Object.Destroy(particleSystem);
-                            }
-                        });
+                    castVfxPosition = unit.Transform.position;
+                    break;
+                case BoardUnitModel unit:
+                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
+
+            particleSystem.transform
+                .DOMove(Utilites.CastVfxPosition(castVfxPosition), .5f).OnComplete(
+                    () =>
+                    {
+                        callbackComplete(target);
+
+                        if (particleSystem != null)
+                        {
+                            Object.Destroy(particleSystem);
+                        }
+                    });
         }
 
-        public void SpawnGotDamageEffect(object onObject, int count)
+        public void SpawnGotDamageEffect(IView onObject, int count)
         {
             Transform target = null;
 
@@ -236,6 +239,9 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitView unit:
                     target = unit.Transform;
+                    break;
+                case BoardUnitModel unit:
+                    target = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
                     break;
                 case Player _:
                     target = ((Player) onObject).AvatarObject.transform;

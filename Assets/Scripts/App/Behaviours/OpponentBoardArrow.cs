@@ -17,9 +17,10 @@ namespace Loom.ZombieBattleground
                     TargetPosition = player.AvatarObject.transform.position;
                     player.SetGlowStatus(true);
                     break;
-                case BoardUnitView unit:
-                    TargetPosition = unit.Transform.position;
-                    unit.SetSelectedUnit(true);
+                case BoardUnitModel unit:
+                    BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(unit);
+                    TargetPosition = unitView.Transform.position;
+                    unitView.SetSelectedUnit(true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -34,13 +35,17 @@ namespace Loom.ZombieBattleground
         {
             if (_target != null)
             {
-                if (_target is Player)
+                switch (_target)
                 {
-                    (_target as Player).SetGlowStatus(false);
-                }
-                else
-                {
-                    (_target as BoardUnitView)?.SetSelectedUnit(false);
+                    case Player player:
+                        player.SetGlowStatus(false);
+                        break;
+                    case BoardUnitModel unit:
+                        BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(unit);
+                        unitView.SetSelectedUnit(false);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(_target), _target, null);
                 }
 
                 _target = null;
