@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(object from, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject from, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(from, damage, isAttacker);
 

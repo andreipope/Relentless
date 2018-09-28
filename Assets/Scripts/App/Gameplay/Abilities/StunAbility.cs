@@ -32,15 +32,15 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitView creature)
+            if (info is BoardUnitModel creature)
             {
-                CreateVfx(creature.Transform.position);
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
             }
         }
     }

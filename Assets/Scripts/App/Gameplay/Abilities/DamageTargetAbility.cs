@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
                         "Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
+                default:
+                    break;
             }
 
             Vector3 targetPosition =
@@ -124,7 +126,7 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(AbilityEffectType), AbilityEffectType, null);
+                    break;
             }
 
             if (VfxObject != null)

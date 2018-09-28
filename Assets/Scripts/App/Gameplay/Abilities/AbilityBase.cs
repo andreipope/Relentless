@@ -346,7 +346,7 @@ namespace Loom.ZombieBattleground
             Dispose();
         }
 
-        protected virtual void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected virtual void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
         }
 
@@ -354,7 +354,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected virtual void UnitDamagedHandler(object from)
+        protected virtual void UnitDamagedHandler(BoardObject from)
         {
         }
 
