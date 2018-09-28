@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -53,6 +54,8 @@ namespace Loom.ZombieBattleground
                         BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, opponent);
                         opponent.Stun(Enumerators.StunType.FREEZE, Value);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
         }

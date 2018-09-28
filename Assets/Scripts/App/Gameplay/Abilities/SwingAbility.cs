@@ -25,12 +25,12 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitView unit = info as BoardUnitView;
+            BoardUnitModel unit = (BoardUnitModel) info;
 
             int targetIndex = -1;
-            for (int i = 0; i < unit.Model.OwnerPlayer.BoardCards.Count; i++)
+            for (int i = 0; i < unit.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (unit.Model.OwnerPlayer.BoardCards[i] == unit)
+                if (unit.OwnerPlayer.BoardCards[i].Model == unit)
                 {
                     targetIndex = i;
                     break;
@@ -41,24 +41,24 @@ namespace Loom.ZombieBattleground
             {
                 if (targetIndex - 1 > -1)
                 {
-                    TakeDamageToUnit(unit.Model.OwnerPlayer.BoardCards[targetIndex - 1]);
+                    TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex - 1]);
                 }
 
-                if (targetIndex + 1 < unit.Model.OwnerPlayer.BoardCards.Count)
+                if (targetIndex + 1 < unit.OwnerPlayer.BoardCards.Count)
                 {
-                    TakeDamageToUnit(unit.Model.OwnerPlayer.BoardCards[targetIndex + 1]);
+                    TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex + 1]);
                 }
             }
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitView)
+            if (info is BoardUnitModel)
             {
                 Action(info);
             }
@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
 
         private void TakeDamageToUnit(BoardUnitView unit)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitViewOwner, AbilityData, unit.Model);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit.Model);
             CreateVfx(unit.Transform.position, true, 5f);
         }
     }

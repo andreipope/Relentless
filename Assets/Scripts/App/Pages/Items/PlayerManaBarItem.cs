@@ -100,17 +100,23 @@ namespace Loom.ZombieBattleground
 
         public void Active(GooBottleItem item)
         {
-            item.selfAnimator.SetBool("IsFull", true);
-            if(_isAfterOverflow)
+            if (item.selfAnimator.gameObject.activeInHierarchy)
             {
-                item.selfAnimator.Play("gooFilling", 0, 1);
+                item.selfAnimator.SetBool("IsFull", true);
+                if (_isAfterOverflow)
+                {
+                    item.selfAnimator.Play("gooFilling", 0, 1);
+                }
             }
+
             item.glow.Play();
         }
 
         public void Disactive(GooBottleItem item)
         {
-			item.selfAnimator.SetBool("IsFull", false);
+            if (item.selfAnimator.gameObject.activeInHierarchy) {
+			    item.selfAnimator.SetBool("IsFull", false);
+            }
         }
 
         private void UpdateGooOVerflow()
