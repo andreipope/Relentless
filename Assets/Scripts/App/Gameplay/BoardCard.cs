@@ -5,13 +5,14 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardCard
+    public class BoardCard : IView
     {
         public int CardsAmountDeckEditing;
 
@@ -43,8 +44,6 @@ namespace Loom.ZombieBattleground
 
         protected SpriteRenderer GlowSprite;
 
-        protected SpriteRenderer PictureSprite;
-
         protected SpriteRenderer BackgroundSprite;
 
         protected GameObject DistibuteCardObject;
@@ -56,6 +55,8 @@ namespace Loom.ZombieBattleground
         protected TextMeshPro BodyText;
 
         protected TextMeshPro AmountText;
+
+        protected TextMeshPro AmountTextForArmy;
 
         protected Animator CardAnimator;
 
@@ -104,6 +105,7 @@ namespace Loom.ZombieBattleground
             NameText = Transform.Find("TitleText").GetComponent<TextMeshPro>();
             BodyText = Transform.Find("BodyText").GetComponent<TextMeshPro>();
             AmountText = Transform.Find("Amount/Text").GetComponent<TextMeshPro>();
+            AmountTextForArmy = Transform.Find("AmountForArmy/Text").GetComponent<TextMeshPro>();
 
             RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
@@ -123,6 +125,8 @@ namespace Loom.ZombieBattleground
 
             BehaviourHandler.Destroying += DestroyingHandler;
         }
+
+        public SpriteRenderer PictureSprite { get; protected set; }
 
         public int ManaCost { get; protected set; }
 
@@ -172,6 +176,7 @@ namespace Loom.ZombieBattleground
                 WorkingCard.LibraryCard.Picture.ToLower()));
 
             AmountText.transform.parent.gameObject.SetActive(false);
+            AmountTextForArmy.transform.parent.gameObject.SetActive(false);
             DistibuteCardObject.SetActive(false);
 
             if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
@@ -398,11 +403,13 @@ namespace Loom.ZombieBattleground
         }
 
         // editing deck page
-        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount)
+        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount, bool isArmy = false)
         {
             CardsAmountDeckEditing = amount;
             if (init)
             {
+                AmountTextForArmy.transform.parent.gameObject.SetActive(isArmy);
+
                 foreach (Transform child in ParentOfEditingGroupUI)
                 {
                     Object.Destroy(child.gameObject);
@@ -432,6 +439,8 @@ namespace Loom.ZombieBattleground
             }
 
             float offset = 0.5f;
+            float spacing = 2f;
+            float offsetY = 0f;
 
             if (maxCopies > 3)
             {
@@ -446,10 +455,18 @@ namespace Loom.ZombieBattleground
                 offset = 0.7f;
             }
 
-            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, 2f);
+
+            if (isArmy)
+            {
+                spacing = 1.4f;
+                offset = -0.55f;
+                offsetY = -0.5f;
+                AmountTextForArmy.text = amount.ToString();
+            }
+            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY, isArmy);
         }
 
-        public void DrawTooltipInfoOfUnit(BoardUnit unit)
+        public void DrawTooltipInfoOfUnit(BoardUnitView unit)
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
@@ -463,14 +480,14 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (unit.Card.LibraryCard.CardRank != Enumerators.CardRank.MINION)
+            if (unit.Model.Card.LibraryCard.CardRank != Enumerators.CardRank.MINION)
             {
                 TooltipContentData.RankInfo rankInfo =
-                    DataManager.GetRankInfoByType(unit.Card.LibraryCard.CardRank.ToString());
+                    DataManager.GetRankInfoByType(unit.Model.Card.LibraryCard.CardRank.ToString());
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
-                        y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Card.LibraryCard).ToLower()));
+                        y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Model.Card.LibraryCard).ToLower()));
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -483,10 +500,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.InitialUnitType != Enumerators.CardType.WALKER &&
-                unit.InitialUnitType != Enumerators.CardType.NONE)
+            if (unit.Model.InitialUnitType != Enumerators.CardType.WALKER &&
+                unit.Model.InitialUnitType != Enumerators.CardType.NONE)
             {
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(unit.InitialUnitType.ToString());
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(unit.Model.InitialUnitType.ToString());
                 if (buffInfo != null)
                 {
                     buffs.Add(
@@ -500,9 +517,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Card.LibraryCard.Abilities != null)
+            if (unit.Model.Card.LibraryCard.Abilities != null)
             {
-                foreach (AbilityData abil in unit.Card.LibraryCard.Abilities)
+                foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
                     TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.BuffType);
                     if (buffInfo != null)
@@ -554,7 +571,7 @@ namespace Loom.ZombieBattleground
             // right block info ------------------------------------
 
             // IMPROVE!!!
-            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit))
+            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.AbilityData.BuffType);
                 if (buffInfo != null)
@@ -571,7 +588,7 @@ namespace Loom.ZombieBattleground
             }
 
             // IMPROVE!!!
-            foreach (Enumerators.BuffType buffOnUnit in unit.BuffsOnUnit)
+            foreach (Enumerators.BuffType buffOnUnit in unit.Model.BuffsOnUnit)
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(buffOnUnit.ToString());
                 if (buffInfo != null)
@@ -788,7 +805,8 @@ namespace Loom.ZombieBattleground
             {
                 case "DELAYED":
                     return ability.Delay;
-                default: return ability.Value;
+                default:
+                    return ability.Value;
             }
         }
 

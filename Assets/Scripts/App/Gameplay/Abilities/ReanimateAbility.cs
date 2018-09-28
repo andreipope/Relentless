@@ -21,8 +21,8 @@ namespace Loom.ZombieBattleground
             Player owner = AbilityUnitOwner.OwnerPlayer;
             Card libraryCard = AbilityUnitOwner.Card.LibraryCard.Clone();
             WorkingCard card = new WorkingCard(libraryCard, owner);
-            BoardUnit unit = CreateBoardUnit(card, owner);
-            unit.IsReanimated = true;
+            BoardUnitView unit = CreateBoardUnit(card, owner);
+            unit.Model.IsReanimated = true;
             AbilityUnitOwner.IsReanimated = true;
 
             owner.AddCardToBoard(card);
@@ -38,12 +38,6 @@ namespace Loom.ZombieBattleground
                 BattlegroundController.PlayerBoardCards.Add(unit);
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
-
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[]
-                {
-                    owner, unit
-                }));
         }
 
         protected override void UnitDiedHandler()
@@ -56,30 +50,29 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        private BoardUnit CreateBoardUnit(WorkingCard card, Player owner)
+        private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ?
                 BattlegroundController.PlayerBoardObject :
                 BattlegroundController.OpponentBoardObject;
 
-            BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
-            boardUnit.Transform.parent = playerBoard.transform;
-            boardUnit.Transform.position =
-                new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnit.OwnerPlayer = owner;
-            boardUnit.SetObjectInfo(card);
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.parent = playerBoard.transform;
+            boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
+            boardUnitView.Model.OwnerPlayer = owner;
+            boardUnitView.SetObjectInfo(card);
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {
-                boardUnit.IsPlayable = true;
+                boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnit.PlayArrivalAnimation();
+            boardUnitView.PlayArrivalAnimation();
 
             GameplayManager.CanDoDragActions = true;
 
-            return boardUnit;
+            return boardUnitView;
         }
     }
 }

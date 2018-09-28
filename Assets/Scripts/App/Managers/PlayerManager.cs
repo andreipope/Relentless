@@ -6,9 +6,9 @@ namespace Loom.ZombieBattleground
     {
         public User LocalUser { get; set; }
 
-        public List<BoardUnit> PlayerGraveyardCards { get; set; }
+        public List<BoardUnitView> PlayerGraveyardCards { get; set; }
 
-        public List<BoardUnit> OpponentGraveyardCards { get; set; }
+        public List<BoardUnitView> OpponentGraveyardCards { get; set; }
 
         public void ChangeGoo(int value)
         {

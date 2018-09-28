@@ -25,12 +25,12 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnit unit = info as BoardUnit;
+            BoardUnitModel unit = (BoardUnitModel) info;
 
             int targetIndex = -1;
             for (int i = 0; i < unit.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (unit.OwnerPlayer.BoardCards[i] == unit)
+                if (unit.OwnerPlayer.BoardCards[i].Model == unit)
                 {
                     targetIndex = i;
                     break;
@@ -51,22 +51,22 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnit)
+            if (info is BoardUnitModel)
             {
                 Action(info);
             }
         }
 
-        private void TakeDamageToUnit(BoardUnit unit)
+        private void TakeDamageToUnit(BoardUnitView unit)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit.Model);
             CreateVfx(unit.Transform.position, true, 5f);
         }
     }

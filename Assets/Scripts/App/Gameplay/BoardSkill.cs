@@ -5,13 +5,11 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSkill
+    public class BoardSkill : OwnableBoardObject
     {
         public BattleBoardArrow FightTargetingArrow;
 
         public GameObject SelfObject;
-
-        public Player Owner;
 
         public HeroSkill Skill;
 
@@ -27,7 +25,7 @@ namespace Loom.ZombieBattleground
 
         private readonly BoardArrowController _boardArrowController;
 
-        private readonly SpriteRenderer _glowObjectSprite;
+        private readonly GameObject _glowObject;
 
         private readonly TextMeshPro _cooldownText;
 
@@ -47,15 +45,19 @@ namespace Loom.ZombieBattleground
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
 
+        private SkillCoolDownTimer _coolDownTimer;
+
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
             SelfObject = obj;
             Skill = skillInfo;
-            Owner = player;
+            OwnerPlayer = player;
             IsPrimary = isPrimary;
 
             _initialCooldown = skillInfo.InitialCooldown;
             _cooldown = skillInfo.Cooldown;
+
+            _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
 
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -65,19 +67,19 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
-            _glowObjectSprite = SelfObject.transform.Find("Glow").GetComponent<SpriteRenderer>();
-            _glowObjectSprite.gameObject.SetActive(false);
+            _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
+            _glowObject.SetActive(false);
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
             string name = isPrimary ? "1stShutters" : "2ndtShutters";
             _shutterAnimator = SelfObject.transform.parent.transform
                 .Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
-            _shutterAnimator.enabled = false;
-            _shutterAnimator.StopPlayback();
+            //_shutterAnimator.enabled = false;
+            //_shutterAnimator.StopPlayback();
 
-            Owner.TurnStarted += TurnStartedHandler;
-            Owner.TurnEnded += TurnEndedHandler;
+            OwnerPlayer.TurnStarted += TurnStartedHandler;
+            OwnerPlayer.TurnEnded += TurnEndedHandler;
 
             _behaviourHandler = SelfObject.GetComponent<OnBehaviourHandler>();
             {
@@ -88,6 +90,7 @@ namespace Loom.ZombieBattleground
             }
 
             _cooldownText.text = _cooldown.ToString();
+            _coolDownTimer.SetAngle(_cooldown);
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
@@ -118,13 +121,13 @@ namespace Loom.ZombieBattleground
             if (!IsSkillCanUsed())
                 return;
 
-            if (Owner.IsLocalPlayer)
+            if (OwnerPlayer.IsLocalPlayer)
             {
                 if (Skill.SkillTargetTypes.Count > 0)
                 {
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
-                    FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == Owner ?
+                    FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == OwnerPlayer ?
                         _gameplayManager.OpponentPlayer.BoardCards :
                         _gameplayManager.CurrentPlayer.BoardCards;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
@@ -154,12 +157,15 @@ namespace Loom.ZombieBattleground
             IsUsing = false;
         }
 
-        public void UseSkill(object target)
+        public void UseSkill()
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
             _usedInThisTurn = true;
             _cooldownText.text = _cooldown.ToString();
+            _coolDownTimer.SetAngle(_cooldown, true);
+
+            GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
         }
 
         public void Hide()
@@ -189,7 +195,7 @@ namespace Loom.ZombieBattleground
 
         public void OnMouseDownEventHandler()
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
                 return;
 
             if (!_gameplayManager.IsGameplayReady())
@@ -210,7 +216,7 @@ namespace Loom.ZombieBattleground
         {
             if (Skill.SkillTargetTypes.Count > 0)
             {
-                if (Owner.IsLocalPlayer)
+                if (OwnerPlayer.IsLocalPlayer)
                 {
                     StartDoSkill();
                 }
@@ -229,7 +235,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if ((IsSkillReady && !_usedInThisTurn) && Owner.IsLocalPlayer)
+                if ((IsSkillReady && !_usedInThisTurn) && OwnerPlayer.IsLocalPlayer)
                 {
                     StartDoSkill();
                 }
@@ -242,7 +248,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerEventSolverEndedHandler()
         {
-            if (Owner.IsLocalPlayer)
+            if (OwnerPlayer.IsLocalPlayer)
             {
                 EndDoSkill();
             }
@@ -250,10 +256,10 @@ namespace Loom.ZombieBattleground
 
         private void TurnStartedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
+            if (_gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 return;
 
-            if (Owner.IsStunned)
+            if (OwnerPlayer.IsStunned)
             {
                 BlockSkill();
             }
@@ -266,11 +272,12 @@ namespace Loom.ZombieBattleground
             }
 
             _cooldownText.text = _cooldown.ToString();
+            _coolDownTimer.SetAngle(_cooldown);
         }
 
         private void TurnEndedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(Owner))
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
                 return;
 
             SetHighlightingEnabled(false);
@@ -290,7 +297,7 @@ namespace Loom.ZombieBattleground
 
         private void SetHighlightingEnabled(bool isActive)
         {
-            _glowObjectSprite.gameObject.SetActive(isActive);
+            _glowObject.SetActive(isActive);
 
             _shutterAnimator.enabled = isActive ? true : false;
             _shutterAnimator.speed = isActive ? 1 : -1;
@@ -299,18 +306,18 @@ namespace Loom.ZombieBattleground
 
         private void DoOnUpSkillAction()
         {
-            if (Owner.IsLocalPlayer && _tutorialManager.IsTutorial)
+            if (OwnerPlayer.IsLocalPlayer && _tutorialManager.IsTutorial)
             {
                 _tutorialManager.ActivateSelectTarget();
             }
 
             if (Skill.SkillTargetTypes.Count == 0)
             {
-                _skillsController.DoSkillAction(this, Owner);
+                _skillsController.DoSkillAction(this, OwnerPlayer);
             }
             else
             {
-                if (Owner.IsLocalPlayer)
+                if (OwnerPlayer.IsLocalPlayer)
                 {
                     if (FightTargetingArrow != null)
                     {
@@ -332,7 +339,7 @@ namespace Loom.ZombieBattleground
                 return true;
             }
 
-            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != Owner || _usedInThisTurn ||
+            if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn ||
                 _tutorialManager.IsTutorial)
             {
                 return false;
@@ -353,7 +360,7 @@ namespace Loom.ZombieBattleground
 
             Vector3 position;
 
-            if (Owner.IsLocalPlayer)
+            if (OwnerPlayer.IsLocalPlayer)
             {
                 if (IsPrimary)
                 {

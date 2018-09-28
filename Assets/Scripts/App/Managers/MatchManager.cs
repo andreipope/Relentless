@@ -48,6 +48,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.MatchType.LOCAL:
                     CreateLocalMatch();
                     break;
+                case Enumerators.MatchType.PVP:
+                    CreateLocalMatch();
+                    break;
                 default:
                     throw new NotImplementedException(matchType + " not implemented yet.");
             }

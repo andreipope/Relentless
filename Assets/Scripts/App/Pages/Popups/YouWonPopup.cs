@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HORDE_SELECTION);
         }
     }
 }

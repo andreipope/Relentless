@@ -121,26 +121,24 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ActionType
         {
-            ATTACK_PLAYER_BY_CREATURE,
-            ATTACK_CREATURE_BY_CREATURE,
-            ATTACK_CREATURE_BY_SKILL,
-            ATTACK_PLAYER_BY_SKILL,
-            HEAL_PLAYER_BY_SKILL,
-            HEAL_CREATURE_BY_SKILL,
-            ATTACK_CREATURE_BY_ABILITY,
-            ATTACK_PLAYER_BY_ABILITY,
-            HEAL_PLAYER_BY_ABILITY,
-            HEAL_CREATURE_BY_ABILITY,
-            PLAY_UNIT_CARD,
-            PLAY_SPELL_CARD,
-            STUN_CREATURE_BY_ABILITY,
-            STUN_UNIT_BY_SKILL,
-            SUMMON_UNIT_CARD,
-            RETURN_TO_HAND_CARD_ABILITY,
-            RETURN_TO_HAND_CARD_SKILL,
-            DRAW_CARD_SKILL,
-            STUN_PLAYER_BY_SKILL,
-            REANIMATE_UNIT_BY_ABILITY
+            None,
+
+            PlayCardFromHand,
+            PlayCardFromHandOnCard,
+            PlayCardFromHandOnMultipleCards,
+            PlayCardFromHandOnOverlord,
+            PlayCardFromHandOncardsWithOverlord,
+            UseOverlordPower,
+            UseOverlordPowerOnCard,
+            UseOverlordPowerOnMultilpleCards,
+            UseOverlordPowerOnOverlord,
+            UseOverlordPowerOnCardsWithOverlord,
+            CardAttackCard,
+            CardAttackOverlord,
+            CardAffectingCard,
+            CardAffectingMultipleCards,
+            CardAffectingOverlord,
+            CardAffectingCardsWithOverlord
         }
 
         public enum AffectObjectType
@@ -168,8 +166,8 @@ namespace Loom.ZombieBattleground.Common
             LOGIN,
             MAIN_MENU,
             HERO_SELECTION,
-            DECK_SELECTION,
-            COLLECTION,
+            HORDE_SELECTION,
+            ARMY,
             SHOP,
             GAMEPLAY,
             DECK_EDITING,
@@ -288,7 +286,7 @@ namespace Loom.ZombieBattleground.Common
             PUSH,
             DRAW,
             WIND_SHIELD,
-            WIND_WALL,
+            LEVITATE,
             RETREAT,
 
             // EARTH
@@ -445,6 +443,67 @@ namespace Loom.ZombieBattleground.Common
         {
             NONE,
             FROZEN
+        }
+
+        public enum ActionEffectType
+        {
+            None,
+
+            AttackBuff,
+            AttackDebuff,
+            ShieldBuff,
+            ShieldDebuff,
+
+            Feral,
+            Heavy,
+
+            Damage,
+            LifeGain,
+
+            Blitz,
+            DeathMark,
+            Guard,
+            Overflow,
+            Freeze,
+
+            Push,
+            Reanimate,
+            LowGooCost,
+            ReturnToHand
+        }
+        public enum ScreenMode
+        {
+            FullScreen,
+            Window,
+            BorderlessWindow
+        }
+
+        public enum QualityLevel
+        {
+            Ultra,
+            High,
+            Medium,
+            Low
+        }
+
+
+        public enum PlayerAction
+        {
+            DrawCard,
+            Mulligan,
+            UseCardAbility,
+            UseOverlordSkill,
+            CardAttack,
+            EndTurn
+        }
+        public enum ExperienceActionType
+        {
+            KillOverlord,
+            KillMinion,
+            PlayCard,
+            ActivateRankAbility,
+            UseOverlordAbility
+
         }
     }
 }

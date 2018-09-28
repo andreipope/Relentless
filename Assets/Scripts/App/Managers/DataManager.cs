@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
             {
-                await LoadCachedData((Enumerators.CacheDataType) i);
+                await LoadCachedData((Enumerators.CacheDataType)i);
             }
 
             CachedCardsLibraryData.FillAllCards();
@@ -101,6 +101,9 @@ namespace Loom.ZombieBattleground
 #if DEV_MODE
             CachedUserLocalData.Tutorial = false;
 #endif
+
+            GameClient.Get<ISoundManager>().ApplySoundData();
+            GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
 
@@ -160,6 +163,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return Task.CompletedTask;
@@ -254,6 +259,12 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+#if SKIP_CARDS_LIBRARY_DATA_FROM_BACKEND
+                    Debug.LogError("Skipping Card Library load from backend, using local data");
+                    if (File.Exists(_cacheDataPathes[type])) {
+                       CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                    }
+#else
                     try
                     {
                         ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
@@ -267,7 +278,7 @@ namespace Loom.ZombieBattleground
                             CachedCardsLibraryData =
                                 DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
                     }
-
+#endif
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try

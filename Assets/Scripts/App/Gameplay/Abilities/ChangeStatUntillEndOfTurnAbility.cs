@@ -33,25 +33,25 @@ namespace Loom.ZombieBattleground
 
             Player opponent = GetOpponentOverlord();
 
-            foreach (BoardUnit unit in opponent.BoardCards)
+            foreach (BoardUnitView unit in opponent.BoardCards)
             {
                 if (Damage != 0)
                 {
-                    unit.DamageDebuffUntillEndOfTurn += Damage;
-                    int buffresult = unit.CurrentDamage + Damage;
+                    unit.Model.DamageDebuffUntillEndOfTurn += Damage;
+                    int buffresult = unit.Model.CurrentDamage + Damage;
 
                     if (buffresult < 0)
                     {
-                        unit.DamageDebuffUntillEndOfTurn -= buffresult;
+                        unit.Model.DamageDebuffUntillEndOfTurn -= buffresult;
                     }
 
-                    unit.CurrentDamage += Damage;
+                    unit.Model.CurrentDamage += Damage;
                 }
 
                 if (Health != 0)
                 {
-                    unit.HpDebuffUntillEndOfTurn += Health;
-                    unit.CurrentHp += Health;
+                    unit.Model.HpDebuffUntillEndOfTurn += Health;
+                    unit.Model.CurrentHp += Health;
                 }
             }
         }
@@ -62,18 +62,18 @@ namespace Loom.ZombieBattleground
 
             Player opponent = GetOpponentOverlord();
 
-            foreach (BoardUnit unit in opponent.BoardCards)
+            foreach (BoardUnitView unit in opponent.BoardCards)
             {
-                if (unit.DamageDebuffUntillEndOfTurn != 0)
+                if (unit.Model.DamageDebuffUntillEndOfTurn != 0)
                 {
-                    unit.CurrentDamage += Mathf.Abs(unit.DamageDebuffUntillEndOfTurn);
-                    unit.DamageDebuffUntillEndOfTurn = 0;
+                    unit.Model.CurrentDamage += Mathf.Abs(unit.Model.DamageDebuffUntillEndOfTurn);
+                    unit.Model.DamageDebuffUntillEndOfTurn = 0;
                 }
 
-                if (unit.HpDebuffUntillEndOfTurn != 0)
+                if (unit.Model.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.CurrentHp += Mathf.Abs(unit.HpDebuffUntillEndOfTurn);
-                    unit.HpDebuffUntillEndOfTurn = 0;
+                    unit.Model.CurrentHp += Mathf.Abs(unit.Model.HpDebuffUntillEndOfTurn);
+                    unit.Model.HpDebuffUntillEndOfTurn = 0;
                 }
             }
 

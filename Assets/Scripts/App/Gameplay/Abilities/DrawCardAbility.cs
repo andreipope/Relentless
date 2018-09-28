@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -26,27 +27,35 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
-            if (SetType == Enumerators.SetType.NONE || SetType != Enumerators.SetType.NONE && PlayerCallerOfAbility
-                .BoardCards.FindAll(x => x.Card.LibraryCard.CardSetType == SetType && x != AbilityUnitOwner).Count > 0)
+            if (SetType != Enumerators.SetType.NONE &&
+                (SetType == Enumerators.SetType.NONE ||
+                    PlayerCallerOfAbility
+                    .BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType && x.Model != AbilityUnitOwner)
+                    .Count <= 0)
+                )
+                return;
+
+            if (AbilityTargetTypes.Count > 0)
             {
-                if (AbilityTargetTypes.Count > 0)
+                Enumerators.AbilityTargetType abilityTargetType = AbilityTargetTypes[0];
+                switch (abilityTargetType)
                 {
-                    if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.PLAYER)
-                    {
+                    case Enumerators.AbilityTargetType.PLAYER:
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
-                    }
-                    else if (AbilityTargetTypes[0] == Enumerators.AbilityTargetType.OPPONENT)
-                    {
+                        break;
+                    case Enumerators.AbilityTargetType.OPPONENT:
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility,
                             PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
                                 GameplayManager.OpponentPlayer :
                                 GameplayManager.CurrentPlayer);
-                    }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
                 }
-                else
-                {
-                    CardsController.AddCardToHand(PlayerCallerOfAbility);
-                }
+            }
+            else
+            {
+                CardsController.AddCardToHand(PlayerCallerOfAbility);
             }
         }
     }

@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
             Card libraryCard = workingCard.LibraryCard.Clone();
 
             WorkingCard card = new WorkingCard(libraryCard, playerOwner);
-            BoardUnit unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
+            BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
             playerOwner.AddCardToBoard(card);

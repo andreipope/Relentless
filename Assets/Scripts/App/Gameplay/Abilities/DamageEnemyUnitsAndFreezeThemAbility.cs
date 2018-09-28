@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -37,14 +38,14 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
 
-                        foreach (BoardUnit unit in opponent.BoardCards)
+                        foreach (BoardUnitView unit in opponent.BoardCards)
                         {
-                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit.Model);
                         }
 
-                        foreach (BoardUnit unit in opponent.BoardCards)
+                        foreach (BoardUnitView unit in opponent.BoardCards)
                         {
-                            unit.Stun(Enumerators.StunType.FREEZE, Value);
+                            unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
                         }
 
                         break;
@@ -53,6 +54,8 @@ namespace Loom.ZombieBattleground
                         BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, opponent);
                         opponent.Stun(Enumerators.StunType.FREEZE, Value);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
         }

@@ -4,7 +4,7 @@
       "subsectionType": "Main",
       "credits": [
         {
-          "FullName": "Matthew Campbell ",
+          "FullName": "Matthew Campbell",
           "Post": "Executive Producer"
         },
         {
@@ -82,6 +82,27 @@
       ]
     },
     {
+      "subsectionType": "Serverside Programmers",
+      "credits": [
+        {
+          "FullName": "Lock Thepdusith",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Parth Desai",
+          "Post": "Senior Programmer"
+        },
+        {
+          "FullName": "Sebastian Klier",
+          "Post": "Programmer"
+        },
+        {
+          "FullName": "Siddhant Mutha",
+          "Post": "Junior Programmer"
+        }
+      ]
+    },
+    {
       "subsectionType": "Art",
       "credits": [
         {
@@ -101,16 +122,12 @@
           "Post": "Senior 2D Artist"
         },
         {
-          "FullName": "Milica Celikovic",
+          "FullName": "Lanny “Wu” Suhandy",
           "Post": "Senior 2D Artist"
         },
         {
-          "FullName": "Josef Kucera",
-          "Post": "2D Artist"
-        },
-        {
-          "FullName": "Basith Ibrahim",
-          "Post": "2D Artist"
+          "FullName": "Milica Celikovic",
+          "Post": "Senior 2D Artist"
         },
         {
           "FullName": "Niles Arguelles",
@@ -136,18 +153,6 @@
         {
           "FullName": "Alexandru Salajan",
           "Post": "3D Artist"
-        },
-        {
-          "FullName": "Roger Luzardo",
-          "Post": "Senior 2D Artist and Animator"
-        },
-        {
-          "FullName": "Martina Mazzitelli",
-          "Post": "2D Artist and Animator"
-        },
-        {
-          "FullName": "Jamie Geolina",
-          "Post": "2D Artist and Animator"
         },
         {
           "FullName": "Yuriy Tarasov",
@@ -186,59 +191,6 @@
         {
           "FullName": "Ryan Withrow",
           "Post": "Zombies Voice Actor"
-        }
-      ]
-    },
-    {
-      "subsectionType": "Backend",
-      "credits": [
-        {
-          "FullName": "Nayeem Siddique",
-          "Post": "Project Manager"
-        },
-        {
-          "FullName": "Kevin Sandom",
-          "Post": "Lead Programmer"
-        },
-        {
-          "FullName": "Ady Romantika",
-          "Post": "Senior Programmer"
-        },
-        {
-          "FullName": "Cristian Esposito",
-          "Post": "Senior Programmer"
-        },
-        {
-          "FullName": "Lock Thepdusith",
-          "Post": "Senior Programmer"
-        },
-        {
-          "FullName": "Parth Desai",
-          "Post": "Senior Programmer"
-        },
-        {
-          "FullName": "Siddhant Mutha",
-          "Post": "Senior Programmer"
-        },
-        {
-          "FullName": "Vadim Macagon",
-          "Post": "Senior Programmer"
-        },
-        {
-          "FullName": "Aditya Anil Godbole",
-          "Post": "Programmer"
-        },
-        {
-          "FullName": "Chinmay Naik",
-          "Post": "Programmer"
-        },
-        {
-          "FullName": "Nishant Modak",
-          "Post": "Programmer"
-        },
-        {
-          "FullName": "Surabhi Borgikar",
-          "Post": "Programmer"
         }
       ]
     },

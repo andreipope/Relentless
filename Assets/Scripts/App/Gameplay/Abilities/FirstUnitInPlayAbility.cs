@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             if (PlayerCallerOfAbility.BoardCards.Count == 0 || PlayerCallerOfAbility.BoardCards.Count == 1 &&
-                PlayerCallerOfAbility.BoardCards[0].Equals(AbilityUnitOwner))
+                PlayerCallerOfAbility.BoardCards[0].Model == AbilityUnitOwner)
             {
                 AbilityUnitOwner.BuffedHp += Value;
                 AbilityUnitOwner.CurrentHp += Value;

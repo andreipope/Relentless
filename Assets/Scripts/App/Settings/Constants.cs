@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string OpponentBoard = "OpponentBoard";
 
+        internal const string BattlegroundTouchZone = "BattlegroundTouchZona";
+
         internal const string ContentFolderName = "SpreadsheetsData/";
 
         internal const string CardSoundPlay = "P";
@@ -122,5 +124,7 @@ namespace Loom.ZombieBattleground.Common
         internal const string AssetBundleMain = "main";
 
         internal const string AssetBundleLoadingScreen = "loadingscreen";
+
+        internal const string Space = " ";
     }
 }

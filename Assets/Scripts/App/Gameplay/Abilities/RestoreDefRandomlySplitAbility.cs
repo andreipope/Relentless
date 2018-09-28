@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
@@ -57,7 +58,8 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                         _targets.AddRange(GameplayManager.OpponentPlayer.BoardCards);
                         break;
-                    default: break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);
                 }
             }
         }
@@ -84,13 +86,16 @@ namespace Loom.ZombieBattleground
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)
         {
-            if(target is BoardUnit unit)
+            switch (target)
             {
-                BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, defenseValue);
-            }
-            else if(target is Player player)
-            {
-                BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
+                case BoardUnitView unit:
+                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit.Model, defenseValue);
+                    break;
+                case Player player:
+                    BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
         }
     }

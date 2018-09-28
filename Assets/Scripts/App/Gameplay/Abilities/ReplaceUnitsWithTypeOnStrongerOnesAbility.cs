@@ -1,13 +1,14 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class ReplaceUnitsWithTypeOnStrongerOnesAbility : AbilityBase
     {
-        private List<BoardUnit> _boardUnits;
+        private List<BoardUnitView> _boardUnits;
         private List<ReplaceUnitInfo> _replaceUnitInfos;
 
         public int Value;
@@ -21,7 +22,7 @@ namespace Loom.ZombieBattleground
             SetType = ability.AbilitySetType;
             TargetTypes = ability.AbilityTargetTypes;
 
-            _boardUnits = new List<BoardUnit>();
+            _boardUnits = new List<BoardUnitView>();
             _replaceUnitInfos = new List<ReplaceUnitInfo>();
         }
 
@@ -53,12 +54,13 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _boardUnits.AddRange(GameplayManager.OpponentPlayer.BoardCards.FindAll(x => CardsController.GetSetOfCard(x.Card.LibraryCard) == SetType.ToString()));
+                        _boardUnits.AddRange(GameplayManager.OpponentPlayer.BoardCards.FindAll(x => CardsController.GetSetOfCard(x.Model.Card.LibraryCard) == SetType.ToString()));
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _boardUnits.AddRange(GameplayManager.CurrentPlayer.BoardCards.FindAll(x => CardsController.GetSetOfCard(x.Card.LibraryCard) == SetType.ToString()));
+                        _boardUnits.AddRange(GameplayManager.CurrentPlayer.BoardCards.FindAll(x => CardsController.GetSetOfCard(x.Model.Card.LibraryCard) == SetType.ToString()));
                         break;
-                    default: break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
         }
@@ -75,24 +77,24 @@ namespace Loom.ZombieBattleground
         {
             foreach(ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
-                unitInfo.OldUnit.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnit);
-                unitInfo.OldUnit.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnit.Card);
+                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
+                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
                
-                Object.Destroy(unitInfo.OldUnit.GameObject);
+                Object.Destroy(unitInfo.OldUnitView.GameObject);
             }
         }
 
         private void GetPossibleNewUnits()
         {
             ReplaceUnitInfo replaceUnitInfo = null;
-            foreach (BoardUnit unit in _boardUnits)
+            foreach (BoardUnitView unit in _boardUnits)
             {
                 replaceUnitInfo = new ReplaceUnitInfo()
                 {
-                    OldUnitCost = unit.Card.RealCost,
-                    NewUnitPossibleCost = unit.Card.RealCost + 1,
-                    OldUnit = unit,
-                    OwnerPlayer = unit.OwnerPlayer
+                    OldUnitCost = unit.Model.Card.RealCost,
+                    NewUnitPossibleCost = unit.Model.Card.RealCost + 1,
+                    OldUnitView = unit,
+                    OwnerPlayer = unit.Model.OwnerPlayer
                 };
 
                 _replaceUnitInfos.Add(replaceUnitInfo);
@@ -118,8 +120,8 @@ namespace Loom.ZombieBattleground
             public int OldUnitCost;
             public int NewUnitPossibleCost;
             public string NewUnitCardTitle;
-            public BoardUnit OldUnit;
-            public BoardUnit NewUnit;
+            public BoardUnitView OldUnitView;
+            public BoardUnitView NewUnitView;
             public Player OwnerPlayer;
         }
 

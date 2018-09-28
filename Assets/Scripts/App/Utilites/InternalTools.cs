@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace Loom.ZombieBattleground.Helpers
             return list.OrderBy(item => rnd.Next()).ToList();
         }
 
-        public static void GroupHorizontalObjects(Transform root, float offset, float spacing)
+        public static void GroupHorizontalObjects(Transform root, float offset, float spacing, float offsetY, bool isReverse = false)
         {
             int count = root.childCount;
 
@@ -55,10 +56,21 @@ namespace Loom.ZombieBattleground.Helpers
 
             Vector3 pivot = new Vector3(offset, 0, 0);
 
-            for (int i = 0; i < count; i++)
+            if (!isReverse)
             {
-                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, 0, 0);
-                pivot.x += width / count;
+                for (int i = 0; i < count; i++)
+                {
+                    root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, offsetY, 0);
+                    pivot.x += width / count;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    root.GetChild(i).localPosition = new Vector3(pivot.x, offsetY, 0);
+                    pivot.x += spacing;
+                }
             }
         }
 
@@ -120,6 +132,28 @@ namespace Loom.ZombieBattleground.Helpers
 #else
             return DeviceDiagonalSizeInInches() > 6.5f;
 #endif
+        }
+
+        public static string ProccesEnumToString(string origin)
+        {
+            if (string.IsNullOrEmpty(origin))
+                return origin;
+
+            char[] chars = origin.Replace("_", Constants.Space).ToCharArray();
+
+            string newValue = chars[0].ToString().ToUpper();
+
+            for(int i = 1; i < chars.Length; i++)
+            {
+                if (char.IsUpper(chars[i]))
+                {
+                    newValue += Constants.Space;
+                }
+
+                newValue += chars[i].ToString().ToLower();
+            }
+          
+            return newValue;
         }
     }
 }

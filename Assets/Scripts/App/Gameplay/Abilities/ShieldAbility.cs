@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityUnitOwner.BuffShield();
+            AbilityUnitOwner.AddBuffShield();
         }
     }
 }

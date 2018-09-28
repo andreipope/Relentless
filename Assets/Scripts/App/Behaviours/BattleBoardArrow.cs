@@ -5,37 +5,37 @@ namespace Loom.ZombieBattleground
 {
     public class BattleBoardArrow : BoardArrow
     {
-        public List<object> IgnoreBoardObjectsList;
+        public List<BoardObject> IgnoreBoardObjectsList;
 
-        public List<BoardUnit> BoardCards;
+        public List<BoardUnitView> BoardCards;
 
-        public BoardUnit Owner;
+        public BoardUnitView Owner;
 
         public bool IgnoreHeavy;
 
-        public void End(BoardUnit creature)
+        public void End(BoardUnitView creature)
         {
             if (!StartedDrag)
                 return;
 
             StartedDrag = false;
 
-            creature.DoCombat(SelectedCard ?? (object) SelectedPlayer);
+            creature.Model.DoCombat((BoardObject) SelectedCard?.Model ?? SelectedPlayer);
             Dispose();
         }
 
-        public override void OnCardSelected(BoardUnit unit)
+        public override void OnCardSelected(BoardUnitView unit)
         {
-            if (TutorialManager.IsTutorial && TutorialManager.CurrentTutorialDataStep.BoardArrowCantUsableOnUnit)
+            if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnUnits)
                 return;
 
-            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit))
+            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
                 return;
 
-            if (unit.CurrentHp <= 0)
+            if (unit.Model.CurrentHp <= 0)
                 return;
 
-            if (ElementType.Count > 0 && !ElementType.Contains(unit.Card.LibraryCard.CardSetType))
+            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.LibraryCard.CardSetType))
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) ||
@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
                 unit.Transform.CompareTag("OpponentOwned"))
             {
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || opponentHasProvoke && unit.IsHeavyUnit() || IgnoreHeavy)
+                if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
                     SelectedCard?.SetSelectedUnit(false);
 
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public override void OnCardUnselected(BoardUnit creature)
+        public override void OnCardUnselected(BoardUnitView creature)
         {
             if (SelectedCard == creature)
             {
@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(player))
                 return;
 
-            if (Owner != null && !Owner.HasFeral && Owner.HasBuffRush)
+            if (Owner != null && !Owner.Model.HasFeral && Owner.Model.HasBuffRush)
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT) &&
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
 
         protected bool OpponentBoardContainsProvokingCreatures()
         {
-            List<BoardUnit> provokeCards = BoardCards.FindAll(x => x.IsHeavyUnit());
+            List<BoardUnitView> provokeCards = BoardCards.FindAll(x => x.Model.IsHeavyUnit);
             return provokeCards.Count > 0;
         }
 

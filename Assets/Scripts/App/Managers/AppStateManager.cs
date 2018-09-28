@@ -1,4 +1,8 @@
 using System;
+using System.Threading.Tasks;
+using App.Utilites;
+using Loom.Client;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
@@ -17,6 +21,10 @@ namespace Loom.ZombieBattleground
         private bool _isBackButtonCounting;
 
         private Enumerators.AppState _previousState;
+
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
 
         public bool IsAppPaused { get; private set; }
 
@@ -48,16 +56,16 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<MainMenuPage>();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
-                    _uiManager.SetPage<HeroSelectionPage>();
+                    _uiManager.SetPage<OverlordSelectionPage>();
                     break;
-                case Enumerators.AppState.DECK_SELECTION:
+                case Enumerators.AppState.HORDE_SELECTION:
                     _uiManager.SetPage<HordeSelectionPage>();
                     break;
-                case Enumerators.AppState.COLLECTION:
-                    _uiManager.SetPage<CollectionPage>();
+                case Enumerators.AppState.ARMY:
+                    _uiManager.SetPage<ArmyPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
-                    _uiManager.SetPage<DeckEditingPage>();
+                    _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
 
@@ -81,7 +89,7 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<CreditsPage>();
                     break;
                 default:
-                    throw new NotImplementedException("Not Implemented " + stateTo + " state!");
+                    throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);
             }
 
             _previousState = AppState != Enumerators.AppState.SHOP ? AppState : Enumerators.AppState.MAIN_MENU;
@@ -116,11 +124,60 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
+
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _backendFacade.ContractCreated += LoomManagerOnContractCreated;
         }
 
         public void Update()
         {
             CheckBackButton();
+        }
+
+        public void QuitApplication()
+        {
+            Application.Quit();
+        }
+        
+        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
+        {
+            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStatus(), null);
+        }
+
+        private void UpdateConnectionStatus()
+        {
+            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+            if (!_backendFacade.IsConnected)
+            {
+                if (connectionPopup.Self == null)
+                {
+                    Func<Task> connectFunc = async () =>
+                    {
+                        await _backendDataControlMediator.LoginAndLoadData();
+                        connectionPopup.Hide();
+                    };
+
+                    connectionPopup.ConnectFunc = connectFunc;
+                    connectionPopup.Show();
+                    connectionPopup.ShowFailedInGame();
+                }
+            }
+        }
+
+        private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)
+        {
+            if (oldContract != null)
+            {
+                oldContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                oldContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
+
+            newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+            newContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+
+            UpdateConnectionStatus();
         }
 
         private void CheckBackButton()

@@ -12,14 +12,14 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected override void UnitDamagedHandler(object from)
+        protected override void UnitDamagedHandler(BoardObject from)
         {
             base.UnitDamagedHandler(from);
 
             if (AbilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
                 return;
 
-            (from as BoardUnit)?.Stun(Enumerators.StunType.FREEZE, Value);
+            ((BoardUnitModel) from)?.Stun(Enumerators.StunType.FREEZE, Value);
         }
     }
 }

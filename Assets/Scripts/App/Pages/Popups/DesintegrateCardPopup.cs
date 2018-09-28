@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            _cardData = data as CollectionCardData;
+            _cardData = (CollectionCardData) data;
             if (_cardData.Amount == 0)
             {
                 _yesButton.interactable = false;
@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
                 .Find(card => card.Name == _cardData.CardName);
             GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int) libraryCard.CardRank + 1));
 
-            _uiManager.GetPage<CollectionPage>().UpdateGooValue();
+            _uiManager.GetPage<ArmyPage>().UpdateGooValue();
         }
     }
 }

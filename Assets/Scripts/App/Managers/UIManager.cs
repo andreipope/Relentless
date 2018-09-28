@@ -34,10 +34,10 @@ namespace Loom.ZombieBattleground
             Pages = new List<IUIElement>();
             Pages.Add(new LoadingPage());
             Pages.Add(new MainMenuPage());
-            Pages.Add(new HeroSelectionPage());
+            Pages.Add(new OverlordSelectionPage());
             Pages.Add(new HordeSelectionPage());
-            Pages.Add(new CollectionPage());
-            Pages.Add(new DeckEditingPage());
+            Pages.Add(new ArmyPage());
+            Pages.Add(new HordeEditingPage());
             Pages.Add(new ShopPage());
             Pages.Add(new GameplayPage());
             Pages.Add(new PackOpenerPage());
@@ -66,6 +66,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new ConnectionPopup());
             _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
+            _uiPopups.Add(new PastActionsPopup());
+            _uiPopups.Add(new SettingsPopup());            
 
             foreach (IUIPopup popup in _uiPopups)
             {

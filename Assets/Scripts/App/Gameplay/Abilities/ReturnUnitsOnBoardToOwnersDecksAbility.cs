@@ -25,19 +25,19 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnit> units = new List<BoardUnit>();
+            List<BoardUnitView> units = new List<BoardUnitView>();
             units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
 
-            foreach (BoardUnit unit in units)
+            foreach (BoardUnitView unit in units)
             {
-                ReturnBoardUnitToDeck(unit);
+                ReturnBoardUnitToDeck(unit.Model);
             }
 
             units.Clear();
         }
 
-        private void ReturnBoardUnitToDeck(BoardUnit unit)
+        private void ReturnBoardUnitToDeck(BoardUnitModel unit)
         {
             if (AbilityUnitOwner != null && unit == AbilityUnitOwner || unit == null)
                 return;

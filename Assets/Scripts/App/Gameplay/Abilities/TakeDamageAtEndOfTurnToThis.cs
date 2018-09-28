@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
-            CreateVfx(AbilityUnitOwner.Transform.position, true, 5f);
+            CreateVfx(GetAbilityUnitOwnerView().Transform.position, true, 5f);
         }
 
         protected override void TurnEndedHandler()

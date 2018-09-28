@@ -4,11 +4,16 @@ using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System.Collections.Generic;
+using System.Linq;
+using Loom.ZombieBattleground.View;
 
 namespace Loom.ZombieBattleground
 {
     public class VfxController : IController
     {
+        private const string TagZoneForTouching = "BattlegroundTouchingArea";
+
         private ISoundManager _soundManager;
 
         private ITimerManager _timerManager;
@@ -19,6 +24,10 @@ namespace Loom.ZombieBattleground
 
         private ParticlesController _particlesController;
 
+        private BattlegroundController _battlegroundController;
+
+        private GameObject _battlegroundTouchPrefab;
+
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
@@ -26,6 +35,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _particlesController = _gameplayManager.GetController<ParticlesController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
+            _battlegroundTouchPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/TouchingBattleground/ZB_ANM_touching_battleground");
         }
 
         public void Dispose()
@@ -34,6 +46,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (_gameplayManager.IsGameStarted)
+            {
+                ChechTouchOnBattleground();
+            }
         }
 
         public void ResetAll()
@@ -44,8 +60,13 @@ namespace Loom.ZombieBattleground
         {
             GameObject effect;
             GameObject vfxPrefab;
-            target = Utilites.CastVfxPosition(target);
-            Vector3 offset = Vector3.forward * 1;
+
+            Vector3 offset = Vector3.zero;
+            if (type == Enumerators.CardType.FERAL || type == Enumerators.CardType.HEAVY)
+            {
+                target = Utilites.CastVfxPosition(target);
+                offset = Vector3.forward * 1;
+            }
 
             switch (type)
             {
@@ -152,8 +173,11 @@ namespace Loom.ZombieBattleground
 
             switch (target)
             {
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     position = unit.Transform.position;
+                    break;
+                case BoardUnitModel unit:
+                    position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                     break;
                 case Player player:
                     position = player.AvatarObject.transform.position;
@@ -161,6 +185,8 @@ namespace Loom.ZombieBattleground
                 case Transform transform:
                     position = transform.transform.position;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             GameObject particle = Object.Instantiate(prefab);
@@ -176,48 +202,52 @@ namespace Loom.ZombieBattleground
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
 
+            Vector3 castVfxPosition;
             switch (target)
             {
                 case Player player:
-                    particleSystem.transform
-                        .DOMove(Utilites.CastVfxPosition(player.AvatarObject.transform.position), .5f).OnComplete(
-                            () =>
-                            {
-                                callbackComplete(target);
-
-                                if (particleSystem != null)
-                                {
-                                    Object.Destroy(particleSystem);
-                                }
-                            });
+                    castVfxPosition = player.AvatarObject.transform.position;
                     break;
-                case BoardUnit unit:
-                    particleSystem.transform.DOMove(Utilites.CastVfxPosition(unit.Transform.position), .5f).OnComplete(
-                        () =>
-                        {
-                            callbackComplete(target);
-
-                            if (particleSystem != null)
-                            {
-                                Object.Destroy(particleSystem);
-                            }
-                        });
+                case BoardUnitView unit:
+                    castVfxPosition = unit.Transform.position;
                     break;
+                case BoardUnitModel unit:
+                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
+
+            particleSystem.transform
+                .DOMove(Utilites.CastVfxPosition(castVfxPosition), .5f).OnComplete(
+                    () =>
+                    {
+                        callbackComplete(target);
+
+                        if (particleSystem != null)
+                        {
+                            Object.Destroy(particleSystem);
+                        }
+                    });
         }
 
-        public void SpawnGotDamageEffect(object onObject, int count)
+        public void SpawnGotDamageEffect(IView onObject, int count)
         {
             Transform target = null;
 
             switch (onObject)
             {
-                case BoardUnit unit:
+                case BoardUnitView unit:
                     target = unit.Transform;
+                    break;
+                case BoardUnitModel unit:
+                    target = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
                     break;
                 case Player _:
                     target = ((Player) onObject).AvatarObject.transform;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(onObject), onObject, null);
             }
 
             GameObject effect =
@@ -229,5 +259,53 @@ namespace Loom.ZombieBattleground
 
             Object.Destroy(effect, 2.5f);
         }
+
+        public void CreateDeathZombieAnimation(BoardUnitView cardToDestroy)
+        {
+            if (cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
+                cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
+                cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.NONE)
+                return;
+
+            string type = cardToDestroy.Model.LastAttackingSetType.ToString();
+            type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
+            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
+            GameObject effect = MonoBehaviour.Instantiate(prefab);
+            effect.transform.position = cardToDestroy.Transform.position;
+            effect.SetActive(false);
+            cardToDestroy.Transform.SetParent(effect.transform, true);
+            cardToDestroy.Transform.position = effect.transform.position;
+            _particlesController.RegisterParticleSystem(effect, true, 8f);
+            effect.SetActive(true);
+        }
+
+        private void ChechTouchOnBattleground()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider != null)
+                    {
+                        if (hit.collider.tag != TagZoneForTouching)
+                            return;
+                    }
+                }
+                if (hits.Length > 0)
+				{
+                    CreateBattlegroundTouchEffect(mousePos);
+				}
+            }
+        }
+
+        private void CreateBattlegroundTouchEffect(Vector3 position)
+        {
+            GameObject effect = Object.Instantiate(_battlegroundTouchPrefab);
+            effect.transform.position = Utilites.CastVfxPosition(position);
+            _particlesController.RegisterParticleSystem(effect, true, 5f);
+		}
     }
 }

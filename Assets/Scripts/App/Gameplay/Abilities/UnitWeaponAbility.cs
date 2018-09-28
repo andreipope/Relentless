@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
                 TargetUnit.CurrentDamage += Value;
                 TargetUnit.BuffedDamage += Value;
 
-                CreateVfx(TargetUnit.Transform.position, true, 5f);
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
             }
         }
 
@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
             {
                 BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
-                CreateVfx(TargetUnit.Transform.position, true, 5f);
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
             }
         }
 

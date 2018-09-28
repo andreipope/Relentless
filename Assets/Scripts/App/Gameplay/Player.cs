@@ -4,12 +4,13 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.View;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
-    public class Player
+    public class Player : BoardObject, IView
     {
         public int Turn;
 
@@ -43,6 +44,8 @@ namespace Loom.ZombieBattleground
 
         private readonly GameObject _avatarHeroHighlight;
 
+        private readonly GameObject _avatarHeroHighlightAfterDead;
+
         private readonly GameObject _avatarSelectedHighlight;
 
         private readonly Animator _avatarAnimator;
@@ -63,8 +66,9 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-        public Player(GameObject playerObject, bool isOpponent)
+        public Player(int id, GameObject playerObject, bool isOpponent)
         {
+            Id = id;
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
 
@@ -81,7 +85,7 @@ namespace Loom.ZombieBattleground
             CardsInGraveyard = new List<WorkingCard>();
             CardsInHand = new List<WorkingCard>();
             CardsOnBoard = new List<WorkingCard>();
-            BoardCards = new List<BoardUnit>();
+            BoardCards = new List<BoardUnitView>();
 
             CardsPreparingToHand = new List<BoardCard>();
 
@@ -124,6 +128,9 @@ namespace Loom.ZombieBattleground
 
             _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject;
 
+            string name = Utilites.FirstCharToUpper(SelfHero.HeroElement.ToString()) + "HeroFrame";
+            _avatarHeroHighlightAfterDead = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
+            _avatarHeroHighlightAfterDead.SetActive(false);
             _avatarAnimator.enabled = false;
             _deathAnimator.enabled = false;
             _deathAnimator.StopPlayback();
@@ -207,7 +214,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
-        public List<BoardUnit> BoardCards { get; set; }
+        public List<BoardUnitView> BoardCards { get; set; }
 
         public List<WorkingCard> CardsInDeck { get; set; }
 
@@ -374,14 +381,15 @@ namespace Loom.ZombieBattleground
 
             cards = ShuffleCardsList(cards);
 
+#if DEV_MODE
+            if (IsLocalPlayer)
+            {
+                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName("Cherno-bill"), this)); // special card id
+            }
+#endif
+
             foreach (string card in cards)
             {
-#if DEV_MODE
-                if (IsLocalPlayer)
-                {
-                    CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card /* 15 */), this)); // special card id
-                }
-#endif
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
             }
 
@@ -444,6 +452,7 @@ namespace Loom.ZombieBattleground
             _avatarAnimator.enabled = true;
             _deathAnimator.enabled = true;
             _avatarHeroHighlight.SetActive(false);
+            _avatarHeroHighlightAfterDead.SetActive(true);
             _avatarAnimator.Play(0);
             _deathAnimator.Play(0);
 
@@ -501,6 +510,11 @@ namespace Loom.ZombieBattleground
         {
             if (now <= 0 && !_isDead)
             {
+                if (!IsLocalPlayer)
+                {
+                    GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
+                }
+
                 PlayerDie();
 
                 _isDead = true;

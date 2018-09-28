@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
@@ -30,18 +31,20 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(List<BoardUnit> units, Card card)
+        public void UpdateRanksByElements(List<BoardUnitView> units, Card card)
         {
-            List<BoardUnit> filter = units.Where(unit =>
-                unit.Card.LibraryCard.CardSetType == card.CardSetType &&
-                (int) unit.Card.LibraryCard.CardRank < (int) card.CardRank).ToList();
+            List<BoardUnitView> filter = units.Where(unit =>
+                unit.Model.Card.LibraryCard.CardSetType == card.CardSetType &&
+                (int) unit.Model.Card.LibraryCard.CardRank < (int) card.CardRank).ToList();
             if (filter.Count > 0)
             {
                 DoRankUpgrades(filter, card.CardSetType, card.CardRank);
+
+                GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.ActivateRankAbility);
             }
         }
 
-        public void DoRankUpgrades(List<BoardUnit> units, Enumerators.SetType element, Enumerators.CardRank rank)
+        public void DoRankUpgrades(List<BoardUnitView> units, Enumerators.SetType element, Enumerators.CardRank rank)
         {
             switch (element)
             {
@@ -63,10 +66,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.SetType.LIFE:
                     LifeRankBuff(units, rank);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(element), element, null);
             }
         }
 
-        private void AirRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
+        private void AirRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -85,12 +90,14 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
         }
 
-        private void EarthRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
+        private void EarthRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -109,12 +116,14 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
         }
 
-        private void FireRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
+        private void FireRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -133,12 +142,14 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
         }
 
-        private void LifeRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
+        private void LifeRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -157,12 +168,14 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
         }
 
-        private void ToxicRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
+        private void ToxicRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -181,12 +194,14 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
         }
 
-        private void WaterRankBuff(List<BoardUnit> units, Enumerators.CardRank rank)
+        private void WaterRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -210,21 +225,21 @@ namespace Loom.ZombieBattleground
             BuffRandomAlly(units, count, buffs);
         }
 
-        private void BuffRandomAlly(List<BoardUnit> units, int count, List<Enumerators.BuffType> buffTypes)
+        private void BuffRandomAlly(List<BoardUnitView> units, int count, List<Enumerators.BuffType> buffTypes)
         {
             if(_tutorialManager.IsTutorial)
             {
                 // need for attacking by Poizom's
-                units = units.FindAll(x => x.UnitCanBeUsable());
+                units = units.FindAll(x => x.Model.UnitCanBeUsable());
             }
 
             units = InternalTools.GetRandomElementsFromList(units, count);
 
             foreach (Enumerators.BuffType buff in buffTypes)
             {
-                foreach (BoardUnit unit in units)
+                foreach (BoardUnitView unit in units)
                 {
-                    unit.ApplyBuff(buff);
+                    unit.Model.ApplyBuff(buff);
                 }
             }
         }

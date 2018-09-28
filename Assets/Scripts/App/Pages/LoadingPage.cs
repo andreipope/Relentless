@@ -96,13 +96,12 @@ namespace Loom.ZombieBattleground
                         catch (GameVersionMismatchException e)
                         {
                             success = false;
-                            _uiManager.DrawPopup<LoginPopup>();
                             _uiManager.GetPopup<LoginPopup>().Show(e);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            // HACK: ignore to allow offline mode
-                            Debug.LogWarning(e);
+                            success = false;
+                            _uiManager.DrawPopup<LoginPopup>();
                         }
 
                         connectionPopup.Hide();
@@ -237,7 +236,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception)
             {
-                OpenAlertDialog("Not Able to Create Account..");
+                OpenAlertDialog("Not Able to Create Account.");
             }
         }
 

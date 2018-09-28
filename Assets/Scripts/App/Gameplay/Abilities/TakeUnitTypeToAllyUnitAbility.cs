@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
@@ -30,8 +31,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnit> allies = PlayerCallerOfAbility.BoardCards
-                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
+            List<BoardUnitView> allies = PlayerCallerOfAbility.BoardCards
+                .Where(unit => unit.Model != AbilityUnitOwner && !unit.Model.HasFeral && unit.Model.NumTurnsOnBoard == 0)
                 .ToList();
 
             if (allies.Count > 0)
@@ -41,7 +42,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeTypeToUnit(BoardUnit unit)
+        private void TakeTypeToUnit(BoardUnitView unit)
         {
             if (unit == null)
                 return;
@@ -49,11 +50,13 @@ namespace Loom.ZombieBattleground
             switch (UnitType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.SetAsHeavyUnit();
+                    unit.Model.SetAsHeavyUnit();
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.SetAsFeralUnit();
+                    unit.Model.SetAsFeralUnit();
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
             }
         }
     }

@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         public bool CanDoDragActions { get; set; }
 
+        public bool IsGameplayInputBlocked { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -86,13 +88,18 @@ namespace Loom.ZombieBattleground
                 _timerManager.AddTimer(
                     x =>
                     {
-                        if (endGameType == Enumerators.EndGameType.WIN)
+                        switch (endGameType)
                         {
-                            _uiManager.DrawPopup<YouWonPopup>();
-                        }
-                        else if (endGameType == Enumerators.EndGameType.LOSE)
-                        {
-                            _uiManager.DrawPopup<YouLosePopup>();
+                            case Enumerators.EndGameType.WIN:
+                                _uiManager.DrawPopup<YouWonPopup>();
+                                break;
+                            case Enumerators.EndGameType.LOSE:
+                                _uiManager.DrawPopup<YouLosePopup>();
+                                break;
+                            case Enumerators.EndGameType.CANCEL:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
                         }
                     },
                     null,
@@ -145,6 +152,16 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayerTurn()
         {
             return CurrentTurnPlayer.Equals(CurrentPlayer);
+        }
+
+        public Player GetOpponentByPlayer(Player player)
+        {
+            return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
+        }
+
+        public Player GetPlayerById(int id)
+        {
+            return CurrentPlayer.Id == id ? CurrentPlayer : OpponentPlayer;
         }
 
         public void ResetWholeGameplayScene()
@@ -211,7 +228,8 @@ namespace Loom.ZombieBattleground
                 new BoardArrowController(),
                 new SkillsController(),
                 new RanksController(),
-                new InputController()
+                new InputController(),
+                new OpponentController()
             };
 
             foreach (IController controller in _controllers)
@@ -222,17 +240,24 @@ namespace Loom.ZombieBattleground
 
 		private void StartInitializeGame()
         {
-            GetController<PlayerController>().InitializePlayer();
+            GetController<PlayerController>().InitializePlayer(0);
 
-            if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
+            switch (_matchManager.MatchType)
             {
-                GetController<AIController>().InitializePlayer();
+                case Enumerators.MatchType.LOCAL:
+                    GetController<AIController>().InitializePlayer(1);
+                    break;
+                case Enumerators.MatchType.PVP:
+                    GetController<OpponentController>().InitializePlayer(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
             }
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
 
-            if(IsTutorial)
+            if (IsTutorial)
             {
                 IsSpecificGameplayBattleground = true;
 
@@ -245,7 +270,20 @@ namespace Loom.ZombieBattleground
             {
                 IsSpecificGameplayBattleground = false;
 
-                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                switch (_matchManager.MatchType)
+                {
+                    case Enumerators.MatchType.LOCAL:
+                        CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                        break;
+                    case Enumerators.MatchType.PVP:
+
+                        //todo implement logic from server
+
+                        CurrentTurnPlayer = CurrentPlayer;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
+                }
 
                 OpponentPlayer.SetFirstHand(false);
 

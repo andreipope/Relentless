@@ -37,12 +37,16 @@ namespace Loom.ZombieBattleground
 
         bool CanDoDragActions { get; set; }
 
+        bool IsGameplayInputBlocked { get; set; }
+
         T GetController<T>()
             where T : IController;
 
         void RearrangeHands();
 
         bool IsLocalPlayerTurn();
+
+        Player GetOpponentByPlayer(Player player);
 
         void StartGameplay();
 
@@ -53,5 +57,7 @@ namespace Loom.ZombieBattleground
         void ResetWholeGameplayScene();
 
         bool IsGameplayReady();
+
+        Player GetPlayerById(int id);
     }
 }

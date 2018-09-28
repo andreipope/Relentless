@@ -30,10 +30,10 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.BuffedHp += Value * damageDeal;
             AbilityUnitOwner.CurrentHp += Value * damageDeal;
 
-            CreateVfx(AbilityUnitOwner.Transform.position, true);
+            CreateVfx(GetAbilityUnitOwnerView().Transform.position, true);
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 

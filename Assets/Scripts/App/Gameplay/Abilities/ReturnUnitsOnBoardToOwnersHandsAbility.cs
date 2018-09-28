@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -25,11 +26,15 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnit> units = new List<BoardUnit>();
+            List<BoardUnitView> units = new List<BoardUnitView>();
             units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
+            units =
+                units
+                    .Where(x => x.Model != AbilityUnitOwner)
+                    .ToList();
 
-            foreach (BoardUnit unit in units)
+            foreach (BoardUnitView unit in units)
             {
                 ReturnBoardUnitToHand(unit);
             }
@@ -37,17 +42,11 @@ namespace Loom.ZombieBattleground
             units.Clear();
         }
 
-        private void ReturnBoardUnitToHand(BoardUnit unit)
+        private void ReturnBoardUnitToHand(BoardUnitView unit)
         {
             CreateVfx(unit.Transform.position, true, 3f, true);
 
             CardsController.ReturnCardToHand(unit);
-
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
-                {
-                    PlayerCallerOfAbility, AbilityData, unit
-                }));
         }
     }
 }

@@ -28,8 +28,7 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
         }
@@ -46,17 +45,17 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnit unit = info as BoardUnit;
+            BoardUnitModel unit = (BoardUnitModel) info;
 
             Player playerOwner = unit.OwnerPlayer;
 
-            BoardUnit leftAdjustment = null, rightAdjastment = null;
+            BoardUnitView leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
-            List<BoardUnit> list = null;
+            List<BoardUnitView> list = null;
             for (int i = 0; i < playerOwner.BoardCards.Count; i++)
             {
-                if (playerOwner.BoardCards[i] == unit)
+                if (playerOwner.BoardCards[i].Model == unit)
                 {
                     targetIndex = i;
                     list = playerOwner.BoardCards;
@@ -83,7 +82,7 @@ namespace Loom.ZombieBattleground
                 CreateAndMoveParticle(
                     () =>
                     {
-                        BattleController.AttackUnitByAbility(caller, AbilityData, leftAdjustment);
+                        BattleController.AttackUnitByAbility(caller, AbilityData, leftAdjustment.Model);
                     },
                     leftAdjustment.Transform.position);
             }
@@ -93,7 +92,7 @@ namespace Loom.ZombieBattleground
                 CreateAndMoveParticle(
                     () =>
                     {
-                        BattleController.AttackUnitByAbility(caller, AbilityData, rightAdjastment);
+                        BattleController.AttackUnitByAbility(caller, AbilityData, rightAdjastment.Model);
                     },
                     rightAdjastment.Transform.position);
             }
@@ -116,14 +115,14 @@ namespace Loom.ZombieBattleground
                             {
                                 BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                             },
-                            TargetUnit.Transform.position);
+                            BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
 
                         break;
                 }
             }
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
@@ -136,7 +135,7 @@ namespace Loom.ZombieBattleground
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
             Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE ?
-                AbilityUnitOwner.Transform.position :
+                GetAbilityUnitOwnerView().Transform.position :
                 SelectedPlayer.Transform.position;
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
@@ -146,29 +145,36 @@ namespace Loom.ZombieBattleground
                     () =>
                     {
                         callback();
-                        if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
+                        switch (AbilityEffectType)
                         {
-                            DestroyParticle(particleMain, true);
-                            GameObject prefab =
-                                LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                            GameObject particle = Object.Instantiate(prefab);
-                            particle.transform.position = Utilites.CastVfxPosition(targetPosition + Vector3.forward);
-                            ParticlesController.RegisterParticleSystem(particle, true);
+                            case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB:
+                            {
+                                DestroyParticle(particleMain, true);
+                                GameObject prefab =
+                                    LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                                GameObject particle = Object.Instantiate(prefab);
+                                particle.transform.position = Utilites.CastVfxPosition(targetPosition + Vector3.forward);
+                                ParticlesController.RegisterParticleSystem(particle, true);
 
-                            SoundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb",
-                                Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-                        }
-                        else if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR)
-                        {
-                            // one particle
-                            ParticleSystem.MainModule main = VfxObject.GetComponent<ParticleSystem>().main;
-                            main.loop = false;
+                                SoundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb",
+                                    Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                                break;
+                            }
+                            case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR:
+                            {
+                                // one particle
+                                ParticleSystem.MainModule main = VfxObject.GetComponent<ParticleSystem>().main;
+                                main.loop = false;
+                                break;
+                            }
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(AbilityEffectType), AbilityEffectType, null);
                         }
                     });
             }
             else
             {
-                CreateVfx(Utilites.CastVfxPosition(TargetUnit.Transform.position));
+                CreateVfx(Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position));
                 callback();
             }
 
@@ -195,7 +201,7 @@ namespace Loom.ZombieBattleground
 
         private void DestroyParticle(object[] param)
         {
-            GameObject particleObj = param[0] as GameObject;
+            GameObject particleObj = (GameObject) param[0];
             Object.Destroy(particleObj);
         }
     }

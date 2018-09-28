@@ -34,16 +34,16 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnit creature = info as BoardUnit;
+            BoardUnitModel creature = (BoardUnitModel) info;
 
-            CreateVfx(creature.Transform.position);
+            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
 
-            BoardUnit leftAdjustment = null, rightAdjastment = null;
+            BoardUnitView leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
             for (int i = 0; i < creature.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (creature.OwnerPlayer.BoardCards[i] == creature)
+                if (creature.OwnerPlayer.BoardCards[i].Model == creature)
                 {
                     targetIndex = i;
                 }
@@ -64,25 +64,25 @@ namespace Loom.ZombieBattleground
 
             if (leftAdjustment != null)
             {
-                if (leftAdjustment.IsStun)
+                if (leftAdjustment.Model.IsStun)
                 {
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment.Model);
                 }
                 else
                 {
-                    leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
+                    leftAdjustment.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
             }
 
             if (rightAdjastment != null)
             {
-                if (rightAdjastment.IsStun)
+                if (rightAdjastment.Model.IsStun)
                 {
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment.Model);
                 }
                 else
                 {
-                    rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
+                    rightAdjastment.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
             }
 
