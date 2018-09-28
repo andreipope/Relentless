@@ -36,8 +36,11 @@ namespace Loom.ZombieBattleground
         private bool _skillsInitialized;
 
         public BoardSkill OpponentPrimarySkill { get; private set; }
+
         public BoardSkill OpponentSecondarySkill { get; private set; }
+
         public BoardSkill PlayerPrimarySkill { get; private set; }
+
         public BoardSkill PlayerSecondarySkill { get; private set; }
 
         public void Dispose()
@@ -101,7 +104,8 @@ namespace Loom.ZombieBattleground
             if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
                 secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
             {
-                SetPlayerSkills(rootPage, _gameplayManager.CurrentPlayer.SelfHero.Skills[primary],
+                SetPlayerSkills(rootPage,
+                    _gameplayManager.CurrentPlayer.SelfHero.Skills[primary],
                     _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary]);
             }
 
@@ -111,7 +115,8 @@ namespace Loom.ZombieBattleground
             if (primary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count &&
                 secondary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count)
             {
-                SetOpponentSkills(rootPage, _gameplayManager.OpponentPlayer.SelfHero.Skills[primary],
+                SetOpponentSkills(rootPage,
+                    _gameplayManager.OpponentPlayer.SelfHero.Skills[primary],
                     _gameplayManager.OpponentPlayer.SelfHero.Skills[secondary]);
             }
 
@@ -149,17 +154,25 @@ namespace Loom.ZombieBattleground
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
             PlayerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
-                _gameplayManager.CurrentPlayer, primary, true);
+                _gameplayManager.CurrentPlayer,
+                primary,
+                true);
             PlayerSecondarySkill = new BoardSkill(rootPage.PlayerSecondarySkillHandler.gameObject,
-                _gameplayManager.CurrentPlayer, secondary, false);
+                _gameplayManager.CurrentPlayer,
+                secondary,
+                false);
         }
 
         public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
             OpponentPrimarySkill = new BoardSkill(rootPage.OpponentPrimarySkillHandler.gameObject,
-                _gameplayManager.OpponentPlayer, primary, true);
+                _gameplayManager.OpponentPlayer,
+                primary,
+                true);
             OpponentSecondarySkill = new BoardSkill(rootPage.OpponentSecondarySkillHandler.gameObject,
-                _gameplayManager.OpponentPlayer, secondary, false);
+                _gameplayManager.OpponentPlayer,
+                secondary,
+                false);
         }
 
         public void DoSkillAction(BoardSkill skill, BoardObject target = null)
@@ -179,7 +192,11 @@ namespace Loom.ZombieBattleground
                     string soundFile = GetSoundBySkills(skill);
                     if (!string.IsNullOrEmpty(soundFile))
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
+                        _soundManager.PlaySound(
+                            Enumerators.SoundType.OVERLORD_ABILITIES,
+                            soundFile,
+                            Constants.OverlordAbilitySoundVolume,
+                            false);
                     }
 
                     skill.UseSkill();
@@ -194,11 +211,16 @@ namespace Loom.ZombieBattleground
 
                             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                             {
-                                await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer, skill, targetPlayer, Enumerators.AffectObjectType.PLAYER);
+                                await
+                                    _gameplayManager
+                                        .GetController<OpponentController>()
+                                        .ActionUseOverlordSkill(
+                                            skill.OwnerPlayer,
+                                            skill,
+                                            targetPlayer,
+                                            Enumerators.AffectObjectType.PLAYER);
                             }
                         });
-
-
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
                 {
@@ -207,7 +229,11 @@ namespace Loom.ZombieBattleground
                     string soundFile = GetSoundBySkills(skill);
                     if (!string.IsNullOrEmpty(soundFile))
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
+                        _soundManager.PlaySound(
+                            Enumerators.SoundType.OVERLORD_ABILITIES,
+                            soundFile,
+                            Constants.OverlordAbilitySoundVolume,
+                            false);
                     }
 
                     skill.UseSkill();
@@ -222,7 +248,10 @@ namespace Loom.ZombieBattleground
 
                             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                             {
-                                await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer, skill, targetUnitView.Model, Enumerators.AffectObjectType.CHARACTER);
+                                await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer,
+                                    skill,
+                                    targetUnitView.Model,
+                                    Enumerators.AffectObjectType.CHARACTER);
                             }
                         });
                 }
@@ -420,7 +449,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.OverlordSkill.DRAW:
                     DrawAction(skill.OwnerPlayer, skill, skill.Skill, target);
-                    break;          
+                    break;
                 case Enumerators.OverlordSkill.WIND_SHIELD:
                     WindShieldAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
@@ -505,7 +534,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-
         // AIR
 
         private void PushAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
@@ -527,8 +555,11 @@ namespace Loom.ZombieBattleground
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"),
                 targetUnit);
 
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Skill.Trim().ToLower(),
-                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.Skill.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
 
             _timerManager.AddTimer(
                 x =>
@@ -556,7 +587,7 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
@@ -564,7 +595,7 @@ namespace Loom.ZombieBattleground
                     {
                         ActionEffectType = Enumerators.ActionEffectType.Push,
                         Target = target
-        }
+                    }
                 }
             });
         }
@@ -575,11 +606,14 @@ namespace Loom.ZombieBattleground
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/DrawCardVFX"),
                 owner);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
-                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.OverlordSkill.ToString().ToLower(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                {
+            {
                 ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
@@ -588,7 +622,10 @@ namespace Loom.ZombieBattleground
 
         private void WindShieldAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            List<BoardUnitView> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.AIR), skill.Value);
+            List<BoardUnitView> units =
+                InternalTools.GetRandomElementsFromList(
+                    owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.AIR),
+                    skill.Value);
 
             foreach (BoardUnitView unit in units)
             {
@@ -597,7 +634,7 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
@@ -608,15 +645,31 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
-        } 
+        }
 
         private void Levitate(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            _cardsController.LowGooCostOfCardInHand(owner, null, skill.Value);
+            WorkingCard card = _cardsController.LowGooCostOfCardInHand(owner, null, skill.Value);
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                Caller = boardSkill,
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.LowGooCost,
+                        Target = card
+                    }
+                }
+            });
         }
 
         private void RetreatAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<BoardUnitView> units = new List<BoardUnitView>();
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
@@ -626,7 +679,20 @@ namespace Loom.ZombieBattleground
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unit); // retreat vfx
 
                 _cardsController.ReturnCardToHand(unit);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ReturnToHand,
+                    Target = unit
+                });
             }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         // TOXIC
@@ -641,9 +707,25 @@ namespace Loom.ZombieBattleground
                 unit.CurrentDamage += skill.Attack;
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX"), unit);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicAttackVFX"),
+                    unit);
+
                 //_soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Skill.Trim().ToLower(),
                 //  Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                    Caller = boardSkill,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.AttackBuff,
+                            Target = target
+                        }
+                    }
+                });
             }
         }
 
@@ -651,19 +733,23 @@ namespace Loom.ZombieBattleground
         {
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
             _vfxController.CreateVfx(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"), target);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower() + "_Impact",
-                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
+                target);
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.OverlordSkill.ToString().ToLower() + "_Impact",
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.None;
+            Enumerators.ActionType actionType;
 
             switch (target)
             {
                 case Player _:
-                    actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
                     break;
                 case BoardUnitModel _:
-                    actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -686,6 +772,8 @@ namespace Loom.ZombieBattleground
 
         private void BreakoutAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<object> targets = new List<object>();
 
             Player opponent = _gameplayManager.GetOpponentByPlayer(owner);
@@ -700,23 +788,26 @@ namespace Loom.ZombieBattleground
                 AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"), target);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower() + "_Impact",
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
+                    target);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.Title.Trim().ToLower() + "_Impact",
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                    Target = targetObject
+                });
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCardsWithOverlord,
                 Caller = boardSkill,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                        Target = target
-        }
-                }
+                TargetEffects = TargetEffects
             });
         }
 
@@ -741,17 +832,34 @@ namespace Loom.ZombieBattleground
             unit = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
 
             _battleController.AttackUnitBySkill(owner, boardSkill, unit.Model, 0);
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                Caller = boardSkill,
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = target
+                    }
+                }
+            });
         }
 
         private void EpidemicAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
 
             if (units.Count == 0)
                 return;
 
             units = InternalTools.GetRandomElementsFromList(units, skill.Count);
-            List<BoardUnitView> opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
+            List<BoardUnitView> opponentUnits =
+                InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
 
             int unitAtk = 0;
 
@@ -762,15 +870,34 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.DestroyBoardUnit(units[i].Model);
 
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                    Target = units[i]
+                });
+
                 if (opponentUnits.Count > 0)
                 {
                     opponentUnitView = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
 
                     _battleController.AttackUnitBySkill(owner, boardSkill, opponentUnitView.Model, 0);
 
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = opponentUnitView
+                    });
+
                     opponentUnits.Remove(opponentUnitView);
                 }
             }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         // LIFE
@@ -782,9 +909,13 @@ namespace Loom.ZombieBattleground
                 _battleController.HealPlayerBySkill(owner, boardSkill, player);
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), player);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"),
+                    player);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
             }
             else
             {
@@ -793,14 +924,18 @@ namespace Loom.ZombieBattleground
                 _battleController.HealUnitBySkill(owner, boardSkill, unit);
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"),
+                    unit);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
@@ -808,7 +943,7 @@ namespace Loom.ZombieBattleground
                     {
                         ActionEffectType = Enumerators.ActionEffectType.Feral,
                         Target = target
-        }
+                    }
                 }
             });
         }
@@ -822,8 +957,11 @@ namespace Loom.ZombieBattleground
             transform.position = owner.AvatarObject.transform.position;
             transform.position += Vector3.up * 2;
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"), transform);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
-                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.OverlordSkill.ToString().ToLower(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -835,18 +973,37 @@ namespace Loom.ZombieBattleground
 
         private void RessurectAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
-                                                                      && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
-                                                                      && x.RealCost == skill.Value);
+                && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                && x.RealCost == skill.Value);
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
             foreach (WorkingCard card in cards)
+            {
                 _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.None,
+                    Target = target
+                });
+            }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         private void EnhanceAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<object> targets = new List<object>();
 
             targets.Add(owner);
@@ -865,45 +1022,87 @@ namespace Loom.ZombieBattleground
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.LifeGain,
+                    Target = targetObject
+                });
             }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCardsWithOverlord,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         private void ReanimateAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
-                                                                       && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
             foreach (WorkingCard card in cards)
+            {
                 _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Reanimate,
+                    Target = target
+                });
+            }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         // WATER
 
         private void FreezeAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            Enumerators.ActionType actionType;
+
             switch (target)
             {
                 case BoardUnitModel unit:
                     unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
                     _vfxController.CreateVfx(
-                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), unit);
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"),
+                        unit);
 
-                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES,
-                        skill.OverlordSkill.ToString().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume,
+                    _soundManager.PlaySound(
+                        Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skill.OverlordSkill.ToString().ToLower() + "_Impact",
+                        Constants.OverlordAbilitySoundVolume,
                         Enumerators.CardSoundType.NONE);
+
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
 
                     break;
                 case Player player:
                     player.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
                     _vfxController.CreateVfx(
-                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), player);
-                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES,
-                        skill.OverlordSkill.ToString().ToLower() + "_Impact", Constants.OverlordAbilitySoundVolume,
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"),
+                        player);
+                    _soundManager.PlaySound(
+                        Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skill.OverlordSkill.ToString().ToLower() + "_Impact",
+                        Constants.OverlordAbilitySoundVolume,
                         Enumerators.CardSoundType.NONE);
+
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
 
                     break;
                 default:
@@ -912,15 +1111,15 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
+                ActionType = actionType,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                        ActionEffectType = Enumerators.ActionEffectType.Freeze,
                         Target = target
-        }
+                    }
                 }
             });
         }
@@ -937,14 +1136,18 @@ namespace Loom.ZombieBattleground
                 }
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBolt_Impact"), unit);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower() + "_Impact",
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBolt_Impact"),
+                    unit);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLower() + "_Impact",
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
@@ -952,28 +1155,54 @@ namespace Loom.ZombieBattleground
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = target
-        }
+                    },
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                        Target = target
+                    }
                 }
             });
         }
 
         private void IceWallAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            Enumerators.ActionType actionType;
+
             switch (target)
             {
                 case BoardUnitModel unit:
                     unit.BuffedHp += skill.Value;
                     unit.CurrentHp += skill.Value;
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                     break;
                 case Player player:
                     _battleController.HealPlayerBySkill(owner, boardSkill, player);
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
-                                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.Title.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = actionType,
+                Caller = boardSkill,
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        Target = target
+                    }
+                }
+            });
         }
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
@@ -985,7 +1214,7 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
@@ -993,13 +1222,15 @@ namespace Loom.ZombieBattleground
                     {
                         ActionEffectType = Enumerators.ActionEffectType.DeathMark,
                         Target = target
-        }
+                    }
                 }
             });
         }
 
         private void BlizzardAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<BoardUnitView> units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
             units = InternalTools.GetRandomElementsFromList(units, skill.Count);
 
@@ -1008,10 +1239,26 @@ namespace Loom.ZombieBattleground
                 unit.Model.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                    Target = unit
+                });
             }
 
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
-                                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.Title.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         // FIRE
@@ -1026,15 +1273,15 @@ namespace Loom.ZombieBattleground
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.None;
+            Enumerators.ActionType actionType;
 
             switch (target)
             {
                 case Player _:
-                    actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
                     break;
                 case BoardUnitModel _:
-                    actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -1062,9 +1309,27 @@ namespace Loom.ZombieBattleground
                 unit.SetAsFeralUnit();
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"),
+                    unit);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
+
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                    Caller = boardSkill,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Feral,
+                            Target = target
+                        }
+                    }
+                });
             }
         }
 
@@ -1073,19 +1338,21 @@ namespace Loom.ZombieBattleground
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX"), target); // vfx Fireball
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.Title.Trim().ToLower(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
 
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
-                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-
-            Enumerators.ActionType actionType = Enumerators.ActionType.None;
+            Enumerators.ActionType actionType;
 
             switch (target)
             {
                 case Player _:
-                    actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
                     break;
                 case BoardUnitModel _:
-                    actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                    actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -1108,6 +1375,8 @@ namespace Loom.ZombieBattleground
 
         private void MassRabiesAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<BoardUnitView> units = InternalTools.GetRandomElementsFromList(owner.BoardCards, skill.Value);
 
             foreach (BoardUnitView unit in units)
@@ -1115,14 +1384,33 @@ namespace Loom.ZombieBattleground
                 unit.Model.SetAsFeralUnit();
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"), unit);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"),
+                    unit);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Feral,
+                    Target = unit
+                });
             }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         private void MeteorShowerAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<BoardUnitView> units = new List<BoardUnitView>();
 
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
@@ -1134,9 +1422,25 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX"), unit); // meteor
 
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                    Target = unit
+                });
             }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         // EARTH
@@ -1154,24 +1458,28 @@ namespace Loom.ZombieBattleground
                 transform.position -= Vector3.up * 3.3f;
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform);
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-            }
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"),
+                    transform);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
-                Caller = boardSkill,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
-                    new PastActionsPopup.TargetEffectParam()
+                    ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                    Caller = boardSkill,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                        Target = target
-        }
-                }
-            });
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                            Target = target
+                        }
+                    }
+                });
+            }
         }
 
         private void HardenAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
@@ -1202,27 +1510,32 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortifyVFX"), unit);
 
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-            }
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = Enumerators.ActionType.UweOverlordPowerOnCard,
-                Caller = boardSkill,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
-                    new PastActionsPopup.TargetEffectParam()
+                    ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                    Caller = boardSkill,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.Heavy,
-                        Target = target
-        }
-                }
-            });
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Heavy,
+                            Target = target
+                        }
+                    }
+                });
+            }
         }
 
         private void PhalanxAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH);
 
             Transform transform;
@@ -1237,22 +1550,58 @@ namespace Loom.ZombieBattleground
                 transform.position -= Vector3.up * 3.3f;
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"), transform); // vfx phalanx
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
-                    Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"),
+                    transform); // vfx phalanx
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                    Target = unit
+                });
             }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         private void FortressAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            List<BoardUnitView> units = InternalTools.GetRandomElementsFromList(owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH), skill.Count);
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach(BoardUnitView unit in units)
+            List<BoardUnitView> units =
+                InternalTools.GetRandomElementsFromList(
+                    owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH),
+                    skill.Count);
+
+            foreach (BoardUnitView unit in units)
             {
                 unit.Model.SetAsHeavyUnit();
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Heavy,
+                    Target = unit
+                });
             }
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                Caller = boardSkill,
+                TargetEffects = TargetEffects
+            });
         }
 
         #endregion
+
     }
 }
