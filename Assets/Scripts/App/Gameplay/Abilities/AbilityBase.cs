@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public WorkingCard MainWorkingCard;
 
-        public BoardUnitView AbilityUnitViewOwner;
+        public BoardUnitModel AbilityUnitOwner;
 
         public Player PlayerCallerOfAbility;
 
@@ -126,18 +126,20 @@ namespace Loom.ZombieBattleground
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
 
+            BoardUnitView abilityUnitOwnerView = GetAbilityUnitOwnerView();
+
             TargettingArrow =
                 Object
                 .Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object"))
                 .AddComponent<AbilityBoardArrow>();
             TargettingArrow.PossibleTargets = AbilityTargetTypes;
-            TargettingArrow.SelfBoardCreature = AbilityUnitViewOwner;
+            TargettingArrow.SelfBoardCreature = abilityUnitOwnerView;
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
 
             if (CardKind == Enumerators.CardKind.CREATURE)
             {
-                TargettingArrow.Begin(AbilityUnitViewOwner.Transform.position);
+                TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
             }
             else if (CardKind == Enumerators.CardKind.SPELL)
             {
@@ -177,12 +179,12 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
 
-            if (CardKind == Enumerators.CardKind.CREATURE && AbilityUnitViewOwner != null)
+            if (CardKind == Enumerators.CardKind.CREATURE && AbilityUnitOwner != null)
             {
-                AbilityUnitViewOwner.Model.UnitDied += UnitDiedHandler;
-                AbilityUnitViewOwner.Model.UnitAttacked += UnitAttackedHandler;
-                AbilityUnitViewOwner.Model.UnitHpChanged += UnitHpChangedHandler;
-                AbilityUnitViewOwner.Model.UnitDamaged += UnitDamagedHandler;
+                AbilityUnitOwner.UnitDied += UnitDiedHandler;
+                AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
+                AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
+                AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
             }
             else if (CardKind == Enumerators.CardKind.SPELL && BoardSpell != null)
             {
@@ -331,10 +333,10 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
-            AbilityUnitViewOwner.Model.UnitDied -= UnitDiedHandler;
-            AbilityUnitViewOwner.Model.UnitAttacked -= UnitAttackedHandler;
-            AbilityUnitViewOwner.Model.UnitHpChanged -= UnitHpChangedHandler;
-            AbilityUnitViewOwner.Model.UnitDamaged -= UnitDamagedHandler;
+            AbilityUnitOwner.UnitDied -= UnitDiedHandler;
+            AbilityUnitOwner.UnitAttacked -= UnitAttackedHandler;
+            AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
+            AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
 
             AbilitiesController.DeactivateAbility(ActivityId);
             Dispose();
@@ -367,7 +369,7 @@ namespace Loom.ZombieBattleground
 
         protected object GetCaller()
         {
-            return AbilityUnitViewOwner ?? (object) BoardSpell;
+            return AbilityUnitOwner ?? (object) BoardSpell;
         }
 
         protected Player GetOpponentOverlord()
@@ -375,6 +377,11 @@ namespace Loom.ZombieBattleground
             return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
+        }
+
+        protected BoardUnitView GetAbilityUnitOwnerView()
+        {
+            return BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
         }
 
         protected void InvokeActionTriggered(object info = null)

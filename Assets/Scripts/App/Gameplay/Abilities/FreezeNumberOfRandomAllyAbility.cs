@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             List<object> allies = new List<object>();
 
             allies.AddRange(PlayerCallerOfAbility.BoardCards);
-            allies.Remove(AbilityUnitViewOwner);
+            allies.Remove(AbilityUnitOwner);
             allies.Add(PlayerCallerOfAbility);
 
             allies = InternalTools.GetRandomElementsFromList(allies, Value);

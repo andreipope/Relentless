@@ -725,7 +725,7 @@ namespace Loom.ZombieBattleground
 
             int unitAtk = unit.Model.CurrentDamage;
 
-            _battlegroundController.DestroyBoardUnit(unit);
+            _battlegroundController.DestroyBoardUnit(unit.Model);
 
             var opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
 
@@ -754,7 +754,7 @@ namespace Loom.ZombieBattleground
             {
                 unitAtk = units[i].Model.CurrentDamage;
 
-                _battlegroundController.DestroyBoardUnit(units[i]);
+                _battlegroundController.DestroyBoardUnit(units[i].Model);
 
                 if (opponentUnits.Count > 0)
                 {
@@ -970,7 +970,7 @@ namespace Loom.ZombieBattleground
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            _battlegroundController.DestroyBoardUnit((BoardUnitView) target);
+            _battlegroundController.DestroyBoardUnit(((BoardUnitView) target).Model);
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

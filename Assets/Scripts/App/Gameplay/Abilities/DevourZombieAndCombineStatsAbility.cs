@@ -60,19 +60,19 @@ namespace Loom.ZombieBattleground
 
         private void DevourTargetZombie(BoardUnitView unit)
         {
-            if (unit.Equals(AbilityUnitViewOwner))
+            if (unit.Model == AbilityUnitOwner)
                 return;
 
             int health = unit.Model.InitialHp;
             int damage = unit.Model.InitialDamage;
 
-            BattlegroundController.DestroyBoardUnit(unit);
+            BattlegroundController.DestroyBoardUnit(unit.Model);
 
-            AbilityUnitViewOwner.Model.BuffedHp += health;
-            AbilityUnitViewOwner.Model.CurrentHp += health;
+            AbilityUnitOwner.BuffedHp += health;
+            AbilityUnitOwner.CurrentHp += health;
 
-            AbilityUnitViewOwner.Model.BuffedDamage += damage;
-            AbilityUnitViewOwner.Model.CurrentDamage += damage;
+            AbilityUnitOwner.BuffedDamage += damage;
+            AbilityUnitOwner.CurrentDamage += damage;
 
             CreateVfx(unit.Transform.position, true, 5f);
         }

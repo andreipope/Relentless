@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -28,7 +29,10 @@ namespace Loom.ZombieBattleground
             List<BoardUnitView> units = new List<BoardUnitView>();
             units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
-            units.Remove(AbilityUnitViewOwner);
+            units =
+                units
+                    .Where(x => x.Model != AbilityUnitOwner)
+                    .ToList();
 
             foreach (BoardUnitView unit in units)
             {

@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
                 TargetPlayer.AvatarObject.transform.position;
 
             VfxObject = Object.Instantiate(VfxObject);
-            VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitViewOwner.Transform.position);
+            VfxObject.transform.position = Utilites.CastVfxPosition(GetAbilityUnitOwnerView().Transform.position);
             targetPosition = Utilites.CastVfxPosition(targetPosition);
             VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
             ulong id = ParticlesController.RegisterParticleSystem(VfxObject, autoDestroy, duration);
@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {

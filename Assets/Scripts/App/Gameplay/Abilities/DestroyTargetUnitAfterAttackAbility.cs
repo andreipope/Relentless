@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitView unit = (BoardUnitView) info;
+            BoardUnitModel unit = (BoardUnitModel) info;
 
             BattlegroundController.DestroyBoardUnit(unit);
         }

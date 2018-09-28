@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (kind == Enumerators.CardKind.CREATURE)
                         {
-                            activeAbility.Ability.AbilityUnitViewOwner = (BoardUnitView) boardObject;
+                            activeAbility.Ability.AbilityUnitOwner = (BoardUnitModel) boardObject;
                         }
                         else
                         {
@@ -816,6 +816,8 @@ namespace Loom.ZombieBattleground
                         break;
                     case Player player:
                         activeAbility.Ability.TargetPlayer = player;
+                        break;
+                    case null:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);

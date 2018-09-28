@@ -6,6 +6,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.View;
 
 namespace Loom.ZombieBattleground
 {
@@ -228,7 +229,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SpawnGotDamageEffect(object onObject, int count)
+        public void SpawnGotDamageEffect(IView onObject, int count)
         {
             Transform target = null;
 

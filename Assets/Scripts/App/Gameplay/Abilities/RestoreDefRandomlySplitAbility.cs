@@ -88,11 +88,11 @@ namespace Loom.ZombieBattleground
         {
             if(target is BoardUnitView unit)
             {
-                BattleController.HealUnitByAbility(AbilityUnitViewOwner, AbilityData, unit.Model, defenseValue);
+                BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit.Model, defenseValue);
             }
             else if(target is Player player)
             {
-                BattleController.HealPlayerByAbility(AbilityUnitViewOwner, AbilityData, player, defenseValue);
+                BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
             }
         }
     }

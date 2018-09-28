@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
             if (SetType == Enumerators.SetType.NONE || SetType != Enumerators.SetType.NONE && PlayerCallerOfAbility
-                .BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType && x != AbilityUnitViewOwner).Count > 0)
+                .BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType && x.Model != AbilityUnitOwner).Count > 0)
             {
                 if (AbilityTargetTypes.Count > 0)
                 {

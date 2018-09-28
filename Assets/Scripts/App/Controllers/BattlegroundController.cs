@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
 
         public void KillBoardCard(BoardUnitModel cardToDestroyModel)
         {
-            BoardUnitView cardToDestroy = GetBoardUnitView(cardToDestroyModel);
+            BoardUnitView cardToDestroy = GetBoardUnitViewByModel(cardToDestroyModel);
             if (cardToDestroy == null)
                 return;
 
@@ -817,10 +817,11 @@ namespace Loom.ZombieBattleground
         /// </summary>
         /// <param name="boardUnitModel"></param>
         /// <returns></returns>
-        public BoardUnitView GetBoardUnitView(BoardUnitModel boardUnitModel)
+        public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
         {
             BoardUnitView cardToDestroy =
                 OpponentBoardCards
+                    .Concat(OpponentBoardCards)
                     .Concat(OpponentGraveyardCards)
                     .Concat(PlayerBoardCards)
                     .Concat(PlayerGraveyardCards)
@@ -847,11 +848,11 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnitView unit)
+        public void DestroyBoardUnit(BoardUnitModel unit)
         {
-            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit.Model);
+            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
 
-            unit?.Model.Die();
+            unit?.Die();
         }
 
         public void TakeControlUnit(Player to, BoardUnitView unit)

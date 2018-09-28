@@ -138,14 +138,7 @@ namespace Loom.ZombieBattleground
             _currentTime -= Time.deltaTime;
             if (_currentTime < 0)
             {
-                try
-                {
-                    Handler(Parameters);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError(ex.Message + " : " + ex.StackTrace);
-                }
+                Handler(Parameters);
 
                 if (_loop)
                 {

@@ -5,13 +5,14 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardCard
+    public class BoardCard : IView
     {
         public int CardsAmountDeckEditing;
 

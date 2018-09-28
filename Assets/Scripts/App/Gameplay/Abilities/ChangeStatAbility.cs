@@ -33,12 +33,12 @@ namespace Loom.ZombieBattleground
             switch (StatType)
             {
                 case Enumerators.StatType.HEALTH:
-                    AbilityUnitViewOwner.Model.BuffedHp += Value;
-                    AbilityUnitViewOwner.Model.CurrentHp += Value;
+                    AbilityUnitOwner.BuffedHp += Value;
+                    AbilityUnitOwner.CurrentHp += Value;
                     break;
                 case Enumerators.StatType.DAMAGE:
-                    AbilityUnitViewOwner.Model.BuffedDamage += Value;
-                    AbilityUnitViewOwner.Model.CurrentDamage += Value;
+                    AbilityUnitOwner.BuffedDamage += Value;
+                    AbilityUnitOwner.CurrentDamage += Value;
                     break;
             }
         }

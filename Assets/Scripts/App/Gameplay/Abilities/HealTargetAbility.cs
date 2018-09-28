@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {

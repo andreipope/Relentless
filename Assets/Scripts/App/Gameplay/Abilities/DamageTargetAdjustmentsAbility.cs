@@ -45,9 +45,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitView unit = (BoardUnitView) info;
+            BoardUnitModel unit = (BoardUnitModel) info;
 
-            Player playerOwner = unit.Model.OwnerPlayer;
+            Player playerOwner = unit.OwnerPlayer;
 
             BoardUnitView leftAdjustment = null, rightAdjastment = null;
 
@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
             List<BoardUnitView> list = null;
             for (int i = 0; i < playerOwner.BoardCards.Count; i++)
             {
-                if (playerOwner.BoardCards[i] == unit)
+                if (playerOwner.BoardCards[i].Model == unit)
                 {
                     targetIndex = i;
                     list = playerOwner.BoardCards;
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
         {
             base.InputEndedHandler();
 
-            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             if (IsAbilityResolved)
             {
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
         {
             Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE ?
-                AbilityUnitViewOwner.Transform.position :
+                GetAbilityUnitOwnerView().Transform.position :
                 SelectedPlayer.Transform.position;
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
