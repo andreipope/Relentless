@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -34,6 +35,20 @@ namespace Loom.ZombieBattleground
                 TargetUnitView.Model.BuffedDamage += Value;
 
                 CreateVfx(TargetUnitView.Transform.position, true, 5f);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.PlayCardFromHandOnCard,
+                    Caller = BoardSpell,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.AttackBuff,
+                            Target = TargetUnitView
+                        }
+                    }
+                });
             }
         }
 
@@ -69,6 +84,20 @@ namespace Loom.ZombieBattleground
                 BattleController.AttackUnitByAbility(TargetUnitView, AbilityData, TargetUnitView.Model, Damage);
 
                 CreateVfx(TargetUnitView.Transform.position, true, 5f);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.PlayCardFromHandOnCard,
+                    Caller = BoardSpell,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = TargetUnitView
+                        }
+                    }
+                });
             }
         }
 
