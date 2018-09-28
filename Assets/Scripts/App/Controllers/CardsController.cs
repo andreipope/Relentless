@@ -574,6 +574,8 @@ namespace Loom.ZombieBattleground
 
                             UpdateCardsStatusEvent?.Invoke(player);
 
+                            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
+
                             Sequence animationSequence = DOTween.Sequence();
                             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
                             animationSequence.OnComplete(
