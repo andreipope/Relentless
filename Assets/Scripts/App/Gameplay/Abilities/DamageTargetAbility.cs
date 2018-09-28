@@ -18,8 +18,6 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
         }
 
         public override void Update()
@@ -50,24 +48,33 @@ namespace Loom.ZombieBattleground
         protected override void CreateVfx(
             Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
         {
-            switch (AbilityEffectType)
+
+            // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
+            if (AbilityUnitViewOwner != null && AbilityUnitViewOwner.Model.Card.LibraryCard.Name == "Jetter")
             {
-                case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetFireAttack");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetFireAttack");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetLifeAttack");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_TOXIC:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetToxicAttack");
-                    break;
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
+            }
+            else
+            {
+                switch (AbilityEffectType)
+                {
+                    case Enumerators.AbilityEffectType.TARGET_ROCK:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/VFX/Spells/SpellTargetFireAttack");
+                        break;
+                    case Enumerators.AbilityEffectType.TARGET_FIRE:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/VFX/Spells/SpellTargetFireAttack");
+                        break;
+                    case Enumerators.AbilityEffectType.TARGET_LIFE:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/VFX/Spells/SpellTargetLifeAttack");
+                        break;
+                    case Enumerators.AbilityEffectType.TARGET_TOXIC:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/VFX/Spells/SpellTargetToxicAttack");
+                        break;
+                }
             }
 
             Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
@@ -104,20 +111,28 @@ namespace Loom.ZombieBattleground
 
             ClearParticles();
 
-            switch (AbilityEffectType)
+            // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
+            if (AbilityUnitViewOwner != null && AbilityUnitViewOwner.Model.Card.LibraryCard.Name == "Jetter")
             {
-                case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_TOXIC:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/IceBolt_Impact");
+            }
+            else
+            {
+                switch (AbilityEffectType)
+                {
+                    case Enumerators.AbilityEffectType.TARGET_ROCK:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                        break;
+                    case Enumerators.AbilityEffectType.TARGET_FIRE:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                        break;
+                    case Enumerators.AbilityEffectType.TARGET_LIFE:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                        break;
+                    case Enumerators.AbilityEffectType.TARGET_TOXIC:
+                        VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                        break;
+                }
             }
 
             if (VfxObject != null)
