@@ -80,8 +80,8 @@ namespace Loom.ZombieBattleground
             _settingsButton = Self.transform.Find("Button_Settings").GetComponent<ButtonShiftingContent>();
             _closeButton = Self.transform.Find("Button_Close").GetComponent<ButtonShiftingContent>();
 
-            _resolutionDropdown = videoGroup.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
-            _screenModeDropdown = videoGroup.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
+            _resolutionDropdown = Self.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
+            _screenModeDropdown = Self.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
 
             _sfxVolumeDropdown = Self.transform.Find("Slider_SFXVolume").GetComponent<Slider>();
             _musicVolumeDropdown = Self.transform.Find("Slider_MusicVolume").GetComponent<Slider>();
