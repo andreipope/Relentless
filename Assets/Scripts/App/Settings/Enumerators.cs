@@ -129,10 +129,10 @@ namespace Loom.ZombieBattleground.Common
             PlayCardFromHandOnOverlord,
             PlayCardFromHandOncardsWithOverlord,
             UseOverlordPower,
-            UweOverlordPowerOnCard,
-            UweOverlordPowerOnMultilpleCards,
-            UweOverlordPowerOnOverlord,
-            UweOverlordPowerOnCardsWithOverlord,
+            UseOverlordPowerOnCard,
+            UseOverlordPowerOnMultilpleCards,
+            UseOverlordPowerOnOverlord,
+            UseOverlordPowerOnCardsWithOverlord,
             CardAttackCard,
             CardAttackOverlord,
             CardAffectingCard,
@@ -466,7 +466,10 @@ namespace Loom.ZombieBattleground.Common
             Overflow,
             Freeze,
 
-            Push
+            Push,
+            Reanimate,
+            LowGooCost,
+            ReturnToHand
         }
         public enum ScreenMode
         {

@@ -724,7 +724,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void LowGooCostOfCardInHand(Player player, WorkingCard card = null, int value = 1)
+        public WorkingCard LowGooCostOfCardInHand(Player player, WorkingCard card = null, int value = 1)
         {
             if (card == null && player.CardsInHand.Count > 0)
             {
@@ -732,7 +732,7 @@ namespace Loom.ZombieBattleground
             }
 
             if (card == null)
-                return;
+                return card;
 
             if (player.IsLocalPlayer)
             {
@@ -744,6 +744,8 @@ namespace Loom.ZombieBattleground
             {
                 card.RealCost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
             }
+
+            return card;
         }
 
         public void SetGooCostOfCardInHand(Player player, WorkingCard card, int value, BoardCard boardCard = null)
