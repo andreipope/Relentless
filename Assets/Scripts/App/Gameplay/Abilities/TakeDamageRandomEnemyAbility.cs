@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -39,7 +41,7 @@ namespace Loom.ZombieBattleground
             _targets = InternalTools.GetRandomElementsFromList(_targets, 1);
 
             // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
-            if (AbilityUnitViewOwner != null && AbilityUnitViewOwner.Model.Card.LibraryCard.Name == "Zpitter")
+            if (AbilityUnitOwner != null && AbilityUnitOwner.Card.LibraryCard.Name == "Zpitter")
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
             }
@@ -61,10 +63,12 @@ namespace Loom.ZombieBattleground
                     case BoardUnitView unit:
                         targetPosition = unit.Transform.position;
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
                 VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitViewOwner.Transform.position);
+                VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
                 targetPosition = Utilites.CastVfxPosition(targetPosition);
                 VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => { ActionCompleted(targetObject, targetPosition); });
                 ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
@@ -79,7 +83,7 @@ namespace Loom.ZombieBattleground
             GameObject vfxObject = null;
 
             // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
-            if (AbilityUnitViewOwner != null && AbilityUnitViewOwner.Model.Card.LibraryCard.Name == "Zpitter")
+            if (AbilityUnitOwner != null && AbilityUnitOwner.Card.LibraryCard.Name == "Zpitter")
             {
                 vfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX");
             }
@@ -103,6 +107,8 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView allyUnit:
                     BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit.Model);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
         }
     }

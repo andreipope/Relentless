@@ -16,6 +16,8 @@ public class BoardArrow : MonoBehaviour
 
     protected InputController InputController;
 
+    protected BattlegroundController BattlegroundController;
+
     protected GameObject TargetObjectsGroup, RootObjectsGroup, ArrowObject, TargetColliderObject;
 
     protected bool StartedDrag;
@@ -117,6 +119,7 @@ public class BoardArrow : MonoBehaviour
         TutorialManager = GameClient.Get<ITutorialManager>();
         BoardArrowController = GameplayManager.GetController<BoardArrowController>();
         InputController = GameplayManager.GetController<InputController>();
+        BattlegroundController = GameplayManager.GetController<BattlegroundController>();
 
         _selfObject = gameObject;
 

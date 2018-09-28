@@ -346,7 +346,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume);
 
-            BoardCard card = param[0] as BoardCard;
+            BoardCard card = (BoardCard) param[0];
             GameObject go = card.GameObject;
 
             SortingGroup sortingGroup = card.GameObject.GetComponent<SortingGroup>();
@@ -413,7 +413,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume);
 
-            GameObject go = param[0] as GameObject;
+            GameObject go = (GameObject) param[0];
             SortingGroup sortingGroup = go.GetComponent<SortingGroup>();
 
             Sequence animationSequence3 = DOTween.Sequence();
@@ -574,6 +574,8 @@ namespace Loom.ZombieBattleground
 
                             UpdateCardsStatusEvent?.Invoke(player);
 
+                            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
+
                             Sequence animationSequence = DOTween.Sequence();
                             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
                             animationSequence.OnComplete(
@@ -593,7 +595,7 @@ namespace Loom.ZombieBattleground
                                                 () =>
                                                 {
                                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                                        Enumerators.CardKind.CREATURE, boardUnitView, CallCardPlay, true, null);
+                                                        Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, null);
                                                 });
                                         },
                                         null,
@@ -632,7 +634,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void PlayOpponentCard(
-            Player player, WorkingCard card, object target, Action<WorkingCard, object> completePlayCardCallback)
+            Player player, WorkingCard card, BoardObject target, Action<WorkingCard, BoardObject> completePlayCardCallback)
         {
             GameObject randomCard =
                 _battlegroundController.OpponentHandCards[
@@ -959,7 +961,7 @@ namespace Loom.ZombieBattleground
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
-            _abilitiesController.ResolveAllAbilitiesOnUnit(unit, true);
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model, true);
 
             if (!owner.IsLocalPlayer)
             {

@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitView : IFightSequenceHandler
+    public class BoardUnitView : IFightSequenceHandler, IView
     {
         private readonly IGameplayManager _gameplayManager;
 
@@ -538,7 +539,7 @@ namespace Loom.ZombieBattleground
 
         private void DestroyParticle(object[] param)
         {
-            GameObject particleObj = param[0] as GameObject;
+            GameObject particleObj = (GameObject) param[0];
             Object.Destroy(particleObj);
         }
 
@@ -706,7 +707,7 @@ namespace Loom.ZombieBattleground
 
         public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
-            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitView(targetCard);
+            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel(targetCard);
             _animationsController.DoFightAnimation(
                 GameObject,
                 targetCardView.Transform.gameObject,
