@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -41,16 +42,19 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < allies.Count; i++)
             {
+                object ally = allies[i];
                 switch (allies[i])
                 {
                     case Player allyPlayer:
                         BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
-                        CreateVfx((allies[i] as Player).AvatarObject.transform.position, true, 5f, true);
+                        CreateVfx(allyPlayer.AvatarObject.transform.position, true, 5f, true);
                         break;
                     case BoardUnitView allyUnit:
                         BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit.Model);
-                        CreateVfx((allies[i] as BoardUnitView).Transform.position, true, 5f);
+                        CreateVfx(allyUnit.Transform.position, true, 5f);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ally), ally, null);
                 }
             }
         }

@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            _card = data as Card;
+            _card = (Card) data;
             _description.text = _card.FlavorText;
 
             _amountAward.text = (5 * ((int) _card.CardRank + 1)).ToString();

@@ -413,7 +413,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new SpellBoardCard(go);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
 
             int amount = _collectionData.GetCardData(card.Name).Amount;
@@ -683,6 +683,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardRank.GENERAL:
                     maxCopies = Constants.CardGeneralMaxCopies;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             return maxCopies;

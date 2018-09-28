@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
@@ -65,6 +66,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.SetType.LIFE:
                     LifeRankBuff(units, rank);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(element), element, null);
             }
         }
 
@@ -87,6 +90,8 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
@@ -111,6 +116,8 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
@@ -135,6 +142,8 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
@@ -159,6 +168,8 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.DEFENCE);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);
@@ -183,6 +194,8 @@ namespace Loom.ZombieBattleground
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
             BuffRandomAlly(units, count, buffs);

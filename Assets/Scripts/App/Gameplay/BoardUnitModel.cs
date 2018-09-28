@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasUsedBuffShield;
 
-        public List<object> AttackedBoardObjectsThisTurn;
+        public List<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
 
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
-            AttackedBoardObjectsThisTurn = new List<object>();
+            AttackedBoardObjectsThisTurn = new List<BoardObject>();
 
             IsCreatedThisTurn = true;
 
@@ -84,9 +84,9 @@ namespace Loom.ZombieBattleground
 
         public event Action UnitDying;
 
-        public event Action<object, int, bool> UnitAttacked;
+        public event Action<BoardObject, int, bool> UnitAttacked;
 
-        public event Action<object> UnitDamaged;
+        public event Action<BoardObject> UnitDamaged;
 
         public event Action UnitHpChanged;
 
@@ -416,7 +416,7 @@ namespace Loom.ZombieBattleground
             CreaturePlayableForceSet?.Invoke();
         }
 
-        public void DoCombat(object target)
+        public void DoCombat(BoardObject target)
         {
             if (target == null)
             {
@@ -499,6 +499,8 @@ namespace Loom.ZombieBattleground
                                 );
                         });
                     break;
+                default:
+                    throw new NotSupportedException(target.GetType().ToString());
             }
         }
 
@@ -543,12 +545,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void InvokeUnitDamaged(object from)
+        public void InvokeUnitDamaged(BoardObject from)
         {
             UnitDamaged?.Invoke(from);
         }
 
-        public void InvokeUnitAttacked(object target, int damage, bool isAttacker)
+        public void InvokeUnitAttacked(BoardObject target, int damage, bool isAttacker)
         {
             UnitAttacked?.Invoke(target, damage, isAttacker);
         }
@@ -570,7 +572,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveUnitFromBoard()
         {
-            OwnerPlayer.BoardCards.Remove(_battlegroundController.GetBoardUnitView(this));
+            OwnerPlayer.BoardCards.Remove(_battlegroundController.GetBoardUnitViewByModel(this));
             OwnerPlayer.RemoveCardFromBoard(Card);
             OwnerPlayer.AddCardToGraveyard(Card);
 
