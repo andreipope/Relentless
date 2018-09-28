@@ -311,7 +311,7 @@ namespace Loom.ZombieBattleground
                         boardCard = new SpellBoardCard(go);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
                 }
 
                 int amount = cardData.Amount;

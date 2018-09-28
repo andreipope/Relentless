@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {
@@ -43,8 +43,10 @@ namespace Loom.ZombieBattleground
                     BattleController.HealPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    BattleController.HealUnitByAbility(caller, AbilityData, TargetUnitView.Model);
+                    BattleController.HealUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
         }
 

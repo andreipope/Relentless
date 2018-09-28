@@ -254,14 +254,14 @@ namespace Loom.ZombieBattleground
         {
             Player caller = _gameplayManager.GetPlayerById(model.CallerId);
             BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(caller, model.CardId);
-            object target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+            BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             Action callback = () =>
             {
                 attackerUnit.DoCombat(target);
             };
 
-            BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitView(attackerUnit);
+            BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel(attackerUnit);
             _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
         }
 
@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
             Card libraryCard = _dataManager.CachedCardsLibraryData.Cards.Find(card => card.Id == model.CardId);
             BoardObject boardObject = _battlegroundController.GetBoardObjectById(model.BoardObjectId);
-            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitView(boardObject as BoardUnitModel);
+            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) boardObject);
 
             Transform transform = model.CardKind == Enumerators.CardKind.SPELL ?
                                  _gameplayManager.OpponentPlayer.AvatarObject.transform : boardUnitView.Transform;
@@ -296,17 +296,20 @@ namespace Loom.ZombieBattleground
         {
             Player caller = _gameplayManager.GetPlayerById(model.CallerId);
             BoardSkill skill = _battlegroundController.GetSkillById(caller, model.SkillId);
-            object target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+            BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             Action callback = () =>
             {
-                if (model.AffectObjectType == Enumerators.AffectObjectType.PLAYER)
+                switch (model.AffectObjectType)
                 {
-                    skill.FightTargetingArrow.SelectedPlayer = target as Player;
-                }
-                else if (model.AffectObjectType == Enumerators.AffectObjectType.CHARACTER)
-                {
-                    skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitView(target as BoardUnitModel);
+                    case Enumerators.AffectObjectType.PLAYER:
+                        skill.FightTargetingArrow.SelectedPlayer = (Player) target;
+                        break;
+                    case Enumerators.AffectObjectType.CHARACTER:
+                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(model.AffectObjectType), model.AffectObjectType, null);
                 }
 
                 skill.EndDoSkill();

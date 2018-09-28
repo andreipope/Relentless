@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitViewOwner)
+                if (PlayerCallerOfAbility.BoardCards[i].Model == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
@@ -36,16 +36,16 @@ namespace Loom.ZombieBattleground
             {
                 if (targetIndex - 1 > -1)
                 {
-                    TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1]);
+                    TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1].Model);
                 }
 
                 if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
                 {
-                    TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1]);
+                    TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1].Model);
                 }
             }
 
-            TakeDamageToUnit(AbilityUnitViewOwner);
+            TakeDamageToUnit(AbilityUnitOwner);
         }
 
         protected override void TurnEndedHandler()
@@ -58,10 +58,10 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        private void TakeDamageToUnit(BoardUnitView unit)
+        private void TakeDamageToUnit(BoardUnitModel unit)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitViewOwner, AbilityData, unit.Model);
-            CreateVfx(unit.Transform.position, true, 5f);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position, true, 5f);
         }
     }
 }

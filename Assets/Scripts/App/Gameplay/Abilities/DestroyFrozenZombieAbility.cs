@@ -21,10 +21,10 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Vector3 targetPosition = TargetUnitView.Transform.position;
+                Vector3 targetPosition = BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position;
 
                 VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitViewOwner.Transform.position);
+                VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
                 targetPosition = Utilites.CastVfxPosition(targetPosition);
                 VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                 ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            TargetUnitView.Model.Die();
+            TargetUnit.Die();
 
             Vector3 targetPosition = VfxObject.transform.position;
 

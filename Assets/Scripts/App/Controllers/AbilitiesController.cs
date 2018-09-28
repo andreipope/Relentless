@@ -93,9 +93,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnitView unit)
+        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnitModel unit)
         {
-            return _activeAbilities.FindAll(x => x.Ability.TargetUnitView == unit).Select(y => y.Ability).ToList();
+            return _activeAbilities.FindAll(x => x.Ability.TargetUnit == unit).Select(y => y.Ability).ToList();
         }
 
         public ActiveAbility CreateActiveAbility(
@@ -123,19 +123,19 @@ namespace Loom.ZombieBattleground
 
                 if (boardObject != null)
                 {
-                    if (boardObject is BoardCard)
+                    if (boardObject is BoardCard card)
                     {
-                        activeAbility.Ability.BoardCard = boardObject as BoardCard;
+                        activeAbility.Ability.BoardCard = card;
                     }
                     else
                     {
                         if (kind == Enumerators.CardKind.CREATURE)
                         {
-                            activeAbility.Ability.AbilityUnitViewOwner = boardObject as BoardUnitView;
+                            activeAbility.Ability.AbilityUnitOwner = (BoardUnitModel) boardObject;
                         }
                         else
                         {
-                            activeAbility.Ability.BoardSpell = boardObject as BoardSpell;
+                            activeAbility.Ability.BoardSpell = (BoardSpell) boardObject;
                         }
                     }
                 }
@@ -223,6 +223,8 @@ namespace Loom.ZombieBattleground
                         case Enumerators.AbilityTargetType.ALL:
                             available = true;
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(item), item, null);
                     }
                 }
             }
@@ -305,6 +307,8 @@ namespace Loom.ZombieBattleground
 
                         break;
                     }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
 
@@ -347,6 +351,8 @@ namespace Loom.ZombieBattleground
 
                         break;
                     }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
 
@@ -358,11 +364,11 @@ namespace Loom.ZombieBattleground
             BoardCard card,
             WorkingCard workingCard,
             Enumerators.CardKind kind,
-            object boardObject,
+            BoardObject boardObject,
             Action<BoardCard> action,
             bool isPlayer,
             Action onCompleteCallback,
-            object target = null,
+            BoardObject target = null,
             HandBoardCard handCard = null)
         {
             ResolveAllAbilitiesOnUnit(boardObject, false);
@@ -372,8 +378,7 @@ namespace Loom.ZombieBattleground
             foreach (AbilityData item in libraryCard.Abilities)
             {
                 // todo improve it bcoz can have queue of abilities with targets
-                activeAbility =
-                    CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
+                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
 
                 if (IsAbilityCanActivateTargetAtStart(item))
                 {
@@ -505,12 +510,16 @@ namespace Loom.ZombieBattleground
                     {
                         switch (target)
                         {
-                            case BoardUnitView unit:
-                                activeAbility.Ability.TargetUnitView = unit;
+                            case BoardUnitModel unit:
+                                activeAbility.Ability.TargetUnit = unit;
                                 break;
                             case Player player:
                                 activeAbility.Ability.TargetPlayer = player;
                                 break;
+                            case null:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(target), target, null);
                         }
 
                         activeAbility.Ability.SelectedTargetAction(true);
@@ -736,15 +745,17 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.RESTORE_DEF_RANDOMLY_SPLIT:
                     ability = new RestoreDefRandomlySplitAbility(cardKind, abilityData);
-                    break;       
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
         }
 
-        public void ResolveAllAbilitiesOnUnit(object boardObject, bool status = true)
+        public void ResolveAllAbilitiesOnUnit(BoardObject boardObject, bool status = true)
         {
-            if (boardObject is BoardUnitView unit)
+            if (boardObject is BoardUnitModel unit)
             {
-                unit.Model.IsAllAbilitiesResolvedAtStart = status;
+                unit.IsAllAbilitiesResolvedAtStart = status;
             }
 
             _gameplayManager.CanDoDragActions = status;
@@ -754,7 +765,7 @@ namespace Loom.ZombieBattleground
             bool isPlayer,
             Action<BoardCard> action,
             BoardCard card,
-            object target,
+            BoardObject target,
             ActiveAbility activeAbility,
             Enumerators.CardKind kind)
         {
@@ -802,12 +813,16 @@ namespace Loom.ZombieBattleground
 
                 switch (target)
                 {
-                    case BoardUnitView unit:
-                        activeAbility.Ability.TargetUnitView = unit;
+                    case BoardUnitModel unit:
+                        activeAbility.Ability.TargetUnit = unit;
                         break;
                     case Player player:
                         activeAbility.Ability.TargetPlayer = player;
                         break;
+                    case null:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
                 activeAbility.Ability.SelectedTargetAction(true);
