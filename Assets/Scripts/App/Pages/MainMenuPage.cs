@@ -88,7 +88,10 @@ namespace Loom.ZombieBattleground
                 _playerManager.LocalUser.PacksCount.ToString() :
                 "99";
 
-            _logoAnimator.SetBool("LogoShow", true);
+            if (_logoAnimator.gameObject.activeInHierarchy)
+            {
+                _logoAnimator.SetBool("LogoShow", true);
+            }
 
             _buttonMusic.SetStatus(!_soundManager.MusicMuted);
             _buttonSfx.SetStatus(!_soundManager.SfxMuted);

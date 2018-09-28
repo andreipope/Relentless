@@ -723,8 +723,6 @@ namespace Loom.ZombieBattleground
                             needsToSelectTarget = true;
                             abilitiesWithTarget.Add(ability);
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(item), item, null);
                     }
                 }
             }
@@ -822,7 +820,7 @@ namespace Loom.ZombieBattleground
                 return target; // hack to handle only one ability
             }
 
-            return target;
+            return null;
         }
 
         private void CheckAndAddTargets(AbilityData ability, ref BoardObject target)

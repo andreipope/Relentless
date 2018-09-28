@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < opponent.BoardCards.Count; i++)
             {
-                if (opponent.BoardCards[i] == TargetUnitView)
+                if (opponent.BoardCards[i].Model == TargetUnit)
                 {
                     targetIndex = i;
                     break;

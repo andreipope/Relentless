@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
             CreateVfx(GetAbilityUnitOwnerView().Transform.position, true);
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 

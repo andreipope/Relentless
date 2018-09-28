@@ -855,7 +855,7 @@ namespace Loom.ZombieBattleground
             unit?.Die();
         }
 
-        public void TakeControlUnit(Player to, BoardUnitView unit)
+        public void TakeControlUnit(Player to, BoardUnitModel unit)
         {
             // implement functionality of the take control
         }

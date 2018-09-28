@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Loom.ZombieBattleground.Common;
@@ -136,17 +137,19 @@ namespace Loom.ZombieBattleground
         {
             if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKeyUp(KeyCode.Return))
             {
-                if (Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+                switch (Screen.fullScreenMode)
                 {
-                    SetScreenMode(Enumerators.ScreenMode.FullScreen);
-                }
-                else if (Screen.fullScreenMode == FullScreenMode.MaximizedWindow)
-                {
-                    SetScreenMode(Enumerators.ScreenMode.Window);
-                }
-                else if(Screen.fullScreenMode == FullScreenMode.Windowed)
-                {
-                    SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
+                    case FullScreenMode.FullScreenWindow:
+                        SetScreenMode(Enumerators.ScreenMode.FullScreen);
+                        break;
+                    case FullScreenMode.MaximizedWindow:
+                        SetScreenMode(Enumerators.ScreenMode.Window);
+                        break;
+                    case FullScreenMode.Windowed:
+                        SetScreenMode(Enumerators.ScreenMode.BorderlessWindow);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(Screen.fullScreenMode), Screen.fullScreenMode, null);
                 }
             }
         }

@@ -300,13 +300,16 @@ namespace Loom.ZombieBattleground
 
             Action callback = () =>
             {
-                if (model.AffectObjectType == Enumerators.AffectObjectType.PLAYER)
+                switch (model.AffectObjectType)
                 {
-                    skill.FightTargetingArrow.SelectedPlayer = (Player) target;
-                }
-                else if (model.AffectObjectType == Enumerators.AffectObjectType.CHARACTER)
-                {
-                    skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
+                    case Enumerators.AffectObjectType.PLAYER:
+                        skill.FightTargetingArrow.SelectedPlayer = (Player) target;
+                        break;
+                    case Enumerators.AffectObjectType.CHARACTER:
+                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(model.AffectObjectType), model.AffectObjectType, null);
                 }
 
                 skill.EndDoSkill();
