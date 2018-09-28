@@ -478,15 +478,6 @@ namespace Loom.ZombieBattleground.Common
             BorderlessWindow
         }
 
-        public enum QualityLevel
-        {
-            Ultra,
-            High,
-            Medium,
-            Low
-        }
-
-
         public enum PlayerAction
         {
             DrawCard,

@@ -9,16 +9,15 @@ namespace Loom.ZombieBattleground
     {
         List<ResolutionInfo> Resolutions { get; }
 
-        Enumerators.QualityLevel CurrentQualityLevel { get; }
-
         Enumerators.ScreenMode CurrentScreenMode { get; }
 
         ResolutionInfo CurrentResolution { get; }
 
         void SetDefaults();
         void ApplySettings();
+#if !UNITY_ANDROID && !UNITY_IOS
         void SetResolution(ResolutionInfo info);
         void SetScreenMode(Enumerators.ScreenMode screenMode);
-        void SetQuality(Enumerators.QualityLevel qualityLevel);
+#endif
     }
 }

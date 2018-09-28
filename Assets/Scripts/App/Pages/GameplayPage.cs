@@ -160,16 +160,13 @@ namespace Loom.ZombieBattleground
                 _zippingVfx.SetActive(false);
             }
 
-            if(Application.isMobilePlatform)
-            {
-                _buttonBack.gameObject.SetActive(true);
-                _settingsButton.gameObject.SetActive(false);
-            }
-            else
-            {
-                _settingsButton.gameObject.SetActive(true);
-                _buttonBack.gameObject.SetActive(false);
-            }
+#if !UNITY_ANDROID && !UNITY_IOS
+            _settingsButton.gameObject.SetActive(true);
+            _buttonBack.gameObject.SetActive(false);
+#else
+            _buttonBack.gameObject.SetActive(true);
+            _settingsButton.gameObject.SetActive(false);
+#endif
 
             if (_gameplayManager.IsTutorial)
             {
