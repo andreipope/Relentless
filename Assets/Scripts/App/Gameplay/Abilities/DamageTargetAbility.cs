@@ -72,8 +72,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
-                TargetUnitView.Transform.position :
+            Vector3 targetPosition =
+                AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
+                BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position :
                 TargetPlayer.AvatarObject.transform.position;
 
             VfxObject = Object.Instantiate(VfxObject);
@@ -98,7 +99,7 @@ namespace Loom.ZombieBattleground
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnitView.Model);
+                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);

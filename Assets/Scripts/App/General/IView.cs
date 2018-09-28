@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Loom.ZombieBattleground.View
 {
     /// <summary>
@@ -5,5 +7,6 @@ namespace Loom.ZombieBattleground.View
     /// </summary>
     public interface IView
     {
+        Transform Transform { get; }
     }
 }

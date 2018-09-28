@@ -3,6 +3,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.View;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -216,7 +217,7 @@ namespace Loom.ZombieBattleground
                         targetUnitView,
                         async (x) =>
                         {
-                            DoActionByType(skill, targetUnitView);
+                            DoActionByType(skill, targetUnitView.Model);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
 
                             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
@@ -379,8 +380,9 @@ namespace Loom.ZombieBattleground
             return soundFileName;
         }
 
-        private void DoActionByType(BoardSkill skill, object target)
+        private void DoActionByType(BoardSkill skill, BoardObject target)
         {
+            Debug.Log(target);
             switch (skill.Skill.OverlordSkill)
             {
                 case Enumerators.OverlordSkill.FREEZE:
@@ -654,13 +656,16 @@ namespace Loom.ZombieBattleground
 
             Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
-            if(target is Player)
+            switch (target)
             {
-                actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
-        }
-            else if(target is BoardUnitModel)
-            {
-                actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                case Player _:
+                    actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
+                    break;
+                case BoardUnitModel _:
+                    actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -954,14 +959,17 @@ namespace Loom.ZombieBattleground
 
         private void IceWallAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
-            if (target is BoardUnitView unit)
+            switch (target)
             {
-                unit.Model.BuffedHp += skill.Value;
-                unit.Model.CurrentHp += skill.Value;
-            }
-            else if (target is Player player)
-            {
-                _battleController.HealPlayerBySkill(owner, boardSkill, player);
+                case BoardUnitView unit:
+                    unit.Model.BuffedHp += skill.Value;
+                    unit.Model.CurrentHp += skill.Value;
+                    break;
+                case Player player:
+                    _battleController.HealPlayerBySkill(owner, boardSkill, player);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Title.Trim().ToLower(),
@@ -1008,20 +1016,25 @@ namespace Loom.ZombieBattleground
         private void FireBoltAction(Player owner, BoardSkill boardSkill, HeroSkill skill, object target)
         {
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX"),
-                target);
-            _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.OverlordSkill.ToString().ToLower() + "_Impact",
-                Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX"), target);
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.OverlordSkill.ToString().ToLower() + "_Impact",
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
 
             Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
-            if (target is Player)
+            switch (target)
             {
-                actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
-        }
-            else if (target is BoardUnitModel)
-            {
-                actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                case Player _:
+                    actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
+                    break;
+                case BoardUnitModel _:
+                    actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1063,13 +1076,16 @@ namespace Loom.ZombieBattleground
 
             Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
-            if (target is Player)
+            switch (target)
             {
-                actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
-        }
-            else if (target is BoardUnitModel)
-            {
-                actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                case Player _:
+                    actionType = Enumerators.ActionType.UweOverlordPowerOnOverlord;
+                    break;
+                case BoardUnitModel _:
+                    actionType = Enumerators.ActionType.UweOverlordPowerOnCard;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()

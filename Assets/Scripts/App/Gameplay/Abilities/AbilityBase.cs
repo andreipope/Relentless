@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
 
         public BoardCard BoardCard;
 
-        public BoardUnitView TargetUnitView;
+        public BoardUnitModel TargetUnit;
 
         public Player TargetPlayer;
 
@@ -137,17 +137,17 @@ namespace Loom.ZombieBattleground
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
 
-            if (CardKind == Enumerators.CardKind.CREATURE)
+            switch (CardKind)
             {
-                TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
-            }
-            else if (CardKind == Enumerators.CardKind.SPELL)
-            {
-                TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position); // (boardSpell.transform.position);
-            }
-            else
-            {
-                TargettingArrow.Begin(PlayerCallerOfAbility.AvatarObject.transform.position);
+                case Enumerators.CardKind.CREATURE:
+                    TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position);
+                    break;
+                default:
+                    TargettingArrow.Begin(PlayerCallerOfAbility.AvatarObject.transform.position);
+                    break;
             }
 
             TargettingArrow.CardSelected += CardSelectedHandler;
@@ -179,26 +179,30 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
 
-            if (CardKind == Enumerators.CardKind.CREATURE && AbilityUnitOwner != null)
+            switch (CardKind)
             {
-                AbilityUnitOwner.UnitDied += UnitDiedHandler;
-                AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
-                AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
-                AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
-            }
-            else if (CardKind == Enumerators.CardKind.SPELL && BoardSpell != null)
-            {
-                BoardSpell.Used += UsedHandler;
+                case Enumerators.CardKind.CREATURE:
+                    if (AbilityUnitOwner != null)
+                    {
+                        AbilityUnitOwner.UnitDied += UnitDiedHandler;
+                        AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
+                        AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
+                        AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
+                    }
+
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    if (BoardSpell != null)
+                    {
+                        BoardSpell.Used += UsedHandler;
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(CardKind), CardKind, null);
             }
 
-            if (PlayerCallerOfAbility.IsLocalPlayer)
-            {
-                SelectedPlayer = _playerAvatar;
-            }
-            else
-            {
-                SelectedPlayer = _opponenentAvatar;
-            }
+            SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponenentAvatar;
         }
 
         public virtual void Update()
@@ -224,7 +228,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (TargetUnitView != null)
+            if (TargetUnit != null)
             {
                 AffectObjectType = Enumerators.AffectObjectType.CHARACTER;
             }
@@ -257,21 +261,21 @@ namespace Loom.ZombieBattleground
 
         protected virtual void CardSelectedHandler(BoardUnitView obj)
         {
-            TargetUnitView = obj;
+            TargetUnit = obj.Model;
 
             TargetPlayer = null;
         }
 
         protected virtual void CardUnselectedHandler(BoardUnitView obj)
         {
-            TargetUnitView = null;
+            TargetUnit = null;
         }
 
         protected virtual void PlayerSelectedHandler(Player obj)
         {
             TargetPlayer = obj;
 
-            TargetUnitView = null;
+            TargetUnit = null;
         }
 
         protected virtual void PlayerUnselectedHandler(Player obj)

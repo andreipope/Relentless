@@ -93,9 +93,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnitView unit)
+        public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnitModel unit)
         {
-            return _activeAbilities.FindAll(x => x.Ability.TargetUnitView == unit).Select(y => y.Ability).ToList();
+            return _activeAbilities.FindAll(x => x.Ability.TargetUnit == unit).Select(y => y.Ability).ToList();
         }
 
         public ActiveAbility CreateActiveAbility(
@@ -368,7 +368,7 @@ namespace Loom.ZombieBattleground
             Action<BoardCard> action,
             bool isPlayer,
             Action onCompleteCallback,
-            object target = null,
+            BoardObject target = null,
             HandBoardCard handCard = null)
         {
             ResolveAllAbilitiesOnUnit(boardObject, false);
@@ -510,11 +510,13 @@ namespace Loom.ZombieBattleground
                     {
                         switch (target)
                         {
-                            case BoardUnitView unit:
-                                activeAbility.Ability.TargetUnitView = unit;
+                            case BoardUnitModel unit:
+                                activeAbility.Ability.TargetUnit = unit;
                                 break;
                             case Player player:
                                 activeAbility.Ability.TargetPlayer = player;
+                                break;
+                            case null:
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -763,7 +765,7 @@ namespace Loom.ZombieBattleground
             bool isPlayer,
             Action<BoardCard> action,
             BoardCard card,
-            object target,
+            BoardObject target,
             ActiveAbility activeAbility,
             Enumerators.CardKind kind)
         {
@@ -811,8 +813,8 @@ namespace Loom.ZombieBattleground
 
                 switch (target)
                 {
-                    case BoardUnitView unit:
-                        activeAbility.Ability.TargetUnitView = unit;
+                    case BoardUnitModel unit:
+                        activeAbility.Ability.TargetUnit = unit;
                         break;
                     case Player player:
                         activeAbility.Ability.TargetPlayer = player;

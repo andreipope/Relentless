@@ -109,13 +109,13 @@ namespace Loom.ZombieBattleground
                 switch (AffectObjectType)
                 {
                     case Enumerators.AffectObjectType.CHARACTER:
-                        Action(TargetUnitView);
+                        Action(TargetUnit);
                         CreateAndMoveParticle(
                             () =>
                             {
-                                BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnitView.Model);
+                                BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                             },
-                            TargetUnitView.Transform.position);
+                            BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
 
                         break;
                 }
@@ -145,29 +145,36 @@ namespace Loom.ZombieBattleground
                     () =>
                     {
                         callback();
-                        if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
+                        switch (AbilityEffectType)
                         {
-                            DestroyParticle(particleMain, true);
-                            GameObject prefab =
-                                LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                            GameObject particle = Object.Instantiate(prefab);
-                            particle.transform.position = Utilites.CastVfxPosition(targetPosition + Vector3.forward);
-                            ParticlesController.RegisterParticleSystem(particle, true);
+                            case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB:
+                            {
+                                DestroyParticle(particleMain, true);
+                                GameObject prefab =
+                                    LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                                GameObject particle = Object.Instantiate(prefab);
+                                particle.transform.position = Utilites.CastVfxPosition(targetPosition + Vector3.forward);
+                                ParticlesController.RegisterParticleSystem(particle, true);
 
-                            SoundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb",
-                                Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-                        }
-                        else if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR)
-                        {
-                            // one particle
-                            ParticleSystem.MainModule main = VfxObject.GetComponent<ParticleSystem>().main;
-                            main.loop = false;
+                                SoundManager.PlaySound(Enumerators.SoundType.SPELLS, "NailBomb",
+                                    Constants.SpellAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                                break;
+                            }
+                            case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR:
+                            {
+                                // one particle
+                                ParticleSystem.MainModule main = VfxObject.GetComponent<ParticleSystem>().main;
+                                main.loop = false;
+                                break;
+                            }
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(AbilityEffectType), AbilityEffectType, null);
                         }
                     });
             }
             else
             {
-                CreateVfx(Utilites.CastVfxPosition(TargetUnitView.Transform.position));
+                CreateVfx(Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position));
                 callback();
             }
 

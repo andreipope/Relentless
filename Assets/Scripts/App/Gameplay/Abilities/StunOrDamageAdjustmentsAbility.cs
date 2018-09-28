@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action(TargetUnitView);
+                Action(TargetUnit);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -72,30 +73,33 @@ namespace Loom.ZombieBattleground
         {
             Sprite sprite = null;
 
-            if (PastActionReport.Caller is Player player)
+            switch (PastActionReport.Caller)
             {
-                sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
-                                                                    player.SelfHero.HeroElement + "_EXP");
-            }
-            else if (PastActionReport.Caller is BoardUnitModel unit)
-            {
-                // FIXME
-                string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
-                string rank = unit.Card.LibraryCard.CardRank.ToString().ToLower();
-                string picture = unit.Card.LibraryCard.Picture.ToLower();
+                case Player player:
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
+                        player.SelfHero.HeroElement + "_EXP");
+                    break;
+                case BoardUnitModel unit:
+                {
+                    // FIXME
+                    string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
+                    string rank = unit.Card.LibraryCard.CardRank.ToString().ToLower();
+                    string picture = unit.Card.LibraryCard.Picture.ToLower();
 
-                string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
-                sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
-            }
-            else if (PastActionReport.Caller is BoardCard card)
-            {
-                sprite = card.PictureSprite.sprite;
-            }
-            else if (PastActionReport.Caller is BoardSkill skill)
-            {
-                sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
-                                                                    skill.OwnerPlayer.SelfHero.HeroElement + "_" +
-                                                                    skill.Skill.Skill.ToLower());
+                    string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
+                    break;
+                }
+                case BoardCard card:
+                    sprite = card.PictureSprite.sprite;
+                    break;
+                case BoardSkill skill:
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
+                        skill.OwnerPlayer.SelfHero.HeroElement + "_" +
+                        skill.Skill.Skill.ToLower());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(PastActionReport.Caller), PastActionReport.Caller, null);
             }
 
             return sprite;

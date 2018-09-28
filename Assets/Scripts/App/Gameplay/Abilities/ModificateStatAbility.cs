@@ -36,23 +36,23 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AffectObjectType.CHARACTER:
                 {
-                    if (TargetUnitView.Model.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
+                    if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                     {
                         switch (StatType)
                         {
                             case Enumerators.StatType.DAMAGE:
-                                TargetUnitView.Model.BuffedDamage += Value;
-                                TargetUnitView.Model.CurrentDamage += Value;
+                                TargetUnit.BuffedDamage += Value;
+                                TargetUnit.CurrentDamage += Value;
                                 break;
                             case Enumerators.StatType.HEALTH:
-                                TargetUnitView.Model.BuffedHp += Value;
-                                TargetUnitView.Model.CurrentHp += Value;
+                                TargetUnit.BuffedHp += Value;
+                                TargetUnit.CurrentHp += Value;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
                         }
 
-                        CreateVfx(TargetUnitView.Transform.position);
+                        CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
                     }
                 }
 

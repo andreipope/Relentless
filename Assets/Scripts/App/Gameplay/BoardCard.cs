@@ -571,7 +571,7 @@ namespace Loom.ZombieBattleground
             // right block info ------------------------------------
 
             // IMPROVE!!!
-            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit))
+            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.AbilityData.BuffType);
                 if (buffInfo != null)
