@@ -1,7 +1,9 @@
+using System;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -74,15 +76,15 @@ namespace Loom.ZombieBattleground
                         VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
                             "Prefabs/VFX/Spells/SpellTargetToxicAttack");
                         break;
-                }
             }
 
-            Vector3 targetPosition = AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
-                TargetUnitView.Transform.position :
+            Vector3 targetPosition =
+                AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
+                BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position :
                 TargetPlayer.AvatarObject.transform.position;
 
             VfxObject = Object.Instantiate(VfxObject);
-            VfxObject.transform.position = Utilites.CastVfxPosition(AbilityUnitViewOwner.Transform.position);
+            VfxObject.transform.position = Utilites.CastVfxPosition(GetAbilityUnitOwnerView().Transform.position);
             targetPosition = Utilites.CastVfxPosition(targetPosition);
             VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
             ulong id = ParticlesController.RegisterParticleSystem(VfxObject, autoDestroy, duration);
@@ -95,7 +97,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitViewOwner != null ? AbilityUnitViewOwner : (object) BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             switch (AffectObjectType)
             {
@@ -103,8 +105,10 @@ namespace Loom.ZombieBattleground
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
                 case Enumerators.AffectObjectType.CHARACTER:
-                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnitView.Model);
+                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
 
             Vector3 targetPosition = VfxObject.transform.position;
@@ -131,6 +135,8 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.AbilityEffectType.TARGET_TOXIC:
                         VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+                        break;
+                    default:
                         break;
                 }
             }

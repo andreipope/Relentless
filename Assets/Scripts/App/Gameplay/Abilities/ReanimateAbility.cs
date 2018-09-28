@@ -15,15 +15,15 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityUnitViewOwner.Model.IsReanimated)
+            if (AbilityUnitOwner.IsReanimated)
                 return;
 
-            Player owner = AbilityUnitViewOwner.Model.OwnerPlayer;
-            Card libraryCard = AbilityUnitViewOwner.Model.Card.LibraryCard.Clone();
+            Player owner = AbilityUnitOwner.OwnerPlayer;
+            Card libraryCard = AbilityUnitOwner.Card.LibraryCard.Clone();
             WorkingCard card = new WorkingCard(libraryCard, owner);
             BoardUnitView unit = CreateBoardUnit(card, owner);
             unit.Model.IsReanimated = true;
-            AbilityUnitViewOwner.Model.IsReanimated = true;
+            AbilityUnitOwner.IsReanimated = true;
 
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
@@ -59,8 +59,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
-            boardUnitView.Transform.position =
-                new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
+            boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
 

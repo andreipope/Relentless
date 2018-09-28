@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitViewOwner)
+                if (PlayerCallerOfAbility.BoardCards[i].Model == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
