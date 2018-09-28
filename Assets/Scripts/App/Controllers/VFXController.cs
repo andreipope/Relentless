@@ -262,6 +262,11 @@ namespace Loom.ZombieBattleground
 
         public void CreateDeathZombieAnimation(BoardUnitView cardToDestroy)
         {
+            if (cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
+                cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
+                cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.NONE)
+                return;
+
             string type = cardToDestroy.Model.LastAttackingSetType.ToString();
             type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
             var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
