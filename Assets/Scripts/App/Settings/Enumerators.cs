@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground.Common
             GAMEPLAY,
             DECK_EDITING,
             PACK_OPENER,
-            CREDITS
+            CREDITS,
         }
 
         public enum AttackInfoType

@@ -80,6 +80,8 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEnded;
 
+        public PvPManager _pvpManager;
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -89,6 +91,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+            _pvpManager = GameClient.Get<PvPManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -99,6 +102,13 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GameEnded += GameEndedHandler;
 
             _gameplayManager.GameInitialized += OnGameInitializedHandler;
+
+            _pvpManager.OnGetEndTurnAction += OnGetEndTurnHandler;
+        }
+
+        private void OnGetEndTurnHandler()
+        {
+            StopTurn();
         }
 
         public void Dispose()
@@ -379,8 +389,8 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _gameplayManager.CurrentPlayer.InvokeTurnEnded();
-            _gameplayManager.OpponentPlayer.InvokeTurnEnded();
+            //_gameplayManager.CurrentPlayer.InvokeTurnEnded();
+            //_gameplayManager.OpponentPlayer.InvokeTurnEnded();
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :

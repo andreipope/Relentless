@@ -1,5 +1,10 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -18,6 +23,9 @@ namespace Loom.ZombieBattleground
         private Enumerators.AppState _finishMatchAppState;
 
         public Enumerators.MatchType MatchType { get; set; }
+
+        // TODO : Find another solution, right now its tempraoray only....
+        private bool _checkPlayerStatus;
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
@@ -41,7 +49,7 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public void FindMatch(Enumerators.MatchType matchType)
+        public async void FindMatch(Enumerators.MatchType matchType)
         {
             switch (matchType)
             {
@@ -49,7 +57,27 @@ namespace Loom.ZombieBattleground
                     CreateLocalMatch();
                     break;
                 case Enumerators.MatchType.PVP:
-                    CreateLocalMatch();
+                    BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                    BackendDataControlMediator backendDataControlMediator =
+                        GameClient.Get<BackendDataControlMediator>();
+                    PvPManager pvpManager = GameClient.Get<PvPManager>();
+
+                    pvpManager.MatchResponse = await GetBackendFacade(backendFacade).FindMatch(
+                        backendDataControlMediator.UserDataModel.UserId,
+                        _uiManager.GetPage<GameplayPage>().CurrentDeckId);
+
+                    Debug.LogWarning("=== Response = " + pvpManager.MatchResponse);
+                    backendFacade.SubscribeEvent(pvpManager.MatchResponse.Match.Topics.ToList());
+                    _uiManager.DrawPopup<ConnectionPopup>();
+
+                    if (pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                    {
+                        OnStartGamePvP();
+                    }
+                    else
+                    {
+                        pvpManager.OnGameStarted += OnStartGamePvP;
+                    }
                     break;
                 default:
                     throw new NotImplementedException(matchType + " not implemented yet.");
@@ -65,6 +93,7 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            MatchType = Enumerators.MatchType.LOCAL;
             _uiManager = GameClient.Get<IUIManager>();
             _sceneManager = GameClient.Get<IScenesManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
@@ -76,12 +105,46 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (_checkPlayerStatus)
+            {
+                _checkPlayerStatus = false;
+                GetGameState();
+                _uiManager.HidePopup<ConnectionPopup>();
+                CreateLocalMatch();
+            }
         }
 
         private void CreateLocalMatch()
         {
-            // todo write logic
             StartLoadMatch();
+        }
+
+        private static BackendFacade GetBackendFacade(BackendFacade backendFacade)
+        {
+            return backendFacade;
+        }
+
+        private void OnStartGamePvP()
+        {
+            _checkPlayerStatus = true;
+        }
+
+        private async void GetGameState()
+        {
+            try
+            {
+                PvPManager pvpManager = GameClient.Get<PvPManager>();
+                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+
+                // TODO : Quick fix... something wrong with backend side..
+                // Need to remove delay
+                await Task.Delay(3000);
+                pvpManager.GameStateResponse = await backendFacade.GetGameState((int)pvpManager.MatchResponse.Match.Id);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(" === GetGameState Exception = " + ex);
+            }
         }
 
         private void StartLoadMatch()

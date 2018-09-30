@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -16,6 +17,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
         public delegate void PlayerActionHandler(byte[] bytes);
+
+        private const string ContractDataVersion = "v1";
 
         public BackendFacade(string authBackendHost, string readerHost, string writerHost)
         {
@@ -38,6 +41,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public string AuthBackendHost { get; set; }
 
         public Contract Contract { get; private set; }
+
+        private IRpcClient reader;
 
         public bool IsConnected => Contract != null &&
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
@@ -63,7 +68,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(WriterHost)
                 .Create();
 
-            IRpcClient reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(ReaderHost)
+            reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(ReaderHost)
                 .Create();
 
             DAppChainClient client = new DAppChainClient(writer, reader)
@@ -108,7 +113,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<ListCardLibraryResponse> GetCardLibrary()
         {
-            ListCardLibraryRequest request = new ListCardLibraryRequest();
+            ListCardLibraryRequest request = new ListCardLibraryRequest
+            {
+                Version = ContractDataVersion
+            };
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
         }
@@ -247,6 +255,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             UpsertAccountRequest req = new UpsertAccountRequest
             {
+                Version = ContractDataVersion,
                 UserId = userId
             };
 
@@ -267,7 +276,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             actionLogModelJson =
                 JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)],
                     Formatting.Indented);
-            Debug.Log("Logging action: \n" + actionLogModelJson);
             await Task.Delay(1000);
         }
 
@@ -359,5 +367,65 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
+
+        #region PVP
+         private const string FindMatchMethod = "FindMatch";
+         private const string SendPlayerActionMethod = "SendPlayerAction";
+         private const string GetGameStateMethod = "GetGameState";
+
+         public UnityAction<byte[]> PlayerActionEventListner;
+
+         public async Task<FindMatchResponse> FindMatch(string userId, long deckId)
+         {
+             FindMatchRequest request = new FindMatchRequest
+             {
+                 UserId = userId,
+                 DeckId = deckId
+
+             };
+
+             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+         }
+
+         public async Task<GetGameStateResponse> GetGameState(int matchId)
+         {
+             GetGameStateRequest request = new GetGameStateRequest
+             {
+                 MatchId = matchId
+             };
+
+             return await Contract.CallAsync<GetGameStateResponse>(GetGameStateMethod, request);
+         }
+
+         public async Task SendAction(long matchId, PlayerAction playerAction)
+         {
+             PlayerActionRequest request = new PlayerActionRequest
+             {
+                 MatchId = matchId,
+                 PlayerAction = playerAction
+             };
+
+             await Contract.CallAsync(SendPlayerActionMethod, request);
+         }
+
+
+         public void SubscribeEvent(List<string> topics)
+         {
+             EventHandler<JsonRpcEventData> handler = (sender, e) =>
+             {
+                 PlayerActionEventListner?.Invoke(e.Data);
+             };
+             reader.SubscribeAsync(topics, handler);
+         }
+
+         public void UnSubscribeEvent()
+         {
+             EventHandler<JsonRpcEventData> handler = (sender, e) =>{ };
+             reader.UnsubscribeAsync(handler);
+
     }
+
+    #endregion
+
+}
 }

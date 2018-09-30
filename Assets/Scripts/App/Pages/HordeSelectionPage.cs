@@ -489,6 +489,13 @@ namespace Loom.ZombieBattleground
             _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
         }
 
+        private void BattlePvPButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeckId;
+            _matchManager.FindMatch(Enumerators.MatchType.PVP);
+        }
+
         private void BattleButtonWarningOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
