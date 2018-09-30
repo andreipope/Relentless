@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
     {
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
+        public delegate void PlayerActionHandler(byte[] bytes);
+
         public BackendFacade(string authBackendHost, string readerHost, string writerHost)
         {
             AuthBackendHost = authBackendHost;
@@ -26,6 +28,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         public event ContractCreatedEventHandler ContractCreated;
+
+        public event PlayerActionHandler PlayerActionEvent;
 
         public string ReaderHost { get; set; }
 
