@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IPvPManager _pvpManager;
+
         private Sequence _rearrangingTopRealTimeSequence, _rearrangingBottomRealTimeSequence;
 
         public event Action<int> PlayerGraveyardUpdated;
@@ -79,8 +81,6 @@ namespace Loom.ZombieBattleground
         public event Action TurnStarted;
 
         public event Action TurnEnded;
-
-        public IPvPManager _pvpManager;
 
         public void Init()
         {

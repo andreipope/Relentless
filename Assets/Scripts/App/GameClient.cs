@@ -15,10 +15,12 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose backend = BackendPurpose.Production;
+#elif USE_PVP_BACKEND
+            const BackendPurpose backend = BackendPurpose.PvP;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif

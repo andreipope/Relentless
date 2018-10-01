@@ -20,6 +20,12 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IPvPManager _pvpManager;
+
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private Enumerators.AppState _finishMatchAppState;
 
         public Enumerators.MatchType MatchType { get; set; }
@@ -49,41 +55,43 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public async void FindMatch(Enumerators.MatchType matchType)
+        public async void FindMatch()
         {
-            switch (matchType)
+            switch (MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
                     CreateLocalMatch();
                     break;
                 case Enumerators.MatchType.PVP:
-                    BackendFacade backendFacade = GameClient.Get<BackendFacade>();
-                    BackendDataControlMediator backendDataControlMediator =
-                        GameClient.Get<BackendDataControlMediator>();
-                    IPvPManager pvpManager = GameClient.Get<IPvPManager>();
-
-                    pvpManager.MatchResponse = await GetBackendFacade(backendFacade).FindMatch(
-                        backendDataControlMediator.UserDataModel.UserId,
-                        _uiManager.GetPage<GameplayPage>().CurrentDeckId);
-
-                    Debug.LogWarning("=== Response = " + pvpManager.MatchResponse);
-                    backendFacade.SubscribeEvent(pvpManager.MatchResponse.Match.Topics.ToList());
-                    _uiManager.DrawPopup<ConnectionPopup>();
-
-                    if (pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
                     {
-                        OnStartGamePvP();
-                    }
-                    else
-                    {
-                        pvpManager.GameStartedActionReceived += OnStartGamePvP;
+                        _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
+                            _backendDataControlMediator.UserDataModel.UserId,
+                            _uiManager.GetPage<GameplayPage>().CurrentDeckId);
+
+                        Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
+                        _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
+                        _uiManager.DrawPopup<ConnectionPopup>();
+
+                        if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                        {
+                            OnStartGamePvP();
+                        }
+                        else
+                        {
+                            _pvpManager.GameStartedActionReceived += OnStartGamePvP;
+                        }
                     }
                     break;
                 default:
-                    throw new NotImplementedException(matchType + " not implemented yet.");
+                    throw new NotImplementedException(MatchType + " not implemented yet.");
             }
 
+        }
+
+        public async void FindMatch(Enumerators.MatchType matchType)
+        {
             MatchType = matchType;
+            FindMatch();
         }
 
         public void Dispose()
@@ -99,6 +107,9 @@ namespace Loom.ZombieBattleground
             _appStateManager = GameClient.Get<IAppStateManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
         }
@@ -109,8 +120,6 @@ namespace Loom.ZombieBattleground
             {
                 _checkPlayerStatus = false;
                 GetGameState();
-                _uiManager.HidePopup<ConnectionPopup>();
-                CreateLocalMatch();
             }
         }
 
@@ -131,13 +140,15 @@ namespace Loom.ZombieBattleground
 
         private async void GetGameState()
         {
-            IPvPManager pvpManager = GameClient.Get<IPvPManager>();
-            BackendFacade backendFacade = GameClient.Get<BackendFacade>();
 
             // TODO : Quick fix... something wrong with backend side..
             // Need to remove delay
             await Task.Delay(3000);
-            pvpManager.GameStateResponse = await backendFacade.GetGameState((int)pvpManager.MatchResponse.Match.Id);
+            _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
+
+            _uiManager.HidePopup<ConnectionPopup>();
+            CreateLocalMatch();
+
         }
 
         private void StartLoadMatch()

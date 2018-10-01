@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground
             if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HORDE_SELECTION);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
             }
             GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
