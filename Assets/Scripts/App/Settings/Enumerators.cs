@@ -480,15 +480,6 @@ namespace Loom.ZombieBattleground.Common
             BorderlessWindow
         }
 
-        public enum PlayerAction
-        {
-            DrawCard,
-            Mulligan,
-            UseCardAbility,
-            UseOverlordSkill,
-            CardAttack,
-            EndTurn
-        }
         public enum ExperienceActionType
         {
             KillOverlord,
@@ -496,7 +487,6 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
-
         }
     }
 }

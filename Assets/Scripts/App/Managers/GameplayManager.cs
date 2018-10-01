@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         private List<IController> _controllers;
 
-        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
+        private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
 
         public event Action GameStarted;
 

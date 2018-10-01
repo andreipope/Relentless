@@ -8,7 +8,7 @@ using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
-    public class ActionLogCollectorUploader : IService
+    public class ActionCollectorUploader : IService
     {
         private IGameplayManager _gameplayManager;
 
@@ -223,7 +223,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         PlayerId = playerId,
                         Attacker = new CardInstance
                         {
-                            InstanceId = attacker.InstanceId,
+                            InstanceId = attacker.Id,
                             Prototype = ToProtobufExtensions.GetCardPrototype(attacker),
                             Defence = attacker.Health,
                             Attack = attacker.Damage
@@ -246,14 +246,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         PlayerId = playerId,
                         Attacker = new CardInstance
                         {
-                            InstanceId = attacker.InstanceId,
+                            InstanceId = attacker.Id,
                             Prototype = ToProtobufExtensions.GetCardPrototype(attacker),
                             Defence = attacker.Health,
                             Attack = attacker.Damage
                         },
                         Target = new CardInstance
                         {
-                            InstanceId = target.InstanceId,
+                            InstanceId = target.Id,
                             Prototype = ToProtobufExtensions.GetCardPrototype(target),
                             Defence = target.Health,
                             Attack = target.Damage
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 return new
                 {
-                    instanceId = card.InstanceId,
+                    instanceId = card.Id,
                     cardId = card.CardId,
                     name = card.LibraryCard.Name,
                     health = card.Health,
