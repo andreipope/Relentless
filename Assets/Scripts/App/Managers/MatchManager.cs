@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        pvpManager.OnGameStarted += OnStartGamePvP;
+                        pvpManager.GameStartedActionReceived += OnStartGamePvP;
                     }
                     break;
                 default:

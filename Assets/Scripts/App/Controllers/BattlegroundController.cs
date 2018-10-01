@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.GameInitialized += OnGameInitializedHandler;
 
-            _pvpManager.OnGetEndTurnAction += OnGetEndTurnHandler;
+            _pvpManager.EndTurnActionReceived += OnGetEndTurnHandler;
         }
 
         private void OnGetEndTurnHandler()

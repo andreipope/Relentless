@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
             CardsPreparingToHand = new List<BoardCard>();
 
-            int heroId = 0;
+            int heroId;
 
             if (!isOpponent)
             {
@@ -118,8 +118,6 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.MatchType.PVP:
                         heroId = _pvpManager.OpponentDeck.HeroId;
-                        break;
-                    case Enumerators.MatchType.PVE:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
