@@ -141,8 +141,9 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
                 if (AbilityEffectType == Enumerators.AbilityEffectType.NONE ||
-                    AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB) // DELETE this line in future when on backend will be updated card library
+                    AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
                 {
+                    #warning DELETE this line in future when on backend will be updated card library
                     callback();
                 }
                 else
