@@ -576,11 +576,11 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case BoardCard card:
-                    CurrentPreviewedCardId = card.WorkingCard.InstanceId;
+                    CurrentPreviewedCardId = card.WorkingCard.Id;
                     break;
                 case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
-                    CurrentPreviewedCardId = unit.Model.Card.InstanceId;
+                    CurrentPreviewedCardId = unit.Model.Card.Id;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);

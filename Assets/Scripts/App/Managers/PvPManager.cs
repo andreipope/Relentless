@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
             switch (playerActionEvent.Match.Status)
             {
                 case Match.Types.Status.Created:
-                    MatchCreateActionRecieved?.Invoke();
+                    MatchCreatedActionRecieved?.Invoke();
                     break;
                 case Match.Types.Status.Matching:
                     MatchingStartedActionRecieved?.Invoke();
@@ -83,12 +83,10 @@ namespace Loom.ZombieBattleground
                     GameStartedActionRecieved?.Invoke();
                     break;
                 case Match.Types.Status.Playing:
-                    {
-                        if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
-                            return;
+                    if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
+                        return;
 
-                        OnReceivePlayerActionType(playerActionEvent);
-                    }
+                    OnReceivePlayerActionType(playerActionEvent);
                     break;
                 case Match.Types.Status.PlayerLeft:
                     PlayerLeftGameActionRecived?.Invoke();
