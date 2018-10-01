@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
@@ -31,6 +32,8 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
 
+        private volatile Queue<Action> _mainThreadActionsToDo;
+
         public FindMatchResponse MatchResponse { get; set; }
         public GetGameStateResponse GameStateResponse { get; set; }
 
@@ -42,15 +45,22 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
-            _backendFacade.PlayerActionEvent += OnGetPlayerActionEventListener;
+            _backendFacade.PlayerActionEventListner += OnGetPlayerActionEventListener;
+
+            _mainThreadActionsToDo = new Queue<Action>();
         }
 
         public void Update()
         {
+            if (_mainThreadActionsToDo.Count > 0)
+            {
+                _mainThreadActionsToDo.Dequeue().Invoke();
+            }
         }
 
         public void Dispose()
         {
+            _mainThreadActionsToDo.Clear();
         }
 
         public bool IsCurrentPlayer()
@@ -64,41 +74,44 @@ namespace Loom.ZombieBattleground
 
         private void OnGetPlayerActionEventListener(byte[] data)
         {
-            string jsonStr = SystemText.Encoding.UTF8.GetString(data);
-
-            Debug.LogWarning(jsonStr); // todo delete
-
-            PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
-            MatchResponse.Match = playerActionEvent.Match.Clone();
-
-            switch (playerActionEvent.Match.Status)
+            _mainThreadActionsToDo.Enqueue(() =>
             {
-                case Match.Types.Status.Created:
-                    OnMatchCreated?.Invoke();
-                    break;
-                case Match.Types.Status.Matching:
-                    OnMatchingStarted?.Invoke();
-                    break;
-                case Match.Types.Status.Started:
-                    OnGameStarted?.Invoke();
-                    break;
-                case Match.Types.Status.Playing:
-                    {
-                        if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
-                            return;
+                string jsonStr = SystemText.Encoding.UTF8.GetString(data);
 
-                        OnReceivePlayerActionType(playerActionEvent);
-                    }
-                    break;
-                case Match.Types.Status.PlayerLeft:
-                    OnPlayerLeftGame?.Invoke();
-                    break;
-                case Match.Types.Status.Ended:
-                    OnGameEnded?.Invoke();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(playerActionEvent.Match.Status), playerActionEvent.Match.Status.ToString() + " not found");
-            }
+                Debug.LogWarning(jsonStr); // todo delete
+
+                PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+                MatchResponse.Match = playerActionEvent.Match.Clone();
+
+                switch (playerActionEvent.Match.Status)
+                {
+                    case Match.Types.Status.Created:
+                        OnMatchCreated?.Invoke();
+                        break;
+                    case Match.Types.Status.Matching:
+                        OnMatchingStarted?.Invoke();
+                        break;
+                    case Match.Types.Status.Started:
+                        OnGameStarted?.Invoke();
+                        break;
+                    case Match.Types.Status.Playing:
+                        {
+                            if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
+                                return;
+
+                            OnReceivePlayerActionType(playerActionEvent);
+                        }
+                        break;
+                    case Match.Types.Status.PlayerLeft:
+                        OnPlayerLeftGame?.Invoke();
+                        break;
+                    case Match.Types.Status.Ended:
+                        OnGameEnded?.Invoke();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(playerActionEvent.Match.Status), playerActionEvent.Match.Status.ToString() + " not found");
+                }
+            });
         }
 
 
