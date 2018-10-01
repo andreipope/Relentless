@@ -479,21 +479,14 @@ namespace Loom.ZombieBattleground
         private void BackButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            _appStateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
         private void BattleButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeckId;
-            _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
-        }
-
-        private void BattlePvPButtonOnClickHandler()
-        {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeckId;
-            _matchManager.FindMatch(Enumerators.MatchType.PVP);
+            _matchManager.FindMatch();
         }
 
         private void BattleButtonWarningOnClickHandler()

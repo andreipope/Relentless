@@ -166,13 +166,15 @@ namespace Loom.ZombieBattleground.Common
             LOGIN,
             MAIN_MENU,
             HERO_SELECTION,
-            HORDE_SELECTION,
+            HordeSelection,
             ARMY,
             SHOP,
             GAMEPLAY,
             DECK_EDITING,
             PACK_OPENER,
             CREDITS,
+            PlaySelection,
+            PvPSelection
         }
 
         public enum AttackInfoType

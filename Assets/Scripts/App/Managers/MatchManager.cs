@@ -49,9 +49,9 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public async void FindMatch(Enumerators.MatchType matchType)
+        public async void FindMatch()
         {
-            switch (matchType)
+            switch (MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
                     CreateLocalMatch();
@@ -80,10 +80,15 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 default:
-                    throw new NotImplementedException(matchType + " not implemented yet.");
+                    throw new NotImplementedException(MatchType + " not implemented yet.");
             }
 
+        }
+
+        public async void FindMatch(Enumerators.MatchType matchType)
+        {
             MatchType = matchType;
+            FindMatch();
         }
 
         public void Dispose()
