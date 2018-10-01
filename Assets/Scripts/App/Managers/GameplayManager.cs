@@ -276,10 +276,7 @@ namespace Loom.ZombieBattleground
                         CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
                         break;
                     case Enumerators.MatchType.PVP:
-
-                        //todo implement logic from server
-
-                        CurrentTurnPlayer = CurrentPlayer;
+                        CurrentTurnPlayer = GameClient.Get<PvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
