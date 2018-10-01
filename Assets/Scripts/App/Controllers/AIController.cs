@@ -1097,9 +1097,7 @@ namespace Loom.ZombieBattleground
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                         else
-                        {
                             return;
-                        }
                     }
                     break;
                 case Enumerators.OverlordSkill.MEND:
@@ -1126,14 +1124,10 @@ namespace Loom.ZombieBattleground
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         } 
                         else 
-                        {
                             return;
-                        }
                     }
                     else
-                    {
                         return;
-                    }
                 }
 
                     break;
@@ -1154,9 +1148,7 @@ namespace Loom.ZombieBattleground
                         selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                     }
                     else
-                    {
                         return;
-                    }
                 }
 
                     break;
@@ -1177,9 +1169,7 @@ namespace Loom.ZombieBattleground
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                         else 
-                        { 
                             return; 
-                        }
                 }
 
                     break;
@@ -1217,9 +1207,7 @@ namespace Loom.ZombieBattleground
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                         else
-                        {
                             return;
-                        }
                     }
                 }
 
