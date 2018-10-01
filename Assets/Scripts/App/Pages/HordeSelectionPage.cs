@@ -247,6 +247,7 @@ namespace Loom.ZombieBattleground
                 horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].Skill.ToLower());
 
             _selectedDeckId = (int) horde.SelfDeck.Id;
+
             _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
 
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
@@ -260,7 +261,7 @@ namespace Loom.ZombieBattleground
         {
             if(_hordeSelection.gameObject.activeSelf)
             {
-                _hordeSelection.position = _hordeDecks[_selectedDeckId].SelectionContainer.transform.position;
+                _hordeSelection.position = _hordeDecks.Find(x => x.SelfDeck.Id == _selectedDeckId).SelectionContainer.transform.position;
             }
         }
 

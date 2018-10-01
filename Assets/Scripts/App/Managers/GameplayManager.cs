@@ -238,8 +238,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-		private void StartInitializeGame()
+        private void StartInitializeGame()
         {
+            if (IsTutorial)
+            {
+                IsSpecificGameplayBattleground = true;
+            }
+
             GetController<PlayerController>().InitializePlayer(0);
 
             switch (_matchManager.MatchType)
@@ -257,10 +262,10 @@ namespace Loom.ZombieBattleground
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
 
+            UnityEngine.Debug.Log(IsTutorial + " IsTutorial");
+
             if (IsTutorial)
             {
-                IsSpecificGameplayBattleground = true;
-
                 CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 
                 GetController<PlayerController>().SetHand();
