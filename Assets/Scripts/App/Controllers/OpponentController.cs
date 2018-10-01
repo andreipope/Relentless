@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
     {
         private IGameplayManager _gameplayManager;
         private IDataManager _dataManager;
-        private IPVPManagaer _pvpManager;
+        private IPvPManager _pvpManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
 
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            _pvpManager = GameClient.Get<IPVPManagaer>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
@@ -75,27 +75,28 @@ namespace Loom.ZombieBattleground
 
         private void GameStartedHandler()
         {
-            _pvpManager.OnCardPlayedAction += OnCardPlayedHandler;
-            _pvpManager.OnCardAttackedAction += OnCardAttackedHandler;
-            _pvpManager.OnDrawCardAction += OnDrawCardHandler;
-            _pvpManager.OnCardAbilityUsedAction += OnCardAbilityUsedHandler;
-            _pvpManager.OnOverlordSkillUsedAction += OnOverlordSkillUsedHandler;
-            _pvpManager.OnMulliganProcessUsedAction += OnMulliganProcessHandler;
+            _pvpManager.CardPlayedActionReceived += OnCardPlayedHandler;
+            _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
+            _pvpManager.DrawCardActionReceived += OnDrawCardHandler;
+            _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
+            _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
-            _pvpManager.OnCardPlayedAction -= OnCardPlayedHandler;
-            _pvpManager.OnCardAttackedAction -= OnCardAttackedHandler;
-            _pvpManager.OnDrawCardAction -= OnDrawCardHandler;
-            _pvpManager.OnCardAbilityUsedAction -= OnCardAbilityUsedHandler;
-            _pvpManager.OnOverlordSkillUsedAction -= OnOverlordSkillUsedHandler;
-            _pvpManager.OnMulliganProcessUsedAction -= OnMulliganProcessHandler;
+            _pvpManager.CardPlayedActionReceived -= OnCardPlayedHandler;
+            _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
+            _pvpManager.DrawCardActionReceived -= OnDrawCardHandler;
+            _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
+            _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
         }
 
-        #region requests
 
-        public async Task ActionEndTurn(Player player)
+    #region requests
+
+    public async Task ActionEndTurn(Player player)
         {
             if (!_backendFacade.IsConnected)
                 return;

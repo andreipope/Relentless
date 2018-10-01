@@ -8,25 +8,25 @@ using SystemText = System.Text;
 
 namespace Loom.ZombieBattleground
 {
-    public class PvPManager : IService, IPVPManagaer
+    public class PvPManager : IService, IPvPManager
     {
         // matching actions
-        public event Action OnMatchCreated;
-        public event Action OnMatchingStarted;
-        public event Action OnPlayerLeftGame;
+        public event Action MatchCreatedActionReceived;
+        public event Action MatchingStartedActionReceived;
+        public event Action PlayerLeftGameActionReceived;
 
         // game status actions
-        public event Action OnGameStarted;
-        public event Action OnGameEnded;
+        public event Action GameStartedActionReceived;
+        public event Action GameEndedActionReceived;
 
         // gameplay actions
-        public event Action OnGetEndTurnAction;
-        public event Action<PlayerActionCardPlay> OnCardPlayedAction;
-        public event Action<PlayerActionCardAttack> OnCardAttackedAction;
-        public event Action<PlayerActionUseOverlordSkill> OnOverlordSkillUsedAction;
-        public event Action<PlayerActionUseCardAbility> OnCardAbilityUsedAction;
-        public event Action<PlayerActionMulligan> OnMulliganProcessUsedAction;
-        public event Action<PlayerActionDrawCard> OnDrawCardAction;
+        public event Action EndTurnActionReceived;
+        public event Action<PlayerActionCardPlay> CardPlayedActionReceived;
+        public event Action<PlayerActionCardAttack> CardAttackedActionReceived;
+        public event Action<PlayerActionUseOverlordSkill> OverlordSkillUsedActionReceived;
+        public event Action<PlayerActionUseCardAbility> CardAbilityUsedActionReceived;
+        public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
+        public event Action<PlayerActionDrawCard> DrawCardActionReceived;
 
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
@@ -74,27 +74,25 @@ namespace Loom.ZombieBattleground
             switch (playerActionEvent.Match.Status)
             {
                 case Match.Types.Status.Created:
-                    OnMatchCreated?.Invoke();
+                    MatchCreatedActionReceived?.Invoke();
                     break;
                 case Match.Types.Status.Matching:
-                    OnMatchingStarted?.Invoke();
+                    MatchingStartedActionReceived?.Invoke();
                     break;
                 case Match.Types.Status.Started:
-                    OnGameStarted?.Invoke();
+                    GameStartedActionReceived?.Invoke();
                     break;
                 case Match.Types.Status.Playing:
-                    {
-                        if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
-                            return;
+                    if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
+                        return;
 
-                        OnReceivePlayerActionType(playerActionEvent);
-                    }
+                    OnReceivePlayerActionType(playerActionEvent);
                     break;
                 case Match.Types.Status.PlayerLeft:
-                    OnPlayerLeftGame?.Invoke();
+                    PlayerLeftGameActionReceived?.Invoke();
                     break;
                 case Match.Types.Status.Ended:
-                    OnGameEnded?.Invoke();
+                    GameEndedActionReceived?.Invoke();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playerActionEvent.Match.Status), playerActionEvent.Match.Status.ToString() + " not found");
@@ -109,16 +107,16 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.NoneAction:
                     break;
                 case PlayerActionType.EndTurn:
-                    OnGetEndTurnAction?.Invoke();
+                    EndTurnActionReceived?.Invoke();
                     break;
                 case PlayerActionType.Mulligan:
-                    OnMulliganProcessUsedAction?.Invoke(playerActionEvent.PlayerAction.Mulligan);
+                    MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
                     break;
                 case PlayerActionType.CardPlay:
-                    OnCardPlayedAction?.Invoke(playerActionEvent.PlayerAction.CardPlay);
+                    CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
                     break;
                 case PlayerActionType.CardAttack:
-                    OnCardAttackedAction?.Invoke(playerActionEvent.PlayerAction.CardAttack);
+                    CardAttackedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAttack);
                     break;
                 case PlayerActionType.UseCardAbility:
                     //  OnCardAbilityUsedAction?.Invoke(playerActionEvent.PlayerAction.UseCardAbility);
@@ -127,7 +125,7 @@ namespace Loom.ZombieBattleground
                     //   OnOverlordSkillUsedAction?.Invoke(playerActionEvent.PlayerAction.UseOverlordSkill);
                     break;
                 case PlayerActionType.DrawCard:
-                    OnDrawCardAction?.Invoke(playerActionEvent.PlayerAction.DrawCard);
+                    DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playerActionEvent.PlayerActionType), playerActionEvent.PlayerActionType.ToString() + " not found");

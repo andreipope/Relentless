@@ -524,8 +524,6 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-                //player.ThrowPlayCardEvent(card.WorkingCard);
-
                 switch (libraryCard.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:

@@ -200,7 +200,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            OpponentDeck randomOpponentDeck =null;
+            OpponentDeck randomOpponentDeck = null;
 
             switch (_matchManager.MatchType)
             {
@@ -212,7 +212,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 case Enumerators.MatchType.PVP:
-                    for (var i = 0; i < _pvpManager.MatchResponse.Match.PlayerStates.Count; i++)
+                    for (int i = 0; i < _pvpManager.MatchResponse.Match.PlayerStates.Count; i++)
                     {
                         if (_pvpManager.MatchResponse.Match.PlayerStates[i].Id !=
                             _backendDataControlMediator.UserDataModel.UserId)

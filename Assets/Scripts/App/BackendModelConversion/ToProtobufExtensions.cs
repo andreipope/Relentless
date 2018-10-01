@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
-        public static CardPrototype GetCardPrototype(WorkingCard workingCard)
+        public static CardPrototype GetCardPrototype(this WorkingCard workingCard)
         {
             Card card = workingCard.LibraryCard;
             CardPrototype cardPrototype = new CardPrototype
@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground.Data
             return cardPrototype;
         }
 
-        private static RepeatedField<CardInstance> GetMulliganCards(List<WorkingCard> cards)
+        private static RepeatedField<CardInstance> GetMulliganCards(this List<WorkingCard> cards)
         {
             RepeatedField<CardInstance> cardInstances = new RepeatedField<CardInstance>();
             for (int i = 0; i < cards.Count; i++)
