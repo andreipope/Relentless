@@ -7,20 +7,20 @@ namespace Loom.ZombieBattleground
 {
     public interface IPvPManager
     {
-        event Action MatchCreatedActionRecieved;
-        event Action MatchingStartedActionRecieved;
-        event Action PlayerLeftGameActionRecived;
+        event Action MatchCreatedActionReceived;
+        event Action MatchingStartedActionReceived;
+        event Action PlayerLeftGameActionReceived;
 
-        event Action GameStartedActionRecieved;
-        event Action GameEndedActioRecieved;
+        event Action GameStartedActionReceived;
+        event Action GameEndedActioReceived;
 
-        event Action EndTurnActionRecieved;
-        event Action<PlayerActionCardPlay> CardPlayedActionRecieved;
-        event Action<PlayerActionCardAttack> CardAttackedActionRecieved;
-        event Action<PlayerActionUseOverlordSkill> OverlordSkillUsedActionRecieved;
-        event Action<PlayerActionUseCardAbility> CardAbilityUsedActionRecieved;
-        event Action<PlayerActionMulligan> MulliganProcessUsedActionRecieved;
-        event Action<PlayerActionDrawCard> DrawCardActionRecieved;
+        event Action EndTurnActionReceived;
+        event Action<PlayerActionCardPlay> CardPlayedActionReceived;
+        event Action<PlayerActionCardAttack> CardAttackedActionReceived;
+        event Action<PlayerActionUseOverlordSkill> OverlordSkillUsedActionReceived;
+        event Action<PlayerActionUseCardAbility> CardAbilityUsedActionReceived;
+        event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
+        event Action<PlayerActionDrawCard> DrawCardActionReceived;
 
         FindMatchResponse MatchResponse { get; set; }
         GetGameStateResponse GameStateResponse { get; set; }

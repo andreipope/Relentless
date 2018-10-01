@@ -75,22 +75,22 @@ namespace Loom.ZombieBattleground
 
         private void GameStartedHandler()
         {
-            _pvpManager.CardPlayedActionRecieved += OnCardPlayedHandler;
-            _pvpManager.CardAttackedActionRecieved += OnCardAttackedHandler;
-            _pvpManager.DrawCardActionRecieved += OnDrawCardHandler;
-            _pvpManager.CardAbilityUsedActionRecieved += OnCardAbilityUsedHandler;
-            _pvpManager.OverlordSkillUsedActionRecieved += OnOverlordSkillUsedHandler;
-            _pvpManager.MulliganProcessUsedActionRecieved += OnMulliganProcessHandler;
+            _pvpManager.CardPlayedActionReceived += OnCardPlayedHandler;
+            _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
+            _pvpManager.DrawCardActionReceived += OnDrawCardHandler;
+            _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
+            _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
-            _pvpManager.CardPlayedActionRecieved -= OnCardPlayedHandler;
-            _pvpManager.CardAttackedActionRecieved -= OnCardAttackedHandler;
-            _pvpManager.DrawCardActionRecieved -= OnDrawCardHandler;
-            _pvpManager.CardAbilityUsedActionRecieved -= OnCardAbilityUsedHandler;
-            _pvpManager.OverlordSkillUsedActionRecieved -= OnOverlordSkillUsedHandler;
-            _pvpManager.MulliganProcessUsedActionRecieved -= OnMulliganProcessHandler;
+            _pvpManager.CardPlayedActionReceived -= OnCardPlayedHandler;
+            _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
+            _pvpManager.DrawCardActionReceived -= OnDrawCardHandler;
+            _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
+            _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
         }
 
 
