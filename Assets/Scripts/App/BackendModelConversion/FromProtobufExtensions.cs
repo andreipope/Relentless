@@ -145,12 +145,20 @@ namespace Loom.ZombieBattleground.Data
                 Rank = cardPrototype.Rank,
                 Type = cardPrototype.Type,
 
-                // TODO : Fill Ability later, some problem on backend side now
+                // TODO : Need Fill Ability
                 //Abilities = cardPrototype.Abilities,
                 CardViewInfo = new CardViewInfo
                 {
-                    Position = new FloatVector3 { X = cardPrototype.CardViewInfo.Position.X, Y = cardPrototype.CardViewInfo.Position.Y, Z = cardPrototype.CardViewInfo.Position.Z },
-                    Scale = new FloatVector3 { X = cardPrototype.CardViewInfo.Scale.X, Y = cardPrototype.CardViewInfo.Scale.Y, Z = cardPrototype.CardViewInfo.Scale.Z }
+                    Position = new FloatVector3 {
+                        X = cardPrototype.CardViewInfo.Position.X,
+                        Y = cardPrototype.CardViewInfo.Position.Y,
+                        Z = cardPrototype.CardViewInfo.Position.Z
+                    },
+                    Scale = new FloatVector3 {
+                        X = cardPrototype.CardViewInfo.Scale.X,
+                        Y = cardPrototype.CardViewInfo.Scale.Y,
+                        Z = cardPrototype.CardViewInfo.Scale.Z
+                    }
                 },
                 Frame = cardPrototype.Frame,
                 CardSetType = (Enumerators.SetType)cardPrototype.CardSetType,
