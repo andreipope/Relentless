@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 return new
                 {
-                    instanceId = card.InstanceId,
+                    instanceId = card.Id,
                     cardId = card.CardId,
                     name = card.LibraryCard.Name,
                     health = card.Health,
