@@ -1097,9 +1097,7 @@ namespace Loom.ZombieBattleground
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                         else
-                        {
                             return;
-                        }
                     }
                     break;
                 case Enumerators.OverlordSkill.MEND:
@@ -1124,8 +1122,12 @@ namespace Loom.ZombieBattleground
                         {
                             target = units[0];
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                        }
+                        } 
+                        else 
+                            return;
                     }
+                    else
+                        return;
                 }
 
                     break;
@@ -1145,6 +1147,8 @@ namespace Loom.ZombieBattleground
                         target = unit;
                         selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                     }
+                    else
+                        return;
                 }
 
                     break;
@@ -1159,11 +1163,13 @@ namespace Loom.ZombieBattleground
 
                     BoardUnitModel unit = GetRandomOpponentUnit();
 
-                    if (unit != null)
-                    {
-                        target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                    }
+                        if (unit != null)
+                        {
+                            target = unit;
+                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        }
+                        else 
+                            return; 
                 }
 
                     break;
@@ -1201,9 +1207,7 @@ namespace Loom.ZombieBattleground
                             selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
                         }
                         else
-                        {
                             return;
-                        }
                     }
                 }
 
