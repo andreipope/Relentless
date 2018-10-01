@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
             switch (playerActionEvent.Match.Status)
             {
                 case Match.Types.Status.Created:
-                    MatchCreateActionRecieved?.Invoke();
+                    MatchCreatedActionRecieved?.Invoke();
                     break;
                 case Match.Types.Status.Matching:
                     MatchingStartedActionRecieved?.Invoke();
