@@ -83,12 +83,10 @@ namespace Loom.ZombieBattleground
                     OnGameStarted?.Invoke();
                     break;
                 case Match.Types.Status.Playing:
-                    {
-                        if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
-                            return;
+                    if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
+                        return;
 
-                        OnReceivePlayerActionType(playerActionEvent);
-                    }
+                    OnReceivePlayerActionType(playerActionEvent);
                     break;
                 case Match.Types.Status.PlayerLeft:
                     OnPlayerLeftGame?.Invoke();
