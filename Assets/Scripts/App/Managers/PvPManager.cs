@@ -8,7 +8,7 @@ using SystemText = System.Text;
 
 namespace Loom.ZombieBattleground
 {
-    public class PvPManager : IService, IPVPManagaer
+    public class PvPManager : IService, IPvPManager
     {
         // matching actions
         public event Action OnMatchCreated;

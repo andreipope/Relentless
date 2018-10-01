@@ -65,14 +65,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
-            private readonly PvPManager _pvpManager;
+            private readonly IPvPManager _pvpManager;
 
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 IDataManager dataManager = GameClient.Get<IDataManager>();
-                _pvpManager = GameClient.Get<PvPManager>();
+                _pvpManager = GameClient.Get<IPvPManager>();
 
                 Player = player;
                 IsOpponent = isOpponent;

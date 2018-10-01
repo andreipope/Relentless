@@ -5,7 +5,7 @@ using System;
 
 namespace Loom.ZombieBattleground
 {
-    public interface IPVPManagaer
+    public interface IPvPManager
     {
         event Action OnMatchCreated;
         event Action OnMatchingStarted;

@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
     {
         private IGameplayManager _gameplayManager;
         private IDataManager _dataManager;
-        private IPVPManagaer _pvpManager;
+        private IPvPManager _pvpManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
 
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            _pvpManager = GameClient.Get<IPVPManagaer>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
@@ -150,7 +150,6 @@ namespace Loom.ZombieBattleground
 
             UseCardAbilityModel model = new UseCardAbilityModel()
             {
-                CallerId = player.Id,
                 AffectObjectType = affectObjectType,
                 TargetId = targetId,
                 BoardObjectId = boardObject.Id,
@@ -222,19 +221,11 @@ namespace Loom.ZombieBattleground
 
         private void OnDrawCardHandler(PlayerActionDrawCard actionDrawCard)
         {
-            // todo improve
-
-            GotActionDrawCard(new DrawCardModel()
-            {
-                CallerId = _gameplayManager.OpponentPlayer.Id,
-                FromDeckOfPlayerId = _gameplayManager.OpponentPlayer.Id,
-                TargetId = _gameplayManager.OpponentPlayer.Id,
-            }, FromProtobufExtensions.FromProtobuf(actionDrawCard.CardInstance, _gameplayManager.OpponentPlayer));
+            GotActionDrawCard(FromProtobufExtensions.FromProtobuf(actionDrawCard.CardInstance, _gameplayManager.OpponentPlayer));
         }
 
         private void OnCardAbilityUsedHandler(PlayerActionUseCardAbility actionUseCardAbility)
         {
-
         }
 
         private void OnOverlordSkillUsedHandler(PlayerActionUseOverlordSkill actionUseOverlordSkill)
@@ -254,18 +245,12 @@ namespace Loom.ZombieBattleground
 
         public void GotActionEndTurn(EndTurnModel model)
         {
-            Player caller = _gameplayManager.GetPlayerById(model.CallerId);
-
             _battlegroundController.EndTurn();
         }
 
-        public void GotActionDrawCard(DrawCardModel model, WorkingCard drawedCard)
+        public void GotActionDrawCard(WorkingCard drawedCard)
         {
-            Player caller = _gameplayManager.GetPlayerById(model.CallerId);
-            Player fromDeckOfPlayer = _gameplayManager.GetPlayerById(model.FromDeckOfPlayerId);
-            Player targetPlayer = _gameplayManager.GetPlayerById(model.TargetId);
-
-            _cardsController.AddCardToHandFromOtherPlayerDeck(fromDeckOfPlayer, targetPlayer, drawedCard);
+            _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
         public void GotActionPlayCard(WorkingCard card)
@@ -420,7 +405,6 @@ namespace Loom.ZombieBattleground
         public Enumerators.CardKind CardKind;
         public int BoardObjectId;
         public int CardAbilityId;
-        public int CallerId;
         public int TargetId;
         public Enumerators.AffectObjectType AffectObjectType;
     }

@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IPvPManager _pvpManager;
+
         private Sequence _rearrangingTopRealTimeSequence, _rearrangingBottomRealTimeSequence;
 
         public event Action<int> PlayerGraveyardUpdated;
@@ -80,8 +82,6 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEnded;
 
-        public PvPManager _pvpManager;
-
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
-            _pvpManager = GameClient.Get<PvPManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _vfxController = _gameplayManager.GetController<VfxController>();

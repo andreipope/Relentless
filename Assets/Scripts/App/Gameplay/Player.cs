@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
 
         private IMatchManager _matchManager;
 
-        private PvPManager _pvpManager;
+        private IPvPManager _pvpManager;
 
         public Player(int id, GameObject playerObject, bool isOpponent)
         {
@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
-            _pvpManager = GameClient.Get<PvPManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();

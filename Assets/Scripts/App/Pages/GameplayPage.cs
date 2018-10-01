@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
 
         private IMatchManager _matchManager;
 
-        private PvPManager _pvpManager;
+        private IPvPManager _pvpManager;
 
         public void Init()
         {
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _matchManager = GameClient.Get<IMatchManager>();
-            _pvpManager = GameClient.Get<PvPManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _gameplayManager.GameInitialized += GameInitializedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
