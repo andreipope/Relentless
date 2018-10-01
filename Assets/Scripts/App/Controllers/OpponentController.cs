@@ -71,6 +71,24 @@ namespace Loom.ZombieBattleground
         public void InitializePlayer(int playerId)
         {
             _gameplayManager.OpponentPlayer = new Player(playerId, GameObject.Find("Opponent"), true);
+
+            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            {
+                List<string> playerDeck = new List<string>();
+                OpponentDeck opponentDeck = _pvpManager.OpponentDeck;
+
+                foreach (DeckCardData card in opponentDeck.Cards)
+                {
+                    for (int i = 0; i < card.Amount; i++)
+                    {
+                        playerDeck.Add(card.CardName);
+                    }
+                }
+
+                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+
+                _battlegroundController.UpdatePositionOfCardsInOpponentHand();
+            }
         }
 
         private void GameStartedHandler()

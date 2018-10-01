@@ -120,8 +120,6 @@ namespace Loom.ZombieBattleground
             {
                 _checkPlayerStatus = false;
                 GetGameState();
-                _uiManager.HidePopup<ConnectionPopup>();
-                CreateLocalMatch();
             }
         }
 
@@ -148,6 +146,9 @@ namespace Loom.ZombieBattleground
                 // Need to remove delay
                 await Task.Delay(3000);
                 _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
+
+                _uiManager.HidePopup<ConnectionPopup>();
+                CreateLocalMatch();
             }
             catch (Exception ex)
             {
