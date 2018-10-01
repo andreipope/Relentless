@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<BackendFacade>(new BackendFacade(backendEndpoint.AuthHost, backendEndpoint.ReaderHost, backendEndpoint.WriterHost));
-            AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
+            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
