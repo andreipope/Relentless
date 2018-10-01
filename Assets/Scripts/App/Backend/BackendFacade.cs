@@ -327,47 +327,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
-        #region Player Actions
-
-        public async Task SendEndTurn(string userId, EndTurnModel model)
-        {
-            await Task.CompletedTask;
-            //  return await Contract.StaticCallAsync<EndTurnModel>(EndTurnMethod, request);
-        }
-
-        public async Task SendDrawCard(string userId, DrawCardModel model)
-        {
-            await Task.CompletedTask;
-            // return await Contract.StaticCallAsync<DrawCardModel>(DrawCardMethod, request);
-        }
-
-        public async Task SendCardAttack(string userId, CardAttackModel model)
-        {
-            await Task.CompletedTask;
-            // return await Contract.StaticCallAsync<CardAttackModel>(CardAttackMethod, request);
-        }
-
-        public async Task SendUseCardAbility(string userId, UseCardAbilityModel model)
-        {
-            await Task.CompletedTask;
-            // return await Contract.StaticCallAsync<UseCardAbilityModel>(UseCardAbilityMethod, request);
-        }
-
-        public async Task SendUseOverlordSkill(string userId, UseOverlordSkillModel model)
-        {
-            await Task.CompletedTask;
-            // return await Contract.StaticCallAsync<UseOverlordSkillModel>(UseOverlordSkillMethod, request);
-        }
-
-        public async Task SendMulligan(string userId, MulliganModel model)
-        {
-            await Task.CompletedTask;
-            // return await Contract.StaticCallAsync<MulliganModel>(MulliganMethod, request);
-        }
-
-        #endregion
-
-
         #region PVP
          private const string FindMatchMethod = "FindMatch";
          private const string SendPlayerActionMethod = "SendPlayerAction";
@@ -423,9 +382,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
              EventHandler<JsonRpcEventData> handler = (sender, e) =>{ };
              reader.UnsubscribeAsync(handler);
 
-    }
+    	 }
 
     #endregion
 
-}
+	}
 }

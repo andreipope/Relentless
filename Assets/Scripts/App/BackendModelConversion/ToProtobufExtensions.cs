@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Protobuf;
 
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Data
             {
                 cardInstances[i] = new CardInstance
                 {
-                    InstanceId = cards[i].InstanceId,
+                    InstanceId = cards[i].Id,
                     Prototype = ToProtobufExtensions.GetCardPrototype(cards[i]),
                     Defence = cards[i].Health,
                     Attack = cards[i].Damage
