@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.GameInitialized += OnGameInitializedHandler;
 
-            _pvpManager.OnGetEndTurnAction += OnGetEndTurnHandler;
+            _pvpManager.EndTurnActionReceived += OnGetEndTurnHandler;
         }
 
         private void OnGetEndTurnHandler()
@@ -388,9 +388,6 @@ namespace Loom.ZombieBattleground
                     card.Model.OnEndTurn();
                 }
             }
-
-            //_gameplayManager.CurrentPlayer.InvokeTurnEnded();
-            //_gameplayManager.OpponentPlayer.InvokeTurnEnded();
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :

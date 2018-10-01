@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            _pvpManager.OnGameStarted += OnStartGamePvP;
+                            _pvpManager.GameStartedActionReceived += OnStartGamePvP;
                         }
                     }
                     break;
@@ -140,20 +140,15 @@ namespace Loom.ZombieBattleground
 
         private async void GetGameState()
         {
-            try
-            {
-                // TODO : Quick fix... something wrong with backend side..
-                // Need to remove delay
-                await Task.Delay(3000);
-                _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
 
-                _uiManager.HidePopup<ConnectionPopup>();
-                CreateLocalMatch();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(" === GetGameState Exception = " + ex);
-            }
+            // TODO : Quick fix... something wrong with backend side..
+            // Need to remove delay
+            await Task.Delay(3000);
+            _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
+
+            _uiManager.HidePopup<ConnectionPopup>();
+            CreateLocalMatch();
+
         }
 
         private void StartLoadMatch()

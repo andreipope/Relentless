@@ -86,27 +86,28 @@ namespace Loom.ZombieBattleground
 
         private void GameStartedHandler()
         {
-            _pvpManager.OnCardPlayedAction += OnCardPlayedHandler;
-            _pvpManager.OnCardAttackedAction += OnCardAttackedHandler;
-            _pvpManager.OnDrawCardAction += OnDrawCardHandler;
-            _pvpManager.OnCardAbilityUsedAction += OnCardAbilityUsedHandler;
-            _pvpManager.OnOverlordSkillUsedAction += OnOverlordSkillUsedHandler;
-            _pvpManager.OnMulliganProcessUsedAction += OnMulliganProcessHandler;
+            _pvpManager.CardPlayedActionReceived += OnCardPlayedHandler;
+            _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
+            _pvpManager.DrawCardActionReceived += OnDrawCardHandler;
+            _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
+            _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
-            _pvpManager.OnCardPlayedAction -= OnCardPlayedHandler;
-            _pvpManager.OnCardAttackedAction -= OnCardAttackedHandler;
-            _pvpManager.OnDrawCardAction -= OnDrawCardHandler;
-            _pvpManager.OnCardAbilityUsedAction -= OnCardAbilityUsedHandler;
-            _pvpManager.OnOverlordSkillUsedAction -= OnOverlordSkillUsedHandler;
-            _pvpManager.OnMulliganProcessUsedAction -= OnMulliganProcessHandler;
+            _pvpManager.CardPlayedActionReceived -= OnCardPlayedHandler;
+            _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
+            _pvpManager.DrawCardActionReceived -= OnDrawCardHandler;
+            _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
+            _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
         }
 
-        #region requests
 
-        public async Task ActionEndTurn(Player player)
+    #region requests
+
+    public async Task ActionEndTurn(Player player)
         {
             if (!_backendFacade.IsConnected)
                 return;
