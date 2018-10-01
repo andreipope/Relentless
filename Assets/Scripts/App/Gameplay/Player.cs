@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
             CardsPreparingToHand = new List<BoardCard>();
 
-            int heroId = -1;
+            int heroId = 0;
 
             if (!isOpponent)
             {
