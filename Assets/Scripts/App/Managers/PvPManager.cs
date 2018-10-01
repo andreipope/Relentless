@@ -1,111 +1,137 @@
 using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using Loom.Newtonsoft.Json;
-using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
-using Card = Loom.ZombieBattleground.Protobuf.Card;
 using SystemText = System.Text;
 
-public class PvPManager : IService
+namespace Loom.ZombieBattleground
 {
-    public FindMatchResponse MatchResponse { get; set; }
-    public GetGameStateResponse GameStateResponse { get; set; }
-
-    private BackendFacade _backendFacade;
-    private BackendDataControlMediator _backendDataControlMediator;
-
-    public OpponentDeck OpponentDeck { get; set; }
-    public int OpponentDeckIndex { get; set; }
-
-    public Action OnGameStarted;
-    public Action OnGetEndTurnAction;
-    public Action<PlayerActionCardPlay> OnCardPlayedAction;
-
-    public void Init()
+    public class PvPManager : IService, IPVPManagaer
     {
-        _backendFacade = GameClient.Get<BackendFacade>();
-        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+        // matching actions
+        public event Action OnMatchCreated;
+        public event Action OnMatchingStarted;
+        public event Action OnPlayerLeftGame;
 
-        _backendFacade.PlayerActionEvent += OnGetPlayerActionEventListener;
-    }
+        // game status actions
+        public event Action OnGameStarted;
+        public event Action OnGameEnded;
 
+        // gameplay actions
+        public event Action OnGetEndTurnAction;
+        public event Action<PlayerActionCardPlay> OnCardPlayedAction;
+        public event Action<PlayerActionCardAttack> OnCardAttackedAction;
+        public event Action<PlayerActionUseOverlordSkill> OnOverlordSkillUsedAction;
+        public event Action<PlayerActionUseCardAbility> OnCardAbilityUsedAction;
+        public event Action<PlayerActionMulligan> OnMulliganProcessUsedAction;
+        public event Action<PlayerActionDrawCard> OnDrawCardAction;
 
-    private void OnGetPlayerActionEventListener(byte[] data)
-    {
-        string jsonStr = SystemText.Encoding.UTF8.GetString(data);
-        Debug.LogWarning(jsonStr);
-        PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
-        MatchResponse.Match = playerActionEvent.Match.Clone();
+        private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
 
-        switch (playerActionEvent.Match.Status)
+        public FindMatchResponse MatchResponse { get; set; }
+        public GetGameStateResponse GameStateResponse { get; set; }
+
+        public OpponentDeck OpponentDeck { get; set; }
+        public int OpponentDeckIndex { get; set; }
+
+        public void Init()
         {
-            case Match.Types.Status.Created:
-                break;
-            case Match.Types.Status.Matching:
-                break;
-            case Match.Types.Status.Started:
-                OnGameStarted?.Invoke();
-                break;
-            case Match.Types.Status.Playing:
-                if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
-                    return;
-                OnReceivePlayerActionType(playerActionEvent);
-                break;
-            case Match.Types.Status.PlayerLeft:
-                break;
-            case Match.Types.Status.Ended:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _backendFacade.PlayerActionEvent += OnGetPlayerActionEventListener;
         }
-    }
 
-
-    private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
-    {
-        switch (playerActionEvent.PlayerActionType)
+        public void Update()
         {
-            case PlayerActionType.NoneAction:
-                break;
-            case PlayerActionType.EndTurn:
-                OnGetEndTurnAction?.Invoke();
-                break;
-            case PlayerActionType.Mulligan:
-                break;
-            case PlayerActionType.CardPlay:
-                OnCardPlayedAction?.Invoke(playerActionEvent.PlayerAction.CardPlay);
-                break;
-            case PlayerActionType.CardAttack:
-                break;
-            case PlayerActionType.UseCardAbility:
-                break;
-            case PlayerActionType.UseOverlordSkill:
-                break;
-            case PlayerActionType.DrawCard:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
         }
-    }
 
-    public bool IsCurrentPlayer()
-    {
-        if (MatchResponse.Match.PlayerStates[GameStateResponse.GameState.CurrentPlayerIndex].Id ==
-            _backendDataControlMediator.UserDataModel.UserId)
-            return true;
+        public void Dispose()
+        {
+        }
 
-        return false;
-    }
+        public bool IsCurrentPlayer()
+        {
+            if (MatchResponse.Match.PlayerStates[GameStateResponse.GameState.CurrentPlayerIndex].Id ==
+                _backendDataControlMediator.UserDataModel.UserId)
+                return true;
 
-    public void Update()
-    {
-    }
+            return false;
+        }
 
-    public void Dispose()
-    {
+        private void OnGetPlayerActionEventListener(byte[] data)
+        {
+            string jsonStr = SystemText.Encoding.UTF8.GetString(data);
+
+            Debug.LogWarning(jsonStr); // todo delete
+
+            PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+            MatchResponse.Match = playerActionEvent.Match.Clone();
+
+            switch (playerActionEvent.Match.Status)
+            {
+                case Match.Types.Status.Created:
+                    OnMatchCreated?.Invoke();
+                    break;
+                case Match.Types.Status.Matching:
+                    OnMatchingStarted?.Invoke();
+                    break;
+                case Match.Types.Status.Started:
+                    OnGameStarted?.Invoke();
+                    break;
+                case Match.Types.Status.Playing:
+                    {
+                        if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
+                            return;
+
+                        OnReceivePlayerActionType(playerActionEvent);
+                    }
+                    break;
+                case Match.Types.Status.PlayerLeft:
+                    OnPlayerLeftGame?.Invoke();
+                    break;
+                case Match.Types.Status.Ended:
+                    OnGameEnded?.Invoke();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(playerActionEvent.Match.Status), playerActionEvent.Match.Status.ToString() + " not found");
+            }
+        }
+
+
+        private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
+        {
+            switch (playerActionEvent.PlayerActionType)
+            {
+                case PlayerActionType.NoneAction:
+                    break;
+                case PlayerActionType.EndTurn:
+                    OnGetEndTurnAction?.Invoke();
+                    break;
+                case PlayerActionType.Mulligan:
+                    OnMulliganProcessUsedAction?.Invoke(playerActionEvent.PlayerAction.Mulligan);
+                    break;
+                case PlayerActionType.CardPlay:
+                    OnCardPlayedAction?.Invoke(playerActionEvent.PlayerAction.CardPlay);
+                    break;
+                case PlayerActionType.CardAttack:
+                    OnCardAttackedAction?.Invoke(playerActionEvent.PlayerAction.CardAttack);
+                    break;
+                case PlayerActionType.UseCardAbility:
+                    //  OnCardAbilityUsedAction?.Invoke(playerActionEvent.PlayerAction.UseCardAbility);
+                    break;
+                case PlayerActionType.UseOverlordSkill:
+                    //   OnOverlordSkillUsedAction?.Invoke(playerActionEvent.PlayerAction.UseOverlordSkill);
+                    break;
+                case PlayerActionType.DrawCard:
+                    OnDrawCardAction?.Invoke(playerActionEvent.PlayerAction.DrawCard);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(playerActionEvent.PlayerActionType), playerActionEvent.PlayerActionType.ToString() + " not found");
+            }
+        }
     }
 }
