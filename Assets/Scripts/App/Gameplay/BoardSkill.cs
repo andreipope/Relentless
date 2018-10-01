@@ -41,6 +41,8 @@ namespace Loom.ZombieBattleground
 
         private bool _usedInThisTurn;
 
+        private bool _isOpen;
+
         private OnBehaviourHandler _behaviourHandler;
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
@@ -94,6 +96,8 @@ namespace Loom.ZombieBattleground
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+
+            _isOpen = false;
         }
 
         public bool IsSkillReady => _cooldown == 0;
@@ -299,9 +303,16 @@ namespace Loom.ZombieBattleground
         {
             _glowObject.SetActive(isActive);
 
-            _shutterAnimator.enabled = isActive ? true : false;
-            _shutterAnimator.speed = isActive ? 1 : -1;
-            _shutterAnimator.StartPlayback();
+            //_shutterAnimator.enabled = isActive ? true : false;
+            //_shutterAnimator.speed = isActive ? 1 : -1;
+            //_shutterAnimator.StartPlayback();
+
+            if (_isOpen != isActive)
+            {
+                _isOpen = isActive;
+                string state = isActive ? "Open" : "Close";
+                _shutterAnimator.SetTrigger(state);
+            }
         }
 
         private void DoOnUpSkillAction()

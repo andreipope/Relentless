@@ -449,7 +449,8 @@ namespace Loom.ZombieBattleground
             _overlordRegularObject.SetActive(false);
             _overlordDeathObject.SetActive(true);
 
-            _avatarAnimator.enabled = true;
+            //_avatarAnimator.enabled = true;
+            _avatarObject.SetActive(false);
             _deathAnimator.enabled = true;
             _avatarHeroHighlight.SetActive(false);
             _avatarHeroHighlightAfterDead.SetActive(true);

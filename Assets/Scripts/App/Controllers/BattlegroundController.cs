@@ -244,8 +244,8 @@ namespace Loom.ZombieBattleground
             CurrentTurn = Constants.FirstGameTurnIndex;
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.Health = 1;
-            _gameplayManager.CurrentPlayer.Health = 99;
+            _gameplayManager.OpponentPlayer.Health = 100;
+            _gameplayManager.CurrentPlayer.Health = 1;
 #endif
 
             _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;

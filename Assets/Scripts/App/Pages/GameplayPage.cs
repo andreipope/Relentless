@@ -302,6 +302,15 @@ namespace Loom.ZombieBattleground
                 transfHeroObject.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
             }
 
+            Debug.Log(objectName + "/OverlordDeath/RegularModel2D/FrameShuttering (1)/FrameExplosion");
+            Transform transfHeroObjectAfterDie = GameObject.Find(objectName + "/OverlordArea/OverlordDeath/RegularModel2D/FrameShuttering (1)/FrameExplosion").transform;
+
+            for (int i = 0; i < transfHeroObject.childCount; i++)
+            {
+                if (transfHeroObjectAfterDie.GetChild(i).GetComponent<Renderer>() != null)
+                    transfHeroObjectAfterDie.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
+            }
+
             Sprite heroHighlight =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
             GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
