@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         // game status actions
         public event Action GameStartedActionReceived;
-        public event Action GameEndedActioReceived;
+        public event Action GameEndedActionReceived;
 
         // gameplay actions
         public event Action EndTurnActionReceived;
@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
                     PlayerLeftGameActionReceived?.Invoke();
                     break;
                 case Match.Types.Status.Ended:
-                    GameEndedActioReceived?.Invoke();
+                    GameEndedActionReceived?.Invoke();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playerActionEvent.Match.Status), playerActionEvent.Match.Status.ToString() + " not found");

@@ -131,20 +131,13 @@ namespace Loom.ZombieBattleground
 
         private async void GetGameState()
         {
-            try
-            {
-                PvPManager pvpManager = GameClient.Get<PvPManager>();
-                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+            PvPManager pvpManager = GameClient.Get<PvPManager>();
+            BackendFacade backendFacade = GameClient.Get<BackendFacade>();
 
-                // TODO : Quick fix... something wrong with backend side..
-                // Need to remove delay
-                await Task.Delay(3000);
-                pvpManager.GameStateResponse = await backendFacade.GetGameState((int)pvpManager.MatchResponse.Match.Id);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(" === GetGameState Exception = " + ex);
-            }
+            // TODO : Quick fix... something wrong with backend side..
+            // Need to remove delay
+            await Task.Delay(3000);
+            pvpManager.GameStateResponse = await backendFacade.GetGameState((int)pvpManager.MatchResponse.Match.Id);
         }
 
         private void StartLoadMatch()

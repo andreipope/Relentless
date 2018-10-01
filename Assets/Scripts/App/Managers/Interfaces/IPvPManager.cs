@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
         event Action PlayerLeftGameActionReceived;
 
         event Action GameStartedActionReceived;
-        event Action GameEndedActioReceived;
+        event Action GameEndedActionReceived;
 
         event Action EndTurnActionReceived;
         event Action<PlayerActionCardPlay> CardPlayedActionReceived;

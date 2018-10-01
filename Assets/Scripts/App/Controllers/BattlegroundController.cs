@@ -389,9 +389,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            //_gameplayManager.CurrentPlayer.InvokeTurnEnded();
-            //_gameplayManager.OpponentPlayer.InvokeTurnEnded();
-
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :
                 _gameplayManager.CurrentPlayer;
