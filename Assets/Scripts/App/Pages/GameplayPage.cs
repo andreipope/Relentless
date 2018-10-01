@@ -284,10 +284,10 @@ namespace Loom.ZombieBattleground
             HeroSkill skillSecond = hero.Skills[hero.SecondarySkill];
 
             skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.HeroElement + "_" +
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_" + hero.HeroElement + "_" +
                     skillPrim.Skill.ToLower());
             skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.HeroElement + "_" +
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_" + hero.HeroElement + "_" +
                     skillSecond.Skill.ToLower());
 
             Texture2D heroTexture =

@@ -280,49 +280,49 @@ namespace Loom.ZombieBattleground.Common
 
         public enum OverlordSkill
         {
-            NONE,
+            None,
 
             // AIR
-            PUSH,
-            DRAW,
-            WIND_SHIELD,
-            LEVITATE,
-            RETREAT,
+            Push,
+            Draw,
+            WindShield,
+            Levitate,
+            Retreat,
 
             // EARTH
-            HARDEN,
-            STONE_SKIN,
-            FORTIFY,
-            PHALANX,
-            FORTRESS,
+            Harden,
+            Stoneskin,
+            Fortify,
+            Phalanx,
+            Fortress,
 
             // FIRE
-            FIRE_BOLT,
-            RABIES,
-            FIREBALL,
-            MASS_RABIES,
-            METEOR_SHOWER,
+            FireBolt,
+            Rabies,
+            Fireball,
+            MassRabies,
+            MeteorShower,
 
             // LIFE
-            HEALING_TOUCH,
-            MEND,
-            RESSURECT,
-            ENHANCE,
-            REANIMATE,
+            HealingTouch,
+            Mend,
+            Resurrect,
+            Enhance,
+            Reanimate,
 
             // TOXIC
-            POISON_DART,
-            TOXIC_POWER,
-            BREAKOUT,
-            INFECT,
-            EPIDEMIC,
+            PoisonDart,
+            ToxicPower,
+            Breakout,
+            Infect,
+            Epidemic,
 
             // WATER
-            FREEZE,
-            ICE_BOLT,
-            ICE_WALL,
-            SHATTER,
-            BLIZZARD
+            Freeze,
+            IceBolt,
+            IceWall,
+            Shatter,
+            Blizzard
         }
 
         public enum SetType
