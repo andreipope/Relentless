@@ -77,9 +77,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Player = player;
                 IsOpponent = isOpponent;
 
-                //if (!dataManager.BetaConfig.SaveTurnData)
-                //    return;
-
                 if (!_backendFacade.IsConnected)
                     return;
 
@@ -198,7 +195,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 };
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
-                //await UploadActionLogModel(CreateBasicActionLogModel("TurnEnd"));
             }
 
             private ActionLogModel CreateBasicActionLogModel(string eventName)
