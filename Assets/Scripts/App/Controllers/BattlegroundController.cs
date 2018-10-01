@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEnded;
 
-        public PvPManager _pvpManager;
+        public IPvPManager _pvpManager;
 
         public void Init()
         {
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
-            _pvpManager = GameClient.Get<PvPManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _vfxController = _gameplayManager.GetController<VfxController>();

@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
                     BackendFacade backendFacade = GameClient.Get<BackendFacade>();
                     BackendDataControlMediator backendDataControlMediator =
                         GameClient.Get<BackendDataControlMediator>();
-                    PvPManager pvpManager = GameClient.Get<PvPManager>();
+                    IPvPManager pvpManager = GameClient.Get<IPvPManager>();
 
                     pvpManager.MatchResponse = await GetBackendFacade(backendFacade).FindMatch(
                         backendDataControlMediator.UserDataModel.UserId,
@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
 
         private async void GetGameState()
         {
-            PvPManager pvpManager = GameClient.Get<PvPManager>();
+            IPvPManager pvpManager = GameClient.Get<IPvPManager>();
             BackendFacade backendFacade = GameClient.Get<BackendFacade>();
 
             // TODO : Quick fix... something wrong with backend side..
