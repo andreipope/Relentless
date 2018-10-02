@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
             _targets = InternalTools.GetRandomElementsFromList(_targets, 1);
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.VFXToPlay[Enumerators.VFXType.Moving]);// "Prefabs/VFX/Skills/PoisonDartVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
 
             foreach (object target in _targets)
             {
@@ -74,9 +74,9 @@ namespace Loom.ZombieBattleground
 
             GameObject vfxObject = null;
 
-            if (AbilityData.VFXToPlay.ContainsKey(Enumerators.VFXType.Impact))
+            if (AbilityData.HasVFXType(Enumerators.VFXType.Impact))
             {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.VFXToPlay[Enumerators.VFXType.Impact]);// "Prefabs/VFX/Skills/PoisonDart_ImpactVFX");
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Impact).Path);
 
                 vfxObject = Object.Instantiate(vfxObject);
                 vfxObject.transform.position = targetPosition;

@@ -2219,7 +2219,17 @@
               "callType": "ENTRY",
               "targetType": "OPPONENT_CARD|OPPONENT",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VFXToPlay": [
+                {
+                  "VFXType": "Moving",
+                  "Path": "Prefabs/VFX/Skills/PoisonDartVFX"
+                },
+                {
+                  "VFXType": "Impact",
+                  "Path": "Prefabs/VFX/Skills/PoisonDart_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
