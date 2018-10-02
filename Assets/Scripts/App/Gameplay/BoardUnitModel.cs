@@ -437,7 +437,7 @@ namespace Loom.ZombieBattleground
                     IsPlayable = false;
                     AttackedThisTurn = true;
 
-                    OwnerPlayer.ThrowCardAttacked(Card, AffectObjectType.Player, 1);
+                    OwnerPlayer.ThrowCardAttacked(Card, AffectObjectType.Player, _gameplayManager.CurrentPlayer.Id);
 
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
@@ -466,7 +466,7 @@ namespace Loom.ZombieBattleground
                     IsPlayable = false;
                     AttackedThisTurn = true;
 
-                    OwnerPlayer.ThrowCardAttacked(Card, AffectObjectType.Card, 1);
+                    OwnerPlayer.ThrowCardAttacked(Card, AffectObjectType.Card, targetCardModel.Card.Id);
 
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>

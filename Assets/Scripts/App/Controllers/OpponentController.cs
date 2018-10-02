@@ -235,6 +235,8 @@ namespace Loom.ZombieBattleground
             switch (actionCardAttack.AffectObjectType)
             {
                 case AffectObjectType.Player:
+                    BoardObject targetPlayer = _gameplayManager.CurrentPlayer;
+                    attackerUnit.DoCombat(targetPlayer);
                     break;
                 case AffectObjectType.Character:
                     break;
