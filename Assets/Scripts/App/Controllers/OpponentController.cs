@@ -217,14 +217,14 @@ namespace Loom.ZombieBattleground
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
         {
-            Debug.LogError(" Going to Attack -- " + actionCardAttack.AffectObjectType + ", id =  " +
-                           actionCardAttack.Target.InstanceId);
+            //Debug.LogError(" Going to Attack -- " + actionCardAttack.AffectObjectType + ", id =  " +
+              //             actionCardAttack.Target.InstanceId);
 
             BoardUnitModel attackerUnit = null;
             List<BoardUnitModel> opponentBoardUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0).Select(x => x.Model).ToList();
             foreach (BoardUnitModel unit in opponentBoardUnits)
             {
-                Debug.Log("Opponent Card id == " + unit.Card.Id);
+                //Debug.Log("Opponent Card id == " + unit.Card.Id);
                 if (unit.Card.Id == actionCardAttack.Attacker.InstanceId)
                 {
                     attackerUnit = unit;
@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
                     List<BoardUnitModel> playerBoardUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0).Select(x => x.Model).ToList();
                     foreach (BoardUnitModel unit in playerBoardUnits)
                     {
-                        Debug.Log("Player Card id == " + unit.Card.Id);
+                        //Debug.Log("Player Card id == " + unit.Card.Id);
                         if (unit.Card.Id == actionCardAttack.Target.InstanceId)
                         {
                             targetUnit = unit;
@@ -309,7 +309,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.zero;
                         boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
-
+                        workingCard.Id = instanceId;
                         boardUnitViewElement.SetObjectInfo(workingCard);
 
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
