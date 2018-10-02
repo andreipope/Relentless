@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
 
         public bool CardDistribution { get; set; }
 
+        public List<WorkingCard> MulliganCards;
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -286,7 +288,8 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
+                //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
+                MulliganCards.Add(card);
             }
         }
 
@@ -520,8 +523,6 @@ namespace Loom.ZombieBattleground
 
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
-
-                player.ThrowPlayCardEvent(card.WorkingCard);
 
                 switch (libraryCard.CardKind)
                 {

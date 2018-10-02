@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _stateManager.ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
+                _stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Loom.Client
@@ -15,6 +16,7 @@ namespace Loom.Client
         Task DisconnectAsync();
         Task SubscribeAsync(EventHandler<JsonRpcEventData> handler);
         Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler);
+        Task SubscribeAsync(List<string> topic, EventHandler<JsonRpcEventData> handler);
     }
 
     [Obsolete("Use IRpcClient", true)]

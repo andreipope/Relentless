@@ -1,5 +1,10 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -15,9 +20,18 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IPvPManager _pvpManager;
+
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private Enumerators.AppState _finishMatchAppState;
 
         public Enumerators.MatchType MatchType { get; set; }
+
+        // TODO : Find another solution, right now its tempraoray only....
+        private bool _checkPlayerStatus;
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
@@ -41,21 +55,43 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public void FindMatch(Enumerators.MatchType matchType)
+        public async void FindMatch()
         {
-            switch (matchType)
+            switch (MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
                     CreateLocalMatch();
                     break;
                 case Enumerators.MatchType.PVP:
-                    CreateLocalMatch();
+                    {
+                        _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
+                            _backendDataControlMediator.UserDataModel.UserId,
+                            _uiManager.GetPage<GameplayPage>().CurrentDeckId);
+
+                        Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
+                        _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
+                        _uiManager.DrawPopup<ConnectionPopup>();
+
+                        if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                        {
+                            OnStartGamePvP();
+                        }
+                        else
+                        {
+                            _pvpManager.GameStartedActionReceived += OnStartGamePvP;
+                        }
+                    }
                     break;
                 default:
-                    throw new NotImplementedException(matchType + " not implemented yet.");
+                    throw new NotImplementedException(MatchType + " not implemented yet.");
             }
 
+        }
+
+        public async void FindMatch(Enumerators.MatchType matchType)
+        {
             MatchType = matchType;
+            FindMatch();
         }
 
         public void Dispose()
@@ -65,23 +101,54 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            MatchType = Enumerators.MatchType.LOCAL;
             _uiManager = GameClient.Get<IUIManager>();
             _sceneManager = GameClient.Get<IScenesManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
         }
 
         public void Update()
         {
+            if (_checkPlayerStatus)
+            {
+                _checkPlayerStatus = false;
+                GetGameState();
+            }
         }
 
         private void CreateLocalMatch()
         {
-            // todo write logic
             StartLoadMatch();
+        }
+
+        private static BackendFacade GetBackendFacade(BackendFacade backendFacade)
+        {
+            return backendFacade;
+        }
+
+        private void OnStartGamePvP()
+        {
+            _checkPlayerStatus = true;
+        }
+
+        private async void GetGameState()
+        {
+
+            // TODO : Quick fix... something wrong with backend side..
+            // Need to remove delay
+            await Task.Delay(3000);
+            _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
+
+            _uiManager.HidePopup<ConnectionPopup>();
+            CreateLocalMatch();
+
         }
 
         private void StartLoadMatch()
