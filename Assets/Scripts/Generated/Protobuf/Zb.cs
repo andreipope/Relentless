@@ -83,38 +83,223 @@ namespace Loom.ZombieBattleground.Protobuf {
             "TGlzdBIVCgZoZXJvZXMYASADKAsyBS5IZXJvIjQKEkNhcmRDb2xsZWN0aW9u",
             "TGlzdBIeCgVjYXJkcxgBIAMoCzIPLkNhcmRDb2xsZWN0aW9uIkUKCERlY2tM",
             "aXN0EhQKBWRlY2tzGAEgAygLMgUuRGVjaxIjChtsYXN0X21vZGlmaWNhdGlv",
-            "bl90aW1lc3RhbXAYAiABKAMihQEKC0luaXRSZXF1ZXN0EhwKDWRlZmF1bHRf",
+            "bl90aW1lc3RhbXAYAiABKAMilgEKC0luaXRSZXF1ZXN0EhwKDWRlZmF1bHRf",
             "ZGVja3MYASADKAsyBS5EZWNrEisKEmRlZmF1bHRfY29sbGVjdGlvbhgCIAMo",
             "CzIPLkNhcmRDb2xsZWN0aW9uEhQKBWNhcmRzGAMgAygLMgUuQ2FyZBIVCgZo",
-            "ZXJvZXMYBCADKAsyBS5IZXJvIukBChRVcHNlcnRBY2NvdW50UmVxdWVzdBIP",
-            "Cgd1c2VyX2lkGAEgASgJEh0KFXBob25lX251bWJlcl92ZXJpZmllZBgCIAEo",
-            "CBIXCg9yZXdhcmRfcmVkZWVtZWQYAyABKAgSFgoOaXNfa2lja3N0YXJ0ZXIY",
-            "BCABKAgSDQoFaW1hZ2UYBSABKAkSGgoSZW1haWxfbm90aWZpY2F0aW9uGAYg",
-            "ASgIEhEKCWVsb19zY29yZRgHIAEoAxIUCgxjdXJyZW50X3RpZXIYCCABKAUS",
-            "HAoUZ2FtZV9tZW1iZXJzaGlwX3RpZXIYCSABKAUiJAoRR2V0QWNjb3VudFJl",
-            "cXVlc3QSDwoHdXNlcl9pZBgBIAEoCSIyCg5HZXREZWNrUmVxdWVzdBIPCgd1",
-            "c2VyX2lkGAEgASgJEg8KB2RlY2tfaWQYAiABKAMiJgoPR2V0RGVja1Jlc3Bv",
-            "bnNlEhMKBGRlY2sYAiABKAsyBS5EZWNrIl4KEUNyZWF0ZURlY2tSZXF1ZXN0",
-            "Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSIwobbGFz",
-            "dF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIiUKEkNyZWF0ZURlY2tS",
-            "ZXNwb25zZRIPCgdkZWNrX2lkGAEgASgDIloKEURlbGV0ZURlY2tSZXF1ZXN0",
-            "Eg8KB3VzZXJfaWQYASABKAkSDwoHZGVja19pZBgCIAEoAxIjChtsYXN0X21v",
-            "ZGlmaWNhdGlvbl90aW1lc3RhbXAYAyABKAMiXAoPRWRpdERlY2tSZXF1ZXN0",
-            "Eg8KB3VzZXJfaWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2sSIwobbGFz",
-            "dF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIjYKDURlY2tzUmVzcG9u",
-            "c2USDwoHdXNlcl9pZBgBIAEoCRIUCgVkZWNrcxgCIAMoCzIFLkRlY2siIwoQ",
-            "TGlzdERlY2tzUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIk4KEUxpc3REZWNr",
-            "c1Jlc3BvbnNlEhQKBWRlY2tzGAEgAygLMgUuRGVjaxIjChtsYXN0X21vZGlm",
-            "aWNhdGlvbl90aW1lc3RhbXAYAyABKAMiGAoWTGlzdENhcmRMaWJyYXJ5UmVx",
-            "dWVzdCIxChdMaXN0Q2FyZExpYnJhcnlSZXNwb25zZRIWCgRzZXRzGAEgAygL",
-            "MgguQ2FyZFNldCIYChZMaXN0SGVyb0xpYnJhcnlSZXF1ZXN0IjAKF0xpc3RI",
-            "ZXJvTGlicmFyeVJlc3BvbnNlEhUKBmhlcm9lcxgBIAMoCzIFLkhlcm8iJwoU",
-            "R2V0Q29sbGVjdGlvblJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSI3ChVHZXRD",
-            "b2xsZWN0aW9uUmVzcG9uc2USHgoFY2FyZHMYASADKAsyDy5DYXJkQ29sbGVj",
-            "dGlvbkIbqgIYTG9vbU5ldHdvcmsuQ1pCLlByb3RvYnVmYgZwcm90bzM="));
+            "ZXJvZXMYBCADKAsyBS5IZXJvEg8KB3ZlcnNpb24YBSABKAkinAEKEVVwZGF0",
+            "ZUluaXRSZXF1ZXN0EhwKDWRlZmF1bHRfZGVja3MYASADKAsyBS5EZWNrEisK",
+            "EmRlZmF1bHRfY29sbGVjdGlvbhgCIAMoCzIPLkNhcmRDb2xsZWN0aW9uEhQK",
+            "BWNhcmRzGAMgAygLMgUuQ2FyZBIVCgZoZXJvZXMYBCADKAsyBS5IZXJvEg8K",
+            "B3ZlcnNpb24YBSABKAki+gEKFFVwc2VydEFjY291bnRSZXF1ZXN0Eg8KB3Vz",
+            "ZXJfaWQYASABKAkSHQoVcGhvbmVfbnVtYmVyX3ZlcmlmaWVkGAIgASgIEhcK",
+            "D3Jld2FyZF9yZWRlZW1lZBgDIAEoCBIWCg5pc19raWNrc3RhcnRlchgEIAEo",
+            "CBINCgVpbWFnZRgFIAEoCRIaChJlbWFpbF9ub3RpZmljYXRpb24YBiABKAgS",
+            "EQoJZWxvX3Njb3JlGAcgASgDEhQKDGN1cnJlbnRfdGllchgIIAEoBRIcChRn",
+            "YW1lX21lbWJlcnNoaXBfdGllchgJIAEoBRIPCgd2ZXJzaW9uGAogASgJIiQK",
+            "EUdldEFjY291bnRSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiMgoOR2V0RGVj",
+            "a1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCRIPCgdkZWNrX2lkGAIgASgDIiYK",
+            "D0dldERlY2tSZXNwb25zZRITCgRkZWNrGAIgASgLMgUuRGVjayJeChFDcmVh",
+            "dGVEZWNrUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKBGRlY2sYAiABKAsy",
+            "BS5EZWNrEiMKG2xhc3RfbW9kaWZpY2F0aW9uX3RpbWVzdGFtcBgDIAEoAyIl",
+            "ChJDcmVhdGVEZWNrUmVzcG9uc2USDwoHZGVja19pZBgBIAEoAyJaChFEZWxl",
+            "dGVEZWNrUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEg8KB2RlY2tfaWQYAiAB",
+            "KAMSIwobbGFzdF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIlwKD0Vk",
+            "aXREZWNrUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJEhMKBGRlY2sYAiABKAsy",
+            "BS5EZWNrEiMKG2xhc3RfbW9kaWZpY2F0aW9uX3RpbWVzdGFtcBgDIAEoAyI2",
+            "Cg1EZWNrc1Jlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkSFAoFZGVja3MYAiAD",
+            "KAsyBS5EZWNrIiMKEExpc3REZWNrc1JlcXVlc3QSDwoHdXNlcl9pZBgBIAEo",
+            "CSJOChFMaXN0RGVja3NSZXNwb25zZRIUCgVkZWNrcxgBIAMoCzIFLkRlY2sS",
+            "IwobbGFzdF9tb2RpZmljYXRpb25fdGltZXN0YW1wGAMgASgDIikKFkxpc3RD",
+            "YXJkTGlicmFyeVJlcXVlc3QSDwoHdmVyc2lvbhgBIAEoCSIxChdMaXN0Q2Fy",
+            "ZExpYnJhcnlSZXNwb25zZRIWCgRzZXRzGAEgAygLMgguQ2FyZFNldCIpChZM",
+            "aXN0SGVyb0xpYnJhcnlSZXF1ZXN0Eg8KB3ZlcnNpb24YASABKAkiMAoXTGlz",
+            "dEhlcm9MaWJyYXJ5UmVzcG9uc2USFQoGaGVyb2VzGAEgAygLMgUuSGVybyIn",
+            "ChRHZXRDb2xsZWN0aW9uUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIjcKFUdl",
+            "dENvbGxlY3Rpb25SZXNwb25zZRIeCgVjYXJkcxgBIAMoCzIPLkNhcmRDb2xs",
+            "ZWN0aW9uIowCCgtQbGF5ZXJTdGF0ZRIKCgJpZBgBIAEoCRIoCg1jdXJyZW50",
+            "QWN0aW9uGAIgASgOMhEuUGxheWVyQWN0aW9uVHlwZRIrChBvdmVybG9yZElu",
+            "c3RhbmNlGAMgASgLMhEuT3ZlcmxvcmRJbnN0YW5jZRIiCgtjYXJkc0luSGFu",
+            "ZBgEIAMoCzINLkNhcmRJbnN0YW5jZRIjCgxjYXJkc09uQm9hcmQYBSADKAsy",
+            "DS5DYXJkSW5zdGFuY2USIgoLY2FyZHNJbkRlY2sYBiADKAsyDS5DYXJkSW5z",
+            "dGFuY2USEwoEZGVjaxgHIAEoCzIFLkRlY2sSCgoCaHAYCCABKAUSDAoEbWFu",
+            "YRgJIAEoBSLAAQoFTWF0Y2gSCgoCaWQYASABKAMSDgoGdG9waWNzGAIgAygJ",
+            "EiIKDHBsYXllclN0YXRlcxgDIAMoCzIMLlBsYXllclN0YXRlEh0KBnN0YXR1",
+            "cxgEIAEoDjINLk1hdGNoLlN0YXR1cyJYCgZTdGF0dXMSCwoHQ3JlYXRlZBAA",
+            "EgwKCE1hdGNoaW5nEAESCwoHU3RhcnRlZBACEgsKB1BsYXlpbmcQAxIOCgpQ",
+            "bGF5ZXJMZWZ0EAQSCQoFRW5kZWQQBSI2ChNNYXRjaE1ha2luZ0luZm9MaXN0",
+            "Eh8KBWluZm9zGAEgAygLMhAuTWF0Y2hNYWtpbmdJbmZvIjYKD01hdGNoTWFr",
+            "aW5nSW5mbxIOCgZ1c2VySWQYASABKAkSEwoEZGVjaxgCIAEoCzIFLkRlY2si",
+            "qgIKDFBsYXllckFjdGlvbhIlCgphY3Rpb25UeXBlGAEgASgOMhEuUGxheWVy",
+            "QWN0aW9uVHlwZRIQCghwbGF5ZXJJZBgGIAEoCRItCgpjYXJkQXR0YWNrGAIg",
+            "ASgLMhcuUGxheWVyQWN0aW9uQ2FyZEF0dGFja0gAEikKCGRyYXdDYXJkGAMg",
+            "ASgLMhUuUGxheWVyQWN0aW9uRHJhd0NhcmRIABInCgdlbmRUdXJuGAQgASgL",
+            "MhQuUGxheWVyQWN0aW9uRW5kVHVybkgAEikKCG11bGxpZ2FuGAUgASgLMhUu",
+            "UGxheWVyQWN0aW9uTXVsbGlnYW5IABIpCghjYXJkUGxheRgHIAEoCzIVLlBs",
+            "YXllckFjdGlvbkNhcmRQbGF5SABCCAoGYWN0aW9uIp0BChFQbGF5ZXJBY3Rp",
+            "b25FdmVudBIrChBwbGF5ZXJBY3Rpb25UeXBlGAEgASgOMhEuUGxheWVyQWN0",
+            "aW9uVHlwZRIOCgZ1c2VySWQYAiABKAkSDwoHbWVzc2FnZRgDIAEoCRIVCgVt",
+            "YXRjaBgEIAEoCzIGLk1hdGNoEiMKDHBsYXllckFjdGlvbhgFIAEoCzINLlBs",
+            "YXllckFjdGlvbiIrChhQbGF5ZXJzSW5NYXRjaG1ha2luZ0xpc3QSDwoHdXNl",
+            "cklEcxgBIAMoCSIrChBQZW5kaW5nTWF0Y2hMaXN0EhcKB21hdGNoZXMYASAD",
+            "KAsyBi5NYXRjaCIkCglNYXRjaExpc3QSFwoHbWF0Y2hlcxgBIAMoCzIGLk1h",
+            "dGNoIh8KCk1hdGNoQ291bnQSEQoJY3VycmVudElkGAEgASgDIjIKEEZpbmRN",
+            "YXRjaFJlcXVlc3QSDgoGdXNlcklkGAEgASgJEg4KBmRlY2tJZBgCIAEoAyIq",
+            "ChFGaW5kTWF0Y2hSZXNwb25zZRIVCgVtYXRjaBgBIAEoCzIGLk1hdGNoIjQK",
+            "EUxlYXZlTWF0Y2hSZXF1ZXN0Eg4KBnVzZXJJZBgBIAEoCRIPCgdtYXRjaElk",
+            "GAIgASgDIhQKEkxlYXZlTWF0Y2hSZXNwb25zZSIiCg9HZXRNYXRjaFJlcXVl",
+            "c3QSDwoHbWF0Y2hJZBgBIAEoAyJIChBHZXRNYXRjaFJlc3BvbnNlEhUKBW1h",
+            "dGNoGAEgASgLMgYuTWF0Y2gSHQoJZ2FtZVN0YXRlGAIgASgLMgouR2FtZVN0",
+            "YXRlIiYKE0dldEdhbWVTdGF0ZVJlcXVlc3QSDwoHbWF0Y2hJZBgBIAEoAyI1",
+            "ChRHZXRHYW1lU3RhdGVSZXNwb25zZRIdCglnYW1lU3RhdGUYASABKAsyCi5H",
+            "YW1lU3RhdGUiSwoTUGxheWVyQWN0aW9uUmVxdWVzdBIPCgdtYXRjaElkGAEg",
+            "ASgDEiMKDHBsYXllckFjdGlvbhgCIAEoCzINLlBsYXllckFjdGlvbiI1ChRQ",
+            "bGF5ZXJBY3Rpb25SZXNwb25zZRIdCglnYW1lU3RhdGUYASABKAsyCi5HYW1l",
+            "U3RhdGUiJgoLR2xvYmFsU3RhdGUSFwoPY3VycmVudF9nYW1lX2lkGAEgASgD",
+            "IqoBCglHYW1lU3RhdGUSCgoCaWQYASABKAMSDwoHaXNFbmRlZBgCIAEoCBIa",
+            "ChJjdXJyZW50UGxheWVySW5kZXgYAyABKAUSIgoMcGxheWVyU3RhdGVzGAQg",
+            "AygLMgwuUGxheWVyU3RhdGUSGgoSY3VycmVudEFjdGlvbkluZGV4GAUgASgD",
+            "EiQKDXBsYXllckFjdGlvbnMYBiADKAsyDS5QbGF5ZXJBY3Rpb24iEQoPQWJp",
+            "bGl0eUluc3RhbmNlIukECgtDYXJkQWJpbGl0eRIlCgthYmlsaXR5VHlwZRgB",
+            "IAEoDjIQLkNhcmRBYmlsaXR5VHlwZRI1ChNhYmlsaXR5QWN0aXZpdHlUeXBl",
+            "GAIgASgOMhguQ2FyZEFiaWxpdHlBY3Rpdml0eVR5cGUSLwoSY2FyZEFiaWxp",
+            "dHlUcmlnZ2VyGAMgASgOMhMuQ2FyZEFiaWxpdHlUcmlnZ2VyEiYKDmFsbG93",
+            "ZWRUYXJnZXRzGAQgAygOMg4uQWxsb3dlZFRhcmdldBIiCg9hYmlsaXR5U3Rh",
+            "dFR5cGUYBSABKA4yCS5TdGF0VHlwZRIkCg5hYmlsaXR5U2V0VHlwZRgGIAEo",
+            "DjIMLkVsZW1lbnRLaW5kEi0KEWNhcmRBYmlsaXR5RWZmZWN0GAcgASgOMhIu",
+            "Q2FyZEFiaWxpdHlFZmZlY3QSLQoRYXR0YWNrUmVzdHJpY3Rpb24YCCABKA4y",
+            "Ei5BdHRhY2tSZXN0cmljdGlvbhIhCg50YXJnZXRDYXJkVHlwZRgJIAEoDjIJ",
+            "LkNhcmRLaW5kEjcKG3RhcmdldFVuaXRTcGVjaWFsU3RhdHVzVHlwZRgKIAEo",
+            "DjISLlVuaXRTcGVjaWFsU3RhdHVzEiEKDnRhcmdldFVuaXRUeXBlGAsgASgO",
+            "MgkuQ2FyZEtpbmQSDQoFdmFsdWUYDCABKAUSDgoGZGFtYWdlGA0gASgFEg4K",
+            "BmhlYWx0aBgOIAEoBRISCgphdHRhY2tJbmZvGA8gASgJEgwKBG5hbWUYECAB",
+            "KAkSDQoFdHVybnMYESABKAUSDQoFY291bnQYEiABKAUSDQoFZGVsYXkYEyAB",
+            "KAUiZgoMQ2FyZEluc3RhbmNlEhIKCmluc3RhbmNlSWQYASABKAUSIQoJcHJv",
+            "dG90eXBlGAIgASgLMg4uQ2FyZFByb3RvdHlwZRIPCgdkZWZlbmNlGAMgASgF",
+            "Eg4KBmF0dGFjaxgEIAEoBSKwAwoNQ2FyZFByb3RvdHlwZRIOCgZkYXRhSWQY",
+            "ASABKAUSIQoLY2FyZFNldFR5cGUYAiABKA4yDC5FbGVtZW50S2luZBIMCgRu",
+            "YW1lGAMgASgJEg8KB2dvb0Nvc3QYBCABKAUSEwoLZGVzY3JpcHRpb24YBSAB",
+            "KAkSEgoKZmxhdm9yVGV4dBgGIAEoCRIPCgdwaWN0dXJlGAcgASgJEg0KBWZy",
+            "YW1lGAggASgJEhUKDWluaXRpYWxEYW1hZ2UYCSABKAUSFgoOaW5pdGlhbERl",
+            "ZmVuY2UYCiABKAUSDAoEcmFuaxgLIAEoCRIMCgR0eXBlGAwgASgJEh8KCWFi",
+            "aWxpdGllcxgNIAMoCzIMLkNhcmRBYmlsaXR5EiMKDGNhcmRWaWV3SW5mbxgO",
+            "IAEoCzINLkNhcmRWaWV3SW5mbxIjCgxjcmVhdHVyZVJhbmsYDyABKA4yDS5D",
+            "cmVhdHVyZVJhbmsSIwoMY3JlYXR1cmVUeXBlGBAgASgOMg0uQ3JlYXR1cmVU",
+            "eXBlEhsKCGNhcmRLaW5kGBEgASgOMgkuQ2FyZEtpbmQSDAoEa2luZBgSIAEo",
+            "CSIdCgtEYXRhSWRPd25lchIOCgZkYXRhSWQYASABKAUiKQoIQ2FyZERlY2sS",
+            "HQoFY2FyZHMYASADKAsyDi5DYXJkUHJvdG90eXBlIiUKD0luc3RhbmNlSWRP",
+            "d25lchISCgppbnN0YW5jZUlkGAEgASgFItQBChBPdmVybG9yZEluc3RhbmNl",
+            "EhIKCmluc3RhbmNlSWQYASABKAUSJQoJcHJvdG90eXBlGAIgASgLMhIuT3Zl",
+            "cmxvcmRQcm90b3R5cGUSKgoKZmlyc3RTa2lsbBgDIAEoCzIWLk92ZXJsb3Jk",
+            "U2tpbGxJbnN0YW5jZRIrCgtzZWNvbmRTa2lsbBgEIAEoCzIWLk92ZXJsb3Jk",
+            "U2tpbGxJbnN0YW5jZRIPCgdkZWZlbmNlGAUgASgFEgsKA2dvbxgGIAEoBRIO",
+            "CgZtYXhHb28YByABKAUi3QEKEU92ZXJsb3JkUHJvdG90eXBlEg4KBmhlcm9J",
+            "ZBgBIAEoBRIMCgRpY29uGAIgASgJEgwKBG5hbWUYAyABKAkSGAoQc2hvcnRE",
+            "ZXNjcmlwdGlvbhgEIAEoCRIXCg9sb25nRGVzY3JpcHRpb24YBSABKAkSEgoK",
+            "ZXhwZXJpZW5jZRgGIAEoBRINCgVsZXZlbBgHIAEoBRIdCgdlbGVtZW50GAgg",
+            "ASgOMgwuRWxlbWVudEtpbmQSJwoGc2tpbGxzGAkgAygLMhcuT3ZlcmxvcmRT",
+            "a2lsbFByb3RvdHlwZSJVChVPdmVybG9yZFNraWxsSW5zdGFuY2USKgoJcHJv",
+            "dG90eXBlGAEgASgLMhcuT3ZlcmxvcmRTa2lsbFByb3RvdHlwZRIQCghjb29s",
+            "ZG93bhgCIAEoBSKuAgoWT3ZlcmxvcmRTa2lsbFByb3RvdHlwZRINCgV0aXRs",
+            "ZRgBIAEoCRINCgVza2lsbBgCIAEoCRIQCghpY29uUGF0aBgDIAEoCRITCgtk",
+            "ZXNjcmlwdGlvbhgEIAEoCRIQCghjb29sZG93bhgFIAEoBRIXCg9pbml0aWFs",
+            "Q29vbGRvd24YBiABKAUSEQoJcGFyYW1ldGVyGAcgASgFEg4KBmF0dGFjaxgI",
+            "IAEoBRItChFvdmVybG9yZFNraWxsS2luZBgJIAEoDjISLk92ZXJsb3JkU2tp",
+            "bGxLaW5kEigKEHNraWxsVGFyZ2V0VHlwZXMYCiADKA4yDi5BbGxvd2VkVGFy",
+            "Z2V0EigKEmVsZW1lbnRUYXJnZXRUeXBlcxgLIAMoDjIMLkVsZW1lbnRLaW5k",
+            "ImoKFlBsYXllckFjdGlvbkNhcmRBdHRhY2sSEAoIcGxheWVySWQYASABKAkS",
+            "HwoIYXR0YWNrZXIYAiABKAsyDS5DYXJkSW5zdGFuY2USHQoGdGFyZ2V0GAMg",
+            "ASgLMg0uQ2FyZEluc3RhbmNlIkUKFFBsYXllckFjdGlvbkNhcmRQbGF5EhAK",
+            "CHBsYXllcklkGAEgASgJEhsKBGNhcmQYAiABKAsyDS5DYXJkSW5zdGFuY2Ui",
+            "TQoUUGxheWVyQWN0aW9uRHJhd0NhcmQSEAoIcGxheWVySWQYASABKAkSIwoM",
+            "Y2FyZEluc3RhbmNlGAIgASgLMg0uQ2FyZEluc3RhbmNlIicKE1BsYXllckFj",
+            "dGlvbkVuZFR1cm4SEAoIcGxheWVySWQYASABKAkiUAoUUGxheWVyQWN0aW9u",
+            "TXVsbGlnYW4SEAoIcGxheWVySWQYASABKAkSJgoPbXVsbGlnYW5lZENhcmRz",
+            "GAIgAygLMg0uQ2FyZEluc3RhbmNlIkYKE1BsYXllckFjdGlvbk91dGNvbWUS",
+            "EAoIcGxheWVySWQYASABKAkSHQoJZ2FtZVN0YXRlGAIgASgLMgouR2FtZVN0",
+            "YXRlImIKGlBsYXllckFjdGlvblVzZUNhcmRBYmlsaXR5EhAKCHBsYXllcklk",
+            "GAEgASgJEhsKBGNhcmQYAiABKAsyDS5DYXJkSW5zdGFuY2USFQoGdGFyZ2V0",
+            "GAMgASgLMgUuVW5pdCIwChxQbGF5ZXJBY3Rpb25Vc2VPdmVybG9yZFNraWxs",
+            "EhAKCHBsYXllcklkGAEgASgFIjUKD1N0YXJ0R2FtZUFjdGlvbhIiCgxwbGF5",
+            "ZXJTdGF0ZXMYASADKAsyDC5QbGF5ZXJTdGF0ZSIaCgRVbml0EhIKCmluc3Rh",
+            "bmNlSWQYASABKAUqkwEKEFBsYXllckFjdGlvblR5cGUSDgoKTm9uZUFjdGlv",
+            "bhAAEgsKB0VuZFR1cm4QARIMCghNdWxsaWdhbhACEgwKCERyYXdDYXJkEAMS",
+            "DAoIQ2FyZFBsYXkQBBIOCgpDYXJkQXR0YWNrEAUSEgoOVXNlQ2FyZEFiaWxp",
+            "dHkQBhIUChBVc2VPdmVybG9yZFNraWxsEAcqowEKDUFsbG93ZWRUYXJnZXQS",
+            "FQoRTm9uZUFsbG93ZWRUYXJnZXQQABIKCgZQbGF5ZXIQARIOCgpQbGF5ZXJD",
+            "YXJkEAISEgoOUGxheWVyQWxsQ2FyZHMQAxIMCghPcHBvbmVudBAEEhAKDE9w",
+            "cG9uZW50Q2FyZBAFEhQKEE9wcG9uZW50QWxsQ2FyZHMQBhIMCghBbGxDYXJk",
+            "cxAHEgcKA0FsbBAIKlcKEUF0dGFja1Jlc3RyaWN0aW9uEhkKFU5vbmVBdHRh",
+            "Y2tSZXN0cmljdGlvbhAAEicKI09ubHlOb3RBdHRhY2tlZEJ5VGhpc1VuaXRJ",
+            "blRoaXNUdXJuEAEqMgoXQ2FyZEFiaWxpdHlBY3Rpdml0eVR5cGUSCwoHUGFz",
+            "c2l2ZRAAEgoKBkFjdGl2ZRABKt4CChFDYXJkQWJpbGl0eUVmZmVjdBIZChVO",
+            "b25lQ2FyZEFiaWxpdHlFZmZlY3QQABIUChBNYXNzaXZlV2F0ZXJXYXZlEAES",
+            "DwoLTWFzc2l2ZUZpcmUQAhIUChBNYXNzaXZlTGlnaHRuaW5nEAMSEwoPTWFz",
+            "c2l2ZVRveGljQWxsEAQSDgoKVGFyZ2V0Um9jaxAFEg4KClRhcmdldEZpcmUQ",
+            "BhIOCgpUYXJnZXRMaWZlEAcSDwoLVGFyZ2V0VG94aWMQCBIPCgtUYXJnZXRX",
+            "YXRlchAJEhkKFVRhcmdldEFkanVzdG1lbnRzQm9tYhAKEg8KC1N0dW5GcmVl",
+            "emVzEAsSFwoTU3R1bk9yRGFtYWdlRnJlZXplcxAMEhgKFFRhcmdldEFkanVz",
+            "dG1lbnRzQWlyEA0SEAoMSGVhbERpcmVjdGx5EA4SGQoVSGVhbENhcmRBYmls",
+            "aXR5RWZmZWN0EA8qggEKEkNhcmRBYmlsaXR5VHJpZ2dlchIICgRUdXJuEAAS",
+            "CQoFRW50cnkQARIHCgNFbmQQAhIKCgZBdHRhY2sQAxIJCgVEZWF0aBAEEg0K",
+            "CVBlcm1hbmVudBAFEg0KCUdvdERhbWFnZRAGEg0KCUF0RGVmZW5jZRAHEgoK",
+            "BkluSGFuZBAIKtELCg9DYXJkQWJpbGl0eVR5cGUSFwoTSGVhbENhcmRBYmls",
+            "aXR5VHlwZRAAEhQKEE1vZGlmaWNhdG9yU3RhdHMQARIOCgpDaGFuZ2VTdGF0",
+            "EAISCAoEU3R1bhADEhsKF1N0dW5PckRhbWFnZUFkanVzdG1lbnRzEAQSCQoF",
+            "U3B1cnQQBRIOCgpBZGRHb29WaWFsEAYSEQoNQWRkR29vQ2FycmllchAHEgcK",
+            "A0RvdBAIEgoKBlN1bW1vbhAJEg8KC1NwZWxsQXR0YWNrEAoSEQoNTWFzc2l2",
+            "ZURhbWFnZRALEhsKF0RhbWFnZVRhcmdldEFkanVzdG1lbnRzEAwSEAoMRGFt",
+            "YWdlVGFyZ2V0EA0SDgoKQ2FyZFJldHVybhAOEgoKBldlYXBvbhAPEh8KG0No",
+            "YW5nZVN0YXRPZkNyZWF0dXJlc0J5VHlwZRAQEh4KGkF0dGFja051bWJlck9m",
+            "VGltZXNQZXJUdXJuEBESGwoXRHJhd0NhcmRDYXJkQWJpbGl0eVR5cGUQEhIg",
+            "ChxEZXZvdXJab21iaWVzQW5kQ29tYmluZVN0YXRzEBMSFQoRRGVzdHJveVVu",
+            "aXRCeVR5cGUQFBIZChVMb3dlckNvc3RPZkNhcmRJbkhhbmQQFRIPCgtPdmVy",
+            "Zmxvd0dvbxAWEgsKB0xvc2VHb28QFxIWChJEaXNhYmxlTmV4dFR1cm5Hb28Q",
+            "GBIICgRSYWdlEBkSDwoLRnJlZXplVW5pdHMQGhIZChVUYWtlRGFtYWdlUmFu",
+            "ZG9tRW5lbXkQGxIYChRUYWtlQ29udHJvbEVuZW15VW5pdBAcEgkKBUd1YXJk",
+            "EB0SFQoRRGVzdHJveUZyb3plblVuaXQQHhIcChhVc2VBbGxHb29Ub0luY3Jl",
+            "YXNlU3RhdHMQHxITCg9GaXJzdFVuaXRJblBsYXkQIBIhCh1BbGx5VW5pdHNP",
+            "ZlR5cGVJblBsYXlHZXRTdGF0cxAhEiEKHURhbWFnZUVuZW15VW5pdHNBbmRG",
+            "cmVlemVUaGVtECISIwofUmV0dXJuVW5pdHNPbkJvYXJkVG9Pd25lcnNEZWNr",
+            "cxAjEiMKH1Rha2VVbml0VHlwZVRvQWRqYWNlbnRBbGx5VW5pdHMQJBIgChxF",
+            "bmVteVRoYXRBdHRhY2tzQmVjb21lRnJvemVuECUSGgoWVGFrZVVuaXRUeXBl",
+            "VG9BbGx5VW5pdBAmEiIKHlJldml2ZURpZWRVbml0c09mVHlwZUZyb21NYXRj",
+            "aBAnEh0KGUNoYW5nZVN0YXRVbnRpbGxFbmRPZlR1cm4QKBISCg5BdHRhY2tP",
+            "dmVybG9yZBApEhkKFUFkamFjZW50VW5pdHNHZXRIZWF2eRAqEhwKGEZyZWV6",
+            "ZU51bWJlck9mUmFuZG9tQWxseRArEhcKE0FkZENhcmRCeU5hbWVUb0hhbmQQ",
+            "LBIkCiBEZWFsRGFtYWdlVG9UaGlzQW5kQWRqYWNlbnRVbml0cxAtEgkKBVN3",
+            "aW5nEC4SKwonVGFrZURlZmVuY2VJZk92ZXJsb3JkSGFzTGVzc0RlZmVuY2VU",
+            "aGFuEC8SKgomR2Fpbk51bWJlck9mTGlmZUZvckVhY2hEYW1hZ2VUaGlzRGVh",
+            "bHMQMBIjCh9BZGRpdGlvbmFsRGFtYWdlVG9IZWF2eUluQXR0YWNrEDESDgoK",
+            "VW5pdFdlYXBvbhAyEh8KG1Rha2VEYW1hZ2VBdEVuZE9mVHVyblRvVGhpcxAz",
+            "Eh4KGkRlbGF5ZWRMb3NlSGVhdnlHYWluQXR0YWNrEDQSFQoRRGVsYXllZEdh",
+            "aW5BdHRhY2sQNRIRCg1SZWFuaW1hdGVVbml0EDYSEgoOUHJpb3JpdHlBdHRh",
+            "Y2sQNxIgChxEZXN0cm95VGFyZ2V0VW5pdEFmdGVyQXR0YWNrEDgSHQoZQ29z",
+            "dHNMZXNzSWZDYXJkVHlwZUluSGFuZBA5EiMKH1JldHVyblVuaXRzT25Cb2Fy",
+            "ZFRvT3duZXJzSGFuZHMQOiojCghDYXJkS2luZBIMCghDcmVhdHVyZRAAEgkK",
+            "BVNwZWxsEAEqQwoMQ3JlYXR1cmVSYW5rEgoKBk1pbmlvbhAAEgsKB09mZmlj",
+            "ZXIQARINCglDb21tYW5kZXIQAhILCgdHZW5lcmFsEAMqOgoMQ3JlYXR1cmVU",
+            "eXBlEgoKBldhbGtlchAAEgkKBUZlcmFsEAESCQoFSGVhdnkQAhIICgROb25l",
+            "EAMqdgoLRWxlbWVudEtpbmQSCAoERmlyZRAAEgkKBVdhdGVyEAESCQoFRWFy",
+            "dGgQAhIHCgNBaXIQAxIICgRMaWZlEAQSCQoFVG94aWMQBRIICgRJdGVtEAYS",
+            "CgoGT3RoZXJzEAcSEwoPTm9uZUVsZW1lbnRLaW5kEAgqygMKEU92ZXJsb3Jk",
+            "U2tpbGxLaW5kEhkKFU5vbmVPdmVybG9yZFNraWxsS2luZBAAEggKBFB1c2gQ",
+            "ARIICgREcmF3EAISDgoKV2luZFNoaWVsZBADEgwKCFdpbmRXYWxsEAQSCwoH",
+            "UmV0cmVhdBAFEgoKBkhhcmRlbhAGEg0KCVN0b25lU2tpbhAHEgsKB0ZvcnRp",
+            "ZnkQCBILCgdQaGFsYW54EAkSDAoIRm9ydHJlc3MQChIMCghGaXJlQm9sdBAL",
+            "EgoKBlJhYmllcxAMEgwKCEZpcmViYWxsEA0SDgoKTWFzc1JhYmllcxAOEhAK",
+            "DE1ldGVvclNob3dlchAPEhAKDEhlYWxpbmdUb3VjaBAQEggKBE1lbmQQERIN",
+            "CglSZXNzdXJlY3QQEhILCgdFbmhhbmNlEBMSDQoJUmVhbmltYXRlEBQSDgoK",
+            "UG9pc29uRGFydBAVEg4KClRveGljUG93ZXIQFhIMCghCcmVha291dBAXEgoK",
+            "BkluZmVjdBAYEgwKCEVwaWRlbWljEBkSCgoGRnJlZXplEBoSCwoHSWNlQm9s",
+            "dBAbEgsKB0ljZVdhbGwQHBILCgdTaGF0dGVyEB0SDAoIQmxpenphcmQQHio4",
+            "ChpPdmVybG9yZFNraWxsU2VsZWN0aW9uVHlwZRILCgdQcmltYXJ5EAASDQoJ",
+            "U2Vjb25kYXJ5EAEqNAoIU3RhdFR5cGUSEAoMTm9uZVN0YXRUeXBlEAASCgoG",
+            "SGVhbHRoEAESCgoGRGFtYWdlEAIqOgoRVW5pdFNwZWNpYWxTdGF0dXMSGQoV",
+            "Tm9uZVVuaXRTcGVjaWFsU3RhdHVzEAASCgoGRnJvemVuEAFCI6oCIExvb20u",
+            "Wm9tYmllQmF0dGxlZ3JvdW5kLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionType), typeof(global::Loom.ZombieBattleground.Protobuf.AllowedTarget), typeof(global::Loom.ZombieBattleground.Protobuf.AttackRestriction), typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityActivityType), typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityEffect), typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityTrigger), typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityType), typeof(global::Loom.ZombieBattleground.Protobuf.CardKind), typeof(global::Loom.ZombieBattleground.Protobuf.CreatureRank), typeof(global::Loom.ZombieBattleground.Protobuf.CreatureType), typeof(global::Loom.ZombieBattleground.Protobuf.ElementKind), typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillKind), typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillSelectionType), typeof(global::Loom.ZombieBattleground.Protobuf.StatType), typeof(global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus), }, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Account), global::Loom.ZombieBattleground.Protobuf.Account.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier", "Owner" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Deck), global::Loom.ZombieBattleground.Protobuf.Deck.Parser, new[]{ "Id", "Name", "HeroId", "Cards" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Card), global::Loom.ZombieBattleground.Protobuf.Card.Parser, new[]{ "Id", "Kind", "Set", "Name", "Description", "FlavorText", "Picture", "Rank", "Type", "Rarity", "Frame", "Damage", "Health", "Cost", "Ability", "CardViewInfo", "Effects", "Abilities" }, null, null, null),
@@ -139,8 +324,9 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.HeroList), global::Loom.ZombieBattleground.Protobuf.HeroList.Parser, new[]{ "Heroes" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardCollectionList), global::Loom.ZombieBattleground.Protobuf.CardCollectionList.Parser, new[]{ "Cards" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DeckList), global::Loom.ZombieBattleground.Protobuf.DeckList.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.InitRequest), global::Loom.ZombieBattleground.Protobuf.InitRequest.Parser, new[]{ "DefaultDecks", "DefaultCollection", "Cards", "Heroes" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest), global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.InitRequest), global::Loom.ZombieBattleground.Protobuf.InitRequest.Parser, new[]{ "DefaultDecks", "DefaultCollection", "Cards", "Heroes", "Version" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UpdateInitRequest), global::Loom.ZombieBattleground.Protobuf.UpdateInitRequest.Parser, new[]{ "DefaultDecks", "DefaultCollection", "Cards", "Heroes", "Version" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest), global::Loom.ZombieBattleground.Protobuf.UpsertAccountRequest.Parser, new[]{ "UserId", "PhoneNumberVerified", "RewardRedeemed", "IsKickstarter", "Image", "EmailNotification", "EloScore", "CurrentTier", "GameMembershipTier", "Version" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetAccountRequest), global::Loom.ZombieBattleground.Protobuf.GetAccountRequest.Parser, new[]{ "UserId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetDeckRequest), global::Loom.ZombieBattleground.Protobuf.GetDeckRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetDeckResponse), global::Loom.ZombieBattleground.Protobuf.GetDeckResponse.Parser, new[]{ "Deck" }, null, null, null),
@@ -151,17 +337,288 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DecksResponse), global::Loom.ZombieBattleground.Protobuf.DecksResponse.Parser, new[]{ "UserId", "Decks" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListDecksRequest), global::Loom.ZombieBattleground.Protobuf.ListDecksRequest.Parser, new[]{ "UserId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListDecksResponse), global::Loom.ZombieBattleground.Protobuf.ListDecksResponse.Parser, new[]{ "Decks", "LastModificationTimestamp" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListCardLibraryRequest), global::Loom.ZombieBattleground.Protobuf.ListCardLibraryRequest.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListCardLibraryRequest), global::Loom.ZombieBattleground.Protobuf.ListCardLibraryRequest.Parser, new[]{ "Version" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListCardLibraryResponse), global::Loom.ZombieBattleground.Protobuf.ListCardLibraryResponse.Parser, new[]{ "Sets" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryRequest), global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryRequest.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryRequest), global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryRequest.Parser, new[]{ "Version" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryResponse), global::Loom.ZombieBattleground.Protobuf.ListHeroLibraryResponse.Parser, new[]{ "Heroes" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCollectionRequest), global::Loom.ZombieBattleground.Protobuf.GetCollectionRequest.Parser, new[]{ "UserId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse), global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse.Parser, new[]{ "Cards" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse), global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse.Parser, new[]{ "Cards" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerState), global::Loom.ZombieBattleground.Protobuf.PlayerState.Parser, new[]{ "Id", "CurrentAction", "OverlordInstance", "CardsInHand", "CardsOnBoard", "CardsInDeck", "Deck", "Hp", "Mana" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Match), global::Loom.ZombieBattleground.Protobuf.Match.Parser, new[]{ "Id", "Topics", "PlayerStates", "Status" }, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.Match.Types.Status) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MatchMakingInfoList), global::Loom.ZombieBattleground.Protobuf.MatchMakingInfoList.Parser, new[]{ "Infos" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo), global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo.Parser, new[]{ "UserId", "Deck" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerAction), global::Loom.ZombieBattleground.Protobuf.PlayerAction.Parser, new[]{ "ActionType", "PlayerId", "CardAttack", "DrawCard", "EndTurn", "Mulligan", "CardPlay" }, new[]{ "Action" }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionEvent), global::Loom.ZombieBattleground.Protobuf.PlayerActionEvent.Parser, new[]{ "PlayerActionType", "UserId", "Message", "Match", "PlayerAction" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayersInMatchmakingList), global::Loom.ZombieBattleground.Protobuf.PlayersInMatchmakingList.Parser, new[]{ "UserIDs" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PendingMatchList), global::Loom.ZombieBattleground.Protobuf.PendingMatchList.Parser, new[]{ "Matches" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MatchList), global::Loom.ZombieBattleground.Protobuf.MatchList.Parser, new[]{ "Matches" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.MatchCount), global::Loom.ZombieBattleground.Protobuf.MatchCount.Parser, new[]{ "CurrentId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.FindMatchRequest), global::Loom.ZombieBattleground.Protobuf.FindMatchRequest.Parser, new[]{ "UserId", "DeckId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.FindMatchResponse), global::Loom.ZombieBattleground.Protobuf.FindMatchResponse.Parser, new[]{ "Match" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.LeaveMatchRequest), global::Loom.ZombieBattleground.Protobuf.LeaveMatchRequest.Parser, new[]{ "UserId", "MatchId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.LeaveMatchResponse), global::Loom.ZombieBattleground.Protobuf.LeaveMatchResponse.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetMatchRequest), global::Loom.ZombieBattleground.Protobuf.GetMatchRequest.Parser, new[]{ "MatchId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetMatchResponse), global::Loom.ZombieBattleground.Protobuf.GetMatchResponse.Parser, new[]{ "Match", "GameState" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetGameStateRequest), global::Loom.ZombieBattleground.Protobuf.GetGameStateRequest.Parser, new[]{ "MatchId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GetGameStateResponse), global::Loom.ZombieBattleground.Protobuf.GetGameStateResponse.Parser, new[]{ "GameState" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionRequest), global::Loom.ZombieBattleground.Protobuf.PlayerActionRequest.Parser, new[]{ "MatchId", "PlayerAction" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionResponse), global::Loom.ZombieBattleground.Protobuf.PlayerActionResponse.Parser, new[]{ "GameState" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GlobalState), global::Loom.ZombieBattleground.Protobuf.GlobalState.Parser, new[]{ "CurrentGameId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.GameState), global::Loom.ZombieBattleground.Protobuf.GameState.Parser, new[]{ "Id", "IsEnded", "CurrentPlayerIndex", "PlayerStates", "CurrentActionIndex", "PlayerActions" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.AbilityInstance), global::Loom.ZombieBattleground.Protobuf.AbilityInstance.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardAbility), global::Loom.ZombieBattleground.Protobuf.CardAbility.Parser, new[]{ "AbilityType", "AbilityActivityType", "CardAbilityTrigger", "AllowedTargets", "AbilityStatType", "AbilitySetType", "CardAbilityEffect", "AttackRestriction", "TargetCardType", "TargetUnitSpecialStatusType", "TargetUnitType", "Value", "Damage", "Health", "AttackInfo", "Name", "Turns", "Count", "Delay" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardInstance), global::Loom.ZombieBattleground.Protobuf.CardInstance.Parser, new[]{ "InstanceId", "Prototype", "Defence", "Attack" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardPrototype), global::Loom.ZombieBattleground.Protobuf.CardPrototype.Parser, new[]{ "DataId", "CardSetType", "Name", "GooCost", "Description", "FlavorText", "Picture", "Frame", "InitialDamage", "InitialDefence", "Rank", "Type", "Abilities", "CardViewInfo", "CreatureRank", "CreatureType", "CardKind", "Kind" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DataIdOwner), global::Loom.ZombieBattleground.Protobuf.DataIdOwner.Parser, new[]{ "DataId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardDeck), global::Loom.ZombieBattleground.Protobuf.CardDeck.Parser, new[]{ "Cards" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.InstanceIdOwner), global::Loom.ZombieBattleground.Protobuf.InstanceIdOwner.Parser, new[]{ "InstanceId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.OverlordInstance), global::Loom.ZombieBattleground.Protobuf.OverlordInstance.Parser, new[]{ "InstanceId", "Prototype", "FirstSkill", "SecondSkill", "Defence", "Goo", "MaxGoo" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.OverlordPrototype), global::Loom.ZombieBattleground.Protobuf.OverlordPrototype.Parser, new[]{ "HeroId", "Icon", "Name", "ShortDescription", "LongDescription", "Experience", "Level", "Element", "Skills" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance), global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance.Parser, new[]{ "Prototype", "Cooldown" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype), global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype.Parser, new[]{ "Title", "Skill", "IconPath", "Description", "Cooldown", "InitialCooldown", "Parameter", "Attack", "OverlordSkillKind", "SkillTargetTypes", "ElementTargetTypes" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack), global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack.Parser, new[]{ "PlayerId", "Attacker", "Target" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionCardPlay), global::Loom.ZombieBattleground.Protobuf.PlayerActionCardPlay.Parser, new[]{ "PlayerId", "Card" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard), global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard.Parser, new[]{ "PlayerId", "CardInstance" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionEndTurn), global::Loom.ZombieBattleground.Protobuf.PlayerActionEndTurn.Parser, new[]{ "PlayerId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan), global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan.Parser, new[]{ "PlayerId", "MulliganedCards" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Parser, new[]{ "PlayerId", "GameState" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionUseCardAbility), global::Loom.ZombieBattleground.Protobuf.PlayerActionUseCardAbility.Parser, new[]{ "PlayerId", "Card", "Target" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionUseOverlordSkill), global::Loom.ZombieBattleground.Protobuf.PlayerActionUseOverlordSkill.Parser, new[]{ "PlayerId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.StartGameAction), global::Loom.ZombieBattleground.Protobuf.StartGameAction.Parser, new[]{ "PlayerStates" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Unit), global::Loom.ZombieBattleground.Protobuf.Unit.Parser, new[]{ "InstanceId" }, null, null, null)
           }));
     }
     #endregion
 
   }
+  #region Enums
+  public enum PlayerActionType {
+    [pbr::OriginalName("NoneAction")] NoneAction = 0,
+    [pbr::OriginalName("EndTurn")] EndTurn = 1,
+    [pbr::OriginalName("Mulligan")] Mulligan = 2,
+    [pbr::OriginalName("DrawCard")] DrawCard = 3,
+    [pbr::OriginalName("CardPlay")] CardPlay = 4,
+    [pbr::OriginalName("CardAttack")] CardAttack = 5,
+    [pbr::OriginalName("UseCardAbility")] UseCardAbility = 6,
+    [pbr::OriginalName("UseOverlordSkill")] UseOverlordSkill = 7,
+  }
+
+  public enum AllowedTarget {
+    [pbr::OriginalName("NoneAllowedTarget")] NoneAllowedTarget = 0,
+    [pbr::OriginalName("Player")] Player = 1,
+    [pbr::OriginalName("PlayerCard")] PlayerCard = 2,
+    [pbr::OriginalName("PlayerAllCards")] PlayerAllCards = 3,
+    [pbr::OriginalName("Opponent")] Opponent = 4,
+    [pbr::OriginalName("OpponentCard")] OpponentCard = 5,
+    [pbr::OriginalName("OpponentAllCards")] OpponentAllCards = 6,
+    [pbr::OriginalName("AllCards")] AllCards = 7,
+    [pbr::OriginalName("All")] All = 8,
+  }
+
+  public enum AttackRestriction {
+    [pbr::OriginalName("NoneAttackRestriction")] NoneAttackRestriction = 0,
+    [pbr::OriginalName("OnlyNotAttackedByThisUnitInThisTurn")] OnlyNotAttackedByThisUnitInThisTurn = 1,
+  }
+
+  public enum CardAbilityActivityType {
+    [pbr::OriginalName("Passive")] Passive = 0,
+    [pbr::OriginalName("Active")] Active = 1,
+  }
+
+  public enum CardAbilityEffect {
+    [pbr::OriginalName("NoneCardAbilityEffect")] NoneCardAbilityEffect = 0,
+    [pbr::OriginalName("MassiveWaterWave")] MassiveWaterWave = 1,
+    [pbr::OriginalName("MassiveFire")] MassiveFire = 2,
+    [pbr::OriginalName("MassiveLightning")] MassiveLightning = 3,
+    [pbr::OriginalName("MassiveToxicAll")] MassiveToxicAll = 4,
+    [pbr::OriginalName("TargetRock")] TargetRock = 5,
+    [pbr::OriginalName("TargetFire")] TargetFire = 6,
+    [pbr::OriginalName("TargetLife")] TargetLife = 7,
+    [pbr::OriginalName("TargetToxic")] TargetToxic = 8,
+    [pbr::OriginalName("TargetWater")] TargetWater = 9,
+    [pbr::OriginalName("TargetAdjustmentsBomb")] TargetAdjustmentsBomb = 10,
+    [pbr::OriginalName("StunFreezes")] StunFreezes = 11,
+    [pbr::OriginalName("StunOrDamageFreezes")] StunOrDamageFreezes = 12,
+    [pbr::OriginalName("TargetAdjustmentsAir")] TargetAdjustmentsAir = 13,
+    [pbr::OriginalName("HealDirectly")] HealDirectly = 14,
+    [pbr::OriginalName("HealCardAbilityEffect")] HealCardAbilityEffect = 15,
+  }
+
+  public enum CardAbilityTrigger {
+    [pbr::OriginalName("Turn")] Turn = 0,
+    [pbr::OriginalName("Entry")] Entry = 1,
+    [pbr::OriginalName("End")] End = 2,
+    [pbr::OriginalName("Attack")] Attack = 3,
+    [pbr::OriginalName("Death")] Death = 4,
+    [pbr::OriginalName("Permanent")] Permanent = 5,
+    [pbr::OriginalName("GotDamage")] GotDamage = 6,
+    [pbr::OriginalName("AtDefence")] AtDefence = 7,
+    [pbr::OriginalName("InHand")] InHand = 8,
+  }
+
+  public enum CardAbilityType {
+    [pbr::OriginalName("HealCardAbilityType")] HealCardAbilityType = 0,
+    [pbr::OriginalName("ModificatorStats")] ModificatorStats = 1,
+    [pbr::OriginalName("ChangeStat")] ChangeStat = 2,
+    [pbr::OriginalName("Stun")] Stun = 3,
+    [pbr::OriginalName("StunOrDamageAdjustments")] StunOrDamageAdjustments = 4,
+    [pbr::OriginalName("Spurt")] Spurt = 5,
+    [pbr::OriginalName("AddGooVial")] AddGooVial = 6,
+    [pbr::OriginalName("AddGooCarrier")] AddGooCarrier = 7,
+    [pbr::OriginalName("Dot")] Dot = 8,
+    [pbr::OriginalName("Summon")] Summon = 9,
+    [pbr::OriginalName("SpellAttack")] SpellAttack = 10,
+    [pbr::OriginalName("MassiveDamage")] MassiveDamage = 11,
+    [pbr::OriginalName("DamageTargetAdjustments")] DamageTargetAdjustments = 12,
+    [pbr::OriginalName("DamageTarget")] DamageTarget = 13,
+    [pbr::OriginalName("CardReturn")] CardReturn = 14,
+    [pbr::OriginalName("Weapon")] Weapon = 15,
+    [pbr::OriginalName("ChangeStatOfCreaturesByType")] ChangeStatOfCreaturesByType = 16,
+    [pbr::OriginalName("AttackNumberOfTimesPerTurn")] AttackNumberOfTimesPerTurn = 17,
+    [pbr::OriginalName("DrawCardCardAbilityType")] DrawCardCardAbilityType = 18,
+    [pbr::OriginalName("DevourZombiesAndCombineStats")] DevourZombiesAndCombineStats = 19,
+    [pbr::OriginalName("DestroyUnitByType")] DestroyUnitByType = 20,
+    [pbr::OriginalName("LowerCostOfCardInHand")] LowerCostOfCardInHand = 21,
+    [pbr::OriginalName("OverflowGoo")] OverflowGoo = 22,
+    [pbr::OriginalName("LoseGoo")] LoseGoo = 23,
+    [pbr::OriginalName("DisableNextTurnGoo")] DisableNextTurnGoo = 24,
+    [pbr::OriginalName("Rage")] Rage = 25,
+    [pbr::OriginalName("FreezeUnits")] FreezeUnits = 26,
+    [pbr::OriginalName("TakeDamageRandomEnemy")] TakeDamageRandomEnemy = 27,
+    [pbr::OriginalName("TakeControlEnemyUnit")] TakeControlEnemyUnit = 28,
+    [pbr::OriginalName("Guard")] Guard = 29,
+    [pbr::OriginalName("DestroyFrozenUnit")] DestroyFrozenUnit = 30,
+    [pbr::OriginalName("UseAllGooToIncreaseStats")] UseAllGooToIncreaseStats = 31,
+    [pbr::OriginalName("FirstUnitInPlay")] FirstUnitInPlay = 32,
+    [pbr::OriginalName("AllyUnitsOfTypeInPlayGetStats")] AllyUnitsOfTypeInPlayGetStats = 33,
+    [pbr::OriginalName("DamageEnemyUnitsAndFreezeThem")] DamageEnemyUnitsAndFreezeThem = 34,
+    [pbr::OriginalName("ReturnUnitsOnBoardToOwnersDecks")] ReturnUnitsOnBoardToOwnersDecks = 35,
+    [pbr::OriginalName("TakeUnitTypeToAdjacentAllyUnits")] TakeUnitTypeToAdjacentAllyUnits = 36,
+    [pbr::OriginalName("EnemyThatAttacksBecomeFrozen")] EnemyThatAttacksBecomeFrozen = 37,
+    [pbr::OriginalName("TakeUnitTypeToAllyUnit")] TakeUnitTypeToAllyUnit = 38,
+    [pbr::OriginalName("ReviveDiedUnitsOfTypeFromMatch")] ReviveDiedUnitsOfTypeFromMatch = 39,
+    [pbr::OriginalName("ChangeStatUntillEndOfTurn")] ChangeStatUntillEndOfTurn = 40,
+    [pbr::OriginalName("AttackOverlord")] AttackOverlord = 41,
+    [pbr::OriginalName("AdjacentUnitsGetHeavy")] AdjacentUnitsGetHeavy = 42,
+    [pbr::OriginalName("FreezeNumberOfRandomAlly")] FreezeNumberOfRandomAlly = 43,
+    [pbr::OriginalName("AddCardByNameToHand")] AddCardByNameToHand = 44,
+    [pbr::OriginalName("DealDamageToThisAndAdjacentUnits")] DealDamageToThisAndAdjacentUnits = 45,
+    [pbr::OriginalName("Swing")] Swing = 46,
+    [pbr::OriginalName("TakeDefenceIfOverlordHasLessDefenceThan")] TakeDefenceIfOverlordHasLessDefenceThan = 47,
+    [pbr::OriginalName("GainNumberOfLifeForEachDamageThisDeals")] GainNumberOfLifeForEachDamageThisDeals = 48,
+    [pbr::OriginalName("AdditionalDamageToHeavyInAttack")] AdditionalDamageToHeavyInAttack = 49,
+    [pbr::OriginalName("UnitWeapon")] UnitWeapon = 50,
+    [pbr::OriginalName("TakeDamageAtEndOfTurnToThis")] TakeDamageAtEndOfTurnToThis = 51,
+    [pbr::OriginalName("DelayedLoseHeavyGainAttack")] DelayedLoseHeavyGainAttack = 52,
+    [pbr::OriginalName("DelayedGainAttack")] DelayedGainAttack = 53,
+    [pbr::OriginalName("ReanimateUnit")] ReanimateUnit = 54,
+    [pbr::OriginalName("PriorityAttack")] PriorityAttack = 55,
+    [pbr::OriginalName("DestroyTargetUnitAfterAttack")] DestroyTargetUnitAfterAttack = 56,
+    [pbr::OriginalName("CostsLessIfCardTypeInHand")] CostsLessIfCardTypeInHand = 57,
+    [pbr::OriginalName("ReturnUnitsOnBoardToOwnersHands")] ReturnUnitsOnBoardToOwnersHands = 58,
+  }
+
+  public enum CardKind {
+    [pbr::OriginalName("Creature")] Creature = 0,
+    [pbr::OriginalName("Spell")] Spell = 1,
+  }
+
+  public enum CreatureRank {
+    [pbr::OriginalName("Minion")] Minion = 0,
+    [pbr::OriginalName("Officer")] Officer = 1,
+    [pbr::OriginalName("Commander")] Commander = 2,
+    [pbr::OriginalName("General")] General = 3,
+  }
+
+  public enum CreatureType {
+    [pbr::OriginalName("Walker")] Walker = 0,
+    [pbr::OriginalName("Feral")] Feral = 1,
+    [pbr::OriginalName("Heavy")] Heavy = 2,
+    [pbr::OriginalName("None")] None = 3,
+  }
+
+  public enum ElementKind {
+    [pbr::OriginalName("Fire")] Fire = 0,
+    [pbr::OriginalName("Water")] Water = 1,
+    [pbr::OriginalName("Earth")] Earth = 2,
+    [pbr::OriginalName("Air")] Air = 3,
+    [pbr::OriginalName("Life")] Life = 4,
+    [pbr::OriginalName("Toxic")] Toxic = 5,
+    [pbr::OriginalName("Item")] Item = 6,
+    [pbr::OriginalName("Others")] Others = 7,
+    [pbr::OriginalName("NoneElementKind")] NoneElementKind = 8,
+  }
+
+  public enum OverlordSkillKind {
+    [pbr::OriginalName("NoneOverlordSkillKind")] NoneOverlordSkillKind = 0,
+    /// <summary>
+    /// AIR
+    /// </summary>
+    [pbr::OriginalName("Push")] Push = 1,
+    [pbr::OriginalName("Draw")] Draw = 2,
+    [pbr::OriginalName("WindShield")] WindShield = 3,
+    [pbr::OriginalName("WindWall")] WindWall = 4,
+    [pbr::OriginalName("Retreat")] Retreat = 5,
+    /// <summary>
+    /// EARTH
+    /// </summary>
+    [pbr::OriginalName("Harden")] Harden = 6,
+    [pbr::OriginalName("StoneSkin")] StoneSkin = 7,
+    [pbr::OriginalName("Fortify")] Fortify = 8,
+    [pbr::OriginalName("Phalanx")] Phalanx = 9,
+    [pbr::OriginalName("Fortress")] Fortress = 10,
+    /// <summary>
+    /// FIRE
+    /// </summary>
+    [pbr::OriginalName("FireBolt")] FireBolt = 11,
+    [pbr::OriginalName("Rabies")] Rabies = 12,
+    [pbr::OriginalName("Fireball")] Fireball = 13,
+    [pbr::OriginalName("MassRabies")] MassRabies = 14,
+    [pbr::OriginalName("MeteorShower")] MeteorShower = 15,
+    /// <summary>
+    /// LIFE
+    /// </summary>
+    [pbr::OriginalName("HealingTouch")] HealingTouch = 16,
+    [pbr::OriginalName("Mend")] Mend = 17,
+    [pbr::OriginalName("Ressurect")] Ressurect = 18,
+    [pbr::OriginalName("Enhance")] Enhance = 19,
+    [pbr::OriginalName("Reanimate")] Reanimate = 20,
+    /// <summary>
+    /// TOXIC
+    /// </summary>
+    [pbr::OriginalName("PoisonDart")] PoisonDart = 21,
+    [pbr::OriginalName("ToxicPower")] ToxicPower = 22,
+    [pbr::OriginalName("Breakout")] Breakout = 23,
+    [pbr::OriginalName("Infect")] Infect = 24,
+    [pbr::OriginalName("Epidemic")] Epidemic = 25,
+    /// <summary>
+    /// WATER
+    /// </summary>
+    [pbr::OriginalName("Freeze")] Freeze = 26,
+    [pbr::OriginalName("IceBolt")] IceBolt = 27,
+    [pbr::OriginalName("IceWall")] IceWall = 28,
+    [pbr::OriginalName("Shatter")] Shatter = 29,
+    [pbr::OriginalName("Blizzard")] Blizzard = 30,
+  }
+
+  public enum OverlordSkillSelectionType {
+    [pbr::OriginalName("Primary")] Primary = 0,
+    [pbr::OriginalName("Secondary")] Secondary = 1,
+  }
+
+  public enum StatType {
+    [pbr::OriginalName("NoneStatType")] NoneStatType = 0,
+    [pbr::OriginalName("Health")] Health = 1,
+    [pbr::OriginalName("Damage")] Damage = 2,
+  }
+
+  public enum UnitSpecialStatus {
+    [pbr::OriginalName("NoneUnitSpecialStatus")] NoneUnitSpecialStatus = 0,
+    [pbr::OriginalName("Frozen")] Frozen = 1,
+  }
+
+  #endregion
+
   #region Messages
   public sealed partial class Account : pb::IMessage<Account> {
     private static readonly pb::MessageParser<Account> _parser = new pb::MessageParser<Account>(() => new Account());
@@ -5558,6 +6015,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       defaultCollection_ = other.defaultCollection_.Clone();
       cards_ = other.cards_.Clone();
       heroes_ = other.heroes_.Clone();
+      version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5606,6 +6064,17 @@ namespace Loom.ZombieBattleground.Protobuf {
       get { return heroes_; }
     }
 
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 5;
+    private string version_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Version {
+      get { return version_; }
+      set {
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as InitRequest);
@@ -5623,6 +6092,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       if(!defaultCollection_.Equals(other.defaultCollection_)) return false;
       if(!cards_.Equals(other.cards_)) return false;
       if(!heroes_.Equals(other.heroes_)) return false;
+      if (Version != other.Version) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5633,6 +6103,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       hash ^= defaultCollection_.GetHashCode();
       hash ^= cards_.GetHashCode();
       hash ^= heroes_.GetHashCode();
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5650,6 +6121,10 @@ namespace Loom.ZombieBattleground.Protobuf {
       defaultCollection_.WriteTo(output, _repeated_defaultCollection_codec);
       cards_.WriteTo(output, _repeated_cards_codec);
       heroes_.WriteTo(output, _repeated_heroes_codec);
+      if (Version.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Version);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5662,6 +6137,9 @@ namespace Loom.ZombieBattleground.Protobuf {
       size += defaultCollection_.CalculateSize(_repeated_defaultCollection_codec);
       size += cards_.CalculateSize(_repeated_cards_codec);
       size += heroes_.CalculateSize(_repeated_heroes_codec);
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -5677,6 +6155,9 @@ namespace Loom.ZombieBattleground.Protobuf {
       defaultCollection_.Add(other.defaultCollection_);
       cards_.Add(other.cards_);
       heroes_.Add(other.heroes_);
+      if (other.Version.Length != 0) {
+        Version = other.Version;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -5704,6 +6185,219 @@ namespace Loom.ZombieBattleground.Protobuf {
             heroes_.AddEntriesFrom(input, _repeated_heroes_codec);
             break;
           }
+          case 42: {
+            Version = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class UpdateInitRequest : pb::IMessage<UpdateInitRequest> {
+    private static readonly pb::MessageParser<UpdateInitRequest> _parser = new pb::MessageParser<UpdateInitRequest>(() => new UpdateInitRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<UpdateInitRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[25]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UpdateInitRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UpdateInitRequest(UpdateInitRequest other) : this() {
+      defaultDecks_ = other.defaultDecks_.Clone();
+      defaultCollection_ = other.defaultCollection_.Clone();
+      cards_ = other.cards_.Clone();
+      heroes_ = other.heroes_.Clone();
+      version_ = other.version_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UpdateInitRequest Clone() {
+      return new UpdateInitRequest(this);
+    }
+
+    /// <summary>Field number for the "default_decks" field.</summary>
+    public const int DefaultDecksFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Deck> _repeated_defaultDecks_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Deck.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> defaultDecks_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Deck> DefaultDecks {
+      get { return defaultDecks_; }
+    }
+
+    /// <summary>Field number for the "default_collection" field.</summary>
+    public const int DefaultCollectionFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardCollection> _repeated_defaultCollection_codec
+        = pb::FieldCodec.ForMessage(18, global::Loom.ZombieBattleground.Protobuf.CardCollection.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> defaultCollection_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection> DefaultCollection {
+      get { return defaultCollection_; }
+    }
+
+    /// <summary>Field number for the "cards" field.</summary>
+    public const int CardsFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Card> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(26, global::Loom.ZombieBattleground.Protobuf.Card.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Card> Cards {
+      get { return cards_; }
+    }
+
+    /// <summary>Field number for the "heroes" field.</summary>
+    public const int HeroesFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Hero> _repeated_heroes_codec
+        = pb::FieldCodec.ForMessage(34, global::Loom.ZombieBattleground.Protobuf.Hero.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> heroes_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Hero> Heroes {
+      get { return heroes_; }
+    }
+
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 5;
+    private string version_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Version {
+      get { return version_; }
+      set {
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as UpdateInitRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(UpdateInitRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!defaultDecks_.Equals(other.defaultDecks_)) return false;
+      if(!defaultCollection_.Equals(other.defaultCollection_)) return false;
+      if(!cards_.Equals(other.cards_)) return false;
+      if(!heroes_.Equals(other.heroes_)) return false;
+      if (Version != other.Version) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= defaultDecks_.GetHashCode();
+      hash ^= defaultCollection_.GetHashCode();
+      hash ^= cards_.GetHashCode();
+      hash ^= heroes_.GetHashCode();
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      defaultDecks_.WriteTo(output, _repeated_defaultDecks_codec);
+      defaultCollection_.WriteTo(output, _repeated_defaultCollection_codec);
+      cards_.WriteTo(output, _repeated_cards_codec);
+      heroes_.WriteTo(output, _repeated_heroes_codec);
+      if (Version.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Version);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += defaultDecks_.CalculateSize(_repeated_defaultDecks_codec);
+      size += defaultCollection_.CalculateSize(_repeated_defaultCollection_codec);
+      size += cards_.CalculateSize(_repeated_cards_codec);
+      size += heroes_.CalculateSize(_repeated_heroes_codec);
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(UpdateInitRequest other) {
+      if (other == null) {
+        return;
+      }
+      defaultDecks_.Add(other.defaultDecks_);
+      defaultCollection_.Add(other.defaultCollection_);
+      cards_.Add(other.cards_);
+      heroes_.Add(other.heroes_);
+      if (other.Version.Length != 0) {
+        Version = other.Version;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            defaultDecks_.AddEntriesFrom(input, _repeated_defaultDecks_codec);
+            break;
+          }
+          case 18: {
+            defaultCollection_.AddEntriesFrom(input, _repeated_defaultCollection_codec);
+            break;
+          }
+          case 26: {
+            cards_.AddEntriesFrom(input, _repeated_cards_codec);
+            break;
+          }
+          case 34: {
+            heroes_.AddEntriesFrom(input, _repeated_heroes_codec);
+            break;
+          }
+          case 42: {
+            Version = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -5718,7 +6412,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5744,6 +6438,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       eloScore_ = other.eloScore_;
       currentTier_ = other.currentTier_;
       gameMembershipTier_ = other.gameMembershipTier_;
+      version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5851,6 +6546,17 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 10;
+    private string version_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Version {
+      get { return version_; }
+      set {
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as UpsertAccountRequest);
@@ -5873,6 +6579,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (EloScore != other.EloScore) return false;
       if (CurrentTier != other.CurrentTier) return false;
       if (GameMembershipTier != other.GameMembershipTier) return false;
+      if (Version != other.Version) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5888,6 +6595,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (EloScore != 0L) hash ^= EloScore.GetHashCode();
       if (CurrentTier != 0) hash ^= CurrentTier.GetHashCode();
       if (GameMembershipTier != 0) hash ^= GameMembershipTier.GetHashCode();
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5937,6 +6645,10 @@ namespace Loom.ZombieBattleground.Protobuf {
         output.WriteRawTag(72);
         output.WriteInt32(GameMembershipTier);
       }
+      if (Version.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(Version);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5971,6 +6683,9 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (GameMembershipTier != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(GameMembershipTier);
+      }
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -6009,6 +6724,9 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (other.GameMembershipTier != 0) {
         GameMembershipTier = other.GameMembershipTier;
+      }
+      if (other.Version.Length != 0) {
+        Version = other.Version;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -6057,6 +6775,10 @@ namespace Loom.ZombieBattleground.Protobuf {
             GameMembershipTier = input.ReadInt32();
             break;
           }
+          case 82: {
+            Version = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -6071,7 +6793,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6200,7 +6922,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6357,7 +7079,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6492,7 +7214,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6683,7 +7405,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6812,7 +7534,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[31]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6997,7 +7719,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[32]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7188,7 +7910,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[33]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7337,7 +8059,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[34]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7466,7 +8188,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[35]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7615,7 +8337,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[36]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7632,12 +8354,24 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ListCardLibraryRequest(ListCardLibraryRequest other) : this() {
+      version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ListCardLibraryRequest Clone() {
       return new ListCardLibraryRequest(this);
+    }
+
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 1;
+    private string version_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Version {
+      get { return version_; }
+      set {
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7653,12 +8387,14 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Version != other.Version) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -7672,6 +8408,10 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+      if (Version.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Version);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7680,6 +8420,9 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -7690,6 +8433,9 @@ namespace Loom.ZombieBattleground.Protobuf {
     public void MergeFrom(ListCardLibraryRequest other) {
       if (other == null) {
         return;
+      }
+      if (other.Version.Length != 0) {
+        Version = other.Version;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -7702,6 +8448,10 @@ namespace Loom.ZombieBattleground.Protobuf {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 10: {
+            Version = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -7716,7 +8466,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[37]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7837,7 +8587,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[38]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7854,12 +8604,24 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ListHeroLibraryRequest(ListHeroLibraryRequest other) : this() {
+      version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ListHeroLibraryRequest Clone() {
       return new ListHeroLibraryRequest(this);
+    }
+
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 1;
+    private string version_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Version {
+      get { return version_; }
+      set {
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7875,12 +8637,14 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Version != other.Version) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -7894,6 +8658,10 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+      if (Version.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Version);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7902,6 +8670,9 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -7912,6 +8683,9 @@ namespace Loom.ZombieBattleground.Protobuf {
     public void MergeFrom(ListHeroLibraryRequest other) {
       if (other == null) {
         return;
+      }
+      if (other.Version.Length != 0) {
+        Version = other.Version;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -7924,6 +8698,10 @@ namespace Loom.ZombieBattleground.Protobuf {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 10: {
+            Version = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -7938,7 +8716,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[39]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[40]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8059,7 +8837,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[40]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8188,7 +8966,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[41]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[42]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8293,6 +9071,8450 @@ namespace Loom.ZombieBattleground.Protobuf {
             break;
           case 10: {
             cards_.AddEntriesFrom(input, _repeated_cards_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerState : pb::IMessage<PlayerState> {
+    private static readonly pb::MessageParser<PlayerState> _parser = new pb::MessageParser<PlayerState>(() => new PlayerState());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerState> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[43]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerState() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerState(PlayerState other) : this() {
+      id_ = other.id_;
+      currentAction_ = other.currentAction_;
+      overlordInstance_ = other.overlordInstance_ != null ? other.overlordInstance_.Clone() : null;
+      cardsInHand_ = other.cardsInHand_.Clone();
+      cardsOnBoard_ = other.cardsOnBoard_.Clone();
+      cardsInDeck_ = other.cardsInDeck_.Clone();
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
+      hp_ = other.hp_;
+      mana_ = other.mana_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerState Clone() {
+      return new PlayerState(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private string id_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Id {
+      get { return id_; }
+      set {
+        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "currentAction" field.</summary>
+    public const int CurrentActionFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.PlayerActionType currentAction_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionType CurrentAction {
+      get { return currentAction_; }
+      set {
+        currentAction_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "overlordInstance" field.</summary>
+    public const int OverlordInstanceFieldNumber = 3;
+    private global::Loom.ZombieBattleground.Protobuf.OverlordInstance overlordInstance_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.OverlordInstance OverlordInstance {
+      get { return overlordInstance_; }
+      set {
+        overlordInstance_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cardsInHand" field.</summary>
+    public const int CardsInHandFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardInstance> _repeated_cardsInHand_codec
+        = pb::FieldCodec.ForMessage(34, global::Loom.ZombieBattleground.Protobuf.CardInstance.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> cardsInHand_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> CardsInHand {
+      get { return cardsInHand_; }
+    }
+
+    /// <summary>Field number for the "cardsOnBoard" field.</summary>
+    public const int CardsOnBoardFieldNumber = 5;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardInstance> _repeated_cardsOnBoard_codec
+        = pb::FieldCodec.ForMessage(42, global::Loom.ZombieBattleground.Protobuf.CardInstance.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> cardsOnBoard_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> CardsOnBoard {
+      get { return cardsOnBoard_; }
+    }
+
+    /// <summary>Field number for the "cardsInDeck" field.</summary>
+    public const int CardsInDeckFieldNumber = 6;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardInstance> _repeated_cardsInDeck_codec
+        = pb::FieldCodec.ForMessage(50, global::Loom.ZombieBattleground.Protobuf.CardInstance.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> cardsInDeck_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> CardsInDeck {
+      get { return cardsInDeck_; }
+    }
+
+    /// <summary>Field number for the "deck" field.</summary>
+    public const int DeckFieldNumber = 7;
+    private global::Loom.ZombieBattleground.Protobuf.Deck deck_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Deck Deck {
+      get { return deck_; }
+      set {
+        deck_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "hp" field.</summary>
+    public const int HpFieldNumber = 8;
+    private int hp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Hp {
+      get { return hp_; }
+      set {
+        hp_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mana" field.</summary>
+    public const int ManaFieldNumber = 9;
+    private int mana_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Mana {
+      get { return mana_; }
+      set {
+        mana_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerState);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerState other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (CurrentAction != other.CurrentAction) return false;
+      if (!object.Equals(OverlordInstance, other.OverlordInstance)) return false;
+      if(!cardsInHand_.Equals(other.cardsInHand_)) return false;
+      if(!cardsOnBoard_.Equals(other.cardsOnBoard_)) return false;
+      if(!cardsInDeck_.Equals(other.cardsInDeck_)) return false;
+      if (!object.Equals(Deck, other.Deck)) return false;
+      if (Hp != other.Hp) return false;
+      if (Mana != other.Mana) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (CurrentAction != 0) hash ^= CurrentAction.GetHashCode();
+      if (overlordInstance_ != null) hash ^= OverlordInstance.GetHashCode();
+      hash ^= cardsInHand_.GetHashCode();
+      hash ^= cardsOnBoard_.GetHashCode();
+      hash ^= cardsInDeck_.GetHashCode();
+      if (deck_ != null) hash ^= Deck.GetHashCode();
+      if (Hp != 0) hash ^= Hp.GetHashCode();
+      if (Mana != 0) hash ^= Mana.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Id);
+      }
+      if (CurrentAction != 0) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) CurrentAction);
+      }
+      if (overlordInstance_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(OverlordInstance);
+      }
+      cardsInHand_.WriteTo(output, _repeated_cardsInHand_codec);
+      cardsOnBoard_.WriteTo(output, _repeated_cardsOnBoard_codec);
+      cardsInDeck_.WriteTo(output, _repeated_cardsInDeck_codec);
+      if (deck_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(Deck);
+      }
+      if (Hp != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(Hp);
+      }
+      if (Mana != 0) {
+        output.WriteRawTag(72);
+        output.WriteInt32(Mana);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (CurrentAction != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CurrentAction);
+      }
+      if (overlordInstance_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(OverlordInstance);
+      }
+      size += cardsInHand_.CalculateSize(_repeated_cardsInHand_codec);
+      size += cardsOnBoard_.CalculateSize(_repeated_cardsOnBoard_codec);
+      size += cardsInDeck_.CalculateSize(_repeated_cardsInDeck_codec);
+      if (deck_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deck);
+      }
+      if (Hp != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Hp);
+      }
+      if (Mana != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Mana);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerState other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id.Length != 0) {
+        Id = other.Id;
+      }
+      if (other.CurrentAction != 0) {
+        CurrentAction = other.CurrentAction;
+      }
+      if (other.overlordInstance_ != null) {
+        if (overlordInstance_ == null) {
+          overlordInstance_ = new global::Loom.ZombieBattleground.Protobuf.OverlordInstance();
+        }
+        OverlordInstance.MergeFrom(other.OverlordInstance);
+      }
+      cardsInHand_.Add(other.cardsInHand_);
+      cardsOnBoard_.Add(other.cardsOnBoard_);
+      cardsInDeck_.Add(other.cardsInDeck_);
+      if (other.deck_ != null) {
+        if (deck_ == null) {
+          deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
+        }
+        Deck.MergeFrom(other.Deck);
+      }
+      if (other.Hp != 0) {
+        Hp = other.Hp;
+      }
+      if (other.Mana != 0) {
+        Mana = other.Mana;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Id = input.ReadString();
+            break;
+          }
+          case 16: {
+            currentAction_ = (global::Loom.ZombieBattleground.Protobuf.PlayerActionType) input.ReadEnum();
+            break;
+          }
+          case 26: {
+            if (overlordInstance_ == null) {
+              overlordInstance_ = new global::Loom.ZombieBattleground.Protobuf.OverlordInstance();
+            }
+            input.ReadMessage(overlordInstance_);
+            break;
+          }
+          case 34: {
+            cardsInHand_.AddEntriesFrom(input, _repeated_cardsInHand_codec);
+            break;
+          }
+          case 42: {
+            cardsOnBoard_.AddEntriesFrom(input, _repeated_cardsOnBoard_codec);
+            break;
+          }
+          case 50: {
+            cardsInDeck_.AddEntriesFrom(input, _repeated_cardsInDeck_codec);
+            break;
+          }
+          case 58: {
+            if (deck_ == null) {
+              deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
+            }
+            input.ReadMessage(deck_);
+            break;
+          }
+          case 64: {
+            Hp = input.ReadInt32();
+            break;
+          }
+          case 72: {
+            Mana = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class Match : pb::IMessage<Match> {
+    private static readonly pb::MessageParser<Match> _parser = new pb::MessageParser<Match>(() => new Match());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Match> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[44]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Match() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Match(Match other) : this() {
+      id_ = other.id_;
+      topics_ = other.topics_.Clone();
+      playerStates_ = other.playerStates_.Clone();
+      status_ = other.status_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Match Clone() {
+      return new Match(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private long id_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "topics" field.</summary>
+    public const int TopicsFieldNumber = 2;
+    private static readonly pb::FieldCodec<string> _repeated_topics_codec
+        = pb::FieldCodec.ForString(18);
+    private readonly pbc::RepeatedField<string> topics_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> Topics {
+      get { return topics_; }
+    }
+
+    /// <summary>Field number for the "playerStates" field.</summary>
+    public const int PlayerStatesFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.PlayerState> _repeated_playerStates_codec
+        = pb::FieldCodec.ForMessage(26, global::Loom.ZombieBattleground.Protobuf.PlayerState.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState> playerStates_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState> PlayerStates {
+      get { return playerStates_; }
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 4;
+    private global::Loom.ZombieBattleground.Protobuf.Match.Types.Status status_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Match.Types.Status Status {
+      get { return status_; }
+      set {
+        status_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Match);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Match other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if(!topics_.Equals(other.topics_)) return false;
+      if(!playerStates_.Equals(other.playerStates_)) return false;
+      if (Status != other.Status) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id != 0L) hash ^= Id.GetHashCode();
+      hash ^= topics_.GetHashCode();
+      hash ^= playerStates_.GetHashCode();
+      if (Status != 0) hash ^= Status.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      topics_.WriteTo(output, _repeated_topics_codec);
+      playerStates_.WriteTo(output, _repeated_playerStates_codec);
+      if (Status != 0) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) Status);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      size += topics_.CalculateSize(_repeated_topics_codec);
+      size += playerStates_.CalculateSize(_repeated_playerStates_codec);
+      if (Status != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Status);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Match other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id != 0L) {
+        Id = other.Id;
+      }
+      topics_.Add(other.topics_);
+      playerStates_.Add(other.playerStates_);
+      if (other.Status != 0) {
+        Status = other.Status;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            topics_.AddEntriesFrom(input, _repeated_topics_codec);
+            break;
+          }
+          case 26: {
+            playerStates_.AddEntriesFrom(input, _repeated_playerStates_codec);
+            break;
+          }
+          case 32: {
+            status_ = (global::Loom.ZombieBattleground.Protobuf.Match.Types.Status) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the Match message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static partial class Types {
+      public enum Status {
+        [pbr::OriginalName("Created")] Created = 0,
+        [pbr::OriginalName("Matching")] Matching = 1,
+        [pbr::OriginalName("Started")] Started = 2,
+        [pbr::OriginalName("Playing")] Playing = 3,
+        [pbr::OriginalName("PlayerLeft")] PlayerLeft = 4,
+        [pbr::OriginalName("Ended")] Ended = 5,
+      }
+
+    }
+    #endregion
+
+  }
+
+  public sealed partial class MatchMakingInfoList : pb::IMessage<MatchMakingInfoList> {
+    private static readonly pb::MessageParser<MatchMakingInfoList> _parser = new pb::MessageParser<MatchMakingInfoList>(() => new MatchMakingInfoList());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<MatchMakingInfoList> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[45]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchMakingInfoList() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchMakingInfoList(MatchMakingInfoList other) : this() {
+      infos_ = other.infos_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchMakingInfoList Clone() {
+      return new MatchMakingInfoList(this);
+    }
+
+    /// <summary>Field number for the "infos" field.</summary>
+    public const int InfosFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo> _repeated_infos_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo> infos_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo> Infos {
+      get { return infos_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as MatchMakingInfoList);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(MatchMakingInfoList other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!infos_.Equals(other.infos_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= infos_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      infos_.WriteTo(output, _repeated_infos_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += infos_.CalculateSize(_repeated_infos_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(MatchMakingInfoList other) {
+      if (other == null) {
+        return;
+      }
+      infos_.Add(other.infos_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            infos_.AddEntriesFrom(input, _repeated_infos_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class MatchMakingInfo : pb::IMessage<MatchMakingInfo> {
+    private static readonly pb::MessageParser<MatchMakingInfo> _parser = new pb::MessageParser<MatchMakingInfo>(() => new MatchMakingInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<MatchMakingInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[46]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchMakingInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchMakingInfo(MatchMakingInfo other) : this() {
+      userId_ = other.userId_;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchMakingInfo Clone() {
+      return new MatchMakingInfo(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deck" field.</summary>
+    public const int DeckFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.Deck deck_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Deck Deck {
+      get { return deck_; }
+      set {
+        deck_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as MatchMakingInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(MatchMakingInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UserId != other.UserId) return false;
+      if (!object.Equals(Deck, other.Deck)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (deck_ != null) hash ^= Deck.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (deck_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Deck);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (deck_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deck);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(MatchMakingInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      if (other.deck_ != null) {
+        if (deck_ == null) {
+          deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
+        }
+        Deck.MergeFrom(other.Deck);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (deck_ == null) {
+              deck_ = new global::Loom.ZombieBattleground.Protobuf.Deck();
+            }
+            input.ReadMessage(deck_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerAction : pb::IMessage<PlayerAction> {
+    private static readonly pb::MessageParser<PlayerAction> _parser = new pb::MessageParser<PlayerAction>(() => new PlayerAction());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerAction> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[47]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerAction() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerAction(PlayerAction other) : this() {
+      actionType_ = other.actionType_;
+      playerId_ = other.playerId_;
+      switch (other.ActionCase) {
+        case ActionOneofCase.CardAttack:
+          CardAttack = other.CardAttack.Clone();
+          break;
+        case ActionOneofCase.DrawCard:
+          DrawCard = other.DrawCard.Clone();
+          break;
+        case ActionOneofCase.EndTurn:
+          EndTurn = other.EndTurn.Clone();
+          break;
+        case ActionOneofCase.Mulligan:
+          Mulligan = other.Mulligan.Clone();
+          break;
+        case ActionOneofCase.CardPlay:
+          CardPlay = other.CardPlay.Clone();
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerAction Clone() {
+      return new PlayerAction(this);
+    }
+
+    /// <summary>Field number for the "actionType" field.</summary>
+    public const int ActionTypeFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.PlayerActionType actionType_ = 0;
+    /// <summary>
+    /// not sure we really need this
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionType ActionType {
+      get { return actionType_; }
+      set {
+        actionType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 6;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "cardAttack" field.</summary>
+    public const int CardAttackFieldNumber = 2;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack CardAttack {
+      get { return actionCase_ == ActionOneofCase.CardAttack ? (global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack) action_ : null; }
+      set {
+        action_ = value;
+        actionCase_ = value == null ? ActionOneofCase.None : ActionOneofCase.CardAttack;
+      }
+    }
+
+    /// <summary>Field number for the "drawCard" field.</summary>
+    public const int DrawCardFieldNumber = 3;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard DrawCard {
+      get { return actionCase_ == ActionOneofCase.DrawCard ? (global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard) action_ : null; }
+      set {
+        action_ = value;
+        actionCase_ = value == null ? ActionOneofCase.None : ActionOneofCase.DrawCard;
+      }
+    }
+
+    /// <summary>Field number for the "endTurn" field.</summary>
+    public const int EndTurnFieldNumber = 4;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionEndTurn EndTurn {
+      get { return actionCase_ == ActionOneofCase.EndTurn ? (global::Loom.ZombieBattleground.Protobuf.PlayerActionEndTurn) action_ : null; }
+      set {
+        action_ = value;
+        actionCase_ = value == null ? ActionOneofCase.None : ActionOneofCase.EndTurn;
+      }
+    }
+
+    /// <summary>Field number for the "mulligan" field.</summary>
+    public const int MulliganFieldNumber = 5;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan Mulligan {
+      get { return actionCase_ == ActionOneofCase.Mulligan ? (global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan) action_ : null; }
+      set {
+        action_ = value;
+        actionCase_ = value == null ? ActionOneofCase.None : ActionOneofCase.Mulligan;
+      }
+    }
+
+    /// <summary>Field number for the "cardPlay" field.</summary>
+    public const int CardPlayFieldNumber = 7;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionCardPlay CardPlay {
+      get { return actionCase_ == ActionOneofCase.CardPlay ? (global::Loom.ZombieBattleground.Protobuf.PlayerActionCardPlay) action_ : null; }
+      set {
+        action_ = value;
+        actionCase_ = value == null ? ActionOneofCase.None : ActionOneofCase.CardPlay;
+      }
+    }
+
+    private object action_;
+    /// <summary>Enum of possible cases for the "action" oneof.</summary>
+    public enum ActionOneofCase {
+      None = 0,
+      CardAttack = 2,
+      DrawCard = 3,
+      EndTurn = 4,
+      Mulligan = 5,
+      CardPlay = 7,
+    }
+    private ActionOneofCase actionCase_ = ActionOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ActionOneofCase ActionCase {
+      get { return actionCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearAction() {
+      actionCase_ = ActionOneofCase.None;
+      action_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerAction);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerAction other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ActionType != other.ActionType) return false;
+      if (PlayerId != other.PlayerId) return false;
+      if (!object.Equals(CardAttack, other.CardAttack)) return false;
+      if (!object.Equals(DrawCard, other.DrawCard)) return false;
+      if (!object.Equals(EndTurn, other.EndTurn)) return false;
+      if (!object.Equals(Mulligan, other.Mulligan)) return false;
+      if (!object.Equals(CardPlay, other.CardPlay)) return false;
+      if (ActionCase != other.ActionCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ActionType != 0) hash ^= ActionType.GetHashCode();
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      if (actionCase_ == ActionOneofCase.CardAttack) hash ^= CardAttack.GetHashCode();
+      if (actionCase_ == ActionOneofCase.DrawCard) hash ^= DrawCard.GetHashCode();
+      if (actionCase_ == ActionOneofCase.EndTurn) hash ^= EndTurn.GetHashCode();
+      if (actionCase_ == ActionOneofCase.Mulligan) hash ^= Mulligan.GetHashCode();
+      if (actionCase_ == ActionOneofCase.CardPlay) hash ^= CardPlay.GetHashCode();
+      hash ^= (int) actionCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (ActionType != 0) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) ActionType);
+      }
+      if (actionCase_ == ActionOneofCase.CardAttack) {
+        output.WriteRawTag(18);
+        output.WriteMessage(CardAttack);
+      }
+      if (actionCase_ == ActionOneofCase.DrawCard) {
+        output.WriteRawTag(26);
+        output.WriteMessage(DrawCard);
+      }
+      if (actionCase_ == ActionOneofCase.EndTurn) {
+        output.WriteRawTag(34);
+        output.WriteMessage(EndTurn);
+      }
+      if (actionCase_ == ActionOneofCase.Mulligan) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Mulligan);
+      }
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(PlayerId);
+      }
+      if (actionCase_ == ActionOneofCase.CardPlay) {
+        output.WriteRawTag(58);
+        output.WriteMessage(CardPlay);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (ActionType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) ActionType);
+      }
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      if (actionCase_ == ActionOneofCase.CardAttack) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CardAttack);
+      }
+      if (actionCase_ == ActionOneofCase.DrawCard) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DrawCard);
+      }
+      if (actionCase_ == ActionOneofCase.EndTurn) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(EndTurn);
+      }
+      if (actionCase_ == ActionOneofCase.Mulligan) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Mulligan);
+      }
+      if (actionCase_ == ActionOneofCase.CardPlay) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CardPlay);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerAction other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ActionType != 0) {
+        ActionType = other.ActionType;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      switch (other.ActionCase) {
+        case ActionOneofCase.CardAttack:
+          if (CardAttack == null) {
+            CardAttack = new global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack();
+          }
+          CardAttack.MergeFrom(other.CardAttack);
+          break;
+        case ActionOneofCase.DrawCard:
+          if (DrawCard == null) {
+            DrawCard = new global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard();
+          }
+          DrawCard.MergeFrom(other.DrawCard);
+          break;
+        case ActionOneofCase.EndTurn:
+          if (EndTurn == null) {
+            EndTurn = new global::Loom.ZombieBattleground.Protobuf.PlayerActionEndTurn();
+          }
+          EndTurn.MergeFrom(other.EndTurn);
+          break;
+        case ActionOneofCase.Mulligan:
+          if (Mulligan == null) {
+            Mulligan = new global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan();
+          }
+          Mulligan.MergeFrom(other.Mulligan);
+          break;
+        case ActionOneofCase.CardPlay:
+          if (CardPlay == null) {
+            CardPlay = new global::Loom.ZombieBattleground.Protobuf.PlayerActionCardPlay();
+          }
+          CardPlay.MergeFrom(other.CardPlay);
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            actionType_ = (global::Loom.ZombieBattleground.Protobuf.PlayerActionType) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack subBuilder = new global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack();
+            if (actionCase_ == ActionOneofCase.CardAttack) {
+              subBuilder.MergeFrom(CardAttack);
+            }
+            input.ReadMessage(subBuilder);
+            CardAttack = subBuilder;
+            break;
+          }
+          case 26: {
+            global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard subBuilder = new global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard();
+            if (actionCase_ == ActionOneofCase.DrawCard) {
+              subBuilder.MergeFrom(DrawCard);
+            }
+            input.ReadMessage(subBuilder);
+            DrawCard = subBuilder;
+            break;
+          }
+          case 34: {
+            global::Loom.ZombieBattleground.Protobuf.PlayerActionEndTurn subBuilder = new global::Loom.ZombieBattleground.Protobuf.PlayerActionEndTurn();
+            if (actionCase_ == ActionOneofCase.EndTurn) {
+              subBuilder.MergeFrom(EndTurn);
+            }
+            input.ReadMessage(subBuilder);
+            EndTurn = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan subBuilder = new global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan();
+            if (actionCase_ == ActionOneofCase.Mulligan) {
+              subBuilder.MergeFrom(Mulligan);
+            }
+            input.ReadMessage(subBuilder);
+            Mulligan = subBuilder;
+            break;
+          }
+          case 50: {
+            PlayerId = input.ReadString();
+            break;
+          }
+          case 58: {
+            global::Loom.ZombieBattleground.Protobuf.PlayerActionCardPlay subBuilder = new global::Loom.ZombieBattleground.Protobuf.PlayerActionCardPlay();
+            if (actionCase_ == ActionOneofCase.CardPlay) {
+              subBuilder.MergeFrom(CardPlay);
+            }
+            input.ReadMessage(subBuilder);
+            CardPlay = subBuilder;
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionEvent : pb::IMessage<PlayerActionEvent> {
+    private static readonly pb::MessageParser<PlayerActionEvent> _parser = new pb::MessageParser<PlayerActionEvent>(() => new PlayerActionEvent());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionEvent> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[48]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionEvent() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionEvent(PlayerActionEvent other) : this() {
+      playerActionType_ = other.playerActionType_;
+      userId_ = other.userId_;
+      message_ = other.message_;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
+      playerAction_ = other.playerAction_ != null ? other.playerAction_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionEvent Clone() {
+      return new PlayerActionEvent(this);
+    }
+
+    /// <summary>Field number for the "playerActionType" field.</summary>
+    public const int PlayerActionTypeFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.PlayerActionType playerActionType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionType PlayerActionType {
+      get { return playerActionType_; }
+      set {
+        playerActionType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 2;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "message" field.</summary>
+    public const int MessageFieldNumber = 3;
+    private string message_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Message {
+      get { return message_; }
+      set {
+        message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "match" field.</summary>
+    public const int MatchFieldNumber = 4;
+    private global::Loom.ZombieBattleground.Protobuf.Match match_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Match Match {
+      get { return match_; }
+      set {
+        match_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "playerAction" field.</summary>
+    public const int PlayerActionFieldNumber = 5;
+    private global::Loom.ZombieBattleground.Protobuf.PlayerAction playerAction_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerAction PlayerAction {
+      get { return playerAction_; }
+      set {
+        playerAction_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionEvent);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionEvent other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerActionType != other.PlayerActionType) return false;
+      if (UserId != other.UserId) return false;
+      if (Message != other.Message) return false;
+      if (!object.Equals(Match, other.Match)) return false;
+      if (!object.Equals(PlayerAction, other.PlayerAction)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerActionType != 0) hash ^= PlayerActionType.GetHashCode();
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (Message.Length != 0) hash ^= Message.GetHashCode();
+      if (match_ != null) hash ^= Match.GetHashCode();
+      if (playerAction_ != null) hash ^= PlayerAction.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerActionType != 0) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) PlayerActionType);
+      }
+      if (UserId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(UserId);
+      }
+      if (Message.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Message);
+      }
+      if (match_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Match);
+      }
+      if (playerAction_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(PlayerAction);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerActionType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlayerActionType);
+      }
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (Message.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
+      }
+      if (match_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Match);
+      }
+      if (playerAction_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PlayerAction);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionEvent other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerActionType != 0) {
+        PlayerActionType = other.PlayerActionType;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      if (other.Message.Length != 0) {
+        Message = other.Message;
+      }
+      if (other.match_ != null) {
+        if (match_ == null) {
+          match_ = new global::Loom.ZombieBattleground.Protobuf.Match();
+        }
+        Match.MergeFrom(other.Match);
+      }
+      if (other.playerAction_ != null) {
+        if (playerAction_ == null) {
+          playerAction_ = new global::Loom.ZombieBattleground.Protobuf.PlayerAction();
+        }
+        PlayerAction.MergeFrom(other.PlayerAction);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            playerActionType_ = (global::Loom.ZombieBattleground.Protobuf.PlayerActionType) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 26: {
+            Message = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (match_ == null) {
+              match_ = new global::Loom.ZombieBattleground.Protobuf.Match();
+            }
+            input.ReadMessage(match_);
+            break;
+          }
+          case 42: {
+            if (playerAction_ == null) {
+              playerAction_ = new global::Loom.ZombieBattleground.Protobuf.PlayerAction();
+            }
+            input.ReadMessage(playerAction_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayersInMatchmakingList : pb::IMessage<PlayersInMatchmakingList> {
+    private static readonly pb::MessageParser<PlayersInMatchmakingList> _parser = new pb::MessageParser<PlayersInMatchmakingList>(() => new PlayersInMatchmakingList());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayersInMatchmakingList> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[49]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayersInMatchmakingList() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayersInMatchmakingList(PlayersInMatchmakingList other) : this() {
+      userIDs_ = other.userIDs_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayersInMatchmakingList Clone() {
+      return new PlayersInMatchmakingList(this);
+    }
+
+    /// <summary>Field number for the "userIDs" field.</summary>
+    public const int UserIDsFieldNumber = 1;
+    private static readonly pb::FieldCodec<string> _repeated_userIDs_codec
+        = pb::FieldCodec.ForString(10);
+    private readonly pbc::RepeatedField<string> userIDs_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> UserIDs {
+      get { return userIDs_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayersInMatchmakingList);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayersInMatchmakingList other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!userIDs_.Equals(other.userIDs_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= userIDs_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      userIDs_.WriteTo(output, _repeated_userIDs_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += userIDs_.CalculateSize(_repeated_userIDs_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayersInMatchmakingList other) {
+      if (other == null) {
+        return;
+      }
+      userIDs_.Add(other.userIDs_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            userIDs_.AddEntriesFrom(input, _repeated_userIDs_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PendingMatchList : pb::IMessage<PendingMatchList> {
+    private static readonly pb::MessageParser<PendingMatchList> _parser = new pb::MessageParser<PendingMatchList>(() => new PendingMatchList());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PendingMatchList> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[50]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PendingMatchList() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PendingMatchList(PendingMatchList other) : this() {
+      matches_ = other.matches_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PendingMatchList Clone() {
+      return new PendingMatchList(this);
+    }
+
+    /// <summary>Field number for the "matches" field.</summary>
+    public const int MatchesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Match> _repeated_matches_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Match.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Match> matches_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Match>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Match> Matches {
+      get { return matches_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PendingMatchList);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PendingMatchList other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!matches_.Equals(other.matches_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= matches_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      matches_.WriteTo(output, _repeated_matches_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += matches_.CalculateSize(_repeated_matches_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PendingMatchList other) {
+      if (other == null) {
+        return;
+      }
+      matches_.Add(other.matches_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            matches_.AddEntriesFrom(input, _repeated_matches_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class MatchList : pb::IMessage<MatchList> {
+    private static readonly pb::MessageParser<MatchList> _parser = new pb::MessageParser<MatchList>(() => new MatchList());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<MatchList> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[51]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchList() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchList(MatchList other) : this() {
+      matches_ = other.matches_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchList Clone() {
+      return new MatchList(this);
+    }
+
+    /// <summary>Field number for the "matches" field.</summary>
+    public const int MatchesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.Match> _repeated_matches_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.Match.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Match> matches_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Match>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.Match> Matches {
+      get { return matches_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as MatchList);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(MatchList other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!matches_.Equals(other.matches_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= matches_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      matches_.WriteTo(output, _repeated_matches_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += matches_.CalculateSize(_repeated_matches_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(MatchList other) {
+      if (other == null) {
+        return;
+      }
+      matches_.Add(other.matches_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            matches_.AddEntriesFrom(input, _repeated_matches_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class MatchCount : pb::IMessage<MatchCount> {
+    private static readonly pb::MessageParser<MatchCount> _parser = new pb::MessageParser<MatchCount>(() => new MatchCount());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<MatchCount> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[52]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchCount() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchCount(MatchCount other) : this() {
+      currentId_ = other.currentId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MatchCount Clone() {
+      return new MatchCount(this);
+    }
+
+    /// <summary>Field number for the "currentId" field.</summary>
+    public const int CurrentIdFieldNumber = 1;
+    private long currentId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long CurrentId {
+      get { return currentId_; }
+      set {
+        currentId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as MatchCount);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(MatchCount other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (CurrentId != other.CurrentId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (CurrentId != 0L) hash ^= CurrentId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (CurrentId != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(CurrentId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (CurrentId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(CurrentId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(MatchCount other) {
+      if (other == null) {
+        return;
+      }
+      if (other.CurrentId != 0L) {
+        CurrentId = other.CurrentId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            CurrentId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class FindMatchRequest : pb::IMessage<FindMatchRequest> {
+    private static readonly pb::MessageParser<FindMatchRequest> _parser = new pb::MessageParser<FindMatchRequest>(() => new FindMatchRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<FindMatchRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[53]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FindMatchRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FindMatchRequest(FindMatchRequest other) : this() {
+      userId_ = other.userId_;
+      deckId_ = other.deckId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FindMatchRequest Clone() {
+      return new FindMatchRequest(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deckId" field.</summary>
+    public const int DeckIdFieldNumber = 2;
+    private long deckId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long DeckId {
+      get { return deckId_; }
+      set {
+        deckId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as FindMatchRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(FindMatchRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UserId != other.UserId) return false;
+      if (DeckId != other.DeckId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (DeckId != 0L) hash ^= DeckId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (DeckId != 0L) {
+        output.WriteRawTag(16);
+        output.WriteInt64(DeckId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (DeckId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(DeckId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(FindMatchRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      if (other.DeckId != 0L) {
+        DeckId = other.DeckId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 16: {
+            DeckId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class FindMatchResponse : pb::IMessage<FindMatchResponse> {
+    private static readonly pb::MessageParser<FindMatchResponse> _parser = new pb::MessageParser<FindMatchResponse>(() => new FindMatchResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<FindMatchResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[54]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FindMatchResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FindMatchResponse(FindMatchResponse other) : this() {
+      match_ = other.match_ != null ? other.match_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FindMatchResponse Clone() {
+      return new FindMatchResponse(this);
+    }
+
+    /// <summary>Field number for the "match" field.</summary>
+    public const int MatchFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.Match match_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Match Match {
+      get { return match_; }
+      set {
+        match_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as FindMatchResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(FindMatchResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Match, other.Match)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (match_ != null) hash ^= Match.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (match_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Match);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (match_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Match);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(FindMatchResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.match_ != null) {
+        if (match_ == null) {
+          match_ = new global::Loom.ZombieBattleground.Protobuf.Match();
+        }
+        Match.MergeFrom(other.Match);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (match_ == null) {
+              match_ = new global::Loom.ZombieBattleground.Protobuf.Match();
+            }
+            input.ReadMessage(match_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class LeaveMatchRequest : pb::IMessage<LeaveMatchRequest> {
+    private static readonly pb::MessageParser<LeaveMatchRequest> _parser = new pb::MessageParser<LeaveMatchRequest>(() => new LeaveMatchRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<LeaveMatchRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[55]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LeaveMatchRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LeaveMatchRequest(LeaveMatchRequest other) : this() {
+      userId_ = other.userId_;
+      matchId_ = other.matchId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LeaveMatchRequest Clone() {
+      return new LeaveMatchRequest(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "matchId" field.</summary>
+    public const int MatchIdFieldNumber = 2;
+    private long matchId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long MatchId {
+      get { return matchId_; }
+      set {
+        matchId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as LeaveMatchRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(LeaveMatchRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UserId != other.UserId) return false;
+      if (MatchId != other.MatchId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (MatchId != 0L) hash ^= MatchId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (MatchId != 0L) {
+        output.WriteRawTag(16);
+        output.WriteInt64(MatchId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (MatchId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(MatchId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(LeaveMatchRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      if (other.MatchId != 0L) {
+        MatchId = other.MatchId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 16: {
+            MatchId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class LeaveMatchResponse : pb::IMessage<LeaveMatchResponse> {
+    private static readonly pb::MessageParser<LeaveMatchResponse> _parser = new pb::MessageParser<LeaveMatchResponse>(() => new LeaveMatchResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<LeaveMatchResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[56]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LeaveMatchResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LeaveMatchResponse(LeaveMatchResponse other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LeaveMatchResponse Clone() {
+      return new LeaveMatchResponse(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as LeaveMatchResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(LeaveMatchResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(LeaveMatchResponse other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class GetMatchRequest : pb::IMessage<GetMatchRequest> {
+    private static readonly pb::MessageParser<GetMatchRequest> _parser = new pb::MessageParser<GetMatchRequest>(() => new GetMatchRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<GetMatchRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[57]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetMatchRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetMatchRequest(GetMatchRequest other) : this() {
+      matchId_ = other.matchId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetMatchRequest Clone() {
+      return new GetMatchRequest(this);
+    }
+
+    /// <summary>Field number for the "matchId" field.</summary>
+    public const int MatchIdFieldNumber = 1;
+    private long matchId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long MatchId {
+      get { return matchId_; }
+      set {
+        matchId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GetMatchRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GetMatchRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (MatchId != other.MatchId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (MatchId != 0L) hash ^= MatchId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (MatchId != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(MatchId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (MatchId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(MatchId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GetMatchRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.MatchId != 0L) {
+        MatchId = other.MatchId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            MatchId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class GetMatchResponse : pb::IMessage<GetMatchResponse> {
+    private static readonly pb::MessageParser<GetMatchResponse> _parser = new pb::MessageParser<GetMatchResponse>(() => new GetMatchResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<GetMatchResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[58]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetMatchResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetMatchResponse(GetMatchResponse other) : this() {
+      match_ = other.match_ != null ? other.match_.Clone() : null;
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetMatchResponse Clone() {
+      return new GetMatchResponse(this);
+    }
+
+    /// <summary>Field number for the "match" field.</summary>
+    public const int MatchFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.Match match_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Match Match {
+      get { return match_; }
+      set {
+        match_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gameState" field.</summary>
+    public const int GameStateFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.GameState gameState_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.GameState GameState {
+      get { return gameState_; }
+      set {
+        gameState_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GetMatchResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GetMatchResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Match, other.Match)) return false;
+      if (!object.Equals(GameState, other.GameState)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (match_ != null) hash ^= Match.GetHashCode();
+      if (gameState_ != null) hash ^= GameState.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (match_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Match);
+      }
+      if (gameState_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(GameState);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (match_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Match);
+      }
+      if (gameState_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameState);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GetMatchResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.match_ != null) {
+        if (match_ == null) {
+          match_ = new global::Loom.ZombieBattleground.Protobuf.Match();
+        }
+        Match.MergeFrom(other.Match);
+      }
+      if (other.gameState_ != null) {
+        if (gameState_ == null) {
+          gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+        }
+        GameState.MergeFrom(other.GameState);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (match_ == null) {
+              match_ = new global::Loom.ZombieBattleground.Protobuf.Match();
+            }
+            input.ReadMessage(match_);
+            break;
+          }
+          case 18: {
+            if (gameState_ == null) {
+              gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+            }
+            input.ReadMessage(gameState_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class GetGameStateRequest : pb::IMessage<GetGameStateRequest> {
+    private static readonly pb::MessageParser<GetGameStateRequest> _parser = new pb::MessageParser<GetGameStateRequest>(() => new GetGameStateRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<GetGameStateRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[59]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetGameStateRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetGameStateRequest(GetGameStateRequest other) : this() {
+      matchId_ = other.matchId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetGameStateRequest Clone() {
+      return new GetGameStateRequest(this);
+    }
+
+    /// <summary>Field number for the "matchId" field.</summary>
+    public const int MatchIdFieldNumber = 1;
+    private long matchId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long MatchId {
+      get { return matchId_; }
+      set {
+        matchId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GetGameStateRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GetGameStateRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (MatchId != other.MatchId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (MatchId != 0L) hash ^= MatchId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (MatchId != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(MatchId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (MatchId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(MatchId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GetGameStateRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.MatchId != 0L) {
+        MatchId = other.MatchId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            MatchId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class GetGameStateResponse : pb::IMessage<GetGameStateResponse> {
+    private static readonly pb::MessageParser<GetGameStateResponse> _parser = new pb::MessageParser<GetGameStateResponse>(() => new GetGameStateResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<GetGameStateResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[60]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetGameStateResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetGameStateResponse(GetGameStateResponse other) : this() {
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GetGameStateResponse Clone() {
+      return new GetGameStateResponse(this);
+    }
+
+    /// <summary>Field number for the "gameState" field.</summary>
+    public const int GameStateFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.GameState gameState_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.GameState GameState {
+      get { return gameState_; }
+      set {
+        gameState_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GetGameStateResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GetGameStateResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(GameState, other.GameState)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (gameState_ != null) hash ^= GameState.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (gameState_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(GameState);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (gameState_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameState);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GetGameStateResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.gameState_ != null) {
+        if (gameState_ == null) {
+          gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+        }
+        GameState.MergeFrom(other.GameState);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (gameState_ == null) {
+              gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+            }
+            input.ReadMessage(gameState_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionRequest : pb::IMessage<PlayerActionRequest> {
+    private static readonly pb::MessageParser<PlayerActionRequest> _parser = new pb::MessageParser<PlayerActionRequest>(() => new PlayerActionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[61]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionRequest(PlayerActionRequest other) : this() {
+      matchId_ = other.matchId_;
+      playerAction_ = other.playerAction_ != null ? other.playerAction_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionRequest Clone() {
+      return new PlayerActionRequest(this);
+    }
+
+    /// <summary>Field number for the "matchId" field.</summary>
+    public const int MatchIdFieldNumber = 1;
+    private long matchId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long MatchId {
+      get { return matchId_; }
+      set {
+        matchId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "playerAction" field.</summary>
+    public const int PlayerActionFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.PlayerAction playerAction_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.PlayerAction PlayerAction {
+      get { return playerAction_; }
+      set {
+        playerAction_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (MatchId != other.MatchId) return false;
+      if (!object.Equals(PlayerAction, other.PlayerAction)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (MatchId != 0L) hash ^= MatchId.GetHashCode();
+      if (playerAction_ != null) hash ^= PlayerAction.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (MatchId != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(MatchId);
+      }
+      if (playerAction_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(PlayerAction);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (MatchId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(MatchId);
+      }
+      if (playerAction_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PlayerAction);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.MatchId != 0L) {
+        MatchId = other.MatchId;
+      }
+      if (other.playerAction_ != null) {
+        if (playerAction_ == null) {
+          playerAction_ = new global::Loom.ZombieBattleground.Protobuf.PlayerAction();
+        }
+        PlayerAction.MergeFrom(other.PlayerAction);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            MatchId = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            if (playerAction_ == null) {
+              playerAction_ = new global::Loom.ZombieBattleground.Protobuf.PlayerAction();
+            }
+            input.ReadMessage(playerAction_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionResponse : pb::IMessage<PlayerActionResponse> {
+    private static readonly pb::MessageParser<PlayerActionResponse> _parser = new pb::MessageParser<PlayerActionResponse>(() => new PlayerActionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[62]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionResponse(PlayerActionResponse other) : this() {
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionResponse Clone() {
+      return new PlayerActionResponse(this);
+    }
+
+    /// <summary>Field number for the "gameState" field.</summary>
+    public const int GameStateFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.GameState gameState_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.GameState GameState {
+      get { return gameState_; }
+      set {
+        gameState_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(GameState, other.GameState)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (gameState_ != null) hash ^= GameState.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (gameState_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(GameState);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (gameState_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameState);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.gameState_ != null) {
+        if (gameState_ == null) {
+          gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+        }
+        GameState.MergeFrom(other.GameState);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (gameState_ == null) {
+              gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+            }
+            input.ReadMessage(gameState_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class GlobalState : pb::IMessage<GlobalState> {
+    private static readonly pb::MessageParser<GlobalState> _parser = new pb::MessageParser<GlobalState>(() => new GlobalState());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<GlobalState> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[63]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GlobalState() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GlobalState(GlobalState other) : this() {
+      currentGameId_ = other.currentGameId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GlobalState Clone() {
+      return new GlobalState(this);
+    }
+
+    /// <summary>Field number for the "current_game_id" field.</summary>
+    public const int CurrentGameIdFieldNumber = 1;
+    private long currentGameId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long CurrentGameId {
+      get { return currentGameId_; }
+      set {
+        currentGameId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GlobalState);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GlobalState other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (CurrentGameId != other.CurrentGameId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (CurrentGameId != 0L) hash ^= CurrentGameId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (CurrentGameId != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(CurrentGameId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (CurrentGameId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(CurrentGameId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GlobalState other) {
+      if (other == null) {
+        return;
+      }
+      if (other.CurrentGameId != 0L) {
+        CurrentGameId = other.CurrentGameId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            CurrentGameId = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class GameState : pb::IMessage<GameState> {
+    private static readonly pb::MessageParser<GameState> _parser = new pb::MessageParser<GameState>(() => new GameState());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<GameState> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[64]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GameState() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GameState(GameState other) : this() {
+      id_ = other.id_;
+      isEnded_ = other.isEnded_;
+      currentPlayerIndex_ = other.currentPlayerIndex_;
+      playerStates_ = other.playerStates_.Clone();
+      currentActionIndex_ = other.currentActionIndex_;
+      playerActions_ = other.playerActions_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public GameState Clone() {
+      return new GameState(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private long id_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "isEnded" field.</summary>
+    public const int IsEndedFieldNumber = 2;
+    private bool isEnded_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool IsEnded {
+      get { return isEnded_; }
+      set {
+        isEnded_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "currentPlayerIndex" field.</summary>
+    public const int CurrentPlayerIndexFieldNumber = 3;
+    private int currentPlayerIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CurrentPlayerIndex {
+      get { return currentPlayerIndex_; }
+      set {
+        currentPlayerIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "playerStates" field.</summary>
+    public const int PlayerStatesFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.PlayerState> _repeated_playerStates_codec
+        = pb::FieldCodec.ForMessage(34, global::Loom.ZombieBattleground.Protobuf.PlayerState.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState> playerStates_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState> PlayerStates {
+      get { return playerStates_; }
+    }
+
+    /// <summary>Field number for the "currentActionIndex" field.</summary>
+    public const int CurrentActionIndexFieldNumber = 5;
+    private long currentActionIndex_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long CurrentActionIndex {
+      get { return currentActionIndex_; }
+      set {
+        currentActionIndex_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "playerActions" field.</summary>
+    public const int PlayerActionsFieldNumber = 6;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.PlayerAction> _repeated_playerActions_codec
+        = pb::FieldCodec.ForMessage(50, global::Loom.ZombieBattleground.Protobuf.PlayerAction.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerAction> playerActions_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerAction>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerAction> PlayerActions {
+      get { return playerActions_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as GameState);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(GameState other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (IsEnded != other.IsEnded) return false;
+      if (CurrentPlayerIndex != other.CurrentPlayerIndex) return false;
+      if(!playerStates_.Equals(other.playerStates_)) return false;
+      if (CurrentActionIndex != other.CurrentActionIndex) return false;
+      if(!playerActions_.Equals(other.playerActions_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id != 0L) hash ^= Id.GetHashCode();
+      if (IsEnded != false) hash ^= IsEnded.GetHashCode();
+      if (CurrentPlayerIndex != 0) hash ^= CurrentPlayerIndex.GetHashCode();
+      hash ^= playerStates_.GetHashCode();
+      if (CurrentActionIndex != 0L) hash ^= CurrentActionIndex.GetHashCode();
+      hash ^= playerActions_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Id != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Id);
+      }
+      if (IsEnded != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(IsEnded);
+      }
+      if (CurrentPlayerIndex != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(CurrentPlayerIndex);
+      }
+      playerStates_.WriteTo(output, _repeated_playerStates_codec);
+      if (CurrentActionIndex != 0L) {
+        output.WriteRawTag(40);
+        output.WriteInt64(CurrentActionIndex);
+      }
+      playerActions_.WriteTo(output, _repeated_playerActions_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      }
+      if (IsEnded != false) {
+        size += 1 + 1;
+      }
+      if (CurrentPlayerIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(CurrentPlayerIndex);
+      }
+      size += playerStates_.CalculateSize(_repeated_playerStates_codec);
+      if (CurrentActionIndex != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(CurrentActionIndex);
+      }
+      size += playerActions_.CalculateSize(_repeated_playerActions_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(GameState other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id != 0L) {
+        Id = other.Id;
+      }
+      if (other.IsEnded != false) {
+        IsEnded = other.IsEnded;
+      }
+      if (other.CurrentPlayerIndex != 0) {
+        CurrentPlayerIndex = other.CurrentPlayerIndex;
+      }
+      playerStates_.Add(other.playerStates_);
+      if (other.CurrentActionIndex != 0L) {
+        CurrentActionIndex = other.CurrentActionIndex;
+      }
+      playerActions_.Add(other.playerActions_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Id = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            IsEnded = input.ReadBool();
+            break;
+          }
+          case 24: {
+            CurrentPlayerIndex = input.ReadInt32();
+            break;
+          }
+          case 34: {
+            playerStates_.AddEntriesFrom(input, _repeated_playerStates_codec);
+            break;
+          }
+          case 40: {
+            CurrentActionIndex = input.ReadInt64();
+            break;
+          }
+          case 50: {
+            playerActions_.AddEntriesFrom(input, _repeated_playerActions_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class AbilityInstance : pb::IMessage<AbilityInstance> {
+    private static readonly pb::MessageParser<AbilityInstance> _parser = new pb::MessageParser<AbilityInstance>(() => new AbilityInstance());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<AbilityInstance> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[65]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AbilityInstance() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AbilityInstance(AbilityInstance other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public AbilityInstance Clone() {
+      return new AbilityInstance(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as AbilityInstance);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(AbilityInstance other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(AbilityInstance other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class CardAbility : pb::IMessage<CardAbility> {
+    private static readonly pb::MessageParser<CardAbility> _parser = new pb::MessageParser<CardAbility>(() => new CardAbility());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<CardAbility> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[66]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardAbility() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardAbility(CardAbility other) : this() {
+      abilityType_ = other.abilityType_;
+      abilityActivityType_ = other.abilityActivityType_;
+      cardAbilityTrigger_ = other.cardAbilityTrigger_;
+      allowedTargets_ = other.allowedTargets_.Clone();
+      abilityStatType_ = other.abilityStatType_;
+      abilitySetType_ = other.abilitySetType_;
+      cardAbilityEffect_ = other.cardAbilityEffect_;
+      attackRestriction_ = other.attackRestriction_;
+      targetCardType_ = other.targetCardType_;
+      targetUnitSpecialStatusType_ = other.targetUnitSpecialStatusType_;
+      targetUnitType_ = other.targetUnitType_;
+      value_ = other.value_;
+      damage_ = other.damage_;
+      health_ = other.health_;
+      attackInfo_ = other.attackInfo_;
+      name_ = other.name_;
+      turns_ = other.turns_;
+      count_ = other.count_;
+      delay_ = other.delay_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardAbility Clone() {
+      return new CardAbility(this);
+    }
+
+    /// <summary>Field number for the "abilityType" field.</summary>
+    public const int AbilityTypeFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.CardAbilityType abilityType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardAbilityType AbilityType {
+      get { return abilityType_; }
+      set {
+        abilityType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "abilityActivityType" field.</summary>
+    public const int AbilityActivityTypeFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.CardAbilityActivityType abilityActivityType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardAbilityActivityType AbilityActivityType {
+      get { return abilityActivityType_; }
+      set {
+        abilityActivityType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cardAbilityTrigger" field.</summary>
+    public const int CardAbilityTriggerFieldNumber = 3;
+    private global::Loom.ZombieBattleground.Protobuf.CardAbilityTrigger cardAbilityTrigger_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardAbilityTrigger CardAbilityTrigger {
+      get { return cardAbilityTrigger_; }
+      set {
+        cardAbilityTrigger_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "allowedTargets" field.</summary>
+    public const int AllowedTargetsFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.AllowedTarget> _repeated_allowedTargets_codec
+        = pb::FieldCodec.ForEnum(34, x => (int) x, x => (global::Loom.ZombieBattleground.Protobuf.AllowedTarget) x);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.AllowedTarget> allowedTargets_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.AllowedTarget>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.AllowedTarget> AllowedTargets {
+      get { return allowedTargets_; }
+    }
+
+    /// <summary>Field number for the "abilityStatType" field.</summary>
+    public const int AbilityStatTypeFieldNumber = 5;
+    private global::Loom.ZombieBattleground.Protobuf.StatType abilityStatType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.StatType AbilityStatType {
+      get { return abilityStatType_; }
+      set {
+        abilityStatType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "abilitySetType" field.</summary>
+    public const int AbilitySetTypeFieldNumber = 6;
+    private global::Loom.ZombieBattleground.Protobuf.ElementKind abilitySetType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.ElementKind AbilitySetType {
+      get { return abilitySetType_; }
+      set {
+        abilitySetType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cardAbilityEffect" field.</summary>
+    public const int CardAbilityEffectFieldNumber = 7;
+    private global::Loom.ZombieBattleground.Protobuf.CardAbilityEffect cardAbilityEffect_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardAbilityEffect CardAbilityEffect {
+      get { return cardAbilityEffect_; }
+      set {
+        cardAbilityEffect_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attackRestriction" field.</summary>
+    public const int AttackRestrictionFieldNumber = 8;
+    private global::Loom.ZombieBattleground.Protobuf.AttackRestriction attackRestriction_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.AttackRestriction AttackRestriction {
+      get { return attackRestriction_; }
+      set {
+        attackRestriction_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "targetCardType" field.</summary>
+    public const int TargetCardTypeFieldNumber = 9;
+    private global::Loom.ZombieBattleground.Protobuf.CardKind targetCardType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardKind TargetCardType {
+      get { return targetCardType_; }
+      set {
+        targetCardType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "targetUnitSpecialStatusType" field.</summary>
+    public const int TargetUnitSpecialStatusTypeFieldNumber = 10;
+    private global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus targetUnitSpecialStatusType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus TargetUnitSpecialStatusType {
+      get { return targetUnitSpecialStatusType_; }
+      set {
+        targetUnitSpecialStatusType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "targetUnitType" field.</summary>
+    public const int TargetUnitTypeFieldNumber = 11;
+    private global::Loom.ZombieBattleground.Protobuf.CardKind targetUnitType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardKind TargetUnitType {
+      get { return targetUnitType_; }
+      set {
+        targetUnitType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "value" field.</summary>
+    public const int ValueFieldNumber = 12;
+    private int value_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Value {
+      get { return value_; }
+      set {
+        value_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "damage" field.</summary>
+    public const int DamageFieldNumber = 13;
+    private int damage_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Damage {
+      get { return damage_; }
+      set {
+        damage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "health" field.</summary>
+    public const int HealthFieldNumber = 14;
+    private int health_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Health {
+      get { return health_; }
+      set {
+        health_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attackInfo" field.</summary>
+    public const int AttackInfoFieldNumber = 15;
+    private string attackInfo_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string AttackInfo {
+      get { return attackInfo_; }
+      set {
+        attackInfo_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 16;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "turns" field.</summary>
+    public const int TurnsFieldNumber = 17;
+    private int turns_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Turns {
+      get { return turns_; }
+      set {
+        turns_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 18;
+    private int count_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "delay" field.</summary>
+    public const int DelayFieldNumber = 19;
+    private int delay_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Delay {
+      get { return delay_; }
+      set {
+        delay_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as CardAbility);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(CardAbility other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (AbilityType != other.AbilityType) return false;
+      if (AbilityActivityType != other.AbilityActivityType) return false;
+      if (CardAbilityTrigger != other.CardAbilityTrigger) return false;
+      if(!allowedTargets_.Equals(other.allowedTargets_)) return false;
+      if (AbilityStatType != other.AbilityStatType) return false;
+      if (AbilitySetType != other.AbilitySetType) return false;
+      if (CardAbilityEffect != other.CardAbilityEffect) return false;
+      if (AttackRestriction != other.AttackRestriction) return false;
+      if (TargetCardType != other.TargetCardType) return false;
+      if (TargetUnitSpecialStatusType != other.TargetUnitSpecialStatusType) return false;
+      if (TargetUnitType != other.TargetUnitType) return false;
+      if (Value != other.Value) return false;
+      if (Damage != other.Damage) return false;
+      if (Health != other.Health) return false;
+      if (AttackInfo != other.AttackInfo) return false;
+      if (Name != other.Name) return false;
+      if (Turns != other.Turns) return false;
+      if (Count != other.Count) return false;
+      if (Delay != other.Delay) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (AbilityType != 0) hash ^= AbilityType.GetHashCode();
+      if (AbilityActivityType != 0) hash ^= AbilityActivityType.GetHashCode();
+      if (CardAbilityTrigger != 0) hash ^= CardAbilityTrigger.GetHashCode();
+      hash ^= allowedTargets_.GetHashCode();
+      if (AbilityStatType != 0) hash ^= AbilityStatType.GetHashCode();
+      if (AbilitySetType != 0) hash ^= AbilitySetType.GetHashCode();
+      if (CardAbilityEffect != 0) hash ^= CardAbilityEffect.GetHashCode();
+      if (AttackRestriction != 0) hash ^= AttackRestriction.GetHashCode();
+      if (TargetCardType != 0) hash ^= TargetCardType.GetHashCode();
+      if (TargetUnitSpecialStatusType != 0) hash ^= TargetUnitSpecialStatusType.GetHashCode();
+      if (TargetUnitType != 0) hash ^= TargetUnitType.GetHashCode();
+      if (Value != 0) hash ^= Value.GetHashCode();
+      if (Damage != 0) hash ^= Damage.GetHashCode();
+      if (Health != 0) hash ^= Health.GetHashCode();
+      if (AttackInfo.Length != 0) hash ^= AttackInfo.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (Turns != 0) hash ^= Turns.GetHashCode();
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (Delay != 0) hash ^= Delay.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (AbilityType != 0) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) AbilityType);
+      }
+      if (AbilityActivityType != 0) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) AbilityActivityType);
+      }
+      if (CardAbilityTrigger != 0) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) CardAbilityTrigger);
+      }
+      allowedTargets_.WriteTo(output, _repeated_allowedTargets_codec);
+      if (AbilityStatType != 0) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) AbilityStatType);
+      }
+      if (AbilitySetType != 0) {
+        output.WriteRawTag(48);
+        output.WriteEnum((int) AbilitySetType);
+      }
+      if (CardAbilityEffect != 0) {
+        output.WriteRawTag(56);
+        output.WriteEnum((int) CardAbilityEffect);
+      }
+      if (AttackRestriction != 0) {
+        output.WriteRawTag(64);
+        output.WriteEnum((int) AttackRestriction);
+      }
+      if (TargetCardType != 0) {
+        output.WriteRawTag(72);
+        output.WriteEnum((int) TargetCardType);
+      }
+      if (TargetUnitSpecialStatusType != 0) {
+        output.WriteRawTag(80);
+        output.WriteEnum((int) TargetUnitSpecialStatusType);
+      }
+      if (TargetUnitType != 0) {
+        output.WriteRawTag(88);
+        output.WriteEnum((int) TargetUnitType);
+      }
+      if (Value != 0) {
+        output.WriteRawTag(96);
+        output.WriteInt32(Value);
+      }
+      if (Damage != 0) {
+        output.WriteRawTag(104);
+        output.WriteInt32(Damage);
+      }
+      if (Health != 0) {
+        output.WriteRawTag(112);
+        output.WriteInt32(Health);
+      }
+      if (AttackInfo.Length != 0) {
+        output.WriteRawTag(122);
+        output.WriteString(AttackInfo);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(130, 1);
+        output.WriteString(Name);
+      }
+      if (Turns != 0) {
+        output.WriteRawTag(136, 1);
+        output.WriteInt32(Turns);
+      }
+      if (Count != 0) {
+        output.WriteRawTag(144, 1);
+        output.WriteInt32(Count);
+      }
+      if (Delay != 0) {
+        output.WriteRawTag(152, 1);
+        output.WriteInt32(Delay);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (AbilityType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AbilityType);
+      }
+      if (AbilityActivityType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AbilityActivityType);
+      }
+      if (CardAbilityTrigger != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CardAbilityTrigger);
+      }
+      size += allowedTargets_.CalculateSize(_repeated_allowedTargets_codec);
+      if (AbilityStatType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AbilityStatType);
+      }
+      if (AbilitySetType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AbilitySetType);
+      }
+      if (CardAbilityEffect != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CardAbilityEffect);
+      }
+      if (AttackRestriction != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AttackRestriction);
+      }
+      if (TargetCardType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TargetCardType);
+      }
+      if (TargetUnitSpecialStatusType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TargetUnitSpecialStatusType);
+      }
+      if (TargetUnitType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TargetUnitType);
+      }
+      if (Value != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Value);
+      }
+      if (Damage != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Damage);
+      }
+      if (Health != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Health);
+      }
+      if (AttackInfo.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AttackInfo);
+      }
+      if (Name.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (Turns != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Turns);
+      }
+      if (Count != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Count);
+      }
+      if (Delay != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(Delay);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(CardAbility other) {
+      if (other == null) {
+        return;
+      }
+      if (other.AbilityType != 0) {
+        AbilityType = other.AbilityType;
+      }
+      if (other.AbilityActivityType != 0) {
+        AbilityActivityType = other.AbilityActivityType;
+      }
+      if (other.CardAbilityTrigger != 0) {
+        CardAbilityTrigger = other.CardAbilityTrigger;
+      }
+      allowedTargets_.Add(other.allowedTargets_);
+      if (other.AbilityStatType != 0) {
+        AbilityStatType = other.AbilityStatType;
+      }
+      if (other.AbilitySetType != 0) {
+        AbilitySetType = other.AbilitySetType;
+      }
+      if (other.CardAbilityEffect != 0) {
+        CardAbilityEffect = other.CardAbilityEffect;
+      }
+      if (other.AttackRestriction != 0) {
+        AttackRestriction = other.AttackRestriction;
+      }
+      if (other.TargetCardType != 0) {
+        TargetCardType = other.TargetCardType;
+      }
+      if (other.TargetUnitSpecialStatusType != 0) {
+        TargetUnitSpecialStatusType = other.TargetUnitSpecialStatusType;
+      }
+      if (other.TargetUnitType != 0) {
+        TargetUnitType = other.TargetUnitType;
+      }
+      if (other.Value != 0) {
+        Value = other.Value;
+      }
+      if (other.Damage != 0) {
+        Damage = other.Damage;
+      }
+      if (other.Health != 0) {
+        Health = other.Health;
+      }
+      if (other.AttackInfo.Length != 0) {
+        AttackInfo = other.AttackInfo;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.Turns != 0) {
+        Turns = other.Turns;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      if (other.Delay != 0) {
+        Delay = other.Delay;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            abilityType_ = (global::Loom.ZombieBattleground.Protobuf.CardAbilityType) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            abilityActivityType_ = (global::Loom.ZombieBattleground.Protobuf.CardAbilityActivityType) input.ReadEnum();
+            break;
+          }
+          case 24: {
+            cardAbilityTrigger_ = (global::Loom.ZombieBattleground.Protobuf.CardAbilityTrigger) input.ReadEnum();
+            break;
+          }
+          case 34:
+          case 32: {
+            allowedTargets_.AddEntriesFrom(input, _repeated_allowedTargets_codec);
+            break;
+          }
+          case 40: {
+            abilityStatType_ = (global::Loom.ZombieBattleground.Protobuf.StatType) input.ReadEnum();
+            break;
+          }
+          case 48: {
+            abilitySetType_ = (global::Loom.ZombieBattleground.Protobuf.ElementKind) input.ReadEnum();
+            break;
+          }
+          case 56: {
+            cardAbilityEffect_ = (global::Loom.ZombieBattleground.Protobuf.CardAbilityEffect) input.ReadEnum();
+            break;
+          }
+          case 64: {
+            attackRestriction_ = (global::Loom.ZombieBattleground.Protobuf.AttackRestriction) input.ReadEnum();
+            break;
+          }
+          case 72: {
+            targetCardType_ = (global::Loom.ZombieBattleground.Protobuf.CardKind) input.ReadEnum();
+            break;
+          }
+          case 80: {
+            targetUnitSpecialStatusType_ = (global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus) input.ReadEnum();
+            break;
+          }
+          case 88: {
+            targetUnitType_ = (global::Loom.ZombieBattleground.Protobuf.CardKind) input.ReadEnum();
+            break;
+          }
+          case 96: {
+            Value = input.ReadInt32();
+            break;
+          }
+          case 104: {
+            Damage = input.ReadInt32();
+            break;
+          }
+          case 112: {
+            Health = input.ReadInt32();
+            break;
+          }
+          case 122: {
+            AttackInfo = input.ReadString();
+            break;
+          }
+          case 130: {
+            Name = input.ReadString();
+            break;
+          }
+          case 136: {
+            Turns = input.ReadInt32();
+            break;
+          }
+          case 144: {
+            Count = input.ReadInt32();
+            break;
+          }
+          case 152: {
+            Delay = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class CardInstance : pb::IMessage<CardInstance> {
+    private static readonly pb::MessageParser<CardInstance> _parser = new pb::MessageParser<CardInstance>(() => new CardInstance());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<CardInstance> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[67]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardInstance() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardInstance(CardInstance other) : this() {
+      instanceId_ = other.instanceId_;
+      prototype_ = other.prototype_ != null ? other.prototype_.Clone() : null;
+      defence_ = other.defence_;
+      attack_ = other.attack_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardInstance Clone() {
+      return new CardInstance(this);
+    }
+
+    /// <summary>Field number for the "instanceId" field.</summary>
+    public const int InstanceIdFieldNumber = 1;
+    private int instanceId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InstanceId {
+      get { return instanceId_; }
+      set {
+        instanceId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "prototype" field.</summary>
+    public const int PrototypeFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.CardPrototype prototype_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardPrototype Prototype {
+      get { return prototype_; }
+      set {
+        prototype_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "defence" field.</summary>
+    public const int DefenceFieldNumber = 3;
+    private int defence_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Defence {
+      get { return defence_; }
+      set {
+        defence_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attack" field.</summary>
+    public const int AttackFieldNumber = 4;
+    private int attack_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Attack {
+      get { return attack_; }
+      set {
+        attack_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as CardInstance);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(CardInstance other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (InstanceId != other.InstanceId) return false;
+      if (!object.Equals(Prototype, other.Prototype)) return false;
+      if (Defence != other.Defence) return false;
+      if (Attack != other.Attack) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (InstanceId != 0) hash ^= InstanceId.GetHashCode();
+      if (prototype_ != null) hash ^= Prototype.GetHashCode();
+      if (Defence != 0) hash ^= Defence.GetHashCode();
+      if (Attack != 0) hash ^= Attack.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (InstanceId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(InstanceId);
+      }
+      if (prototype_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Prototype);
+      }
+      if (Defence != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Defence);
+      }
+      if (Attack != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Attack);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (InstanceId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InstanceId);
+      }
+      if (prototype_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Prototype);
+      }
+      if (Defence != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Defence);
+      }
+      if (Attack != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Attack);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(CardInstance other) {
+      if (other == null) {
+        return;
+      }
+      if (other.InstanceId != 0) {
+        InstanceId = other.InstanceId;
+      }
+      if (other.prototype_ != null) {
+        if (prototype_ == null) {
+          prototype_ = new global::Loom.ZombieBattleground.Protobuf.CardPrototype();
+        }
+        Prototype.MergeFrom(other.Prototype);
+      }
+      if (other.Defence != 0) {
+        Defence = other.Defence;
+      }
+      if (other.Attack != 0) {
+        Attack = other.Attack;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            InstanceId = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            if (prototype_ == null) {
+              prototype_ = new global::Loom.ZombieBattleground.Protobuf.CardPrototype();
+            }
+            input.ReadMessage(prototype_);
+            break;
+          }
+          case 24: {
+            Defence = input.ReadInt32();
+            break;
+          }
+          case 32: {
+            Attack = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class CardPrototype : pb::IMessage<CardPrototype> {
+    private static readonly pb::MessageParser<CardPrototype> _parser = new pb::MessageParser<CardPrototype>(() => new CardPrototype());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<CardPrototype> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[68]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardPrototype() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardPrototype(CardPrototype other) : this() {
+      dataId_ = other.dataId_;
+      cardSetType_ = other.cardSetType_;
+      name_ = other.name_;
+      gooCost_ = other.gooCost_;
+      description_ = other.description_;
+      flavorText_ = other.flavorText_;
+      picture_ = other.picture_;
+      frame_ = other.frame_;
+      initialDamage_ = other.initialDamage_;
+      initialDefence_ = other.initialDefence_;
+      rank_ = other.rank_;
+      type_ = other.type_;
+      abilities_ = other.abilities_.Clone();
+      cardViewInfo_ = other.cardViewInfo_ != null ? other.cardViewInfo_.Clone() : null;
+      creatureRank_ = other.creatureRank_;
+      creatureType_ = other.creatureType_;
+      cardKind_ = other.cardKind_;
+      kind_ = other.kind_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardPrototype Clone() {
+      return new CardPrototype(this);
+    }
+
+    /// <summary>Field number for the "dataId" field.</summary>
+    public const int DataIdFieldNumber = 1;
+    private int dataId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int DataId {
+      get { return dataId_; }
+      set {
+        dataId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cardSetType" field.</summary>
+    public const int CardSetTypeFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.ElementKind cardSetType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.ElementKind CardSetType {
+      get { return cardSetType_; }
+      set {
+        cardSetType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 3;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "gooCost" field.</summary>
+    public const int GooCostFieldNumber = 4;
+    private int gooCost_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int GooCost {
+      get { return gooCost_; }
+      set {
+        gooCost_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "description" field.</summary>
+    public const int DescriptionFieldNumber = 5;
+    private string description_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Description {
+      get { return description_; }
+      set {
+        description_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "flavorText" field.</summary>
+    public const int FlavorTextFieldNumber = 6;
+    private string flavorText_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string FlavorText {
+      get { return flavorText_; }
+      set {
+        flavorText_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "picture" field.</summary>
+    public const int PictureFieldNumber = 7;
+    private string picture_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Picture {
+      get { return picture_; }
+      set {
+        picture_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "frame" field.</summary>
+    public const int FrameFieldNumber = 8;
+    private string frame_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Frame {
+      get { return frame_; }
+      set {
+        frame_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "initialDamage" field.</summary>
+    public const int InitialDamageFieldNumber = 9;
+    private int initialDamage_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InitialDamage {
+      get { return initialDamage_; }
+      set {
+        initialDamage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "initialDefence" field.</summary>
+    public const int InitialDefenceFieldNumber = 10;
+    private int initialDefence_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InitialDefence {
+      get { return initialDefence_; }
+      set {
+        initialDefence_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rank" field.</summary>
+    public const int RankFieldNumber = 11;
+    private string rank_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Rank {
+      get { return rank_; }
+      set {
+        rank_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 12;
+    private string type_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Type {
+      get { return type_; }
+      set {
+        type_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "abilities" field.</summary>
+    public const int AbilitiesFieldNumber = 13;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardAbility> _repeated_abilities_codec
+        = pb::FieldCodec.ForMessage(106, global::Loom.ZombieBattleground.Protobuf.CardAbility.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardAbility> abilities_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardAbility>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardAbility> Abilities {
+      get { return abilities_; }
+    }
+
+    /// <summary>Field number for the "cardViewInfo" field.</summary>
+    public const int CardViewInfoFieldNumber = 14;
+    private global::Loom.ZombieBattleground.Protobuf.CardViewInfo cardViewInfo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardViewInfo CardViewInfo {
+      get { return cardViewInfo_; }
+      set {
+        cardViewInfo_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "creatureRank" field.</summary>
+    public const int CreatureRankFieldNumber = 15;
+    private global::Loom.ZombieBattleground.Protobuf.CreatureRank creatureRank_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CreatureRank CreatureRank {
+      get { return creatureRank_; }
+      set {
+        creatureRank_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "creatureType" field.</summary>
+    public const int CreatureTypeFieldNumber = 16;
+    private global::Loom.ZombieBattleground.Protobuf.CreatureType creatureType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CreatureType CreatureType {
+      get { return creatureType_; }
+      set {
+        creatureType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cardKind" field.</summary>
+    public const int CardKindFieldNumber = 17;
+    private global::Loom.ZombieBattleground.Protobuf.CardKind cardKind_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardKind CardKind {
+      get { return cardKind_; }
+      set {
+        cardKind_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "kind" field.</summary>
+    public const int KindFieldNumber = 18;
+    private string kind_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Kind {
+      get { return kind_; }
+      set {
+        kind_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as CardPrototype);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(CardPrototype other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DataId != other.DataId) return false;
+      if (CardSetType != other.CardSetType) return false;
+      if (Name != other.Name) return false;
+      if (GooCost != other.GooCost) return false;
+      if (Description != other.Description) return false;
+      if (FlavorText != other.FlavorText) return false;
+      if (Picture != other.Picture) return false;
+      if (Frame != other.Frame) return false;
+      if (InitialDamage != other.InitialDamage) return false;
+      if (InitialDefence != other.InitialDefence) return false;
+      if (Rank != other.Rank) return false;
+      if (Type != other.Type) return false;
+      if(!abilities_.Equals(other.abilities_)) return false;
+      if (!object.Equals(CardViewInfo, other.CardViewInfo)) return false;
+      if (CreatureRank != other.CreatureRank) return false;
+      if (CreatureType != other.CreatureType) return false;
+      if (CardKind != other.CardKind) return false;
+      if (Kind != other.Kind) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DataId != 0) hash ^= DataId.GetHashCode();
+      if (CardSetType != 0) hash ^= CardSetType.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (GooCost != 0) hash ^= GooCost.GetHashCode();
+      if (Description.Length != 0) hash ^= Description.GetHashCode();
+      if (FlavorText.Length != 0) hash ^= FlavorText.GetHashCode();
+      if (Picture.Length != 0) hash ^= Picture.GetHashCode();
+      if (Frame.Length != 0) hash ^= Frame.GetHashCode();
+      if (InitialDamage != 0) hash ^= InitialDamage.GetHashCode();
+      if (InitialDefence != 0) hash ^= InitialDefence.GetHashCode();
+      if (Rank.Length != 0) hash ^= Rank.GetHashCode();
+      if (Type.Length != 0) hash ^= Type.GetHashCode();
+      hash ^= abilities_.GetHashCode();
+      if (cardViewInfo_ != null) hash ^= CardViewInfo.GetHashCode();
+      if (CreatureRank != 0) hash ^= CreatureRank.GetHashCode();
+      if (CreatureType != 0) hash ^= CreatureType.GetHashCode();
+      if (CardKind != 0) hash ^= CardKind.GetHashCode();
+      if (Kind.Length != 0) hash ^= Kind.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (DataId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(DataId);
+      }
+      if (CardSetType != 0) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) CardSetType);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Name);
+      }
+      if (GooCost != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(GooCost);
+      }
+      if (Description.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Description);
+      }
+      if (FlavorText.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(FlavorText);
+      }
+      if (Picture.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Picture);
+      }
+      if (Frame.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(Frame);
+      }
+      if (InitialDamage != 0) {
+        output.WriteRawTag(72);
+        output.WriteInt32(InitialDamage);
+      }
+      if (InitialDefence != 0) {
+        output.WriteRawTag(80);
+        output.WriteInt32(InitialDefence);
+      }
+      if (Rank.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Rank);
+      }
+      if (Type.Length != 0) {
+        output.WriteRawTag(98);
+        output.WriteString(Type);
+      }
+      abilities_.WriteTo(output, _repeated_abilities_codec);
+      if (cardViewInfo_ != null) {
+        output.WriteRawTag(114);
+        output.WriteMessage(CardViewInfo);
+      }
+      if (CreatureRank != 0) {
+        output.WriteRawTag(120);
+        output.WriteEnum((int) CreatureRank);
+      }
+      if (CreatureType != 0) {
+        output.WriteRawTag(128, 1);
+        output.WriteEnum((int) CreatureType);
+      }
+      if (CardKind != 0) {
+        output.WriteRawTag(136, 1);
+        output.WriteEnum((int) CardKind);
+      }
+      if (Kind.Length != 0) {
+        output.WriteRawTag(146, 1);
+        output.WriteString(Kind);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (DataId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DataId);
+      }
+      if (CardSetType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CardSetType);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (GooCost != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(GooCost);
+      }
+      if (Description.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
+      }
+      if (FlavorText.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FlavorText);
+      }
+      if (Picture.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Picture);
+      }
+      if (Frame.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Frame);
+      }
+      if (InitialDamage != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InitialDamage);
+      }
+      if (InitialDefence != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InitialDefence);
+      }
+      if (Rank.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Rank);
+      }
+      if (Type.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
+      }
+      size += abilities_.CalculateSize(_repeated_abilities_codec);
+      if (cardViewInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CardViewInfo);
+      }
+      if (CreatureRank != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CreatureRank);
+      }
+      if (CreatureType != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeEnumSize((int) CreatureType);
+      }
+      if (CardKind != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeEnumSize((int) CardKind);
+      }
+      if (Kind.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(Kind);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(CardPrototype other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DataId != 0) {
+        DataId = other.DataId;
+      }
+      if (other.CardSetType != 0) {
+        CardSetType = other.CardSetType;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.GooCost != 0) {
+        GooCost = other.GooCost;
+      }
+      if (other.Description.Length != 0) {
+        Description = other.Description;
+      }
+      if (other.FlavorText.Length != 0) {
+        FlavorText = other.FlavorText;
+      }
+      if (other.Picture.Length != 0) {
+        Picture = other.Picture;
+      }
+      if (other.Frame.Length != 0) {
+        Frame = other.Frame;
+      }
+      if (other.InitialDamage != 0) {
+        InitialDamage = other.InitialDamage;
+      }
+      if (other.InitialDefence != 0) {
+        InitialDefence = other.InitialDefence;
+      }
+      if (other.Rank.Length != 0) {
+        Rank = other.Rank;
+      }
+      if (other.Type.Length != 0) {
+        Type = other.Type;
+      }
+      abilities_.Add(other.abilities_);
+      if (other.cardViewInfo_ != null) {
+        if (cardViewInfo_ == null) {
+          cardViewInfo_ = new global::Loom.ZombieBattleground.Protobuf.CardViewInfo();
+        }
+        CardViewInfo.MergeFrom(other.CardViewInfo);
+      }
+      if (other.CreatureRank != 0) {
+        CreatureRank = other.CreatureRank;
+      }
+      if (other.CreatureType != 0) {
+        CreatureType = other.CreatureType;
+      }
+      if (other.CardKind != 0) {
+        CardKind = other.CardKind;
+      }
+      if (other.Kind.Length != 0) {
+        Kind = other.Kind;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            DataId = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            cardSetType_ = (global::Loom.ZombieBattleground.Protobuf.ElementKind) input.ReadEnum();
+            break;
+          }
+          case 26: {
+            Name = input.ReadString();
+            break;
+          }
+          case 32: {
+            GooCost = input.ReadInt32();
+            break;
+          }
+          case 42: {
+            Description = input.ReadString();
+            break;
+          }
+          case 50: {
+            FlavorText = input.ReadString();
+            break;
+          }
+          case 58: {
+            Picture = input.ReadString();
+            break;
+          }
+          case 66: {
+            Frame = input.ReadString();
+            break;
+          }
+          case 72: {
+            InitialDamage = input.ReadInt32();
+            break;
+          }
+          case 80: {
+            InitialDefence = input.ReadInt32();
+            break;
+          }
+          case 90: {
+            Rank = input.ReadString();
+            break;
+          }
+          case 98: {
+            Type = input.ReadString();
+            break;
+          }
+          case 106: {
+            abilities_.AddEntriesFrom(input, _repeated_abilities_codec);
+            break;
+          }
+          case 114: {
+            if (cardViewInfo_ == null) {
+              cardViewInfo_ = new global::Loom.ZombieBattleground.Protobuf.CardViewInfo();
+            }
+            input.ReadMessage(cardViewInfo_);
+            break;
+          }
+          case 120: {
+            creatureRank_ = (global::Loom.ZombieBattleground.Protobuf.CreatureRank) input.ReadEnum();
+            break;
+          }
+          case 128: {
+            creatureType_ = (global::Loom.ZombieBattleground.Protobuf.CreatureType) input.ReadEnum();
+            break;
+          }
+          case 136: {
+            cardKind_ = (global::Loom.ZombieBattleground.Protobuf.CardKind) input.ReadEnum();
+            break;
+          }
+          case 146: {
+            Kind = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class DataIdOwner : pb::IMessage<DataIdOwner> {
+    private static readonly pb::MessageParser<DataIdOwner> _parser = new pb::MessageParser<DataIdOwner>(() => new DataIdOwner());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DataIdOwner> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[69]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataIdOwner() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataIdOwner(DataIdOwner other) : this() {
+      dataId_ = other.dataId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataIdOwner Clone() {
+      return new DataIdOwner(this);
+    }
+
+    /// <summary>Field number for the "dataId" field.</summary>
+    public const int DataIdFieldNumber = 1;
+    private int dataId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int DataId {
+      get { return dataId_; }
+      set {
+        dataId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DataIdOwner);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DataIdOwner other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DataId != other.DataId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DataId != 0) hash ^= DataId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (DataId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(DataId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (DataId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DataId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DataIdOwner other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DataId != 0) {
+        DataId = other.DataId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            DataId = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// (interface IDeck)
+  /// </summary>
+  public sealed partial class CardDeck : pb::IMessage<CardDeck> {
+    private static readonly pb::MessageParser<CardDeck> _parser = new pb::MessageParser<CardDeck>(() => new CardDeck());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<CardDeck> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[70]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardDeck() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardDeck(CardDeck other) : this() {
+      cards_ = other.cards_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CardDeck Clone() {
+      return new CardDeck(this);
+    }
+
+    /// <summary>Field number for the "cards" field.</summary>
+    public const int CardsFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardPrototype> _repeated_cards_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.CardPrototype.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardPrototype> cards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardPrototype>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardPrototype> Cards {
+      get { return cards_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as CardDeck);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(CardDeck other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!cards_.Equals(other.cards_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= cards_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      cards_.WriteTo(output, _repeated_cards_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += cards_.CalculateSize(_repeated_cards_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(CardDeck other) {
+      if (other == null) {
+        return;
+      }
+      cards_.Add(other.cards_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            cards_.AddEntriesFrom(input, _repeated_cards_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class InstanceIdOwner : pb::IMessage<InstanceIdOwner> {
+    private static readonly pb::MessageParser<InstanceIdOwner> _parser = new pb::MessageParser<InstanceIdOwner>(() => new InstanceIdOwner());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<InstanceIdOwner> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[71]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public InstanceIdOwner() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public InstanceIdOwner(InstanceIdOwner other) : this() {
+      instanceId_ = other.instanceId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public InstanceIdOwner Clone() {
+      return new InstanceIdOwner(this);
+    }
+
+    /// <summary>Field number for the "instanceId" field.</summary>
+    public const int InstanceIdFieldNumber = 1;
+    private int instanceId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InstanceId {
+      get { return instanceId_; }
+      set {
+        instanceId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as InstanceIdOwner);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(InstanceIdOwner other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (InstanceId != other.InstanceId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (InstanceId != 0) hash ^= InstanceId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (InstanceId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(InstanceId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (InstanceId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InstanceId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(InstanceIdOwner other) {
+      if (other == null) {
+        return;
+      }
+      if (other.InstanceId != 0) {
+        InstanceId = other.InstanceId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            InstanceId = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class OverlordInstance : pb::IMessage<OverlordInstance> {
+    private static readonly pb::MessageParser<OverlordInstance> _parser = new pb::MessageParser<OverlordInstance>(() => new OverlordInstance());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<OverlordInstance> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[72]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordInstance() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordInstance(OverlordInstance other) : this() {
+      instanceId_ = other.instanceId_;
+      prototype_ = other.prototype_ != null ? other.prototype_.Clone() : null;
+      firstSkill_ = other.firstSkill_ != null ? other.firstSkill_.Clone() : null;
+      secondSkill_ = other.secondSkill_ != null ? other.secondSkill_.Clone() : null;
+      defence_ = other.defence_;
+      goo_ = other.goo_;
+      maxGoo_ = other.maxGoo_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordInstance Clone() {
+      return new OverlordInstance(this);
+    }
+
+    /// <summary>Field number for the "instanceId" field.</summary>
+    public const int InstanceIdFieldNumber = 1;
+    private int instanceId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InstanceId {
+      get { return instanceId_; }
+      set {
+        instanceId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "prototype" field.</summary>
+    public const int PrototypeFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.OverlordPrototype prototype_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.OverlordPrototype Prototype {
+      get { return prototype_; }
+      set {
+        prototype_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "firstSkill" field.</summary>
+    public const int FirstSkillFieldNumber = 3;
+    private global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance firstSkill_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance FirstSkill {
+      get { return firstSkill_; }
+      set {
+        firstSkill_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "secondSkill" field.</summary>
+    public const int SecondSkillFieldNumber = 4;
+    private global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance secondSkill_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance SecondSkill {
+      get { return secondSkill_; }
+      set {
+        secondSkill_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "defence" field.</summary>
+    public const int DefenceFieldNumber = 5;
+    private int defence_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Defence {
+      get { return defence_; }
+      set {
+        defence_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "goo" field.</summary>
+    public const int GooFieldNumber = 6;
+    private int goo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Goo {
+      get { return goo_; }
+      set {
+        goo_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "maxGoo" field.</summary>
+    public const int MaxGooFieldNumber = 7;
+    private int maxGoo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int MaxGoo {
+      get { return maxGoo_; }
+      set {
+        maxGoo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as OverlordInstance);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(OverlordInstance other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (InstanceId != other.InstanceId) return false;
+      if (!object.Equals(Prototype, other.Prototype)) return false;
+      if (!object.Equals(FirstSkill, other.FirstSkill)) return false;
+      if (!object.Equals(SecondSkill, other.SecondSkill)) return false;
+      if (Defence != other.Defence) return false;
+      if (Goo != other.Goo) return false;
+      if (MaxGoo != other.MaxGoo) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (InstanceId != 0) hash ^= InstanceId.GetHashCode();
+      if (prototype_ != null) hash ^= Prototype.GetHashCode();
+      if (firstSkill_ != null) hash ^= FirstSkill.GetHashCode();
+      if (secondSkill_ != null) hash ^= SecondSkill.GetHashCode();
+      if (Defence != 0) hash ^= Defence.GetHashCode();
+      if (Goo != 0) hash ^= Goo.GetHashCode();
+      if (MaxGoo != 0) hash ^= MaxGoo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (InstanceId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(InstanceId);
+      }
+      if (prototype_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Prototype);
+      }
+      if (firstSkill_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(FirstSkill);
+      }
+      if (secondSkill_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(SecondSkill);
+      }
+      if (Defence != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(Defence);
+      }
+      if (Goo != 0) {
+        output.WriteRawTag(48);
+        output.WriteInt32(Goo);
+      }
+      if (MaxGoo != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(MaxGoo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (InstanceId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InstanceId);
+      }
+      if (prototype_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Prototype);
+      }
+      if (firstSkill_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(FirstSkill);
+      }
+      if (secondSkill_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SecondSkill);
+      }
+      if (Defence != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Defence);
+      }
+      if (Goo != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Goo);
+      }
+      if (MaxGoo != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxGoo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(OverlordInstance other) {
+      if (other == null) {
+        return;
+      }
+      if (other.InstanceId != 0) {
+        InstanceId = other.InstanceId;
+      }
+      if (other.prototype_ != null) {
+        if (prototype_ == null) {
+          prototype_ = new global::Loom.ZombieBattleground.Protobuf.OverlordPrototype();
+        }
+        Prototype.MergeFrom(other.Prototype);
+      }
+      if (other.firstSkill_ != null) {
+        if (firstSkill_ == null) {
+          firstSkill_ = new global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance();
+        }
+        FirstSkill.MergeFrom(other.FirstSkill);
+      }
+      if (other.secondSkill_ != null) {
+        if (secondSkill_ == null) {
+          secondSkill_ = new global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance();
+        }
+        SecondSkill.MergeFrom(other.SecondSkill);
+      }
+      if (other.Defence != 0) {
+        Defence = other.Defence;
+      }
+      if (other.Goo != 0) {
+        Goo = other.Goo;
+      }
+      if (other.MaxGoo != 0) {
+        MaxGoo = other.MaxGoo;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            InstanceId = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            if (prototype_ == null) {
+              prototype_ = new global::Loom.ZombieBattleground.Protobuf.OverlordPrototype();
+            }
+            input.ReadMessage(prototype_);
+            break;
+          }
+          case 26: {
+            if (firstSkill_ == null) {
+              firstSkill_ = new global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance();
+            }
+            input.ReadMessage(firstSkill_);
+            break;
+          }
+          case 34: {
+            if (secondSkill_ == null) {
+              secondSkill_ = new global::Loom.ZombieBattleground.Protobuf.OverlordSkillInstance();
+            }
+            input.ReadMessage(secondSkill_);
+            break;
+          }
+          case 40: {
+            Defence = input.ReadInt32();
+            break;
+          }
+          case 48: {
+            Goo = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            MaxGoo = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class OverlordPrototype : pb::IMessage<OverlordPrototype> {
+    private static readonly pb::MessageParser<OverlordPrototype> _parser = new pb::MessageParser<OverlordPrototype>(() => new OverlordPrototype());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<OverlordPrototype> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[73]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordPrototype() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordPrototype(OverlordPrototype other) : this() {
+      heroId_ = other.heroId_;
+      icon_ = other.icon_;
+      name_ = other.name_;
+      shortDescription_ = other.shortDescription_;
+      longDescription_ = other.longDescription_;
+      experience_ = other.experience_;
+      level_ = other.level_;
+      element_ = other.element_;
+      skills_ = other.skills_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordPrototype Clone() {
+      return new OverlordPrototype(this);
+    }
+
+    /// <summary>Field number for the "heroId" field.</summary>
+    public const int HeroIdFieldNumber = 1;
+    private int heroId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int HeroId {
+      get { return heroId_; }
+      set {
+        heroId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "icon" field.</summary>
+    public const int IconFieldNumber = 2;
+    private string icon_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Icon {
+      get { return icon_; }
+      set {
+        icon_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 3;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "shortDescription" field.</summary>
+    public const int ShortDescriptionFieldNumber = 4;
+    private string shortDescription_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ShortDescription {
+      get { return shortDescription_; }
+      set {
+        shortDescription_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "longDescription" field.</summary>
+    public const int LongDescriptionFieldNumber = 5;
+    private string longDescription_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string LongDescription {
+      get { return longDescription_; }
+      set {
+        longDescription_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "experience" field.</summary>
+    public const int ExperienceFieldNumber = 6;
+    private int experience_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Experience {
+      get { return experience_; }
+      set {
+        experience_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "level" field.</summary>
+    public const int LevelFieldNumber = 7;
+    private int level_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Level {
+      get { return level_; }
+      set {
+        level_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "element" field.</summary>
+    public const int ElementFieldNumber = 8;
+    private global::Loom.ZombieBattleground.Protobuf.ElementKind element_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.ElementKind Element {
+      get { return element_; }
+      set {
+        element_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "skills" field.</summary>
+    public const int SkillsFieldNumber = 9;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype> _repeated_skills_codec
+        = pb::FieldCodec.ForMessage(74, global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype> skills_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype> Skills {
+      get { return skills_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as OverlordPrototype);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(OverlordPrototype other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (HeroId != other.HeroId) return false;
+      if (Icon != other.Icon) return false;
+      if (Name != other.Name) return false;
+      if (ShortDescription != other.ShortDescription) return false;
+      if (LongDescription != other.LongDescription) return false;
+      if (Experience != other.Experience) return false;
+      if (Level != other.Level) return false;
+      if (Element != other.Element) return false;
+      if(!skills_.Equals(other.skills_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (HeroId != 0) hash ^= HeroId.GetHashCode();
+      if (Icon.Length != 0) hash ^= Icon.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (ShortDescription.Length != 0) hash ^= ShortDescription.GetHashCode();
+      if (LongDescription.Length != 0) hash ^= LongDescription.GetHashCode();
+      if (Experience != 0) hash ^= Experience.GetHashCode();
+      if (Level != 0) hash ^= Level.GetHashCode();
+      if (Element != 0) hash ^= Element.GetHashCode();
+      hash ^= skills_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (HeroId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(HeroId);
+      }
+      if (Icon.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Icon);
+      }
+      if (Name.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Name);
+      }
+      if (ShortDescription.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(ShortDescription);
+      }
+      if (LongDescription.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(LongDescription);
+      }
+      if (Experience != 0) {
+        output.WriteRawTag(48);
+        output.WriteInt32(Experience);
+      }
+      if (Level != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(Level);
+      }
+      if (Element != 0) {
+        output.WriteRawTag(64);
+        output.WriteEnum((int) Element);
+      }
+      skills_.WriteTo(output, _repeated_skills_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (HeroId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(HeroId);
+      }
+      if (Icon.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Icon);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (ShortDescription.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ShortDescription);
+      }
+      if (LongDescription.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(LongDescription);
+      }
+      if (Experience != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Experience);
+      }
+      if (Level != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Level);
+      }
+      if (Element != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Element);
+      }
+      size += skills_.CalculateSize(_repeated_skills_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(OverlordPrototype other) {
+      if (other == null) {
+        return;
+      }
+      if (other.HeroId != 0) {
+        HeroId = other.HeroId;
+      }
+      if (other.Icon.Length != 0) {
+        Icon = other.Icon;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.ShortDescription.Length != 0) {
+        ShortDescription = other.ShortDescription;
+      }
+      if (other.LongDescription.Length != 0) {
+        LongDescription = other.LongDescription;
+      }
+      if (other.Experience != 0) {
+        Experience = other.Experience;
+      }
+      if (other.Level != 0) {
+        Level = other.Level;
+      }
+      if (other.Element != 0) {
+        Element = other.Element;
+      }
+      skills_.Add(other.skills_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            HeroId = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            Icon = input.ReadString();
+            break;
+          }
+          case 26: {
+            Name = input.ReadString();
+            break;
+          }
+          case 34: {
+            ShortDescription = input.ReadString();
+            break;
+          }
+          case 42: {
+            LongDescription = input.ReadString();
+            break;
+          }
+          case 48: {
+            Experience = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            Level = input.ReadInt32();
+            break;
+          }
+          case 64: {
+            element_ = (global::Loom.ZombieBattleground.Protobuf.ElementKind) input.ReadEnum();
+            break;
+          }
+          case 74: {
+            skills_.AddEntriesFrom(input, _repeated_skills_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class OverlordSkillInstance : pb::IMessage<OverlordSkillInstance> {
+    private static readonly pb::MessageParser<OverlordSkillInstance> _parser = new pb::MessageParser<OverlordSkillInstance>(() => new OverlordSkillInstance());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<OverlordSkillInstance> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[74]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordSkillInstance() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordSkillInstance(OverlordSkillInstance other) : this() {
+      prototype_ = other.prototype_ != null ? other.prototype_.Clone() : null;
+      cooldown_ = other.cooldown_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordSkillInstance Clone() {
+      return new OverlordSkillInstance(this);
+    }
+
+    /// <summary>Field number for the "prototype" field.</summary>
+    public const int PrototypeFieldNumber = 1;
+    private global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype prototype_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype Prototype {
+      get { return prototype_; }
+      set {
+        prototype_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cooldown" field.</summary>
+    public const int CooldownFieldNumber = 2;
+    private int cooldown_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Cooldown {
+      get { return cooldown_; }
+      set {
+        cooldown_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as OverlordSkillInstance);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(OverlordSkillInstance other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Prototype, other.Prototype)) return false;
+      if (Cooldown != other.Cooldown) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (prototype_ != null) hash ^= Prototype.GetHashCode();
+      if (Cooldown != 0) hash ^= Cooldown.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (prototype_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Prototype);
+      }
+      if (Cooldown != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Cooldown);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (prototype_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Prototype);
+      }
+      if (Cooldown != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Cooldown);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(OverlordSkillInstance other) {
+      if (other == null) {
+        return;
+      }
+      if (other.prototype_ != null) {
+        if (prototype_ == null) {
+          prototype_ = new global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype();
+        }
+        Prototype.MergeFrom(other.Prototype);
+      }
+      if (other.Cooldown != 0) {
+        Cooldown = other.Cooldown;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (prototype_ == null) {
+              prototype_ = new global::Loom.ZombieBattleground.Protobuf.OverlordSkillPrototype();
+            }
+            input.ReadMessage(prototype_);
+            break;
+          }
+          case 16: {
+            Cooldown = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class OverlordSkillPrototype : pb::IMessage<OverlordSkillPrototype> {
+    private static readonly pb::MessageParser<OverlordSkillPrototype> _parser = new pb::MessageParser<OverlordSkillPrototype>(() => new OverlordSkillPrototype());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<OverlordSkillPrototype> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[75]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordSkillPrototype() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordSkillPrototype(OverlordSkillPrototype other) : this() {
+      title_ = other.title_;
+      skill_ = other.skill_;
+      iconPath_ = other.iconPath_;
+      description_ = other.description_;
+      cooldown_ = other.cooldown_;
+      initialCooldown_ = other.initialCooldown_;
+      parameter_ = other.parameter_;
+      attack_ = other.attack_;
+      overlordSkillKind_ = other.overlordSkillKind_;
+      skillTargetTypes_ = other.skillTargetTypes_.Clone();
+      elementTargetTypes_ = other.elementTargetTypes_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public OverlordSkillPrototype Clone() {
+      return new OverlordSkillPrototype(this);
+    }
+
+    /// <summary>Field number for the "title" field.</summary>
+    public const int TitleFieldNumber = 1;
+    private string title_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Title {
+      get { return title_; }
+      set {
+        title_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "skill" field.</summary>
+    public const int SkillFieldNumber = 2;
+    private string skill_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Skill {
+      get { return skill_; }
+      set {
+        skill_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "iconPath" field.</summary>
+    public const int IconPathFieldNumber = 3;
+    private string iconPath_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string IconPath {
+      get { return iconPath_; }
+      set {
+        iconPath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "description" field.</summary>
+    public const int DescriptionFieldNumber = 4;
+    private string description_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Description {
+      get { return description_; }
+      set {
+        description_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "cooldown" field.</summary>
+    public const int CooldownFieldNumber = 5;
+    private int cooldown_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Cooldown {
+      get { return cooldown_; }
+      set {
+        cooldown_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "initialCooldown" field.</summary>
+    public const int InitialCooldownFieldNumber = 6;
+    private int initialCooldown_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InitialCooldown {
+      get { return initialCooldown_; }
+      set {
+        initialCooldown_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "parameter" field.</summary>
+    public const int ParameterFieldNumber = 7;
+    private int parameter_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Parameter {
+      get { return parameter_; }
+      set {
+        parameter_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attack" field.</summary>
+    public const int AttackFieldNumber = 8;
+    private int attack_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Attack {
+      get { return attack_; }
+      set {
+        attack_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "overlordSkillKind" field.</summary>
+    public const int OverlordSkillKindFieldNumber = 9;
+    private global::Loom.ZombieBattleground.Protobuf.OverlordSkillKind overlordSkillKind_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.OverlordSkillKind OverlordSkillKind {
+      get { return overlordSkillKind_; }
+      set {
+        overlordSkillKind_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "skillTargetTypes" field.</summary>
+    public const int SkillTargetTypesFieldNumber = 10;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.AllowedTarget> _repeated_skillTargetTypes_codec
+        = pb::FieldCodec.ForEnum(82, x => (int) x, x => (global::Loom.ZombieBattleground.Protobuf.AllowedTarget) x);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.AllowedTarget> skillTargetTypes_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.AllowedTarget>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.AllowedTarget> SkillTargetTypes {
+      get { return skillTargetTypes_; }
+    }
+
+    /// <summary>Field number for the "elementTargetTypes" field.</summary>
+    public const int ElementTargetTypesFieldNumber = 11;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.ElementKind> _repeated_elementTargetTypes_codec
+        = pb::FieldCodec.ForEnum(90, x => (int) x, x => (global::Loom.ZombieBattleground.Protobuf.ElementKind) x);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.ElementKind> elementTargetTypes_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.ElementKind>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.ElementKind> ElementTargetTypes {
+      get { return elementTargetTypes_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as OverlordSkillPrototype);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(OverlordSkillPrototype other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Title != other.Title) return false;
+      if (Skill != other.Skill) return false;
+      if (IconPath != other.IconPath) return false;
+      if (Description != other.Description) return false;
+      if (Cooldown != other.Cooldown) return false;
+      if (InitialCooldown != other.InitialCooldown) return false;
+      if (Parameter != other.Parameter) return false;
+      if (Attack != other.Attack) return false;
+      if (OverlordSkillKind != other.OverlordSkillKind) return false;
+      if(!skillTargetTypes_.Equals(other.skillTargetTypes_)) return false;
+      if(!elementTargetTypes_.Equals(other.elementTargetTypes_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Title.Length != 0) hash ^= Title.GetHashCode();
+      if (Skill.Length != 0) hash ^= Skill.GetHashCode();
+      if (IconPath.Length != 0) hash ^= IconPath.GetHashCode();
+      if (Description.Length != 0) hash ^= Description.GetHashCode();
+      if (Cooldown != 0) hash ^= Cooldown.GetHashCode();
+      if (InitialCooldown != 0) hash ^= InitialCooldown.GetHashCode();
+      if (Parameter != 0) hash ^= Parameter.GetHashCode();
+      if (Attack != 0) hash ^= Attack.GetHashCode();
+      if (OverlordSkillKind != 0) hash ^= OverlordSkillKind.GetHashCode();
+      hash ^= skillTargetTypes_.GetHashCode();
+      hash ^= elementTargetTypes_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Title.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Title);
+      }
+      if (Skill.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Skill);
+      }
+      if (IconPath.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(IconPath);
+      }
+      if (Description.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Description);
+      }
+      if (Cooldown != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(Cooldown);
+      }
+      if (InitialCooldown != 0) {
+        output.WriteRawTag(48);
+        output.WriteInt32(InitialCooldown);
+      }
+      if (Parameter != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(Parameter);
+      }
+      if (Attack != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(Attack);
+      }
+      if (OverlordSkillKind != 0) {
+        output.WriteRawTag(72);
+        output.WriteEnum((int) OverlordSkillKind);
+      }
+      skillTargetTypes_.WriteTo(output, _repeated_skillTargetTypes_codec);
+      elementTargetTypes_.WriteTo(output, _repeated_elementTargetTypes_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Title.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Title);
+      }
+      if (Skill.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Skill);
+      }
+      if (IconPath.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(IconPath);
+      }
+      if (Description.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
+      }
+      if (Cooldown != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Cooldown);
+      }
+      if (InitialCooldown != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InitialCooldown);
+      }
+      if (Parameter != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Parameter);
+      }
+      if (Attack != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Attack);
+      }
+      if (OverlordSkillKind != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) OverlordSkillKind);
+      }
+      size += skillTargetTypes_.CalculateSize(_repeated_skillTargetTypes_codec);
+      size += elementTargetTypes_.CalculateSize(_repeated_elementTargetTypes_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(OverlordSkillPrototype other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Title.Length != 0) {
+        Title = other.Title;
+      }
+      if (other.Skill.Length != 0) {
+        Skill = other.Skill;
+      }
+      if (other.IconPath.Length != 0) {
+        IconPath = other.IconPath;
+      }
+      if (other.Description.Length != 0) {
+        Description = other.Description;
+      }
+      if (other.Cooldown != 0) {
+        Cooldown = other.Cooldown;
+      }
+      if (other.InitialCooldown != 0) {
+        InitialCooldown = other.InitialCooldown;
+      }
+      if (other.Parameter != 0) {
+        Parameter = other.Parameter;
+      }
+      if (other.Attack != 0) {
+        Attack = other.Attack;
+      }
+      if (other.OverlordSkillKind != 0) {
+        OverlordSkillKind = other.OverlordSkillKind;
+      }
+      skillTargetTypes_.Add(other.skillTargetTypes_);
+      elementTargetTypes_.Add(other.elementTargetTypes_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Title = input.ReadString();
+            break;
+          }
+          case 18: {
+            Skill = input.ReadString();
+            break;
+          }
+          case 26: {
+            IconPath = input.ReadString();
+            break;
+          }
+          case 34: {
+            Description = input.ReadString();
+            break;
+          }
+          case 40: {
+            Cooldown = input.ReadInt32();
+            break;
+          }
+          case 48: {
+            InitialCooldown = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            Parameter = input.ReadInt32();
+            break;
+          }
+          case 64: {
+            Attack = input.ReadInt32();
+            break;
+          }
+          case 72: {
+            overlordSkillKind_ = (global::Loom.ZombieBattleground.Protobuf.OverlordSkillKind) input.ReadEnum();
+            break;
+          }
+          case 82:
+          case 80: {
+            skillTargetTypes_.AddEntriesFrom(input, _repeated_skillTargetTypes_codec);
+            break;
+          }
+          case 90:
+          case 88: {
+            elementTargetTypes_.AddEntriesFrom(input, _repeated_elementTargetTypes_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionCardAttack : pb::IMessage<PlayerActionCardAttack> {
+    private static readonly pb::MessageParser<PlayerActionCardAttack> _parser = new pb::MessageParser<PlayerActionCardAttack>(() => new PlayerActionCardAttack());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionCardAttack> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[76]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionCardAttack() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionCardAttack(PlayerActionCardAttack other) : this() {
+      playerId_ = other.playerId_;
+      attacker_ = other.attacker_ != null ? other.attacker_.Clone() : null;
+      target_ = other.target_ != null ? other.target_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionCardAttack Clone() {
+      return new PlayerActionCardAttack(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "attacker" field.</summary>
+    public const int AttackerFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.CardInstance attacker_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardInstance Attacker {
+      get { return attacker_; }
+      set {
+        attacker_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "target" field.</summary>
+    public const int TargetFieldNumber = 3;
+    private global::Loom.ZombieBattleground.Protobuf.CardInstance target_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardInstance Target {
+      get { return target_; }
+      set {
+        target_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionCardAttack);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionCardAttack other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      if (!object.Equals(Attacker, other.Attacker)) return false;
+      if (!object.Equals(Target, other.Target)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      if (attacker_ != null) hash ^= Attacker.GetHashCode();
+      if (target_ != null) hash ^= Target.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(PlayerId);
+      }
+      if (attacker_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Attacker);
+      }
+      if (target_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Target);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      if (attacker_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Attacker);
+      }
+      if (target_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Target);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionCardAttack other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      if (other.attacker_ != null) {
+        if (attacker_ == null) {
+          attacker_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+        }
+        Attacker.MergeFrom(other.Attacker);
+      }
+      if (other.target_ != null) {
+        if (target_ == null) {
+          target_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+        }
+        Target.MergeFrom(other.Target);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            PlayerId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (attacker_ == null) {
+              attacker_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+            }
+            input.ReadMessage(attacker_);
+            break;
+          }
+          case 26: {
+            if (target_ == null) {
+              target_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+            }
+            input.ReadMessage(target_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionCardPlay : pb::IMessage<PlayerActionCardPlay> {
+    private static readonly pb::MessageParser<PlayerActionCardPlay> _parser = new pb::MessageParser<PlayerActionCardPlay>(() => new PlayerActionCardPlay());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionCardPlay> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[77]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionCardPlay() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionCardPlay(PlayerActionCardPlay other) : this() {
+      playerId_ = other.playerId_;
+      card_ = other.card_ != null ? other.card_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionCardPlay Clone() {
+      return new PlayerActionCardPlay(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "card" field.</summary>
+    public const int CardFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.CardInstance card_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardInstance Card {
+      get { return card_; }
+      set {
+        card_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionCardPlay);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionCardPlay other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      if (!object.Equals(Card, other.Card)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      if (card_ != null) hash ^= Card.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(PlayerId);
+      }
+      if (card_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Card);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      if (card_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Card);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionCardPlay other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      if (other.card_ != null) {
+        if (card_ == null) {
+          card_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+        }
+        Card.MergeFrom(other.Card);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            PlayerId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (card_ == null) {
+              card_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+            }
+            input.ReadMessage(card_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionDrawCard : pb::IMessage<PlayerActionDrawCard> {
+    private static readonly pb::MessageParser<PlayerActionDrawCard> _parser = new pb::MessageParser<PlayerActionDrawCard>(() => new PlayerActionDrawCard());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionDrawCard> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[78]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionDrawCard() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionDrawCard(PlayerActionDrawCard other) : this() {
+      playerId_ = other.playerId_;
+      cardInstance_ = other.cardInstance_ != null ? other.cardInstance_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionDrawCard Clone() {
+      return new PlayerActionDrawCard(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "cardInstance" field.</summary>
+    public const int CardInstanceFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.CardInstance cardInstance_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardInstance CardInstance {
+      get { return cardInstance_; }
+      set {
+        cardInstance_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionDrawCard);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionDrawCard other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      if (!object.Equals(CardInstance, other.CardInstance)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      if (cardInstance_ != null) hash ^= CardInstance.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(PlayerId);
+      }
+      if (cardInstance_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(CardInstance);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      if (cardInstance_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CardInstance);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionDrawCard other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      if (other.cardInstance_ != null) {
+        if (cardInstance_ == null) {
+          cardInstance_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+        }
+        CardInstance.MergeFrom(other.CardInstance);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            PlayerId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (cardInstance_ == null) {
+              cardInstance_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+            }
+            input.ReadMessage(cardInstance_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionEndTurn : pb::IMessage<PlayerActionEndTurn> {
+    private static readonly pb::MessageParser<PlayerActionEndTurn> _parser = new pb::MessageParser<PlayerActionEndTurn>(() => new PlayerActionEndTurn());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionEndTurn> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[79]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionEndTurn() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionEndTurn(PlayerActionEndTurn other) : this() {
+      playerId_ = other.playerId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionEndTurn Clone() {
+      return new PlayerActionEndTurn(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionEndTurn);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionEndTurn other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(PlayerId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionEndTurn other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            PlayerId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionMulligan : pb::IMessage<PlayerActionMulligan> {
+    private static readonly pb::MessageParser<PlayerActionMulligan> _parser = new pb::MessageParser<PlayerActionMulligan>(() => new PlayerActionMulligan());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionMulligan> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[80]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionMulligan() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionMulligan(PlayerActionMulligan other) : this() {
+      playerId_ = other.playerId_;
+      mulliganedCards_ = other.mulliganedCards_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionMulligan Clone() {
+      return new PlayerActionMulligan(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "mulliganedCards" field.</summary>
+    public const int MulliganedCardsFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.CardInstance> _repeated_mulliganedCards_codec
+        = pb::FieldCodec.ForMessage(18, global::Loom.ZombieBattleground.Protobuf.CardInstance.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> mulliganedCards_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance> MulliganedCards {
+      get { return mulliganedCards_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionMulligan);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionMulligan other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      if(!mulliganedCards_.Equals(other.mulliganedCards_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      hash ^= mulliganedCards_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(PlayerId);
+      }
+      mulliganedCards_.WriteTo(output, _repeated_mulliganedCards_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      size += mulliganedCards_.CalculateSize(_repeated_mulliganedCards_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionMulligan other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      mulliganedCards_.Add(other.mulliganedCards_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            PlayerId = input.ReadString();
+            break;
+          }
+          case 18: {
+            mulliganedCards_.AddEntriesFrom(input, _repeated_mulliganedCards_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionOutcome : pb::IMessage<PlayerActionOutcome> {
+    private static readonly pb::MessageParser<PlayerActionOutcome> _parser = new pb::MessageParser<PlayerActionOutcome>(() => new PlayerActionOutcome());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionOutcome> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[81]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionOutcome() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionOutcome(PlayerActionOutcome other) : this() {
+      playerId_ = other.playerId_;
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionOutcome Clone() {
+      return new PlayerActionOutcome(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "gameState" field.</summary>
+    public const int GameStateFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.GameState gameState_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.GameState GameState {
+      get { return gameState_; }
+      set {
+        gameState_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionOutcome);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionOutcome other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      if (!object.Equals(GameState, other.GameState)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      if (gameState_ != null) hash ^= GameState.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(PlayerId);
+      }
+      if (gameState_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(GameState);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      if (gameState_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(GameState);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionOutcome other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      if (other.gameState_ != null) {
+        if (gameState_ == null) {
+          gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+        }
+        GameState.MergeFrom(other.GameState);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            PlayerId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (gameState_ == null) {
+              gameState_ = new global::Loom.ZombieBattleground.Protobuf.GameState();
+            }
+            input.ReadMessage(gameState_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionUseCardAbility : pb::IMessage<PlayerActionUseCardAbility> {
+    private static readonly pb::MessageParser<PlayerActionUseCardAbility> _parser = new pb::MessageParser<PlayerActionUseCardAbility>(() => new PlayerActionUseCardAbility());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionUseCardAbility> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[82]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionUseCardAbility() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionUseCardAbility(PlayerActionUseCardAbility other) : this() {
+      playerId_ = other.playerId_;
+      card_ = other.card_ != null ? other.card_.Clone() : null;
+      target_ = other.target_ != null ? other.target_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionUseCardAbility Clone() {
+      return new PlayerActionUseCardAbility(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private string playerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "card" field.</summary>
+    public const int CardFieldNumber = 2;
+    private global::Loom.ZombieBattleground.Protobuf.CardInstance card_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.CardInstance Card {
+      get { return card_; }
+      set {
+        card_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "target" field.</summary>
+    public const int TargetFieldNumber = 3;
+    private global::Loom.ZombieBattleground.Protobuf.Unit target_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Unit Target {
+      get { return target_; }
+      set {
+        target_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionUseCardAbility);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionUseCardAbility other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      if (!object.Equals(Card, other.Card)) return false;
+      if (!object.Equals(Target, other.Target)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
+      if (card_ != null) hash ^= Card.GetHashCode();
+      if (target_ != null) hash ^= Target.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(PlayerId);
+      }
+      if (card_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Card);
+      }
+      if (target_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Target);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
+      }
+      if (card_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Card);
+      }
+      if (target_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Target);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionUseCardAbility other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId.Length != 0) {
+        PlayerId = other.PlayerId;
+      }
+      if (other.card_ != null) {
+        if (card_ == null) {
+          card_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+        }
+        Card.MergeFrom(other.Card);
+      }
+      if (other.target_ != null) {
+        if (target_ == null) {
+          target_ = new global::Loom.ZombieBattleground.Protobuf.Unit();
+        }
+        Target.MergeFrom(other.Target);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            PlayerId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (card_ == null) {
+              card_ = new global::Loom.ZombieBattleground.Protobuf.CardInstance();
+            }
+            input.ReadMessage(card_);
+            break;
+          }
+          case 26: {
+            if (target_ == null) {
+              target_ = new global::Loom.ZombieBattleground.Protobuf.Unit();
+            }
+            input.ReadMessage(target_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlayerActionUseOverlordSkill : pb::IMessage<PlayerActionUseOverlordSkill> {
+    private static readonly pb::MessageParser<PlayerActionUseOverlordSkill> _parser = new pb::MessageParser<PlayerActionUseOverlordSkill>(() => new PlayerActionUseOverlordSkill());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlayerActionUseOverlordSkill> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[83]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionUseOverlordSkill() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionUseOverlordSkill(PlayerActionUseOverlordSkill other) : this() {
+      playerId_ = other.playerId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlayerActionUseOverlordSkill Clone() {
+      return new PlayerActionUseOverlordSkill(this);
+    }
+
+    /// <summary>Field number for the "playerId" field.</summary>
+    public const int PlayerIdFieldNumber = 1;
+    private int playerId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int PlayerId {
+      get { return playerId_; }
+      set {
+        playerId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlayerActionUseOverlordSkill);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlayerActionUseOverlordSkill other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerId != other.PlayerId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerId != 0) hash ^= PlayerId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (PlayerId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(PlayerId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlayerActionUseOverlordSkill other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerId != 0) {
+        PlayerId = other.PlayerId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PlayerId = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class StartGameAction : pb::IMessage<StartGameAction> {
+    private static readonly pb::MessageParser<StartGameAction> _parser = new pb::MessageParser<StartGameAction>(() => new StartGameAction());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<StartGameAction> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[84]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public StartGameAction() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public StartGameAction(StartGameAction other) : this() {
+      playerStates_ = other.playerStates_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public StartGameAction Clone() {
+      return new StartGameAction(this);
+    }
+
+    /// <summary>Field number for the "playerStates" field.</summary>
+    public const int PlayerStatesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Loom.ZombieBattleground.Protobuf.PlayerState> _repeated_playerStates_codec
+        = pb::FieldCodec.ForMessage(10, global::Loom.ZombieBattleground.Protobuf.PlayerState.Parser);
+    private readonly pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState> playerStates_ = new pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState> PlayerStates {
+      get { return playerStates_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as StartGameAction);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(StartGameAction other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!playerStates_.Equals(other.playerStates_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= playerStates_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      playerStates_.WriteTo(output, _repeated_playerStates_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += playerStates_.CalculateSize(_repeated_playerStates_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(StartGameAction other) {
+      if (other == null) {
+        return;
+      }
+      playerStates_.Add(other.playerStates_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            playerStates_.AddEntriesFrom(input, _repeated_playerStates_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class Unit : pb::IMessage<Unit> {
+    private static readonly pb::MessageParser<Unit> _parser = new pb::MessageParser<Unit>(() => new Unit());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Unit> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[85]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Unit() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Unit(Unit other) : this() {
+      instanceId_ = other.instanceId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Unit Clone() {
+      return new Unit(this);
+    }
+
+    /// <summary>Field number for the "instanceId" field.</summary>
+    public const int InstanceIdFieldNumber = 1;
+    private int instanceId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InstanceId {
+      get { return instanceId_; }
+      set {
+        instanceId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Unit);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Unit other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (InstanceId != other.InstanceId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (InstanceId != 0) hash ^= InstanceId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (InstanceId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(InstanceId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (InstanceId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InstanceId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Unit other) {
+      if (other == null) {
+        return;
+      }
+      if (other.InstanceId != 0) {
+        InstanceId = other.InstanceId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            InstanceId = input.ReadInt32();
             break;
           }
         }

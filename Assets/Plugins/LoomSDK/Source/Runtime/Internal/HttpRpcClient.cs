@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System;
 using Loom.Newtonsoft.Json;
 using System.Text;
 using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
 using UnityEngine.Networking;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Loom.Client.Internal
 {
@@ -28,6 +29,11 @@ namespace Loom.Client.Internal
         }
 
         public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task SubscribeAsync(List<string> topic, EventHandler<JsonRpcEventData> handler)
         {
             throw new NotImplementedException();
         }

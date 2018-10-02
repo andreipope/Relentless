@@ -126,20 +126,20 @@ namespace Loom.ZombieBattleground
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
 
-            BoardUnitView abilityUnitOwnerView = GetAbilityUnitOwnerView();
-
             TargettingArrow =
                 Object
                 .Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object"))
                 .AddComponent<AbilityBoardArrow>();
             TargettingArrow.PossibleTargets = AbilityTargetTypes;
-            TargettingArrow.SelfBoardCreature = abilityUnitOwnerView;
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
 
             switch (CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
+
+                    BoardUnitView abilityUnitOwnerView = GetAbilityUnitOwnerView();
+                    TargettingArrow.SelfBoardCreature = abilityUnitOwnerView;
                     TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
                     break;
                 case Enumerators.CardKind.SPELL:
