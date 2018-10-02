@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,7 +21,15 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
-            creature.Model.DoCombat((BoardObject) SelectedCard?.Model ?? SelectedPlayer);
+
+            BoardObject target = (BoardObject) SelectedCard?.Model ?? SelectedPlayer;
+            creature.Model.DoCombat(target);
+
+            if(target == SelectedPlayer)
+                creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Player, -1);
+            else
+                creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Card, SelectedCard.Model.Card.Id);
+
             Dispose();
         }
 
