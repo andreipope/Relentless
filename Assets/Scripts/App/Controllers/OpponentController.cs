@@ -89,8 +89,8 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardPlayedActionReceived += OnCardPlayedHandler;
             _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
             _pvpManager.DrawCardActionReceived += OnDrawCardHandler;
-            _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
-            _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
+            //_pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
+            //_pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
         }
 
@@ -99,8 +99,8 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardPlayedActionReceived -= OnCardPlayedHandler;
             _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
             _pvpManager.DrawCardActionReceived -= OnDrawCardHandler;
-            _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
-            _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
+            //_pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
+            //_pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
         }
 
@@ -217,17 +217,48 @@ namespace Loom.ZombieBattleground
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
         {
-            // todo improve for players!
-            WorkingCard attacker = FromProtobufExtensions.FromProtobuf(actionCardAttack.Attacker, _gameplayManager.OpponentPlayer);
-            WorkingCard target = FromProtobufExtensions.FromProtobuf(actionCardAttack.Target, _gameplayManager.CurrentPlayer);
+            Debug.LogError(" Going to Attack -- " + actionCardAttack.AffectObjectType + ", id =  " +
+                           actionCardAttack.Target.InstanceId);
 
-            GotActionCardAttack(new CardAttackModel()
+            BoardUnitModel attackerUnit = null;
+            List<BoardUnitModel> opponentBoardUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0).Select(x => x.Model).ToList();
+            foreach (BoardUnitModel unit in opponentBoardUnits)
             {
-                CardId = attacker.Id,
-                CallerId = _gameplayManager.OpponentPlayer.Id,
-                TargetId = target.Id,
-                AffectObjectType = Enumerators.AffectObjectType.CHARACTER
-            });
+                Debug.Log("Opponent Card id == " + unit.Card.Id);
+                if (unit.Card.Id == actionCardAttack.Attacker.InstanceId)
+                {
+                    attackerUnit = unit;
+                    break;
+                }
+            }
+
+            switch (actionCardAttack.AffectObjectType)
+            {
+                case AffectObjectType.Player:
+                    break;
+                case AffectObjectType.Character:
+                    break;
+                case AffectObjectType.Card:
+                    BoardUnitModel targetUnit = null;
+                    List<BoardUnitModel> playerBoardUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0).Select(x => x.Model).ToList();
+                    foreach (BoardUnitModel unit in playerBoardUnits)
+                    {
+                        Debug.Log("Player Card id == " + unit.Card.Id);
+                        if (unit.Card.Id == actionCardAttack.Target.InstanceId)
+                        {
+                            targetUnit = unit;
+                            break;
+                        }
+                    }
+
+                    attackerUnit.DoCombat(targetUnit);
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+
         }
 
         private void OnDrawCardHandler(PlayerActionDrawCard actionDrawCard)
@@ -235,14 +266,14 @@ namespace Loom.ZombieBattleground
             GotActionDrawCard(FromProtobufExtensions.FromProtobuf(actionDrawCard.CardInstance, _gameplayManager.OpponentPlayer));
         }
 
-        private void OnCardAbilityUsedHandler(PlayerActionUseCardAbility actionUseCardAbility)
+        /*private void OnCardAbilityUsedHandler(PlayerActionUseCardAbility actionUseCardAbility)
         {
         }
 
         private void OnOverlordSkillUsedHandler(PlayerActionUseOverlordSkill actionUseOverlordSkill)
         {
 
-        }
+        }*/
 
         private void OnMulliganProcessHandler(PlayerActionMulligan actionMulligan)
         {
@@ -401,6 +432,7 @@ namespace Loom.ZombieBattleground
         public int TargetId;
         public Enumerators.AffectObjectType AffectObjectType;
     }
+
 
     public class UseOverlordSkillModel
     {

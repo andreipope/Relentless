@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -436,6 +437,8 @@ namespace Loom.ZombieBattleground
                     IsPlayable = false;
                     AttackedThisTurn = true;
 
+                    OwnerPlayer.ThrowCardAttacked(Card, AffectObjectType.Player, 1);
+
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
@@ -462,6 +465,8 @@ namespace Loom.ZombieBattleground
                 case BoardUnitModel targetCardModel:
                     IsPlayable = false;
                     AttackedThisTurn = true;
+
+                    OwnerPlayer.ThrowCardAttacked(Card, AffectObjectType.Card, 1);
 
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>

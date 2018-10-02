@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using UnityEngine;
+using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
@@ -174,6 +175,8 @@ namespace Loom.ZombieBattleground
         public event Action<int> BoardChanged;
 
         public event Action<WorkingCard> CardPlayed;
+
+        public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
 
         public event Action<List<WorkingCard>> Mulligan;
 
@@ -508,6 +511,11 @@ namespace Loom.ZombieBattleground
         public void ThrowPlayCardEvent(WorkingCard card)
         {
             CardPlayed?.Invoke(card);
+        }
+
+        public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)
+        {
+            CardAttacked?.Invoke(card, type, instanceId);
         }
 
         public void ThrowOnHandChanged()
