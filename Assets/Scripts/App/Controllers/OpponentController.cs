@@ -219,13 +219,12 @@ namespace Loom.ZombieBattleground
         {
             // todo improve for players!
             WorkingCard attacker = FromProtobufExtensions.FromProtobuf(actionCardAttack.Attacker, _gameplayManager.OpponentPlayer);
-            WorkingCard target = FromProtobufExtensions.FromProtobuf(actionCardAttack.Target, _gameplayManager.CurrentPlayer);
 
             GotActionCardAttack(new CardAttackModel()
             {
                 CardId = attacker.Id,
                 CallerId = _gameplayManager.OpponentPlayer.Id,
-                TargetId = target.Id,
+                TargetId = actionCardAttack.Target.InstanceId,
                 AffectObjectType = Enumerators.AffectObjectType.CHARACTER
             });
         }
@@ -235,11 +234,11 @@ namespace Loom.ZombieBattleground
             GotActionDrawCard(FromProtobufExtensions.FromProtobuf(actionDrawCard.CardInstance, _gameplayManager.OpponentPlayer));
         }
 
-        private void OnCardAbilityUsedHandler(PlayerActionUseCardAbility actionUseCardAbility)
+        private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
         {
         }
 
-        private void OnOverlordSkillUsedHandler(PlayerActionUseOverlordSkill actionUseOverlordSkill)
+        private void OnOverlordSkillUsedHandler(PlayerActionOverlordSkillUsed actionUseOverlordSkill)
         {
 
         }

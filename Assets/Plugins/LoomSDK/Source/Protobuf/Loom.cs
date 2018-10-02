@@ -12,7 +12,7 @@ using scg = global::System.Collections.Generic;
 namespace Loom.Client.Internal.Protobuf {
 
   /// <summary>Holder for reflection information generated from proto/loom.proto</summary>
-  internal static partial class LoomReflection {
+  public static partial class LoomReflection {
 
     #region Descriptor
     /// <summary>File descriptor for proto/loom.proto</summary>
@@ -549,7 +549,7 @@ return;
 
   }
 
-  internal sealed partial class Address : pb::IMessage<Address> {
+  public sealed partial class Address : pb::IMessage<Address> {
     private static readonly pb::MessageParser<Address> _parser = new pb::MessageParser<Address>(() => new Address());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

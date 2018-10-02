@@ -24,8 +24,8 @@ namespace Loom.ZombieBattleground
         public event Action EndTurnActionReceived;
         public event Action<PlayerActionCardPlay> CardPlayedActionReceived;
         public event Action<PlayerActionCardAttack> CardAttackedActionReceived;
-        public event Action<PlayerActionUseOverlordSkill> OverlordSkillUsedActionReceived;
-        public event Action<PlayerActionUseCardAbility> CardAbilityUsedActionReceived;
+        public event Action<PlayerActionOverlordSkillUsed> OverlordSkillUsedActionReceived;
+        public event Action<PlayerActionCardAbilityUsed> CardAbilityUsedActionReceived;
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         public event Action<PlayerActionDrawCard> DrawCardActionReceived;
 
@@ -81,6 +81,7 @@ namespace Loom.ZombieBattleground
                 Debug.LogWarning(jsonStr); // todo delete
 
                 PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+                Debug.Log("Action:" + playerActionEvent.PlayerAction);
                 MatchResponse.Match = playerActionEvent.Match.Clone();
 
                 switch (playerActionEvent.Match.Status)
@@ -133,10 +134,10 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.CardAttack:
                     CardAttackedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAttack);
                     break;
-                case PlayerActionType.UseCardAbility:
+                case PlayerActionType.CardAbilityUsed:
                     //  OnCardAbilityUsedAction?.Invoke(playerActionEvent.PlayerAction.UseCardAbility);
                     break;
-                case PlayerActionType.UseOverlordSkill:
+                case PlayerActionType.OverlordSkillUsed:
                     //   OnOverlordSkillUsedAction?.Invoke(playerActionEvent.PlayerAction.UseOverlordSkill);
                     break;
                 case PlayerActionType.DrawCard:

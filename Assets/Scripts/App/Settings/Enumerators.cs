@@ -174,7 +174,8 @@ namespace Loom.ZombieBattleground.Common
             PACK_OPENER,
             CREDITS,
             PlaySelection,
-            PvPSelection
+            PvPSelection,
+            CustomGameModeList
         }
 
         public enum AttackInfoType

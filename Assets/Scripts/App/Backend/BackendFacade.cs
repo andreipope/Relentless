@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.Google.Protobuf;
 using Loom.Google.Protobuf.Collections;
+using Loom.WebSocketSharp;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
@@ -334,13 +336,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
          public UnityAction<byte[]> PlayerActionEventListner;
 
-         public async Task<FindMatchResponse> FindMatch(string userId, long deckId)
+         public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameAddress)
          {
+             Client.Internal.Protobuf.Address requestCustomGameAddress = null;
+             if (customGameAddress != null)
+             {
+                 requestCustomGameAddress = new Client.Internal.Protobuf.Address
+                 {
+                     ChainId = customGameAddress.Value.ChainId,
+                     Local = ByteString.CopyFrom(customGameAddress.Value.ToByteArray())
+                 };
+             }
              FindMatchRequest request = new FindMatchRequest
              {
                  UserId = userId,
-                 DeckId = deckId
-
+                 DeckId = deckId,
+                 CustomGame = requestCustomGameAddress
              };
 
              return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
@@ -386,5 +397,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
     #endregion
 
+        #region Custom Game Modes
+
+        private const string ListGameModesMethod = "ListGameModes";
+
+        public async Task<GameModeList> GetCustomGameModeList()
+        {
+            ListGameModesRequest request = new ListGameModesRequest();
+            return await Contract.StaticCallAsync<GameModeList>(ListGameModesMethod, request);
+        }
+
+        #endregion
 	}
 }

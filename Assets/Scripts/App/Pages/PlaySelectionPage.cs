@@ -43,8 +43,7 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PlaySelectionPage"));
+            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PlaySelectionPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();

@@ -116,6 +116,11 @@ namespace Loom.Client
             return QualifiedAddress;
         }
 
+        public byte[] ToByteArray()
+        {
+            return CryptoUtils.HexStringToBytes(LocalAddress.Substring(2));
+        }
+
         /// <returns>Checksum-encoded local part of the address as a hex string, in the format "0x...".</returns>
         public override string ToString() {
             return this.ChainId == kDefaultChainId ? this.LocalAddress : this.QualifiedAddress;

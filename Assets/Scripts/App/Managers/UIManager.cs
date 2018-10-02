@@ -44,6 +44,7 @@ namespace Loom.ZombieBattleground
             Pages.Add(new CreditsPage());
             Pages.Add(new PlaySelectionPage());
             Pages.Add(new PvPSelectionPage());
+            Pages.Add(new CustomGameModeListPage());
 
             foreach (IUIElement page in Pages)
             {
