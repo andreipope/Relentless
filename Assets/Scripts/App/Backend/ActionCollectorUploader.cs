@@ -125,11 +125,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Player.CardPlayed -= CardPlayedHandler;
             }
 
-            private async void CardPlayedHandler(WorkingCard obj)
+            private async void CardPlayedHandler(WorkingCard card)
             {
-                await
-                    UploadActionLogModel(CreateBasicActionLogModel("CardPlayed")
-                        .Add("Card", WorkingCardToSimpleRepresentation(obj)));
+                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                PlayerAction playerAction = new PlayerAction
+                {
+                    ActionType = PlayerActionType.CardPlay,
+                    PlayerId = playerId,
+                    CardPlay = new PlayerActionCardPlay
+                    {
+                        PlayerId = playerId,
+                        Card = new CardInstance
+                        {
+                            InstanceId = card.Id,
+                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                            Defence = card.Health,
+                            Attack = card.Damage
+                        }
+                    }
+                };
+
+                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
             private async void BoardChangedHandler(int obj)
