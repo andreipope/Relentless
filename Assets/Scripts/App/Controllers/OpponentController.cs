@@ -271,31 +271,30 @@ namespace Loom.ZombieBattleground
                 switch (workingCard.LibraryCard.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:
+                        BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), _battlegroundController.OpponentBoardObject.transform);
+                        GameObject boardUnit = boardUnitViewElement.GameObject;
+                        boardUnit.tag = SRTags.OpponentOwned;
+                        boardUnit.transform.position = Vector3.zero;
+                        boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
+
+                        boardUnitViewElement.SetObjectInfo(workingCard);
+
+                        boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
+
+                        _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
+
+                        boardUnitViewElement.PlayArrivalAnimation();
+
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+
+                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
-                            BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), _battlegroundController.OpponentBoardObject.transform);
-                            GameObject boardUnit = boardUnitViewElement.GameObject;
-                            boardUnit.tag = SRTags.OpponentOwned;
-                            boardUnit.transform.position = Vector3.zero;
-                            boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
-
-                            boardUnitViewElement.SetObjectInfo(workingCard);
-
-                            boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
-
-                            _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-                            _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
-
-                            boardUnitViewElement.PlayArrivalAnimation();
-
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-
-                            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                            {
-                                ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                Caller = boardUnitViewElement.Model,
-                                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                            });
-                        }
+                            ActionType = Enumerators.ActionType.PlayCardFromHand,
+                            Caller = boardUnitViewElement.Model,
+                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        });
+                        _gameplayManager.CanDoDragActions = true;
                         break;
                     case Enumerators.CardKind.SPELL:
                         break;
