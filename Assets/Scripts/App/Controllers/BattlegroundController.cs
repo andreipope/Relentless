@@ -826,6 +826,9 @@ namespace Loom.ZombieBattleground
         /// <returns></returns>
         public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
         {
+            if (boardUnitModel == null)
+                return null;
+
             BoardUnitView cardToDestroy =
                 OpponentBoardCards
                     .Concat(OpponentBoardCards)
