@@ -648,8 +648,6 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
 
-            player.ThrowPlayCardEvent(card);
-
             randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(
                 () =>
                 {
