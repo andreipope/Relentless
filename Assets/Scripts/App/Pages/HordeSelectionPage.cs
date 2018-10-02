@@ -247,6 +247,7 @@ namespace Loom.ZombieBattleground
                 horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].Skill.ToLower());
 
             _selectedDeckId = (int) horde.SelfDeck.Id;
+
             _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
 
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
@@ -260,7 +261,7 @@ namespace Loom.ZombieBattleground
         {
             if(_hordeSelection.gameObject.activeSelf)
             {
-                _hordeSelection.position = _hordeDecks[_selectedDeckId].SelectionContainer.transform.position;
+                _hordeSelection.position = _hordeDecks.Find(x => x.SelfDeck.Id == _selectedDeckId).SelectionContainer.transform.position;
             }
         }
 
@@ -479,14 +480,14 @@ namespace Loom.ZombieBattleground
         private void BackButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            _appStateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
         private void BattleButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeckId;
-            _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
+            _matchManager.FindMatch();
         }
 
         private void BattleButtonWarningOnClickHandler()
