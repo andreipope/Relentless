@@ -333,7 +333,6 @@ namespace Loom.ZombieBattleground
         private GameObject GetVfxPrefabBySkill(BoardSkill skill)
         {
             GameObject prefab;
-
             switch (skill.Skill.OverlordSkill)
             {
                 case Enumerators.OverlordSkill.ICE_BOLT:
@@ -346,6 +345,8 @@ namespace Loom.ZombieBattleground
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
                     break;
                 case Enumerators.OverlordSkill.FIREBALL:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBallVFX");
+                    break;
                 case Enumerators.OverlordSkill.FIRE_BOLT:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
                     break;
@@ -1013,11 +1014,31 @@ namespace Loom.ZombieBattleground
             {
                 switch (targetObject)
                 {
-                    case BoardUnitModel unit:
-                        _battleController.HealUnitBySkill(owner, boardSkill, unit);
+                    case BoardUnitView unit:
+                        {
+                            _battleController.HealUnitBySkill(owner, boardSkill, unit.Model);
+                            _vfxController.CreateVfx(
+                            _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"), unit);
+                            _soundManager.PlaySound(
+                                Enumerators.SoundType.OVERLORD_ABILITIES,
+                                skill.OverlordSkill.ToString().ToLower(),
+                                Constants.OverlordAbilitySoundVolume,
+                                Enumerators.CardSoundType.NONE);
+                        }
                         break;
                     case Player player:
-                        _battleController.HealPlayerBySkill(owner, boardSkill, player);
+                        {
+                            _battleController.HealPlayerBySkill(owner, boardSkill, player);
+                            Transform transform = new GameObject().transform;
+                            transform.position = owner.AvatarObject.transform.position;
+                            transform.position += Vector3.up * 2;
+                            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"), transform);
+                            _soundManager.PlaySound(
+                                Enumerators.SoundType.OVERLORD_ABILITIES,
+                                skill.OverlordSkill.ToString().ToLower(),
+                                Constants.OverlordAbilitySoundVolume,
+                                Enumerators.CardSoundType.NONE);
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -1337,7 +1358,7 @@ namespace Loom.ZombieBattleground
         {
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
 
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX"), target); // vfx Fireball
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBall_ImpactVFX"), target); // vfx Fireball
             _soundManager.PlaySound(
                 Enumerators.SoundType.OVERLORD_ABILITIES,
                 skill.Title.Trim().ToLower(),
@@ -1508,7 +1529,7 @@ namespace Loom.ZombieBattleground
             {
                 unit.SetAsHeavyUnit();
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortifyVFX"), unit);
+                //_vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortifyVFX"), unit);
 
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
