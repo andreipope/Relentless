@@ -1,4 +1,4 @@
-﻿#if !UNITY_WEBGL || UNITY_EDITOR
+#if !UNITY_WEBGL || UNITY_EDITOR
 
 using System.Threading.Tasks;
 using System;
@@ -6,6 +6,7 @@ using System.ComponentModel;
 using Loom.Newtonsoft.Json;
 using Loom.WebSocketSharp;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Loom.Client.Internal
 {
@@ -159,6 +160,21 @@ namespace Loom.Client.Internal
             // TODO: once re-sub on reconnect is implemented this should only
             // be done on first sub
             return SendAsync<object, object>("subevents", new object());
+        }
+
+        public override Task SubscribeAsync(List<string> topic, EventHandler<JsonRpcEventData> handler)
+        {
+            var isFirstSub = this.eventReceived == null;
+            this.eventReceived += handler;
+            if (isFirstSub)
+            {
+                this.webSocket.OnMessage += WSSharpRPCClient_OnMessage;
+            }
+            // TODO: once re-sub on reconnect is implemented this should only
+            // be done on first sub
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            result.Add("topics", topic);
+            return SendAsync<object, object>("subevents", result);
         }
 
         public override Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler)

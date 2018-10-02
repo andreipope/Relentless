@@ -259,7 +259,7 @@ namespace Loom.ZombieBattleground
                         BoardUnitView selectedBoardUnitView =
                             _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                         if (selectedBoardUnitView != null && (!_battlegroundController.IsPreviewActive ||
-                            selectedBoardUnitView.Model.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
+                            selectedBoardUnitView.Model.Card.Id != _battlegroundController.CurrentPreviewedCardId))
                         {
                             float delta = Application.isMobilePlatform ?
                                 Constants.PointerMinDragDelta * 2f :

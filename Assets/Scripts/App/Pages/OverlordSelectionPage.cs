@@ -410,7 +410,7 @@ namespace Loom.ZombieBattleground
         private void BackButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
+            _appStateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
         }
 
         private void ContinueButtonOnClickHandler()

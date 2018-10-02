@@ -783,7 +783,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }
         }
 
@@ -1083,7 +1083,7 @@ namespace Loom.ZombieBattleground
                 OnDoneButtonPressed();
             }
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
         }
 
         private void BuyButtonHandler()

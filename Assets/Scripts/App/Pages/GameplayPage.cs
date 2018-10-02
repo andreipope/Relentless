@@ -70,6 +70,10 @@ namespace Loom.ZombieBattleground
 
         public int CurrentDeckId { get; set; }
 
+        private IMatchManager _matchManager;
+
+        private IPvPManager _pvpManager;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -79,6 +83,8 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _gameplayManager.GameInitialized += GameInitializedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
@@ -194,13 +200,39 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            OpponentDeck randomOpponentDeck =
-                _dataManager.CachedOpponentDecksData.Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
-            _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
+            OpponentDeck randomOpponentDeck = null;
 
-            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo);
-            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo);
-            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId);
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.LOCAL:
+                    randomOpponentDeck =
+                        _dataManager.CachedOpponentDecksData.Decks[
+                            Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
+                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
+                    break;
+
+                case Enumerators.MatchType.PVP:
+                    for (int i = 0; i < _pvpManager.MatchResponse.Match.PlayerStates.Count; i++)
+                    {
+                        if (_pvpManager.MatchResponse.Match.PlayerStates[i].Id !=
+                            _backendDataControlMediator.UserDataModel.UserId)
+                        {
+                            _pvpManager.OpponentDeckIndex = i;
+                            break;
+                        }
+                    }
+                    _pvpManager.OpponentDeck = FromProtobufExtensions.FromProtobuf(_pvpManager.MatchResponse.Match.PlayerStates[_pvpManager.OpponentDeckIndex].Deck);
+
+                    randomOpponentDeck = _pvpManager.OpponentDeck;
+                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
+                    break;
+
+                case Enumerators.MatchType.PVE:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             int heroId = 0; //Constants.TutorialPlayerHeroId; // TUTORIAL
             int opponentHeroId = 0;
 

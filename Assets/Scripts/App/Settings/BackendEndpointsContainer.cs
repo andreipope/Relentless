@@ -18,6 +18,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         )
                 },
                 {
+                    BackendPurpose.PvP, new BackendEndpoint(
+                        "http://stage.loom.games",
+                        "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
+                        "ws://battleground-testnet-asia2.dappchains.com:46657/websocket"
+                    )
+                },
+                {
                     BackendPurpose.Staging, new BackendEndpoint(
                         "http://stage.loom.games",
 #if USE_GAMECHAIN_1_FOR_PRODUCTION

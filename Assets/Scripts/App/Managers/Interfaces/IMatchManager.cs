@@ -8,6 +8,7 @@ namespace Loom.ZombieBattleground
 
         void FinishMatch(Enumerators.AppState appStateAfterMatch);
 
+        void FindMatch();
         void FindMatch(Enumerators.MatchType matchType);
     }
 }
