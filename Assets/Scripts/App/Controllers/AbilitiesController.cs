@@ -390,14 +390,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (kind == Enumerators.CardKind.SPELL)
-            {
-            }
-            else
-            {
-                workingCard.Owner.RemoveCardFromHand(workingCard);
-                workingCard.Owner.AddCardToBoard(workingCard);
-            }
 
             if (kind == Enumerators.CardKind.SPELL)
             {
