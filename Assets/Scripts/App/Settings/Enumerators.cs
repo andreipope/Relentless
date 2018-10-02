@@ -503,7 +503,12 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
+        }
 
+        public enum VFXType
+        {
+            Impact,
+            Moving
         }
     }
 }

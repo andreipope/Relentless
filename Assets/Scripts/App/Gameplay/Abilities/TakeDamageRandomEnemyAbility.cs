@@ -40,15 +40,7 @@ namespace Loom.ZombieBattleground
 
             _targets = InternalTools.GetRandomElementsFromList(_targets, 1);
 
-            // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
-            if (AbilityUnitOwner != null && AbilityUnitOwner.Card.LibraryCard.Name == "Zpitter")
-            {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
-            }
-            else
-            {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
-            }
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.VFXToPlay[Enumerators.VFXType.Moving]);// "Prefabs/VFX/Skills/PoisonDartVFX");
 
             foreach (object target in _targets)
             {
@@ -82,18 +74,10 @@ namespace Loom.ZombieBattleground
 
             GameObject vfxObject = null;
 
-            // lets improve this when it will be possible ofr the VFX that it can be used more accurate for different cards!
-            if (AbilityUnitOwner != null && AbilityUnitOwner.Card.LibraryCard.Name == "Zpitter")
+            if (AbilityData.VFXToPlay.ContainsKey(Enumerators.VFXType.Impact))
             {
-                vfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX");
-            }
-            else
-            {
-                vfxObject = null;
-            }
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.VFXToPlay[Enumerators.VFXType.Impact]);// "Prefabs/VFX/Skills/PoisonDart_ImpactVFX");
 
-            if (vfxObject != null)
-            {
                 vfxObject = Object.Instantiate(vfxObject);
                 vfxObject.transform.position = targetPosition;
                 ParticlesController.RegisterParticleSystem(vfxObject, true);

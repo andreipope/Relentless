@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground.Data
 
         public int Delay;
 
+        public Dictionary<Enumerators.VFXType, string> VFXToPlay;
+
         public void ParseData()
         {
             AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(Type);
