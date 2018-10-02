@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using UnityEngine;
+using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
@@ -27,6 +29,8 @@ namespace Loom.ZombieBattleground
         private readonly IGameplayManager _gameplayManager;
 
         private readonly ISoundManager _soundManager;
+
+        private readonly BackendDataControlMediator _backendDataControlMediator;
 
         private readonly CardsController _cardsController;
 
@@ -81,6 +85,7 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -101,8 +106,7 @@ namespace Loom.ZombieBattleground
             {
                 if (!_gameplayManager.IsTutorial)
                 {
-                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId)
-                        .HeroId;
+                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId).HeroId;
                 }
                 else
                 {
@@ -126,10 +130,23 @@ namespace Loom.ZombieBattleground
 
             SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
 
-            _health = Constants.DefaultPlayerHp;
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.PVP:
+                    PlayerState playerState =
+                        _pvpManager.MatchResponse.Match.PlayerStates
+                        .First(state => state.Id == _backendDataControlMediator.UserDataModel.UserId);
+                    _health = playerState.Hp;
+                    _goo = playerState.Mana;
+                    break;
+                default:
+                    _health = Constants.DefaultPlayerHp;
+                    _goo = Constants.DefaultPlayerGoo;
+                    break;
+            }
+
             InitialHp = _health;
             BuffedHp = 0;
-            _goo = Constants.DefaultPlayerGoo;
 
             _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
@@ -358,7 +375,7 @@ namespace Loom.ZombieBattleground
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
-            ThrowPlayCardEvent(card);
+
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
