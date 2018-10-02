@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
         {
             TargetUnitStatusType = ability.TargetUnitStatusType;
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
+            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
         }
 
         protected override void InputEndedHandler()
@@ -39,11 +39,14 @@ namespace Loom.ZombieBattleground
 
             ClearParticles();
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/IceBolt_Impact");
+            if (AbilityData.HasVFXType(Enumerators.VFXType.Impact))
+            {
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Impact).Path);
 
-            VfxObject = Object.Instantiate(VfxObject);
-            VfxObject.transform.position = targetPosition;
-            ParticlesController.RegisterParticleSystem(VfxObject, true);
+                VfxObject = Object.Instantiate(VfxObject);
+                VfxObject.transform.position = targetPosition;
+                ParticlesController.RegisterParticleSystem(VfxObject, true);
+            }
         }
     }
 }
