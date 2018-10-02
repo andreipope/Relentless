@@ -212,7 +212,7 @@ namespace Loom.ZombieBattleground
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
-            GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer));
+            GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer), cardPlay.Card.InstanceId);
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground
             _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
-        public void GotActionPlayCard(WorkingCard card)
+        public void GotActionPlayCard(WorkingCard card, int instanceId)
         {
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
@@ -308,6 +308,8 @@ namespace Loom.ZombieBattleground
                             boardUnit.tag = SRTags.OpponentOwned;
                             boardUnit.transform.position = Vector3.zero;
                             boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
+
+                            workingCard.Id = instanceId;
 
                             boardUnitViewElement.SetObjectInfo(workingCard);
 
