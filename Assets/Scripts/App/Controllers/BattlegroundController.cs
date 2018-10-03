@@ -375,11 +375,6 @@ namespace Loom.ZombieBattleground
                 {
                     card.Model.OnEndTurn();
                 }
-
-                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                {
-                    await _gameplayManager.GetController<OpponentController>().ActionEndTurn(_gameplayManager.CurrentPlayer);
-                }
             }
             else
             {
@@ -907,6 +902,8 @@ namespace Loom.ZombieBattleground
                             return unit.Model;
                     }
                     break;
+                case Enumerators.AffectObjectType.Card:
+                    return null;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(affectObjectType), affectObjectType, null);
             }
@@ -945,11 +942,27 @@ namespace Loom.ZombieBattleground
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-            BoardUnitModel unit = units.Find(u => u.Model.Card.Id == id).Model;
+            BoardUnitView unit = units.Find(u => u.Model.Card.Id == id);
 
-            units.Clear();
+            if(unit != null)
+            {
+                units.Clear();
+                return unit.Model;
+            }
+            else
+            {
+                List<BoardObject> boardObjects = new List<BoardObject>();
+                boardObjects.Add(_gameplayManager.CurrentPlayer);
+                boardObjects.Add(_gameplayManager.OpponentPlayer);
+                boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardSpellsInUse);
+                boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardSpellsInUse);
 
-            return unit;
+                BoardObject foundObject = boardObjects.Find(x => x is BoardSpell spell ? spell.Card.Id == id : x.Id == id);
+
+                boardObjects.Clear();
+
+                return foundObject;
+            }
         }
 
         #region specific setup of battleground

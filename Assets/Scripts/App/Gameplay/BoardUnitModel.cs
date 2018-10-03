@@ -445,13 +445,8 @@ namespace Loom.ZombieBattleground
                             FightSequenceHandler.HandleAttackPlayer(
                                 completeCallback,
                                 targetPlayer,
-                                async () =>
+                                () =>
                                 {
-                                    _battleController.AttackPlayerByUnit(this, targetPlayer);
-                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                                    {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetPlayer, Enumerators.AffectObjectType.Player);
-                                    }
                                 },
                                 () =>
                                 {
@@ -471,14 +466,9 @@ namespace Loom.ZombieBattleground
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
                                 targetCardModel,
-                                async () =>
+                                () =>
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
-
-                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                                    {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetCardModel, Enumerators.AffectObjectType.Player);
-                                    }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {

@@ -67,12 +67,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private readonly IPvPManager _pvpManager;
 
+            private AbilitiesController _abilitiesController;
+
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 IDataManager dataManager = GameClient.Get<IDataManager>();
                 _pvpManager = GameClient.Get<IPvPManager>();
+                _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
 
                 Player = player;
                 IsOpponent = isOpponent;
@@ -97,6 +100,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                // Player.BoardChanged += BoardChangedHandler;
                 Player.CardPlayed += CardPlayedHandler;
                 Player.CardAttacked += CardAttackedHandler;
+
+                _abilitiesController.AbilityUsed += AbilityUsedHandler;
             }
 
             public Player Player { get; }
@@ -276,37 +281,44 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void AbilityPlayedOnPlayerHandler(BoardSkill skill, Player player)
+            private async void AbilityUsedHandler(WorkingCard card, CardKind cardKind,
+                                                  AffectObjectType affectObjectType, BoardObject target = null)
             {
+                int instanceId = -1;
+
+                if (target != null)
+                {
+                    if (target is Player player)
+                    {
+                        instanceId = player.Id;
+                    }
+                    else if (target is BoardUnitModel unit)
+                    {
+                        instanceId = unit.Card.Id;
+                    }
+                }
+
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                   // ActionType = PlayerActionType.UseOverlordSkill,
-                    PlayerId = playerId
-                };
-
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
-            }
-
-            private async void AbilityPlayedOnUnitHandler(BoardSkill skill, BoardUnitView unit)
-            {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    //ActionType = PlayerActionType.UseOverlordSkill,
-                    PlayerId = playerId
-                };
-
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
-            }
-
-            private async void CardAbilityHandler(WorkingCard card)
-            {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    //ActionType = PlayerActionType.UseCardAbility,
-                    PlayerId = playerId
+                    ActionType = PlayerActionType.CardAbilityUsed,
+                    PlayerId = playerId,
+                    CardAbilityUsed = new PlayerActionCardAbilityUsed()
+                    {
+                        AffectObjectType = affectObjectType,
+                        Target = new Unit()
+                        {
+                            InstanceId = instanceId
+                        },
+                        CardKind = cardKind,
+                        Card = new CardInstance
+                        {
+                            InstanceId = card.Id,
+                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                            Defence = card.Health,
+                            Attack = card.Damage
+                        }
+                    }
                 };
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
