@@ -362,9 +362,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.HARDEN:
                 case Enumerators.OverlordSkill.STONE_SKIN:
                 case Enumerators.OverlordSkill.PUSH:
+                case Enumerators.OverlordSkill.BREAKOUT:
                 case Enumerators.OverlordSkill.DRAW:
                 case Enumerators.OverlordSkill.BLIZZARD:
-                case Enumerators.OverlordSkill.BREAKOUT:
                 case Enumerators.OverlordSkill.ENHANCE:
                 case Enumerators.OverlordSkill.EPIDEMIC:
                 case Enumerators.OverlordSkill.FORTIFY:
@@ -786,17 +786,24 @@ namespace Loom.ZombieBattleground
             Player opponent = _gameplayManager.GetOpponentByPlayer(owner);
 
             targets.Add(opponent);
-            targets.AddRange(opponent.BoardCards);
+
+            List<BoardUnitModel> boardCradsModels = new List<BoardUnitModel>();
+            foreach (var item in opponent.BoardCards)
+            {
+                boardCradsModels.Add(item.Model);
+            }
+
+            targets.AddRange(boardCradsModels);
 
             targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
 
-            foreach (BoardObject targetObject in targets)
+            foreach (object targetObject in targets)
             {
                 AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                    target);
+                    targetObject);
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.Title.Trim().ToLower() + "_Impact",
