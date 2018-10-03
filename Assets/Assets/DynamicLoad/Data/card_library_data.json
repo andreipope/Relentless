@@ -2705,7 +2705,7 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "value": 4,
-              "effectType": "TARGET_ADJUSTMENTS_BOMB",
+              "effectType": "NONE",
               "buffType": "SWING"
             }
           ],

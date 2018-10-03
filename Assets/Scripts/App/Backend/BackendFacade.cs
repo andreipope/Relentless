@@ -329,6 +329,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region PVP
          private const string FindMatchMethod = "FindMatch";
+         private const string EndMatchMethod = "EndMatch";
          private const string SendPlayerActionMethod = "SendPlayerAction";
          private const string GetGameStateMethod = "GetGameState";
 
@@ -345,6 +346,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
              return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
          }
+
+        public async Task<EndMatchResponse> EndMatch(string userId, int matchId, string winnerId)
+        {
+            EndMatchRequest request = new EndMatchRequest
+            {
+                UserId = userId,
+                MatchId = matchId,
+                WinnerId = winnerId
+            };
+
+            return await Contract.CallAsync<EndMatchResponse>(EndMatchMethod, request);
+        }
+
 
          public async Task<GetGameStateResponse> GetGameState(int matchId)
          {
