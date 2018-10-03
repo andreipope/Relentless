@@ -303,9 +303,9 @@ namespace Loom.ZombieBattleground
             }
 
 			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
-                _playerManaBarsPosition, _playerNameText.text);
+                _playerManaBarsPosition, _playerNameText.text, "Player");
             _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
-                _opponentManaBarsPosition, _opponentNameText.text);
+                _opponentManaBarsPosition, _opponentNameText.text, "Opponent");
 			
             _isPlayerInited = true;
         }
@@ -331,16 +331,10 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < transfHeroObject.childCount; i++)
             {
-                transfHeroObject.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
-            }
-
-            Debug.Log(objectName + "/OverlordDeath/RegularModel2D/FrameShuttering (1)/FrameExplosion");
-            Transform transfHeroObjectAfterDie = GameObject.Find(objectName + "/OverlordArea/OverlordDeath/RegularModel2D/FrameShuttering (1)/FrameExplosion").transform;
-
-            for (int i = 0; i < transfHeroObject.childCount; i++)
-            {
-                if (transfHeroObjectAfterDie.GetChild(i).GetComponent<Renderer>() != null)
-                    transfHeroObjectAfterDie.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
+                if (transfHeroObject.GetChild(i).GetComponent<MeshRenderer>() != null)
+                {
+                    transfHeroObject.GetChild(i).GetComponent<MeshRenderer>().material = heroAvatarMaterial;
+                }
             }
 
             Sprite heroHighlight =
