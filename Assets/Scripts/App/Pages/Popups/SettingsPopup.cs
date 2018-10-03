@@ -167,13 +167,13 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.HidePopup<YourTurnPopup>();
 
+                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
                 _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
-
-                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
             };
 
             _uiManager.DrawPopup<ConfirmationPopup>(actions);
