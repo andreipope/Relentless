@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ParticleSystem _sleepingParticles;
 
+        private readonly ParticleSystem _toxicPowerGlowParticles;
+
         private readonly GameObject _unitContentObject;
 
         private GameObject _battleframeObject;
@@ -103,6 +105,9 @@ namespace Loom.ZombieBattleground
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
+            _toxicPowerGlowParticles = GameObject.transform.Find("Other/ToxicPowerGlowVFX").GetComponent<ParticleSystem>();
+
+            Debug.LogError(_toxicPowerGlowParticles);
 
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
@@ -490,6 +495,11 @@ namespace Loom.ZombieBattleground
             {
                 _sleepingParticles.Stop();
             }
+        }
+
+        public void EnabledToxicPowerGlow()
+        {
+            _toxicPowerGlowParticles.Play();
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)
