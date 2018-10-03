@@ -447,6 +447,7 @@ namespace Loom.ZombieBattleground
                                 targetPlayer,
                                 () =>
                                 {
+                                    _battleController.AttackPlayerByUnit(this, targetPlayer);
                                 },
                                 () =>
                                 {
