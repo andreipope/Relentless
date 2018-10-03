@@ -488,5 +488,11 @@ namespace Loom.ZombieBattleground.Common
             ActivateRankAbility,
             UseOverlordAbility
         }
+
+        public enum VFXType
+        {
+            Impact,
+            Moving
+        }
     }
 }
