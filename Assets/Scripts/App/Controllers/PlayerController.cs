@@ -326,7 +326,7 @@ namespace Loom.ZombieBattleground
             {
                 CheckCardPreviewShow();
             }
-            else
+            else if (!_gameplayManager.IsTutorial)
             {
                 _timerManager.StopTimer(SetStatusZoomingFalse);
                 _cardsZooming = true;
