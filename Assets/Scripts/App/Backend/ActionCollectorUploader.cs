@@ -136,7 +136,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardPlay = new PlayerActionCardPlay
                     {
-                        //PlayerId = playerId,
                         Card = new CardInstance
                         {
                             InstanceId = card.Id,
@@ -231,7 +230,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardAttack = new PlayerActionCardAttack
                     {
-                        //PlayerId = playerId,
                         Attacker = new CardInstance
                         {
                             InstanceId = attacker.Id,
@@ -254,7 +252,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardAttack = new PlayerActionCardAttack
                     {
-                        //PlayerId = playerId,
                         Attacker = new CardInstance
                         {
                             InstanceId = attacker.Id,
@@ -318,7 +315,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     Mulligan = new PlayerActionMulligan
                     {
-                        //PlayerId = playerId,
                         // TODO : cant able to set the mulligan cards, no setter in zb protobuf
                         //MulliganedCards = GetMulliganCards(cards)
                     }

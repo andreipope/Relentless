@@ -217,14 +217,10 @@ namespace Loom.ZombieBattleground
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
         {
-            //Debug.LogError(" Going to Attack -- " + actionCardAttack.AffectObjectType + ", id =  " +
-              //             actionCardAttack.Target.InstanceId);
-
             BoardUnitModel attackerUnit = null;
             List<BoardUnitModel> opponentBoardUnits = _gameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0).Select(x => x.Model).ToList();
             foreach (BoardUnitModel unit in opponentBoardUnits)
             {
-                //Debug.Log("Opponent Card id == " + unit.Card.Id);
                 if (unit.Card.Id == actionCardAttack.Attacker.InstanceId)
                 {
                     attackerUnit = unit;
@@ -245,7 +241,6 @@ namespace Loom.ZombieBattleground
                     List<BoardUnitModel> playerBoardUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.CurrentHp > 0).Select(x => x.Model).ToList();
                     foreach (BoardUnitModel unit in playerBoardUnits)
                     {
-                        //Debug.Log("Player Card id == " + unit.Card.Id);
                         if (unit.Card.Id == actionCardAttack.Target.InstanceId)
                         {
                             targetUnit = unit;

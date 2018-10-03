@@ -25,10 +25,14 @@ namespace Loom.ZombieBattleground
             BoardObject target = (BoardObject) SelectedCard?.Model ?? SelectedPlayer;
             creature.Model.DoCombat(target);
 
-            if(target == SelectedPlayer)
+            if (target == SelectedPlayer)
+            {
                 creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Player, -1);
+            }
             else
+            {
                 creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Card, SelectedCard.Model.Card.Id);
+            }
 
             Dispose();
         }
