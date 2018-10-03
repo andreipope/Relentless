@@ -74,9 +74,9 @@ namespace Loom.ZombieBattleground
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
-            string name = isPrimary ? "1stShutters" : "2ndtShutters";
+            string name = isPrimary ? "OverlordRegularNeckR" : "OverlordRegularNeckL";
             _shutterAnimator = SelfObject.transform.parent.transform
-                .Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
+                .Find("OverlordArea/RegularModel/RegularPosition/OverlordRegular/Shutters/" + name).GetComponent<Animator>();
             //_shutterAnimator.enabled = false;
             //_shutterAnimator.StopPlayback();
 
