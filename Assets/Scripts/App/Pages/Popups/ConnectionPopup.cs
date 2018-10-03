@@ -28,7 +28,6 @@ namespace Loom.ZombieBattleground
         private Transform _matchMakingGroup;
 
         private ConnectionState _state;
-        private object _mat;
 
         public GameObject Self { get; private set; }
 
