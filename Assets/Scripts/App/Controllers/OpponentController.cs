@@ -92,6 +92,7 @@ namespace Loom.ZombieBattleground
             //_pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
+            _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -102,6 +103,7 @@ namespace Loom.ZombieBattleground
             //_pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
+            _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
         }
 
 
@@ -211,6 +213,11 @@ namespace Loom.ZombieBattleground
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
             GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer), cardPlay.Card.InstanceId);
+        }
+
+        private void OnLeaveMatchHandler()
+        {
+            _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)

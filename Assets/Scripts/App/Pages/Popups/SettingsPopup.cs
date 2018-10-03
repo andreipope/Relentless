@@ -57,6 +57,7 @@ namespace Loom.ZombieBattleground
             if (Self == null)
                 return;
 
+            _appStateManager.SetPausingApp(false);
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -100,6 +101,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.IsGameplayInputBlocked = true;
 
             FillInfo();
+            _appStateManager.SetPausingApp(true);
 #endif
         }
 
@@ -167,6 +169,8 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.HidePopup<YourTurnPopup>();
 
+                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
@@ -181,6 +185,8 @@ namespace Loom.ZombieBattleground
         private void QuitToDesktopButtonHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
 
             _appStateManager.QuitApplication();
         }

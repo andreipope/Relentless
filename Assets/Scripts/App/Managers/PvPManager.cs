@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         public event Action<PlayerActionDrawCard> DrawCardActionReceived;
 
+        public event Action LeaveMatchReceived;
+
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
 
@@ -70,6 +72,21 @@ namespace Loom.ZombieBattleground
                 return true;
 
             return false;
+        }
+
+        public string GetOpponentUserId()
+        {
+            string opponentId = string.Empty;
+            for (int i = 0; i < MatchResponse.Match.PlayerStates.Count; i++)
+            {
+                if (MatchResponse.Match.PlayerStates[i].Id != _backendDataControlMediator.UserDataModel.UserId)
+                {
+                    opponentId = MatchResponse.Match.PlayerStates[i].Id;
+                    break;
+                }
+            }
+
+            return opponentId;
         }
 
         private void OnGetPlayerActionEventListener(byte[] data)
@@ -141,6 +158,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.DrawCard:
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
+                    break;
+                case PlayerActionType.LeaveMatch:
+                    LeaveMatchReceived?.Invoke();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playerActionEvent.PlayerActionType), playerActionEvent.PlayerActionType.ToString() + " not found");
