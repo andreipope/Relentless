@@ -284,6 +284,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private async void AbilityUsedHandler(WorkingCard card, CardKind cardKind,
                                                   AffectObjectType affectObjectType, BoardObject target = null)
             {
+                await Task.Delay(1000); // just for testing! remove it!!!
+
                 int instanceId = -1;
 
                 if (target != null)
