@@ -80,6 +80,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 if (!_backendFacade.IsConnected)
                     return;
 
+                IMatchManager matchManager = GameClient.Get<IMatchManager>();
+                if (matchManager.MatchType == Enumerators.MatchType.LOCAL ||
+                    matchManager.MatchType == Enumerators.MatchType.PVE ||
+                    _pvpManager.MatchResponse == null)
+                    return;
+
                 Player.TurnEnded += TurnEndedHandler;
                //Player.TurnStarted += TurnStartedHandler;
                // Player.PlayerHpChanged += PlayerHpChangedHandler;
@@ -90,6 +96,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                // Player.GraveyardChanged += GraveyardChangedHandler;
                // Player.BoardChanged += BoardChangedHandler;
                 Player.CardPlayed += CardPlayedHandler;
+                Player.CardAttacked += CardAttackedHandler;
             }
 
             public Player Player { get; }
@@ -123,6 +130,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 //Player.GraveyardChanged -= GraveyardChangedHandler;
                 //Player.BoardChanged -= BoardChangedHandler;
                 Player.CardPlayed -= CardPlayedHandler;
+                Player.CardAttacked -= CardAttackedHandler;
             }
 
             private async void CardPlayedHandler(WorkingCard card)
@@ -134,7 +142,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardPlay = new PlayerActionCardPlay
                     {
-                        PlayerId = playerId,
                         Card = new CardInstance
                         {
                             InstanceId = card.Id,
@@ -204,10 +211,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     ActionType = PlayerActionType.EndTurn,
                     PlayerId = playerId,
-                    EndTurn = new PlayerActionEndTurn
-                    {
-                        PlayerId = playerId
-                    }
+                    EndTurn = new PlayerActionEndTurn()
                 };
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
@@ -232,7 +236,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardAttack = new PlayerActionCardAttack
                     {
-                        PlayerId = playerId,
                         Attacker = new CardInstance
                         {
                             InstanceId = attacker.Id,
@@ -246,7 +249,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void CardAttackedOnUnitHandler(WorkingCard attacker, WorkingCard target)
+            private async void CardAttackedHandler(WorkingCard attacker, AffectObjectType type, int instanceId)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -255,7 +258,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardAttack = new PlayerActionCardAttack
                     {
-                        PlayerId = playerId,
                         Attacker = new CardInstance
                         {
                             InstanceId = attacker.Id,
@@ -263,12 +265,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             Defence = attacker.Health,
                             Attack = attacker.Damage
                         },
-                        Target = new CardInstance
+                        AffectObjectType = type,
+                        Target = new Unit
                         {
-                            InstanceId = target.Id,
-                            Prototype = ToProtobufExtensions.GetCardPrototype(target),
-                            Defence = target.Health,
-                            Attack = target.Damage
+                            InstanceId = instanceId
                         }
                     }
                 };
@@ -281,7 +281,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.UseOverlordSkill,
+                   // ActionType = PlayerActionType.UseOverlordSkill,
                     PlayerId = playerId
                 };
 
@@ -293,7 +293,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.UseOverlordSkill,
+                    //ActionType = PlayerActionType.UseOverlordSkill,
                     PlayerId = playerId
                 };
 
@@ -305,7 +305,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.UseCardAbility,
+                    //ActionType = PlayerActionType.UseCardAbility,
                     PlayerId = playerId
                 };
 
@@ -321,7 +321,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     Mulligan = new PlayerActionMulligan
                     {
-                        PlayerId = playerId,
                         // TODO : cant able to set the mulligan cards, no setter in zb protobuf
                         //MulliganedCards = GetMulliganCards(cards)
                     }

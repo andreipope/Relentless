@@ -61,9 +61,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public static T CastStringTuEnum<T>(string data)
+        public static T CastStringTuEnum<T>(string data, bool isManual = false)
         {
-            return (T) Enum.Parse(typeof(T), data.ToUpper());
+            if (isManual)
+            {
+                return (T)Enum.Parse(typeof(T), data);
+            }
+            else
+            {
+                return (T)Enum.Parse(typeof(T), data.ToUpper());
+            }
         }
 
         public static List<T> CastList<T>(string data, char separator = '|')
