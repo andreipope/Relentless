@@ -61,20 +61,19 @@ namespace Loom.ZombieBattleground
             GameObject effect;
             GameObject vfxPrefab;
 
-            Vector3 offset = Vector3.zero;
-            if (type == Enumerators.CardType.FERAL || type == Enumerators.CardType.HEAVY)
+            if (type == Enumerators.CardType.HEAVY)
             {
                 target = Utilites.CastVfxPosition(target);
-                offset = Vector3.forward * 1;
             }
 
             switch (type)
             {
                 case Enumerators.CardType.FERAL:
                 {
+                   // offset = Vector3.forward * 3;
                     vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                     effect = Object.Instantiate(vfxPrefab);
-                    effect.transform.position = target - offset;
+                    effect.transform.position = target;
                     _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume,
                         false, false, true);
 
@@ -86,7 +85,7 @@ namespace Loom.ZombieBattleground
                             a =>
                             {
                                 effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target - offset;
+                                effect.transform.position = target;
                                 effect.transform.localScale = new Vector3(-1, 1, 1);
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
                             },
@@ -100,7 +99,7 @@ namespace Loom.ZombieBattleground
                             a =>
                             {
                                 effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target - Vector3.right - offset;
+                                effect.transform.position = target - Vector3.right;
                                 effect.transform.eulerAngles = Vector3.forward * 90;
 
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
@@ -132,7 +131,7 @@ namespace Loom.ZombieBattleground
                 {
                     vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
                     effect = Object.Instantiate(vfxPrefab);
-                    effect.transform.position = target - offset;
+                    effect.transform.position = target;
 
                     _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -142,7 +141,7 @@ namespace Loom.ZombieBattleground
                             a =>
                             {
                                 effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target - offset;
+                                effect.transform.position = target;
 
                                 effect.transform.localScale = new Vector3(-1, 1, 1);
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
