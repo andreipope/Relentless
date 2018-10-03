@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         public event Action EndTurnActionReceived;
         public event Action<PlayerActionCardPlay> CardPlayedActionReceived;
         public event Action<PlayerActionCardAttack> CardAttackedActionReceived;
-        //public event Action<PlayerActionUseOverlordSkill> OverlordSkillUsedActionReceived;
+        public event Action<PlayerActionOverlordSkillUsed> OverlordSkillUsedActionReceived;
         //public event Action<PlayerActionUseCardAbility> CardAbilityUsedActionReceived;
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         public event Action<PlayerActionDrawCard> DrawCardActionReceived;
@@ -152,10 +152,10 @@ namespace Loom.ZombieBattleground
                     break;
                 /*case PlayerActionType.UseCardAbility:
                     //  OnCardAbilityUsedAction?.Invoke(playerActionEvent.PlayerAction.UseCardAbility);
+                    break; */
+                case PlayerActionType.OverlordSkillUsed:
+                    OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
                     break;
-                case PlayerActionType.UseOverlordSkill:
-                    //   OnOverlordSkillUsedAction?.Invoke(playerActionEvent.PlayerAction.UseOverlordSkill);
-                    break;*/
                 case PlayerActionType.DrawCard:
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
