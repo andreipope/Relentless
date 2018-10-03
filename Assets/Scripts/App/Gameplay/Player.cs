@@ -101,6 +101,7 @@ namespace Loom.ZombieBattleground
             CardsInHand = new List<WorkingCard>();
             CardsOnBoard = new List<WorkingCard>();
             BoardCards = new List<BoardUnitView>();
+            BoardSpellsInUse = new List<BoardSpell>();
 
             CardsPreparingToHand = new List<BoardCard>();
 
@@ -245,6 +246,8 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayer { get; set; }
 
         public List<BoardUnitView> BoardCards { get; set; }
+
+        public List<BoardSpell> BoardSpellsInUse { get; set; }
 
         public List<WorkingCard> CardsInDeck { get; set; }
 
