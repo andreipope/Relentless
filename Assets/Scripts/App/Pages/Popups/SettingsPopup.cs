@@ -57,6 +57,7 @@ namespace Loom.ZombieBattleground
             if (Self == null)
                 return;
 
+            _appStateManager.SetPausingApp(false);
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -100,6 +101,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.IsGameplayInputBlocked = true;
 
             FillInfo();
+            _appStateManager.SetPausingApp(true);
 #endif
         }
 
