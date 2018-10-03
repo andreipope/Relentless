@@ -172,6 +172,8 @@ namespace Loom.ZombieBattleground
 
                 _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
                 _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+
+                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
             };
 
             _uiManager.DrawPopup<ConfirmationPopup>(actions);
@@ -181,6 +183,8 @@ namespace Loom.ZombieBattleground
         private void QuitToDesktopButtonHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
 
             _appStateManager.QuitApplication();
         }

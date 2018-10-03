@@ -97,6 +97,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                // Player.BoardChanged += BoardChangedHandler;
                 Player.CardPlayed += CardPlayedHandler;
                 Player.CardAttacked += CardAttackedHandler;
+                Player.LeaveMatch += LeaveMatchHandler;
             }
 
             public Player Player { get; }
@@ -212,6 +213,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     ActionType = PlayerActionType.EndTurn,
                     PlayerId = playerId,
                     EndTurn = new PlayerActionEndTurn()
+                };
+
+                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+            }
+
+            private async void LeaveMatchHandler()
+            {
+                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                PlayerAction playerAction = new PlayerAction
+                {
+                    ActionType = PlayerActionType.LeaveMatch,
+                    PlayerId = playerId,
+                    LeaveMatch = new PlayerActionLeaveMatch()
                 };
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
