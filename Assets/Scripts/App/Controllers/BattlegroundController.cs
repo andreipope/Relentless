@@ -891,15 +891,15 @@ namespace Loom.ZombieBattleground
         {
             switch(affectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
                     return _gameplayManager.OpponentPlayer.Id == id ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                     {
                         List<BoardUnitView> units = new List<BoardUnitView>();
                         units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
                         units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-                        BoardUnitView unit = units.Find(u => u.Model.Id == id);
+                        BoardUnitView unit = units.Find(u => u.Model.Card.Id == id);
 
                         units.Clear();
 
@@ -936,7 +936,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel GetBoardUnitById(Player owner, int id)
         {
-            return owner.BoardCards.Find(u => u.Model.Id == id).Model;
+            return owner.BoardCards.Find(u => u.Model.Card.Id == id).Model;
         }
 
         public BoardObject GetBoardObjectById(int id)
@@ -945,7 +945,7 @@ namespace Loom.ZombieBattleground
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-            BoardUnitModel unit = units.Find(u => u.Model.Id == id).Model;
+            BoardUnitModel unit = units.Find(u => u.Model.Card.Id == id).Model;
 
             units.Clear();
 

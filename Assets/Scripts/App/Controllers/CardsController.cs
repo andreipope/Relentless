@@ -250,7 +250,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, player, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
+                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, player, player, Enumerators.AffectObjectType.Player, card.LibraryCard.Name);
             }
         }
 
@@ -641,14 +641,13 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.OpponentHandCards[
                     Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
 
-            _battlegroundController.OpponentHandCards.Remove(randomCard);
+            if(_battlegroundController.OpponentHandCards.Count > 0)
+                _battlegroundController.OpponentHandCards.Remove(randomCard);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
-
-            player.ThrowPlayCardEvent(card);
 
             randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(
                 () =>

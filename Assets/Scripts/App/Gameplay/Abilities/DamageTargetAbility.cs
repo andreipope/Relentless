@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
             }
 
             Vector3 targetPosition =
-                AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
+                AffectObjectType == Enumerators.AffectObjectType.Character ?
                 BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position :
                 TargetPlayer.AvatarObject.transform.position;
 
@@ -97,10 +97,10 @@ namespace Loom.ZombieBattleground
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
                 default:

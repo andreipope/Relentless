@@ -230,18 +230,18 @@ namespace Loom.ZombieBattleground
 
             if (TargetUnit != null)
             {
-                AffectObjectType = Enumerators.AffectObjectType.CHARACTER;
+                AffectObjectType = Enumerators.AffectObjectType.Character;
             }
             else if (TargetPlayer != null)
             {
-                AffectObjectType = Enumerators.AffectObjectType.PLAYER;
+                AffectObjectType = Enumerators.AffectObjectType.Player;
             }
             else
             {
-                AffectObjectType = Enumerators.AffectObjectType.NONE;
+                AffectObjectType = Enumerators.AffectObjectType.None;
             }
 
-            if (AffectObjectType != Enumerators.AffectObjectType.NONE)
+            if (AffectObjectType != Enumerators.AffectObjectType.None)
             {
                 IsAbilityResolved = true;
 

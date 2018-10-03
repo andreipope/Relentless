@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
             {
                 switch (AffectObjectType)
                 {
-                    case Enumerators.AffectObjectType.CHARACTER:
+                    case Enumerators.AffectObjectType.Character:
                         Action(TargetUnit);
                         CreateAndMoveParticle(
                             () =>

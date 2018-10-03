@@ -39,10 +39,10 @@ namespace Loom.ZombieBattleground
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
                     BattleController.HealPlayerByAbility(caller, AbilityData, TargetPlayer);
                     break;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                     BattleController.HealUnitByAbility(caller, AbilityData, TargetUnit);
                     break;
                 default:
