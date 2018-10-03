@@ -285,8 +285,6 @@ namespace Loom.ZombieBattleground
 
         private void TurnEndedHandler()
         {
-            Debug.LogError(_gameplayManager.CurrentTurnPlayer.Id + " _gameplayManager.CurrentTurnPlayer");
-
             if (_gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 return;
 
