@@ -67,6 +67,10 @@ namespace Loom.ZombieBattleground
 
         private BattleBoardArrow _fightTargetingArrow;
 
+        private const string _orangeGlow = "Orange";
+
+        private const string _greenGlow = "Orange";
+
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
@@ -392,7 +396,9 @@ namespace Loom.ZombieBattleground
             spriteContainerTransform.transform.localScale = scale;
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
             if (firstAppear)
+            {
                 GameObject.transform.position += Vector3.back * 5f;
+            }
         }
 
         public void ArrivalAnimationEventHandler()
@@ -746,7 +752,7 @@ namespace Loom.ZombieBattleground
 
         private void SetNormalGlowFromUnitType()
         {
-            string color = Model.HasBuffRush ? "Orange" : "Green";
+            string color = Model.HasBuffRush ? _orangeGlow : _greenGlow;
             bool active = false;
             if (_glowObj != null)
             {

@@ -70,7 +70,6 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CardType.FERAL:
                 {
-                   // offset = Vector3.forward * 3;
                     vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                     effect = Object.Instantiate(vfxPrefab);
                     effect.transform.position = target;
