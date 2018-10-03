@@ -167,6 +167,8 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.HidePopup<YourTurnPopup>();
 
+                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
@@ -181,6 +183,8 @@ namespace Loom.ZombieBattleground
         private void QuitToDesktopButtonHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
 
             _appStateManager.QuitApplication();
         }

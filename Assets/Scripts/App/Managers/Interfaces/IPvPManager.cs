@@ -22,11 +22,15 @@ namespace Loom.ZombieBattleground
         event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         event Action<PlayerActionDrawCard> DrawCardActionReceived;
 
+        event Action LeaveMatchReceived;
+
         FindMatchResponse MatchResponse { get; set; }
         GetGameStateResponse GameStateResponse { get; set; }
 
         OpponentDeck OpponentDeck { get; set; }
         int OpponentDeckIndex { get; set; }
+
+        string GetOpponentUserId();
 
         bool IsCurrentPlayer();
     }
