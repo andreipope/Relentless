@@ -496,16 +496,9 @@ namespace Loom.ZombieBattleground
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
 
-                try
-                {
-                    EndMatchResponse endMatchResponse = await _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
-                        (int)_pvpManager.MatchResponse.Match.Id,
-                        IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError(e);
-                }
+                await _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
+                                                (int)_pvpManager.MatchResponse.Match.Id,
+                                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
 
             }
             else
