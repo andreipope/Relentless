@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
@@ -24,6 +26,10 @@ namespace Loom.ZombieBattleground
         private readonly GameObject _freezedHighlightObject;
 
         private readonly IDataManager _dataManager;
+
+        private readonly BackendFacade _backendFacade;
+
+        private readonly BackendDataControlMediator _backendDataControlMediator;
 
         private readonly IGameplayManager _gameplayManager;
 
@@ -82,6 +88,8 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -178,6 +186,8 @@ namespace Loom.ZombieBattleground
         public event Action<WorkingCard> CardPlayed;
 
         public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
+
+        public event Action LeaveMatch;
 
         public event Action<List<WorkingCard>> Mulligan;
 
@@ -467,7 +477,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayerDie()
+        public async Task PlayerDie()
         {
             _gooBarFadeTool.FadeIn();
 
@@ -488,6 +498,11 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+
+                await _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
+                                                (int)_pvpManager.MatchResponse.Match.Id,
+                                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
+
             }
             else
             {
@@ -519,6 +534,11 @@ namespace Loom.ZombieBattleground
         public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)
         {
             CardAttacked?.Invoke(card, type, instanceId);
+        }
+
+        public void ThrowLeaveMatch()
+        {
+            LeaveMatch?.Invoke();
         }
 
         public void ThrowOnHandChanged()
