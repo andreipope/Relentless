@@ -199,7 +199,7 @@ namespace Loom.ZombieBattleground
                             false);
                     }
 
-                    skill.UseSkill();
+                    skill.UseSkill(targetPlayer);
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
@@ -218,7 +218,7 @@ namespace Loom.ZombieBattleground
                                             skill.OwnerPlayer,
                                             skill,
                                             targetPlayer,
-                                            Enumerators.AffectObjectType.PLAYER);
+                                            Enumerators.AffectObjectType.Player);
                             }
                         });
                 }
@@ -236,7 +236,7 @@ namespace Loom.ZombieBattleground
                             false);
                     }
 
-                    skill.UseSkill();
+                    skill.UseSkill(targetUnitView.Model);
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
@@ -251,7 +251,7 @@ namespace Loom.ZombieBattleground
                                 await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer,
                                     skill,
                                     targetUnitView.Model,
-                                    Enumerators.AffectObjectType.CHARACTER);
+                                    Enumerators.AffectObjectType.Character);
                             }
                         });
                 }
@@ -267,7 +267,7 @@ namespace Loom.ZombieBattleground
                     _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
                 }
 
-                skill.UseSkill();
+                skill.UseSkill(target);
                 _vfxController.CreateSkillVfx(
                     GetVfxPrefabBySkill(skill),
                     skill.SelfObject.transform.position,

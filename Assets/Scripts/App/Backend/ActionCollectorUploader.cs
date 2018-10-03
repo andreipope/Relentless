@@ -66,6 +66,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
             private readonly IPvPManager _pvpManager;
+            private readonly SkillsController _skillsController;
 
             public PlayerEventListener(Player player, bool isOpponent)
             {
@@ -73,6 +74,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 IDataManager dataManager = GameClient.Get<IDataManager>();
                 _pvpManager = GameClient.Get<IPvPManager>();
+                _skillsController = GameClient.Get<IGameplayManager>().GetController<SkillsController>();
 
                 Player = player;
                 IsOpponent = isOpponent;
@@ -97,6 +99,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                // Player.BoardChanged += BoardChangedHandler;
                 Player.CardPlayed += CardPlayedHandler;
                 Player.CardAttacked += CardAttackedHandler;
+
+                _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
             }
 
             public Player Player { get; }
@@ -329,6 +333,36 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
+
+            private async void SkillUsedHandler(BoardSkill skill, BoardObject target)
+            {
+                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                AffectObjectType affectObjectType = target is Player ? AffectObjectType.Player : AffectObjectType.Character;
+                Unit targetUnit = null;
+
+                if(target is BoardUnitModel unit)
+                {
+                    targetUnit = new Unit() { InstanceId = unit.Card.Id };
+                }
+                else if(target is Player player)
+                {
+                    targetUnit = new Unit() { InstanceId = player.Id };
+                }
+
+                PlayerAction playerAction = new PlayerAction
+                {
+                    ActionType = PlayerActionType.OverlordSkillUsed,
+                    PlayerId = playerId,
+                    OverlordSkillUsed = new PlayerActionOverlordSkillUsed
+                    {
+                        SkillId = skill.Id,
+                        AffectObjectType = affectObjectType,     
+                        Target = targetUnit
+                    }
+                };
+
+                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+            }
 
             private async Task UploadActionLogModel(ActionLogModel model)
             {

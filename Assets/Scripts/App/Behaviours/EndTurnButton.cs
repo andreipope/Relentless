@@ -86,7 +86,6 @@ public class EndTurnButton : MonoBehaviour
         if (_active && _hovering)
         {
             GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn();
-            GameClient.Get<IGameplayManager>().CurrentPlayer.InvokeTurnEnded();
             SetEnabled(false);
         }
 

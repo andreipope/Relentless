@@ -1,12 +1,16 @@
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using System;
 using TMPro;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class BoardSkill : OwnableBoardObject
     {
+        public event Action<BoardSkill, BoardObject> SkillUsed;
+
         public BattleBoardArrow FightTargetingArrow;
 
         public GameObject SelfObject;
@@ -157,7 +161,7 @@ namespace Loom.ZombieBattleground
             IsUsing = false;
         }
 
-        public void UseSkill()
+        public void UseSkill(BoardObject target)
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
@@ -166,6 +170,8 @@ namespace Loom.ZombieBattleground
             _coolDownTimer.SetAngle(_cooldown, true);
 
             GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+
+            SkillUsed?.Invoke(this, target);
         }
 
         public void Hide()
@@ -277,7 +283,9 @@ namespace Loom.ZombieBattleground
 
         private void TurnEndedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            Debug.LogError(_gameplayManager.CurrentTurnPlayer.Id + " _gameplayManager.CurrentTurnPlayer");
+
+            if (_gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 return;
 
             SetHighlightingEnabled(false);

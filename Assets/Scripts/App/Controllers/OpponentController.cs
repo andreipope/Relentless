@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
             _pvpManager.DrawCardActionReceived += OnDrawCardHandler;
             //_pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
-            //_pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
         }
 
@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
             _pvpManager.DrawCardActionReceived -= OnDrawCardHandler;
             //_pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
-            //_pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
         }
 
@@ -184,7 +184,6 @@ namespace Loom.ZombieBattleground
 
             UseOverlordSkillModel model = new UseOverlordSkillModel()
             {
-                CallerId = player.Id,
                 SkillId = skill.Id,
                 TargetId = targetId,
                 AffectObjectType = affectObjectType
@@ -229,14 +228,19 @@ namespace Loom.ZombieBattleground
             GotActionDrawCard(FromProtobufExtensions.FromProtobuf(actionDrawCard.CardInstance, _gameplayManager.OpponentPlayer));
         }
 
-        /*private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
+        private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
         {
         }
 
         private void OnOverlordSkillUsedHandler(PlayerActionOverlordSkillUsed actionUseOverlordSkill)
         {
-
-        }*/
+            GotActionUseOverlordSkill(new UseOverlordSkillModel()
+            {
+                SkillId = (int)actionUseOverlordSkill.SkillId,
+                TargetId = actionUseOverlordSkill.Target.InstanceId,
+                AffectObjectType = Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(actionUseOverlordSkill.AffectObjectType.ToString(), true)
+            });
+        }
 
         private void OnMulliganProcessHandler(PlayerActionMulligan actionMulligan)
         {
@@ -339,8 +343,7 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseOverlordSkill(UseOverlordSkillModel model)
         {
-            Player caller = _gameplayManager.GetPlayerById(model.CallerId);
-            BoardSkill skill = _battlegroundController.GetSkillById(caller, model.SkillId);
+            BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             Action callback = () =>
@@ -398,7 +401,6 @@ namespace Loom.ZombieBattleground
     public class UseOverlordSkillModel
     {
         public int SkillId;
-        public int CallerId;
         public int TargetId;
         public Enumerators.AffectObjectType AffectObjectType;
     }
