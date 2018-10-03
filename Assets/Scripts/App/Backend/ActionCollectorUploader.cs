@@ -97,6 +97,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Player.CardAttacked += CardAttackedHandler;
 
                 _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
+                _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
             }
 
             public Player Player { get; }
@@ -335,7 +336,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
                 else if(target is Player player)
                 {
-                    targetUnit = new Unit() { InstanceId = player.Id };
+                    targetUnit = new Unit() { InstanceId = player.Id == 0 ? 1 : 0 };
                 }
 
                 PlayerAction playerAction = new PlayerAction

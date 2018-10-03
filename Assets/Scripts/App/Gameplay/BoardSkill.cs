@@ -82,6 +82,8 @@ namespace Loom.ZombieBattleground
             //_shutterAnimator.enabled = false;
             //_shutterAnimator.StopPlayback();
 
+            Id = isPrimary ? 0 : 1;
+
             OwnerPlayer.TurnStarted += TurnStartedHandler;
             OwnerPlayer.TurnEnded += TurnEndedHandler;
 
