@@ -679,7 +679,17 @@
               "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
               "unitStatus": "FROZEN",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VFXToPlay": [
+                {
+                  "VFXType": "Moving",
+                  "Path": "Prefabs/VFX/Skills/IceBoltVFX"
+                },
+                {
+                  "VFXType": "Impact",
+                  "Path": "Prefabs/VFX/IceBolt_Impact"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
