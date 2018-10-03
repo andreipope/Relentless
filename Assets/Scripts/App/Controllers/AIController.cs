@@ -1074,7 +1074,7 @@ namespace Loom.ZombieBattleground
         {
             BoardObject target = null;
 
-            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
+            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.None;
 
             switch (skill.Skill.OverlordSkill)
             {
@@ -1082,7 +1082,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.STONE_SKIN:
                 case Enumerators.OverlordSkill.DRAW:
                 {
-                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
                     target = _gameplayManager.OpponentPlayer;
                 }
 
@@ -1094,7 +1094,7 @@ namespace Loom.ZombieBattleground
                         if (units.Count > 0)
                         {
                             target = units[0];
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
                         }
                         else
                             return;
@@ -1103,7 +1103,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.MEND:
                 {
                     target = _gameplayManager.OpponentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
 
                     if (_gameplayManager.OpponentPlayer.Health > 13)
                     {
@@ -1121,7 +1121,7 @@ namespace Loom.ZombieBattleground
                         if (units.Count > 0)
                         {
                             target = units[0];
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
                         } 
                         else 
                             return;
@@ -1145,7 +1145,7 @@ namespace Loom.ZombieBattleground
                     if (unit != null)
                     {
                         target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
                     }
                     else
                         return;
@@ -1159,14 +1159,14 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.FIRE_BOLT:
                 {
                     target = _gameplayManager.CurrentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
 
                     BoardUnitModel unit = GetRandomOpponentUnit();
 
                         if (unit != null)
                         {
                             target = unit;
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
                         }
                         else 
                             return; 
@@ -1192,7 +1192,7 @@ namespace Loom.ZombieBattleground
 
                         _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
 
-                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
                     }
                     else
                     {
@@ -1204,7 +1204,7 @@ namespace Loom.ZombieBattleground
 
                             _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
 
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
                         }
                         else
                             return;
@@ -1222,14 +1222,14 @@ namespace Loom.ZombieBattleground
             {
                 switch (selectedObjectType)
                 {
-                    case Enumerators.AffectObjectType.PLAYER:
+                    case Enumerators.AffectObjectType.Player:
                         skill.FightTargetingArrow.SelectedPlayer = (Player) target;
                         break;
-                    case Enumerators.AffectObjectType.CHARACTER:
+                    case Enumerators.AffectObjectType.Character:
                         BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
                         skill.FightTargetingArrow.SelectedCard = selectedCardView;
                         break;
-                    case Enumerators.AffectObjectType.NONE:
+                    case Enumerators.AffectObjectType.None:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(selectedObjectType), selectedObjectType, null);

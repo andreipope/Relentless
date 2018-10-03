@@ -250,7 +250,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, player, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
+                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, player, player, Enumerators.AffectObjectType.Player, card.LibraryCard.Name);
             }
         }
 

@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                 {
                     if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                     {
