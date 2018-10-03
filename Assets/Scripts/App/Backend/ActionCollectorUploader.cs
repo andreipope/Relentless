@@ -80,6 +80,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 if (!_backendFacade.IsConnected)
                     return;
 
+                IMatchManager matchManager = GameClient.Get<IMatchManager>();
+                if (matchManager.MatchType == Enumerators.MatchType.LOCAL ||
+                    matchManager.MatchType == Enumerators.MatchType.PVE ||
+                    _pvpManager.MatchResponse == null)
+                    return;
+
                 Player.TurnEnded += TurnEndedHandler;
                //Player.TurnStarted += TurnStartedHandler;
                // Player.PlayerHpChanged += PlayerHpChangedHandler;

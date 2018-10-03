@@ -641,7 +641,8 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.OpponentHandCards[
                     Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
 
-            _battlegroundController.OpponentHandCards.Remove(randomCard);
+            if(_battlegroundController.OpponentHandCards.Count > 0)
+                _battlegroundController.OpponentHandCards.Remove(randomCard);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
