@@ -199,7 +199,7 @@ namespace Loom.ZombieBattleground
                             false);
                     }
 
-                    skill.UseSkill();
+                    skill.UseSkill(targetPlayer);
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
@@ -224,7 +224,7 @@ namespace Loom.ZombieBattleground
                             false);
                     }
 
-                    skill.UseSkill();
+                    skill.UseSkill(targetUnitView.Model);
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
@@ -247,7 +247,7 @@ namespace Loom.ZombieBattleground
                     _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
                 }
 
-                skill.UseSkill();
+                skill.UseSkill(target);
                 _vfxController.CreateSkillVfx(
                     GetVfxPrefabBySkill(skill),
                     skill.SelfObject.transform.position,

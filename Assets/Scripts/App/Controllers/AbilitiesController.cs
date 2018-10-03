@@ -672,6 +672,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DESTROY_FROZEN_UNIT:
                     ability = new DestroyFrozenZombieAbility(cardKind, abilityData);
+                    abilityView = new DestroyFrozenZombieAbilityView((DestroyFrozenZombieAbility)ability);
                     break;
                 case Enumerators.AbilityType.USE_ALL_GOO_TO_INCREASE_STATS:
                     ability = new UseAllGooToIncreaseStatsAbility(cardKind, abilityData);
