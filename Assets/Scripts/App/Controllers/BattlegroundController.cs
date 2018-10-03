@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IPvPManager _pvpManager;
+
         private Sequence _rearrangingTopRealTimeSequence, _rearrangingBottomRealTimeSequence;
 
         public event Action<int> PlayerGraveyardUpdated;
@@ -89,6 +91,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -99,6 +102,13 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GameEnded += GameEndedHandler;
 
             _gameplayManager.GameInitialized += OnGameInitializedHandler;
+
+            _pvpManager.EndTurnActionReceived += OnGetEndTurnHandler;
+        }
+
+        private void OnGetEndTurnHandler()
+        {
+            StopTurn();
         }
 
         public void Dispose()
@@ -379,9 +389,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _gameplayManager.CurrentPlayer.InvokeTurnEnded();
-            _gameplayManager.OpponentPlayer.InvokeTurnEnded();
-
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :
                 _gameplayManager.CurrentPlayer;
@@ -576,11 +583,11 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case BoardCard card:
-                    CurrentPreviewedCardId = card.WorkingCard.InstanceId;
+                    CurrentPreviewedCardId = card.WorkingCard.Id;
                     break;
                 case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
-                    CurrentPreviewedCardId = unit.Model.Card.InstanceId;
+                    CurrentPreviewedCardId = unit.Model.Card.Id;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -819,6 +826,9 @@ namespace Loom.ZombieBattleground
         /// <returns></returns>
         public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
         {
+            if (boardUnitModel == null)
+                return null;
+
             BoardUnitView cardToDestroy =
                 OpponentBoardCards
                     .Concat(OpponentBoardCards)
@@ -881,15 +891,15 @@ namespace Loom.ZombieBattleground
         {
             switch(affectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
                     return _gameplayManager.OpponentPlayer.Id == id ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                     {
                         List<BoardUnitView> units = new List<BoardUnitView>();
                         units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
                         units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-                        BoardUnitView unit = units.Find(u => u.Model.Id == id);
+                        BoardUnitView unit = units.Find(u => u.Model.Card.Id == id);
 
                         units.Clear();
 
@@ -926,7 +936,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel GetBoardUnitById(Player owner, int id)
         {
-            return owner.BoardCards.Find(u => u.Model.Id == id).Model;
+            return owner.BoardCards.Find(u => u.Model.Card.Id == id).Model;
         }
 
         public BoardObject GetBoardObjectById(int id)
@@ -935,7 +945,7 @@ namespace Loom.ZombieBattleground
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-            BoardUnitModel unit = units.Find(u => u.Model.Id == id).Model;
+            BoardUnitModel unit = units.Find(u => u.Model.Card.Id == id).Model;
 
             units.Clear();
 

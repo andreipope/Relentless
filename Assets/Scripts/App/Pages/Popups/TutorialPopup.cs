@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground
 
         private void SkipButtonOnClickHandler()
         {
-            _tutorialManager.SkipTutorial(Enumerators.AppState.HORDE_SELECTION);
+            _tutorialManager.SkipTutorial(Enumerators.AppState.HordeSelection);
         }
 
         private void BackButtonOnClickHandler()

@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using UnityEngine;
+using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
@@ -66,6 +67,10 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
+        private IMatchManager _matchManager;
+
+        private IPvPManager _pvpManager;
+
         public Player(int id, GameObject playerObject, bool isOpponent)
         {
             Id = id;
@@ -75,6 +80,8 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -105,8 +112,17 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId)
-                    .HeroId;
+                switch (_matchManager.MatchType)
+                {
+                    case Enumerators.MatchType.LOCAL:
+                        heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId).HeroId;
+                        break;
+                    case Enumerators.MatchType.PVP:
+                        heroId = _pvpManager.OpponentDeck.HeroId;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
 
             SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
@@ -159,6 +175,10 @@ namespace Loom.ZombieBattleground
         public event Action<int> BoardChanged;
 
         public event Action<WorkingCard> CardPlayed;
+
+        public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
+
+        public event Action<List<WorkingCard>> Mulligan;
 
         public GameObject PlayerObject { get; }
 
@@ -341,7 +361,7 @@ namespace Loom.ZombieBattleground
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
-
+            ThrowPlayCardEvent(card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -427,6 +447,8 @@ namespace Loom.ZombieBattleground
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
                 }
             }
+
+            ThrowMulliganCardsEvent(_cardsController.MulliganCards);
         }
 
         public void DistributeCard()
@@ -491,9 +513,19 @@ namespace Loom.ZombieBattleground
             CardPlayed?.Invoke(card);
         }
 
+        public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)
+        {
+            CardAttacked?.Invoke(card, type, instanceId);
+        }
+
         public void ThrowOnHandChanged()
         {
             HandChanged?.Invoke(CardsInHand.Count);
+        }
+
+        private void ThrowMulliganCardsEvent(List<WorkingCard> cards)
+        {
+            Mulligan?.Invoke(cards);
         }
 
         private WorkingCard GetCardThatNotInDistribution()

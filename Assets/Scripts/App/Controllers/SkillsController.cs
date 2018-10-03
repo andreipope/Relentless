@@ -218,7 +218,7 @@ namespace Loom.ZombieBattleground
                                             skill.OwnerPlayer,
                                             skill,
                                             targetPlayer,
-                                            Enumerators.AffectObjectType.PLAYER);
+                                            Enumerators.AffectObjectType.Player);
                             }
                         });
                 }
@@ -251,7 +251,7 @@ namespace Loom.ZombieBattleground
                                 await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer,
                                     skill,
                                     targetUnitView.Model,
-                                    Enumerators.AffectObjectType.CHARACTER);
+                                    Enumerators.AffectObjectType.Character);
                             }
                         });
                 }

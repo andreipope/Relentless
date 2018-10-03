@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.HERO_SELECTION:
                     _uiManager.SetPage<OverlordSelectionPage>();
                     break;
-                case Enumerators.AppState.HORDE_SELECTION:
+                case Enumerators.AppState.HordeSelection:
                     _uiManager.SetPage<HordeSelectionPage>();
                     break;
                 case Enumerators.AppState.ARMY:
@@ -87,6 +87,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.CREDITS:
                     _uiManager.SetPage<CreditsPage>();
+                    break;
+                case Enumerators.AppState.PlaySelection:
+                    _uiManager.SetPage<PlaySelectionPage>();
+                    break;
+                case Enumerators.AppState.PvPSelection:
+                    _uiManager.SetPage<PvPSelectionPage>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);

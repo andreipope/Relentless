@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -449,7 +450,7 @@ namespace Loom.ZombieBattleground
                                     _battleController.AttackPlayerByUnit(this, targetPlayer);
                                     if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                                     {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetPlayer, Enumerators.AffectObjectType.PLAYER);
+                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetPlayer, Enumerators.AffectObjectType.Player);
                                     }
                                 },
                                 () =>
@@ -476,7 +477,7 @@ namespace Loom.ZombieBattleground
 
                                     if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                                     {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetCardModel, Enumerators.AffectObjectType.PLAYER);
+                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetCardModel, Enumerators.AffectObjectType.Player);
                                     }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)

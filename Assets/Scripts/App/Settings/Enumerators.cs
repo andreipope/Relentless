@@ -143,10 +143,10 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AffectObjectType
         {
-            NONE,
-            PLAYER,
-            CARD,
-            CHARACTER
+            None,
+            Player,
+            Card,
+            Character
         }
 
         public enum AiType
@@ -166,13 +166,15 @@ namespace Loom.ZombieBattleground.Common
             LOGIN,
             MAIN_MENU,
             HERO_SELECTION,
-            HORDE_SELECTION,
+            HordeSelection,
             ARMY,
             SHOP,
             GAMEPLAY,
             DECK_EDITING,
             PACK_OPENER,
-            CREDITS
+            CREDITS,
+            PlaySelection,
+            PvPSelection
         }
 
         public enum AttackInfoType
@@ -478,15 +480,6 @@ namespace Loom.ZombieBattleground.Common
             BorderlessWindow
         }
 
-        public enum PlayerAction
-        {
-            DrawCard,
-            Mulligan,
-            UseCardAbility,
-            UseOverlordSkill,
-            CardAttack,
-            EndTurn
-        }
         public enum ExperienceActionType
         {
             KillOverlord,
@@ -494,7 +487,6 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
-
         }
     }
 }
