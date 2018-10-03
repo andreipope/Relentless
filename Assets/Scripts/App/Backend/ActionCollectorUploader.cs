@@ -65,6 +65,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
+            private readonly BattlegroundController _battlegroundController;
+
             private readonly IPvPManager _pvpManager;
             private readonly SkillsController _skillsController;
 
@@ -72,6 +74,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+                _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
                 IDataManager dataManager = GameClient.Get<IDataManager>();
                 _pvpManager = GameClient.Get<IPvPManager>();
                 _skillsController = GameClient.Get<IGameplayManager>().GetController<SkillsController>();
@@ -88,15 +91,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     _pvpManager.MatchResponse == null)
                     return;
 
-                Player.TurnEnded += TurnEndedHandler;
-               //Player.TurnStarted += TurnStartedHandler;
-               // Player.PlayerHpChanged += PlayerHpChangedHandler;
-               // Player.PlayerGooChanged += PlayerGooChangedHandler;
-               // Player.PlayerVialGooChanged += PlayerVialGooChangedHandler;
-               // Player.DeckChanged += DeckChangedHandler;
-               // Player.HandChanged += HandChangedHandler;
-               // Player.GraveyardChanged += GraveyardChangedHandler;
-               // Player.BoardChanged += BoardChangedHandler;
+                _battlegroundController.TurnEnded += TurnEndedHandler;
+
                 Player.CardPlayed += CardPlayedHandler;
                 Player.CardAttacked += CardAttackedHandler;
 
@@ -124,15 +120,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void UnsubscribeFromPlayerEvents()
             {
-                Player.TurnEnded -= TurnEndedHandler;
-                //Player.TurnStarted -= TurnStartedHandler;
-                //Player.PlayerHpChanged -= PlayerHpChangedHandler;
-                //Player.PlayerGooChanged -= PlayerGooChangedHandler;
-                //Player.PlayerVialGooChanged -= PlayerVialGooChangedHandler;
-                //Player.DeckChanged -= DeckChangedHandler;
-                //Player.HandChanged -= HandChangedHandler;
-                //Player.GraveyardChanged -= GraveyardChangedHandler;
-                //Player.BoardChanged -= BoardChangedHandler;
+                _battlegroundController.TurnEnded -= TurnEndedHandler;
+
                 Player.CardPlayed -= CardPlayedHandler;
                 Player.CardAttacked -= CardAttackedHandler;
             }

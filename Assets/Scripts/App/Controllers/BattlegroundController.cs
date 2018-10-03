@@ -380,6 +380,8 @@ namespace Loom.ZombieBattleground
                 {
                     await _gameplayManager.GetController<OpponentController>().ActionEndTurn(_gameplayManager.CurrentPlayer);
                 }
+
+                TurnEnded?.Invoke();
             }
             else
             {
@@ -389,28 +391,20 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            _gameplayManager.CurrentPlayer.InvokeTurnEnded();
+            _gameplayManager.OpponentPlayer.InvokeTurnEnded();
+
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
-                      _gameplayManager.OpponentPlayer :
-                      _gameplayManager.CurrentPlayer;
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
-
-            TurnEnded?.Invoke();
-
-            if (_gameplayManager.IsLocalPlayerTurn())
-            {
-                _gameplayManager.CurrentPlayer.InvokeTurnEnded();
-            }
-            else
-            {
-                _gameplayManager.OpponentPlayer.InvokeTurnEnded();
-            }
         }
 
         public void StopTurn()
         {
             EndTurn();
-             
+
             if (_gameplayManager.IsLocalPlayerTurn())
             {
                 _uiManager.DrawPopup<YourTurnPopup>();
