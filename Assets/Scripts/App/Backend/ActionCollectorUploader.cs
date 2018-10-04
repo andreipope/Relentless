@@ -290,22 +290,35 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void AbilityUsedHandler(WorkingCard card, CardKind cardKind,
-                                                  AffectObjectType affectObjectType, BoardObject target = null)
+            private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
+                                                  AffectObjectType affectObjectType, List<BoardObject> targets = null)
             {
                 await Task.Delay(1000); // just for testing! remove it!!!
 
-                int instanceId = -1;
+                List<Unit> targetUnits = new List<Unit>();
 
-                if (target != null)
+                Unit unit;
+
+                if (targets != null)
                 {
-                    if (target is Player player)
+                    foreach(BoardObject boardObject in targets)
                     {
-                        instanceId = player.Id;
-                    }
-                    else if (target is BoardUnitModel unit)
-                    {
-                        instanceId = unit.Card.Id;
+                        unit = new Unit();
+
+                        if (boardObject is BoardUnitModel model)
+                        {
+                            unit = new Unit() { InstanceId = model.Card.Id };
+                        }
+                        else if (boardObject is Player player)
+                        {
+                            unit = new Unit() { InstanceId = player.Id == 0 ? 1 : 0 };
+                        }
+                        else if(boardObject is HandBoardCard handCard)
+                        {
+                            unit = new Unit() { InstanceId = handCard.Id };
+                        }
+
+                        targetUnits.Add(unit);
                     }
                 }
 
@@ -317,11 +330,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     CardAbilityUsed = new PlayerActionCardAbilityUsed()
                     {
                         AffectObjectType = affectObjectType,
-                        Target = new Unit()
-                        {
-                            InstanceId = instanceId
-                        },
+                        //Targets = targetUnits,
                         CardKind = cardKind,
+                        // AbilityType = abilityType.ToString(),
                         Card = new CardInstance
                         {
                             InstanceId = card.Id,

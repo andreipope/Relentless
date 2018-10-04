@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -27,6 +28,11 @@ namespace Loom.ZombieBattleground
 
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
             CreateVfx(GetAbilityUnitOwnerView().Transform.position, true, 5f);
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                 AbilityUnitOwner
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void TurnEndedHandler()

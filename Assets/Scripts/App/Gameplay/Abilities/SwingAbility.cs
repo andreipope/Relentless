@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -49,6 +50,12 @@ namespace Loom.ZombieBattleground
                     TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex + 1]);
                 }
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+              unit.OwnerPlayer.BoardCards[targetIndex - 1].Model,
+              unit.OwnerPlayer.BoardCards[targetIndex + 1].Model,
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)

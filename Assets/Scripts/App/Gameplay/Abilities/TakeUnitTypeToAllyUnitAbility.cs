@@ -58,6 +58,11 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                 unit.Model
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

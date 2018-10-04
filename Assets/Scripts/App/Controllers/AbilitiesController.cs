@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Protobuf.CardKind, Protobuf.AffectObjectType, BoardObject> AbilityUsed;
+        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind, Protobuf.AffectObjectType, List<BoardObject>> AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -411,8 +411,6 @@ namespace Loom.ZombieBattleground
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
 
-                    ThrowUseAbilityEvent(kind, target, workingCard);
-
                     onCompleteCallback?.Invoke();
 
                     ResolveAllAbilitiesOnUnit(boardObject);
@@ -460,11 +458,7 @@ namespace Loom.ZombieBattleground
                                         1.5f);
                                 }
 
-                                ThrowUseAbilityEvent(kind, activeAbility.Ability.TargetUnit != null ?
-                                                           (BoardObject)activeAbility.Ability.TargetUnit :
-                                                           (BoardObject)activeAbility.Ability.TargetPlayer, workingCard);
-
-                                  action?.Invoke(card);
+                                action?.Invoke(card);
 
                                 onCompleteCallback?.Invoke();
 
@@ -527,8 +521,6 @@ namespace Loom.ZombieBattleground
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
                     onCompleteCallback?.Invoke();
 
-                    ThrowUseAbilityEvent(kind, target, workingCard);
-
                     ResolveAllAbilitiesOnUnit(boardObject);
                 }
             }
@@ -537,34 +529,18 @@ namespace Loom.ZombieBattleground
                 CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
                 onCompleteCallback?.Invoke();
 
-                ThrowUseAbilityEvent(kind, target, workingCard);
-
                 ResolveAllAbilitiesOnUnit(boardObject);
             }
         }
 
-        public void ThrowUseAbilityEvent(Enumerators.CardKind kind, BoardObject target, WorkingCard workingCard)
+        public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
+                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType affectObjectType)
         {
             if (!_gameplayManager.IsLocalPlayerTurn())
                 return;
 
-            Protobuf.AffectObjectType affectObjectType;
-
-            if (target is Player)
-            {
-                affectObjectType = Protobuf.AffectObjectType.Player;
-            }
-            else if (target is BoardUnitModel)
-            {
-                affectObjectType = Protobuf.AffectObjectType.Character;
-            }
-            else
-            {
-                affectObjectType = Protobuf.AffectObjectType.Card;
-            }
-
-            AbilityUsed?.Invoke(workingCard, kind == Enumerators.CardKind.SPELL ? Protobuf.CardKind.Spell : Protobuf.CardKind.Creature,
-                                affectObjectType, target);
+            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ? Protobuf.CardKind.Spell : Protobuf.CardKind.Creature,
+                                affectObjectType, targets);
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)

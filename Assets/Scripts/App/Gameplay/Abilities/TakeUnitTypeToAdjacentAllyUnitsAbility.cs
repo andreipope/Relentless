@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -63,14 +64,19 @@ namespace Loom.ZombieBattleground
             switch (CardType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.Model.HasHeavy = true;
+                    unit.Model.SetAsHeavyUnit();
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.Model.HasFeral = true;
+                    unit.Model.SetAsFeralUnit();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CardType), CardType, null);
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                 unit.Model
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

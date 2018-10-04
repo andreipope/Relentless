@@ -408,5 +408,10 @@ namespace Loom.ZombieBattleground
         {
 
         }
+
+        protected void ReportAbilityDoneAction(List<BoardObject> targets)
+        {
+
+        }
     }
 }

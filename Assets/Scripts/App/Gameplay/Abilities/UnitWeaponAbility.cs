@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -34,6 +35,11 @@ namespace Loom.ZombieBattleground
                 TargetUnit.BuffedDamage += Value;
 
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                {
+                   TargetUnit
+                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
             }
         }
 

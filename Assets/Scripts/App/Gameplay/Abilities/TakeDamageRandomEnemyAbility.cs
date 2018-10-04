@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -13,7 +14,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        private List<object> _targets = new List<object>();
+        private List<BoardObject> _targets = new List<BoardObject>();
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -35,7 +36,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            _targets.AddRange(GetOpponentOverlord().BoardCards);
+            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
             _targets.Add(GetOpponentOverlord());
 
             _targets = InternalTools.GetRandomElementsFromList(_targets, 1);
@@ -57,8 +58,8 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         targetPosition = player.AvatarObject.transform.position;
                         break;
-                    case BoardUnitView unit:
-                        targetPosition = unit.Transform.position;
+                    case BoardUnitModel unit:
+                        targetPosition =  BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -77,10 +78,12 @@ namespace Loom.ZombieBattleground
                     ActionCompleted(targetObject, targetPosition);
                 }
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
 
-        private void ActionCompleted(object target, Vector3 targetPosition)
+    private void ActionCompleted(object target, Vector3 targetPosition)
         {
             ClearParticles();
 
