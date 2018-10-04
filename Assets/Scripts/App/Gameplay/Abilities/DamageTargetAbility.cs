@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -99,9 +100,17 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AffectObjectType.Player:
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        TargetPlayer
+                    },  AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
                     break;
                 case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        TargetUnit
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);

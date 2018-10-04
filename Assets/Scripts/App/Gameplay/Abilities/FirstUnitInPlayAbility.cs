@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,6 +36,11 @@ namespace Loom.ZombieBattleground
 
                 AbilityUnitOwner.BuffedDamage += Value;
                 AbilityUnitOwner.CurrentDamage += Value;
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                {
+                    AbilityUnitOwner
+                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
             }
         }
     }

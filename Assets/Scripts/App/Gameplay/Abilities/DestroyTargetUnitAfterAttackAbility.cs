@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -20,7 +21,7 @@ namespace Loom.ZombieBattleground
                 case BoardUnitModel boardUnitModel:
                     BattlegroundController.DestroyBoardUnit(boardUnitModel);
                     break;
-                case Player _ :
+                case Player player:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(info), info, null);
@@ -35,6 +36,11 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action(from);
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                from
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

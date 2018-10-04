@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
 
             BoardUnitModel unit = (BoardUnitModel) info;
 
+            List<BoardObject> targets = new List<BoardObject>();
+
             int targetIndex = -1;
             for (int i = 0; i < unit.OwnerPlayer.BoardCards.Count; i++)
             {
@@ -42,20 +44,18 @@ namespace Loom.ZombieBattleground
             {
                 if (targetIndex - 1 > -1)
                 {
+                    targets.Add(unit.OwnerPlayer.BoardCards[targetIndex - 1].Model);
                     TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex - 1]);
                 }
 
                 if (targetIndex + 1 < unit.OwnerPlayer.BoardCards.Count)
                 {
+                    targets.Add(unit.OwnerPlayer.BoardCards[targetIndex + 1].Model);
                     TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex + 1]);
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-              unit.OwnerPlayer.BoardCards[targetIndex - 1].Model,
-              unit.OwnerPlayer.BoardCards[targetIndex + 1].Model,
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)

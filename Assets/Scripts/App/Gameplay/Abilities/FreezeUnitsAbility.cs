@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -39,6 +40,9 @@ namespace Loom.ZombieBattleground
                 unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
                 CreateVfx(unit.Transform.position, true, 5f);
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, opponent.BoardCards.Select(x => (BoardObject)x.Model).ToList(),
+                AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

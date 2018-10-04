@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -31,21 +32,29 @@ namespace Loom.ZombieBattleground
                     break;
                 }
             }
+            List<BoardObject> targets = new List<BoardObject>();
+
 
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
                 {
+                    targets.Add(PlayerCallerOfAbility.BoardCards[targetIndex - 1].Model);
                     TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1].Model);
                 }
 
                 if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
                 {
+                    targets.Add(PlayerCallerOfAbility.BoardCards[targetIndex + 1].Model);
                     TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1].Model);
                 }
             }
 
+            targets.Add(AbilityUnitOwner);
+
             TakeDamageToUnit(AbilityUnitOwner);
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void TurnEndedHandler()

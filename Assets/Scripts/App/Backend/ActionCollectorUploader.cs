@@ -330,9 +330,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     CardAbilityUsed = new PlayerActionCardAbilityUsed()
                     {
                         AffectObjectType = affectObjectType,
-                        //Targets = targetUnits,
+                      //  Targets = targetUnits,
                         CardKind = cardKind,
-                        // AbilityType = abilityType.ToString(),
+                        AbilityType = abilityType.ToString(),
                         Card = new CardInstance
                         {
                             InstanceId = card.Id,
@@ -342,6 +342,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         }
                     }
                 };
+
+                var CardAbilityUsed = new PlayerActionCardAbilityUsed();
+                CardAbilityUsed.Targets.Add(new Unit());
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
