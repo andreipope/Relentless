@@ -64,6 +64,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.MatchType.PVP:
                     {
+                        GameClient.Get<IQueueManager>().StartNetworkThread();
                         _uiManager.DrawPopup<ConnectionPopup>();
                         _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
                         _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
