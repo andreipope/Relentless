@@ -236,6 +236,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private async Task DoNothingAiBrain(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
+            {
+                ((TutorialManager) _tutorialManager).Paused = true;
+            }
+            else
+            {
+                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+            }
+        }
+
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
