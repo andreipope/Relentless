@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -32,6 +33,8 @@ namespace Loom.ZombieBattleground
                 CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement)
             {
                 CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Card);
             }
         }
     }

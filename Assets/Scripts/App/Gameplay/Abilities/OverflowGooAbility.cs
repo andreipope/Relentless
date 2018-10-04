@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -31,6 +32,8 @@ namespace Loom.ZombieBattleground
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
                 PlayerCallerOfAbility.Goo += Value;
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
             }
         }
     }

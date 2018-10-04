@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                          CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name);
+                            CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name);
                         }
 
                         break;
@@ -60,6 +60,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void TurnStartedHandler()

@@ -40,6 +40,8 @@ namespace Loom.ZombieBattleground
 
             if (info is BoardUnitModel creature)
             {
+                creature.Stun(Enumerators.StunType.FREEZE, 1);
+
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
             }
         }

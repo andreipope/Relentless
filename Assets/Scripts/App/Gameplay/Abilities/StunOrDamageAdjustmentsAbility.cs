@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -94,6 +95,14 @@ namespace Loom.ZombieBattleground
             {
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
             }
+
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                leftAdjustment.Model,
+                rightAdjastment.Model,
+                creature
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void InputEndedHandler()

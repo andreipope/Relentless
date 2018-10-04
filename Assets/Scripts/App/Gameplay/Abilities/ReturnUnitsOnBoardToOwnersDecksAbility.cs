@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -35,6 +36,9 @@ namespace Loom.ZombieBattleground
             }
 
             units.Clear();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Select(x => (BoardObject)x.Model).ToList(),
+              AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         private void ReturnBoardUnitToDeck(BoardUnitModel unit)

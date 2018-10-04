@@ -1,5 +1,6 @@
-﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -13,6 +14,9 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
+
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitHpChangedHandler()
