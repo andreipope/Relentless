@@ -220,10 +220,15 @@ namespace Loom.ZombieBattleground
 
             if (isDirection)
             {
-                var main = particleSystem.GetComponent<ParticleSystem>().main;
                 float angle = AngleBetweenVector3(particleSystem.transform.position, targetPosition);
-                Debug.LogError(angle);
-                main.startRotation = angle * Mathf.Rad2Deg;
+                var main = particleSystem.GetComponent<ParticleSystem>().main;
+                main.startRotationZ = angle * Mathf.Deg2Rad;
+                ParticleSystem.MainModule subMain = new ParticleSystem.MainModule();
+                foreach (var item in particleSystem.GetComponentsInChildren<ParticleSystem>())
+                {
+                    subMain = item.main;
+                    subMain.startRotationZ = angle * Mathf.Deg2Rad;
+                }
             }
 
             particleSystem.transform
