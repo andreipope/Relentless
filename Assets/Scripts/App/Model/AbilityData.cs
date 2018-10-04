@@ -156,11 +156,23 @@ namespace Loom.ZombieBattleground.Data
 
         public bool HasVFXType(Enumerators.VFXType type)
         {
+            if (VFXToPlay == null)
+                return false;
+
             return VFXToPlay.Find(vfx => vfx.VFXType == type) != null;
         }
 
         public VFXInfo GetVFXByType(Enumerators.VFXType type)
         {
+            if (VFXToPlay == null) 
+            {
+                return new VFXInfo()
+                {
+                    Path = string.Empty, 
+                    VFXType = type
+                };
+            }
+
             return VFXToPlay.Find(vfx => vfx.VFXType == type);
         }
 

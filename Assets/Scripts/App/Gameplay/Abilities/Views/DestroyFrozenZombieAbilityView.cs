@@ -15,23 +15,32 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+            if (Ability.AbilityData.HasVFXType(Enumerators.VFXType.Moving))
+            {
+                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
 
-            VfxObject = Object.Instantiate(VfxObject);
-            VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
-            targetPosition = Utilites.CastVfxPosition(targetPosition);
-            VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
-            ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
+
+                VfxObject = Object.Instantiate(VfxObject);
+                VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
+                targetPosition = Utilites.CastVfxPosition(targetPosition);
+                VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+                ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+            }
+            else
+            {
+                ActionCompleted();
+            }
         }
 
         private void ActionCompleted()
         {
-            Vector3 targetPosition = VfxObject.transform.position;
-
             ClearParticles();
 
             if (Ability.AbilityData.HasVFXType(Enumerators.VFXType.Impact))
             {
+                Vector3 targetPosition = VfxObject.transform.position;
+
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVFXByType(Enumerators.VFXType.Impact).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
