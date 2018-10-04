@@ -199,27 +199,15 @@ namespace Loom.ZombieBattleground
                             false);
                     }
 
-                    skill.UseSkill();
+                    skill.UseSkill(targetPlayer);
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
                         targetPlayer,
-                        async (x) =>
+                        (x) =>
                         {
                             DoActionByType(skill, targetPlayer);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-
-                            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                            {
-                                await
-                                    _gameplayManager
-                                        .GetController<OpponentController>()
-                                        .ActionUseOverlordSkill(
-                                            skill.OwnerPlayer,
-                                            skill,
-                                            targetPlayer,
-                                            Enumerators.AffectObjectType.Player);
-                            }
                         });
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
@@ -236,23 +224,15 @@ namespace Loom.ZombieBattleground
                             false);
                     }
 
-                    skill.UseSkill();
+                    skill.UseSkill(targetUnitView.Model);
                     _vfxController.CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
                         targetUnitView,
-                        async (x) =>
+                        (x) =>
                         {
                             DoActionByType(skill, targetUnitView.Model);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-
-                            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                            {
-                                await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer,
-                                    skill,
-                                    targetUnitView.Model,
-                                    Enumerators.AffectObjectType.Character);
-                            }
                         });
                 }
 
@@ -267,20 +247,15 @@ namespace Loom.ZombieBattleground
                     _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
                 }
 
-                skill.UseSkill();
+                skill.UseSkill(target);
                 _vfxController.CreateSkillVfx(
                     GetVfxPrefabBySkill(skill),
                     skill.SelfObject.transform.position,
                     target,
-                    async (x) =>
+                    (x) =>
                     {
                         DoActionByType(skill, target);
                         _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
-
-                        if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                        {
-                            await _gameplayManager.GetController<OpponentController>().ActionUseOverlordSkill(skill.OwnerPlayer, skill, target);
-                        }
                     });
             }
         }

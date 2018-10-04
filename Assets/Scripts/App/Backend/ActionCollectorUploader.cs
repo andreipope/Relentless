@@ -68,6 +68,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private readonly BattlegroundController _battlegroundController;
 
             private readonly IPvPManager _pvpManager;
+            
+            private readonly SkillsController _skillsController;
+
+            private readonly AbilitiesController _abilitiesController;
 
             public PlayerEventListener(Player player, bool isOpponent)
             {
@@ -76,6 +80,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
                 IDataManager dataManager = GameClient.Get<IDataManager>();
                 _pvpManager = GameClient.Get<IPvPManager>();
+                _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+                _skillsController = GameClient.Get<IGameplayManager>().GetController<SkillsController>();
 
                 Player = player;
                 IsOpponent = isOpponent;
@@ -90,10 +96,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     return;
 
                 _battlegroundController.TurnEnded += TurnEndedHandler;
+                _abilitiesController.AbilityUsed += AbilityUsedHandler;
 
                 Player.CardPlayed += CardPlayedHandler;
                 Player.CardAttacked += CardAttackedHandler;
                 Player.LeaveMatch += LeaveMatchHandler;
+
+                _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
+                _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
+
             }
 
             public Player Player { get; }
@@ -279,37 +290,46 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void AbilityPlayedOnPlayerHandler(BoardSkill skill, Player player)
+            private async void AbilityUsedHandler(WorkingCard card, CardKind cardKind,
+                                                  AffectObjectType affectObjectType, BoardObject target = null)
             {
+                await Task.Delay(1000); // just for testing! remove it!!!
+
+                int instanceId = -1;
+
+                if (target != null)
+                {
+                    if (target is Player player)
+                    {
+                        instanceId = player.Id;
+                    }
+                    else if (target is BoardUnitModel unit)
+                    {
+                        instanceId = unit.Card.Id;
+                    }
+                }
+
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                   // ActionType = PlayerActionType.UseOverlordSkill,
-                    PlayerId = playerId
-                };
-
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
-            }
-
-            private async void AbilityPlayedOnUnitHandler(BoardSkill skill, BoardUnitView unit)
-            {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    //ActionType = PlayerActionType.UseOverlordSkill,
-                    PlayerId = playerId
-                };
-
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
-            }
-
-            private async void CardAbilityHandler(WorkingCard card)
-            {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    //ActionType = PlayerActionType.UseCardAbility,
-                    PlayerId = playerId
+                    ActionType = PlayerActionType.CardAbilityUsed,
+                    PlayerId = playerId,
+                    CardAbilityUsed = new PlayerActionCardAbilityUsed()
+                    {
+                        AffectObjectType = affectObjectType,
+                        Target = new Unit()
+                        {
+                            InstanceId = instanceId
+                        },
+                        CardKind = cardKind,
+                        Card = new CardInstance
+                        {
+                            InstanceId = card.Id,
+                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                            Defence = card.Health,
+                            Attack = card.Damage
+                        }
+                    }
                 };
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
@@ -332,6 +352,36 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
+
+            private async void SkillUsedHandler(BoardSkill skill, BoardObject target)
+            {
+                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                AffectObjectType affectObjectType = target is Player ? AffectObjectType.Player : AffectObjectType.Character;
+                Unit targetUnit = null;
+
+                if(target is BoardUnitModel unit)
+                {
+                    targetUnit = new Unit() { InstanceId = unit.Card.Id };
+                }
+                else if(target is Player player)
+                {
+                    targetUnit = new Unit() { InstanceId = player.Id == 0 ? 1 : 0 };
+                }
+
+                PlayerAction playerAction = new PlayerAction
+                {
+                    ActionType = PlayerActionType.OverlordSkillUsed,
+                    PlayerId = playerId,
+                    OverlordSkillUsed = new PlayerActionOverlordSkillUsed
+                    {
+                        SkillId = skill.Id,
+                        AffectObjectType = affectObjectType,     
+                        Target = targetUnit
+                    }
+                };
+
+                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+            }
 
             private async Task UploadActionLogModel(ActionLogModel model)
             {

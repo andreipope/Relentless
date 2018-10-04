@@ -1,5 +1,7 @@
-﻿using Loom.ZombieBattleground.Common;
+using DG.Tweening;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,8 +19,15 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                TargetUnit.Die();
+                InvokeActionTriggered();
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            TargetUnit.Die();
         }
     }
 }
