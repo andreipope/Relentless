@@ -581,8 +581,15 @@ namespace Loom.ZombieBattleground
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
         {
-            WorkingCard workingCard =
-                _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
+            WorkingCard workingCard = null;
+
+            if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
+            {
+                workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
+            }
+
+            if (workingCard == null || card == null) 
+                return;
 
             switch (card.LibraryCard.CardKind)
             {
