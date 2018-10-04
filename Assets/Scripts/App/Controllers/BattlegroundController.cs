@@ -914,6 +914,18 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
+        public List<BoardObject> GetTargetsById(List<Protobuf.Unit> targetUnits)
+        {
+            List<BoardObject> boardObjects = new List<BoardObject>();
+
+            foreach(Protobuf.Unit targetUnit in targetUnits)
+            {
+              //  boardObjects.Add(GetTargetById(targetUnit.InstanceId, targetUnit.AffectObjectType));
+            }
+
+            return boardObjects;
+        }
+
         public BoardSkill GetSkillById(Player owner, int id)
         {
             if (!owner.IsLocalPlayer)

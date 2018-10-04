@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
 {
     public class DamageTargetAdjustmentsAbility : AbilityBase
     {
+        private List<BoardObject> _targets = new List<BoardObject>();
+
         public int Value { get; }
 
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -79,6 +81,7 @@ namespace Loom.ZombieBattleground
 
             if (leftAdjustment != null)
             {
+                _targets.Add(leftAdjustment.Model);
                 CreateAndMoveParticle(
                     () =>
                     {
@@ -89,6 +92,8 @@ namespace Loom.ZombieBattleground
 
             if (rightAdjastment != null)
             {
+                _targets.Add(rightAdjastment.Model);
+
                 CreateAndMoveParticle(
                     () =>
                     {
@@ -96,6 +101,8 @@ namespace Loom.ZombieBattleground
                     },
                     rightAdjastment.Transform.position);
             }
+
+            
         }
 
         protected override void InputEndedHandler()
@@ -116,7 +123,10 @@ namespace Loom.ZombieBattleground
                                 BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                             },
                             BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
+                        _targets.Add(TargetUnit);
+                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
+                        _targets = new List<BoardObject>();
                         break;
                 }
             }
@@ -130,6 +140,9 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action(info);
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            _targets = new List<BoardObject>();
         }
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
@@ -141,9 +154,10 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
                 if (AbilityEffectType == Enumerators.AbilityEffectType.NONE ||
+#warning DELETE this line in future when on backend will be updated card library
                     AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
                 {
-                    #warning DELETE this line in future when on backend will be updated card library
+                  
                     callback();
                 }
                 else

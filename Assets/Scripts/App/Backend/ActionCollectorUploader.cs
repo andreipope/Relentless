@@ -297,54 +297,65 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 List<Unit> targetUnits = new List<Unit>();
 
-                Unit unit;
-
+                Unit targetUnit;
                 if (targets != null)
                 {
                     foreach(BoardObject boardObject in targets)
                     {
-                        unit = new Unit();
+                        targetUnit = new Unit();
 
                         if (boardObject is BoardUnitModel model)
                         {
-                            unit = new Unit() { InstanceId = model.Card.Id };
+                            targetUnit = new Unit()
+                            {
+                                InstanceId = model.Card.Id,
+                               // AffectObjectType = Enumerators.AffectObjectType.Character
+                            };
                         }
                         else if (boardObject is Player player)
                         {
-                            unit = new Unit() { InstanceId = player.Id == 0 ? 1 : 0 };
+                            targetUnit = new Unit()
+                            {
+                                InstanceId = player.Id == 0 ? 1 : 0,
+                              //  AffectObjectType = Enumerators.AffectObjectType.Player
+                            };
                         }
                         else if(boardObject is HandBoardCard handCard)
                         {
-                            unit = new Unit() { InstanceId = handCard.Id };
+                            targetUnit = new Unit()
+                            {
+                                InstanceId = handCard.Id,
+                               // AffectObjectType = Enumerators.AffectObjectType.Card
+                            };
                         }
 
-                        targetUnits.Add(unit);
+                        targetUnits.Add(targetUnit);
                     }
                 }
+
+                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
+                {
+                    AffectObjectType = affectObjectType,
+                    CardKind = cardKind,
+                    AbilityType = abilityType.ToString(),
+                    Card = new CardInstance
+                    {
+                        InstanceId = card.Id,
+                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                        Defence = card.Health,
+                        Attack = card.Damage
+                    }
+                };
+                CardAbilityUsed.Targets.Add(targetUnits);
 
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
                     ActionType = PlayerActionType.CardAbilityUsed,
                     PlayerId = playerId,
-                    CardAbilityUsed = new PlayerActionCardAbilityUsed()
-                    {
-                        AffectObjectType = affectObjectType,
-                      //  Targets = targetUnits,
-                        CardKind = cardKind,
-                        AbilityType = abilityType.ToString(),
-                        Card = new CardInstance
-                        {
-                            InstanceId = card.Id,
-                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
-                            Defence = card.Health,
-                            Attack = card.Damage
-                        }
-                    }
-                };
+                    CardAbilityUsed = CardAbilityUsed
 
-                var CardAbilityUsed = new PlayerActionCardAbilityUsed();
-                CardAbilityUsed.Targets.Add(new Unit());
+                };
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }

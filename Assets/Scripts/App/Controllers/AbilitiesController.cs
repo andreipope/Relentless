@@ -561,6 +561,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller, List<BoardObject> targets, WorkingCard card, Player owner)
+        {
+            ActiveAbility activeAbility = CreateActiveAbility(card.LibraryCard.Abilities.Find(x => x.AbilityType == ability),
+                                                               card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
+
+            activeAbility.Ability.PredefinedTargets = targets;
+
+            activeAbility.Ability.Activate();
+        }
+
         private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
         {
             ability = null;

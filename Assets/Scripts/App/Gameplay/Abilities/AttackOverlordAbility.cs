@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
             Action();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
         }
 
         public override void Action(object param = null)

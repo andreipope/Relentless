@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -69,6 +70,8 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(unit.Transform.position, true);
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, unitsOnBoard.Select(x => (BoardObject)x.Model).ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }
