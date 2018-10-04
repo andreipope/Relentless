@@ -22,11 +22,6 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.BuffedDamage += Value;
 
             AbilityUnitOwner.SetAsWalkerUnit();
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                AbilityUnitOwner
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

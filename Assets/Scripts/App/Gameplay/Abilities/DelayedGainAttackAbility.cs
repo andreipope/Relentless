@@ -20,11 +20,6 @@ namespace Loom.ZombieBattleground
 
             AbilityUnitOwner.CurrentDamage += Value;
             AbilityUnitOwner.BuffedDamage += Value;
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                AbilityUnitOwner
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

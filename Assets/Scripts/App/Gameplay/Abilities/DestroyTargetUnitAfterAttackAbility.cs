@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
         public DestroyTargetUnitAfterAttackAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         public override void Action(object info = null)
@@ -36,11 +38,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action(from);
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                from
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

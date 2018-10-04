@@ -10,8 +10,6 @@ namespace Loom.ZombieBattleground
 {
     public class DamageTargetAdjustmentsAbility : AbilityBase
     {
-        private List<BoardObject> _targets = new List<BoardObject>();
-
         public int Value { get; }
 
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -33,6 +31,8 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         public override void Update()
@@ -81,7 +81,6 @@ namespace Loom.ZombieBattleground
 
             if (leftAdjustment != null)
             {
-                _targets.Add(leftAdjustment.Model);
                 CreateAndMoveParticle(
                     () =>
                     {
@@ -92,8 +91,6 @@ namespace Loom.ZombieBattleground
 
             if (rightAdjastment != null)
             {
-                _targets.Add(rightAdjastment.Model);
-
                 CreateAndMoveParticle(
                     () =>
                     {
@@ -123,10 +120,6 @@ namespace Loom.ZombieBattleground
                                 BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                             },
                             BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
-                        _targets.Add(TargetUnit);
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-
-                        _targets = new List<BoardObject>();
                         break;
                 }
             }
@@ -140,9 +133,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action(info);
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-            _targets = new List<BoardObject>();
         }
 
         private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)

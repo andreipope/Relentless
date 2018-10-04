@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         public override void Action(object param = null)
@@ -32,29 +34,21 @@ namespace Loom.ZombieBattleground
                     break;
                 }
             }
-            List<BoardObject> targets = new List<BoardObject>();
-
 
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
                 {
-                    targets.Add(PlayerCallerOfAbility.BoardCards[targetIndex - 1].Model);
                     TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1].Model);
                 }
 
                 if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
                 {
-                    targets.Add(PlayerCallerOfAbility.BoardCards[targetIndex + 1].Model);
                     TakeDamageToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1].Model);
                 }
             }
 
-            targets.Add(AbilityUnitOwner);
-
             TakeDamageToUnit(AbilityUnitOwner);
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void TurnEndedHandler()

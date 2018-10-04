@@ -22,11 +22,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                {
-                    AbilityUnitOwner
-                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
         }
 
         public override void Action(object info = null)

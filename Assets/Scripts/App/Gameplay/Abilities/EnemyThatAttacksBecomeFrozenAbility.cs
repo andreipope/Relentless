@@ -13,6 +13,13 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+        }
+
         protected override void UnitDamagedHandler(BoardObject from)
         {
             base.UnitDamagedHandler(from);
@@ -21,11 +28,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             ((BoardUnitModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                {
-                    from
-                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }
