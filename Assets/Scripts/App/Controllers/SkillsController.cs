@@ -317,6 +317,7 @@ namespace Loom.ZombieBattleground
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
                     break;
                 case Enumerators.OverlordSkill.FREEZE:
+                case Enumerators.OverlordSkill.SHATTER:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
                     break;
                 case Enumerators.OverlordSkill.POISON_DART:
@@ -353,7 +354,6 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.REANIMATE:
                 case Enumerators.OverlordSkill.RESSURECT:
                 case Enumerators.OverlordSkill.RETREAT:
-                case Enumerators.OverlordSkill.SHATTER:
                 case Enumerators.OverlordSkill.WIND_SHIELD:
                 default:
                     prefab = new GameObject();
@@ -1216,8 +1216,11 @@ namespace Loom.ZombieBattleground
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), target);
+
             if (target is BoardUnitModel boardUnitModel)
             {
+                boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
                 _battlegroundController.DestroyBoardUnit(boardUnitModel);
             }
 
@@ -1247,7 +1250,7 @@ namespace Loom.ZombieBattleground
             {
                 unit.Model.Stun(Enumerators.StunType.FREEZE, skill.Value);
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX"), unit);
+                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), unit);
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
