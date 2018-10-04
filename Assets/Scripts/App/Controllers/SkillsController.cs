@@ -315,6 +315,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.OverlordSkill.ICE_BOLT:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
+                    _isDirection = true;
                     break;
                 case Enumerators.OverlordSkill.FREEZE:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
