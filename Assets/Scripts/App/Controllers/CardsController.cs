@@ -636,10 +636,7 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.OpponentHandCards.Remove(randomCard);
             }
-            else
-            {
-                return;
-            }
+            else return;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
