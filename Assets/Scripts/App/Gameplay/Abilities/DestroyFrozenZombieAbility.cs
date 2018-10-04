@@ -11,8 +11,6 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             TargetUnitStatusType = ability.TargetUnitStatusType;
-
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
         }
 
         protected override void InputEndedHandler()

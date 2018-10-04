@@ -40,7 +40,12 @@ namespace Loom.ZombieBattleground
 
             _targets = InternalTools.GetRandomElementsFromList(_targets, 1);
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
+            VfxObject = null;
+
+            if (AbilityData.HasVFXType(Enumerators.VFXType.Moving))
+            {
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
+            }
 
             foreach (object target in _targets)
             {
@@ -59,11 +64,18 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
-                targetPosition = Utilites.CastVfxPosition(targetPosition);
-                VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => { ActionCompleted(targetObject, targetPosition); });
-                ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                if (VfxObject != null)
+                {
+                    VfxObject = Object.Instantiate(VfxObject);
+                    VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
+                    targetPosition = Utilites.CastVfxPosition(targetPosition);
+                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => { ActionCompleted(targetObject, targetPosition); });
+                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                }
+                else
+                {
+                    ActionCompleted(targetObject, targetPosition);
+                }
             }
         }
 
