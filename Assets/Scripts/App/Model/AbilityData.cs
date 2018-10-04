@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground.Data
 
         public int Delay;
 
+        public List<VFXInfo> VFXToPlay;
+
         public void ParseData()
         {
             AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(Type);
@@ -150,6 +152,22 @@ namespace Loom.ZombieBattleground.Data
             {
                 TargetUnitType = Utilites.CastStringTuEnum<Enumerators.CardType>(UnitType);
             }
+        }
+
+        public bool HasVFXType(Enumerators.VFXType type)
+        {
+            return VFXToPlay.Find(vfx => vfx.VFXType == type) != null;
+        }
+
+        public VFXInfo GetVFXByType(Enumerators.VFXType type)
+        {
+            return VFXToPlay.Find(vfx => vfx.VFXType == type);
+        }
+
+        public class VFXInfo
+        {
+            public Enumerators.VFXType VFXType;
+            public string Path;
         }
     }
 }

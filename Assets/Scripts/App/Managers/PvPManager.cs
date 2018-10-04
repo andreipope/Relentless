@@ -24,10 +24,12 @@ namespace Loom.ZombieBattleground
         public event Action EndTurnActionReceived;
         public event Action<PlayerActionCardPlay> CardPlayedActionReceived;
         public event Action<PlayerActionCardAttack> CardAttackedActionReceived;
-        public event Action<PlayerActionUseOverlordSkill> OverlordSkillUsedActionReceived;
-        public event Action<PlayerActionUseCardAbility> CardAbilityUsedActionReceived;
+        public event Action<PlayerActionOverlordSkillUsed> OverlordSkillUsedActionReceived;
+        public event Action<PlayerActionCardAbilityUsed> CardAbilityUsedActionReceived;
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         public event Action<PlayerActionDrawCard> DrawCardActionReceived;
+
+        public event Action LeaveMatchReceived;
 
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
@@ -70,6 +72,21 @@ namespace Loom.ZombieBattleground
                 return true;
 
             return false;
+        }
+
+        public string GetOpponentUserId()
+        {
+            string opponentId = string.Empty;
+            for (int i = 0; i < MatchResponse.Match.PlayerStates.Count; i++)
+            {
+                if (MatchResponse.Match.PlayerStates[i].Id != _backendDataControlMediator.UserDataModel.UserId)
+                {
+                    opponentId = MatchResponse.Match.PlayerStates[i].Id;
+                    break;
+                }
+            }
+
+            return opponentId;
         }
 
         private void OnGetPlayerActionEventListener(byte[] data)
@@ -133,14 +150,17 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.CardAttack:
                     CardAttackedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAttack);
                     break;
-                case PlayerActionType.UseCardAbility:
-                    //  OnCardAbilityUsedAction?.Invoke(playerActionEvent.PlayerAction.UseCardAbility);
+               case PlayerActionType.CardAbilityUsed:
+                      CardAbilityUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAbilityUsed);
                     break;
-                case PlayerActionType.UseOverlordSkill:
-                    //   OnOverlordSkillUsedAction?.Invoke(playerActionEvent.PlayerAction.UseOverlordSkill);
+                case PlayerActionType.OverlordSkillUsed:
+                    OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
                     break;
                 case PlayerActionType.DrawCard:
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
+                    break;
+                case PlayerActionType.LeaveMatch:
+                    LeaveMatchReceived?.Invoke();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playerActionEvent.PlayerActionType), playerActionEvent.PlayerActionType.ToString() + " not found");

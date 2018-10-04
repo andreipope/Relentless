@@ -100,17 +100,15 @@ namespace Loom.ZombieBattleground
         private void RankedTypeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
-
-            _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
+            _uiManager.DrawPopup<WarningPopup>(
+                        $"Ranked Games are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
         }
 
         private void FriendlyTypeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
-
-            _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
+            _uiManager.DrawPopup<WarningPopup>(
+                         $"Friendly Games are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
         }
 
         private void BackButtonOnClickHandler()

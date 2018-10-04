@@ -143,10 +143,10 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AffectObjectType
         {
-            NONE,
-            PLAYER,
-            CARD,
-            CHARACTER
+            None,
+            Player,
+            Card,
+            Character
         }
 
         public enum AiType
@@ -487,6 +487,12 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
+        }
+
+        public enum VFXType
+        {
+            Impact,
+            Moving
         }
     }
 }

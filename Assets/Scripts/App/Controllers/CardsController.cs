@@ -119,7 +119,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public async void EndCardDistribution()
+        public void EndCardDistribution()
         {
             if (!CardDistribution)
                 return;
@@ -138,11 +138,6 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer.CardsInDeck.Remove(card.WorkingCard);
                 _gameplayManager.CurrentPlayer.CardsInDeck.Add(card.WorkingCard);
                 card.ReturnCardToDeck();
-            }
-
-            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-            {
-                await _gameplayManager.GetController<OpponentController>().ActionMulligan(_gameplayManager.CurrentPlayer, cards.Select(x => x.WorkingCard).ToList());
             }
 
             foreach (BoardCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
@@ -247,11 +242,6 @@ namespace Loom.ZombieBattleground
 
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
-
-            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-            {
-                await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, player, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
-            }
         }
 
         public async void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
@@ -641,7 +631,8 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.OpponentHandCards[
                     Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
 
-            _battlegroundController.OpponentHandCards.Remove(randomCard);
+            if(_battlegroundController.OpponentHandCards.Count > 0)
+                _battlegroundController.OpponentHandCards.Remove(randomCard);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
