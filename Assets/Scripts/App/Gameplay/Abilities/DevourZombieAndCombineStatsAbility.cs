@@ -56,7 +56,16 @@ namespace Loom.ZombieBattleground
 
         private void DevourAllAllyZombies()
         {
-            List<BoardUnitModel> units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
+            List<BoardUnitModel> units;
+
+            if (PredefinedTargets != null)
+            {
+                units = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+            }
+            else
+            {
+                units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
+            }
 
             foreach (BoardUnitModel unit in units)
             {

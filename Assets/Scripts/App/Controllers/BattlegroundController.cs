@@ -918,10 +918,13 @@ namespace Loom.ZombieBattleground
         {
             List<BoardObject> boardObjects = new List<BoardObject>();
 
-            foreach(Protobuf.Unit targetUnit in targetUnits)
+            if (targetUnits != null)
             {
-                boardObjects.Add(GetTargetById(targetUnit.InstanceId,
-                     Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(targetUnit.AffectObjectType.ToString(), true)));
+                foreach (Protobuf.Unit targetUnit in targetUnits)
+                {
+                    boardObjects.Add(GetTargetById(targetUnit.InstanceId,
+                         Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(targetUnit.AffectObjectType.ToString(), true)));
+                }
             }
 
             return boardObjects;

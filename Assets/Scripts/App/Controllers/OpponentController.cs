@@ -230,42 +230,11 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
-            List<BoardObject> targets = new List<BoardObject>();
-
-            if (model.Targets != null)
-            {
-                targets = _battlegroundController.GetTargetsById(model.Targets);
-            }
-
-            BoardObject boardObject = _battlegroundController.GetBoardObjectById(model.Card.Id);
-
-            _abilitiesController.PlayAbilityFromEvent(model.AbilityType, boardObject, targets, model.Card, _gameplayManager.OpponentPlayer);
-
-           /* if (target != null)
-            {
-                Transform transform;
-
-                if (model.CardKind == Enumerators.CardKind.SPELL)
-                {
-                    transform = _gameplayManager.OpponentPlayer.AvatarObject.transform;
-                }
-                else
-                {
-                    BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)boardObject);
-                    transform = boardUnitView.Transform;
-                }
-
-                Action callback = () =>
-                {
-                    _abilitiesController.CallAbility(model.Card.LibraryCard, null, model.Card, model.CardKind, boardObject, null, false, null, target);
-                };
-
-                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(transform, target, action: callback);
-            }
-            else
-            {
-                _abilitiesController.CallAbility(model.Card.LibraryCard, null, model.Card, model.CardKind, boardObject, null, false, null);
-            } */
+            _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
+                                                      _battlegroundController.GetBoardObjectById(model.Card.Id),
+                                                      _battlegroundController.GetTargetsById(model.Targets),
+                                                      model.Card,
+                                                      _gameplayManager.OpponentPlayer);
         }
 
         public void GotActionUseOverlordSkill(UseOverlordSkillModel model)

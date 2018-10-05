@@ -12,9 +12,7 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value { get; }
-
-        private List<BoardObject> _targets = new List<BoardObject>();
+        public int Value { get; } = 1;
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -36,10 +34,20 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
-            _targets.Add(GetOpponentOverlord());
+            List<BoardObject> _targets;
 
-            _targets = InternalTools.GetRandomElementsFromList(_targets, 1);
+            if (PredefinedTargets != null)
+            {
+                _targets = PredefinedTargets;
+            }
+            else
+            {
+                _targets = new List<BoardObject>();
+                _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                _targets.Add(GetOpponentOverlord());
+
+                _targets = InternalTools.GetRandomElementsFromList(_targets, Value);
+            }
 
             VfxObject = null;
 
@@ -103,8 +111,8 @@ namespace Loom.ZombieBattleground
                 case Player allyPlayer:
                     BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
                     break;
-                case BoardUnitView allyUnit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit.Model);
+                case BoardUnitModel allyUnit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
