@@ -45,19 +45,21 @@ namespace Loom.ZombieBattleground
 
         private readonly GameObject _avatarObject;
 
+        private readonly GameObject _avatarAfterDeadObject;
+
         private readonly GameObject _overlordRegularObject;
 
         private readonly GameObject _overlordDeathObject;
 
         private readonly GameObject _avatarHeroHighlight;
 
-        private readonly GameObject _avatarHeroHighlightAfterDead;
-
         private readonly GameObject _avatarSelectedHighlight;
 
         private readonly Animator _avatarAnimator;
 
         private readonly Animator _deathAnimator;
+
+        private readonly Animator _regularAnimator;
 
         private readonly FadeTool _gooBarFadeTool;
 
@@ -141,23 +143,23 @@ namespace Loom.ZombieBattleground
             BuffedHp = 0;
             _goo = Constants.DefaultPlayerGoo;
 
-            _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
+            _avatarAfterDeadObject = _overlordRegularObject.transform.Find("RegularPosition/FrameShuttering (1)/FrameExplosion").gameObject;
+            _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
             _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
 
-            _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
+            _avatarAnimator = _avatarObject.GetComponent<Animator>();
             _deathAnimator = _overlordDeathObject.GetComponent<Animator>();
-            _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
+            _regularAnimator = _overlordRegularObject.GetComponent<Animator>();
+            _gooBarFadeTool = _avatarObject.GetComponent<FadeTool>();
 
             _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject;
 
-            string name = Utilites.FirstCharToUpper(SelfHero.HeroElement.ToString()) + "HeroFrame";
-            _avatarHeroHighlightAfterDead = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
-            _avatarHeroHighlightAfterDead.SetActive(false);
             _avatarAnimator.enabled = false;
             _deathAnimator.enabled = false;
+            _regularAnimator.enabled = false;
             _deathAnimator.StopPlayback();
 
             PlayerHpChanged += PlayerHpChangedHandler;
@@ -481,15 +483,27 @@ namespace Loom.ZombieBattleground
         {
             _gooBarFadeTool.FadeIn();
 
-            _overlordRegularObject.SetActive(false);
-            _overlordDeathObject.SetActive(true);
+            Material heroAvatarMaterial = _avatarObject.transform.GetChild(1).GetComponent<Renderer>().material;
 
-            _avatarAnimator.enabled = true;
-            _deathAnimator.enabled = true;
+            MeshRenderer renderer;
+            for (int i = 0; i < _avatarAfterDeadObject.transform.childCount; i++)
+            {
+                renderer = _avatarAfterDeadObject.transform.GetChild(i).GetComponent<MeshRenderer>();
+
+                if (renderer  != null)
+                {
+                    renderer.material.mainTexture = heroAvatarMaterial.mainTexture;
+                }
+            }
+
+            _overlordDeathObject.SetActive(true);
+            _avatarObject.SetActive(false);
             _avatarHeroHighlight.SetActive(false);
-            _avatarHeroHighlightAfterDead.SetActive(true);
-            _avatarAnimator.Play(0);
+            _avatarAfterDeadObject.SetActive(true);
+            _deathAnimator.enabled = true;
+            _regularAnimator.enabled = true;
             _deathAnimator.Play(0);
+            _regularAnimator.Play(0);
 
             _skillsController.DisableSkillsContent(this);
 

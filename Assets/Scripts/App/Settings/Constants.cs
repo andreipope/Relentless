@@ -126,5 +126,14 @@ namespace Loom.ZombieBattleground.Common
         internal const string AssetBundleLoadingScreen = "loadingscreen";
 
         internal const string Space = " ";
+
+        internal const string OverlordRegularNeckR = "OverlordRegularNeckR";
+
+        internal const string OverlordRegularNeckL = "OverlordRegularNeckL";
+
+        internal const string Player = "Player";
+
+        internal const string Opponent = "Opponent";
+
     }
 }

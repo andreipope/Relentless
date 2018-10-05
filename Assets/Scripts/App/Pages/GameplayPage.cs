@@ -273,18 +273,18 @@ namespace Loom.ZombieBattleground
             _endTurnButton = GameObject.Find("EndTurnButton");
             
             PlayerPrimarySkillHandler =
-                GameObject.Find("Player").transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Player).transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             PlayerSecondarySkillHandler =
-                GameObject.Find("Player").transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Player).transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             OpponentPrimarySkillHandler =
-                GameObject.Find("Opponent").transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Opponent).transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             OpponentSecondarySkillHandler =
-                GameObject.Find("Opponent").transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Opponent).transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             if (currentPlayerHero != null)
             {
-                SetHeroInfo(currentPlayerHero, "Player", PlayerPrimarySkillHandler.gameObject,
+                SetHeroInfo(currentPlayerHero, Constants.Player, PlayerPrimarySkillHandler.gameObject,
                     PlayerSecondarySkillHandler.gameObject);
                 string playerNameText = currentPlayerHero.FullName;
                 if (_backendDataControlMediator.LoadUserDataModel())
@@ -297,15 +297,15 @@ namespace Loom.ZombieBattleground
 
             if (currentOpponentHero != null)
             {
-                SetHeroInfo(currentOpponentHero, "Opponent", OpponentPrimarySkillHandler.gameObject,
+                SetHeroInfo(currentOpponentHero, Constants.Opponent, OpponentPrimarySkillHandler.gameObject,
                     OpponentSecondarySkillHandler.gameObject);
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
 			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
-                _playerManaBarsPosition, _playerNameText.text);
+                _playerManaBarsPosition, _playerNameText.text, Constants.Player);
             _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
-                _opponentManaBarsPosition, _opponentNameText.text);
+                _opponentManaBarsPosition, _opponentNameText.text, Constants.Opponent);
 			
             _isPlayerInited = true;
         }
@@ -329,21 +329,20 @@ namespace Loom.ZombieBattleground
             Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
             heroAvatarMaterial.mainTexture = heroTexture;
 
+            MeshRenderer renderer;
             for (int i = 0; i < transfHeroObject.childCount; i++)
             {
-                transfHeroObject.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
+                renderer = transfHeroObject.GetChild(i).GetComponent<MeshRenderer>();
+
+                if (renderer != null)
+                {
+                    renderer.material = heroAvatarMaterial;
+                }
             }
 
             Sprite heroHighlight =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
             GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
-
-            string name = Utilites.FirstCharToUpper(hero.HeroElement.ToString()) + "HeroFrame";
-            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
-            var avatarHeroHighlight = MonoBehaviour.Instantiate(prefab, GameObject.Find(objectName + "/Avatar/HeroHighlight").transform, false);
-            //avatarHeroHighlight.transform.localPosition = Vector3.zero;
-            avatarHeroHighlight.name = name;
-            avatarHeroHighlight.transform.parent.gameObject.SetActive(false);
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
