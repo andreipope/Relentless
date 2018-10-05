@@ -495,5 +495,11 @@ namespace Loom.ZombieBattleground.Common
             Impact,
             Moving
         }
+
+        public enum ShutterState
+        {
+            Open,
+            Close
+        }
     }
 }
