@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
@@ -170,6 +171,15 @@ namespace Loom.ZombieBattleground.Data
             };
 
             return new WorkingCard(card, player, cardInstance.InstanceId);
+        }
+
+        public static List<Unit> FromProtobuf(this RepeatedField<Unit> repeatedListUnits)
+        {
+            List<Unit> units = new List<Unit>();
+
+            units.AddRange(repeatedListUnits);
+
+            return units;
         }
     }
 }
