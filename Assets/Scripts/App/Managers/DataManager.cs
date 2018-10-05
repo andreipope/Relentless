@@ -124,6 +124,7 @@ namespace Loom.ZombieBattleground
             Debug.Log("Writer Host:" + CachedConfigData.writerHost);
             Debug.Log("Encryption:" + CachedConfigData.encryptData.ToString());
             Debug.Log("Card Data Version:" + CachedConfigData.cardsDataVersion);
+            Debug.Log("Skip Card Data Backend:" + CachedConfigData.skipBackendCardData.ToString());
             await SaveCache(Enumerators.CacheDataType.CONFIG_DATA);
             Debug.Log("Config Cached in Persistent Data Path");
         }
@@ -277,14 +278,11 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-#if SKIP_CARDS_LIBRARY_DATA_FROM_BACKEND
-                    Debug.LogError("Skipping Card Library load from backend, using local data");
-                    if (File.Exists(_cacheDataPathes[type])) {
-                       CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
-                    }
-#else
                     try
                     {
+                        if (CachedConfigData.skipBackendCardData) {
+                            throw new Exception("Config Set to Skip Backend Call");
+                        }
                         ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
                         Debug.Log(listCardLibraryResponse.ToString());
                         CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
@@ -296,7 +294,6 @@ namespace Loom.ZombieBattleground
                             CachedCardsLibraryData =
                                 DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
                     }
-#endif
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try
