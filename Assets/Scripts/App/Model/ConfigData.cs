@@ -7,5 +7,6 @@ namespace Loom.ZombieBattleground.Data
         public string readerHost;
         public string writerHost;
         public string cardsDataVersion;
+        public bool skipBackendCardData;
     }
 }
