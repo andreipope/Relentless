@@ -415,14 +415,7 @@ namespace Loom.ZombieBattleground
             CardsInDeck = new List<WorkingCard>();
 
             cards = ShuffleCardsList(cards);
-
-#if DEV_MODE
-            if (IsLocalPlayer)
-            {
-                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName("Cherno-bill"), this)); // special card id
-            }
-#endif
-
+           
             foreach (string card in cards)
             {
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));

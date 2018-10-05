@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardType Type;
 
-        public WorkingCard(Card card, Player player, int id = -1)
+        public WorkingCard(Card card, Player player)
         {
             LibraryCard = card.Clone();
             CardId = LibraryCard.Id;
@@ -34,14 +34,7 @@ namespace Loom.ZombieBattleground
 
             Type = LibraryCard.CardType;
 
-            if (id == -1)
-            {
-                Id = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
-            }
-            else
-            {
-                Id = id;
-            }
+            Id = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
         }
 
         public bool IsPlayable { get; set; }
