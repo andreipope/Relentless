@@ -64,7 +64,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             string modelJson = JsonConvert.SerializeObject(userDataModel);
 
-            File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
+            if (_dataManager.CachedConfigData.encryptData)
+            {
+                File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
+            }
+            else 
+            {
+                File.WriteAllText(UserDataFilePath, modelJson);
+            }
             UserDataModel = userDataModel;
             return true;
         }
