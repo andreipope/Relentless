@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -26,6 +27,11 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+
+            if(AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            {
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }
         }
 
         public override void Action(object info = null)
@@ -35,26 +41,31 @@ namespace Loom.ZombieBattleground
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.Character:
-                {
-                    if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                     {
-                        switch (StatType)
+                        if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                         {
-                            case Enumerators.StatType.DAMAGE:
-                                TargetUnit.BuffedDamage += Value;
-                                TargetUnit.CurrentDamage += Value;
-                                break;
-                            case Enumerators.StatType.HEALTH:
-                                TargetUnit.BuffedHp += Value;
-                                TargetUnit.CurrentHp += Value;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
-                        }
+                            switch (StatType)
+                            {
+                                case Enumerators.StatType.DAMAGE:
+                                    TargetUnit.BuffedDamage += Value;
+                                    TargetUnit.CurrentDamage += Value;
+                                    break;
+                                case Enumerators.StatType.HEALTH:
+                                    TargetUnit.BuffedHp += Value;
+                                    TargetUnit.CurrentHp += Value;
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
+                            }
 
-                        CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
+                            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
+
+                            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                            {
+                                TargetUnit
+                            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                        }
                     }
-                }
 
                     break;
             }
