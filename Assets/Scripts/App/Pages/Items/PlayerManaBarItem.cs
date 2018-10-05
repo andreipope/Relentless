@@ -59,7 +59,9 @@ namespace Loom.ZombieBattleground
             _isInOverflow = false;
             _isAfterOverflow = false;
             _name = name;
-            _arrowObject.transform.localEulerAngles = new Vector3(_arrowObject.transform.localEulerAngles.x, _arrowObject.transform.localEulerAngles.y, -90);
+            _arrowObject.transform.localEulerAngles = new Vector3(_arrowObject.transform.localEulerAngles.x,
+                                                                  _arrowObject.transform.localEulerAngles.y,
+                                                                  -90);
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }

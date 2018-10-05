@@ -485,11 +485,14 @@ namespace Loom.ZombieBattleground
 
             Material heroAvatarMaterial = _avatarObject.transform.GetChild(1).GetComponent<Renderer>().material;
 
+            MeshRenderer renderer;
             for (int i = 0; i < _avatarAfterDeadObject.transform.childCount; i++)
             {
-                if (_avatarAfterDeadObject.transform.GetChild(i).GetComponent<MeshRenderer>() != null)
+                renderer = _avatarAfterDeadObject.transform.GetChild(i).GetComponent<MeshRenderer>();
+
+                if (renderer  != null)
                 {
-                    _avatarAfterDeadObject.transform.GetChild(i).GetComponent<MeshRenderer>().material.mainTexture = heroAvatarMaterial.mainTexture;
+                    renderer.material.mainTexture = heroAvatarMaterial.mainTexture;
                 }
             }
 

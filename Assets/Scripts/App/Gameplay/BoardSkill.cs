@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using System;
@@ -78,11 +79,10 @@ namespace Loom.ZombieBattleground
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
-            string name = isPrimary ? "OverlordRegularNeckR" : "OverlordRegularNeckL";
+            string name = isPrimary ? Constants.OverlordRegularNeckR : Constants.OverlordRegularNeckL;
+
             _shutterAnimator = SelfObject.transform.parent.transform
                 .Find("OverlordArea/RegularModel/RegularPosition/OverlordRegular/Shutters/" + name).GetComponent<Animator>();
-            //_shutterAnimator.enabled = false;
-            //_shutterAnimator.StopPlayback();
 
             Id = isPrimary ? 0 : 1;
 
@@ -311,15 +311,10 @@ namespace Loom.ZombieBattleground
         {
             _glowObject.SetActive(isActive);
 
-            //_shutterAnimator.enabled = isActive ? true : false;
-            //_shutterAnimator.speed = isActive ? 1 : -1;
-            //_shutterAnimator.StartPlayback();
-
             if (_isOpen != isActive)
             {
                 _isOpen = isActive;
-                string state = isActive ? "Open" : "Close";
-                _shutterAnimator.SetTrigger(state);
+                _shutterAnimator.SetTrigger((isActive ? Enumerators.ShutterState.Open : Enumerators.ShutterState.Close).ToString());
             }
         }
 
