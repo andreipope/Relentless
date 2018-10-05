@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -36,13 +37,20 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<object> allies = new List<object>();
+            List<BoardObject> allies = new List<BoardObject>();
 
-            allies.AddRange(PlayerCallerOfAbility.BoardCards);
-            allies.Remove(AbilityUnitOwner);
-            allies.Add(PlayerCallerOfAbility);
+            if (PredefinedTargets != null)
+            {
+                allies = PredefinedTargets;
+            }
+            else
+            {
+                allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                allies.Remove(AbilityUnitOwner);
+                allies.Add(PlayerCallerOfAbility);
 
-            allies = InternalTools.GetRandomElementsFromList(allies, Value);
+                allies = InternalTools.GetRandomElementsFromList(allies, Value);
+            }
 
             for (int i = 0; i < allies.Count; i++)
             {
@@ -53,14 +61,16 @@ namespace Loom.ZombieBattleground
                         player.Stun(Enumerators.StunType.FREEZE, Turns);
                         CreateVfx(player.AvatarObject.transform.position, true, 5f);
                         break;
-                    case BoardUnitView unit:
-                        unit.Model.Stun(Enumerators.StunType.FREEZE, Turns);
-                        CreateVfx(unit.Transform.position, true, 5f);
+                    case BoardUnitModel unit:
+                        unit.Stun(Enumerators.StunType.FREEZE, Turns);
+                        CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position, true, 5f);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ally), ally, null);
                 }
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

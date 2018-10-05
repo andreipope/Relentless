@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -45,17 +46,33 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved && Value > 0)
             {
                 DevourTargetZombie(TargetUnit);
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                {
+                    TargetUnit
+                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
             }
         }
 
         private void DevourAllAllyZombies()
         {
-            List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards;
+            List<BoardUnitModel> units;
 
-            foreach (BoardUnitView unit in units)
+            if (PredefinedTargets != null)
             {
-                DevourTargetZombie(unit.Model);
+                units = PredefinedTargets.Cast<BoardUnitModel>().ToList();
             }
+            else
+            {
+                units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
+            }
+
+            foreach (BoardUnitModel unit in units)
+            {
+                DevourTargetZombie(unit);
+            }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         private void DevourTargetZombie(BoardUnitModel unit)
