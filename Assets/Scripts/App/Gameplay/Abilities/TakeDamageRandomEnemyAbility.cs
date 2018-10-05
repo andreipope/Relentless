@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -11,9 +12,7 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value { get; }
-
-        private List<object> _targets = new List<object>();
+        public int Value { get; } = 1;
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -35,10 +34,20 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            _targets.AddRange(GetOpponentOverlord().BoardCards);
-            _targets.Add(GetOpponentOverlord());
+            List<BoardObject> _targets;
 
-            _targets = InternalTools.GetRandomElementsFromList(_targets, 1);
+            if (PredefinedTargets != null)
+            {
+                _targets = PredefinedTargets;
+            }
+            else
+            {
+                _targets = new List<BoardObject>();
+                _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                _targets.Add(GetOpponentOverlord());
+
+                _targets = InternalTools.GetRandomElementsFromList(_targets, Value);
+            }
 
             VfxObject = null;
 
@@ -57,8 +66,8 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         targetPosition = player.AvatarObject.transform.position;
                         break;
-                    case BoardUnitView unit:
-                        targetPosition = unit.Transform.position;
+                    case BoardUnitModel unit:
+                        targetPosition =  BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -77,10 +86,12 @@ namespace Loom.ZombieBattleground
                     ActionCompleted(targetObject, targetPosition);
                 }
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
 
-        private void ActionCompleted(object target, Vector3 targetPosition)
+    private void ActionCompleted(object target, Vector3 targetPosition)
         {
             ClearParticles();
 
@@ -100,8 +111,8 @@ namespace Loom.ZombieBattleground
                 case Player allyPlayer:
                     BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
                     break;
-                case BoardUnitView allyUnit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit.Model);
+                case BoardUnitModel allyUnit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
