@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         CreditsData CachedCreditsData { get; set; }
 
+        ConfigData CachedConfigData { get; set; }
+
         long CachedDecksLastModificationTimestamp { get; set; }
 
         BetaConfig BetaConfig { get; set; }
@@ -28,6 +30,8 @@ namespace Loom.ZombieBattleground
         Task LoadRemoteConfig();
 
         Task StartLoadCache();
+
+        Task StartLoadConfigData();
 
         Task SaveCache(Enumerators.CacheDataType type);
 

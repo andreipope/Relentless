@@ -48,7 +48,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             string modelJson = File.ReadAllText(UserDataFilePath);
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
+            if (_dataManager.CachedConfigData.encryptData)
+            {
+                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
+            } else {
+                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(modelJson);
+            }
             return true;
         }
 

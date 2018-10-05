@@ -25,9 +25,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             AuthBackendHost = authBackendHost;
             ReaderHost = readerHost;
             WriterHost = writerHost;
-
-            Debug.Log($"Using auth backend {AuthBackendHost}");
-            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
         }
 
         public event ContractCreatedEventHandler ContractCreated;
@@ -115,11 +112,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             ListCardLibraryRequest request = new ListCardLibraryRequest
             {
-#if VERSION_2_FOR_CARD_LIBRARY
-                Version = "v2";
-#else
-                Version = ContractDataVersion
-#endif
+                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
             };
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
