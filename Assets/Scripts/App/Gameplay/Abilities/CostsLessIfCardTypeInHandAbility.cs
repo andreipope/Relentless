@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Card);
+
             if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
 
@@ -31,8 +33,6 @@ namespace Loom.ZombieBattleground
                 x =>
                 {
                     Action();
-
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Card);
                 },
                 null,
                 0.5f);

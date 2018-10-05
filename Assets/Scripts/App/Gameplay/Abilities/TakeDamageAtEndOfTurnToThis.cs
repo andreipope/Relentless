@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         public override void Action(object info = null)
@@ -28,11 +30,6 @@ namespace Loom.ZombieBattleground
 
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
             CreateVfx(GetAbilityUnitOwnerView().Transform.position, true, 5f);
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                 AbilityUnitOwner
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void TurnEndedHandler()

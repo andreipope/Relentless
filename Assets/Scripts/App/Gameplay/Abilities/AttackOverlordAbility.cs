@@ -23,14 +23,14 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
 
             Action();
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
         }
 
         public override void Action(object param = null)

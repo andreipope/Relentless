@@ -36,6 +36,8 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
             if (AbilityCallType != Enumerators.AbilityCallType.PERMANENT)
                 return;
 
@@ -70,8 +72,6 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(unit.Transform.position, true);
             }
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, unitsOnBoard.Select(x => (BoardObject)x.Model).ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

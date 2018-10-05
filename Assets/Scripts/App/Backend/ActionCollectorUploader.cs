@@ -293,7 +293,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
                                                   AffectObjectType affectObjectType, List<BoardObject> targets = null)
             {
-                await Task.Delay(1000); // just for testing! remove it!!!
+                await Task.Delay(1000);
 
                 List<Unit> targetUnits = new List<Unit>();
 
@@ -309,7 +309,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             targetUnit = new Unit()
                             {
                                 InstanceId = model.Card.Id,
-                               // AffectObjectType = Enumerators.AffectObjectType.Character
+                                AffectObjectType =  AffectObjectType.Character
                             };
                         }
                         else if (boardObject is Player player)
@@ -317,7 +317,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             targetUnit = new Unit()
                             {
                                 InstanceId = player.Id == 0 ? 1 : 0,
-                              //  AffectObjectType = Enumerators.AffectObjectType.Player
+                                AffectObjectType = AffectObjectType.Player
                             };
                         }
                         else if(boardObject is HandBoardCard handCard)
@@ -325,7 +325,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             targetUnit = new Unit()
                             {
                                 InstanceId = handCard.Id,
-                               // AffectObjectType = Enumerators.AffectObjectType.Card
+                                AffectObjectType = AffectObjectType.Card
                             };
                         }
 
@@ -335,7 +335,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
                 {
-                    AffectObjectType = affectObjectType,
                     CardKind = cardKind,
                     AbilityType = abilityType.ToString(),
                     Card = new CardInstance

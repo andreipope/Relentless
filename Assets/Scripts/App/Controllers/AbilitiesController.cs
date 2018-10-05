@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private BoardArrowController _boardArrowController;
+
         private ulong _castedAbilitiesIds;
 
         private List<ActiveAbility> _activeAbilities;
@@ -40,6 +42,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
         }
 
         public void ResetAll()
@@ -539,7 +542,8 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsLocalPlayerTurn())
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ? Protobuf.CardKind.Spell : Protobuf.CardKind.Creature,
+            AbilityUsed?.Invoke(card, abilityType,
+                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ? Protobuf.CardKind.Spell : Protobuf.CardKind.Creature,
                                 affectObjectType, targets);
         }
 
@@ -567,6 +571,39 @@ namespace Loom.ZombieBattleground
                                                                card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
 
             activeAbility.Ability.PredefinedTargets = targets;
+
+            if (targets.Count > 0)
+            {
+                switch (targets[0])
+                {
+                    case BoardUnitModel unit:
+                        activeAbility.Ability.TargetUnit = unit;
+                        break;
+                    case Player player:
+                        activeAbility.Ability.TargetPlayer = player;
+                        break;
+                    case null:
+                        break;
+                }
+
+                Transform from = owner.AvatarObject.transform;
+
+                if (abilityCaller is BoardUnitModel unitModel)
+                {
+                    from = _battlegroundController.GetBoardUnitViewByModel(unitModel).Transform;
+                }
+
+                Action callback = () =>
+                {
+                    activeAbility.Ability.SelectedTargetAction(true);
+
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
+                        .BoardCards);
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                };
+
+                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(from, targets[0], action: callback);
+            }
 
             activeAbility.Ability.Activate();
         }

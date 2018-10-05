@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
-                 unit.Model
+               unit.Model
             }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }

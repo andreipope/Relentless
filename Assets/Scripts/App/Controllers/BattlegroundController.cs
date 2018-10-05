@@ -920,7 +920,8 @@ namespace Loom.ZombieBattleground
 
             foreach(Protobuf.Unit targetUnit in targetUnits)
             {
-              //  boardObjects.Add(GetTargetById(targetUnit.InstanceId, targetUnit.AffectObjectType));
+                boardObjects.Add(GetTargetById(targetUnit.InstanceId,
+                     Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(targetUnit.AffectObjectType.ToString(), true)));
             }
 
             return boardObjects;

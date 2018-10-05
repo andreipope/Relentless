@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -40,9 +43,6 @@ namespace Loom.ZombieBattleground
                 unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
                 CreateVfx(unit.Transform.position, true, 5f);
             }
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, opponent.BoardCards.Select(x => (BoardObject)x.Model).ToList(),
-                AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

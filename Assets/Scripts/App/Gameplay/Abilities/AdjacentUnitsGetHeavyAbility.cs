@@ -15,6 +15,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -35,24 +38,18 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            List<BoardObject> targets = new List<BoardObject>();
-
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
                 {
-                    targets.Add(PlayerCallerOfAbility.BoardCards[targetIndex - 1].Model);
                     TakeHeavyToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1]);
                 }
 
                 if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
                 {
-                    targets.Add(PlayerCallerOfAbility.BoardCards[targetIndex + 1].Model);
                     TakeHeavyToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1]);
                 }
             }
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         private static void TakeHeavyToUnit(BoardUnitView unit)

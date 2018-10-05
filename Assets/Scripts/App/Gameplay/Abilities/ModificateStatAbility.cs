@@ -27,6 +27,11 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+
+            if(AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            {
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }
         }
 
         public override void Action(object info = null)
@@ -54,7 +59,6 @@ namespace Loom.ZombieBattleground
                             }
 
                             CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
-
 
                             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                             {

@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         public override void Action(object info = null)
@@ -54,8 +56,6 @@ namespace Loom.ZombieBattleground
                     TakeDamageToUnit(unit.OwnerPlayer.BoardCards[targetIndex + 1]);
                 }
             }
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)

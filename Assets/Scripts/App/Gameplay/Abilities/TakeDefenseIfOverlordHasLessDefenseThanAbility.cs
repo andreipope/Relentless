@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         public override void Action(object info = null)
@@ -39,11 +41,6 @@ namespace Loom.ZombieBattleground
                 AbilityUnitOwner.BuffedHp += Value;
                 AbilityUnitOwner.CurrentHp += Value;
             }
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                AbilityUnitOwner
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

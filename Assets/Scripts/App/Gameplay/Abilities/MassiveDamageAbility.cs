@@ -20,6 +20,9 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -59,36 +62,18 @@ namespace Loom.ZombieBattleground
                         {
                             BattleController.AttackUnitByAbility(caller, AbilityData, cardOpponent.Model);
                         }
-
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, opponent.BoardCards.Select(x => (BoardObject)x.Model).ToList(),
-                            AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
                         foreach (BoardUnitView cardPlayer in PlayerCallerOfAbility.BoardCards)
                         {
                             BattleController.AttackUnitByAbility(caller, AbilityData, cardPlayer.Model);
                         }
-
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, PlayerCallerOfAbility.BoardCards.Select(x => (BoardObject)x.Model).ToList(),
-                            AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, opponent);
-
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                        {
-                            opponent
-                        },AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, PlayerCallerOfAbility);
-
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                        {
-                            PlayerCallerOfAbility
-                        }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);

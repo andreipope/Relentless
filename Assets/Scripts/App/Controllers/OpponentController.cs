@@ -230,7 +230,13 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
-            List<BoardObject> targets = _battlegroundController.GetTargetsById(model.Targets);
+            List<BoardObject> targets = new List<BoardObject>();
+
+            if (model.Targets != null)
+            {
+                targets = _battlegroundController.GetTargetsById(model.Targets);
+            }
+
             BoardObject boardObject = _battlegroundController.GetBoardObjectById(model.Card.Id);
 
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType, boardObject, targets, model.Card, _gameplayManager.OpponentPlayer);

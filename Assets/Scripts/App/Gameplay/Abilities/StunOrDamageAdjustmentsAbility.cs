@@ -95,14 +95,6 @@ namespace Loom.ZombieBattleground
             {
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
             }
-
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                leftAdjustment.Model,
-                rightAdjastment.Model,
-                creature
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void InputEndedHandler()
@@ -112,6 +104,11 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 Action(TargetUnit);
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                {
+                    TargetUnit,
+                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
             }
         }
     }
