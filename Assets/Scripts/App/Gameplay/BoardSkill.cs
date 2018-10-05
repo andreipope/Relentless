@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using System;
@@ -45,6 +46,8 @@ namespace Loom.ZombieBattleground
 
         private bool _usedInThisTurn;
 
+        private bool _isOpen;
+
         private OnBehaviourHandler _behaviourHandler;
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
@@ -76,11 +79,10 @@ namespace Loom.ZombieBattleground
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
-            string name = isPrimary ? "1stShutters" : "2ndtShutters";
+            string name = isPrimary ? Constants.OverlordRegularNeckR : Constants.OverlordRegularNeckL;
+
             _shutterAnimator = SelfObject.transform.parent.transform
-                .Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
-            //_shutterAnimator.enabled = false;
-            //_shutterAnimator.StopPlayback();
+                .Find("OverlordArea/RegularModel/RegularPosition/OverlordRegular/Shutters/" + name).GetComponent<Animator>();
 
             Id = isPrimary ? 0 : 1;
 
@@ -100,6 +102,8 @@ namespace Loom.ZombieBattleground
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+
+            _isOpen = false;
         }
 
         public bool IsSkillReady => _cooldown == 0;
@@ -307,9 +311,11 @@ namespace Loom.ZombieBattleground
         {
             _glowObject.SetActive(isActive);
 
-            _shutterAnimator.enabled = isActive ? true : false;
-            _shutterAnimator.speed = isActive ? 1 : -1;
-            _shutterAnimator.StartPlayback();
+            if (_isOpen != isActive)
+            {
+                _isOpen = isActive;
+                _shutterAnimator.SetTrigger((isActive ? Enumerators.ShutterState.Open : Enumerators.ShutterState.Close).ToString());
+            }
         }
 
         private void DoOnUpSkillAction()
