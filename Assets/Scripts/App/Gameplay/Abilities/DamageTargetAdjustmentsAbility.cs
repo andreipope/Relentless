@@ -31,6 +31,11 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/SpellTargetToxicAttack");
                     break;
             }
+
+            if(AbilityCallType == Enumerators.AbilityCallType.ATTACK)
+            {
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }
         }
 
         public override void Update()
@@ -96,6 +101,8 @@ namespace Loom.ZombieBattleground
                     },
                     rightAdjastment.Transform.position);
             }
+
+            
         }
 
         protected override void InputEndedHandler()
@@ -117,6 +124,10 @@ namespace Loom.ZombieBattleground
                             },
                             BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
 
+                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                        {
+                            TargetUnit
+                        }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
                         break;
                 }
             }
@@ -141,9 +152,10 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
             {
                 if (AbilityEffectType == Enumerators.AbilityEffectType.NONE ||
+#warning DELETE this line in future when on backend will be updated card library
                     AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
                 {
-                    #warning DELETE this line in future when on backend will be updated card library
+                  
                     callback();
                 }
                 else
