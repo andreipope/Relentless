@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Loom.ZombieBattleground
 
         private volatile Queue<Action> _mainThreadActions;
 
-        private volatile Queue<PlayerActionRequest> _networkThreadActions;
+        private BlockingCollection<PlayerActionRequest> _networkThreadActions;
 
         private Thread _networkThread;
 
@@ -23,7 +24,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _mainThreadActions = new Queue<Action>();
-            _networkThreadActions = new Queue<PlayerActionRequest>();
+            _networkThreadActions = new BlockingCollection<PlayerActionRequest>();
         }
 
         public void StartNetworkThread()
@@ -35,9 +36,12 @@ namespace Loom.ZombieBattleground
 
         public void StopNetworkThread()
         {
-            _networkThreadAlive = false;
-            _networkThread.Abort();
-            _networkThread = null;
+            if (_networkThread != null)
+            {
+                _networkThreadAlive = false;
+                _networkThread.Abort();
+                _networkThread = null;
+            }
         }
 
         //Main Gameplay Thread
@@ -53,10 +57,7 @@ namespace Loom.ZombieBattleground
 
         public void AddAction(PlayerActionRequest action)
         {
-            UnityEngine.Debug.Log("NEW Action _ " + action.PlayerAction);
-            UnityEngine.Debug.Log("STATUS _ " + _networkThread.ThreadState);
-            _networkThreadActions.Enqueue(action);
-            UnityEngine.Debug.Log("NEW COUNT _ " + _networkThreadActions.Count);
+            _networkThreadActions.Add(action);
         }
 
         private void MainThread()
@@ -71,23 +72,22 @@ namespace Loom.ZombieBattleground
         {
             while (_networkThreadAlive)
             {
-                Thread.Sleep(5000);
                 while (_networkThreadActions.Count > 0)
                 {
-                    UnityEngine.Debug.Log("Start Action _ " + _networkThreadActions.Count);
-                    await GameClient.Get<BackendFacade>().SendAction(_networkThreadActions.Dequeue());
-                    UnityEngine.Debug.Log("End Action _ " + _networkThreadActions.Count);
+                    await GameClient.Get<BackendFacade>().SendAction(_networkThreadActions.Take());
                 }
-              //  Thread.Sleep(1000);
             }
-            //_networkThread.Abort();
         }
 
         public void Dispose()
         {
-            _networkThread.Interrupt();
+            if(_networkThread != null)
+            {
+                _networkThreadAlive = false;
+                _networkThread.Interrupt();
+                _networkThreadActions.Dispose();
+            }
             _mainThreadActions.Clear();
-            _networkThreadActions.Clear();
         }
     }
 }
