@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 if(!isOpponent)
                     _battlegroundController.TurnEnded += TurnEndedHandler;
-                //_abilitiesController.AbilityUsed += AbilityUsedHandler;
+                _abilitiesController.AbilityUsed += AbilityUsedHandler;
 
                 Player.CardPlayed += CardPlayedHandler;
                 Player.CardAttacked += CardAttackedHandler;
