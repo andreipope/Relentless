@@ -114,6 +114,8 @@ namespace Loom.ZombieBattleground
             CurrentPlayer = null;
             OpponentPlayer = null;
 
+            GameClient.Get<IQueueManager>().StopNetworkThread();
+
             GameEnded?.Invoke(endGameType);
         }
 
