@@ -1,5 +1,3 @@
-#define USE_GAMECHAIN_1_FOR_PRODUCTION
-
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground.BackendCommunication
@@ -27,32 +25,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     BackendPurpose.Staging, new BackendEndpoint(
                         "http://stage-auth.loom.games",
-#if USE_GAMECHAIN_1_FOR_PRODUCTION
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket"
-#else
-                        "ws://gamechain.dappchains.com:9999/queryws",
-                        "ws://gamechain.dappchains.com:46657/websocket"
-#endif
                     )
                 },
                 {
                     BackendPurpose.Production, new BackendEndpoint(
                         "http://auth.loom.games",
-
-#if USE_GAMECHAIN_1_FOR_PRODUCTION
                         "ws://gamechain.dappchains.com:9999/queryws",
                         "ws://gamechain.dappchains.com:46657/websocket"
-#else
-                        "ws://gamechain-2.dappchains.com:9999/queryws",
-                        "ws://gamechain-2.dappchains.com:46657/websocket"
-#endif
                     )
                 }
             };
 
         public class BackendEndpoint
         {
+
             public BackendEndpoint(string authHost, string readerHost, string writerHost)
             {
                 AuthHost = authHost;

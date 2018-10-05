@@ -1,0 +1,7 @@
+{
+  "encryptData":false,
+  "authHost":"http://stage-auth.loom.games",
+  "readerHost":"ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
+  "writerHost":"ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
+  "cardsDataVersion":"v2"
+}
