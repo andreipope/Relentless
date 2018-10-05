@@ -71,6 +71,7 @@ namespace Loom.ZombieBattleground
         {
             while (_networkThreadAlive)
             {
+                Thread.Sleep(5000);
                 while (_networkThreadActions.Count > 0)
                 {
                     UnityEngine.Debug.Log("Start Action _ " + _networkThreadActions.Count);
