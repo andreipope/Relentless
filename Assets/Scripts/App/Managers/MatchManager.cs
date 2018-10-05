@@ -64,13 +64,14 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.MatchType.PVP:
                     {
+                        _uiManager.DrawPopup<ConnectionPopup>();
+                        _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
                         _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
                             _backendDataControlMediator.UserDataModel.UserId,
                             _uiManager.GetPage<GameplayPage>().CurrentDeckId);
 
                         Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
                         _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
-                        _uiManager.DrawPopup<ConnectionPopup>();
 
                         if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
                         {

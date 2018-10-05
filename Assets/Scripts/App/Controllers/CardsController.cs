@@ -627,12 +627,16 @@ namespace Loom.ZombieBattleground
         public void PlayOpponentCard(
             Player player, WorkingCard card, BoardObject target, Action<WorkingCard, BoardObject> completePlayCardCallback)
         {
-            GameObject randomCard =
-                _battlegroundController.OpponentHandCards[
+            GameObject randomCard;
+
+            if (_battlegroundController.OpponentHandCards.Count > 0)
+            {
+                randomCard = _battlegroundController.OpponentHandCards[
                     Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
 
-            if(_battlegroundController.OpponentHandCards.Count > 0)
                 _battlegroundController.OpponentHandCards.Remove(randomCard);
+            }
+            else return;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
