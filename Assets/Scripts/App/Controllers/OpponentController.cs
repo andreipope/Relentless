@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
             {
                 CardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(actionUseCardAbility.CardKind.ToString()),
                 Card = FromProtobufExtensions.FromProtobuf(actionUseCardAbility.Card, _gameplayManager.OpponentPlayer),
-             //   Targets = JsonConvert.DeserializeObject<List<Unit>>(actionUseCardAbility.Targets),
+                Targets = FromProtobufExtensions.FromProtobuf(actionUseCardAbility.Targets),
                 AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(actionUseCardAbility.AbilityType)
             });
         }
