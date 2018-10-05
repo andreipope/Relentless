@@ -95,8 +95,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     _pvpManager.MatchResponse == null)
                     return;
 
-                _battlegroundController.TurnEnded += TurnEndedHandler;
-                _abilitiesController.AbilityUsed += AbilityUsedHandler;
+                if(!isOpponent)
+                    _battlegroundController.TurnEnded += TurnEndedHandler;
+                //_abilitiesController.AbilityUsed += AbilityUsedHandler;
 
                 Player.CardPlayed += CardPlayedHandler;
                 Player.CardAttacked += CardAttackedHandler;
@@ -134,7 +135,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Player.CardAttacked -= CardAttackedHandler;
             }
 
-            private async void CardPlayedHandler(WorkingCard card)
+            private void CardPlayedHandler(WorkingCard card)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -153,59 +154,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void BoardChangedHandler(int obj)
-            {
-                await
-                    UploadActionLogModel(CreateBasicActionLogModel("BoardChanged")
-                        .Add("CardsOnBoard", Player.CardsOnBoard.Select(WorkingCardToSimpleRepresentation).ToArray()));
-            }
-
-            private async void GraveyardChangedHandler(int obj)
-            {
-                await
-                    UploadActionLogModel(CreateBasicActionLogModel("GraveyardChanged")
-                        .Add("CardsOnBoard",
-                            Player.CardsInGraveyard.Select(WorkingCardToSimpleRepresentation).ToArray()));
-            }
-
-            private async void HandChangedHandler(int obj)
-            {
-                await
-                    UploadActionLogModel(CreateBasicActionLogModel("HandChanged")
-                        .Add("CardsOnBoard", Player.CardsInHand.Select(WorkingCardToSimpleRepresentation).ToArray()));
-            }
-
-            private async void DeckChangedHandler(int obj)
-            {
-                await
-                    UploadActionLogModel(CreateBasicActionLogModel("DeckChanged")
-                        .Add("CardsOnBoard", Player.CardsInDeck.Select(WorkingCardToSimpleRepresentation).ToArray()));
-            }
-
-            private async void PlayerVialGooChangedHandler(int obj)
-            {
-                await UploadActionLogModel(CreateBasicActionLogModel("GooOnCurrentTurnChanged").Add("Goo", obj));
-            }
-
-            private async void PlayerGooChangedHandler(int obj)
-            {
-                await UploadActionLogModel(CreateBasicActionLogModel("GooChanged").Add("Goo", obj));
-            }
-
-            private async void PlayerHpChangedHandler(int obj)
-            {
-                await UploadActionLogModel(CreateBasicActionLogModel("HealthChanged").Add("Health", obj));
-            }
-
-            private async void TurnStartedHandler()
-            {
-                await UploadActionLogModel(CreateBasicActionLogModel("TurnStart"));
-            }
-
-            private async void TurnEndedHandler()
+            private void TurnEndedHandler()
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -215,10 +167,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     EndTurn = new PlayerActionEndTurn()
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void LeaveMatchHandler()
+            private void LeaveMatchHandler()
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -228,7 +180,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     LeaveMatch = new PlayerActionLeaveMatch()
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
             private ActionLogModel CreateBasicActionLogModel(string eventName)
@@ -241,29 +193,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
 
 
-            private async void CardAttackedOnPlayerHandler(WorkingCard attacker, Player player)
-            {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.CardAttack,
-                    PlayerId = playerId,
-                    CardAttack = new PlayerActionCardAttack
-                    {
-                        Attacker = new CardInstance
-                        {
-                            InstanceId = attacker.Id,
-                            Prototype = ToProtobufExtensions.GetCardPrototype(attacker),
-                            Defence = attacker.Health,
-                            Attack = attacker.Damage
-                        }
-                    }
-                };
-
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
-            }
-
-            private async void CardAttackedHandler(WorkingCard attacker, AffectObjectType type, int instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, AffectObjectType type, int instanceId)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -287,14 +217,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void AbilityUsedHandler(WorkingCard card, CardKind cardKind,
+            private void AbilityUsedHandler(WorkingCard card, CardKind cardKind,
                                                   AffectObjectType affectObjectType, BoardObject target = null)
             {
-                await Task.Delay(1000); // just for testing! remove it!!!
-
                 int instanceId = -1;
 
                 if (target != null)
@@ -332,10 +260,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void MulliganHandler(List<WorkingCard> cards)
+            private void MulliganHandler(List<WorkingCard> cards)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -349,11 +277,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
 
-            private async void SkillUsedHandler(BoardSkill skill, BoardObject target)
+            private void SkillUsedHandler(BoardSkill skill, BoardObject target)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 AffectObjectType affectObjectType = target is Player ? AffectObjectType.Player : AffectObjectType.Character;
@@ -380,7 +308,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
             private async Task UploadActionLogModel(ActionLogModel model)
