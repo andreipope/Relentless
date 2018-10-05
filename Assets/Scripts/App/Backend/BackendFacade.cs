@@ -396,9 +396,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SendAction(PlayerActionRequest request)
         {
-            Debug.Log("Start request");
             await Contract.CallAsync(SendPlayerActionMethod, request);
-            Debug.Log("End request");
         }
 
         #endregion
