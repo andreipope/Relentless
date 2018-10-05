@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -38,6 +39,11 @@ namespace Loom.ZombieBattleground
             CreateVfx(unitPosition, true, 3f, true);
 
             CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                TargetUnit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void InputEndedHandler()

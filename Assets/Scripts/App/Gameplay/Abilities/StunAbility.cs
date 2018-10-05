@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -30,6 +31,8 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
@@ -40,6 +43,8 @@ namespace Loom.ZombieBattleground
 
             if (info is BoardUnitModel creature)
             {
+                creature.Stun(Enumerators.StunType.FREEZE, 1);
+
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
             }
         }
