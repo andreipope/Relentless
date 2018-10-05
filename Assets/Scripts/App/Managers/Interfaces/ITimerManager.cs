@@ -9,5 +9,7 @@ namespace Loom.ZombieBattleground
         void AddTimer(
             Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false,
             bool storeTimer = false);
+
+        void Dispose();
     }
 }
