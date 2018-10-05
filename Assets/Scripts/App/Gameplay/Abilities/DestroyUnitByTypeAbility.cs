@@ -1,5 +1,6 @@
-﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -24,6 +25,11 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             BattlegroundController.DestroyBoardUnit(TargetUnit);
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                TargetUnit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void InputEndedHandler()
