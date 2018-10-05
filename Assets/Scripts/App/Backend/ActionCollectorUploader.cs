@@ -95,8 +95,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     _pvpManager.MatchResponse == null)
                     return;
 
-                if(!isOpponent)
+                if (!isOpponent)
+                {
                     _battlegroundController.TurnEnded += TurnEndedHandler;
+                }
                 _abilitiesController.AbilityUsed += AbilityUsedHandler;
 
                 Player.CardPlayed += CardPlayedHandler;
