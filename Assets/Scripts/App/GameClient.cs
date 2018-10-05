@@ -1,4 +1,3 @@
-#define USE_PVP_BACKEND
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
