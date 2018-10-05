@@ -290,46 +290,70 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private async void AbilityUsedHandler(WorkingCard card, CardKind cardKind,
-                                                  AffectObjectType affectObjectType, BoardObject target = null)
+            private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
+                                                  AffectObjectType affectObjectType, List<BoardObject> targets = null)
             {
-                await Task.Delay(1000); // just for testing! remove it!!!
+                await Task.Delay(2000);
 
-                int instanceId = -1;
+                List<Unit> targetUnits = new List<Unit>();
 
-                if (target != null)
+                Unit targetUnit;
+                if (targets != null)
                 {
-                    if (target is Player player)
+                    foreach(BoardObject boardObject in targets)
                     {
-                        instanceId = player.Id;
-                    }
-                    else if (target is BoardUnitModel unit)
-                    {
-                        instanceId = unit.Card.Id;
+                        targetUnit = new Unit();
+
+                        if (boardObject is BoardUnitModel model)
+                        {
+                            targetUnit = new Unit()
+                            {
+                                InstanceId = model.Card.Id,
+                                AffectObjectType =  AffectObjectType.Character
+                            };
+                        }
+                        else if (boardObject is Player player)
+                        {
+                            targetUnit = new Unit()
+                            {
+                                InstanceId = player.Id == 0 ? 1 : 0,
+                                AffectObjectType = AffectObjectType.Player
+                            };
+                        }
+                        else if(boardObject is HandBoardCard handCard)
+                        {
+                            targetUnit = new Unit()
+                            {
+                                InstanceId = handCard.Id,
+                                AffectObjectType = AffectObjectType.Card
+                            };
+                        }
+
+                        targetUnits.Add(targetUnit);
                     }
                 }
+
+                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
+                {
+                    CardKind = cardKind,
+                    AbilityType = abilityType.ToString(),
+                    Card = new CardInstance
+                    {
+                        InstanceId = card.Id,
+                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                        Defence = card.Health,
+                        Attack = card.Damage
+                    }
+                };
+                CardAbilityUsed.Targets.Add(targetUnits);
 
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
                     ActionType = PlayerActionType.CardAbilityUsed,
                     PlayerId = playerId,
-                    CardAbilityUsed = new PlayerActionCardAbilityUsed()
-                    {
-                        AffectObjectType = affectObjectType,
-                        Target = new Unit()
-                        {
-                            InstanceId = instanceId
-                        },
-                        CardKind = cardKind,
-                        Card = new CardInstance
-                        {
-                            InstanceId = card.Id,
-                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
-                            Defence = card.Health,
-                            Attack = card.Damage
-                        }
-                    }
+                    CardAbilityUsed = CardAbilityUsed
+
                 };
 
                 await _backendFacade.SendAction(_pvpManager.MatchResponse.Match.Id, playerAction);
