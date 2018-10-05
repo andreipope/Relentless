@@ -115,7 +115,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             ListCardLibraryRequest request = new ListCardLibraryRequest
             {
+#if VERSION_2_FOR_CARD_LIBRARY
+                Version = "v2";
+#else
                 Version = ContractDataVersion
+#endif
             };
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
