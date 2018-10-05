@@ -48,6 +48,7 @@ namespace Loom.ZombieBattleground
             CachedOpponentDecksData = new OpponentDecksData();
             CachedCreditsData = new CreditsData();
             CachedBuffsTooltipData = new TooltipContentData();
+            CachedConfigData = new ConfigData();
         }
 
         public TooltipContentData CachedBuffsTooltipData { get; set; }
@@ -65,6 +66,8 @@ namespace Loom.ZombieBattleground
         public OpponentDecksData CachedOpponentDecksData { get; set; }
 
         public CreditsData CachedCreditsData { get; set; }
+
+        public ConfigData CachedConfigData { get; set; }
 
         public BetaConfig BetaConfig { get; set; }
 
@@ -111,6 +114,18 @@ namespace Loom.ZombieBattleground
             {
                 await SaveCache((Enumerators.CacheDataType)i);
             }
+        }
+
+        public async Task StartLoadConfigData () {
+            Debug.Log("=== Loading Config File ==== ");
+            await LoadCachedData(Enumerators.CacheDataType.CONFIG_DATA);
+            Debug.Log("Auth Host:" + CachedConfigData.authHost);
+            Debug.Log("Reader Host:" + CachedConfigData.readerHost);
+            Debug.Log("Writer Host:" + CachedConfigData.writerHost);
+            Debug.Log("Encryption:" + CachedConfigData.encryptData.ToString());
+            Debug.Log("Card Data Version:" + CachedConfigData.cardsDataVersion);
+            await SaveCache(Enumerators.CacheDataType.CONFIG_DATA);
+            Debug.Log("Config Cached in Persistent Data Path");
         }
 
         public void DeleteData()
@@ -162,6 +177,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
+                    break;
+                case Enumerators.CacheDataType.CONFIG_DATA:
+                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedConfigData));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -427,7 +445,18 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     if (File.Exists(_cacheDataPathes[type]))
                         CachedBuffsTooltipData = DeserializeObjectFromPath<TooltipContentData>(_cacheDataPathes[type]);
-
+                    break;
+                case Enumerators.CacheDataType.CONFIG_DATA:
+                    if (File.Exists(_cacheDataPathes[type]))
+                    {
+                        CachedConfigData = DeserializeObjectFromPath<ConfigData>(_cacheDataPathes[type]);
+                    }
+                    else
+                    {
+                        CachedConfigData =
+                    JsonConvert.DeserializeObject<ConfigData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/config_data").text);
+                    }
                     break;
             }
         }
@@ -453,6 +482,9 @@ namespace Loom.ZombieBattleground
                 CachedBuffsTooltipData =
                     JsonConvert.DeserializeObject<TooltipContentData>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>("Data/buffs_tooltip_data").text);
+                CachedConfigData =
+                    JsonConvert.DeserializeObject<ConfigData>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>("Data/config_data").text);
             }
         }
 
@@ -492,35 +524,39 @@ namespace Loom.ZombieBattleground
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA,
                     Path.Combine(Application.persistentDataPath, Constants.LocalBuffsTooltipDataFilePath)
                 },
+                {
+                    Enumerators.CacheDataType.CONFIG_DATA,
+                    Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFilePath)
+                }
             };
         }
 
         public string DecryptData(string data)
         {
-#if DISABLE_DATA_ENCRYPTION
-            return data;
-#else
             return Utilites.Decrypt(data, Constants.PrivateEncryptionKeyForApp);
-#endif
         }
 
         public string EncryptData(string data)
         {
-#if DISABLE_DATA_ENCRYPTION
-            return data;
-#else
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
-#endif
         }
 
         private T DeserializeObjectFromPath<T>(string path)
         {
+            if (CachedConfigData is T || !CachedConfigData.encryptData)
+                return JsonConvert.DeserializeObject<T>((File.ReadAllText(path)));
+
             return JsonConvert.DeserializeObject<T>(DecryptData(File.ReadAllText(path)));
         }
 
         private string SerializeObject(object obj)
         {
-            return EncryptData(JsonConvert.SerializeObject(obj, Formatting.Indented));
+            string data = JsonConvert.SerializeObject(obj, Formatting.Indented);
+
+            if (obj == CachedConfigData || !CachedConfigData.encryptData)
+                return data;
+
+            return EncryptData(data);
         }
 
         private void FillFullCollection()
