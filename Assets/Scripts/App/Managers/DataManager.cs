@@ -448,11 +448,15 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CacheDataType.CONFIG_DATA:
                     if (File.Exists(_cacheDataPathes[type]))
+                    {
                         CachedConfigData = DeserializeObjectFromPath<ConfigData>(_cacheDataPathes[type]);
+                    }
                     else
+                    {
                         CachedConfigData =
                     JsonConvert.DeserializeObject<ConfigData>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>("Data/config_data").text);
+                    }
                     break;
             }
         }
@@ -540,13 +544,9 @@ namespace Loom.ZombieBattleground
         private T DeserializeObjectFromPath<T>(string path)
         {
             if (CachedConfigData is T || !CachedConfigData.encryptData)
-            {
                 return JsonConvert.DeserializeObject<T>((File.ReadAllText(path)));
-            }
-            else
-            {
-                return JsonConvert.DeserializeObject<T>(DecryptData(File.ReadAllText(path)));
-            }
+
+            return JsonConvert.DeserializeObject<T>(DecryptData(File.ReadAllText(path)));
         }
 
         private string SerializeObject(object obj)
@@ -554,13 +554,9 @@ namespace Loom.ZombieBattleground
             string data = JsonConvert.SerializeObject(obj, Formatting.Indented);
 
             if (obj == CachedConfigData || !CachedConfigData.encryptData)
-            {
                 return data;
-            }
-            else
-            {
-                return EncryptData(data);
-            }
+
+            return EncryptData(data);
         }
 
         private void FillFullCollection()
