@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -18,6 +20,9 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -57,14 +62,12 @@ namespace Loom.ZombieBattleground
                         {
                             BattleController.AttackUnitByAbility(caller, AbilityData, cardOpponent.Model);
                         }
-
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
                         foreach (BoardUnitView cardPlayer in PlayerCallerOfAbility.BoardCards)
                         {
                             BattleController.AttackUnitByAbility(caller, AbilityData, cardPlayer.Model);
                         }
-
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
                         BattleController.AttackPlayerByAbility(caller, AbilityData, opponent);
