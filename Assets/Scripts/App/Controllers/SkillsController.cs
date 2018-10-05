@@ -692,9 +692,6 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.GetBoardUnitViewByModel(unit).EnabledToxicPowerGlow();
 
-                //_soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, skill.Skill.Trim().ToLower(),
-                //  Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
-
                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
@@ -1516,8 +1513,6 @@ namespace Loom.ZombieBattleground
             if (target != null && target is BoardUnitModel unit)
             {
                 unit.SetAsHeavyUnit();
-
-                //_vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortifyVFX"), unit);
 
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
