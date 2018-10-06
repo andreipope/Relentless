@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -75,7 +76,7 @@ namespace Loom.ZombieBattleground
             }
 
             Vector3 targetPosition =
-                AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
+                AffectObjectType == Enumerators.AffectObjectType.Character ?
                 BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position :
                 TargetPlayer.AvatarObject.transform.position;
 
@@ -97,11 +98,19 @@ namespace Loom.ZombieBattleground
 
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        TargetPlayer
+                    },  AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
                     break;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        TargetUnit
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);

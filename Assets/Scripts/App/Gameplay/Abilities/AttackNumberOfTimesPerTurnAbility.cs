@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -23,6 +24,8 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             AbilityUnitOwner.AttackInfoType = AttackInfo;
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)

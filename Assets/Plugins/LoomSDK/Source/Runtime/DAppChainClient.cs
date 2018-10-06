@@ -1,4 +1,4 @@
-﻿using Loom.Google.Protobuf;
+using Loom.Google.Protobuf;
 using Loom.Chaos.NaCl;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -163,7 +163,18 @@ namespace Loom.Client
             {
                 try
                 {
-                    return await this.TryCommitTxAsync(tx);
+                    const int timeout = 3000;
+                    Task<BroadcastTxResult> function = this.TryCommitTxAsync(tx);
+                    Task result = await Task.WhenAny(function, Task.Delay(timeout));
+                    if (result == function)
+                    {
+                        return function.GetAwaiter().GetResult();
+                    }
+                    else
+                    {
+                        Logger.Log(LogTag, tx + "function is Time Out !");
+                        ++badNonceCount;
+                    }
                 }
                 catch (InvalidTxNonceException)
                 {

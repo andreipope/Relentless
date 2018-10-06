@@ -1,5 +1,6 @@
-﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -16,8 +17,20 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, TargetUnit);
+                Action();
             }
+        }
+
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, TargetUnit);
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+              TargetUnit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

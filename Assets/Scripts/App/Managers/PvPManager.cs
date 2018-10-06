@@ -29,10 +29,10 @@ namespace Loom.ZombieBattleground
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         public event Action<PlayerActionDrawCard> DrawCardActionReceived;
 
+        public event Action LeaveMatchReceived;
+
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
-
-        private volatile Queue<Action> _mainThreadActionsToDo;
 
         public FindMatchResponse MatchResponse { get; set; }
         public GetGameStateResponse GameStateResponse { get; set; }
@@ -47,20 +47,16 @@ namespace Loom.ZombieBattleground
 
             _backendFacade.PlayerActionEventListner += OnGetPlayerActionEventListener;
 
-            _mainThreadActionsToDo = new Queue<Action>();
         }
 
         public void Update()
         {
-            if (_mainThreadActionsToDo.Count > 0)
-            {
-                _mainThreadActionsToDo.Dequeue().Invoke();
-            }
+            
         }
 
         public void Dispose()
         {
-            _mainThreadActionsToDo.Clear();
+
         }
 
         public bool IsCurrentPlayer()
@@ -72,16 +68,31 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
+        public string GetOpponentUserId()
+        {
+            string opponentId = string.Empty;
+            for (int i = 0; i < MatchResponse.Match.PlayerStates.Count; i++)
+            {
+                if (MatchResponse.Match.PlayerStates[i].Id != _backendDataControlMediator.UserDataModel.UserId)
+                {
+                    opponentId = MatchResponse.Match.PlayerStates[i].Id;
+                    break;
+                }
+            }
+
+            return opponentId;
+        }
+
         private void OnGetPlayerActionEventListener(byte[] data)
         {
-            _mainThreadActionsToDo.Enqueue(() =>
+            GameClient.Get<IQueueManager>().AddAction(
+            () =>
             {
                 string jsonStr = SystemText.Encoding.UTF8.GetString(data);
 
                 Debug.LogWarning(jsonStr); // todo delete
 
                 PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
-                Debug.Log("Action:" + playerActionEvent.PlayerAction);
                 MatchResponse.Match = playerActionEvent.Match.Clone();
 
                 switch (playerActionEvent.Match.Status)
@@ -134,14 +145,17 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.CardAttack:
                     CardAttackedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAttack);
                     break;
-                case PlayerActionType.CardAbilityUsed:
-                    //  OnCardAbilityUsedAction?.Invoke(playerActionEvent.PlayerAction.UseCardAbility);
+               case PlayerActionType.CardAbilityUsed:
+                      CardAbilityUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAbilityUsed);
                     break;
                 case PlayerActionType.OverlordSkillUsed:
-                    //   OnOverlordSkillUsedAction?.Invoke(playerActionEvent.PlayerAction.UseOverlordSkill);
+                    OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
                     break;
                 case PlayerActionType.DrawCard:
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
+                    break;
+                case PlayerActionType.LeaveMatch:
+                    LeaveMatchReceived?.Invoke();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playerActionEvent.PlayerActionType), playerActionEvent.PlayerActionType.ToString() + " not found");

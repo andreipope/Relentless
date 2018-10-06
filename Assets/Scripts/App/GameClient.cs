@@ -26,6 +26,7 @@ namespace Loom.ZombieBattleground
 #endif
 
             BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
@@ -51,6 +52,7 @@ namespace Loom.ZombieBattleground
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
+            AddService<IQueueManager>(new QueueManager());
         }
 
         public static GameClient Instance

@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
@@ -131,6 +133,9 @@ namespace Loom.ZombieBattleground.Data
         {
             CardPrototype cardPrototype = cardInstance.Prototype;
 
+            List<AbilityData> abilities = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.
+                Find(x => x.Id == cardPrototype.DataId).Clone().Abilities;
+
             Card card = new Card
             {
                 Id = cardPrototype.DataId,
@@ -144,9 +149,6 @@ namespace Loom.ZombieBattleground.Data
                 Health = cardPrototype.InitialDefence,
                 Rank = cardPrototype.Rank,
                 Type = cardPrototype.Type,
-
-                // TODO : Need Fill Ability
-                //Abilities = cardPrototype.Abilities,
                 CardViewInfo = new CardViewInfo
                 {
                     Position = new FloatVector3 {
@@ -164,10 +166,20 @@ namespace Loom.ZombieBattleground.Data
                 CardSetType = (Enumerators.SetType)cardPrototype.CardSetType,
                 CardRank = (Enumerators.CardRank)cardPrototype.CreatureRank,
                 CardType = (Enumerators.CardType)cardPrototype.CreatureType,
-                CardKind = (Enumerators.CardKind)cardPrototype.CardKind
+                CardKind = (Enumerators.CardKind)cardPrototype.CardKind,
+                Abilities = abilities
             };
 
-            return new WorkingCard(card, player);
+            return new WorkingCard(card, player, cardInstance.InstanceId);
+        }
+
+        public static List<Unit> FromProtobuf(this RepeatedField<Unit> repeatedListUnits)
+        {
+            List<Unit> units = new List<Unit>();
+
+            units.AddRange(repeatedListUnits);
+
+            return units;
         }
     }
 }

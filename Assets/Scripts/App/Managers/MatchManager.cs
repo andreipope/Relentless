@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.MatchType MatchType { get; set; }
 
-        public Address? CustomGameAddress { get; set; }
+        public Address? CustomGameModeAddress { get; set; }
 
         // TODO : Find another solution, right now its tempraoray only....
         private bool _checkPlayerStatus;
@@ -66,33 +66,32 @@ namespace Loom.ZombieBattleground
                     CreateLocalMatch();
                     break;
                 case Enumerators.MatchType.PVP:
-                {
-                    _pvpManager.MatchResponse =
-                        await GetBackendFacade(_backendFacade)
-                            .FindMatch(
-                                _backendDataControlMediator.UserDataModel.UserId,
-                                _uiManager.GetPage<GameplayPage>().CurrentDeckId,
-                                CustomGameAddress
-                                );
-
-                    Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
-                    _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
-                    _uiManager.DrawPopup<ConnectionPopup>();
-
-                    Debug.Log(_pvpManager.MatchResponse.Match.Status);
-                    if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
                     {
-                        OnStartGamePvP();
+                        GameClient.Get<IQueueManager>().StartNetworkThread();
+                        _uiManager.DrawPopup<ConnectionPopup>();
+                        _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
+                        _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
+                            _backendDataControlMediator.UserDataModel.UserId,
+                            _uiManager.GetPage<GameplayPage>().CurrentDeckId,
+                            CustomGameModeAddress);
+
+                        Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
+                        _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
+
+                        if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                        {
+                            OnStartGamePvP();
+                        }
+                        else
+                        {
+                            _pvpManager.GameStartedActionReceived += OnStartGamePvP;
+                        }
                     }
-                    else
-                    {
-                        _pvpManager.GameStartedActionReceived += OnStartGamePvP;
-                    }
-                }
                     break;
                 default:
                     throw new NotImplementedException(MatchType + " not implemented yet.");
             }
+
         }
 
         public async void FindMatch(Enumerators.MatchType matchType)
@@ -147,13 +146,15 @@ namespace Loom.ZombieBattleground
 
         private async void GetGameState()
         {
+
             // TODO : Quick fix... something wrong with backend side..
             // Need to remove delay
             await Task.Delay(3000);
-            _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int) _pvpManager.MatchResponse.Match.Id);
+            _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
 
             _uiManager.HidePopup<ConnectionPopup>();
             CreateLocalMatch();
+
         }
 
         private void StartLoadMatch()
@@ -169,15 +170,16 @@ namespace Loom.ZombieBattleground
             switch (state)
             {
                 case Enumerators.AppState.GAMEPLAY:
-                {
-                    ForceStartGameplay(_gameplayManager.IsTutorial);
-                }
+                    {
+                        ForceStartGameplay(_gameplayManager.IsTutorial);
+                    }
                     break;
                 case Enumerators.AppState.APP_INIT:
-                {
-                    _appStateManager.ChangeAppState(_finishMatchAppState);
-                }
+                    {
+                        _appStateManager.ChangeAppState(_finishMatchAppState);
+                    }
                     break;
+
             }
         }
 

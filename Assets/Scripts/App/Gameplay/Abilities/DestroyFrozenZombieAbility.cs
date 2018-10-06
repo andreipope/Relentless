@@ -1,5 +1,8 @@
-﻿using Loom.ZombieBattleground.Common;
+using DG.Tweening;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,8 +20,20 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                TargetUnit.Die();
+                InvokeActionTriggered();
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            TargetUnit.Die();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+               TargetUnit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

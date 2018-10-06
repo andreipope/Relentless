@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
 {
     public class AbilityBase
     {
+        public event Action VFXAnimationEnded;
+
         public ulong ActivityId;
 
         public Enumerators.AbilityActivityType AbilityActivityType;
@@ -44,6 +46,8 @@ namespace Loom.ZombieBattleground
         public Player TargetPlayer;
 
         public Player SelectedPlayer;
+
+        public List<BoardObject> PredefinedTargets;
 
         protected AbilitiesController AbilitiesController;
 
@@ -179,6 +183,8 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
 
+            VFXAnimationEnded += VFXAnimationEndedHandler;
+
             switch (CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
@@ -214,6 +220,8 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
 
+            VFXAnimationEnded -= VFXAnimationEndedHandler;
+
             DeactivateSelectTarget();
             ClearParticles();
 
@@ -230,18 +238,18 @@ namespace Loom.ZombieBattleground
 
             if (TargetUnit != null)
             {
-                AffectObjectType = Enumerators.AffectObjectType.CHARACTER;
+                AffectObjectType = Enumerators.AffectObjectType.Character;
             }
             else if (TargetPlayer != null)
             {
-                AffectObjectType = Enumerators.AffectObjectType.PLAYER;
+                AffectObjectType = Enumerators.AffectObjectType.Player;
             }
             else
             {
-                AffectObjectType = Enumerators.AffectObjectType.NONE;
+                AffectObjectType = Enumerators.AffectObjectType.None;
             }
 
-            if (AffectObjectType != Enumerators.AffectObjectType.NONE)
+            if (AffectObjectType != Enumerators.AffectObjectType.None)
             {
                 IsAbilityResolved = true;
 
@@ -257,6 +265,11 @@ namespace Loom.ZombieBattleground
 
         public virtual void Action(object info = null)
         {
+        }
+
+        public void InvokeVFXAnimationEnded()
+        {
+            VFXAnimationEnded?.Invoke();
         }
 
         protected virtual void CardSelectedHandler(BoardUnitView obj)
@@ -391,6 +404,16 @@ namespace Loom.ZombieBattleground
         protected void InvokeActionTriggered(object info = null)
         {
             ActionTriggered?.Invoke(info);
+        }
+
+        protected virtual void VFXAnimationEndedHandler()
+        {
+
+        }
+
+        protected void ReportAbilityDoneAction(List<BoardObject> targets)
+        {
+
         }
     }
 }

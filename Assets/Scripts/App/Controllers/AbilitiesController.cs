@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
+        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind, Protobuf.AffectObjectType, List<BoardObject>> AbilityUsed;
+
         private readonly object _lock = new object();
 
         private IGameplayManager _gameplayManager;
@@ -22,6 +24,8 @@ namespace Loom.ZombieBattleground
         private BattlegroundController _battlegroundController;
 
         private ActionsQueueController _actionsQueueController;
+
+        private BoardArrowController _boardArrowController;
 
         private ulong _castedAbilitiesIds;
 
@@ -38,6 +42,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
         }
 
         public void ResetAll()
@@ -359,7 +364,7 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public async void CallAbility(
+        public void CallAbility(
             Card libraryCard,
             BoardCard card,
             WorkingCard workingCard,
@@ -390,7 +395,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-
             if (kind == Enumerators.CardKind.SPELL)
             {
                 if (handCard != null && isPlayer)
@@ -410,11 +414,6 @@ namespace Loom.ZombieBattleground
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
 
-                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                    {
-                        await _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
-                    }
-
                     onCompleteCallback?.Invoke();
 
                     ResolveAllAbilitiesOnUnit(boardObject);
@@ -428,7 +427,7 @@ namespace Loom.ZombieBattleground
                     if (isPlayer)
                     {
                         activeAbility.Ability.ActivateSelectTarget(
-                            callback: async () =>
+                            callback: () =>
                             {
                                 if (kind == Enumerators.CardKind.SPELL && isPlayer)
                                 {
@@ -460,11 +459,6 @@ namespace Loom.ZombieBattleground
                                         },
                                         null,
                                         1.5f);
-                                }
-
-                                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                                {
-                                    await _gameplayManager.GetController<OpponentController>().ActionUseCardAbility(workingCard.Owner, libraryCard, (BoardObject)boardObject, (BoardObject)target);
                                 }
 
                                 action?.Invoke(card);
@@ -542,6 +536,17 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
+                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType affectObjectType)
+        {
+            if (!_gameplayManager.IsLocalPlayerTurn())
+                return;
+
+            AbilityUsed?.Invoke(card, abilityType,
+                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ? Protobuf.CardKind.Spell : Protobuf.CardKind.Creature,
+                                affectObjectType, targets);
+        }
+
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
         {
             ActiveAbility activeAbility =
@@ -558,6 +563,49 @@ namespace Loom.ZombieBattleground
                 CreateActiveAbility(ability, card.LibraryCard.CardKind, boardCard, card.Owner, card.LibraryCard, card)
                     .Ability.Activate();
             }
+        }
+
+        public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller, List<BoardObject> targets, WorkingCard card, Player owner)
+        {
+            ActiveAbility activeAbility = CreateActiveAbility(card.LibraryCard.Abilities.Find(x => x.AbilityType == ability),
+                                                               card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
+
+            activeAbility.Ability.PredefinedTargets = targets;
+
+            if (targets.Count > 0)
+            {
+                switch (targets[0])
+                {
+                    case BoardUnitModel unit:
+                        activeAbility.Ability.TargetUnit = unit;
+                        break;
+                    case Player player:
+                        activeAbility.Ability.TargetPlayer = player;
+                        break;
+                    case null:
+                        break;
+                }
+
+                Transform from = owner.AvatarObject.transform;
+
+                if (abilityCaller is BoardUnitModel unitModel)
+                {
+                    from = _battlegroundController.GetBoardUnitViewByModel(unitModel).Transform;
+                }
+
+                Action callback = () =>
+                {
+                    activeAbility.Ability.SelectedTargetAction(true);
+
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
+                        .BoardCards);
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                };
+
+                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(from, targets[0], action: callback);
+            }
+
+            activeAbility.Ability.Activate();
         }
 
         private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
@@ -647,6 +695,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DESTROY_FROZEN_UNIT:
                     ability = new DestroyFrozenZombieAbility(cardKind, abilityData);
+                    abilityView = new DestroyFrozenZombieAbilityView((DestroyFrozenZombieAbility)ability);
                     break;
                 case Enumerators.AbilityType.USE_ALL_GOO_TO_INCREASE_STATS:
                     ability = new UseAllGooToIncreaseStatsAbility(cardKind, abilityData);

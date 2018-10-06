@@ -1,5 +1,6 @@
 using System;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -41,6 +42,12 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
 #endif
 
+                IDataManager dataManager = GameClient.Get<IDataManager>();
+                dataManager.StartLoadConfigData();
+                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                backendFacade.ReaderHost = dataManager.CachedConfigData.readerHost;
+                backendFacade.WriterHost = dataManager.CachedConfigData.writerHost;
+                backendFacade.AuthBackendHost = dataManager.CachedConfigData.authHost;
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;

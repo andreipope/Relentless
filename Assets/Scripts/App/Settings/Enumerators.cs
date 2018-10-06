@@ -143,10 +143,10 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AffectObjectType
         {
-            NONE,
-            PLAYER,
-            CARD,
-            CHARACTER
+            None,
+            Player,
+            Card,
+            Character
         }
 
         public enum AiType
@@ -201,6 +201,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CacheDataType
         {
+            CONFIG_DATA,
             CARDS_LIBRARY_DATA,
             HEROES_DATA,
             COLLECTION_DATA,
@@ -208,7 +209,7 @@ namespace Loom.ZombieBattleground.Common
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA,
+            BUFFS_TOOLTIP_DATA
         }
 
         public enum CardKind
@@ -488,6 +489,18 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
+        }
+
+        public enum VFXType
+        {
+            Impact,
+            Moving
+        }
+
+        public enum ShutterState
+        {
+            Open,
+            Close
         }
     }
 }

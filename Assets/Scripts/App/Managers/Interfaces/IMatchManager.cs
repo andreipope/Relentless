@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
     public interface IMatchManager
     {
         Enumerators.MatchType MatchType { get; set; }
-        Address? CustomGameAddress { get; set; }
+        Address? CustomGameModeAddress { get; set; }
 
         void FinishMatch(Enumerators.AppState appStateAfterMatch);
 
