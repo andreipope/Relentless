@@ -494,5 +494,19 @@ namespace Loom.ZombieBattleground.Common
             Impact,
             Moving
         }
+
+        public enum AiBrainType
+        {
+            DoNothing,
+            Normal,
+            DontAttack
+        }
+
+        public enum StartingTurn
+        {
+            UnDecided,
+            Player,
+            Enemy
+        }
     }
 }

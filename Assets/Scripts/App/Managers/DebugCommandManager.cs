@@ -4,7 +4,8 @@ public class DebugCommandsManager : IService
 {
     public void Init()
     {
-        BattleCommandHandlers.Initialize();
+        QuickPlayCommandsHandler.Initialize();
+        BattleCommandsHandler.Initialize();
     }
 
     public void Update()
