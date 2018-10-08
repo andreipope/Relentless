@@ -23,17 +23,29 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
+            BoardObject target = null;
 
-            BoardObject target = (BoardObject) SelectedCard?.Model ?? SelectedPlayer;
-            creature.Model.DoCombat(target);
-
-            if (target == SelectedPlayer)
+            if (SelectedCard != null)
             {
-                creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Player, -1);
+                target = SelectedCard.Model;
             }
-            else
+            else if (SelectedPlayer != null)
             {
-                creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Character, SelectedCard.Model.Card.Id);
+                target = SelectedPlayer;
+            }
+
+            if (target != null)
+            {
+                creature.Model.DoCombat(target);
+
+                if (target == SelectedPlayer)
+                {
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Player, -1);
+                }
+                else
+                {
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Character, SelectedCard.Model.Card.Id);
+                }
             }
 
             Dispose();
