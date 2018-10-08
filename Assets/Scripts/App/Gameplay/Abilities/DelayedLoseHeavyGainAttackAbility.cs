@@ -1,5 +1,6 @@
-﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {

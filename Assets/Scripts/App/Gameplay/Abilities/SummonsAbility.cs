@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -45,7 +47,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                          CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name);
+                            CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name);
                         }
 
                         break;

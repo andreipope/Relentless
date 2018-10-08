@@ -15,17 +15,8 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
-            const BackendPurpose backend = BackendPurpose.Local;
-#elif USE_PRODUCTION_BACKEND
-            const BackendPurpose backend = BackendPurpose.Production;
-#elif USE_PVP_BACKEND
-            const BackendPurpose backend = BackendPurpose.PvP;
-#else
-            const BackendPurpose backend = BackendPurpose.Staging;
-#endif
+            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Staging];
 
-            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
@@ -51,6 +42,7 @@ namespace Loom.ZombieBattleground
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
+            AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
         }
 

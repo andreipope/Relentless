@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -28,13 +29,10 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetUnit != null)
-            {
-                TargetUnit.CurrentDamage += Value;
-                TargetUnit.BuffedDamage += Value;
+            TargetUnit.CurrentDamage += Value;
+            TargetUnit.BuffedDamage += Value;
 
-                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
-            }
+            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
         }
 
         protected override void InputEndedHandler()
@@ -43,11 +41,16 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
-
                 if (TargetUnit != null)
                 {
+                    Action();
+
                     TargetUnit.UnitDied += TargetUnitDiedHandler;
+
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                       TargetUnit
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
                 }
             }
         }

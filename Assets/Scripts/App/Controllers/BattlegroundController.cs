@@ -254,8 +254,8 @@ namespace Loom.ZombieBattleground
             CurrentTurn = Constants.FirstGameTurnIndex;
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.Health = 1;
-            _gameplayManager.CurrentPlayer.Health = 99;
+            _gameplayManager.OpponentPlayer.Health = 100;
+            _gameplayManager.CurrentPlayer.Health = 1;
 #endif
 
             _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;
@@ -912,6 +912,22 @@ namespace Loom.ZombieBattleground
             }
 
             return null;
+        }
+
+        public List<BoardObject> GetTargetsById(List<Protobuf.Unit> targetUnits)
+        {
+            List<BoardObject> boardObjects = new List<BoardObject>();
+
+            if (targetUnits != null)
+            {
+                foreach (Protobuf.Unit targetUnit in targetUnits)
+                {
+                    boardObjects.Add(GetTargetById(targetUnit.InstanceId,
+                         Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(targetUnit.AffectObjectType.ToString(), true)));
+                }
+            }
+
+            return boardObjects;
         }
 
         public BoardSkill GetSkillById(Player owner, int id)

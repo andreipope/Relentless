@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -22,6 +23,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         public override void Action(object info = null)
@@ -33,7 +36,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < opponent.BoardCards.Count; i++)
             {
-                if (opponent.BoardCards[i].Model == TargetUnit)
+                if (opponent.BoardCards[i].Model == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
@@ -63,10 +66,10 @@ namespace Loom.ZombieBattleground
             switch (CardType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.Model.HasHeavy = true;
+                    unit.Model.SetAsHeavyUnit();
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.Model.HasFeral = true;
+                    unit.Model.SetAsFeralUnit();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CardType), CardType, null);

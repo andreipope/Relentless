@@ -25,9 +25,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             AuthBackendHost = authBackendHost;
             ReaderHost = readerHost;
             WriterHost = writerHost;
-
-            Debug.Log($"Using auth backend {AuthBackendHost}");
-            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
         }
 
         public event ContractCreatedEventHandler ContractCreated;
@@ -115,7 +112,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             ListCardLibraryRequest request = new ListCardLibraryRequest
             {
-                Version = ContractDataVersion
+                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
             };
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
@@ -370,19 +367,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
              return await Contract.CallAsync<GetGameStateResponse>(GetGameStateMethod, request);
          }
 
-         public async Task SendAction(long matchId, PlayerAction playerAction)
-         {
-             PlayerActionRequest request = new PlayerActionRequest
-             {
-                 MatchId = matchId,
-                 PlayerAction = playerAction
-             };
-
-             await Contract.CallAsync(SendPlayerActionMethod, request);
-         }
-
-
-         public void SubscribeEvent(List<string> topics)
+        public void SubscribeEvent(List<string> topics)
          {
              EventHandler<JsonRpcEventData> handler = (sender, e) =>
              {
@@ -398,7 +383,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
     	 }
 
-    #endregion
+        public void AddAction(long matchId, PlayerAction playerAction)
+        {
+            PlayerActionRequest request = new PlayerActionRequest
+            {
+                MatchId = matchId,
+                PlayerAction = playerAction
+            };
 
-	}
+            GameClient.Get<IQueueManager>().AddAction(request);
+        }
+
+        public async Task SendAction(PlayerActionRequest request)
+        {
+            await Contract.CallAsync(SendPlayerActionMethod, request);
+        }
+
+        #endregion
+
+    }
 }

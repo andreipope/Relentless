@@ -34,8 +34,6 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private volatile Queue<Action> _mainThreadActionsToDo;
-
         public FindMatchResponse MatchResponse { get; set; }
         public GetGameStateResponse GameStateResponse { get; set; }
 
@@ -49,20 +47,16 @@ namespace Loom.ZombieBattleground
 
             _backendFacade.PlayerActionEventListner += OnGetPlayerActionEventListener;
 
-            _mainThreadActionsToDo = new Queue<Action>();
         }
 
         public void Update()
         {
-            if (_mainThreadActionsToDo.Count > 0)
-            {
-                _mainThreadActionsToDo.Dequeue().Invoke();
-            }
+            
         }
 
         public void Dispose()
         {
-            _mainThreadActionsToDo.Clear();
+
         }
 
         public bool IsCurrentPlayer()
@@ -91,7 +85,8 @@ namespace Loom.ZombieBattleground
 
         private void OnGetPlayerActionEventListener(byte[] data)
         {
-            _mainThreadActionsToDo.Enqueue(() =>
+            GameClient.Get<IQueueManager>().AddAction(
+            () =>
             {
                 string jsonStr = SystemText.Encoding.UTF8.GetString(data);
 

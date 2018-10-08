@@ -47,6 +47,8 @@ namespace Loom.ZombieBattleground
 
         public Player SelectedPlayer;
 
+        public List<BoardObject> PredefinedTargets;
+
         protected AbilitiesController AbilitiesController;
 
         protected ParticlesController ParticlesController;
@@ -405,6 +407,11 @@ namespace Loom.ZombieBattleground
         }
 
         protected virtual void VFXAnimationEndedHandler()
+        {
+
+        }
+
+        protected void ReportAbilityDoneAction(List<BoardObject> targets)
         {
 
         }
