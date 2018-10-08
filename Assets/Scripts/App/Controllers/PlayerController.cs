@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         private ITimerManager _timerManager;
 
+        private IMatchManager _matchManager;
+
         private CardsController _cardsController;
 
         private BattlegroundController _battlegroundController;
@@ -49,6 +51,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -109,7 +112,14 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
+                if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+                {
+                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, !GameClient.Get<IPvPManager>().IsCurrentPlayer());
+                }
+                else
+                {
+                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, false);
+                }
             }
 
             _gameplayManager.CurrentPlayer.TurnStarted += OnTurnStartedStartedHandler;
