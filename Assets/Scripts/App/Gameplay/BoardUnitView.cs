@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
 
         private const string _orangeGlow = "Orange";
 
-        private const string _greenGlow = "Orange";
+        private const string _greenGlow = "Green";
 
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
