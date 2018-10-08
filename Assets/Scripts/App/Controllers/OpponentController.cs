@@ -78,7 +78,14 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, GameClient.Get<IPvPManager>().IsCurrentPlayer());
+                }
+                else
+                {
+                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
+                }
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }

@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground.Data
                 Abilities = abilities
             };
 
-            return new WorkingCard(card, player);
+            return new WorkingCard(card, player, cardInstance.InstanceId);
         }
 
         public static List<Unit> FromProtobuf(this RepeatedField<Unit> repeatedListUnits)

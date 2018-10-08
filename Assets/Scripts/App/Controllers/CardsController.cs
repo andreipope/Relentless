@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-            //    SetNewCardInstanceId(Constants.MinDeckSize * 2);// 2 is players count
+                SetNewCardInstanceId(Constants.MinDeckSize * 2);// 2 is players count
             }
         }
 

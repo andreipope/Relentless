@@ -410,11 +410,20 @@ namespace Loom.ZombieBattleground
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
-        public void SetDeck(List<string> cards)
+        public void SetDeck(List<string> cards, bool isMainTurnSecond)
         {
             CardsInDeck = new List<WorkingCard>();
 
             cards = ShuffleCardsList(cards);
+
+            if(isMainTurnSecond)
+            {
+                _cardsController.SetNewCardInstanceId(Constants.MinDeckSize);
+            }
+            else
+            {
+                _cardsController.SetNewCardInstanceId(0);
+            }
            
             foreach (string card in cards)
             {

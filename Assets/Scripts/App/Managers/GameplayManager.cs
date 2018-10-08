@@ -287,11 +287,6 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
                 }
 
-                if (!CurrentTurnPlayer.IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
-                {
-                    GetController<CardsController>().SetNewCardInstanceId(Constants.MinDeckSize);
-                }
-
                 OpponentPlayer.SetFirstHand(false);
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
