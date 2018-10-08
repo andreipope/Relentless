@@ -539,7 +539,7 @@ namespace Loom.ZombieBattleground
         public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
                                          Enumerators.AbilityType abilityType, Protobuf.AffectObjectType affectObjectType)
         {
-            if (!_gameplayManager.IsLocalPlayerTurn())
+            if (!_gameplayManager.IsLocalPlayerTurn() || card == null)
                 return;
 
             AbilityUsed?.Invoke(card, abilityType,
