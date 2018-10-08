@@ -126,25 +126,27 @@ namespace Loom.ZombieBattleground
                 activeAbility.Ability.CardOwnerOfAbility = cardOwner;
                 activeAbility.Ability.MainWorkingCard = workingCard;
 
-                if (boardObject != null)
+                switch(boardObject)
                 {
-                    if (boardObject is BoardCard card)
-                    {
+                    case BoardCard card:
                         activeAbility.Ability.BoardCard = card;
-                    }
-                    else
-                    {
-                        if (kind == Enumerators.CardKind.CREATURE)
-                        {
-                            activeAbility.Ability.AbilityUnitOwner = (BoardUnitModel) boardObject;
-                        }
-                        else
-                        {
-                            activeAbility.Ability.BoardSpell = (BoardSpell) boardObject;
-                        }
-                    }
+                        break;
+                    case BoardUnitModel model:
+                        activeAbility.Ability.AbilityUnitOwner = model;
+                        break;
+                    case BoardSpell spell:
+                        activeAbility.Ability.BoardSpell = spell;
+                        break;
+                    case BoardUnitView view:
+                        activeAbility.Ability.AbilityUnitOwner = view.Model;
+                        break;
+                    case Player player:
+                        break;
+                    case null:
+                        break;
+                    default:
+                        throw new NotImplementedException($"boardObject with type {boardObject.GetType().ToString()} not implemented!");
                 }
-
                 _activeAbilities.Add(activeAbility);
 
                 return activeAbility;
@@ -439,6 +441,8 @@ namespace Loom.ZombieBattleground
 
                                     workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                     workingCard.Owner.AddCardToBoard(workingCard);
+
+                                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard);
 
                                     GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                                     {
@@ -823,6 +827,8 @@ namespace Loom.ZombieBattleground
 
                     card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                     card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
+
+                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard);
 
                     GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                     {

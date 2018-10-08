@@ -952,7 +952,12 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel GetBoardUnitById(Player owner, int id)
         {
-            return owner.BoardCards.Find(u => u.Model.Card.Id == id).Model;
+            BoardUnitView view = owner.BoardCards.Find(u => u != null && u.Model.Card.Id == id);
+
+            if (view != null)
+                return view.Model;
+
+            return null;
         }
 
         public BoardObject GetBoardObjectById(int id)

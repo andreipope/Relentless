@@ -376,7 +376,6 @@ namespace Loom.ZombieBattleground
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
-            ThrowPlayCardEvent(card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
