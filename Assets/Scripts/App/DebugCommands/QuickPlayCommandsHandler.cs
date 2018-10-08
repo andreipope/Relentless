@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
@@ -126,19 +127,6 @@ static class QuickPlayCommandsHandler
 
             gameplayManager.OpponentStarterCards.Add(cards[i]);
         }
-    }
-
-    [CommandHandler(Description = "Undoes the Previous Action")]
-    private static void Undo()
-    {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        if (gameplayManager.CurrentTurnPlayer != gameplayManager.CurrentPlayer)
-        {
-            Debug.LogError("Please Wait for Your turn");
-            return;
-        }
-
-
     }
 
 }

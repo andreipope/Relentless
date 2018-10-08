@@ -1,41 +1,78 @@
 ﻿using System.Collections.Generic;
+using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class PlayerMove
+    public class PlayerMoveAction
     {
-        private List<IMove> _movesList;
+        private Stack<PlayerMove> _movesList;
 
-        public PlayerMove()
+        public PlayerMoveAction()
         {
-            _movesList = new List<IMove>();
+            _movesList = new Stack<PlayerMove>();
         }
 
-        public void AddAction(IMove move)
+        public void AddPlayerMove(PlayerMove move)
         {
-            _movesList.Add(move);
+            _movesList.Push(move);
         }
 
-        public void RemoveAction(IMove move)
+        public PlayerMove GetPlayerMove()
         {
-            if (_movesList.Contains(move))
+            if (_movesList.Count <= 0)
             {
-                _movesList.Remove(move);
+                Debug.LogError("No Moves Left");
+                return null;
             }
-        }
 
+            return _movesList.Pop();
+        }
+    }
+}
+
+public class PlayerMove
+{
+    public Enumerators.PlayerActionType PlayerActionType;
+    public IMove Move;
+
+    public PlayerMove(Enumerators.PlayerActionType playerActionType, IMove move)
+    {
+        PlayerActionType = playerActionType;
+        Move = move;
     }
 }
 
 public interface IMove
 {
-    Enumerators.PlayerActionType PlayerActionType { get; set; }
+
 }
 
 public class PlayCardOnBoard : IMove
 {
-    public Enumerators.PlayerActionType PlayerActionType { get; set; }
+    public BoardUnitView Unit;
+    public int GooCost;
 
+    public PlayCardOnBoard(BoardUnitView unit, int gooCost)
+    {
+        Unit = unit;
+        GooCost = gooCost;
+    }
 }
+
+public class AttackOverlord : IMove
+{
+    public BoardUnitModel UnitModel;
+    public Player AttackedPlayer;
+    public int Damage;
+
+    public AttackOverlord(BoardUnitModel unitModel, Player player, int damage)
+    {
+        UnitModel = unitModel;
+        AttackedPlayer = player;
+        Damage = damage;
+    }
+}
+
+

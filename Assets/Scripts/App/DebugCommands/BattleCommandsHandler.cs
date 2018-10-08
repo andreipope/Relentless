@@ -1,4 +1,5 @@
-﻿using Loom.ZombieBattleground;
+﻿using System;
+using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Opencoding.CommandHandlerSystem;
 using UnityEngine;
@@ -83,7 +84,7 @@ static class BattleCommandsHandler
         if (workingCard != null)
         {
             BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-            cardsController.PlayPlayerCard(player, card, card.HandBoardCard);
+            cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
         }
         else
         {
@@ -93,13 +94,86 @@ static class BattleCommandsHandler
                 cardsController.AddCardToHand(player, workingCard);
                 workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
                 BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-                cardsController.PlayPlayerCard(player, card, card.HandBoardCard);
+                cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
             }
             else
             {
                 Debug.LogError(cardName + " not Found.");
             }
         }
+    }
 
+    private static void PlayPlayerCardOnBoard(PlayCardOnBoard playCardOnBoard)
+    {
+        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+        Player player = gameplayManager.CurrentPlayer;
+
+        if (player == gameplayManager.CurrentPlayer)
+        {
+            int gooDiff = playCardOnBoard.GooCost;
+            if (player.Goo < playCardOnBoard.GooCost)
+            {
+                gooDiff = player.Goo > 0 ? player.Goo : 0;
+            }
+
+            playCardOnBoard.GooCost = gooDiff;
+
+            PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
+            gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+        }
+    }
+
+
+    [CommandHandler(Description = "Undoes the Previous Action")]
+    private static void Undo()
+    {
+        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+        if (gameplayManager.CurrentTurnPlayer != gameplayManager.CurrentPlayer)
+        {
+            Debug.LogError("Please Wait for Your turn");
+            return;
+        }
+
+        PlayerMove playerMove = gameplayManager.PlayerMoves.GetPlayerMove();
+        if (playerMove == null)
+        {
+            Debug.LogError(" No Moves Exists");
+            return;
+        }
+
+        switch (playerMove.PlayerActionType)
+        {
+            case Enumerators.PlayerActionType.PlayCardOnBoard:
+                RevertPlayCardOnBoard(playerMove.Move);
+                break;
+            case Enumerators.PlayerActionType.AttackOnUnit:
+                break;
+            case Enumerators.PlayerActionType.AttackOnOverlord:
+                RevertAttackOnOverlord(playerMove.Move);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private static void RevertPlayCardOnBoard(IMove move)
+    {
+        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+        CardsController cardsController = gameplayManager.GetController<CardsController>();
+
+        PlayCardOnBoard obj = (PlayCardOnBoard)move;
+
+        cardsController.ReturnCardToHand(obj.Unit);
+        gameplayManager.CurrentPlayer.Goo += obj.GooCost;
+    }
+
+    private static void RevertAttackOnOverlord(IMove move)
+    {
+        AttackOverlord obj = (AttackOverlord)move;
+
+        obj.UnitModel.NumTurnsOnBoard--;
+        obj.UnitModel.OnStartTurn();
+
+        obj.AttackedPlayer.Health += obj.Damage;
     }
 }

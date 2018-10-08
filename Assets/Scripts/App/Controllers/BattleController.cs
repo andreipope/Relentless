@@ -74,6 +74,12 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
+
+            if (attackedPlayer != _gameplayManager.CurrentPlayer)
+            {
+                _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.AttackOnOverlord,
+                    new AttackOverlord(attackingUnitModel, attackedPlayer, damageAttacking)));
+            }
         }
 
         public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0)
