@@ -71,11 +71,11 @@ namespace Loom.ZombieBattleground
 
         private void ApplyReward(Hero hero)
         {
-            LevelReward reward = _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
+            LevelReward levelReward = _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
 
-            if (reward != null)
+            if (levelReward != null)
             {
-                switch (reward.Reward)
+                switch (levelReward.Reward)
                 {
                     case LevelReward.UnitRewardItem unitReward:
                         {
@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
                     case null:
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(reward.Reward), reward.Reward, null);
+                        throw new ArgumentOutOfRangeException(nameof(levelReward.Reward), levelReward.Reward, null);
                 }
             }
         }
