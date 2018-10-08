@@ -192,7 +192,7 @@ namespace Loom.ZombieBattleground
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
-        public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
+        public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
         {
             if (target == null)
                 return;
@@ -216,8 +216,23 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
+            Vector3 targetPosition = Utilites.CastVfxPosition(castVfxPosition);
+
+            if (isDirection)
+            {
+                float angle = AngleBetweenVector3(particleSystem.transform.position, targetPosition);
+                var main = particleSystem.GetComponent<ParticleSystem>().main;
+                main.startRotationZ = angle * Mathf.Deg2Rad;
+                ParticleSystem.MainModule subMain = new ParticleSystem.MainModule();
+                foreach (var item in particleSystem.GetComponentsInChildren<ParticleSystem>())
+                {
+                    subMain = item.main;
+                    subMain.startRotationZ = angle * Mathf.Deg2Rad;
+                }
+            }
+
             particleSystem.transform
-                .DOMove(Utilites.CastVfxPosition(castVfxPosition), .5f).OnComplete(
+                .DOMove(targetPosition, .5f).OnComplete(
                     () =>
                     {
                         callbackComplete(target);
@@ -305,5 +320,12 @@ namespace Loom.ZombieBattleground
             effect.transform.position = Utilites.CastVfxPosition(position);
             _particlesController.RegisterParticleSystem(effect, true, 5f);
 		}
+
+        public float AngleBetweenVector3(Vector3 from, Vector3 target)
+        {
+            Vector3 diference = target - from;
+            float sign = (target.x < from.x) ? -1.0f : 1.0f;
+            return Vector3.Angle(Vector3.forward, diference) * sign;
+        }
     }
 }
