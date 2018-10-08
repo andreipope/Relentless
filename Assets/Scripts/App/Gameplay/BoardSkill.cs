@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
                         _gameplayManager.CurrentPlayer.BoardCards;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
-
+                    FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
