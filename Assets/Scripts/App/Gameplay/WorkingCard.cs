@@ -5,6 +5,8 @@ namespace Loom.ZombieBattleground
 {
     public class WorkingCard
     {
+        private CardsController _cardsController;
+
        public int Id;
 
         public int CardId;
@@ -34,13 +36,20 @@ namespace Loom.ZombieBattleground
 
             Type = LibraryCard.CardType;
 
+            _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
+
             if (id == -1)
             {
-                Id = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetNewCardInstanceId();
+                Id = _cardsController.GetNewCardInstanceId();
             }
             else
             {
                 Id = id;
+
+                if(Id > _cardsController.GetNewCardInstanceId()-1)
+                {
+                    _cardsController.SetNewCardInstanceId(Id);
+                }
             }
         }
 

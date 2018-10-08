@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+                _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
