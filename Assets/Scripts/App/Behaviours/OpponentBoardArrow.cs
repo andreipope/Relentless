@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
                     TargetPosition = view.Transform.position;
                     view.SetSelectedUnit(true);
                     break;
+                case null:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
