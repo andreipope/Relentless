@@ -147,10 +147,15 @@ static class BattleCommandsHandler
                 RevertPlayCardOnBoard(playerMove.Move);
                 break;
             case Enumerators.PlayerActionType.AttackOnUnit:
+                RevertAttackOnUnit(playerMove.Move);
                 break;
             case Enumerators.PlayerActionType.AttackOnOverlord:
                 RevertAttackOnOverlord(playerMove.Move);
                 break;
+            case Enumerators.PlayerActionType.PlayOverlordSkill:
+                RevertOverlordSkill(playerMove.Move);
+                break;
+
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -163,9 +168,31 @@ static class BattleCommandsHandler
 
         PlayCardOnBoard obj = (PlayCardOnBoard)move;
 
-        cardsController.ReturnCardToHand(obj.Unit);
-        gameplayManager.CurrentPlayer.Goo += obj.GooCost;
+        if (obj.Unit.GameObject == null)
+        {
+            Debug.LogError("Object is already Destoryed");
+        }
+        else
+        {
+            cardsController.ReturnCardToHand(obj.Unit);
+            gameplayManager.CurrentPlayer.Goo += obj.GooCost;
+        }
     }
+
+
+    private static void RevertAttackOnUnit(IMove move)
+    {
+        AttackUnit obj = (AttackUnit) move;
+
+        obj.AttackingUnitModel.NumTurnsOnBoard--;
+        obj.AttackingUnitModel.OnStartTurn();
+
+        obj.AttackingUnitModel.CurrentHp += obj.DamageOnAttackingUnit;
+        obj.AttackedUnitModel.CurrentHp += obj.DamageOnAttackedUnit;
+
+        // TODO : code if unit is destroyed
+    }
+
 
     private static void RevertAttackOnOverlord(IMove move)
     {
@@ -175,5 +202,133 @@ static class BattleCommandsHandler
         obj.UnitModel.OnStartTurn();
 
         obj.AttackedPlayer.Health += obj.Damage;
+    }
+
+    private static void RevertOverlordSkill(IMove move)
+    {
+        PlayOverlordSkill obj = (PlayOverlordSkill) move;
+        switch (obj.Skill.Skill.OverlordSkill)
+        {
+            case Enumerators.OverlordSkill.NONE:
+                break;
+            case Enumerators.OverlordSkill.PUSH:
+                RevertPush(obj);
+                break;
+            case Enumerators.OverlordSkill.DRAW:
+                break;
+            case Enumerators.OverlordSkill.WIND_SHIELD:
+                break;
+            case Enumerators.OverlordSkill.LEVITATE:
+                break;
+            case Enumerators.OverlordSkill.RETREAT:
+                break;
+            case Enumerators.OverlordSkill.HARDEN:
+                break;
+            case Enumerators.OverlordSkill.STONE_SKIN:
+                break;
+            case Enumerators.OverlordSkill.FORTIFY:
+                break;
+            case Enumerators.OverlordSkill.PHALANX:
+                break;
+            case Enumerators.OverlordSkill.FORTRESS:
+                break;
+            case Enumerators.OverlordSkill.FIRE_BOLT:
+                break;
+            case Enumerators.OverlordSkill.RABIES:
+                break;
+            case Enumerators.OverlordSkill.FIREBALL:
+                break;
+            case Enumerators.OverlordSkill.MASS_RABIES:
+                break;
+            case Enumerators.OverlordSkill.METEOR_SHOWER:
+                break;
+            case Enumerators.OverlordSkill.HEALING_TOUCH:
+                break;
+            case Enumerators.OverlordSkill.MEND:
+                break;
+            case Enumerators.OverlordSkill.RESSURECT:
+                break;
+            case Enumerators.OverlordSkill.ENHANCE:
+                break;
+            case Enumerators.OverlordSkill.REANIMATE:
+                break;
+            case Enumerators.OverlordSkill.POISON_DART:
+                RevertPosionDartAttack(obj);
+                break;
+            case Enumerators.OverlordSkill.TOXIC_POWER:
+                RevertToxicPowerAttack(obj);
+                break;
+            case Enumerators.OverlordSkill.BREAKOUT:
+                break;
+            case Enumerators.OverlordSkill.INFECT:
+                break;
+            case Enumerators.OverlordSkill.EPIDEMIC:
+                break;
+            case Enumerators.OverlordSkill.FREEZE:
+                break;
+            case Enumerators.OverlordSkill.ICE_BOLT:
+                break;
+            case Enumerators.OverlordSkill.ICE_WALL:
+                break;
+            case Enumerators.OverlordSkill.SHATTER:
+                break;
+            case Enumerators.OverlordSkill.BLIZZARD:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private static void RevertPush(PlayOverlordSkill playOverlordSkill)
+    {
+        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+        CardsController cardsController = gameplayManager.GetController<CardsController>();
+
+
+        /*WorkingCard workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
+        if (workingCard != null)
+        {
+            BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
+            cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
+            cardsController.
+        }*/
+    }
+
+    private static void RevertToxicPowerAttack(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
+
+            unit.BuffedDamage -= playOverlordSkill.Skill.Skill.Attack;
+            unit.CurrentDamage -= playOverlordSkill.Skill.Skill.Attack;
+
+            playOverlordSkill.Skill.SetCoolDown(0);
+        }
+    }
+
+    private static void RevertPosionDartAttack(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
+        }
+        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
+        }
+
+        playOverlordSkill.Skill.SetCoolDown(0);
+    }
+
+    private static void RevertAttackOnOverlordBySkill(Player player, BoardSkill boardSkill)
+    {
+        player.Health += boardSkill.Skill.Value;
+    }
+
+    private static void RevertAttackOnUnitBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
+    {
+        BoardUnitModel creature = unitModel;
+        creature.CurrentHp += boardSkill.Skill.Value;
     }
 }

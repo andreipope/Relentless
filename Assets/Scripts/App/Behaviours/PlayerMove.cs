@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             if (_movesList.Count <= 0)
             {
-                Debug.LogError("No Moves Left");
+                //Debug.LogError("No Moves Left");
                 return null;
             }
 
@@ -72,6 +72,35 @@ public class AttackOverlord : IMove
         UnitModel = unitModel;
         AttackedPlayer = player;
         Damage = damage;
+    }
+}
+
+public class AttackUnit : IMove
+{
+    public BoardUnitModel AttackingUnitModel;
+    public BoardUnitModel AttackedUnitModel;
+    public int DamageOnAttackingUnit;
+    public int DamageOnAttackedUnit;
+
+    public AttackUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int damageOnAttackingUnit, int damageOnAttackedUnit)
+    {
+        AttackingUnitModel = attackingUnitModel;
+        AttackedUnitModel = attackedUnitModel;
+
+        DamageOnAttackingUnit = damageOnAttackingUnit;
+        DamageOnAttackedUnit = damageOnAttackedUnit;
+    }
+}
+
+public class PlayOverlordSkill : IMove
+{
+    public BoardSkill Skill;
+    public BoardObject Target;
+
+    public PlayOverlordSkill(BoardSkill skill, BoardObject target)
+    {
+        Skill = skill;
+        Target = target;
     }
 }
 

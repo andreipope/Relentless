@@ -520,7 +520,8 @@ namespace Loom.ZombieBattleground.Common
         {
             PlayCardOnBoard,
             AttackOnUnit,
-            AttackOnOverlord
+            AttackOnOverlord,
+            PlayOverlordSkill
         }
     }
 }

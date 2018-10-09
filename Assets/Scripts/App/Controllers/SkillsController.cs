@@ -209,6 +209,13 @@ namespace Loom.ZombieBattleground
                             DoActionByType(skill, targetPlayer);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         });
+
+                    if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                    {
+                        Debug.LogError(" === Add Player Move regarding skill played ==== ");
+                        _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
+                            new PlayOverlordSkill(skill, targetPlayer)));
+                    }
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
                 {
@@ -234,6 +241,13 @@ namespace Loom.ZombieBattleground
                             DoActionByType(skill, targetUnitView.Model);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         });
+
+                    if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                    {
+                        Debug.LogError(" === Add Player Move regarding skill played ==== ");
+                        _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
+                            new PlayOverlordSkill(skill, targetUnitView.Model)));
+                    }
                 }
 
                 skill.CancelTargetingArrows();
