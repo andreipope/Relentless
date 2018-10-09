@@ -243,7 +243,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 await Task.Delay(300);
 
-                List<Unit> targetUnits = new List<Unit>();
+                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
+                {
+                    CardKind = cardKind,
+                    AbilityType = abilityType.ToString(),
+                    Card = new CardInstance
+                    {
+                        InstanceId = card.Id,
+                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                        Defence = card.Health,
+                        Attack = card.Damage
+                    }
+                };
 
                 Unit targetUnit;
                 if (targets != null)
@@ -277,23 +288,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             };
                         }
 
-                        targetUnits.Add(targetUnit);
+                        CardAbilityUsed.Targets.Add(targetUnit);
                     }
                 }
-
-                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
-                {
-                    CardKind = cardKind,
-                    AbilityType = abilityType.ToString(),
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
-                        Defence = card.Health,
-                        Attack = card.Damage
-                    }
-                };
-                CardAbilityUsed.Targets.Add(targetUnits);
 
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -357,23 +354,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private async void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
-                await Task.Delay(5000);
+                await Task.Delay(1000);
 
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
-
-                List<Unit> targetUnits = new List<Unit>();
-
-                Unit unit;
-                foreach (BoardUnitView view in units)
-                {
-                    unit = new Unit()
-                    {
-                        InstanceId = view.Model.Card.Id,
-                        AffectObjectType = AffectObjectType.Character
-                    };
-
-                    targetUnits.Add(unit);
-                }
 
                 PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
                 {
@@ -386,7 +369,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                rankBuff.Targets.Add(targetUnits);
+                Unit unit;
+                foreach (BoardUnitView view in units)
+                {
+                    unit = new Unit()
+                    {
+                        InstanceId = view.Model.Card.Id,
+                        AffectObjectType = AffectObjectType.Character
+                    };
+
+                    rankBuff.Targets.Add(unit);
+                }
 
                 PlayerAction playerAction = new PlayerAction
                 {
