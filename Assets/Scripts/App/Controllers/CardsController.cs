@@ -856,6 +856,8 @@ namespace Loom.ZombieBattleground
 
             Vector3 unitPosition = unit.Transform.position;
 
+            unit.Model.InvokeUnitPrepairingToDie();
+
             _timerManager.AddTimer(
                 x =>
                 {
