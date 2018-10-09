@@ -147,6 +147,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                     _skillsController.PlayerPrimarySkill.SkillUsed -= SkillUsedHandler;
                     _skillsController.PlayerSecondarySkill.SkillUsed -= SkillUsedHandler;
+
+                    _ranksController.RanksUpdated -= RanksUpdatedHandler;
                 }
             }
 
@@ -355,7 +357,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private async void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
-                await Task.Delay(2000);
+                await Task.Delay(5000);
 
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
 
