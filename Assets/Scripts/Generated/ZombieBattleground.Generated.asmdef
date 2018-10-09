@@ -1,3 +1,10 @@
-﻿{
-	"name": "ZombieBattleground.Generated"
+{
+    "name": "ZombieBattleground.Generated",
+    "references": [
+        "LoomSDK"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
 }

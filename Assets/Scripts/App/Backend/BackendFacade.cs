@@ -187,7 +187,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         cards
                     }
                 },
-                LastModificationTimestamp = lastModificationTimestamp
+                LastModificationTimestamp = lastModificationTimestamp,
+                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
@@ -222,7 +223,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         cards
                     }
                 },
-                LastModificationTimestamp = lastModificationTimestamp
+                LastModificationTimestamp = lastModificationTimestamp,
+                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
             };
             return request;
         }
