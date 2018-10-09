@@ -577,7 +577,7 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
 
-                            player.ThrowPlayCardEvent(card.WorkingCard);
+                            player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
 
                             Sequence animationSequence = DOTween.Sequence();
                             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
@@ -675,7 +675,7 @@ namespace Loom.ZombieBattleground
                                 },
                                 null,
                                 0.1f);
-                            _ranksController.UpdateRanksByElements(player.BoardCards, card.LibraryCard);
+                            _ranksController.UpdateRanksByElements(player.BoardCards, card);
                             _timerManager.AddTimer(
                                 x =>
                                 {
