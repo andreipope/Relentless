@@ -229,7 +229,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.CardKind.SPELL:
                         BoardSpell spell = new BoardSpell(null, card); // todo improve it with game Object aht will be aniamted
                         _gameplayManager.OpponentPlayer.BoardSpellsInUse.Add(spell);
-
+                        spell.OwnerPlayer = _gameplayManager.OpponentPlayer;
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,

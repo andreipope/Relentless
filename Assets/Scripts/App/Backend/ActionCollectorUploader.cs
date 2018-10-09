@@ -353,8 +353,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
             }
 
-            private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
+            private async void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
+                await Task.Delay(2000);
+
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
 
                 List<Unit> targetUnits = new List<Unit>();
