@@ -259,8 +259,20 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.Id);
+
+            if(boardObjectCaller == null)
+            {
+                GameClient.Get<IQueueManager>().AddAction(() =>
+                {
+                    GotActionUseCardAbility(model);
+                });
+
+                return;
+            }
+
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
-                                                      _battlegroundController.GetBoardObjectById(model.Card.Id),
+                                                      boardObjectCaller,
                                                       _battlegroundController.GetTargetsById(model.Targets),
                                                       model.Card,
                                                       _gameplayManager.OpponentPlayer);
