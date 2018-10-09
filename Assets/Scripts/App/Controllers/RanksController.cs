@@ -255,6 +255,13 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                if (!card.Owner.IsLocalPlayer)
+                    return;
+            }
+
             RanksUpdated?.Invoke(card, units);
         }
 
