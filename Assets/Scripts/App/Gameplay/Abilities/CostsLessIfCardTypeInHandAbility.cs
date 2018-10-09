@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                 MainWorkingCard.RealCost + gooCost, BoardCard);
         }
 
-        private void CardPlayedHandler(WorkingCard card)
+        private void CardPlayedHandler(WorkingCard card, int position)
         {
             if (!card.Equals(MainWorkingCard))
                 return;
