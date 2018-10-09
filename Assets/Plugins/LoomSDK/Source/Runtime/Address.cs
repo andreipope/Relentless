@@ -1,5 +1,6 @@
 ﻿using System;
 using Loom.Client.Internal;
+using Loom.Google.Protobuf;
 using Loom.Nethereum.Util;
 using Loom.Newtonsoft.Json;
 
@@ -76,6 +77,14 @@ namespace Loom.Client
             );
         }
 
+        public static Address FromProtobufAddress(Internal.Protobuf.Address protobufAddress)
+        {
+            return new Address(
+                CryptoUtils.BytesToHexString(protobufAddress.Local.ToByteArray()),
+                protobufAddress.ChainId
+            );
+        }
+
         /// <summary>
         /// Creates an Address instance from a hex string representing an address.
         /// </summary>
@@ -119,6 +128,17 @@ namespace Loom.Client
         public byte[] ToByteArray()
         {
             return CryptoUtils.HexStringToBytes(LocalAddress.Substring(2));
+        }
+
+        public Client.Internal.Protobuf.Address ToProtobufAddress()
+        {
+            Client.Internal.Protobuf.Address protobufAddress;
+            protobufAddress = new Client.Internal.Protobuf.Address
+            {
+                ChainId = ChainId,
+                Local = ByteString.CopyFrom(ToByteArray())
+            };
+            return protobufAddress;
         }
 
         /// <returns>Checksum-encoded local part of the address as a hex string, in the format "0x...".</returns>

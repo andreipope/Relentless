@@ -338,11 +338,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
              Client.Internal.Protobuf.Address requestCustomGameAddress = null;
              if (customGameModeAddress != null)
              {
-                 requestCustomGameAddress = new Client.Internal.Protobuf.Address
-                 {
-                     ChainId = customGameModeAddress.Value.ChainId,
-                     Local = ByteString.CopyFrom(customGameModeAddress.Value.ToByteArray())
-                 };
+                 requestCustomGameAddress = GetProtobufAddressFromAddress(customGameModeAddress.Value);
              }
              FindMatchRequest request = new FindMatchRequest
              {
@@ -414,6 +410,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region Custom Game Modes
 
         private const string ListGameModesMethod = "ListGameModes";
+        private const string CallCustomGameModeFunctionMethod = "CallCustomGameModeFunction";
+        private const string GetGameModeCustomUiMethod = "GetGameModeCustomUi";
 
         public async Task<GameModeList> GetCustomGameModeList()
         {
@@ -421,7 +419,38 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<GameModeList>(ListGameModesMethod, request);
         }
 
+        public async Task<GetCustomGameModeCustomUiResponse> GetGameModeCustomUi(Address address)
+        {
+            GetCustomGameModeCustomUiRequest request = new GetCustomGameModeCustomUiRequest
+            {
+                Address = GetProtobufAddressFromAddress(address)
+            };
+
+            return await Contract.StaticCallAsync<GetCustomGameModeCustomUiResponse>(GetGameModeCustomUiMethod, request);
+        }
+
+        public async Task CallCustomGameModeFunction(Address address, string functionName)
+        {
+            CallCustomGameModeFunctionRequest request = new CallCustomGameModeFunctionRequest
+            {
+                Address = GetProtobufAddressFromAddress(address),
+                FunctionName = functionName
+            };
+
+            await Contract.CallAsync(CallCustomGameModeFunctionMethod, request);
+        }
+
         #endregion
 
+        private static Client.Internal.Protobuf.Address GetProtobufAddressFromAddress(Address address)
+        {
+            Client.Internal.Protobuf.Address protobufAddress;
+            protobufAddress = new Client.Internal.Protobuf.Address
+            {
+                ChainId = address.ChainId,
+                Local = ByteString.CopyFrom(address.ToByteArray())
+            };
+            return protobufAddress;
+        }
     }
 }

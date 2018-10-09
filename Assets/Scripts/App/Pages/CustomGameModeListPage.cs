@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -27,7 +28,6 @@ namespace Loom.ZombieBattleground
         private GameObject _selfPage;
 
         private Button _backButton;
-
 
         private List<CustomGameModeListItem> _listItems = new List<CustomGameModeListItem>();
 
@@ -130,15 +130,16 @@ namespace Loom.ZombieBattleground
                 Object.Destroy(GameObject);
             }
 
-            private void ChooseButtonOnClickHandler()
+            private async void ChooseButtonOnClickHandler()
             {
-                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+                GetCustomGameModeCustomUiResponse customUiResponse =
+                    await GameClient.Get<BackendFacade>().GetGameModeCustomUi(Address.FromProtobufAddress(GameMode.Address));
 
-                GameClient.Get<IMatchManager>().CustomGameModeAddress =
-                    Address.FromString(
-                        CryptoUtils.BytesToHexString(GameMode.Address.Local.ToByteArray())
-                        );
-                _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
+                CustomGameModeCustomUiElement[] customUiElements = customUiResponse.UiElements.ToArray();
+                GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
+                GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(GameMode, customUiElements);
+
+                Debug.Log(customUiResponse.ToString());
             }
         }
     }

@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 224412494567760666}
   - component: {fileID: 222148340972286014}
   m_Layer: 0
-  m_Name: PvPSelectionPage.prefab.REMOTE
+  m_Name: PvPSelectionPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
