@@ -71,40 +71,43 @@ namespace Loom.ZombieBattleground
 
         private void ApplyReward(Hero hero)
         {
-            LevelReward reward = _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
+            LevelReward levelReward = _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
 
-            switch (reward.Reward)
+            if (levelReward != null)
             {
-                case LevelReward.UnitRewardItem unitReward:
-                    {
-                        List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(x => x.CardRank == unitReward.Rank);
-                        Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
-                        CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
-                        if (foundCard != null)
+                switch (levelReward.Reward)
+                {
+                    case LevelReward.UnitRewardItem unitReward:
                         {
-                            foundCard.Amount += unitReward.Count;
-                        }
-                        else
-                        {
-                            _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
+                            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(x => x.CardRank == unitReward.Rank);
+                            Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
+                            CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
+                            if (foundCard != null)
                             {
-                                Amount = unitReward.Count,
-                                CardName = card.Name
-                            });
+                                foundCard.Amount += unitReward.Count;
+                            }
+                            else
+                            {
+                                _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
+                                {
+                                    Amount = unitReward.Count,
+                                    CardName = card.Name
+                                });
+                            }
                         }
-                    }
-                    break;
-                case LevelReward.OverlordSkillRewardItem skillReward:
-                    {
-                        hero.Skills[skillReward.SkillIndex].Unlocked = true;
-                    }
-                    break;
-                case LevelReward.ItemReward itemReward:
-                    break;
-                case null:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(reward.Reward), reward.Reward, null);
+                        break;
+                    case LevelReward.OverlordSkillRewardItem skillReward:
+                        {
+                            hero.Skills[skillReward.SkillIndex].Unlocked = true;
+                        }
+                        break;
+                    case LevelReward.ItemReward itemReward:
+                        break;
+                    case null:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(levelReward.Reward), levelReward.Reward, null);
+                }
             }
         }
 

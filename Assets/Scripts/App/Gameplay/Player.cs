@@ -376,7 +376,6 @@ namespace Loom.ZombieBattleground
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
-            ThrowPlayCardEvent(card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -410,19 +409,21 @@ namespace Loom.ZombieBattleground
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
-        public void SetDeck(List<string> cards)
+        public void SetDeck(List<string> cards, bool isMainTurnSecond)
         {
             CardsInDeck = new List<WorkingCard>();
 
             cards = ShuffleCardsList(cards);
 
-#if DEV_MODE
-            if (IsLocalPlayer)
+            if(isMainTurnSecond)
             {
-                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName("Cherno-bill"), this)); // special card id
+                _cardsController.SetNewCardInstanceId(Constants.MinDeckSize);
             }
-#endif
-
+            else
+            {
+                _cardsController.SetNewCardInstanceId(0);
+            }
+           
             foreach (string card in cards)
             {
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));

@@ -103,6 +103,11 @@ namespace Loom.ZombieBattleground
             return _cardInstanceId++;
         }
 
+        public void SetNewCardInstanceId(int id)
+        {
+            _cardInstanceId = id;
+        }
+
         public void StartCardDistribution()
         {
             CardDistribution = true;
@@ -177,6 +182,11 @@ namespace Loom.ZombieBattleground
             else
             {
                 _battlegroundController.StartGameplayTurns();
+            }
+
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                SetNewCardInstanceId(Constants.MinDeckSize * 2);// 2 is players count
             }
         }
 
@@ -566,6 +576,8 @@ namespace Loom.ZombieBattleground
                             UpdateCardsStatusEvent?.Invoke(player);
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
+
+                            player.ThrowPlayCardEvent(card.WorkingCard);
 
                             Sequence animationSequence = DOTween.Sequence();
                             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));

@@ -98,16 +98,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 if (!isOpponent)
                 {
                     _battlegroundController.TurnEnded += TurnEndedHandler;
+
+                    _abilitiesController.AbilityUsed += AbilityUsedHandler;
+
+                    Player.CardPlayed += CardPlayedHandler;
+                    Player.CardAttacked += CardAttackedHandler;
+                    Player.LeaveMatch += LeaveMatchHandler;
+
+                    _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
+                    _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
                 }
-                _abilitiesController.AbilityUsed += AbilityUsedHandler;
-
-                Player.CardPlayed += CardPlayedHandler;
-                Player.CardAttacked += CardAttackedHandler;
-                Player.LeaveMatch += LeaveMatchHandler;
-
-                _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
-                _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
-
             }
 
             public Player Player { get; }
@@ -131,10 +131,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void UnsubscribeFromPlayerEvents()
             {
-                _battlegroundController.TurnEnded -= TurnEndedHandler;
+                if (!IsOpponent)
+                {
+                    _battlegroundController.TurnEnded -= TurnEndedHandler;
 
-                Player.CardPlayed -= CardPlayedHandler;
-                Player.CardAttacked -= CardAttackedHandler;
+                    _abilitiesController.AbilityUsed -= AbilityUsedHandler;
+
+                    Player.CardPlayed -= CardPlayedHandler;
+                    Player.CardAttacked -= CardAttackedHandler;
+                    Player.LeaveMatch -= LeaveMatchHandler;
+
+                    _skillsController.PlayerPrimarySkill.SkillUsed -= SkillUsedHandler;
+                    _skillsController.PlayerSecondarySkill.SkillUsed -= SkillUsedHandler;
+                }
             }
 
             private void CardPlayedHandler(WorkingCard card)

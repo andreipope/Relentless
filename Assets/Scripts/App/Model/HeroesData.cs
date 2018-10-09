@@ -99,6 +99,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string ElementTargets;
 
+        public string UnitStatus;
+
         public int Cooldown;
 
         public int InitialCooldown;
@@ -114,6 +116,9 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonIgnore]
         public List<Enumerators.SkillTargetType> SkillTargetTypes;
+
+        [JsonIgnore]
+        public Enumerators.UnitStatusType TargetUnitStatusType;
 
         [JsonIgnore]
         public bool Unlocked;
@@ -143,6 +148,11 @@ namespace Loom.ZombieBattleground.Data
             else
             {
                 ElementTargetTypes = new List<Enumerators.SetType>();
+            }
+
+            if (!string.IsNullOrEmpty(UnitStatus))
+            {
+                TargetUnitStatusType = Utilites.CastStringTuEnum<Enumerators.UnitStatusType>(UnitStatus);
             }
         }
     }

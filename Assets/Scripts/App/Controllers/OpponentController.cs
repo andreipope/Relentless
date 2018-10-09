@@ -78,7 +78,14 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, GameClient.Get<IPvPManager>().IsCurrentPlayer());
+                }
+                else
+                {
+                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
+                }
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -209,8 +216,17 @@ namespace Loom.ZombieBattleground
                     case Enumerators.CardKind.SPELL:
                         BoardSpell spell = new BoardSpell(null, card); // todo improve it with game Object aht will be aniamted
                         _gameplayManager.OpponentPlayer.BoardSpellsInUse.Add(spell);
+
+                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        {
+                            ActionType = Enumerators.ActionType.PlayCardFromHand,
+                            Caller = spell,
+                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        });
                         break;
                 }
+
+                _gameplayManager.OpponentPlayer.Goo -= card.RealCost;
             });
         }
 

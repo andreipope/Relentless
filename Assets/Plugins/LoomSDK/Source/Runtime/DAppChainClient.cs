@@ -156,14 +156,13 @@ namespace Loom.Client
         /// <param name="tx">Transaction to commit.</param>
         /// <returns>Commit metadata.</returns>
         /// <exception cref="InvalidTxNonceException">Thrown if transaction is rejected due to a bad nonce after <see cref="NonceRetries"/> attempts.</exception>
-        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx)
+        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx, int timeout = 3000)
         {
             int badNonceCount = 0;
             do
             {
                 try
                 {
-                    const int timeout = 3000;
                     Task<BroadcastTxResult> function = this.TryCommitTxAsync(tx);
                     Task result = await Task.WhenAny(function, Task.Delay(timeout));
                     if (result == function)
