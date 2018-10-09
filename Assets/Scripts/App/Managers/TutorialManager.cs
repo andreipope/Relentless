@@ -186,11 +186,32 @@ namespace Loom.ZombieBattleground
         {
             if (IsTutorial)
             {
-                if(CurrentTutorialDataStep != null)
+                if (CurrentTutorialDataStep != null)
+                {
                     if (CurrentTutorialDataStep.RequiredAction == action)
                     {
-                        NextStep();
+                        if(action == Enumerators.TutorialReportAction.START_TURN &&
+                          !string.IsNullOrEmpty(CurrentTutorialDataStep.WaiterOfWhichTurn))
+                        {
+                            if ((_gameplayManager.IsLocalPlayerTurn() &&
+                                 CurrentTutorialDataStep.WaiterOfWhichTurn == Constants.Player) ||
+                               (!_gameplayManager.IsLocalPlayerTurn() &&
+                                CurrentTutorialDataStep.WaiterOfWhichTurn == Constants.Opponent))
+                            {
+                                NextStep();
+                            }
+                        }
+                        else
+                        {
+                            NextStep();
+                        }
                     }
+
+                    if(action == Enumerators.TutorialReportAction.USE_ABILITY)
+                    {
+                        DestroySelectTarget();
+                    }
+                }
             }
         }
 
@@ -257,7 +278,9 @@ namespace Loom.ZombieBattleground
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             if (CurrentTutorialDataStep.HasDelayToPlaySound)
             {
-                GameClient.Get<ITimerManager>().AddTimer(
+                if (!string.IsNullOrEmpty(CurrentTutorialDataStep.SoundName))
+                {
+                    GameClient.Get<ITimerManager>().AddTimer(
                     x =>
                     {
                         _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName,
@@ -265,11 +288,15 @@ namespace Loom.ZombieBattleground
                     },
                     null,
                     CurrentTutorialDataStep.DelayToPlaySound);
+                }
             }
             else
             {
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume,
-                    false);
+                if (!string.IsNullOrEmpty(CurrentTutorialDataStep.SoundName))
+                {
+                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume,
+                        false);
+                }
             }
 
             if (CurrentTutorialDataStep.IsLaunchAIBrain)
