@@ -215,6 +215,7 @@ static class BattleCommandsHandler
                 RevertPush(obj);
                 break;
             case Enumerators.OverlordSkill.DRAW:
+                RevertDraw(obj);
                 break;
             case Enumerators.OverlordSkill.WIND_SHIELD:
                 break;
@@ -283,15 +284,24 @@ static class BattleCommandsHandler
     {
         IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
         CardsController cardsController = gameplayManager.GetController<CardsController>();
+        BattlegroundController battlegroundController = gameplayManager.GetController<BattlegroundController>();
 
+        Player player = gameplayManager.CurrentPlayer;
+        BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Target;
+        WorkingCard workingCard = targetUnit.Card;
 
-        /*WorkingCard workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
-        if (workingCard != null)
-        {
-            BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-            cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
-            cardsController.
-        }*/
+        BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
+        cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
+
+        playOverlordSkill.Skill.SetCoolDown(0);
+    }
+
+    private static void RevertDraw(PlayOverlordSkill playOverlordSkill)
+    {
+        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+        CardsController cardsController = gameplayManager.GetController<CardsController>();
+
+        // TODO : no information which card added...
     }
 
     private static void RevertToxicPowerAttack(PlayOverlordSkill playOverlordSkill)

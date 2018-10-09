@@ -211,7 +211,6 @@ namespace Loom.ZombieBattleground
                             DoActionByType(skill, targetPlayer);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         }, _isDirection);
-                        });
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                     {
@@ -244,7 +243,6 @@ namespace Loom.ZombieBattleground
                             DoActionByType(skill, targetUnitView.Model);
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         }, _isDirection);
-                        });
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                     {
