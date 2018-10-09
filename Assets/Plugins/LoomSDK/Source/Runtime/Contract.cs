@@ -43,10 +43,10 @@ namespace Loom.Client
         /// <param name="method">Smart contract method name.</param>
         /// <param name="args">Arguments object for the smart contract method.</param>
         /// <returns>The return value of the smart contract method.</returns>
-        public async Task<T> CallAsync<T>(string method, IMessage args) where T : IMessage, new()
+        public async Task<T> CallAsync<T>(string method, IMessage args, int timeout = 3000) where T : IMessage, new()
         {
             var tx = this.CreateContractMethodCallTx(method, args);
-            return await CallAsync<T>(tx);
+            return await CallAsync<T>(tx, timeout);
         }
 
         /// <summary>
@@ -95,9 +95,9 @@ namespace Loom.Client
         /// <typeparam name="T">Smart contract method return type.</typeparam>
         /// <param name="tx">Transaction message.</param>
         /// <returns>The return value of the smart contract method.</returns>
-        private async Task<T> CallAsync<T>(Transaction tx) where T : IMessage, new()
+        private async Task<T> CallAsync<T>(Transaction tx, int timeout = 3000) where T : IMessage, new()
         {
-            var result = await this.Client.CommitTxAsync(tx);
+            var result = await this.Client.CommitTxAsync(tx, timeout);
             if (result != null && result.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0)
             {
                 var resp = new Response();
