@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -64,23 +65,32 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.MatchType.PVP:
                     {
-                        GameClient.Get<IQueueManager>().StartNetworkThread();
-                        _uiManager.DrawPopup<ConnectionPopup>();
-                        _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
-                        _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
-                            _backendDataControlMediator.UserDataModel.UserId,
-                            _uiManager.GetPage<GameplayPage>().CurrentDeckId);
-
-                        Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
-                        _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
-
-                        if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                        try
                         {
-                            OnStartGamePvP();
-                        }
-                        else
-                        {
-                            _pvpManager.GameStartedActionReceived += OnStartGamePvP;
+                            GameClient.Get<IQueueManager>().StartNetworkThread();
+                            _uiManager.DrawPopup<ConnectionPopup>();
+                            _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
+                            _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
+                                _backendDataControlMediator.UserDataModel.UserId,
+                                _uiManager.GetPage<GameplayPage>().CurrentDeckId);
+
+                            Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
+                            _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
+
+                            if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                            {
+                                OnStartGamePvP();
+                            }
+                            else
+                            {
+                                _pvpManager.GameStartedActionReceived += OnStartGamePvP;
+                            }
+                        } 
+                        catch (Exception e) {
+                            Debug.LogWarning(e.Message);
+                            if (_uiManager.GetPopup<ConnectionPopup>().Self != null) {
+                                _uiManager.HidePopup<ConnectionPopup>();
+                            }
                         }
                     }
                     break;
