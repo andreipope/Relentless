@@ -289,7 +289,7 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
-                MulliganCards.Add(card);
+                MulliganCards?.Add(card);
             }
         }
 
@@ -648,7 +648,17 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.OpponentHandCards.Remove(randomCard);
             }
-            else return;
+            else
+            {
+                #warning hot fix - visual bug will appear! temp solution!
+                if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    randomCard = CreateOpponentBoardCard();
+
+                    _battlegroundController.UpdatePositionOfCardsInOpponentHand();
+                }
+                else return;
+            }
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
