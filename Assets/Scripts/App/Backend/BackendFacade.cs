@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf.Collections;
@@ -341,7 +342,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
              };
 
-             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+            const int timeout = 120000;
+
+            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request, timeout);
          }
 
         public async Task<EndMatchResponse> EndMatch(string userId, int matchId, string winnerId)
