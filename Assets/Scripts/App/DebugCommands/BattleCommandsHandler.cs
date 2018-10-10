@@ -1,6 +1,7 @@
 ﻿using System;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Opencoding.CommandHandlerSystem;
 using UnityEngine;
 
@@ -166,11 +167,12 @@ static class BattleCommandsHandler
         IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
         CardsController cardsController = gameplayManager.GetController<CardsController>();
 
+
         PlayCardOnBoard obj = (PlayCardOnBoard)move;
 
         if (obj.Unit.GameObject == null)
         {
-            Debug.LogError("Object is already Destoryed");
+            GetCardFromGraveyard(obj.Unit, gameplayManager.CurrentPlayer);
         }
         else
         {
@@ -179,18 +181,41 @@ static class BattleCommandsHandler
         }
     }
 
+    private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
+    {
+        BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
+        Card libraryCard = unit.Model.Card.LibraryCard.Clone();
+        WorkingCard workingCard = new WorkingCard(libraryCard, player);
+        BoardUnitView newUnit = battlegroundController.CreateBoardUnit(player, workingCard);
+
+        player.RemoveCardFromGraveyard(unit.Model.Card);
+        player.AddCardToBoard(workingCard);
+        player.BoardCards.Add(newUnit);
+
+        battlegroundController.PlayerBoardCards.Add(newUnit);
+        battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(player.BoardCards);
+    }
+
 
     private static void RevertAttackOnUnit(IMove move)
     {
         AttackUnit obj = (AttackUnit) move;
+        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+        BattlegroundController battlegroundController = gameplayManager.GetController<BattlegroundController>();
 
-        obj.AttackingUnitModel.NumTurnsOnBoard--;
-        obj.AttackingUnitModel.OnStartTurn();
+        BoardUnitView attackingUnitView = battlegroundController.GetBoardUnitViewByModel(obj.AttackingUnitModel);
+        if (attackingUnitView.GameObject == null)
+        {
+            GetCardFromGraveyard(attackingUnitView, gameplayManager.CurrentPlayer);
+        }
+        else
+        {
+            obj.AttackingUnitModel.NumTurnsOnBoard--;
+            obj.AttackingUnitModel.OnStartTurn();
+            obj.AttackingUnitModel.CurrentHp += obj.DamageOnAttackingUnit;
+        }
 
-        obj.AttackingUnitModel.CurrentHp += obj.DamageOnAttackingUnit;
-        obj.AttackedUnitModel.CurrentHp += obj.DamageOnAttackedUnit;
-
-        // TODO : code if unit is destroyed
+         obj.AttackedUnitModel.CurrentHp += obj.DamageOnAttackedUnit;
     }
 
 
@@ -386,10 +411,6 @@ static class BattleCommandsHandler
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
             playOverlordSkill.Skill.SetCoolDown(0);
-        }
-        else
-        {
-            Debug.LogError("Target is Card === ");
         }
     }
 
