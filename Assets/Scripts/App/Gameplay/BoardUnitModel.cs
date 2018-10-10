@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<Enumerators.BuffType> BuffApplied;
 
-        public event Action BuffShieldAdded;
+        public event Action<bool> BuffShieldStateChanged;
 
         public event Action CreaturePlayableForceSet;
 
@@ -250,13 +250,14 @@ namespace Loom.ZombieBattleground
         {
             HasBuffShield = false;
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
+            BuffShieldStateChanged?.Invoke(false);
         }
 
         public void AddBuffShield()
         {
             AddBuff(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
-            BuffShieldAdded?.Invoke();
+            BuffShieldStateChanged?.Invoke(true);
         }
 
         public void UpdateCardType()
