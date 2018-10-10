@@ -456,7 +456,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _ranksController.UpdateRanksByElements(Model.OwnerPlayer.BoardCards, Model.Card.LibraryCard);
+                _ranksController.UpdateRanksByElements(Model.OwnerPlayer.BoardCards, Model.Card);
             }
 
             _initialScale = GameObject.transform.localScale;

@@ -442,7 +442,7 @@ namespace Loom.ZombieBattleground
                                     workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                     workingCard.Owner.AddCardToBoard(workingCard);
 
-                                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard);
+                                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
 
                                     GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                                     {
@@ -828,7 +828,7 @@ namespace Loom.ZombieBattleground
                     card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                     card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
 
-                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard);
+                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
 
                     GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                     {

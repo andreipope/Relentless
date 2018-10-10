@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
         private BoardArrowController _boardArrowController;
         private AbilitiesController _abilitiesController;
         private ActionsQueueController _actionsQueueController;
+        private RanksController _ranksController;
 
         public void Dispose()
         {
@@ -47,6 +48,7 @@ namespace Loom.ZombieBattleground
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _ranksController = _gameplayManager.GetController<RanksController>();
 
             _gameplayManager.GameStarted += GameStartedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
@@ -100,6 +102,7 @@ namespace Loom.ZombieBattleground
             _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
+            _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -111,18 +114,21 @@ namespace Loom.ZombieBattleground
             _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
+            _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
         }
 
         #region event handlers
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
-            GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer), cardPlay.Card.InstanceId);
+            GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer),
+                              cardPlay.Card.InstanceId,
+                              cardPlay.Position);
         }
 
-        private void OnLeaveMatchHandler()
+        private async void OnLeaveMatchHandler()
         {
-            _gameplayManager.OpponentPlayer.PlayerDie();
+            await _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -166,6 +172,13 @@ namespace Loom.ZombieBattleground
 
         }
 
+        private void OnRankBuffHandler(PlayerActionRankBuff actionRankBuff)
+        {
+            GotActionRankBuff(FromProtobufExtensions.FromProtobuf(actionRankBuff.Card, _gameplayManager.OpponentPlayer),
+                              FromProtobufExtensions.FromProtobuf(actionRankBuff.Targets));
+        }
+         
+
         #endregion
 
 
@@ -181,7 +194,7 @@ namespace Loom.ZombieBattleground
             _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
-        public void GotActionPlayCard(WorkingCard card, int instanceId)
+        public void GotActionPlayCard(WorkingCard card, int instanceId, int position)
         {
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
@@ -199,7 +212,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-                        _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(position, boardUnitViewElement);
 
                         boardUnitViewElement.PlayArrivalAnimation();
 
@@ -216,7 +229,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.CardKind.SPELL:
                         BoardSpell spell = new BoardSpell(null, card); // todo improve it with game Object aht will be aniamted
                         _gameplayManager.OpponentPlayer.BoardSpellsInUse.Add(spell);
-
+                        spell.OwnerPlayer = _gameplayManager.OpponentPlayer;
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -246,8 +259,20 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.Id);
+
+            if(boardObjectCaller == null)
+            {
+                GameClient.Get<IQueueManager>().AddAction(() =>
+                {
+                    GotActionUseCardAbility(model);
+                });
+
+                return;
+            }
+
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
-                                                      _battlegroundController.GetBoardObjectById(model.Card.Id),
+                                                      boardObjectCaller,
                                                       _battlegroundController.GetTargetsById(model.Targets),
                                                       model.Card,
                                                       _gameplayManager.OpponentPlayer);
@@ -283,6 +308,15 @@ namespace Loom.ZombieBattleground
         public void GotActionMulligan(MulliganModel model)
         {
             // todo implement logic..
+        }
+
+        public void GotActionRankBuff(WorkingCard card, List<Unit> targets)
+        {
+            List<BoardUnitView> units = _battlegroundController.GetTargetsById(targets)
+                .Cast<BoardUnitModel>()
+                .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
+
+            _ranksController.BuffAllyManually(units, card);
         }
 
         #endregion

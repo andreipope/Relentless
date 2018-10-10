@@ -89,6 +89,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject> UnitDamaged;
 
+        public event Action<BoardObject> PrepairingToDie;
+
         public event Action UnitHpChanged;
 
         public event Action UnitDamageChanged;
@@ -580,6 +582,11 @@ namespace Loom.ZombieBattleground
             OwnerPlayer.AddCardToGraveyard(Card);
 
             UnitFromDeckRemoved?.Invoke();
+        }
+
+        public void InvokeUnitPrepairingToDie()
+        {
+            PrepairingToDie?.Invoke(this);
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
         public event Action<PlayerActionCardAbilityUsed> CardAbilityUsedActionReceived;
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         public event Action<PlayerActionDrawCard> DrawCardActionReceived;
+        public event Action<PlayerActionRankBuff> RankBuffActionReceived;
 
         public event Action LeaveMatchReceived;
 
@@ -156,6 +157,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.LeaveMatch:
                     LeaveMatchReceived?.Invoke();
+                    break;
+                case PlayerActionType.RankBuff:
+                    RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playerActionEvent.PlayerActionType), playerActionEvent.PlayerActionType.ToString() + " not found");
