@@ -338,10 +338,6 @@ namespace Loom.ZombieBattleground
                     renderer.material = heroAvatarMaterial;
                 }
             }
-
-            Sprite heroHighlight =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
-            GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/FactionFrame").GetComponent<SpriteRenderer>().sprite = heroHighlight;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
