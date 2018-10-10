@@ -21,6 +21,7 @@ namespace Loom.ZombieBattleground
         event Action<PlayerActionCardAbilityUsed> CardAbilityUsedActionReceived;
         event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         event Action<PlayerActionDrawCard> DrawCardActionReceived;
+        event Action<PlayerActionRankBuff> RankBuffActionReceived;
 
         event Action LeaveMatchReceived;
 
