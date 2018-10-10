@@ -224,7 +224,8 @@ namespace Loom.ZombieBattleground
                             Caller = boardUnitViewElement.Model,
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
-                        _gameplayManager.CanDoDragActions = true;
+
+                        _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
                         break;
                     case Enumerators.CardKind.SPELL:
                         BoardSpell spell = new BoardSpell(null, card); // todo improve it with game Object aht will be aniamted
@@ -259,8 +260,20 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.Id);
+
+            if(boardObjectCaller == null)
+            {
+                GameClient.Get<IQueueManager>().AddAction(() =>
+                {
+                    GotActionUseCardAbility(model);
+                });
+
+                return;
+            }
+
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
-                                                      _battlegroundController.GetBoardObjectById(model.Card.Id),
+                                                      boardObjectCaller,
                                                       _battlegroundController.GetTargetsById(model.Targets),
                                                       model.Card,
                                                       _gameplayManager.OpponentPlayer);

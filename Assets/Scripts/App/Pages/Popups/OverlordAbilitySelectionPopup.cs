@@ -254,12 +254,12 @@ namespace Loom.ZombieBattleground
                 if (Skill != null)
                 {
                     _abilityIconImage.sprite =
-                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.IconPath);
+                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
                 }
                 else
                 {
                     _abilityIconImage.sprite =
-                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");
+                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_locked");
                 }
             }
         }

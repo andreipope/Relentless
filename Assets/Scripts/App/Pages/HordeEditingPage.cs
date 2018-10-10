@@ -648,6 +648,11 @@ namespace Loom.ZombieBattleground
                         CalculateVisibility();
                         Canvas.ForceUpdateCanvases();
                     });
+            } else {
+                int foundItemIndex = _createdHordeCards.FindIndex(c => c.LibraryCard.Id == foundItem.LibraryCard.Id);
+                _currentHordePage = foundItemIndex / CardsPerPage;
+                CalculateVisibility();
+                Canvas.ForceUpdateCanvases();
             }
         }
 

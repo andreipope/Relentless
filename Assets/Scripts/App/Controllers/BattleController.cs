@@ -113,6 +113,7 @@ namespace Loom.ZombieBattleground
                     if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
                     {
                         damageAttacked = 0;
+                        attackingUnitModel.HasUsedBuffShield = true;
                     }
 
                     attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;

@@ -285,30 +285,16 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1120467692606536
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4340420332258302}
   - component: {fileID: 95654274058278296}
+  - component: {fileID: 114515230922872694}
   m_Layer: 21
-  m_Name: EarthRocksCrumbling
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1120831087827296
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4462067577830690}
-  m_Layer: 21
-  m_Name: EarthHeroFrameAnim
+  m_Name: Anim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2099,11 +2085,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1569588274884980}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -2.36, y: 3.2260005, z: -6}
+  m_LocalScale: {x: 0.95, y: 1, z: 1}
   m_Children:
-  - {fileID: 4462067577830690}
+  - {fileID: 4340420332258302}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2237,7 +2223,7 @@ Transform:
   - {fileID: 4143429992721850}
   - {fileID: 4325076749800576}
   - {fileID: 4648446806974860}
-  m_Father: {fileID: 4462067577830690}
+  m_Father: {fileID: 4267481050861446}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4340815002381570
@@ -2395,20 +2381,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4240552053586208}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4462067577830690
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1120831087827296}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.499, y: 3.226, z: -10.240234}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 4340420332258302}
-  m_Father: {fileID: 4267481050861446}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4462229085956532
@@ -6112,6 +6084,98 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114515230922872694
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1120467692606536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed655f2f6c1b6a24ea39cd4ab15f4e67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Texts: []
+  Sprites: []
+  MeshRenderers:
+  - {fileID: 23867692113655750}
+  - {fileID: 23186377158448672}
+  - {fileID: 23448098026889318}
+  - {fileID: 23002666999279136}
+  - {fileID: 23463603726157572}
+  - {fileID: 23430481384388092}
+  - {fileID: 23933001550921634}
+  - {fileID: 23521331130648066}
+  - {fileID: 23380076869538628}
+  - {fileID: 23235855712796526}
+  - {fileID: 23366345961167278}
+  - {fileID: 23302199819898808}
+  - {fileID: 23482599516536962}
+  - {fileID: 23887343248106552}
+  - {fileID: 23391054139866734}
+  - {fileID: 23132441118646710}
+  - {fileID: 23973430121578512}
+  - {fileID: 23645433510108122}
+  - {fileID: 23093978757522254}
+  - {fileID: 23350996378997398}
+  - {fileID: 23826750098344802}
+  - {fileID: 23327088512920244}
+  - {fileID: 23528755904897162}
+  - {fileID: 23729436465013114}
+  - {fileID: 23900848354937486}
+  - {fileID: 23405798891881036}
+  - {fileID: 23550335823566434}
+  - {fileID: 23909585389701420}
+  - {fileID: 23150199741974964}
+  - {fileID: 23678955391934886}
+  - {fileID: 23248458487030962}
+  - {fileID: 23904352868188166}
+  - {fileID: 23931120428229248}
+  - {fileID: 23369685392737094}
+  - {fileID: 23904418371332288}
+  - {fileID: 23459873853436776}
+  - {fileID: 23103255148227878}
+  - {fileID: 23293037339533582}
+  - {fileID: 23818265365118292}
+  - {fileID: 23399903641586460}
+  - {fileID: 23889565657363974}
+  - {fileID: 23702421426257860}
+  - {fileID: 23446912424576516}
+  - {fileID: 23244830580999542}
+  - {fileID: 23866820844805628}
+  - {fileID: 23622093425766982}
+  - {fileID: 23148606400452874}
+  - {fileID: 23897148883199700}
+  - {fileID: 23512914879706296}
+  - {fileID: 23666208183071516}
+  - {fileID: 23214121381953892}
+  - {fileID: 23681495993968424}
+  - {fileID: 23866108231731550}
+  - {fileID: 23129821803554290}
+  - {fileID: 23197826412435954}
+  - {fileID: 23796024658444812}
+  - {fileID: 23687505007470300}
+  - {fileID: 23143443377663908}
+  - {fileID: 23707044919880410}
+  - {fileID: 23287099325667604}
+  - {fileID: 23661932984349430}
+  - {fileID: 23344044865576712}
+  - {fileID: 23441756487876028}
+  - {fileID: 23426599214448862}
+  - {fileID: 23289416129553408}
+  - {fileID: 23478484155450068}
+  - {fileID: 23323153069279712}
+  - {fileID: 23429573385794580}
+  - {fileID: 23680294941253220}
+  - {fileID: 23732032302951368}
+  - {fileID: 23194867181121536}
+  - {fileID: 23120486645617368}
+  - {fileID: 23869108246023836}
+  - {fileID: 23557766797891990}
+  - {fileID: 23665786023755276}
+  _startFade: 0
+  _basicValue: 1
+  _step: 0.015
 --- !u!198 &198058214029446512
 ParticleSystem:
   m_ObjectHideFlags: 1

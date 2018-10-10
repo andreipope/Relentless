@@ -209,8 +209,9 @@ namespace Loom.ZombieBattleground
                         (x) =>
                         {
                             DoActionByType(skill, targetPlayer);
-                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         }, _isDirection);
+
+
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
                 {
@@ -234,7 +235,6 @@ namespace Loom.ZombieBattleground
                         (x) =>
                         {
                             DoActionByType(skill, targetUnitView.Model);
-                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                         }, _isDirection);
                 }
 
@@ -257,7 +257,6 @@ namespace Loom.ZombieBattleground
                     (x) =>
                     {
                         DoActionByType(skill, target);
-                        _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                     }, _isDirection);
             }
         }

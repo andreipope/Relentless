@@ -289,7 +289,7 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
-                MulliganCards.Add(card);
+                MulliganCards?.Add(card);
             }
         }
 
@@ -575,7 +575,7 @@ namespace Loom.ZombieBattleground
 
                             UpdateCardsStatusEvent?.Invoke(player);
 
-                            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
+                            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
                             player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
 
@@ -648,7 +648,17 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.OpponentHandCards.Remove(randomCard);
             }
-            else return;
+            else
+            {
+                #warning hot fix - visual bug will appear! temp solution!
+                if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    randomCard = CreateOpponentBoardCard();
+
+                    _battlegroundController.UpdatePositionOfCardsInOpponentHand();
+                }
+                else return;
+            }
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
@@ -969,7 +979,7 @@ namespace Loom.ZombieBattleground
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
-            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model, true);
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
             if (!owner.IsLocalPlayer)
             {
