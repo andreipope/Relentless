@@ -259,9 +259,8 @@ namespace Loom.ZombieBattleground
             _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard")
                 .GetComponent<SpriteRenderer>();
 
-            _playerHealthText = GameObject.Find("Player/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
-            _opponentHealthText =
-                GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            _playerHealthText = GameObject.Find("Player/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
+            _opponentHealthText = GameObject.Find("Opponent/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
 
             // improve find to get it from OBJECTS ON BOARD!!
             _playerNameText = GameObject.Find("Player/NameBoard/NameText").GetComponent<TextMeshPro>();
@@ -322,7 +321,7 @@ namespace Loom.ZombieBattleground
 
             Texture2D heroTexture =
                 _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.HeroElement + "_EXP");
-            Transform transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
+            Transform transfHeroObject = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage").transform;
 
             Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
             heroAvatarMaterial.mainTexture = heroTexture;
@@ -337,10 +336,6 @@ namespace Loom.ZombieBattleground
                     renderer.material = heroAvatarMaterial;
                 }
             }
-
-            Sprite heroHighlight =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
-            GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
