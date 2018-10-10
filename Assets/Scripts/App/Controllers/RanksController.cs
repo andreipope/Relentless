@@ -41,6 +41,8 @@ namespace Loom.ZombieBattleground
                 DoRankUpgrades(filter, card.CardSetType, card.CardRank);
 
                 GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+
+                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_OF_RANK_UPGRADE);
             }
         }
 

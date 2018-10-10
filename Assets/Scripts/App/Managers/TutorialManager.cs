@@ -5,6 +5,7 @@ using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Newtonsoft.Json;
 using Object = UnityEngine.Object;
+using DG.Tweening;
 
 namespace Loom.ZombieBattleground
 {
@@ -29,6 +30,10 @@ namespace Loom.ZombieBattleground
         private TutorialBoardArrow _targettingArrow;
 
         private GameObject _targettingArrowPrefab;
+
+        private Sequence _helpArrowsDelay;
+
+        private List<TutorialBoardArrow> _tutorialHelpBoardArrows;
 
         public bool IsTutorial { get; private set; }
 
@@ -65,6 +70,8 @@ namespace Loom.ZombieBattleground
 
             _tutorials = JsonConvert.DeserializeObject<TutorialContentData>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
+
+            _tutorialHelpBoardArrows = new List<TutorialBoardArrow>();
         }
 
         public void Update()
@@ -211,6 +218,8 @@ namespace Loom.ZombieBattleground
                     {
                         DestroySelectTarget();
                     }
+
+                    ResetHelpArrows();
                 }
             }
         }
@@ -337,6 +346,43 @@ namespace Loom.ZombieBattleground
                     _popup.ShowNextButton();
                 }
             }
+
+            ResetHelpArrows();
+
+            if (CurrentTutorialDataStep.HasHelpArrowsAfterDelay)
+            {
+                _helpArrowsDelay = DOTween.Sequence();
+                _helpArrowsDelay.PrependInterval(CurrentTutorialDataStep.DelayToShowHelpArrows);
+                _helpArrowsDelay.OnComplete(ShowHelpArrowsDelay);
+            }
+        }
+
+        private void ShowHelpArrowsDelay()
+        {
+           List<BoardUnitView> availableUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.UnitCanBeUsable());
+
+            TutorialBoardArrow tutorialBoardArrow;
+            foreach (BoardUnitView unit in availableUnits)
+            {
+                tutorialBoardArrow = Object.Instantiate(_targettingArrowPrefab).AddComponent<TutorialBoardArrow>();
+                tutorialBoardArrow.Begin(unit.Transform.position);
+                tutorialBoardArrow.UpdateTargetPosition((Vector3)CurrentTutorialDataStep.ArrowEndPosition);
+                _tutorialHelpBoardArrows.Add(tutorialBoardArrow);
+            }
+        }
+
+        private void ResetHelpArrows()
+        {
+            if (_helpArrowsDelay != null)
+            {
+                _helpArrowsDelay.Kill();
+            }
+
+            foreach (TutorialBoardArrow arrow in _tutorialHelpBoardArrows)
+            {
+                arrow.Dispose();
+            }
+            _tutorialHelpBoardArrows.Clear();
         }
 
         private void CreateSelectTarget()

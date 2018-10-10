@@ -440,6 +440,7 @@ namespace Loom.ZombieBattleground.Common
             USE_ABILITY,
             HERO_DEATH,
             START_TURN,
+            END_OF_RANK_UPGRADE
         }
 
         public enum UnitStatusType

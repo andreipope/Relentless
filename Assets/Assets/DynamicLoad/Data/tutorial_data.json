@@ -1189,7 +1189,7 @@
           },
           "CanMoveToNextStepByClick": false,
           "SoundName": "czb_tutorial_B_21_done",
-          "requiredAction": "MOVE_CARD",
+          "requiredAction": "END_OF_RANK_UPGRADE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
@@ -1441,7 +1441,14 @@
           "CanClickEndTurn": false,
           "BoardArrowCanUsableOnUnits": false,
           "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true
+          "UnitsCanAttack": true,
+          "HasHelpArrowsAfterDelay": true,
+          "DelayToShowHelpArrows": 10,
+          "ArrowEndPosition": {
+            "X": 0.0,
+            "Y": 5.55,
+            "Z": 0.0
+          }
         },
         {
           "id": 29,
