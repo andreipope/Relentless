@@ -253,11 +253,12 @@ namespace Loom.ZombieBattleground
                             float delta = Application.isMobilePlatform ?
                                 Constants.PointerMinDragDelta * 2f :
                                 Constants.PointerMinDragDeltaMobile;
-                            _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
                             _isPreviewHandCard = true;
                             _topmostBoardCard = topmostBoardCard;
+
+                            _pointerEventSolver.PushPointer(delta);
                         }
                     }
                 }
