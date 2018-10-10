@@ -336,45 +336,45 @@ namespace Loom.ZombieBattleground
 
             switch (skill.Skill.OverlordSkill)
             {
-                case Enumerators.OverlordSkill.IceBolt:
+                case Enumerators.OverlordSkill.ICE_BOLT:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");
                     break;
-                case Enumerators.OverlordSkill.Freeze:
+                case Enumerators.OverlordSkill.FREEZE:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
                     break;
-                case Enumerators.OverlordSkill.PoisonDart:
+                case Enumerators.OverlordSkill.POISON_DART:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
                     break;
-                case Enumerators.OverlordSkill.Fireball:
-                case Enumerators.OverlordSkill.FireBolt:
+                case Enumerators.OverlordSkill.FIREBALL:
+                case Enumerators.OverlordSkill.FIRE_BOLT:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
                     break;
-                case Enumerators.OverlordSkill.HealingTouch:
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
                     break;
-                case Enumerators.OverlordSkill.ToxicPower:
-                case Enumerators.OverlordSkill.Mend:
-                case Enumerators.OverlordSkill.Harden:
-                case Enumerators.OverlordSkill.Stoneskin:
-                case Enumerators.OverlordSkill.Push:
-                case Enumerators.OverlordSkill.Draw:
-                case Enumerators.OverlordSkill.Blizzard:
-                case Enumerators.OverlordSkill.Breakout:
-                case Enumerators.OverlordSkill.Enhance:
-                case Enumerators.OverlordSkill.Epidemic:
-                case Enumerators.OverlordSkill.Fortify:
-                case Enumerators.OverlordSkill.Fortress:
-                case Enumerators.OverlordSkill.IceWall:
-                case Enumerators.OverlordSkill.Infect:
-                case Enumerators.OverlordSkill.Levitate:
-                case Enumerators.OverlordSkill.MassRabies:
-                case Enumerators.OverlordSkill.MeteorShower:
-                case Enumerators.OverlordSkill.Phalanx:
-                case Enumerators.OverlordSkill.Reanimate:
-                case Enumerators.OverlordSkill.Resurrect:
-                case Enumerators.OverlordSkill.Retreat:
-                case Enumerators.OverlordSkill.Shatter:
-                case Enumerators.OverlordSkill.WindShield:
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.OverlordSkill.MEND:
+                case Enumerators.OverlordSkill.HARDEN:
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                case Enumerators.OverlordSkill.PUSH:
+                case Enumerators.OverlordSkill.DRAW:
+                case Enumerators.OverlordSkill.BLIZZARD:
+                case Enumerators.OverlordSkill.BREAKOUT:
+                case Enumerators.OverlordSkill.ENHANCE:
+                case Enumerators.OverlordSkill.EPIDEMIC:
+                case Enumerators.OverlordSkill.FORTIFY:
+                case Enumerators.OverlordSkill.FORTRESS:
+                case Enumerators.OverlordSkill.ICE_WALL:
+                case Enumerators.OverlordSkill.INFECT:
+                case Enumerators.OverlordSkill.LEVITATE:
+                case Enumerators.OverlordSkill.MASS_RABIES:
+                case Enumerators.OverlordSkill.METEOR_SHOWER:
+                case Enumerators.OverlordSkill.PHALANX:
+                case Enumerators.OverlordSkill.REANIMATE:
+                case Enumerators.OverlordSkill.RESSURECT:
+                case Enumerators.OverlordSkill.RETREAT:
+                case Enumerators.OverlordSkill.SHATTER:
+                case Enumerators.OverlordSkill.WIND_SHIELD:
                 default:
                     prefab = new GameObject();
                     break;
@@ -388,20 +388,20 @@ namespace Loom.ZombieBattleground
             string soundFileName = string.Empty;
             switch (skill.Skill.OverlordSkill)
             {
-                case Enumerators.OverlordSkill.IceBolt:
-                case Enumerators.OverlordSkill.Freeze:
-                case Enumerators.OverlordSkill.PoisonDart:
-                case Enumerators.OverlordSkill.FireBolt:
+                case Enumerators.OverlordSkill.ICE_BOLT:
+                case Enumerators.OverlordSkill.FREEZE:
+                case Enumerators.OverlordSkill.POISON_DART:
+                case Enumerators.OverlordSkill.FIRE_BOLT:
                     soundFileName = skill.Skill.OverlordSkill.ToString().ToLower();
                     break;
-                case Enumerators.OverlordSkill.HealingTouch:
-                case Enumerators.OverlordSkill.Fireball:
-                case Enumerators.OverlordSkill.ToxicPower:
-                case Enumerators.OverlordSkill.Mend:
-                case Enumerators.OverlordSkill.Harden:
-                case Enumerators.OverlordSkill.Stoneskin:
-                case Enumerators.OverlordSkill.Push:
-                case Enumerators.OverlordSkill.Draw:
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
+                case Enumerators.OverlordSkill.FIREBALL:
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.OverlordSkill.MEND:
+                case Enumerators.OverlordSkill.HARDEN:
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                case Enumerators.OverlordSkill.PUSH:
+                case Enumerators.OverlordSkill.DRAW:
                 default:
                     break;
             }
@@ -414,94 +414,94 @@ namespace Loom.ZombieBattleground
             Debug.Log(target);
             switch (skill.Skill.OverlordSkill)
             {
-                case Enumerators.OverlordSkill.Freeze:
+                case Enumerators.OverlordSkill.FREEZE:
                     FreezeAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.IceBolt:
+                case Enumerators.OverlordSkill.ICE_BOLT:
                     IceBoltAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.PoisonDart:
+                case Enumerators.OverlordSkill.POISON_DART:
                     PoisonDartAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.ToxicPower:
+                case Enumerators.OverlordSkill.TOXIC_POWER:
                     ToxicPowerAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.HealingTouch:
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
                     HealingTouchAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Mend:
+                case Enumerators.OverlordSkill.MEND:
                     MendAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.FireBolt:
+                case Enumerators.OverlordSkill.FIRE_BOLT:
                     FireBoltAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Rabies:
+                case Enumerators.OverlordSkill.RABIES:
                     RabiesAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Harden:
+                case Enumerators.OverlordSkill.HARDEN:
                     HardenAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Stoneskin:
+                case Enumerators.OverlordSkill.STONE_SKIN:
                     StoneskinAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Push:
+                case Enumerators.OverlordSkill.PUSH:
                     PushAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Draw:
+                case Enumerators.OverlordSkill.DRAW:
                     DrawAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.WindShield:
+                case Enumerators.OverlordSkill.WIND_SHIELD:
                     WindShieldAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Levitate:
+                case Enumerators.OverlordSkill.LEVITATE:
                     Levitate(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Retreat:
+                case Enumerators.OverlordSkill.RETREAT:
                     RetreatAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Breakout:
+                case Enumerators.OverlordSkill.BREAKOUT:
                     BreakoutAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Infect:
+                case Enumerators.OverlordSkill.INFECT:
                     InfectAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Epidemic:
+                case Enumerators.OverlordSkill.EPIDEMIC:
                     EpidemicAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Resurrect:
+                case Enumerators.OverlordSkill.RESSURECT:
                     RessurectAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Reanimate:
+                case Enumerators.OverlordSkill.REANIMATE:
                     ReanimateAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Enhance:
+                case Enumerators.OverlordSkill.ENHANCE:
                     EnhanceAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.IceWall:
+                case Enumerators.OverlordSkill.ICE_WALL:
                     IceWallAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Shatter:
+                case Enumerators.OverlordSkill.SHATTER:
                     ShatterAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Blizzard:
+                case Enumerators.OverlordSkill.BLIZZARD:
                     BlizzardAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.MassRabies:
+                case Enumerators.OverlordSkill.MASS_RABIES:
                     MassRabiesAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.MeteorShower:
+                case Enumerators.OverlordSkill.METEOR_SHOWER:
                     MeteorShowerAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Fireball:
+                case Enumerators.OverlordSkill.FIREBALL:
                     FireballAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Fortify:
+                case Enumerators.OverlordSkill.FORTIFY:
                     FortifyAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Fortress:
+                case Enumerators.OverlordSkill.FORTRESS:
                     FortressAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
-                case Enumerators.OverlordSkill.Phalanx:
+                case Enumerators.OverlordSkill.PHALANX:
                     PhalanxAction(skill.OwnerPlayer, skill, skill.Skill, target);
                     break;
                 default:

@@ -1078,16 +1078,16 @@ namespace Loom.ZombieBattleground
 
             switch (skill.Skill.OverlordSkill)
             {
-                case Enumerators.OverlordSkill.Harden:
-                case Enumerators.OverlordSkill.Stoneskin:
-                case Enumerators.OverlordSkill.Draw:
+                case Enumerators.OverlordSkill.HARDEN:
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                case Enumerators.OverlordSkill.DRAW:
                 {
                     selectedObjectType = Enumerators.AffectObjectType.Player;
                     target = _gameplayManager.OpponentPlayer;
                 }
 
                     break;
-                case Enumerators.OverlordSkill.HealingTouch:
+                case Enumerators.OverlordSkill.HEALING_TOUCH:
                     {
                         List<BoardUnitModel> units = GetUnitsWithLowHp();
 
@@ -1100,7 +1100,7 @@ namespace Loom.ZombieBattleground
                             return;
                     }
                     break;
-                case Enumerators.OverlordSkill.Mend:
+                case Enumerators.OverlordSkill.MEND:
                 {
                     target = _gameplayManager.OpponentPlayer;
                     selectedObjectType = Enumerators.AffectObjectType.Player;
@@ -1131,7 +1131,7 @@ namespace Loom.ZombieBattleground
                 }
 
                     break;
-                case Enumerators.OverlordSkill.Rabies:
+                case Enumerators.OverlordSkill.RABIES:
                 {
                     _unitsToIgnoreThisTurn =
                         _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
@@ -1152,11 +1152,11 @@ namespace Loom.ZombieBattleground
                 }
 
                     break;
-                case Enumerators.OverlordSkill.PoisonDart:
-                case Enumerators.OverlordSkill.ToxicPower:
-                case Enumerators.OverlordSkill.IceBolt:
-                case Enumerators.OverlordSkill.Freeze:
-                case Enumerators.OverlordSkill.FireBolt:
+                case Enumerators.OverlordSkill.POISON_DART:
+                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.OverlordSkill.ICE_BOLT:
+                case Enumerators.OverlordSkill.FREEZE:
+                case Enumerators.OverlordSkill.FIRE_BOLT:
                 {
                     target = _gameplayManager.CurrentPlayer;
                     selectedObjectType = Enumerators.AffectObjectType.Player;
@@ -1173,7 +1173,7 @@ namespace Loom.ZombieBattleground
                 }
 
                     break;
-                case Enumerators.OverlordSkill.Push:
+                case Enumerators.OverlordSkill.PUSH:
                 {
                     if (skill.Skill.ElementTargetTypes.Count > 0)
                     {
