@@ -273,6 +273,13 @@ namespace Loom.ZombieBattleground
                         DoActionByType(skill, target);
                         _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
                     }, _isDirection);
+
+                if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                {
+                    Debug.LogError(" === Add Player Move regarding skill played ==== ");
+                    _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
+                        new PlayOverlordSkill(skill, target)));
+                }
             }
         }
 

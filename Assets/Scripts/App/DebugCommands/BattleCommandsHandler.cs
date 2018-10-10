@@ -224,8 +224,10 @@ static class BattleCommandsHandler
             case Enumerators.OverlordSkill.RETREAT:
                 break;
             case Enumerators.OverlordSkill.HARDEN:
+                RevertHarden(obj);
                 break;
             case Enumerators.OverlordSkill.STONE_SKIN:
+                RevertStoneSkin(obj);
                 break;
             case Enumerators.OverlordSkill.FORTIFY:
                 break;
@@ -234,8 +236,10 @@ static class BattleCommandsHandler
             case Enumerators.OverlordSkill.FORTRESS:
                 break;
             case Enumerators.OverlordSkill.FIRE_BOLT:
+                RevertFireBolt(obj);
                 break;
             case Enumerators.OverlordSkill.RABIES:
+                RevertRabies(obj);
                 break;
             case Enumerators.OverlordSkill.FIREBALL:
                 break;
@@ -266,8 +270,10 @@ static class BattleCommandsHandler
             case Enumerators.OverlordSkill.EPIDEMIC:
                 break;
             case Enumerators.OverlordSkill.FREEZE:
+                RevertFreeze(obj);
                 break;
             case Enumerators.OverlordSkill.ICE_BOLT:
+                RevertIceBolt(obj);
                 break;
             case Enumerators.OverlordSkill.ICE_WALL:
                 break;
@@ -277,6 +283,78 @@ static class BattleCommandsHandler
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private static void RevertIceBolt(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
+            unit.UnitStatus = Enumerators.UnitStatusType.NONE;
+            playOverlordSkill.Skill.SetCoolDown(0);
+
+            // revert stun effects
+        }
+    }
+
+    private static void RevertFreeze(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            //player.
+        }
+        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            unit.UnitStatus = Enumerators.UnitStatusType.NONE;
+        }
+
+        playOverlordSkill.Skill.SetCoolDown(0);
+    }
+
+    private static void RevertRabies(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            unit.SetInitialUnitType();
+            playOverlordSkill.Skill.SetCoolDown(0);
+        }
+    }
+
+    private static void RevertFireBolt(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
+        }
+        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
+        }
+
+        playOverlordSkill.Skill.SetCoolDown(0);
+    }
+
+    private static void RevertStoneSkin(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
+            unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
+            playOverlordSkill.Skill.SetCoolDown(0);
+        }
+    }
+
+    private static void RevertHarden(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
+            playOverlordSkill.Skill.SetCoolDown(0);
+        }
+        else
+        {
+            Debug.LogError("Target is Card === ");
         }
     }
 
@@ -340,5 +418,13 @@ static class BattleCommandsHandler
     {
         BoardUnitModel creature = unitModel;
         creature.CurrentHp += boardSkill.Skill.Value;
+    }
+
+    private static void RevertHealPlayerBySkill(Player player, BoardSkill boardSkill)
+    {
+        if (player == null)
+            return;
+
+        player.Health -= boardSkill.Skill.Value;
     }
 }

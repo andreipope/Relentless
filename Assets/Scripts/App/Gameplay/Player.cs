@@ -423,7 +423,7 @@ namespace Loom.ZombieBattleground
             {
                 _cardsController.SetNewCardInstanceId(0);
             }
-           
+
             foreach (string card in cards)
             {
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
@@ -568,6 +568,15 @@ namespace Loom.ZombieBattleground
 
             _skillsController.BlockSkill(this, Enumerators.SkillType.PRIMARY);
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
+        }
+
+        public void RevertStun()
+        {
+            IsStunned = false;
+            _freezedHighlightObject.SetActive(false);
+            _turnsLeftToFreeFromStun = 0;
+
+
         }
 
         public void ThrowPlayCardEvent(WorkingCard card)

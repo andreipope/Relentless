@@ -327,6 +327,17 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void SetInitialUnitType()
+        {
+            HasHeavy = false;
+            HasBuffHeavy = false;
+            HasFeral = false;
+
+            InitialUnitType = Card.LibraryCard.CardType;
+
+            CardTypeChanged?.Invoke(InitialUnitType);
+        }
+
         public void SetObjectInfo(WorkingCard card)
         {
             Card = card;
