@@ -93,9 +93,7 @@ namespace Loom.ZombieBattleground
                     sprite = card.PictureSprite.sprite;
                     break;
                 case BoardSkill skill:
-                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_" +
-                        skill.OwnerPlayer.SelfHero.HeroElement + "_" +
-                        skill.Skill.Skill.ToLower());
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
                     break;
                 case BoardSpell spell:
                     {

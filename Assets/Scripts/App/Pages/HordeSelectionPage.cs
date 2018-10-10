@@ -243,12 +243,10 @@ namespace Loom.ZombieBattleground
             horde.SelfDeck.PrimarySkill = 0;
             horde.SelfDeck.SecondarySkill = 1;
             
-            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_" +
-                horde.SelfHero.Element.ToUpper() + "_" +
-                horde.SelfHero.Skills[horde.SelfDeck.PrimarySkill].Skill.ToLower());
-            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_" +
-                horde.SelfHero.Element.ToUpper() + "_" +
-                horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].Skill.ToLower());
+            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
+                 horde.SelfHero.Skills[horde.SelfDeck.PrimarySkill].IconPath);
+            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
+               horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].IconPath);
 
             _selectedDeckId = (int) horde.SelfDeck.Id;
 
