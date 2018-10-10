@@ -146,7 +146,7 @@ SpriteAtlas:
   - battleground_mechanic_icon_attack
   - battleground_mechanic_icon_flash
   - battleground_past_action_bar_icon_lifegain
-  - battleground_mechanic_icon_blank_large
+  - battleground_past_action_bar_icon_blank
   - battleground_mechanic_icon_guard
   - battleground_mechanic_icon_entry
   - battleground_past_action_bar_icon_attack
