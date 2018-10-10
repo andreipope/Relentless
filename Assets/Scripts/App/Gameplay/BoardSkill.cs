@@ -126,6 +126,11 @@ namespace Loom.ZombieBattleground
             SetHighlightingEnabled(false);
         }
 
+        public void UnBlockSkill()
+        {
+            _usedInThisTurn = false;
+        }
+
         public void SetCoolDown(int coolDownValue)
         {
             _cooldown = coolDownValue;

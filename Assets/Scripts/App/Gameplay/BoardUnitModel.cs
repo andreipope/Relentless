@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEnded;
 
-        public event Action Stunned;
+        public event Action<bool> Stunned;
 
         public event Action UnitDied;
 
@@ -418,7 +418,14 @@ namespace Loom.ZombieBattleground
 
             UnitStatus = Enumerators.UnitStatusType.FROZEN;
 
-            Stunned?.Invoke();
+            Stunned?.Invoke(true);
+        }
+
+        public void RevertStun()
+        {
+            UnitStatus = Enumerators.UnitStatusType.NONE;
+            _stunTurns = 0;
+            Stunned?.Invoke(false);
         }
 
         public void ForceSetCreaturePlayable()

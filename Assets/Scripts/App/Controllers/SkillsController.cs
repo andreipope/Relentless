@@ -45,8 +45,11 @@ namespace Loom.ZombieBattleground
 
         public BoardSkill PlayerSecondarySkill { get; private set; }
 
+        public List<BoardUnitView> UnitsAffectedBySkills { get; set; }
+
         public void Dispose()
         {
+            UnitsAffectedBySkills = null;
         }
 
         public void Init()
@@ -65,6 +68,8 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _gameplayManager.GameEnded += GameplayManagerGameEnded;
+
+            UnitsAffectedBySkills = new List<BoardUnitView>();
         }
 
         public void Update()
@@ -153,6 +158,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void UnBlockSkill(Player player)
+        {
+            if (player.IsLocalPlayer)
+            {
+                PlayerPrimarySkill.UnBlockSkill();
+                PlayerSecondarySkill.UnBlockSkill();
+            }
+            else
+            {
+                OpponentPrimarySkill.UnBlockSkill();
+                OpponentSecondarySkill.UnBlockSkill();
+            }
+        }
+
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
             PlayerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
@@ -214,9 +233,15 @@ namespace Loom.ZombieBattleground
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                     {
-                        Debug.LogError(" === Add Player Move regarding skill played ==== ");
+                        PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetPlayer);
                         _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
-                            new PlayOverlordSkill(skill, targetPlayer)));
+                            playOverlordSkill));
+
+                        if (UnitsAffectedBySkills.Count > 0)
+                        {
+                            playOverlordSkill.UnitsAffectedBySkills = UnitsAffectedBySkills;
+                            UnitsAffectedBySkills.Clear();
+                        }
                     }
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
@@ -246,9 +271,15 @@ namespace Loom.ZombieBattleground
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                     {
-                        Debug.LogError(" === Add Player Move regarding skill played ==== ");
+                        PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetUnitView.Model);
                         _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
-                            new PlayOverlordSkill(skill, targetUnitView.Model)));
+                            playOverlordSkill));
+
+                        if (UnitsAffectedBySkills.Count > 0)
+                        {
+                            playOverlordSkill.UnitsAffectedBySkills = UnitsAffectedBySkills;
+                            UnitsAffectedBySkills.Clear();
+                        }
                     }
                 }
 
@@ -276,9 +307,15 @@ namespace Loom.ZombieBattleground
 
                 if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                 {
-                    Debug.LogError(" === Add Player Move regarding skill played ==== ");
+                    PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, target);
                     _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
-                        new PlayOverlordSkill(skill, target)));
+                        playOverlordSkill));
+
+                    if (UnitsAffectedBySkills.Count > 0)
+                    {
+                        playOverlordSkill.UnitsAffectedBySkills = UnitsAffectedBySkills;
+                        UnitsAffectedBySkills.Clear();
+                    }
                 }
             }
         }
@@ -1290,6 +1327,8 @@ namespace Loom.ZombieBattleground
                 Caller = boardSkill,
                 TargetEffects = TargetEffects
             });
+
+            UnitsAffectedBySkills = new List<BoardUnitView>(units);
         }
 
         // FIRE

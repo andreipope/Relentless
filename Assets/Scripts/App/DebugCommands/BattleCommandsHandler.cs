@@ -217,23 +217,11 @@ static class BattleCommandsHandler
             case Enumerators.OverlordSkill.DRAW:
                 RevertDraw(obj);
                 break;
-            case Enumerators.OverlordSkill.WIND_SHIELD:
-                break;
-            case Enumerators.OverlordSkill.LEVITATE:
-                break;
-            case Enumerators.OverlordSkill.RETREAT:
-                break;
             case Enumerators.OverlordSkill.HARDEN:
                 RevertHarden(obj);
                 break;
             case Enumerators.OverlordSkill.STONE_SKIN:
                 RevertStoneSkin(obj);
-                break;
-            case Enumerators.OverlordSkill.FORTIFY:
-                break;
-            case Enumerators.OverlordSkill.PHALANX:
-                break;
-            case Enumerators.OverlordSkill.FORTRESS:
                 break;
             case Enumerators.OverlordSkill.FIRE_BOLT:
                 RevertFireBolt(obj);
@@ -242,32 +230,19 @@ static class BattleCommandsHandler
                 RevertRabies(obj);
                 break;
             case Enumerators.OverlordSkill.FIREBALL:
-                break;
-            case Enumerators.OverlordSkill.MASS_RABIES:
-                break;
-            case Enumerators.OverlordSkill.METEOR_SHOWER:
+                RevertFireball(obj);
                 break;
             case Enumerators.OverlordSkill.HEALING_TOUCH:
+                RevertHealingTouch(obj);
                 break;
             case Enumerators.OverlordSkill.MEND:
-                break;
-            case Enumerators.OverlordSkill.RESSURECT:
-                break;
-            case Enumerators.OverlordSkill.ENHANCE:
-                break;
-            case Enumerators.OverlordSkill.REANIMATE:
+                RevertMend(obj);
                 break;
             case Enumerators.OverlordSkill.POISON_DART:
                 RevertPosionDartAttack(obj);
                 break;
             case Enumerators.OverlordSkill.TOXIC_POWER:
                 RevertToxicPowerAttack(obj);
-                break;
-            case Enumerators.OverlordSkill.BREAKOUT:
-                break;
-            case Enumerators.OverlordSkill.INFECT:
-                break;
-            case Enumerators.OverlordSkill.EPIDEMIC:
                 break;
             case Enumerators.OverlordSkill.FREEZE:
                 RevertFreeze(obj);
@@ -276,14 +251,76 @@ static class BattleCommandsHandler
                 RevertIceBolt(obj);
                 break;
             case Enumerators.OverlordSkill.ICE_WALL:
-                break;
-            case Enumerators.OverlordSkill.SHATTER:
+                RevertIceWall(obj);
                 break;
             case Enumerators.OverlordSkill.BLIZZARD:
+                RevertBlizzard(obj);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    private static void RevertIceWall(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
+        }
+        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
+            unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
+        }
+
+        playOverlordSkill.Skill.SetCoolDown(0);
+    }
+
+    private static void RevertBlizzard(PlayOverlordSkill playOverlordSkill)
+    {
+        foreach (BoardUnitView unit in playOverlordSkill.UnitsAffectedBySkills)
+        {
+            unit.Model.RevertStun();
+        }
+
+        playOverlordSkill.Skill.SetCoolDown(0);
+    }
+
+    private static void RevertFireball(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
+        }
+        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
+        }
+
+        playOverlordSkill.Skill.SetCoolDown(0);
+    }
+
+    private static void RevertMend(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
+            playOverlordSkill.Skill.SetCoolDown(0);
+        }
+    }
+
+    private static void RevertHealingTouch(PlayOverlordSkill playOverlordSkill)
+    {
+        if (playOverlordSkill.Target is Player player)
+        {
+            RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
+        }
+        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        {
+            RevertHealUnityBySkill(unit, playOverlordSkill.Skill);
+        }
+
+        playOverlordSkill.Skill.SetCoolDown(0);
     }
 
     private static void RevertIceBolt(PlayOverlordSkill playOverlordSkill)
@@ -291,10 +328,8 @@ static class BattleCommandsHandler
         if (playOverlordSkill.Target is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
-            unit.UnitStatus = Enumerators.UnitStatusType.NONE;
+            unit.RevertStun();
             playOverlordSkill.Skill.SetCoolDown(0);
-
-            // revert stun effects
         }
     }
 
@@ -302,11 +337,11 @@ static class BattleCommandsHandler
     {
         if (playOverlordSkill.Target is Player player)
         {
-            //player.
+            player.RevertStun();
         }
         else if(playOverlordSkill.Target is BoardUnitModel unit)
         {
-            unit.UnitStatus = Enumerators.UnitStatusType.NONE;
+            unit.RevertStun();
         }
 
         playOverlordSkill.Skill.SetCoolDown(0);
@@ -426,5 +461,13 @@ static class BattleCommandsHandler
             return;
 
         player.Health -= boardSkill.Skill.Value;
+    }
+
+    private static void RevertHealUnityBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
+    {
+        if (unitModel == null)
+            return;
+
+        unitModel.CurrentHp -= boardSkill.Skill.Value;
     }
 }

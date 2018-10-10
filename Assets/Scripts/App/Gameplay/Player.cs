@@ -577,6 +577,7 @@ namespace Loom.ZombieBattleground
             _turnsLeftToFreeFromStun = 0;
 
 
+            _skillsController.UnBlockSkill(this);
         }
 
         public void ThrowPlayCardEvent(WorkingCard card, int position)
