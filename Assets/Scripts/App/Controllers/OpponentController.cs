@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
         private BoardArrowController _boardArrowController;
         private AbilitiesController _abilitiesController;
         private ActionsQueueController _actionsQueueController;
+        private RanksController _ranksController;
 
         public void Dispose()
         {
@@ -47,6 +48,7 @@ namespace Loom.ZombieBattleground
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _ranksController = _gameplayManager.GetController<RanksController>();
 
             _gameplayManager.GameStarted += GameStartedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
@@ -78,7 +80,14 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, GameClient.Get<IPvPManager>().IsCurrentPlayer());
+                }
+                else
+                {
+                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
+                }
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -89,9 +98,11 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardPlayedActionReceived += OnCardPlayedHandler;
             _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
             _pvpManager.DrawCardActionReceived += OnDrawCardHandler;
-            //_pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
-            //_pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
+            _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
+            _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
+            _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -99,119 +110,25 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardPlayedActionReceived -= OnCardPlayedHandler;
             _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
             _pvpManager.DrawCardActionReceived -= OnDrawCardHandler;
-            //_pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
-            //_pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
+            _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
+            _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
+            _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
+            _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
         }
-
-
-    #region requests
-
-    public async Task ActionEndTurn(Player player)
-        {
-            if (!_backendFacade.IsConnected)
-                return;
-
-            EndTurnModel model = new EndTurnModel()
-            {
-                CallerId = player.Id
-            };
-        }
-
-        public async Task ActionDrawCard(Player player, Player fromDeckOfPlayer, Player toPlayer, Enumerators.AffectObjectType affectObjectType, string cardName = null)
-        {
-            if (!_backendFacade.IsConnected)
-                return;
-
-            DrawCardModel model = new DrawCardModel()
-            {
-                CallerId = player.Id,
-                CardName = cardName,
-                FromDeckOfPlayerId = fromDeckOfPlayer.Id,
-                TargetId = toPlayer.Id,
-                AffectObjectType = affectObjectType
-            };
-        }
-
-        public async Task ActionCardAttack(Player player, BoardUnitModel attacker, BoardObject target, Enumerators.AffectObjectType affectObjectType)
-        {
-            if (!_backendFacade.IsConnected)
-                return;
-
-            CardAttackModel model = new CardAttackModel() 
-            {
-                CardId = attacker.Id,
-                TargetId = target.Id,
-                AffectObjectType = affectObjectType
-            };
-        }
-
-        public async Task ActionUseCardAbility(Player player, Data.Card card, BoardObject boardObject, BoardObject target = null,
-                                               Enumerators.AffectObjectType affectObjectType = Enumerators.AffectObjectType.None)
-        {
-            if (!_backendFacade.IsConnected)
-                return;
-
-            int targetId = -1;
-
-            if (target != null)
-            {
-                targetId = target.Id;
-            }
-
-            UseCardAbilityModel model = new UseCardAbilityModel()
-            {
-                AffectObjectType = affectObjectType,
-                TargetId = targetId,
-                BoardObjectId = boardObject.Id,
-                CardId = card.Id,
-                CardKind = card.CardKind
-            };
-        }
-
-        public async Task ActionUseOverlordSkill(Player player, BoardSkill skill, BoardObject target = null,
-                                                 Enumerators.AffectObjectType affectObjectType = Enumerators.AffectObjectType.None)
-        {
-            if (!_backendFacade.IsConnected)
-                return;
-
-            int targetId = -1;
-
-            if (target != null)
-            {
-                targetId = target.Id;
-            }
-
-            UseOverlordSkillModel model = new UseOverlordSkillModel()
-            {
-                CallerId = player.Id,
-                SkillId = skill.Id,
-                TargetId = targetId,
-                AffectObjectType = affectObjectType
-            };
-        }
-
-        public async Task ActionMulligan(Player player, List<WorkingCard> cards)
-        {
-            if (!_backendFacade.IsConnected)
-                return;
-
-            List<int> cardsIds = cards.Select(card => card.Id).ToList();
-
-            MulliganModel model = new MulliganModel()
-            {
-                CallerId = player.Id,
-                CardsIds = cardsIds
-            };
-        }
-        #endregion
-
 
         #region event handlers
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
-            GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer), cardPlay.Card.InstanceId);
+            GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer),
+                              cardPlay.Card.InstanceId,
+                              cardPlay.Position);
+        }
+
+        private async void OnLeaveMatchHandler()
+        {
+            await _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -229,19 +146,38 @@ namespace Loom.ZombieBattleground
             GotActionDrawCard(FromProtobufExtensions.FromProtobuf(actionDrawCard.CardInstance, _gameplayManager.OpponentPlayer));
         }
 
-        /*private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
-        {
+        private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
+        {           
+            GotActionUseCardAbility(new UseCardAbilityModel()
+            {
+                CardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(actionUseCardAbility.CardKind.ToString()),
+                Card = FromProtobufExtensions.FromProtobuf(actionUseCardAbility.Card, _gameplayManager.OpponentPlayer),
+                Targets = FromProtobufExtensions.FromProtobuf(actionUseCardAbility.Targets),
+                AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(actionUseCardAbility.AbilityType)
+            });
         }
 
         private void OnOverlordSkillUsedHandler(PlayerActionOverlordSkillUsed actionUseOverlordSkill)
         {
-
-        }*/
+            GotActionUseOverlordSkill(new UseOverlordSkillModel()
+            {
+                SkillId = (int)actionUseOverlordSkill.SkillId,
+                TargetId = actionUseOverlordSkill.Target.InstanceId,
+                AffectObjectType = Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(actionUseOverlordSkill.AffectObjectType.ToString(), true)
+            });
+        }
 
         private void OnMulliganProcessHandler(PlayerActionMulligan actionMulligan)
         {
 
         }
+
+        private void OnRankBuffHandler(PlayerActionRankBuff actionRankBuff)
+        {
+            GotActionRankBuff(FromProtobufExtensions.FromProtobuf(actionRankBuff.Card, _gameplayManager.OpponentPlayer),
+                              FromProtobufExtensions.FromProtobuf(actionRankBuff.Targets));
+        }
+         
 
         #endregion
 
@@ -258,7 +194,7 @@ namespace Loom.ZombieBattleground
             _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
-        public void GotActionPlayCard(WorkingCard card, int instanceId)
+        public void GotActionPlayCard(WorkingCard card, int instanceId, int position)
         {
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
@@ -276,7 +212,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-                        _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(position, boardUnitViewElement);
 
                         boardUnitViewElement.PlayArrivalAnimation();
 
@@ -288,11 +224,23 @@ namespace Loom.ZombieBattleground
                             Caller = boardUnitViewElement.Model,
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
-                        _gameplayManager.CanDoDragActions = true;
+
+                        _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
                         break;
                     case Enumerators.CardKind.SPELL:
+                        BoardSpell spell = new BoardSpell(null, card); // todo improve it with game Object aht will be aniamted
+                        _gameplayManager.OpponentPlayer.BoardSpellsInUse.Add(spell);
+                        spell.OwnerPlayer = _gameplayManager.OpponentPlayer;
+                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        {
+                            ActionType = Enumerators.ActionType.PlayCardFromHand,
+                            Caller = spell,
+                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        });
                         break;
                 }
+
+                _gameplayManager.OpponentPlayer.Goo -= card.RealCost;
             });
         }
 
@@ -312,35 +260,28 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
-            BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
-            Data.Card libraryCard = _dataManager.CachedCardsLibraryData.Cards.Find(card => card.Id == model.CardId);
-            BoardObject boardObject = _battlegroundController.GetBoardObjectById(model.BoardObjectId);
-            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)boardObject);
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.Id);
 
-            Transform transform = model.CardKind == Enumerators.CardKind.SPELL ?
-                                 _gameplayManager.OpponentPlayer.AvatarObject.transform : boardUnitView.Transform;
-
-            WorkingCard workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
-
-            if (target != null)
+            if(boardObjectCaller == null)
             {
-                Action callback = () =>
+                GameClient.Get<IQueueManager>().AddAction(() =>
                 {
-                    _abilitiesController.CallAbility(libraryCard, null, workingCard, model.CardKind, boardObject, null, false, null, target);
-                };
+                    GotActionUseCardAbility(model);
+                });
 
-                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(transform, target, action: callback);
+                return;
             }
-            else
-            {
-                _abilitiesController.CallAbility(libraryCard, null, workingCard, model.CardKind, boardObject, null, false, null);
-            }
+
+            _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
+                                                      boardObjectCaller,
+                                                      _battlegroundController.GetTargetsById(model.Targets),
+                                                      model.Card,
+                                                      _gameplayManager.OpponentPlayer);
         }
 
         public void GotActionUseOverlordSkill(UseOverlordSkillModel model)
         {
-            Player caller = _gameplayManager.GetPlayerById(model.CallerId);
-            BoardSkill skill = _battlegroundController.GetSkillById(caller, model.SkillId);
+            BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             Action callback = () =>
@@ -368,6 +309,15 @@ namespace Loom.ZombieBattleground
         public void GotActionMulligan(MulliganModel model)
         {
             // todo implement logic..
+        }
+
+        public void GotActionRankBuff(WorkingCard card, List<Unit> targets)
+        {
+            List<BoardUnitView> units = _battlegroundController.GetTargetsById(targets)
+                .Cast<BoardUnitModel>()
+                .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
+
+            _ranksController.BuffAllyManually(units, card);
         }
 
         #endregion
@@ -398,25 +348,28 @@ namespace Loom.ZombieBattleground
     public class UseOverlordSkillModel
     {
         public int SkillId;
-        public int CallerId;
         public int TargetId;
         public Enumerators.AffectObjectType AffectObjectType;
     }
 
     public class UseCardAbilityModel
     {
-        public int CardId;
+        public WorkingCard Card;
         public Enumerators.CardKind CardKind;
-        public int BoardObjectId;
-        public int CardAbilityId;
-        public int TargetId;
-        public Enumerators.AffectObjectType AffectObjectType;
+        public Enumerators.AbilityType AbilityType;
+        public List<Unit> Targets;
     }
 
     public class CardAttackModel
     {
         public int CardId;
         public int TargetId;
+        public Enumerators.AffectObjectType AffectObjectType;
+    }
+
+    public class TargetUnitModel
+    {
+        public int Target;
         public Enumerators.AffectObjectType AffectObjectType;
     }
 

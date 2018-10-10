@@ -1,12 +1,17 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using System;
 using TMPro;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class BoardSkill : OwnableBoardObject
     {
+        public event Action<BoardSkill, BoardObject> SkillUsed;
+
         public BattleBoardArrow FightTargetingArrow;
 
         public GameObject SelfObject;
@@ -41,6 +46,8 @@ namespace Loom.ZombieBattleground
 
         private bool _usedInThisTurn;
 
+        private bool _isOpen;
+
         private OnBehaviourHandler _behaviourHandler;
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
@@ -72,11 +79,12 @@ namespace Loom.ZombieBattleground
 
             _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
 
-            string name = isPrimary ? "1stShutters" : "2ndtShutters";
+            string name = isPrimary ? Constants.OverlordRegularNeckR : Constants.OverlordRegularNeckL;
+
             _shutterAnimator = SelfObject.transform.parent.transform
-                .Find("OverlordArea/RegularModel/CZB_3D_Overlord_death_regular_LOD0/" + name).GetComponent<Animator>();
-            //_shutterAnimator.enabled = false;
-            //_shutterAnimator.StopPlayback();
+                .Find("OverlordArea/RegularModel/RegularPosition/OverlordRegular/Shutters/" + name).GetComponent<Animator>();
+
+            Id = isPrimary ? 0 : 1;
 
             OwnerPlayer.TurnStarted += TurnStartedHandler;
             OwnerPlayer.TurnEnded += TurnEndedHandler;
@@ -94,6 +102,8 @@ namespace Loom.ZombieBattleground
 
             _fightTargetingArrowPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
+
+            _isOpen = false;
         }
 
         public bool IsSkillReady => _cooldown == 0;
@@ -132,7 +142,7 @@ namespace Loom.ZombieBattleground
                         _gameplayManager.CurrentPlayer.BoardCards;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
-
+                    FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
@@ -157,7 +167,7 @@ namespace Loom.ZombieBattleground
             IsUsing = false;
         }
 
-        public void UseSkill()
+        public void UseSkill(BoardObject target)
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
@@ -166,6 +176,10 @@ namespace Loom.ZombieBattleground
             _coolDownTimer.SetAngle(_cooldown, true);
 
             GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+
+            SkillUsed?.Invoke(this, target);
         }
 
         public void Hide()
@@ -277,7 +291,7 @@ namespace Loom.ZombieBattleground
 
         private void TurnEndedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (_gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 return;
 
             SetHighlightingEnabled(false);
@@ -299,9 +313,11 @@ namespace Loom.ZombieBattleground
         {
             _glowObject.SetActive(isActive);
 
-            _shutterAnimator.enabled = isActive ? true : false;
-            _shutterAnimator.speed = isActive ? 1 : -1;
-            _shutterAnimator.StartPlayback();
+            if (_isOpen != isActive)
+            {
+                _isOpen = isActive;
+                _shutterAnimator.SetTrigger((isActive ? Enumerators.ShutterState.Open : Enumerators.ShutterState.Close).ToString());
+            }
         }
 
         private void DoOnUpSkillAction()

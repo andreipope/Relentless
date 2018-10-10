@@ -649,11 +649,6 @@ namespace Loom.ZombieBattleground
                         Canvas.ForceUpdateCanvases();
                     });
             }
-
-            if (_currentHordePage + 1 < _numHordePages)
-            {
-                MoveHordeToRight();
-            }
         }
 
         public uint GetMaxCopiesValue(Card card)

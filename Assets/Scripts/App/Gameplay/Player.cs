@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
@@ -25,6 +27,10 @@ namespace Loom.ZombieBattleground
 
         private readonly IDataManager _dataManager;
 
+        private readonly BackendFacade _backendFacade;
+
+        private readonly BackendDataControlMediator _backendDataControlMediator;
+
         private readonly IGameplayManager _gameplayManager;
 
         private readonly ISoundManager _soundManager;
@@ -39,19 +45,21 @@ namespace Loom.ZombieBattleground
 
         private readonly GameObject _avatarObject;
 
+        private readonly GameObject _avatarAfterDeadObject;
+
         private readonly GameObject _overlordRegularObject;
 
         private readonly GameObject _overlordDeathObject;
 
         private readonly GameObject _avatarHeroHighlight;
 
-        private readonly GameObject _avatarHeroHighlightAfterDead;
-
         private readonly GameObject _avatarSelectedHighlight;
 
         private readonly Animator _avatarAnimator;
 
         private readonly Animator _deathAnimator;
+
+        private readonly Animator _regularAnimator;
 
         private readonly FadeTool _gooBarFadeTool;
 
@@ -82,6 +90,8 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -93,6 +103,7 @@ namespace Loom.ZombieBattleground
             CardsInHand = new List<WorkingCard>();
             CardsOnBoard = new List<WorkingCard>();
             BoardCards = new List<BoardUnitView>();
+            BoardSpellsInUse = new List<BoardSpell>();
 
             CardsPreparingToHand = new List<BoardCard>();
 
@@ -132,23 +143,23 @@ namespace Loom.ZombieBattleground
             BuffedHp = 0;
             _goo = Constants.DefaultPlayerGoo;
 
-            _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
+            _avatarAfterDeadObject = _overlordRegularObject.transform.Find("RegularPosition/FrameShuttering (1)/FrameExplosion").gameObject;
+            _avatarObject = playerObject.transform.Find("Avatar/Hero_Object").gameObject;
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _avatarHeroHighlight = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
             _avatarSelectedHighlight = playerObject.transform.Find("Avatar/SelectedHighlight").gameObject;
 
-            _avatarAnimator = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<Animator>();
+            _avatarAnimator = _avatarObject.GetComponent<Animator>();
             _deathAnimator = _overlordDeathObject.GetComponent<Animator>();
-            _gooBarFadeTool = playerObject.transform.Find("Avatar/Hero_Object").GetComponent<FadeTool>();
+            _regularAnimator = _overlordRegularObject.GetComponent<Animator>();
+            _gooBarFadeTool = _avatarObject.GetComponent<FadeTool>();
 
             _freezedHighlightObject = playerObject.transform.Find("Avatar/FreezedHighlight").gameObject;
 
-            string name = Utilites.FirstCharToUpper(SelfHero.HeroElement.ToString()) + "HeroFrame";
-            _avatarHeroHighlightAfterDead = playerObject.transform.Find("Avatar/HeroHighlight").gameObject;
-            _avatarHeroHighlightAfterDead.SetActive(false);
             _avatarAnimator.enabled = false;
             _deathAnimator.enabled = false;
+            _regularAnimator.enabled = false;
             _deathAnimator.StopPlayback();
 
             PlayerHpChanged += PlayerHpChangedHandler;
@@ -174,9 +185,11 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> BoardChanged;
 
-        public event Action<WorkingCard> CardPlayed;
+        public event Action<WorkingCard, int> CardPlayed;
 
         public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
+
+        public event Action LeaveMatch;
 
         public event Action<List<WorkingCard>> Mulligan;
 
@@ -235,6 +248,8 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayer { get; set; }
 
         public List<BoardUnitView> BoardCards { get; set; }
+
+        public List<BoardSpell> BoardSpellsInUse { get; set; }
 
         public List<WorkingCard> CardsInDeck { get; set; }
 
@@ -361,7 +376,6 @@ namespace Loom.ZombieBattleground
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
-            ThrowPlayCardEvent(card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -395,19 +409,21 @@ namespace Loom.ZombieBattleground
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
-        public void SetDeck(List<string> cards)
+        public void SetDeck(List<string> cards, bool isMainTurnSecond)
         {
             CardsInDeck = new List<WorkingCard>();
 
             cards = ShuffleCardsList(cards);
 
-#if DEV_MODE
-            if (IsLocalPlayer)
+            if(isMainTurnSecond)
             {
-                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName("Cherno-bill"), this)); // special card id
+                _cardsController.SetNewCardInstanceId(Constants.MinDeckSize);
             }
-#endif
-
+            else
+            {
+                _cardsController.SetNewCardInstanceId(0);
+            }
+           
             foreach (string card in cards)
             {
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
@@ -464,19 +480,31 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayerDie()
+        public async Task PlayerDie()
         {
             _gooBarFadeTool.FadeIn();
 
-            _overlordRegularObject.SetActive(false);
-            _overlordDeathObject.SetActive(true);
+            Material heroAvatarMaterial = _avatarObject.transform.GetChild(1).GetComponent<Renderer>().material;
 
-            _avatarAnimator.enabled = true;
-            _deathAnimator.enabled = true;
+            MeshRenderer renderer;
+            for (int i = 0; i < _avatarAfterDeadObject.transform.childCount; i++)
+            {
+                renderer = _avatarAfterDeadObject.transform.GetChild(i).GetComponent<MeshRenderer>();
+
+                if (renderer  != null)
+                {
+                    renderer.material.mainTexture = heroAvatarMaterial.mainTexture;
+                }
+            }
+
+            _overlordDeathObject.SetActive(true);
+            _avatarObject.SetActive(false);
             _avatarHeroHighlight.SetActive(false);
-            _avatarHeroHighlightAfterDead.SetActive(true);
-            _avatarAnimator.Play(0);
+            _avatarAfterDeadObject.SetActive(true);
+            _deathAnimator.enabled = true;
+            _regularAnimator.enabled = true;
             _deathAnimator.Play(0);
+            _regularAnimator.Play(0);
 
             _skillsController.DisableSkillsContent(this);
 
@@ -485,6 +513,11 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+
+                await _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
+                                                (int)_pvpManager.MatchResponse.Match.Id,
+                                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
+
             }
             else
             {
@@ -508,14 +541,19 @@ namespace Loom.ZombieBattleground
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
         }
 
-        public void ThrowPlayCardEvent(WorkingCard card)
+        public void ThrowPlayCardEvent(WorkingCard card, int position)
         {
-            CardPlayed?.Invoke(card);
+            CardPlayed?.Invoke(card, position);
         }
 
         public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)
         {
             CardAttacked?.Invoke(card, type, instanceId);
+        }
+
+        public void ThrowLeaveMatch()
+        {
+            LeaveMatch?.Invoke();
         }
 
         public void ThrowOnHandChanged()

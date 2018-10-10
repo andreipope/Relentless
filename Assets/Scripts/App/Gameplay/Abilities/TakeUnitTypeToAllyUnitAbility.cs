@@ -31,18 +31,32 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnitView> allies = PlayerCallerOfAbility.BoardCards
-                .Where(unit => unit.Model != AbilityUnitOwner && !unit.Model.HasFeral && unit.Model.NumTurnsOnBoard == 0)
+            List<BoardUnitModel> allies;
+
+            if (PredefinedTargets != null)
+            {
+                allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+
+                if (allies.Count > 0)
+                {
+                    TakeTypeToUnit(allies[0]);
+                }
+            }
+            else
+            {
+                 allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
                 .ToList();
 
-            if (allies.Count > 0)
-            {
-                int random = Random.Range(0, allies.Count);
-                TakeTypeToUnit(allies[random]);
+                if (allies.Count > 0)
+                {
+                    int random = Random.Range(0, allies.Count);
+                    TakeTypeToUnit(allies[random]);
+                }
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitView unit)
+        private void TakeTypeToUnit(BoardUnitModel unit)
         {
             if (unit == null)
                 return;
@@ -50,14 +64,19 @@ namespace Loom.ZombieBattleground
             switch (UnitType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.Model.SetAsHeavyUnit();
+                    unit.SetAsHeavyUnit();
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.Model.SetAsFeralUnit();
+                    unit.SetAsFeralUnit();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+               unit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

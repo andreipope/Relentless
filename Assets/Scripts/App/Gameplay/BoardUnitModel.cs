@@ -89,6 +89,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject> UnitDamaged;
 
+        public event Action<BoardObject> PrepairingToDie;
+
         public event Action UnitHpChanged;
 
         public event Action UnitDamageChanged;
@@ -97,7 +99,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<Enumerators.BuffType> BuffApplied;
 
-        public event Action BuffShieldAdded;
+        public event Action<bool> BuffShieldStateChanged;
 
         public event Action CreaturePlayableForceSet;
 
@@ -248,13 +250,14 @@ namespace Loom.ZombieBattleground
         {
             HasBuffShield = false;
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
+            BuffShieldStateChanged?.Invoke(false);
         }
 
         public void AddBuffShield()
         {
             AddBuff(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
-            BuffShieldAdded?.Invoke();
+            BuffShieldStateChanged?.Invoke(true);
         }
 
         public void UpdateCardType()
@@ -445,13 +448,9 @@ namespace Loom.ZombieBattleground
                             FightSequenceHandler.HandleAttackPlayer(
                                 completeCallback,
                                 targetPlayer,
-                                async () =>
+                                () =>
                                 {
                                     _battleController.AttackPlayerByUnit(this, targetPlayer);
-                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                                    {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetPlayer, Enumerators.AffectObjectType.Player);
-                                    }
                                 },
                                 () =>
                                 {
@@ -471,14 +470,9 @@ namespace Loom.ZombieBattleground
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
                                 targetCardModel,
-                                async () =>
+                                () =>
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
-
-                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                                    {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetCardModel, Enumerators.AffectObjectType.Player);
-                                    }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {
@@ -578,6 +572,11 @@ namespace Loom.ZombieBattleground
             OwnerPlayer.AddCardToGraveyard(Card);
 
             UnitFromDeckRemoved?.Invoke();
+        }
+
+        public void InvokeUnitPrepairingToDie()
+        {
+            PrepairingToDie?.Invoke(this);
         }
     }
 }

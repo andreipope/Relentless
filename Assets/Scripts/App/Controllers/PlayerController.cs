@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         private ITimerManager _timerManager;
 
+        private IMatchManager _matchManager;
+
         private CardsController _cardsController;
 
         private BattlegroundController _battlegroundController;
@@ -49,6 +51,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -84,6 +87,7 @@ namespace Loom.ZombieBattleground
         {
             StopHandTimer();
             _timerManager.StopTimer(SetStatusZoomingFalse);
+            _timerManager.StopTimer(UpdateCardDistribution);
         }
 
         public void InitializePlayer(int playerId)
@@ -109,7 +113,14 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
+                if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+                {
+                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, !GameClient.Get<IPvPManager>().IsCurrentPlayer());
+                }
+                else
+                {
+                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, false);
+                }
             }
 
             _gameplayManager.CurrentPlayer.TurnStarted += OnTurnStartedStartedHandler;
@@ -120,13 +131,14 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
 
-            GameClient.Get<ITimerManager>().AddTimer(
-                x =>
-                {
-                    _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
-                });
+            _timerManager.AddTimer(UpdateCardDistribution);
 
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+        }
+
+        private void UpdateCardDistribution(object[] param)
+        {
+            _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
         }
 
         public virtual void GameStartedHandler()
@@ -195,6 +207,11 @@ namespace Loom.ZombieBattleground
 
         private void HandleInput()
         {
+            if (Input.GetMouseButtonUp(0))
+            {
+                _pointerEventSolver.PopPointer();
+            }
+
             if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
                 return;
 
@@ -264,11 +281,12 @@ namespace Loom.ZombieBattleground
                             float delta = Application.isMobilePlatform ?
                                 Constants.PointerMinDragDelta * 2f :
                                 Constants.PointerMinDragDeltaMobile;
-                            _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
                             _isPreviewHandCard = false;
                             _selectedBoardUnitView = selectedBoardUnitView;
+
+                            _pointerEventSolver.PushPointer(delta);
                         }
                     }
                 }
@@ -293,11 +311,6 @@ namespace Loom.ZombieBattleground
             if (_startedOnClickDelay)
             {
                 _delayTimerOfClick += Time.deltaTime;
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                _pointerEventSolver.PopPointer();
             }
 
             if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow.IsDragging())
@@ -326,7 +339,7 @@ namespace Loom.ZombieBattleground
             {
                 CheckCardPreviewShow();
             }
-            else
+            else if (!_gameplayManager.IsTutorial)
             {
                 _timerManager.StopTimer(SetStatusZoomingFalse);
                 _cardsZooming = true;
@@ -344,6 +357,8 @@ namespace Loom.ZombieBattleground
 
             _topmostBoardCard = null;
             _selectedBoardUnitView = null;
+
+            _battlegroundController.CurrentPreviewedCardId = -1;
         }
 
         private void CheckCardPreviewShow()

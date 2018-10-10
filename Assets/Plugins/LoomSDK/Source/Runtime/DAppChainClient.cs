@@ -1,4 +1,4 @@
-﻿using Loom.Google.Protobuf;
+using Loom.Google.Protobuf;
 using Loom.Chaos.NaCl;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -156,14 +156,24 @@ namespace Loom.Client
         /// <param name="tx">Transaction to commit.</param>
         /// <returns>Commit metadata.</returns>
         /// <exception cref="InvalidTxNonceException">Thrown if transaction is rejected due to a bad nonce after <see cref="NonceRetries"/> attempts.</exception>
-        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx)
+        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx, int timeout = 3000)
         {
             int badNonceCount = 0;
             do
             {
                 try
                 {
-                    return await this.TryCommitTxAsync(tx);
+                    Task<BroadcastTxResult> function = this.TryCommitTxAsync(tx);
+                    Task result = await Task.WhenAny(function, Task.Delay(timeout));
+                    if (result == function)
+                    {
+                        return function.GetAwaiter().GetResult();
+                    }
+                    else
+                    {
+                        Logger.Log(LogTag, tx + "function is Time Out !");
+                        ++badNonceCount;
+                    }
                 }
                 catch (InvalidTxNonceException)
                 {

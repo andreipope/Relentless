@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalTutorialDataFilePath = "tutorial_data.json";
 
+        internal const string LocalConfigDataFilePath = "config_data.json";
+
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
 
@@ -126,5 +128,14 @@ namespace Loom.ZombieBattleground.Common
         internal const string AssetBundleLoadingScreen = "loadingscreen";
 
         internal const string Space = " ";
+
+        internal const string OverlordRegularNeckR = "OverlordRegularNeckR";
+
+        internal const string OverlordRegularNeckL = "OverlordRegularNeckL";
+
+        internal const string Player = "Player";
+
+        internal const string Opponent = "Opponent";
+
     }
 }

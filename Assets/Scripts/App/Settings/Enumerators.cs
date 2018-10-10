@@ -200,6 +200,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CacheDataType
         {
+            CONFIG_DATA,
             CARDS_LIBRARY_DATA,
             HEROES_DATA,
             COLLECTION_DATA,
@@ -207,7 +208,7 @@ namespace Loom.ZombieBattleground.Common
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA,
+            BUFFS_TOOLTIP_DATA
         }
 
         public enum CardKind
@@ -439,6 +440,7 @@ namespace Loom.ZombieBattleground.Common
             USE_ABILITY,
             HERO_DEATH,
             START_TURN,
+            END_OF_RANK_UPGRADE
         }
 
         public enum UnitStatusType
@@ -487,6 +489,18 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
+        }
+
+        public enum VFXType
+        {
+            Impact,
+            Moving
+        }
+
+        public enum ShutterState
+        {
+            Open,
+            Close
         }
     }
 }
