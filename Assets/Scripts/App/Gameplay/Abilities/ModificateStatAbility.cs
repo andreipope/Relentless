@@ -60,10 +60,13 @@ namespace Loom.ZombieBattleground
 
                             CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
 
-                            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
                             {
-                                TargetUnit
-                            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                                {
+                                    TargetUnit
+                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                            }
                         }
                     }
 

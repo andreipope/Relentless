@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> BoardChanged;
 
-        public event Action<WorkingCard> CardPlayed;
+        public event Action<WorkingCard, int> CardPlayed;
 
         public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
 
@@ -376,7 +376,6 @@ namespace Loom.ZombieBattleground
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
-            ThrowPlayCardEvent(card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -571,9 +570,9 @@ namespace Loom.ZombieBattleground
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
         }
 
-        public void ThrowPlayCardEvent(WorkingCard card)
+        public void ThrowPlayCardEvent(WorkingCard card, int position)
         {
-            CardPlayed?.Invoke(card);
+            CardPlayed?.Invoke(card, position);
         }
 
         public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)

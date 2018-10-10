@@ -24,6 +24,7 @@ namespace Loom.ZombieBattleground
         public string SoundName;
         public string EmotionDescription;
         public string AvailableCard;
+        public string WaiterOfWhichTurn; 
 
         public bool IsFocusing;
         public bool IsArrowEnabled;
@@ -45,8 +46,10 @@ namespace Loom.ZombieBattleground
         public bool UnitsCanAttack;
         public bool BoardArrowCanUsableOnUnits;
         public bool BoardArrowCanUsableOnPlayer;
+        public bool HasHelpArrowsAfterDelay;
 
         public float DelayToPlaySound;
+        public float DelayToShowHelpArrows;
 
         public TutorialDataStep()
         {
@@ -57,8 +60,10 @@ namespace Loom.ZombieBattleground
             SoundName = string.Empty;
             EmotionDescription = string.Empty;
             AvailableCard = string.Empty;
+            WaiterOfWhichTurn = string.Empty;
 
             DelayToPlaySound = 0f;
+            DelayToShowHelpArrows = 0f;
 
             IsFocusing = false;
             IsArrowEnabled = false;
@@ -79,6 +84,7 @@ namespace Loom.ZombieBattleground
             UnitsCanAttack = false;
             BoardArrowCanUsableOnUnits = false;
             BoardArrowCanUsableOnPlayer = false;
+            HasHelpArrowsAfterDelay = false;
         }
     }
 }

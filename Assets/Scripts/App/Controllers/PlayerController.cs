@@ -87,6 +87,7 @@ namespace Loom.ZombieBattleground
         {
             StopHandTimer();
             _timerManager.StopTimer(SetStatusZoomingFalse);
+            _timerManager.StopTimer(UpdateCardDistribution);
         }
 
         public void InitializePlayer(int playerId)
@@ -131,13 +132,14 @@ namespace Loom.ZombieBattleground
             _gameplayManager.PlayerStarterCards =
                 _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.PlayerStarterCards, _gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
 
-            GameClient.Get<ITimerManager>().AddTimer(
-                x =>
-                {
-                    _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
-                });
+            _timerManager.AddTimer(UpdateCardDistribution);
 
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+        }
+
+        private void UpdateCardDistribution(object[] param)
+        {
+            _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
         }
 
         public virtual void GameStartedHandler()

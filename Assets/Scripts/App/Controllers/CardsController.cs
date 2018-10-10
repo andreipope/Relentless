@@ -289,7 +289,7 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
-                MulliganCards.Add(card);
+                MulliganCards?.Add(card);
             }
         }
 
@@ -577,6 +577,8 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
 
+                            player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
+
                             Sequence animationSequence = DOTween.Sequence();
                             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
                             animationSequence.OnComplete(
@@ -646,7 +648,17 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.OpponentHandCards.Remove(randomCard);
             }
-            else return;
+            else
+            {
+                #warning hot fix - visual bug will appear! temp solution!
+                if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+                {
+                    randomCard = CreateOpponentBoardCard();
+
+                    _battlegroundController.UpdatePositionOfCardsInOpponentHand();
+                }
+                else return;
+            }
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
@@ -673,7 +685,7 @@ namespace Loom.ZombieBattleground
                                 },
                                 null,
                                 0.1f);
-                            _ranksController.UpdateRanksByElements(player.BoardCards, card.LibraryCard);
+                            _ranksController.UpdateRanksByElements(player.BoardCards, card);
                             _timerManager.AddTimer(
                                 x =>
                                 {
@@ -853,6 +865,8 @@ namespace Loom.ZombieBattleground
             returningCard.RealCost = returningCard.InitialCost;
 
             Vector3 unitPosition = unit.Transform.position;
+
+            unit.Model.InvokeUnitPrepairingToDie();
 
             _timerManager.AddTimer(
                 x =>

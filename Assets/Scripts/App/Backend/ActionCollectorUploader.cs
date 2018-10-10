@@ -73,15 +73,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private readonly AbilitiesController _abilitiesController;
 
+            private readonly RanksController _ranksController;
+
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-                _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
-                IDataManager dataManager = GameClient.Get<IDataManager>();
                 _pvpManager = GameClient.Get<IPvPManager>();
+                _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
                 _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
                 _skillsController = GameClient.Get<IGameplayManager>().GetController<SkillsController>();
+                _ranksController = GameClient.Get<IGameplayManager>().GetController<RanksController>();
 
                 Player = player;
                 IsOpponent = isOpponent;
@@ -98,16 +100,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 if (!isOpponent)
                 {
                     _battlegroundController.TurnEnded += TurnEndedHandler;
+
+                    _abilitiesController.AbilityUsed += AbilityUsedHandler;
+
+                    Player.CardPlayed += CardPlayedHandler;
+                    Player.CardAttacked += CardAttackedHandler;
+                    Player.LeaveMatch += LeaveMatchHandler;
+
+                    _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
+                    _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
+
+                    _ranksController.RanksUpdated += RanksUpdatedHandler;
                 }
-                _abilitiesController.AbilityUsed += AbilityUsedHandler;
-
-                Player.CardPlayed += CardPlayedHandler;
-                Player.CardAttacked += CardAttackedHandler;
-                Player.LeaveMatch += LeaveMatchHandler;
-
-                _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
-                _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
-
             }
 
             public Player Player { get; }
@@ -131,13 +135,24 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void UnsubscribeFromPlayerEvents()
             {
-                _battlegroundController.TurnEnded -= TurnEndedHandler;
+                if (!IsOpponent)
+                {
+                    _battlegroundController.TurnEnded -= TurnEndedHandler;
 
-                Player.CardPlayed -= CardPlayedHandler;
-                Player.CardAttacked -= CardAttackedHandler;
+                    _abilitiesController.AbilityUsed -= AbilityUsedHandler;
+
+                    Player.CardPlayed -= CardPlayedHandler;
+                    Player.CardAttacked -= CardAttackedHandler;
+                    Player.LeaveMatch -= LeaveMatchHandler;
+
+                    _skillsController.PlayerPrimarySkill.SkillUsed -= SkillUsedHandler;
+                    _skillsController.PlayerSecondarySkill.SkillUsed -= SkillUsedHandler;
+
+                    _ranksController.RanksUpdated -= RanksUpdatedHandler;
+                }
             }
 
-            private void CardPlayedHandler(WorkingCard card)
+            private void CardPlayedHandler(WorkingCard card, int position)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -152,7 +167,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             Prototype = ToProtobufExtensions.GetCardPrototype(card),
                             Defence = card.Health,
                             Attack = card.Damage
-                        }
+                        },
+                        Position = position
                     }
                 };
 
@@ -227,8 +243,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 await Task.Delay(300);
 
-                List<Unit> targetUnits = new List<Unit>();
-
+                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
+                {
+                    CardKind = cardKind,
+                    AbilityType = abilityType.ToString(),
+                    Card = new CardInstance
+                    {
+                        InstanceId = card.Id,
+                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                        Defence = card.Health,
+                        Attack = card.Damage
+                    }
+                };
 
                 Unit targetUnit;
                 if (targets != null)
@@ -262,23 +288,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             };
                         }
 
-                        targetUnits.Add(targetUnit);
+                        CardAbilityUsed.Targets.Add(targetUnit);
                     }
                 }
-
-                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
-                {
-                    CardKind = cardKind,
-                    AbilityType = abilityType.ToString(),
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
-                        Defence = card.Health,
-                        Attack = card.Damage
-                    }
-                };
-                CardAbilityUsed.Targets.Add(targetUnits);
 
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -335,6 +347,45 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         AffectObjectType = affectObjectType,     
                         Target = targetUnit
                     }
+                };
+
+                _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);
+            }
+
+            private async void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
+            {
+                await Task.Delay(1000);
+
+                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+
+                PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
+                {
+                    Card = new CardInstance
+                    {
+                        InstanceId = card.Id,
+                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                        Defence = card.Health,
+                        Attack = card.Damage
+                    }
+                };
+
+                Unit unit;
+                foreach (BoardUnitView view in units)
+                {
+                    unit = new Unit()
+                    {
+                        InstanceId = view.Model.Card.Id,
+                        AffectObjectType = AffectObjectType.Character
+                    };
+
+                    rankBuff.Targets.Add(unit);
+                }
+
+                PlayerAction playerAction = new PlayerAction
+                {
+                    ActionType = PlayerActionType.RankBuff,
+                    PlayerId = playerId,
+                    RankBuff = rankBuff
                 };
 
                 _backendFacade.AddAction(_pvpManager.MatchResponse.Match.Id, playerAction);

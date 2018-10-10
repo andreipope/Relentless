@@ -48,6 +48,9 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+            if (Self != null)
+                return;
+
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/WarningPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
