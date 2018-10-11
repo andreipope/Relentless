@@ -134,13 +134,6 @@ namespace Loom.ZombieBattleground
         {
             Model.SetObjectInfo(card);
 
-            // hack for top zombies
-            if (!Model.OwnerPlayer.IsLocalPlayer)
-            {
-                _sleepingParticles.transform.localPosition = new Vector3(_sleepingParticles.transform.localPosition.x,
-                    _sleepingParticles.transform.localPosition.y, 3f);
-            }
-
             string setName = _cardsController.GetSetOfCard(card.LibraryCard);
             string rank = Model.Card.LibraryCard.CardRank.ToString().ToLower();
             string picture = Model.Card.LibraryCard.Picture.ToLower();
