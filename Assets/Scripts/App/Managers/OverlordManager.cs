@@ -98,7 +98,8 @@ namespace Loom.ZombieBattleground
                         break;
                     case LevelReward.OverlordSkillRewardItem skillReward:
                         {
-                            hero.Skills[skillReward.SkillIndex].Unlocked = true;
+                            //TODO: commented now in perspective of lock funcitonality for release stage
+                            //hero.Skills[skillReward.SkillIndex].Unlocked = true;
                         }
                         break;
                     case LevelReward.ItemReward itemReward:
