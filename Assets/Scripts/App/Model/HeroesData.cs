@@ -69,7 +69,9 @@ namespace Loom.ZombieBattleground.Data
 
         public void ValidateSkillLocking()
         {
-            int skillId = Level % 4;
+            //TODO: commented now in perspective of lock funcitonality for release stage
+            //int skillId = Level % 4;
+            int skillId = 2;
             for (int i = 0; i < skillId; i++)
             {
                 Skills[i].Unlocked = true;
