@@ -45,11 +45,8 @@ namespace Loom.ZombieBattleground
 
         public BoardSkill PlayerSecondarySkill { get; private set; }
 
-        public List<BoardUnitView> UnitsAffectedBySkills { get; set; }
-
         public void Dispose()
         {
-            UnitsAffectedBySkills = null;
         }
 
         public void Init()
@@ -68,8 +65,6 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _gameplayManager.GameEnded += GameplayManagerGameEnded;
-
-            UnitsAffectedBySkills = new List<BoardUnitView>();
         }
 
         public void Update()
@@ -235,12 +230,6 @@ namespace Loom.ZombieBattleground
                         PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetPlayer);
                         _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
                             playOverlordSkill));
-
-                        if (UnitsAffectedBySkills.Count > 0)
-                        {
-                            playOverlordSkill.UnitsAffectedBySkills = UnitsAffectedBySkills;
-                            UnitsAffectedBySkills.Clear();
-                        }
                     }
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
@@ -272,12 +261,6 @@ namespace Loom.ZombieBattleground
                         PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetUnitView.Model);
                         _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
                             playOverlordSkill));
-
-                        if (UnitsAffectedBySkills.Count > 0)
-                        {
-                            playOverlordSkill.UnitsAffectedBySkills = UnitsAffectedBySkills;
-                            UnitsAffectedBySkills.Clear();
-                        }
                     }
                 }
 
@@ -307,12 +290,6 @@ namespace Loom.ZombieBattleground
                     PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, target);
                     _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
                         playOverlordSkill));
-
-                    if (UnitsAffectedBySkills.Count > 0)
-                    {
-                        playOverlordSkill.UnitsAffectedBySkills = UnitsAffectedBySkills;
-                        UnitsAffectedBySkills.Clear();
-                    }
                 }
             }
         }
@@ -1324,8 +1301,6 @@ namespace Loom.ZombieBattleground
                 Caller = boardSkill,
                 TargetEffects = TargetEffects
             });
-
-            UnitsAffectedBySkills = new List<BoardUnitView>(units);
         }
 
         // FIRE

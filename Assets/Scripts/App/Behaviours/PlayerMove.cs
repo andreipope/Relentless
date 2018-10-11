@@ -96,7 +96,6 @@ public class PlayOverlordSkill : IMove
 {
     public BoardSkill Skill;
     public BoardObject Target;
-    public List<BoardUnitView> UnitsAffectedBySkills { get; set; }
 
     public PlayOverlordSkill(BoardSkill skill, BoardObject target)
     {
