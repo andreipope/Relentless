@@ -89,9 +89,6 @@ namespace Loom.ZombieBattleground
         {
             Debug.Log("=== Start loading server ==== ");
 
-            Debug.Log("Encryption:" + ConfigData.EncryptData);
-            Debug.Log("Skip Card Data Backend:" + ConfigData.SkipBackendCardData);
-
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
             {
@@ -203,6 +200,9 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            Debug.Log("Encryption:" + ConfigData.EncryptData);
+            Debug.Log("Skip Card Data Backend:" + ConfigData.SkipBackendCardData);
+
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();

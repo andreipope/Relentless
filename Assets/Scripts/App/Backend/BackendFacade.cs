@@ -41,10 +41,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public void Init()
         {
-            Debug.Log("Auth Host:" + BackendEndpoint.AuthHost);
-            Debug.Log("Reader Host:" + BackendEndpoint.ReaderHost);
-            Debug.Log("Writer Host:" + BackendEndpoint.WriterHost);
-            Debug.Log("Card Data Version:" + BackendEndpoint.DataVersion);
+            Debug.Log("Auth Host: " + BackendEndpoint.AuthHost);
+            Debug.Log("Reader Host: " + BackendEndpoint.ReaderHost);
+            Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
+            Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()
