@@ -628,7 +628,7 @@ namespace Loom.ZombieBattleground
 
                     _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
 
-                    _battlegroundController.    UpdatePositionOfBoardUnitsOfOpponent(
+                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
                         () =>
                         {
                             bool createTargetArrow = false;
