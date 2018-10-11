@@ -136,10 +136,29 @@ namespace Loom.ZombieBattleground
 
             SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
 
-            _health = Constants.DefaultPlayerHp;
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.PVP:
+                    PlayerState playerState =
+                        _pvpManager.MatchResponse.Match.PlayerStates
+                        .First(state =>
+                                isOpponent ?
+                                    state.Id != _backendDataControlMediator.UserDataModel.UserId :
+                                    state.Id == _backendDataControlMediator.UserDataModel.UserId
+                                    );
+                    _health = playerState.Hp;
+                    _goo = playerState.Mana;
+
+                    Debug.Log($"Remote data: is local {IsLocalPlayer}, id {playerState.Id}, defense {playerState.Hp}, goo {playerState.Mana}");
+                    break;
+                default:
+                    _health = Constants.DefaultPlayerHp;
+                    _goo = Constants.DefaultPlayerGoo;
+                    break;
+            }
+
             InitialHp = _health;
             BuffedHp = 0;
-            _goo = Constants.DefaultPlayerGoo;
 
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;

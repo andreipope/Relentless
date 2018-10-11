@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -30,6 +31,8 @@ namespace Loom.ZombieBattleground
         private Enumerators.AppState _finishMatchAppState;
 
         public Enumerators.MatchType MatchType { get; set; }
+
+        public Address? CustomGameModeAddress { get; set; }
 
         // TODO : Find another solution, right now its tempraoray only....
         private bool _checkPlayerStatus;
@@ -72,7 +75,8 @@ namespace Loom.ZombieBattleground
                             _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
                             _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
                                 _backendDataControlMediator.UserDataModel.UserId,
-                                _uiManager.GetPage<GameplayPage>().CurrentDeckId);
+                                _uiManager.GetPage<GameplayPage>().CurrentDeckId,
+                                CustomGameModeAddress);
 
                             Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
                             _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());

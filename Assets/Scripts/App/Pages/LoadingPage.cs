@@ -98,8 +98,9 @@ namespace Loom.ZombieBattleground
                             success = false;
                             _uiManager.GetPopup<LoginPopup>().Show(e);
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
+                            Debug.LogWarning(e);
                             success = false;
                             _uiManager.DrawPopup<LoginPopup>();
                         }

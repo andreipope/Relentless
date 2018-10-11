@@ -175,7 +175,9 @@ namespace Loom.ZombieBattleground.Common
             PACK_OPENER,
             CREDITS,
             PlaySelection,
-            PvPSelection
+            PvPSelection,
+            CustomGameModeList,
+            CustomGameModeCustomUi
         }
 
         public enum AttackInfoType
@@ -201,7 +203,6 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CacheDataType
         {
-            CONFIG_DATA,
             CARDS_LIBRARY_DATA,
             HEROES_DATA,
             COLLECTION_DATA,
