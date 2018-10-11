@@ -32,8 +32,6 @@ namespace Loom.ZombieBattleground
 
         private readonly GameObject _glowObject;
 
-        private readonly TextMeshPro _cooldownText;
-
         private readonly GameObject _fightTargetingArrowPrefab;
 
         private readonly int _initialCooldown;
@@ -77,8 +75,6 @@ namespace Loom.ZombieBattleground
             _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
             _glowObject.SetActive(false);
 
-            _cooldownText = SelfObject.transform.Find("SpellCost/SpellCostText").GetComponent<TextMeshPro>();
-
             string name = isPrimary ? Constants.OverlordRegularNeckR : Constants.OverlordRegularNeckL;
 
             _shutterAnimator = SelfObject.transform.parent.transform
@@ -97,7 +93,6 @@ namespace Loom.ZombieBattleground
                 _pointerEventSolver.Ended += PointerEventSolverEndedHandler;
             }
 
-            _cooldownText.text = _cooldown.ToString();
             _coolDownTimer.SetAngle(_cooldown);
 
             _fightTargetingArrowPrefab =
@@ -172,7 +167,6 @@ namespace Loom.ZombieBattleground
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
             _usedInThisTurn = true;
-            _cooldownText.text = _cooldown.ToString();
             _coolDownTimer.SetAngle(_cooldown, true);
 
             GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
@@ -285,7 +279,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _cooldownText.text = _cooldown.ToString();
             _coolDownTimer.SetAngle(_cooldown);
         }
 
