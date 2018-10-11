@@ -876,11 +876,14 @@ namespace Loom.ZombieBattleground
         private void InitObjects()
         {
             _numSets = _dataManager.CachedCardsLibraryData.Sets.Count - 1;
-            CalculateNumberOfPages();
 
             Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.HeroesParsed
                 .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
-            LoadCards(0, heroSetType);
+
+            _currentElementPage = 0;
+            _currentSet = heroSetType;
+            CalculateNumberOfPages();
+            LoadCards(_currentElementPage, _currentSet);
         }
 
         private bool GetSetAndIndexForCard(Card card, out int setIndex, out int cardIndex)
