@@ -304,6 +304,8 @@ namespace Loom.ZombieBattleground
         private void BoardUnitOnCardTypeChanged(Enumerators.CardType type)
         {
             _shieldSprite.SetActive(Model.HasBuffShield);
+
+            bool currentHighlight = GetHighlightingEnabled();
             switch (type)
             {
                 case Enumerators.CardType.WALKER:
@@ -315,14 +317,14 @@ namespace Loom.ZombieBattleground
                     if (!Model.AttackedThisTurn && !Model.IsPlayable)
                     {
                         StopSleepingParticles();
-                        SetHighlightingEnabled(true);
+                        currentHighlight = true;
                     }
                     break;
                 case Enumerators.CardType.HEAVY:
                     ChangeTypeFrame(2.5f, 1.7f);
                     if (!Model.AttackedThisTurn && Model.NumTurnsOnBoard == 0)
                     {
-                        SetHighlightingEnabled(false);
+                        currentHighlight = false;
                     }
                     else if (!Model.AttackedThisTurn && Model.IsPlayable && !Model.CantAttackInThisTurnBlocker)
                     {
@@ -337,6 +339,7 @@ namespace Loom.ZombieBattleground
 
             SetNormalGlowFromUnitType();
             SetAttackGlowFromUnitType();
+            SetHighlightingEnabled(currentHighlight);
         }
 
         private void BoardUnitOnStunned()
@@ -500,6 +503,13 @@ namespace Loom.ZombieBattleground
             {
                 _glowObj.SetActive(enabled);
             }
+        }
+
+        public bool GetHighlightingEnabled () {
+            if (_glowObj) 
+                return _glowObj.activeSelf;
+
+            return false;
         }
 
         public void StopSleepingParticles()
@@ -770,6 +780,7 @@ namespace Loom.ZombieBattleground
             }
             string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + Model.InitialUnitType + "_ActiveFrame_" + color;
             _glowObj = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(direction), _unitContentObject.transform, false);
+
             SetHighlightingEnabled(active);
         }
 
