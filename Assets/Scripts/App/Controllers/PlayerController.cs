@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         private ITimerManager _timerManager;
 
+        private IMatchManager _matchManager;
+
         private CardsController _cardsController;
 
         private BattlegroundController _battlegroundController;
@@ -49,6 +51,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _timerManager = GameClient.Get<ITimerManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -84,6 +87,7 @@ namespace Loom.ZombieBattleground
         {
             StopHandTimer();
             _timerManager.StopTimer(SetStatusZoomingFalse);
+            _timerManager.StopTimer(UpdateCardDistribution);
         }
 
         public void InitializePlayer(int playerId)
@@ -109,7 +113,14 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.CurrentPlayer.SetDeck(playerDeck);
+                if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+                {
+                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, !GameClient.Get<IPvPManager>().IsCurrentPlayer());
+                }
+                else
+                {
+                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, false);
+                }
             }
 
             _gameplayManager.CurrentPlayer.TurnStarted += OnTurnStartedStartedHandler;
@@ -120,13 +131,14 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
 
-            GameClient.Get<ITimerManager>().AddTimer(
-                x =>
-                {
-                    _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
-                });
+            _timerManager.AddTimer(UpdateCardDistribution);
 
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+        }
+
+        private void UpdateCardDistribution(object[] param)
+        {
+            _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
         }
 
         public virtual void GameStartedHandler()

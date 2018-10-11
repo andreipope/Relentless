@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -43,9 +43,8 @@ namespace Loom.Client.Internal
         public abstract Task<TResult> SendAsync<TResult, TArgs>(string method, TArgs args);
         public abstract Task ConnectAsync();
         public abstract Task DisconnectAsync();
-        public abstract Task SubscribeAsync(EventHandler<JsonRpcEventData> handler);
+        public abstract Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics = null);
         public abstract Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler);
-        public abstract Task SubscribeAsync(List<string> topic, EventHandler<JsonRpcEventData> handler);
 
         protected abstract void Dispose(bool disposing);
 

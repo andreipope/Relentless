@@ -185,6 +185,7 @@
           "iconPath": "overlordability_water_ice_bolt",
           "description": "Destroy a Frozen enemy zombie",
           "skillTargets": "OPPONENT_CARD",
+		  "unitStatus": "FROZEN",
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1

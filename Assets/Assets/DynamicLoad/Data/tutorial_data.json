@@ -305,7 +305,7 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false,
           "UnitsCanAttack": true,
-          "BoardArrowCanUsableOnUnits" : true,
+          "BoardArrowCanUsableOnUnits": true,
           "SoundName": "czb_tutorial_15_attack"
         },
         {
@@ -469,18 +469,20 @@
           "janeText": "Let’s continue",
           "IsFocusing": true,
           "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
+          "CanMoveToNextStepByClick": true,
           "requiredAction": "START_TURN",
+          "WaiterOfWhichTurn": "Player",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
           "IsShowNextButtonFocusing": false,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": true,
+          "IsLaunchAIBrain": true,
           "SoundName": "czb_tutorial_23_end_turn3"
         },
         {
@@ -490,7 +492,7 @@
           "IsFocusing": false,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
+          "requiredAction": "START_TURN",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
@@ -501,8 +503,7 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "IsManuallyHideBubble": true,
-          "IsLaunchAIBrain": true,
+          "IsManuallyHideBubble": false,
           "SoundName": "czb_tutorial_24_heavy"
         },
         {
@@ -534,7 +535,7 @@
           "CanHandleInput": false,
           "CanClickEndTurn": false,
           "UnitsCanAttack": true,
-          "BoardArrowCanUsableOnUnits" : true,
+          "BoardArrowCanUsableOnUnits": true,
           "SoundName": "czb_tutorial_25_remove_heavy"
         },
         {
@@ -1188,7 +1189,7 @@
           },
           "CanMoveToNextStepByClick": false,
           "SoundName": "czb_tutorial_B_21_done",
-          "requiredAction": "MOVE_CARD",
+          "requiredAction": "END_OF_RANK_UPGRADE",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
@@ -1440,7 +1441,14 @@
           "CanClickEndTurn": false,
           "BoardArrowCanUsableOnUnits": false,
           "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true
+          "UnitsCanAttack": true,
+          "HasHelpArrowsAfterDelay": true,
+          "DelayToShowHelpArrows": 10,
+          "ArrowEndPosition": {
+            "X": 0.0,
+            "Y": 5.55,
+            "Z": 0.0
+          }
         },
         {
           "id": 29,

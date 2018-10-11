@@ -204,7 +204,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> BoardChanged;
 
-        public event Action<WorkingCard> CardPlayed;
+        public event Action<WorkingCard, int> CardPlayed;
 
         public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
 
@@ -395,7 +395,6 @@ namespace Loom.ZombieBattleground
         public void AddCardToBoard(WorkingCard card)
         {
             CardsOnBoard.Add(card);
-            ThrowPlayCardEvent(card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -429,19 +428,21 @@ namespace Loom.ZombieBattleground
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
 
-        public void SetDeck(List<string> cards)
+        public void SetDeck(List<string> cards, bool isMainTurnSecond)
         {
             CardsInDeck = new List<WorkingCard>();
 
             cards = ShuffleCardsList(cards);
 
-#if DEV_MODE
-            if (IsLocalPlayer)
+            if(isMainTurnSecond)
             {
-                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName("Cherno-bill"), this)); // special card id
+                _cardsController.SetNewCardInstanceId(Constants.MinDeckSize);
             }
-#endif
-
+            else
+            {
+                _cardsController.SetNewCardInstanceId(0);
+            }
+           
             foreach (string card in cards)
             {
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
@@ -559,9 +560,9 @@ namespace Loom.ZombieBattleground
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
         }
 
-        public void ThrowPlayCardEvent(WorkingCard card)
+        public void ThrowPlayCardEvent(WorkingCard card, int position)
         {
-            CardPlayed?.Invoke(card);
+            CardPlayed?.Invoke(card, position);
         }
 
         public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)

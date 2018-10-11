@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
                         _gameplayManager.CurrentPlayer.BoardCards;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
-
+                    FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
@@ -176,6 +176,8 @@ namespace Loom.ZombieBattleground
             _coolDownTimer.SetAngle(_cooldown, true);
 
             GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
 
             SkillUsed?.Invoke(this, target);
         }

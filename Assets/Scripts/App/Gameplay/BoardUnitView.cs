@@ -51,6 +51,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ParticleSystem _sleepingParticles;
 
+        private readonly ParticleSystem _toxicPowerGlowParticles;
+
         private readonly GameObject _unitContentObject;
 
         private GameObject _battleframeObject;
@@ -69,7 +71,7 @@ namespace Loom.ZombieBattleground
 
         private const string _orangeGlow = "Orange";
 
-        private const string _greenGlow = "Orange";
+        private const string _greenGlow = "Green";
 
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
@@ -104,6 +106,7 @@ namespace Loom.ZombieBattleground
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
+            _toxicPowerGlowParticles = GameObject.transform.Find("Other/ToxicPowerGlowVFX").GetComponent<ParticleSystem>();
 
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
@@ -166,7 +169,7 @@ namespace Loom.ZombieBattleground
             Model.Stunned += BoardUnitOnStunned;
             Model.CardTypeChanged += BoardUnitOnCardTypeChanged;
             Model.BuffApplied += BoardUnitOnBuffApplied;
-            Model.BuffShieldAdded += BoardUnitOnBuffShieldAdded;
+            Model.BuffShieldStateChanged += BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet += BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved += BoardUnitOnUnitFromDeckRemoved;
 
@@ -256,9 +259,9 @@ namespace Loom.ZombieBattleground
             SetHighlightingEnabled(true);
         }
 
-        private void BoardUnitOnBuffShieldAdded()
+        private void BoardUnitOnBuffShieldStateChanged(bool status)
         {
-            _shieldSprite.SetActive(true);
+            _shieldSprite.SetActive(status);
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
@@ -266,6 +269,7 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.BuffType.GUARD:
+                    BoardUnitOnBuffShieldStateChanged(true);
                     break;
                 case Enumerators.BuffType.DEFENCE:
                     break;
@@ -379,7 +383,7 @@ namespace Loom.ZombieBattleground
             Model.Stunned -= BoardUnitOnStunned;
             Model.CardTypeChanged -= BoardUnitOnCardTypeChanged;
             Model.BuffApplied -= BoardUnitOnBuffApplied;
-            Model.BuffShieldAdded -= BoardUnitOnBuffShieldAdded;
+            Model.BuffShieldStateChanged -= BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet -= BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
         }
@@ -453,7 +457,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _ranksController.UpdateRanksByElements(Model.OwnerPlayer.BoardCards, Model.Card.LibraryCard);
+                _ranksController.UpdateRanksByElements(Model.OwnerPlayer.BoardCards, Model.Card);
             }
 
             _initialScale = GameObject.transform.localScale;
@@ -504,6 +508,11 @@ namespace Loom.ZombieBattleground
             {
                 _sleepingParticles.Stop();
             }
+        }
+
+        public void EnabledToxicPowerGlow()
+        {
+            _toxicPowerGlowParticles.Play();
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)

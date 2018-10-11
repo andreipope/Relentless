@@ -1,12 +1,13 @@
-using Loom.Google.Protobuf;
+﻿using Loom.Google.Protobuf;
 using Loom.Chaos.NaCl;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
 using Loom.Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using Loom.Client.Internal;
-using Loom.Client.Internal.Protobuf;
+using Loom.Client.Protobuf;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
@@ -54,7 +55,7 @@ namespace Loom.Client
         /// </summary>
         public ILogger Logger {
             get {
-                return logger;
+                return this.logger;
             }
             set {
                 if (value == null)
@@ -154,27 +155,31 @@ namespace Loom.Client
         /// Commits a transaction to the DAppChain.
         /// </summary>
         /// <param name="tx">Transaction to commit.</param>
+        /// <param name="timeout">Specifies the amount of time after which a call will time out.</param>
         /// <returns>Commit metadata.</returns>
         /// <exception cref="InvalidTxNonceException">Thrown if transaction is rejected due to a bad nonce after <see cref="NonceRetries"/> attempts.</exception>
-        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx)
+        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx, int timeout = 5000)
         {
             int badNonceCount = 0;
             do
             {
                 try
                 {
-                    const int timeout = 3000;
-                    Task<BroadcastTxResult> function = this.TryCommitTxAsync(tx);
-                    Task result = await Task.WhenAny(function, Task.Delay(timeout));
-                    if (result == function)
+                    try
                     {
-                        return function.GetAwaiter().GetResult();
+                        Task<BroadcastTxResult> function = this.TryCommitTxAsync(tx);
+                        Task result = await Task.WhenAny(function, Task.Delay(timeout));
+                        if (result == function)
+                        {
+                            return function.Result;
+                        }
                     }
-                    else
+                    catch (AggregateException e)
                     {
-                        Logger.Log(LogTag, tx + "function is Time Out !");
-                        ++badNonceCount;
+                        ExceptionDispatchInfo.Capture(e.InnerException).Throw();
                     }
+
+                    throw new TimeoutException();
                 }
                 catch (InvalidTxNonceException)
                 {

@@ -1,12 +1,12 @@
-#if !UNITY_WEBGL || UNITY_EDITOR
+﻿#if !UNITY_WEBGL || UNITY_EDITOR
 
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Loom.Newtonsoft.Json;
 using Loom.WebSocketSharp;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace Loom.Client.Internal
 {
@@ -149,7 +149,7 @@ namespace Loom.Client.Internal
             return tcs.Task;
         }
 
-        public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler)
+        public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics = null)
         {
             var isFirstSub = this.eventReceived == null;
             this.eventReceived += handler;
@@ -159,22 +159,14 @@ namespace Loom.Client.Internal
             }
             // TODO: once re-sub on reconnect is implemented this should only
             // be done on first sub
-            return SendAsync<object, object>("subevents", new object());
-        }
+            Dictionary<string, ICollection<string>> result = null;
+            if (topics != null)
+            {
+                result = new Dictionary<string, ICollection<string>>();
+                result.Add("topics", topics);
+            }
 
-        public override Task SubscribeAsync(List<string> topic, EventHandler<JsonRpcEventData> handler)
-        {
-            var isFirstSub = this.eventReceived == null;
-            this.eventReceived += handler;
-            if (isFirstSub)
-            {
-                this.webSocket.OnMessage += WSSharpRPCClient_OnMessage;
-            }
-            // TODO: once re-sub on reconnect is implemented this should only
-            // be done on first sub
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
-            result.Add("topics", topic);
-            return SendAsync<object, object>("subevents", result);
+            return SendAsync<string, Dictionary<string, ICollection<string>>>("subevents", result);
         }
 
         public override Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler)
@@ -183,7 +175,7 @@ namespace Loom.Client.Internal
             if (this.eventReceived == null)
             {
                 this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage;
-                return SendAsync<object, object>("unsubevents", new object());
+                return SendAsync<string, object>("unsubevents", null);
             }
             return Task.CompletedTask;
         }
@@ -221,11 +213,9 @@ namespace Loom.Client.Internal
                                     partialMsg.Error.Code, partialMsg.Error.Message, partialMsg.Error.Data
                                 ));
                             }
-                            else
-                            {
-                                var fullMsg = JsonConvert.DeserializeObject<JsonRpcResponse<T>>(e.Data);
-                                tcs.TrySetResult(fullMsg.Result);
-                            }
+
+                            var fullMsg = JsonConvert.DeserializeObject<JsonRpcResponse<T>>(e.Data);
+                            tcs.TrySetResult(fullMsg.Result);
                         }
                     }
                     else
@@ -243,7 +233,7 @@ namespace Loom.Client.Internal
             this.webSocket.OnMessage += messageHandler;
             try
             {
-                await SendAsync<U>(method, args, msgId);
+                await SendAsync(method, args, msgId);
             }
             catch
             {

@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+                _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -138,8 +138,16 @@ namespace Loom.ZombieBattleground
         private void SetAiTypeByDeck()
         {
             OpponentDeck deck =
-                _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId);
-            SetAiType((Enumerators.AiType) Enum.Parse(typeof(Enumerators.AiType), deck.Type));
+                _dataManager.CachedOpponentDecksData.Decks.Find(d => d.Id == _gameplayManager.OpponentDeckId);
+
+            if (deck != null)
+            {
+                SetAiType((Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type));
+            }
+            else
+            {
+                throw new NullReferenceException($"OpponentDeck with id {_gameplayManager.OpponentDeckId} is null!");
+            }
         }
 
         public void SetAiType(Enumerators.AiType aiType)
@@ -155,7 +163,7 @@ namespace Loom.ZombieBattleground
 
         private void GameStartedHandler()
         {
-            if (!_gameplayManager.IsTutorial)
+            if (!_gameplayManager.IsTutorial && GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 SetAiTypeByDeck();
             }

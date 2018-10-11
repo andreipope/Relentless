@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf;
@@ -187,7 +188,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         cards
                     }
                 },
-                LastModificationTimestamp = lastModificationTimestamp
+                LastModificationTimestamp = lastModificationTimestamp,
+                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
@@ -222,7 +224,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         cards
                     }
                 },
-                LastModificationTimestamp = lastModificationTimestamp
+                LastModificationTimestamp = lastModificationTimestamp,
+                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
             };
             return request;
         }
@@ -335,7 +338,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
          public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameModeAddress)
          {
-             Client.Internal.Protobuf.Address requestCustomGameAddress = null;
+             Client.Protobuf.Address requestCustomGameAddress = null;
              if (customGameModeAddress != null)
              {
                  requestCustomGameAddress = GetProtobufAddressFromAddress(customGameModeAddress.Value);
@@ -347,7 +350,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                  CustomGame = requestCustomGameAddress
              };
 
-             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+            const int timeout = 120000;
+
+            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request, timeout);
          }
 
         public async Task<EndMatchResponse> EndMatch(string userId, int matchId, string winnerId)
@@ -379,7 +384,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
              {
                  PlayerActionEventListner?.Invoke(e.Data);
              };
-             reader.SubscribeAsync(topics, handler);
+             reader.SubscribeAsync(handler, topics);
          }
 
          public void UnSubscribeEvent()
@@ -442,10 +447,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
-        private static Client.Internal.Protobuf.Address GetProtobufAddressFromAddress(Address address)
+        private static Client.Protobuf.Address GetProtobufAddressFromAddress(Address address)
         {
-            Client.Internal.Protobuf.Address protobufAddress;
-            protobufAddress = new Client.Internal.Protobuf.Address
+            Client.Protobuf.Address protobufAddress;
+            protobufAddress = new Client.Protobuf.Address
             {
                 ChainId = address.ChainId,
                 Local = ByteString.CopyFrom(address.ToByteArray())
