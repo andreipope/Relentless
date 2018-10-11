@@ -275,6 +275,7 @@ new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.GetCustomGameModeCustomUiResponse, global::Loom.Google.Protobuf.Collections.RepeatedField<Loom.ZombieBattleground.Protobuf.CustomGameModeCustomUiElement>>().ToString();
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.CallCustomGameModeFunctionRequest, global::Loom.Client.Protobuf.Address>().ToString();
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.CallCustomGameModeFunctionRequest, global::System.String>().ToString();
+new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.StaticCallCustomGameModeFunctionResponse, global::Loom.Google.Protobuf.ByteString>().ToString();
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.CustomGameModeCustomUiLabel, global::System.String>().ToString();
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.CustomGameModeCustomUiButton, global::System.String>().ToString();
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.CustomGameModeCustomUiButton, global::System.String>().ToString();
@@ -386,8 +387,6 @@ new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.StartGameAction, global::Loom.Google.Protobuf.Collections.RepeatedField<Loom.ZombieBattleground.Protobuf.PlayerState>>().ToString();
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Unit, global::System.Int32>().ToString();
 new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Unit, global::Loom.ZombieBattleground.Protobuf.AffectObjectType>().ToString();
-
-
         }
     }
 }
