@@ -47,7 +47,6 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
                         PlayerCallerOfAbility.Health -= Value;
-                        Debug.Log(PlayerCallerOfAbility.AvatarObject.transform.position);
                         CreateVfx(Utilites.CastVfxPosition(PlayerCallerOfAbility.AvatarObject.transform.position), true, 5f, true);
                         break;
                     default:
