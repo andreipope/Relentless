@@ -202,7 +202,6 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CacheDataType
         {
-            CONFIG_DATA,
             CARDS_LIBRARY_DATA,
             HEROES_DATA,
             COLLECTION_DATA,

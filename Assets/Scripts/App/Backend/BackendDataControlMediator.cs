@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             string modelJson = File.ReadAllText(UserDataFilePath);
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (_dataManager.CachedConfigData.encryptData)
+            if (_dataManager.ConfigData.EncryptData)
             {
                 UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
             } else {
@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             string modelJson = JsonConvert.SerializeObject(userDataModel);
 
-            if (_dataManager.CachedConfigData.encryptData)
+            if (_dataManager.ConfigData.EncryptData)
             {
                 File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
             }

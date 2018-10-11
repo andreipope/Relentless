@@ -20,24 +20,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public delegate void PlayerActionHandler(byte[] bytes);
 
-        private const string ContractDataVersion = "v1";
-
-        public BackendFacade(string authBackendHost, string readerHost, string writerHost)
+        public BackendFacade(BackendEndpoint backendEndpoint)
         {
-            AuthBackendHost = authBackendHost;
-            ReaderHost = readerHost;
-            WriterHost = writerHost;
+            BackendEndpoint = backendEndpoint;
         }
 
         public event ContractCreatedEventHandler ContractCreated;
 
         public event PlayerActionHandler PlayerActionEvent;
 
-        public string ReaderHost { get; set; }
-
-        public string WriterHost { get; set; }
-
-        public string AuthBackendHost { get; set; }
+        public BackendEndpoint BackendEndpoint { get; set; }
 
         public Contract Contract { get; private set; }
 
@@ -49,6 +41,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public void Init()
         {
+            Debug.Log("Auth Host: " + BackendEndpoint.AuthHost);
+            Debug.Log("Reader Host: " + BackendEndpoint.ReaderHost);
+            Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
+            Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()
@@ -64,10 +60,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(WriterHost)
+            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.WriterHost)
                 .Create();
 
-            reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(ReaderHost)
+            reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.ReaderHost)
                 .Create();
 
             DAppChainClient client = new DAppChainClient(writer, reader)
@@ -114,7 +110,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             ListCardLibraryRequest request = new ListCardLibraryRequest
             {
-                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
+                Version = BackendEndpoint.DataVersion
             };
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
@@ -189,14 +185,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 },
                 LastModificationTimestamp = lastModificationTimestamp,
-                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
+                Version = BackendEndpoint.DataVersion
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
         }
 
-        private static EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
+        private EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
@@ -225,7 +221,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 },
                 LastModificationTimestamp = lastModificationTimestamp,
-                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
+                Version = BackendEndpoint.DataVersion
             };
             return request;
         }
@@ -256,7 +252,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             UpsertAccountRequest req = new UpsertAccountRequest
             {
-                Version = ContractDataVersion,
+                Version = BackendEndpoint.DataVersion,
                 UserId = userId
             };
 
@@ -291,7 +287,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
@@ -306,7 +302,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<BetaConfig> GetBetaConfig(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
