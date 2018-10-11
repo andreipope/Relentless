@@ -202,6 +202,12 @@ namespace Loom.ZombieBattleground
 
         public void UpdatePositionOfCardsForDistribution(Player player)
         {
+            if (player == null)
+                return;
+            else if (player.CardsPreparingToHand == null)
+                return;
+
+
             int count = player.CardsPreparingToHand.Count;
 
             float handWidth = 0.0f;

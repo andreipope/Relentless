@@ -410,6 +410,9 @@ namespace Loom.ZombieBattleground
 
         public void ArrivalAnimationEventHandler()
         {
+            if (_unitContentObject == null || !_unitContentObject)
+                return;
+
             _unitContentObject.SetActive(true);
             if (Model.HasFeral || Model.NumTurnsOnBoard > 0 && !Model.CantAttackInThisTurnBlocker)
             {
