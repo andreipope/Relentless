@@ -459,7 +459,7 @@ namespace Loom.ZombieBattleground
             {
                 for (int i = 0; i < starterCards.Count; i++)
                 {
-                    WorkingCard card = CardsInDeck.Find(x => x.LibraryCard.Name == starterCards[i]);
+                    WorkingCard card = CardsInDeck.Find(workingCard => workingCard.LibraryCard.Name == starterCards[i]);
                     if(card == null)
                         continue;
 
