@@ -32,7 +32,6 @@ static class QuickPlayCommandsHandler
 
         int opponentDeckId = _gameplayManager.OpponentDeckId;
         string opponentDeckName = "Default";
-            //dataManager.CachedOpponentDecksData.Decks.First(deck => deck.Id == opponentDeckId).Name;
 
         string playerStarterCards = "[ ";
         for (int i = 0; i < _gameplayManager.PlayerStarterCards.Count; i++)

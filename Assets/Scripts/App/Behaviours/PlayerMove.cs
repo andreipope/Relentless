@@ -22,10 +22,7 @@ namespace Loom.ZombieBattleground
         public PlayerMove GetPlayerMove()
         {
             if (_movesList.Count <= 0)
-            {
-                //Debug.LogError("No Moves Left");
                 return null;
-            }
 
             return _movesList.Pop();
         }
