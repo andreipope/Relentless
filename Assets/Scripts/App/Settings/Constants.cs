@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.4";
+        internal const string CurrentVersionBase = "0.1.5";
 
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
@@ -93,6 +93,11 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int DelayBetweenAiActions = 1100;
 
+        internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
+
+        internal static Vector3 VfxOffset = Vector3.zero;
+
+        // SOUNDS VOLUME'S
         internal const float TutorialSoundVolume = 1f;
 
         internal const float ArrivalSoundVolume = 0.1f;
@@ -112,12 +117,6 @@ namespace Loom.ZombieBattleground.Common
         internal const float SpellAbilitySoundVolume = 0.1f;
 
         internal const float BattlegroundEffectsSoundVolume = 0.25f;
-
-        internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
-
-        internal static Vector3 VfxOffset = Vector3.zero;
-
-        // SOUNDS VOLUME'S
 
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;

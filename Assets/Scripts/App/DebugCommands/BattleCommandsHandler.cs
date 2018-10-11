@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -7,54 +7,56 @@ using UnityEngine;
 
 static class BattleCommandsHandler
 {
+    private static IGameplayManager _gameplayManager;
+    private static SkillsController _skillController;
+    private static BattlegroundController _battlegroundController;
+    private static CardsController _cardsController;
+
     public static void Initialize()
     {
         CommandHandlers.RegisterCommandHandlers(typeof(BattleCommandsHandler));
+
+        _gameplayManager = GameClient.Get<IGameplayManager>();
+        _skillController = _gameplayManager.GetController<SkillsController>();
+        _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+        _cardsController = _gameplayManager.GetController<CardsController>();
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
     private static void PlayerOverlordSetDef(int defenseValue)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        gameplayManager.CurrentPlayer.Health = defenseValue;
+        _gameplayManager.CurrentPlayer.Health = defenseValue;
     }
 
     [CommandHandler(Description = "Reduce the current def of the AI overlord")]
     private static void EnemyOverlordSetDef(int defenseValue)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        gameplayManager.OpponentPlayer.Health = defenseValue;
+        _gameplayManager.OpponentPlayer.Health = defenseValue;
     }
 
     [CommandHandler(Description = "Player Overlord Ability Slot (0 or 1) and Cool Down Timer")]
     private static void PlayerOverlordSetAbilityTurn(int abilitySlot, int coolDownTimer)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        SkillsController skillController = gameplayManager.GetController<SkillsController>();
-
         if (abilitySlot == 0)
         {
-            skillController.PlayerPrimarySkill.SetCoolDown(coolDownTimer);
+            _skillController.PlayerPrimarySkill.SetCoolDown(coolDownTimer);
         }
         else if (abilitySlot == 1)
         {
-            skillController.PlayerSecondarySkill.SetCoolDown(coolDownTimer);
+            _skillController.PlayerSecondarySkill.SetCoolDown(coolDownTimer);
         }
     }
 
     [CommandHandler(Description = "AI Overlord Ability Slot (0 or 1) and Cool Down Timer")]
     private static void EnemyOverlordSetAbilityTurn(int abilitySlot, int coolDownTimer)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        SkillsController skillController = gameplayManager.GetController<SkillsController>();
-
         if (abilitySlot == 0)
         {
-            skillController.OpponentPrimarySkill.SetCoolDown(coolDownTimer);
+            _skillController.OpponentPrimarySkill.SetCoolDown(coolDownTimer);
         }
         else if (abilitySlot == 1)
         {
-            skillController.OpponentSecondarySkill.SetCoolDown(coolDownTimer);
+            _skillController.OpponentSecondarySkill.SetCoolDown(coolDownTimer);
         }
     }
 
@@ -62,20 +64,15 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Enemy Mode - DoNothing / Normal / DontAttack")]
     private static void EnemyMode(Enumerators.AiBrainType aiBrainType)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        gameplayManager.GetController<AIController>().SetAiBrainType(aiBrainType);
+        _gameplayManager.GetController<AIController>().SetAiBrainType(aiBrainType);
     }
-
 
     [CommandHandler(Description = "Player Draw Next - Draw next Card with Card Name")]
     private static void PlayerDrawNext(string cardName)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        BattlegroundController battlegroundController = gameplayManager.GetController<BattlegroundController>();
-        CardsController cardsController = gameplayManager.GetController<CardsController>();
-        Player player = gameplayManager.CurrentPlayer;
+        Player player = _gameplayManager.CurrentPlayer;
 
-        if (!gameplayManager.CurrentTurnPlayer.Equals(player))
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
             Debug.LogError("Please Wait For Your Turn");
             return;
@@ -92,7 +89,7 @@ static class BattleCommandsHandler
             workingCard = player.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
             if (workingCard != null)
             {
-                cardsController.AddCardToHand(player, workingCard);
+                _cardsController.AddCardToHand(player, workingCard);
                 workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
                 BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
                 cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);

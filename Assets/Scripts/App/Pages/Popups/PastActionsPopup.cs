@@ -166,100 +166,78 @@ namespace Loom.ZombieBattleground
             if (pastActionParam.TargetEffects.Count <= 0)
                 return;
 
-                if (pastActionParam.TargetEffects.Count > 1)
+            if (pastActionParam.TargetEffects.Count > 1)
+            {
+                _rightBlockElements = new List<ActionElement>();
+
+                TargetEffectParam actionWithPlayer = pastActionParam.TargetEffects.Find(targetEffect => targetEffect.Target is Player);
+
+                if (actionWithPlayer != null)
                 {
-                    _rightBlockElements = new List<ActionElement>();
+                    _rightBlockOverlordElement.Init((Player)actionWithPlayer.Target, actionWithPlayer.ActionEffectType);
+                }
 
-                    TargetEffectParam actionWithPlayer = pastActionParam.TargetEffects.Find(targ => targ.Target is Player);
-
+                foreach (TargetEffectParam targetEffect in pastActionParam.TargetEffects)
+                {
                     if (actionWithPlayer != null)
                     {
-                        _rightBlockOverlordElement.Init((Player) actionWithPlayer.Target, actionWithPlayer.ActionEffectType);
-
-                        foreach (TargetEffectParam targetEffect in pastActionParam.TargetEffects)
-                        {
-                            if (targetEffect == actionWithPlayer)
-                                continue;
-
-                            ActionElement actionElement;
-                            switch (targetEffect.Target)
-                            {
-                                case BoardCard crd when crd is SpellBoardCard:
-                                    actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
-                                    actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                                    break;
-                                case BoardCard crd when crd is UnitBoardCard:
-                                {
-                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                                    actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                                    break;
-                                }
-                                case BoardUnitModel unt:
-                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                                    actionElement.Init(unt.Card, targetEffect.ActionEffectType);
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
-                            }
-
-                            _rightBlockElements.Add(actionElement);
-                        }
-
-                        _parentOfRightBlockElements.GetComponent<RectTransform>().anchoredPosition = new Vector2(520f, 0f);
+                        if (targetEffect == actionWithPlayer)
+                            continue;
                     }
-                    else
-                    {
-                        foreach (TargetEffectParam targetEffect in pastActionParam.TargetEffects)
-                        {
-                            ActionElement actionElement;
-                            switch (targetEffect.Target)
-                            {
-                                case BoardCard crd when crd is SpellBoardCard:
-                                    actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
-                                    actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                                    break;
-                                case BoardCard crd when crd is UnitBoardCard:
-                                {
-                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                                    actionElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                                    break;
-                                }
-                                case BoardUnitModel unitModel:
-                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                                    actionElement.Init(unitModel.Card, targetEffect.ActionEffectType);
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
-                            }
 
-                            _rightBlockElements.Add(actionElement);
-                        }
-
-                        _parentOfRightBlockElements.GetComponent<RectTransform>().anchoredPosition = new Vector2(20f, 0f);
-                    }
-                }
-                else
-                {
-                    TargetEffectParam targetEffect = pastActionParam.TargetEffects[0];
-
+                    ActionElement actionElement;
                     switch (targetEffect.Target)
                     {
-                        case Player pl:
-                            _rightBlockOverlordElement.Init(pl, targetEffect.ActionEffectType);
+                        case BoardCard card when card is SpellBoardCard:
+                            actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
+                            actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
                             break;
-                        case BoardCard crd when crd is SpellBoardCard:
-                            _rightBlockCardSpellElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                            break;
-                        case BoardCard crd when crd is UnitBoardCard:
-                            _rightBlockCardUnitElement.Init(crd.WorkingCard, targetEffect.ActionEffectType);
-                            break;
-                        case BoardUnitModel unt:
-                            _rightBlockCardUnitElement.Init(unt.Card, targetEffect.ActionEffectType);
+                        case BoardCard card when card is UnitBoardCard:
+                                actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                                actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
+                                break;
+                        case BoardUnitModel unit:
+                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                            actionElement.Init(unit.Card, targetEffect.ActionEffectType);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                     }
+
+                    _rightBlockElements.Add(actionElement);
                 }
+
+                if (actionWithPlayer != null)
+                {
+                    _parentOfRightBlockElements.GetComponent<RectTransform>().anchoredPosition = new Vector2(520f, 0f);
+                }
+                else
+                {
+                    _parentOfRightBlockElements.GetComponent<RectTransform>().anchoredPosition = new Vector2(20f, 0f);
+                }
+            }
+            else
+            {
+                TargetEffectParam targetEffect = pastActionParam.TargetEffects[0];
+
+                switch (targetEffect.Target)
+                {
+                    case Player player:
+                        _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType);
+                        break;
+                    case BoardCard card when card is SpellBoardCard:
+                        _rightBlockCardSpellElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
+                        break;
+                    case BoardCard card when card is UnitBoardCard:
+                        _rightBlockCardUnitElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
+                        break;
+                    case BoardUnitModel unit:
+                        _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
+                }
+            }
         }
 
         public class PastActionParam
@@ -365,6 +343,12 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
                     }
                     else
                     {
@@ -521,9 +505,7 @@ namespace Loom.ZombieBattleground
 
             public override void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
-                _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
-                                                                                skill.OwnerPlayer.SelfHero.Element.ToLower() + "_" +
-                                                                                skill.Skill.OverlordSkill.ToString().ToLower());
+                _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
 
                 if (_withEffect)
                 {

@@ -239,16 +239,14 @@ namespace Loom.ZombieBattleground
 
             horde.Select();
 
-            //TODO remove once we complete the ability selection process. For now, just hard coding values like everywhere else for overlord abilities.
+			//TODO remove once we complete the ability selection process. For now, just hard coding values like everywhere else for overlord abilities.
             horde.SelfDeck.PrimarySkill = 0;
             horde.SelfDeck.SecondarySkill = 1;
-
-            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
-                horde.SelfHero.Element.ToUpper() + "_" +
-                horde.SelfHero.Skills[horde.SelfDeck.PrimarySkill].Skill.ToLower());
-            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
-                horde.SelfHero.Element.ToUpper() + "_" +
-                horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].Skill.ToLower());
+            
+            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
+                 horde.SelfHero.Skills[horde.SelfDeck.PrimarySkill].IconPath);
+            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
+               horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].IconPath);
 
             _selectedDeckId = (int) horde.SelfDeck.Id;
 

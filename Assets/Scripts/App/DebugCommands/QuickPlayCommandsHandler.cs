@@ -9,44 +9,50 @@ using UnityEngine;
 
 static class QuickPlayCommandsHandler
 {
+    private static IGameplayManager _gameplayManager;
+    private static IUIManager _uiManager;
+    private static IDataManager _dataManager;
+    private static IMatchManager _matchManager;
+
     public static void Initialize()
     {
         CommandHandlers.RegisterCommandHandlers(typeof(QuickPlayCommandsHandler));
+
+        _gameplayManager = GameClient.Get<IGameplayManager>();
+        _uiManager = GameClient.Get<IUIManager>();
+        _dataManager = GameClient.Get<IDataManager>();
+        _matchManager = GameClient.Get<IMatchManager>();
     }
 
     [CommandHandler(Description = "Print Settings for QuickPlay")]
     private static void Print()
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        IUIManager uiManager = GameClient.Get<IUIManager>();
-        IDataManager dataManager = GameClient.Get<IDataManager>();
+        int playerDeckId = _uiManager.GetPage<GameplayPage>().CurrentDeckId;
+        string playerDeckName = _dataManager.CachedDecksData.Decks.First(deck => deck.Id == playerDeckId).Name;
 
-        int playerDeckId = uiManager.GetPage<GameplayPage>().CurrentDeckId;
-        string playerDeckName = dataManager.CachedDecksData.Decks.First(o => o.Id == playerDeckId).Name;
-
-        int opponentDeckId = gameplayManager.OpponentDeckId;
+        int opponentDeckId = _gameplayManager.OpponentDeckId;
         string opponentDeckName = "Default";
-            //dataManager.CachedOpponentDecksData.Decks.First(o => o.Id == opponentDeckId).Name;
+            //dataManager.CachedOpponentDecksData.Decks.First(deck => deck.Id == opponentDeckId).Name;
 
         string playerStarterCards = "[ ";
-        for (int i = 0; i < gameplayManager.PlayerStarterCards.Count; i++)
+        for (int i = 0; i < _gameplayManager.PlayerStarterCards.Count; i++)
         {
-            playerStarterCards += gameplayManager.PlayerStarterCards[i] + " ,";
+            playerStarterCards += _gameplayManager.PlayerStarterCards[i] + " ,";
         }
         playerStarterCards = playerStarterCards.TrimEnd(',');
         playerStarterCards += "]";
 
         string opponentStarterCards = "[ ";
-        for (int i = 0; i < gameplayManager.OpponentStarterCards.Count; i++)
+        for (int i = 0; i < _gameplayManager.OpponentStarterCards.Count; i++)
         {
-            opponentStarterCards += gameplayManager.OpponentStarterCards[i] + " ,";
+            opponentStarterCards += _gameplayManager.OpponentStarterCards[i] + " ,";
         }
         opponentStarterCards = opponentStarterCards.TrimEnd(',');
         opponentStarterCards += "]";
 
         Debug.Log($"(1). Player Horde : {playerDeckName}\n"+
                   $"(2). Enemy AI Horde : {opponentDeckName}\n" +
-                  $"(3). Starting Turn : {gameplayManager.StartingTurn}\n"+
+                  $"(3). Starting Turn : {_gameplayManager.StartingTurn}\n"+
                   $"(4). Player Starter Zombies : {playerStarterCards}\n"+
                   $"(5). Enemy Starter Zombies : {opponentStarterCards}\n");
     }
@@ -54,42 +60,34 @@ static class QuickPlayCommandsHandler
     [CommandHandler(Description = "Starts the battle")]
     private static void Start()
     {
-        IMatchManager matchManager = GameClient.Get<IMatchManager>();
-        IDataManager dataManager = GameClient.Get<IDataManager>();
-        IUIManager uiManager = GameClient.Get<IUIManager>();
-
-        int index = dataManager.CachedDecksData.Decks.FindIndex(
-            o => o.Id == uiManager.GetPage<GameplayPage>().CurrentDeckId);
+        int index = _dataManager.CachedDecksData.Decks.FindIndex(
+            deck => deck.Id == _uiManager.GetPage<GameplayPage>().CurrentDeckId);
         if (index == -1)
         {
-            int lastPlayerDeckId = dataManager.CachedUserLocalData.LastSelectedDeckId;
-            uiManager.GetPage<GameplayPage>().CurrentDeckId = lastPlayerDeckId;
+            int lastPlayerDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
+            _uiManager.GetPage<GameplayPage>().CurrentDeckId = lastPlayerDeckId;
         }
 
-        matchManager.FindMatch(Enumerators.MatchType.LOCAL);
+        _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
     }
 
     [CommandHandler(Description = "Set Start Turn  - Player / Enemy")]
     private static void StartingTurn(Enumerators.StartingTurn startingTurn)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        gameplayManager.StartingTurn = startingTurn;
+        _gameplayManager.StartingTurn = startingTurn;
     }
 
     [CommandHandler(Description = "Set which player horde to fight with. Accepts deck name.")]
     private static void SetPlayerHorde(string deckName)
     {
-        IDataManager dataManager = GameClient.Get<IDataManager>();
-        IUIManager uiManager = GameClient.Get<IUIManager>();
-
-        int index = dataManager.CachedDecksData.Decks.FindIndex(x => x.Name == deckName);
+        int index = _dataManager.CachedDecksData.Decks.FindIndex(deck => deck.Name == deckName);
         if (index == -1)
         {
             Debug.LogError(deckName + " Not found");
             return;
         }
 
-        uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)dataManager.CachedDecksData.Decks[index].Id;
+        _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_dataManager.CachedDecksData.Decks[index].Id;
     }
 
     // TODO : Set Enemy Horde, right now no name exist
@@ -102,30 +100,28 @@ static class QuickPlayCommandsHandler
     [CommandHandler(Description = "Adds starting cards in Player Starter")]
     private static void AddPlayerStarter(params string[] cards)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        gameplayManager.PlayerStarterCards = new List<string>();
+        _gameplayManager.PlayerStarterCards = new List<string>();
 
         for (int i = 0; i < cards.Length; i++)
         {
-            if (gameplayManager.PlayerStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
+            if (_gameplayManager.PlayerStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
                 break;
 
-            gameplayManager.PlayerStarterCards.Add(cards[i]);
+            _gameplayManager.PlayerStarterCards.Add(cards[i]);
         }
     }
 
     [CommandHandler(Description = "Adds starting cards in Enemy Starter")]
     private static void AddEnemyStarter(string[] cards)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        gameplayManager.OpponentStarterCards = new List<string>();
+        _gameplayManager.OpponentStarterCards = new List<string>();
 
         for (int i = 0; i < cards.Length; i++)
         {
-            if (gameplayManager.OpponentStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
+            if (_gameplayManager.OpponentStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
                 break;
 
-            gameplayManager.OpponentStarterCards.Add(cards[i]);
+            _gameplayManager.OpponentStarterCards.Add(cards[i]);
         }
     }
 

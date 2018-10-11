@@ -208,6 +208,11 @@ namespace Loom.ZombieBattleground
 
         private void HandleInput()
         {
+            if (Input.GetMouseButtonUp(0))
+            {
+                _pointerEventSolver.PopPointer();
+            }
+
             if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
                 return;
 
@@ -277,11 +282,12 @@ namespace Loom.ZombieBattleground
                             float delta = Application.isMobilePlatform ?
                                 Constants.PointerMinDragDelta * 2f :
                                 Constants.PointerMinDragDeltaMobile;
-                            _pointerEventSolver.PushPointer(delta);
 
                             _startedOnClickDelay = true;
                             _isPreviewHandCard = false;
                             _selectedBoardUnitView = selectedBoardUnitView;
+
+                            _pointerEventSolver.PushPointer(delta);
                         }
                     }
                 }
@@ -306,11 +312,6 @@ namespace Loom.ZombieBattleground
             if (_startedOnClickDelay)
             {
                 _delayTimerOfClick += Time.deltaTime;
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                _pointerEventSolver.PopPointer();
             }
 
             if (_boardArrowController.CurrentBoardArrow != null && _boardArrowController.CurrentBoardArrow.IsDragging())
@@ -357,6 +358,8 @@ namespace Loom.ZombieBattleground
 
             _topmostBoardCard = null;
             _selectedBoardUnitView = null;
+
+            _battlegroundController.CurrentPreviewedCardId = -1;
         }
 
         private void CheckCardPreviewShow()

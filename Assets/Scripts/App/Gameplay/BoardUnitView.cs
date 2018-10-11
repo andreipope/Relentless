@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground
             Model.Stunned += BoardUnitOnStunned;
             Model.CardTypeChanged += BoardUnitOnCardTypeChanged;
             Model.BuffApplied += BoardUnitOnBuffApplied;
-            Model.BuffShieldAdded += BoardUnitOnBuffShieldAdded;
+            Model.BuffShieldStateChanged += BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet += BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved += BoardUnitOnUnitFromDeckRemoved;
 
@@ -259,9 +259,9 @@ namespace Loom.ZombieBattleground
             SetHighlightingEnabled(true);
         }
 
-        private void BoardUnitOnBuffShieldAdded()
+        private void BoardUnitOnBuffShieldStateChanged(bool status)
         {
-            _shieldSprite.SetActive(true);
+            _shieldSprite.SetActive(status);
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
@@ -269,6 +269,7 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.BuffType.GUARD:
+                    BoardUnitOnBuffShieldStateChanged(true);
                     break;
                 case Enumerators.BuffType.DEFENCE:
                     break;
@@ -389,7 +390,7 @@ namespace Loom.ZombieBattleground
             Model.Stunned -= BoardUnitOnStunned;
             Model.CardTypeChanged -= BoardUnitOnCardTypeChanged;
             Model.BuffApplied -= BoardUnitOnBuffApplied;
-            Model.BuffShieldAdded -= BoardUnitOnBuffShieldAdded;
+            Model.BuffShieldStateChanged -= BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet -= BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
         }

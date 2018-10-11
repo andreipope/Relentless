@@ -13,7 +13,7 @@
         {
           "title": "Harden",
           "skill": "HARDEN",
-          "iconPath": "overlordability_earth",
+          "iconPath": "overlordability_earth_harden",
           "description": "Give +2 Def to your Overlord",
           "skillTargets": "",
           "cooldown": 3,
@@ -23,7 +23,7 @@
         {
           "title": "Stoneskin",
           "skill": "STONE_SKIN",
-          "iconPath": "overlordability_earth_stone_skin",
+          "iconPath": "overlordability_earth_stoneskin",
           "description": "Give an ally Earth zombie +1 Def",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "EARTH",
@@ -82,7 +82,7 @@
         {
           "title": "Fire Bolt",
           "skill": "FIRE_BOLT",
-          "iconPath": "overlordability_fire",
+          "iconPath": "overlordability_fire_firebolt",
           "description": "Deal 1 damage to target",
           "skillTargets": "OPPONENT_CARD|PLAYER_CARD|PLAYER|OPPONENT",
           "cooldown": 3,
@@ -103,7 +103,7 @@
         {
           "title": "Fireball",
           "skill": "FIREBALL",
-          "iconPath": "overlordability_fire_rabies",
+          "iconPath": "overlordability_fire_fireball",
           "description": "Deal 2 damage to a target",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "FIRE",
@@ -114,7 +114,7 @@
         {
           "title": "Mass Rabies",
           "skill": "MASS_RABIES",
-          "iconPath": "overlordability_fire_mass_rabies",
+          "iconPath": "overlordability_fire_massrabies",
           "description": "Give 2 random ally Fire zombies Feral",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "FIRE",
@@ -126,7 +126,7 @@
         {
           "title": "Meteor Shower",
           "skill": "METEOR_SHOWER",
-          "iconPath": "overlordability_fire_meteor_shower",
+          "iconPath": "overlordability_fire_meteorshower",
           "description": "Deal 2 damage to all zombies",
           "skillTargets": "",
           "elementTargets": "FIRE",
@@ -151,7 +151,7 @@
         {
           "title": "Freeze",
           "skill": "FREEZE",
-          "iconPath": "overlordability_water",
+          "iconPath": "overlordability_water_freeze",
           "description": "Freeze a zombie",
           "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
           "cooldown": 3,
@@ -161,7 +161,7 @@
         {
           "title": "Ice Bolt",
           "skill": "ICE_BOLT",
-          "iconPath": "overlordability_water_ice_bolt",
+          "iconPath": "overlordability_water_icebolt",
           "description": "Deal 2 damage to a target zombie. If it survives, Freeze it",
           "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
           "cooldown": 4,
@@ -171,7 +171,7 @@
         {
           "title": "Ice Wall",
           "skill": "ICE_WALL",
-          "iconPath": "overlordability_water_ice_bolt",
+          "iconPath": "overlordability_water_icewall",
           "description": "Add 2 Def to target Water zombie or your Overlord",
           "skillTargets": "OPPONENT_CARD|PLAYER_CARD",
           "elementTargets": "WATER",
@@ -182,7 +182,7 @@
         {
           "title": "Shatter",
           "skill": "SHATTER",
-          "iconPath": "overlordability_water_ice_bolt",
+          "iconPath": "overlordability_water_shatter",
           "description": "Destroy a Frozen enemy zombie",
           "skillTargets": "OPPONENT_CARD",
 		  "unitStatus": "FROZEN",
@@ -193,7 +193,7 @@
         {
           "title": "Blizzard",
           "skill": "BLIZZARD",
-          "iconPath": "overlordability_water_ice_bolt",
+          "iconPath": "overlordability_water_blizzard",
           "description": "Freeze 2 random zombie enemies",
           "skillTargets": "",
           "cooldown": 4,
@@ -239,7 +239,7 @@
         {
           "title": "Wind Shield",
           "skill": "WIND_SHIELD",
-          "iconPath": "overlordability_air_wind_shield",
+          "iconPath": "overlordability_air_windshield",
           "description": "Give a random ally Air zombie Guard",
           "skillTargets": "",
           "elementTargets": "AIR",
@@ -284,7 +284,7 @@
         {
           "title": "Poison Dart",
           "skill": "POISON_DART",
-          "iconPath": "overlordability_toxic",
+          "iconPath": "overlordability_toxic_poisondart",
           "description": "Deal 1 damage to an enemy",
           "skillTargets": "OPPONENT_CARD|OPPONENT",
           "cooldown": 3,
@@ -294,7 +294,7 @@
         {
           "title": "Toxic Power",
           "skill": "TOXIC_POWER",
-          "iconPath": "overlordability_toxic_toxic_power",
+          "iconPath": "overlordability_toxic_toxicpower",
           "description": "Deal 1 damage to an ally Toxic zombie and give it +1 Atk",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "TOXIC",
@@ -306,7 +306,7 @@
         {
           "title": "Breakout",
           "skill": "BREAKOUT",
-          "iconPath": "overlordability_toxic_toxic_power",
+          "iconPath": "overlordability_toxic_breakout",
           "description": "Deal 1 damage to 5 random enemies",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "",
@@ -318,7 +318,7 @@
         {
           "title": "Infect",
           "skill": "INFECT",
-          "iconPath": "overlordability_toxic_toxic_power",
+          "iconPath": "overlordability_toxic_infect",
           "description": "Destroy an ally Toxic zombie, deal its Atk to a random enemy zombie",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "TOXIC",
@@ -329,7 +329,7 @@
         {
           "title": "Epidemic",
           "skill": "EPIDEMIC",
-          "iconPath": "overlordability_toxic_toxic_power",
+          "iconPath": "overlordability_toxic_epidemic",
           "description": "Destroy an 2 random Toxic zombies, deal their Atk to 2 enemy zombies",
           "skillTargets": "PLAYER_CARD",
           "elementTargets": "TOXIC",
@@ -354,7 +354,7 @@
         {
           "title": "Healing Touch",
           "skill": "HEALING_TOUCH",
-          "iconPath": "overlordability_life",
+          "iconPath": "overlordability_life_healingtouch",
           "description": "Restore 2 Def to an ally zombie",
           "skillTargets": "PLAYER_CARD",
           "cooldown": 3,
@@ -374,7 +374,7 @@
         {
           "title": "Resurrect",
           "skill": "RESSURECT",
-          "iconPath": "overlordability_life_ressurect",
+          "iconPath": "overlordability_life_resurrect",
           "description": "Reanimate a random 3 goo-cost ally Life zombie",
           "skillTargets": "PLAYER",
           "elementTargets": "LIFE",

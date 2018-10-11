@@ -192,6 +192,8 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
+            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+
             SkillUsed?.Invoke(this, target);
         }
 
