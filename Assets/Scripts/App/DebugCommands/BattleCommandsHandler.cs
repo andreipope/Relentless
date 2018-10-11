@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -81,8 +81,8 @@ static class BattleCommandsHandler
         WorkingCard workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
         if (workingCard != null)
         {
-            BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-            cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
+            BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
+            _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
         }
         else
         {
@@ -91,8 +91,8 @@ static class BattleCommandsHandler
             {
                 _cardsController.AddCardToHand(player, workingCard);
                 workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
-                BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-                cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
+                BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
+                _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
             }
             else
             {
@@ -103,36 +103,31 @@ static class BattleCommandsHandler
 
     private static void PlayPlayerCardOnBoard(PlayCardOnBoard playCardOnBoard)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        Player player = gameplayManager.CurrentPlayer;
+        Player player = _gameplayManager.CurrentPlayer;
 
-        if (player == gameplayManager.CurrentPlayer)
+        int gooDiff = playCardOnBoard.GooCost;
+        if (player.Goo < playCardOnBoard.GooCost)
         {
-            int gooDiff = playCardOnBoard.GooCost;
-            if (player.Goo < playCardOnBoard.GooCost)
-            {
-                gooDiff = player.Goo > 0 ? player.Goo : 0;
-            }
-
-            playCardOnBoard.GooCost = gooDiff;
-
-            PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
-            gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+            gooDiff = player.Goo > 0 ? player.Goo : 0;
         }
+
+        playCardOnBoard.GooCost = gooDiff;
+
+        PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
+        _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
     }
 
 
     [CommandHandler(Description = "Undoes the Previous Action")]
     private static void Undo()
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        if (gameplayManager.CurrentTurnPlayer != gameplayManager.CurrentPlayer)
+        if (_gameplayManager.CurrentTurnPlayer != _gameplayManager.CurrentPlayer)
         {
             Debug.LogError("Please Wait for Your turn");
             return;
         }
 
-        PlayerMove playerMove = gameplayManager.PlayerMoves.GetPlayerMove();
+        PlayerMove playerMove = _gameplayManager.PlayerMoves.GetPlayerMove();
         if (playerMove == null)
         {
             Debug.LogError(" No Moves Exists");
@@ -161,49 +156,42 @@ static class BattleCommandsHandler
 
     private static void RevertPlayCardOnBoard(IMove move)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        CardsController cardsController = gameplayManager.GetController<CardsController>();
-
-
         PlayCardOnBoard obj = (PlayCardOnBoard)move;
 
         if (obj.Unit.GameObject == null)
         {
-            GetCardFromGraveyard(obj.Unit, gameplayManager.CurrentPlayer);
+            GetCardFromGraveyard(obj.Unit, _gameplayManager.CurrentPlayer);
         }
         else
         {
-            cardsController.ReturnCardToHand(obj.Unit);
-            gameplayManager.CurrentPlayer.Goo += obj.GooCost;
+            _cardsController.ReturnCardToHand(obj.Unit);
+            _gameplayManager.CurrentPlayer.Goo += obj.GooCost;
         }
     }
 
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
-        BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
         Card libraryCard = unit.Model.Card.LibraryCard.Clone();
         WorkingCard workingCard = new WorkingCard(libraryCard, player);
-        BoardUnitView newUnit = battlegroundController.CreateBoardUnit(player, workingCard);
+        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
 
         player.RemoveCardFromGraveyard(unit.Model.Card);
         player.AddCardToBoard(workingCard);
         player.BoardCards.Add(newUnit);
 
-        battlegroundController.PlayerBoardCards.Add(newUnit);
-        battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(player.BoardCards);
+        _battlegroundController.PlayerBoardCards.Add(newUnit);
+        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(player.BoardCards);
     }
 
 
     private static void RevertAttackOnUnit(IMove move)
     {
         AttackUnit obj = (AttackUnit) move;
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        BattlegroundController battlegroundController = gameplayManager.GetController<BattlegroundController>();
 
-        BoardUnitView attackingUnitView = battlegroundController.GetBoardUnitViewByModel(obj.AttackingUnitModel);
+        BoardUnitView attackingUnitView = _battlegroundController.GetBoardUnitViewByModel(obj.AttackingUnitModel);
         if (attackingUnitView.GameObject == null)
         {
-            GetCardFromGraveyard(attackingUnitView, gameplayManager.CurrentPlayer);
+            GetCardFromGraveyard(attackingUnitView, _gameplayManager.CurrentPlayer);
         }
         else
         {
@@ -276,7 +264,6 @@ static class BattleCommandsHandler
                 RevertIceWall(obj);
                 break;
             case Enumerators.OverlordSkill.BLIZZARD:
-                RevertBlizzard(obj);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -293,16 +280,6 @@ static class BattleCommandsHandler
         {
             unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
             unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
-        }
-
-        playOverlordSkill.Skill.SetCoolDown(0);
-    }
-
-    private static void RevertBlizzard(PlayOverlordSkill playOverlordSkill)
-    {
-        foreach (BoardUnitView unit in playOverlordSkill.UnitsAffectedBySkills)
-        {
-            unit.Model.RevertStun();
         }
 
         playOverlordSkill.Skill.SetCoolDown(0);
@@ -413,25 +390,18 @@ static class BattleCommandsHandler
 
     private static void RevertPush(PlayOverlordSkill playOverlordSkill)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        CardsController cardsController = gameplayManager.GetController<CardsController>();
-        BattlegroundController battlegroundController = gameplayManager.GetController<BattlegroundController>();
-
-        Player player = gameplayManager.CurrentPlayer;
+        Player player = _gameplayManager.CurrentPlayer;
         BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Target;
         WorkingCard workingCard = targetUnit.Card;
 
-        BoardCard card = battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-        cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
+        BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
+        _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);
     }
 
     private static void RevertDraw(PlayOverlordSkill playOverlordSkill)
     {
-        IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-        CardsController cardsController = gameplayManager.GetController<CardsController>();
-
         // TODO : no information which card added...
     }
 
