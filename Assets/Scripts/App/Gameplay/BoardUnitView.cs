@@ -726,16 +726,10 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow = null;
                     SetHighlightingEnabled(true);
                     attackCompleteCallback();
+
+                    completeCallback?.Invoke();
                 }
                 );
-
-            _timerManager.AddTimer(
-                x =>
-                {
-                    completeCallback?.Invoke();
-                },
-                null,
-                1.5f);
         }
 
         public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
@@ -757,16 +751,27 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow = null;
                     SetHighlightingEnabled(true);
                     attackCompleteCallback();
+
+                    if (targetCardView.Model.CurrentHp <= 0)
+                    {
+                        targetCardView.Model.UnitDied += () =>
+                        {
+                            completeCallback?.Invoke();
+                        };
+                    }
+                    else if(Model.CurrentHp <= 0)
+                    {
+                        Model.UnitDied += () =>
+                        {
+                            completeCallback?.Invoke();
+                        };
+                    }
+                    else
+                    {
+                        completeCallback?.Invoke();
+                    }
                 }
             );
-
-            _timerManager.AddTimer(
-                x =>
-                {
-                    completeCallback?.Invoke();
-                },
-                null,
-                1.5f);
         }
 
         private void SetNormalGlowFromUnitType()

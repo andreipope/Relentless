@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
@@ -133,14 +135,10 @@ namespace Loom.ZombieBattleground
         {
             _actionDone = true;
 
-            // small delay between actions
-            _timerManager.AddTimer(
-                x =>
-                {
-                    OnActionDoneEvent?.Invoke(this);
-                },
-                null,
-                Constants.DelayBetweenGameplayActions);
+            InternalTools.DoActionDelayed(() =>
+            {
+                OnActionDoneEvent?.Invoke(this);
+            }, Constants.DelayBetweenGameplayActions);
         }
     }
 

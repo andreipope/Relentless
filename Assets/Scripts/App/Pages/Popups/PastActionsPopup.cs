@@ -119,7 +119,7 @@ namespace Loom.ZombieBattleground
 
             if (pastActionParam.TargetEffects.Count > 0)
             {
-                if (pastActionParam.ActionType.ToString().Contains("ATTACK"))
+                if (pastActionParam.ActionType.ToString().ToLower().Contains("attack"))
                 {
                     _effectTypeImage.sprite = _attackActionSprite;
                 }
