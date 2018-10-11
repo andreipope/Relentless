@@ -1677,7 +1677,7 @@
               "buffType": "GUARD"
             },
             {
-              "type": "ADJACENT_UNITS_GET_HEAVY",
+              "type": "ADJACENT_UNITS_GET_GUARD",
               "activityType": "passive",
               "callType": "ENTRY",
               "buffType": "ENTRY"
