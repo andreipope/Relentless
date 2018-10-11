@@ -224,7 +224,8 @@ namespace Loom.ZombieBattleground
                             Caller = boardUnitViewElement.Model,
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
-                        _gameplayManager.CanDoDragActions = true;
+
+                        _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
                         break;
                     case Enumerators.CardKind.SPELL:
                         BoardSpell spell = new BoardSpell(null, card); // todo improve it with game Object aht will be aniamted

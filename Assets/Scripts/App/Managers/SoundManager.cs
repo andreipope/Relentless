@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            CreateSound(soundType, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
+            CreateSound(soundType, 128, volume, null, false, false, 0, clipTitle, false, cardSoundType.ToString());
         }
 
         public void PlaySound(
@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            SoundContainer thisSoundContainer = CreateSound(soundType, volume, null, false, false, 0, clipTitle, false,
+            SoundContainer thisSoundContainer = CreateSound(soundType, 128, volume, null, false, false, 0, clipTitle, false,
                 cardSoundType.ToString());
             FadeSound(thisSoundContainer, false, 0.005f, 0f, fadeOutAfterTime);
         }
@@ -173,14 +173,21 @@ namespace Loom.ZombieBattleground
             Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false,
             bool isInQueue = false)
         {
-            CreateSound(soundType, volume, null, isLoop, false, 0, clipTitle, isInQueue);
+            CreateSound(soundType, 128, volume, null, isLoop, false, 0, clipTitle, isInQueue);
+        }
+
+        public void PlaySound(
+            Enumerators.SoundType soundType, int priority = 128, string clipTitle = "", float volume = -1f, bool isLoop = false,
+            bool isInQueue = false)
+        {
+            CreateSound(soundType, priority, volume, null, isLoop, false, 0, clipTitle, isInQueue);
         }
 
         public void PlaySound(
             Enumerators.SoundType soundType, int clipIndex, float volume = -1f, bool isLoop = false,
             bool isInQueue = false)
         {
-            CreateSound(soundType, volume, null, isLoop, false, clipIndex, isInQueue: isInQueue);
+            CreateSound(soundType, 128, volume, null, isLoop, false, clipIndex, isInQueue: isInQueue);
         }
 
         public void CrossfaidSound(Enumerators.SoundType soundType, Transform parent = null, bool isLoop = false)
@@ -189,7 +196,7 @@ namespace Loom.ZombieBattleground
             float volumeStep = oldContainers[0].AudioSource.volume / 15f;
             FadeSound(oldContainers, volumeStep: volumeStep);
 
-            SoundContainer soundContainer = CreateSound(soundType, 0, parent, isLoop);
+            SoundContainer soundContainer = CreateSound(soundType, 128, 0, parent, isLoop);
             soundContainer.AudioSource.time = Mathf.Min(oldContainers[0].AudioSource.time, soundContainer.AudioSource.clip.length - 0.01f);
             FadeSound(soundContainer, true, volumeStep, oldContainers[0].AudioSource.volume);
         }
@@ -208,8 +215,7 @@ namespace Loom.ZombieBattleground
             {
                 StopBackroundMusic();
             }
-
-            CreateSound(soundType, volume, parent, isLoop, isPlaylist, isInQueue: isInQueue);
+            CreateSound(soundType, priority, volume, parent, isLoop, isPlaylist, isInQueue: isInQueue);
         }
 
         public void SetMusicMuted(bool status, bool withSaving = true)
@@ -261,8 +267,8 @@ namespace Loom.ZombieBattleground
             {
                 foreach (SoundContainer container in containers)
                 {
-                    container.SoundParameters.Volume = _musicVolume;
-                    container.AudioSource.volume = _musicVolume;
+                    container.SoundParameters.Volume = _musicVolume * Constants.BackgroundSoundVolume;
+                    container.AudioSource.volume = _musicVolume * Constants.BackgroundSoundVolume;
                 }
             }
 
@@ -409,6 +415,7 @@ namespace Loom.ZombieBattleground
 
         private SoundContainer CreateSound(
             Enumerators.SoundType soundType,
+            int priority = 128,
             float volume = -1f,
             Transform parent = null,
             bool isLoop = false,
@@ -418,12 +425,13 @@ namespace Loom.ZombieBattleground
             bool isInQueue = false,
             string tag = "")
         {
-            return DoSoundContainer(soundType, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue,
+            return DoSoundContainer(soundType, priority, volume, parent, isLoop, isPlaylist, clipIndex, clipTitle, isInQueue,
                 tag);
         }
 
         private SoundContainer DoSoundContainer(
             Enumerators.SoundType soundType,
+            int priority = 128,
             float volume = -1f,
             Transform parent = null,
             bool isLoop = false,
@@ -464,7 +472,7 @@ namespace Loom.ZombieBattleground
             soundParam.IsMute = false;
             soundParam.PlayOnAwake = false;
 
-            soundParam.Priority = 128;
+            soundParam.Priority = priority;
 
             if (soundParam.IsBackground)
             {

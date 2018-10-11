@@ -796,14 +796,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ResolveAllAbilitiesOnUnit(BoardObject boardObject, bool status = true)
+        public void ResolveAllAbilitiesOnUnit(BoardObject boardObject, bool status = true, bool inputDragStatus = true)
         {
             if (boardObject is BoardUnitModel unit)
             {
                 unit.IsAllAbilitiesResolvedAtStart = status;
             }
 
-            _gameplayManager.CanDoDragActions = status;
+            _gameplayManager.CanDoDragActions = inputDragStatus;
         }
 
         private void CallPermanentAbilityAction(

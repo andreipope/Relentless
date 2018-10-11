@@ -617,14 +617,16 @@ namespace Loom.ZombieBattleground
 
                     _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
 
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                        {
-                            ActionType = Enumerators.ActionType.PlayCardFromHand,
-                            Caller = boardUnitViewElement.Model,
-                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                        });
+                    _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    {
+                        ActionType = Enumerators.ActionType.PlayCardFromHand,
+                        Caller = boardUnitViewElement.Model,
+                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    });
 
-                        boardUnitViewElement.PlayArrivalAnimation();
+                    boardUnitViewElement.PlayArrivalAnimation();
+
+                    _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
 
                     _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
                         () =>

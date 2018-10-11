@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 4594077713498752}
   - component: {fileID: 95705611256193626}
   m_Layer: 21
-  m_Name: AirHeroFrameAnim
+  m_Name: Anim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

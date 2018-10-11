@@ -575,7 +575,7 @@ namespace Loom.ZombieBattleground
 
                             UpdateCardsStatusEvent?.Invoke(player);
 
-                            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
+                            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
                             player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
 
@@ -979,7 +979,7 @@ namespace Loom.ZombieBattleground
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
-            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model, true);
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
             if (!owner.IsLocalPlayer)
             {
