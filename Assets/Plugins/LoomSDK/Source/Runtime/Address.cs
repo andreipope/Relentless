@@ -11,6 +11,7 @@ namespace Loom.Client
     {
         public const string DefaultChainId = "default";
         private const int AddressLengthBytes = 20;
+
         private static readonly AddressUtil addressUtil = new AddressUtil();
 
         public string ChainId { get; }
