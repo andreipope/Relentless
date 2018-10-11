@@ -505,9 +505,7 @@ namespace Loom.ZombieBattleground
 
             public override void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
             {
-                _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
-                                                                                skill.OwnerPlayer.SelfHero.Element.ToLower() + "_" +
-                                                                                skill.Skill.OverlordSkill.ToString().ToLower());
+                _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
 
                 if (_withEffect)
                 {
