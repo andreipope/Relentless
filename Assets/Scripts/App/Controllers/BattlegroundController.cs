@@ -986,6 +986,17 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
+        {
+            BoardUnitView targetView = GetBoardUnitViewByModel(targetUnit);
+
+            return targetUnit.OwnerPlayer.BoardCards.Where(unit =>
+            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
+            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)-1)||
+            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
+            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)+1)).ToList();
+        }
+
         #region specific setup of battleground
 
         public void SetupBattlegroundAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)

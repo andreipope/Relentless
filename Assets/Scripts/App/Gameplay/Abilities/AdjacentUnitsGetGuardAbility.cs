@@ -28,33 +28,10 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            int targetIndex = -1;
-            for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
+            foreach(BoardUnitView unit in BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner))
             {
-                if (PlayerCallerOfAbility.BoardCards[i].Model == AbilityUnitOwner)
-                {
-                    targetIndex = i;
-                    break;
-                }
+                unit?.Model.AddBuffShield();
             }
-
-            if (targetIndex > -1)
-            {
-                if (targetIndex - 1 > -1)
-                {
-                    TakeGuardToUnit(PlayerCallerOfAbility.BoardCards[targetIndex - 1]);
-                }
-
-                if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
-                {
-                    TakeGuardToUnit(PlayerCallerOfAbility.BoardCards[targetIndex + 1]);
-                }
-            }
-        }
-
-        private static void TakeGuardToUnit(BoardUnitView unit)
-        {
-            unit?.Model.AddBuffShield();
         }
     }
 }
