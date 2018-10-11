@@ -1,8 +1,10 @@
 {
-  "encryptData":false,
-  "authHost":"http://stage-auth.loom.games",
-  "readerHost":"ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
-  "writerHost":"ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
-  "cardsDataVersion":"v1",
-  "skipBackendCardData":false
+  "encryptData": false,
+  "skipBackendCardData": false,
+  "backend": {
+    "authHost": "http://stage-auth.loom.games",
+    "readerHost": "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
+    "writerHost": "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
+    "dataVersion": "v1"
+  }
 }
