@@ -341,7 +341,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
              Client.Protobuf.Address requestCustomGameAddress = null;
              if (customGameModeAddress != null)
              {
-                 requestCustomGameAddress = GetProtobufAddressFromAddress(customGameModeAddress.Value);
+                 requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
              }
              FindMatchRequest request = new FindMatchRequest
              {
@@ -428,7 +428,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             GetCustomGameModeCustomUiRequest request = new GetCustomGameModeCustomUiRequest
             {
-                Address = GetProtobufAddressFromAddress(address)
+                Address = address.ToProtobufAddress()
             };
 
             return await Contract.StaticCallAsync<GetCustomGameModeCustomUiResponse>(GetGameModeCustomUiMethod, request);
@@ -438,7 +438,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             CallCustomGameModeFunctionRequest request = new CallCustomGameModeFunctionRequest
             {
-                Address = GetProtobufAddressFromAddress(address),
+                Address = address.ToProtobufAddress(),
                 FunctionName = functionName
             };
 
@@ -446,16 +446,5 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         #endregion
-
-        private static Client.Protobuf.Address GetProtobufAddressFromAddress(Address address)
-        {
-            Client.Protobuf.Address protobufAddress;
-            protobufAddress = new Client.Protobuf.Address
-            {
-                ChainId = address.ChainId,
-                Local = ByteString.CopyFrom(address.ToByteArray())
-            };
-            return protobufAddress;
-        }
     }
 }

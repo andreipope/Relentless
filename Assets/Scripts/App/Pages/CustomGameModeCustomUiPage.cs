@@ -170,10 +170,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().CustomGameModeAddress =
-                Address.FromString(
-                    CryptoUtils.BytesToHexString(GameMode.Address.Local.ToByteArray())
-                );
+            GameClient.Get<IMatchManager>().CustomGameModeAddress = Address.FromProtobufAddress(GameMode.Address);
             _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
         }
     }
