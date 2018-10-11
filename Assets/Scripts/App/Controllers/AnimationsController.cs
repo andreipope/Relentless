@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -64,25 +65,6 @@ namespace Loom.ZombieBattleground
                 partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.7f);
             }
 
-            if (isCreatureAttacker)
-            {
-                Transform shieldObject = source.transform.Find("Other/Shield");
-                Vector3 originalShieldPosition = shieldObject.transform.position;
-
-                Vector3 partWayShield = Vector3.Lerp(originalShieldPosition + Vector3.forward * 5f,
-                    target.transform.position + Vector3.forward * 5f, 0.6f);
-
-                shieldObject.transform.DOMove(partWayShield, 0.1f).SetEase(Ease.InSine).OnComplete(
-                    () =>
-                    {
-                        shieldObject.transform.DOMove(originalShieldPosition, duration).SetEase(Ease.OutSine)
-                            .OnComplete(
-                                () =>
-                                {
-                                });
-                    });
-            }
-
             source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(
                 () =>
                 {
@@ -94,7 +76,10 @@ namespace Loom.ZombieBattleground
                     source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
-                            onCompleteCallback?.Invoke();
+                            InternalTools.DoActionDelayed(() =>
+                            {
+                                onCompleteCallback?.Invoke();
+                            }, 0.5f);
 
                             sortingGroup.sortingOrder = oldSortingOrder;
                             sortingGroup.sortingLayerName = oldsortingLayerName;

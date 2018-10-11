@@ -285,11 +285,8 @@ namespace Loom.ZombieBattleground
             var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
             GameObject effect = MonoBehaviour.Instantiate(prefab);
             effect.transform.position = cardToDestroy.Transform.position;
-            effect.SetActive(false);
             cardToDestroy.Transform.SetParent(effect.transform, true);
-            cardToDestroy.Transform.position = effect.transform.position;
             _particlesController.RegisterParticleSystem(effect, true, 8f);
-            effect.SetActive(true);
         }
 
         private void ChechTouchOnBattleground()

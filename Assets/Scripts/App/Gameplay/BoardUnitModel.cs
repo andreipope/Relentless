@@ -443,6 +443,15 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
+                            if (targetPlayer.Health <= 0)
+                            {
+                                IsPlayable = true;
+                                AttackedThisTurn = false;
+                                IsAttacking = false;
+                                completeCallback?.Invoke();
+                                return;
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetPlayer);
 
                             FightSequenceHandler.HandleAttackPlayer(
@@ -466,6 +475,15 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
+                            if(targetCardModel.CurrentHp <= 0)
+                            {
+                                IsPlayable = true;
+                                AttackedThisTurn = false;
+                                IsAttacking = false;
+                                completeCallback?.Invoke();
+                                return;
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,

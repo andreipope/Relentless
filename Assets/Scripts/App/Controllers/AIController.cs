@@ -348,25 +348,23 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
+                        if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                         {
-                            if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
+                            unit.DoCombat(_gameplayManager.CurrentPlayer);
+                            await LetsThink(cancellationToken);
+                        }
+                        else
+                        {
+                            BoardUnitModel attackedCreature = GetRandomOpponentUnit();
+                            if (attackedCreature != null)
                             {
-                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                unit.DoCombat(attackedCreature);
                                 await LetsThink(cancellationToken);
                             }
                             else
                             {
-                                BoardUnitModel attackedCreature = GetRandomOpponentUnit();
-                                if (attackedCreature != null)
-                                {
-                                    unit.DoCombat(attackedCreature);
-                                    await LetsThink(cancellationToken);
-                                }
-                                else
-                                {
-                                    unit.DoCombat(_gameplayManager.CurrentPlayer);
-                                    await LetsThink(cancellationToken);
-                                }
+                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                await LetsThink(cancellationToken);
                             }
                         }
                     }
