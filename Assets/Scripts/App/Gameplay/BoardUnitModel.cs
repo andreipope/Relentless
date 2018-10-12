@@ -423,14 +423,7 @@ namespace Loom.ZombieBattleground
         public void DoCombat(BoardObject target)
         {
             if (target == null)
-            {
-                if (_tutorialManager.IsTutorial)
-                {
-                    _tutorialManager.ActivateSelectTarget();
-                }
-
                 return;
-            }
 
             IsAttacking = true;
 
