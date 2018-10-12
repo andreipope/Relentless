@@ -68,11 +68,8 @@ namespace Loom.ZombieBattleground
             source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(
                 () =>
                 {
-                    DOTween.Sequence().Append(target.GetComponent<Image>().DOColor(Color.red, 0.25f))
-                        .Append(target.GetComponent<Image>().DOColor(Color.white, 0.25f)).Play();
-
                     target.transform.DOShakePosition(1, new Vector3(shakeStrength, shakeStrength, 0));
-
+                   
                     source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
