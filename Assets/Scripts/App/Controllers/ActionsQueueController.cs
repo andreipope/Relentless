@@ -45,9 +45,9 @@ namespace Loom.ZombieBattleground
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
         public void AddNewActionInToQueue(
-            Action<object, Action> actionToDo, object parameter = null, PastActionsPopup.PastActionParam report = null)
+            Action<object, Action> actionToDo, object parameter = null)
         {
-            GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter, report);
+            GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
             _actionsToDo.Enqueue(gameAction);
 
@@ -74,8 +74,6 @@ namespace Loom.ZombieBattleground
 
         private void OnActionDoneEvent(GameAction<object> previousAction)
         {
-            PostGameActionReport(previousAction.Report);
-
             TryCallNewActionFromQueue();
         }
 
@@ -99,19 +97,16 @@ namespace Loom.ZombieBattleground
 
         public T Parameter;
 
-        public PastActionsPopup.PastActionParam Report;
-
         private readonly ITimerManager _timerManager;
 
         private bool _actionDone;
 
-        public GameAction(Action<T, Action> action, T parameter, PastActionsPopup.PastActionParam report)
+        public GameAction(Action<T, Action> action, T parameter)
         {
             _timerManager = GameClient.Get<ITimerManager>();
 
             Action = action;
             Parameter = parameter;
-            Report = report;
         }
 
         public event Action<GameAction<T>> OnActionDoneEvent;
@@ -133,25 +128,15 @@ namespace Loom.ZombieBattleground
 
         private void ActionDoneCallback()
         {
+            if (_actionDone)
+                return;
+
             _actionDone = true;
 
             InternalTools.DoActionDelayed(() =>
             {
                 OnActionDoneEvent?.Invoke(this);
             }, Constants.DelayBetweenGameplayActions);
-        }
-    }
-
-    public class GameActionReport
-    {
-        public Enumerators.ActionType ActionType;
-
-        public object[] Parameters;
-
-        public GameActionReport(Enumerators.ActionType actionType, object[] parameters)
-        {
-            ActionType = actionType;
-            Parameters = parameters;
         }
     }
 }

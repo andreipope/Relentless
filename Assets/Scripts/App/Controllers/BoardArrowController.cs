@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -68,6 +69,14 @@ namespace Loom.ZombieBattleground
                 UnityEngine.Object.Destroy(arrow.gameObject);
                 action?.Invoke();
             }, null, delayTillDestroyArrow);
+
+            return arrow;
+        }
+
+        public T BeginTargetingArrowFrom<T>(Transform from) where T : BoardArrow
+        {
+            T arrow = UnityEngine.Object.Instantiate(_boardArrowPrefab).AddComponent<T>();
+            arrow.Begin(from.position);
 
             return arrow;
         }
