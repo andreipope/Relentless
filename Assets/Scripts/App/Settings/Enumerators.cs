@@ -116,7 +116,8 @@ namespace Loom.ZombieBattleground.Common
             COSTS_LESS_IF_CARD_TYPE_IN_HAND,
             RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS,
             REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES,
-            RESTORE_DEF_RANDOMLY_SPLIT
+            RESTORE_DEF_RANDOMLY_SPLIT,
+            ADJACENT_UNITS_GET_GUARD
         }
 
         public enum ActionType
@@ -143,10 +144,10 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AffectObjectType
         {
-            NONE,
-            PLAYER,
-            CARD,
-            CHARACTER
+            None,
+            Player,
+            Card,
+            Character
         }
 
         public enum AiType
@@ -166,13 +167,17 @@ namespace Loom.ZombieBattleground.Common
             LOGIN,
             MAIN_MENU,
             HERO_SELECTION,
-            HORDE_SELECTION,
+            HordeSelection,
             ARMY,
             SHOP,
             GAMEPLAY,
             DECK_EDITING,
             PACK_OPENER,
-            CREDITS
+            CREDITS,
+            PlaySelection,
+            PvPSelection,
+            CustomGameModeList,
+            CustomGameModeCustomUi
         }
 
         public enum AttackInfoType
@@ -205,7 +210,7 @@ namespace Loom.ZombieBattleground.Common
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA,
+            BUFFS_TOOLTIP_DATA
         }
 
         public enum CardKind
@@ -437,6 +442,7 @@ namespace Loom.ZombieBattleground.Common
             USE_ABILITY,
             HERO_DEATH,
             START_TURN,
+            END_OF_RANK_UPGRADE
         }
 
         public enum UnitStatusType
@@ -478,15 +484,6 @@ namespace Loom.ZombieBattleground.Common
             BorderlessWindow
         }
 
-        public enum PlayerAction
-        {
-            DrawCard,
-            Mulligan,
-            UseCardAbility,
-            UseOverlordSkill,
-            CardAttack,
-            EndTurn
-        }
         public enum ExperienceActionType
         {
             KillOverlord,
@@ -494,7 +491,18 @@ namespace Loom.ZombieBattleground.Common
             PlayCard,
             ActivateRankAbility,
             UseOverlordAbility
+        }
 
+        public enum VFXType
+        {
+            Impact,
+            Moving
+        }
+
+        public enum ShutterState
+        {
+            Open,
+            Close
         }
     }
 }

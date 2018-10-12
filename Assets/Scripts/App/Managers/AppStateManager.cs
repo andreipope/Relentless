@@ -41,6 +41,7 @@ namespace Loom.ZombieBattleground
             switch (stateTo)
             {
                 case Enumerators.AppState.APP_INIT:
+                    GameClient.Get<ITimerManager>().Dispose();
                     _uiManager.SetPage<LoadingPage>();
                     GameClient.Get<ISoundManager>().PlaySound(
                         Enumerators.SoundType.BACKGROUND,
@@ -58,7 +59,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.HERO_SELECTION:
                     _uiManager.SetPage<OverlordSelectionPage>();
                     break;
-                case Enumerators.AppState.HORDE_SELECTION:
+                case Enumerators.AppState.HordeSelection:
                     _uiManager.SetPage<HordeSelectionPage>();
                     break;
                 case Enumerators.AppState.ARMY:
@@ -87,6 +88,18 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.CREDITS:
                     _uiManager.SetPage<CreditsPage>();
+                    break;
+                case Enumerators.AppState.PlaySelection:
+                    _uiManager.SetPage<PlaySelectionPage>();
+                    break;
+                case Enumerators.AppState.PvPSelection:
+                    _uiManager.SetPage<PvPSelectionPage>();
+                    break;
+                case Enumerators.AppState.CustomGameModeList:
+                    _uiManager.SetPage<CustomGameModeListPage>();
+                    break;
+                case Enumerators.AppState.CustomGameModeCustomUi:
+                    _uiManager.SetPage<CustomGameModeCustomUiPage>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);

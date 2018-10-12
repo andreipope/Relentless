@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value { get; }
+        public int Value { get; } = 1;
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -24,38 +27,95 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-
-            Action();
+            Action(null);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            List<object> allies = new List<object>();
+            List<BoardObject> _targets;
 
-            allies.AddRange(GetOpponentOverlord().BoardCards);
-            allies.Add(GetOpponentOverlord());
-
-            allies = InternalTools.GetRandomElementsFromList(allies, 1);
-
-            for (int i = 0; i < allies.Count; i++)
+            if (PredefinedTargets != null)
             {
-                object ally = allies[i];
-                switch (allies[i])
+                _targets = PredefinedTargets;
+            }
+            else
+            {
+                _targets = new List<BoardObject>();
+                _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                _targets.Add(GetOpponentOverlord());
+
+                _targets = InternalTools.GetRandomElementsFromList(_targets, Value);
+            }
+
+            VfxObject = null;
+
+            if (AbilityData.HasVFXType(Enumerators.VFXType.Moving))
+            {
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
+            }
+
+            foreach (object target in _targets)
+            {
+                object targetObject = target;
+                Vector3 targetPosition = Vector3.zero;
+
+                switch (target)
                 {
-                    case Player allyPlayer:
-                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
-                        CreateVfx(allyPlayer.AvatarObject.transform.position, true, 5f, true);
+                    case Player player:
+                        targetPosition = player.AvatarObject.transform.position;
                         break;
-                    case BoardUnitView allyUnit:
-                        BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit.Model);
-                        CreateVfx(allyUnit.Transform.position, true, 5f);
+                    case BoardUnitModel unit:
+                        targetPosition =  BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(ally), ally, null);
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
+
+                if (VfxObject != null)
+                {
+                    VfxObject = Object.Instantiate(VfxObject);
+                    VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
+                    targetPosition = Utilites.CastVfxPosition(targetPosition);
+                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => { ActionCompleted(targetObject, targetPosition); });
+                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                }
+                else
+                {
+                    ActionCompleted(targetObject, targetPosition);
+                }
+            }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+        }
+
+
+    private void ActionCompleted(object target, Vector3 targetPosition)
+        {
+            ClearParticles();
+
+            GameObject vfxObject = null;
+
+            if (AbilityData.HasVFXType(Enumerators.VFXType.Impact))
+            {
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Impact).Path);
+
+                vfxObject = Object.Instantiate(vfxObject);
+                vfxObject.transform.position = targetPosition;
+                ParticlesController.RegisterParticleSystem(vfxObject, true);
+            }
+
+            switch (target)
+            {
+                case Player allyPlayer:
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
+                    break;
+                case BoardUnitModel allyUnit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
         }
     }

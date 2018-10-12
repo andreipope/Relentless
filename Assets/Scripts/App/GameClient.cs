@@ -1,6 +1,10 @@
+using System.IO;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -15,24 +19,39 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND
+            LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
+            loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
+
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose backend = BackendPurpose.Production;
+#elif USE_PVP_BACKEND
+            const BackendPurpose backend = BackendPurpose.PvP;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif
 
-            BackendEndpointsContainer.BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
-            LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
-            loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
+            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+
+            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFilePath);
+            ConfigData configData = new ConfigData();
+            if (File.Exists(configDataFilePath))
+            {
+                configData = JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
+                if (configData.Backend != null)
+                {
+                    Debug.Log("Backend overriden by config file.");
+                    backendEndpoint = configData.Backend;
+                }
+            }
 
             AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
             AddService<ILoadObjectsManager>(loadObjectsManager);
             AddService<ITimerManager>(new TimerManager());
             AddService<IInputManager>(new InputManager());
             AddService<ILocalizationManager>(new LocalizationManager());
-            AddService<IDataManager>(new DataManager());
+            AddService<IDataManager>(new DataManager(configData));
             AddService<IScenesManager>(new ScenesManager());
             AddService<IAppStateManager>(new AppStateManager());
             AddService<ICameraManager>(new CameraManager());
@@ -44,10 +63,12 @@ namespace Loom.ZombieBattleground
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
-            AddService<BackendFacade>(new BackendFacade(backendEndpoint.AuthHost, backendEndpoint.ReaderHost, backendEndpoint.WriterHost));
-            AddService<ActionLogCollectorUploader>(new ActionLogCollectorUploader());
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint));
+            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
+            AddService<IPvPManager>(new PvPManager());
+            AddService<IQueueManager>(new QueueManager());
         }
 
         public static GameClient Instance

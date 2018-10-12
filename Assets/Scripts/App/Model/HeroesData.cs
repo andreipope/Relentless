@@ -69,7 +69,9 @@ namespace Loom.ZombieBattleground.Data
 
         public void ValidateSkillLocking()
         {
-            int skillId = Level % 4;
+            //TODO: commented now in perspective of lock funcitonality for release stage
+            //int skillId = Level % 4;
+            int skillId = 2;
             for (int i = 0; i < skillId; i++)
             {
                 Skills[i].Unlocked = true;
@@ -99,6 +101,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string ElementTargets;
 
+        public string UnitStatus;
+
         public int Cooldown;
 
         public int InitialCooldown;
@@ -114,6 +118,9 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonIgnore]
         public List<Enumerators.SkillTargetType> SkillTargetTypes;
+
+        [JsonIgnore]
+        public Enumerators.UnitStatusType TargetUnitStatusType;
 
         [JsonIgnore]
         public bool Unlocked;
@@ -143,6 +150,11 @@ namespace Loom.ZombieBattleground.Data
             else
             {
                 ElementTargetTypes = new List<Enumerators.SetType>();
+            }
+
+            if (!string.IsNullOrEmpty(UnitStatus))
+            {
+                TargetUnitStatusType = Utilites.CastStringTuEnum<Enumerators.UnitStatusType>(UnitStatus);
             }
         }
     }

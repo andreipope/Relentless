@@ -648,11 +648,11 @@ namespace Loom.ZombieBattleground
                         CalculateVisibility();
                         Canvas.ForceUpdateCanvases();
                     });
-            }
-
-            if (_currentHordePage + 1 < _numHordePages)
-            {
-                MoveHordeToRight();
+            } else {
+                int foundItemIndex = _createdHordeCards.FindIndex(c => c.LibraryCard.Id == foundItem.LibraryCard.Id);
+                _currentHordePage = foundItemIndex / CardsPerPage;
+                CalculateVisibility();
+                Canvas.ForceUpdateCanvases();
             }
         }
 
@@ -783,7 +783,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }
         }
 
@@ -876,11 +876,14 @@ namespace Loom.ZombieBattleground
         private void InitObjects()
         {
             _numSets = _dataManager.CachedCardsLibraryData.Sets.Count - 1;
-            CalculateNumberOfPages();
 
             Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.HeroesParsed
                 .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
-            LoadCards(0, heroSetType);
+
+            _currentElementPage = 0;
+            _currentSet = heroSetType;
+            CalculateNumberOfPages();
+            LoadCards(_currentElementPage, _currentSet);
         }
 
         private bool GetSetAndIndexForCard(Card card, out int setIndex, out int cardIndex)
@@ -1083,7 +1086,7 @@ namespace Loom.ZombieBattleground
                 OnDoneButtonPressed();
             }
 
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HORDE_SELECTION);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
         }
 
         private void BuyButtonHandler()

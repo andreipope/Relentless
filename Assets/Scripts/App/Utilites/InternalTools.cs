@@ -1,4 +1,6 @@
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -154,6 +156,13 @@ namespace Loom.ZombieBattleground.Helpers
             }
           
             return newValue;
+        }
+
+        public static void DoActionDelayed(TweenCallback action, float delay)
+        {
+            Sequence sequence = DOTween.Sequence();
+            sequence.PrependInterval(delay);
+            sequence.OnComplete(action);
         }
     }
 }

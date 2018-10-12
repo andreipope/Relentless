@@ -70,6 +70,10 @@ namespace Loom.ZombieBattleground
 
         public int CurrentDeckId { get; set; }
 
+        private IMatchManager _matchManager;
+
+        private IPvPManager _pvpManager;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -79,6 +83,8 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _gameplayManager.GameInitialized += GameInitializedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
@@ -194,13 +200,39 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            OpponentDeck randomOpponentDeck =
-                _dataManager.CachedOpponentDecksData.Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
-            _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
+            OpponentDeck randomOpponentDeck = null;
 
-            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo);
-            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo);
-            //Debug.Log(_tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId);
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.LOCAL:
+                    randomOpponentDeck =
+                        _dataManager.CachedOpponentDecksData.Decks[
+                            Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
+                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
+                    break;
+
+                case Enumerators.MatchType.PVP:
+                    for (int i = 0; i < _pvpManager.MatchResponse.Match.PlayerStates.Count; i++)
+                    {
+                        if (_pvpManager.MatchResponse.Match.PlayerStates[i].Id !=
+                            _backendDataControlMediator.UserDataModel.UserId)
+                        {
+                            _pvpManager.OpponentDeckIndex = i;
+                            break;
+                        }
+                    }
+                    _pvpManager.OpponentDeck = FromProtobufExtensions.FromProtobuf(_pvpManager.MatchResponse.Match.PlayerStates[_pvpManager.OpponentDeckIndex].Deck);
+
+                    randomOpponentDeck = _pvpManager.OpponentDeck;
+                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
+                    break;
+
+                case Enumerators.MatchType.PVE:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             int heroId = 0; //Constants.TutorialPlayerHeroId; // TUTORIAL
             int opponentHeroId = 0;
 
@@ -227,9 +259,8 @@ namespace Loom.ZombieBattleground
             _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard")
                 .GetComponent<SpriteRenderer>();
 
-            _playerHealthText = GameObject.Find("Player/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
-            _opponentHealthText =
-                GameObject.Find("Opponent/Avatar/LivesCircle/DefenceText").GetComponent<TextMeshPro>();
+            _playerHealthText = GameObject.Find("Player/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
+            _opponentHealthText = GameObject.Find("Opponent/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
 
             // improve find to get it from OBJECTS ON BOARD!!
             _playerNameText = GameObject.Find("Player/NameBoard/NameText").GetComponent<TextMeshPro>();
@@ -241,18 +272,18 @@ namespace Loom.ZombieBattleground
             _endTurnButton = GameObject.Find("EndTurnButton");
             
             PlayerPrimarySkillHandler =
-                GameObject.Find("Player").transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Player).transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             PlayerSecondarySkillHandler =
-                GameObject.Find("Player").transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Player).transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             OpponentPrimarySkillHandler =
-                GameObject.Find("Opponent").transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Opponent).transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             OpponentSecondarySkillHandler =
-                GameObject.Find("Opponent").transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
+                GameObject.Find(Constants.Opponent).transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
             if (currentPlayerHero != null)
             {
-                SetHeroInfo(currentPlayerHero, "Player", PlayerPrimarySkillHandler.gameObject,
+                SetHeroInfo(currentPlayerHero, Constants.Player, PlayerPrimarySkillHandler.gameObject,
                     PlayerSecondarySkillHandler.gameObject);
                 string playerNameText = currentPlayerHero.FullName;
                 if (_backendDataControlMediator.LoadUserDataModel())
@@ -265,15 +296,15 @@ namespace Loom.ZombieBattleground
 
             if (currentOpponentHero != null)
             {
-                SetHeroInfo(currentOpponentHero, "Opponent", OpponentPrimarySkillHandler.gameObject,
+                SetHeroInfo(currentOpponentHero, Constants.Opponent, OpponentPrimarySkillHandler.gameObject,
                     OpponentSecondarySkillHandler.gameObject);
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
 			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
-                _playerManaBarsPosition, _playerNameText.text);
+                _playerManaBarsPosition, _playerNameText.text, Constants.Player);
             _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
-                _opponentManaBarsPosition, _opponentNameText.text);
+                _opponentManaBarsPosition, _opponentNameText.text, Constants.Opponent);
 			
             _isPlayerInited = true;
         }
@@ -284,34 +315,27 @@ namespace Loom.ZombieBattleground
             HeroSkill skillSecond = hero.Skills[hero.SecondarySkill];
 
             skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.HeroElement + "_" +
-                    skillPrim.Skill.ToLower());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skillPrim.IconPath);
             skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" + hero.HeroElement + "_" +
-                    skillSecond.Skill.ToLower());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skillSecond.IconPath);
 
             Texture2D heroTexture =
                 _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.HeroElement + "_EXP");
-            Transform transfHeroObject = GameObject.Find(objectName + "/Avatar/Hero_Object").transform;
+            Transform transfHeroObject = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage").transform;
 
             Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
             heroAvatarMaterial.mainTexture = heroTexture;
 
+            MeshRenderer renderer;
             for (int i = 0; i < transfHeroObject.childCount; i++)
             {
-                transfHeroObject.GetChild(i).GetComponent<Renderer>().material = heroAvatarMaterial;
+                renderer = transfHeroObject.GetChild(i).GetComponent<MeshRenderer>();
+
+                if (renderer != null)
+                {
+                    renderer.material = heroAvatarMaterial;
+                }
             }
-
-            Sprite heroHighlight =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Decor_" + hero.HeroElement + "_EXP");
-            GameObject.Find(objectName + "/Avatar/HeroHighlight").GetComponent<SpriteRenderer>().sprite = heroHighlight;
-
-            string name = Utilites.FirstCharToUpper(hero.HeroElement.ToString()) + "HeroFrame";
-            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
-            var avatarHeroHighlight = MonoBehaviour.Instantiate(prefab, GameObject.Find(objectName + "/Avatar/HeroHighlight").transform, false);
-            //avatarHeroHighlight.transform.localPosition = Vector3.zero;
-            avatarHeroHighlight.name = name;
-            avatarHeroHighlight.transform.parent.gameObject.SetActive(false);
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)

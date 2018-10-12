@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         CreditsData CachedCreditsData { get; set; }
 
+        ConfigData ConfigData { get; set; }
+
         long CachedDecksLastModificationTimestamp { get; set; }
 
         BetaConfig BetaConfig { get; set; }

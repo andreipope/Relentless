@@ -52,23 +52,10 @@
       ]
     },
     {
-      "subsectionType": "Gameplay Programmers",
+      "subsectionType": "Programmers",
       "credits": [
         {
           "FullName": "Stanislav Sorokin",
-          "Post": "Lead Gameplay Programmer"
-        },
-        {
-          "FullName": "Artem Shyriaiev",
-          "Post": "Gameplay Programmer"
-        }
-      ]
-    },
-    {
-      "subsectionType": "Unity Programmers",
-      "credits": [
-        {
-          "FullName": "Serhii Yolkin",
           "Post": "Lead Programmer"
         },
         {
@@ -76,29 +63,24 @@
           "Post": "Senior Programmer"
         },
         {
-          "FullName": "Gaurav Garg",
+          "FullName": "Artem Shyriaiev",
           "Post": "Programmer"
-        }
-      ]
-    },
-    {
-      "subsectionType": "Serverside Programmers",
-      "credits": [
-        {
-          "FullName": "Lock Thepdusith",
-          "Post": "Senior Programmer"
         },
         {
-          "FullName": "Parth Desai",
-          "Post": "Senior Programmer"
+          "FullName": "Gaurav Garg",
+          "Post": "Programmer"
+        },
+        {
+          "FullName": "Lock Thepdusith",
+          "Post": "Senior Serverside Programmer"
         },
         {
           "FullName": "Sebastian Klier",
-          "Post": "Programmer"
+          "Post": "Serverside Programmer"
         },
         {
           "FullName": "Siddhant Mutha",
-          "Post": "Junior Programmer"
+          "Post": "Junior Serverside Programmer"
         }
       ]
     },

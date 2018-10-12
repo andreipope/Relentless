@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
 
         public bool IgnoreHeavy;
 
+        public Enumerators.UnitStatusType TargetUnitStatusType;
+
         public void End(BoardUnitView creature)
         {
             if (!StartedDrag)
@@ -20,7 +23,38 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
-            creature.Model.DoCombat((BoardObject) SelectedCard?.Model ?? SelectedPlayer);
+            BoardObject target = null;
+
+            if (SelectedCard != null)
+            {
+                target = SelectedCard.Model;
+            }
+            else if (SelectedPlayer != null)
+            {
+                target = SelectedPlayer;
+            }
+
+            if (target != null)
+            {
+                creature.Model.DoCombat(target);
+
+                if (target == SelectedPlayer)
+                {
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Player, -1);
+                }
+                else
+                {
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Character, SelectedCard.Model.Card.Id);
+                }
+            }
+            else
+            {
+                if (TutorialManager.IsTutorial)
+                {
+                    TutorialManager.ActivateSelectTarget();
+                }
+            }
+
             Dispose();
         }
 
@@ -47,13 +81,17 @@ namespace Loom.ZombieBattleground
                 bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
                 if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
-                    SelectedCard?.SetSelectedUnit(false);
+                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
+                        unit.Model.UnitStatus == TargetUnitStatusType)
+                    {
+                        SelectedCard?.SetSelectedUnit(false);
 
-                    SelectedCard = unit;
-                    SelectedPlayer?.SetGlowStatus(false);
+                        SelectedCard = unit;
+                        SelectedPlayer?.SetGlowStatus(false);
 
-                    SelectedPlayer = null;
-                    SelectedCard.SetSelectedUnit(true);
+                        SelectedPlayer = null;
+                        SelectedCard.SetSelectedUnit(true);
+                    }
                 }
             }
         }

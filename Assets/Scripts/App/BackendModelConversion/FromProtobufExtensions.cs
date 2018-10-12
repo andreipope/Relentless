@@ -1,4 +1,7 @@
-﻿using System.Linq;
+using System.Collections.Generic;
+using System.Linq;
+using Loom.Google.Protobuf.Collections;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 
@@ -104,6 +107,79 @@ namespace Loom.ZombieBattleground.Data
                 Name = !string.IsNullOrEmpty(cardSet.Name) ? cardSet.Name : "none",
                 Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
             };
+        }
+
+        public static OpponentDeck FromProtobuf(this Protobuf.Deck deck)
+        {
+            return new OpponentDeck
+            {
+                Id = (int)deck.Id,
+                HeroId = (int)deck.HeroId,
+                Type = string.Empty,
+                Cards = deck.Cards.Select(card => card.GetDeckCardData()).ToList()
+            };
+        }
+        //TOTO: review does need this function at all
+        private static DeckCardData GetDeckCardData(this CardCollection cardCollection)
+        {
+            return new DeckCardData
+            {
+                CardName = cardCollection.CardName,
+                Amount = (int)cardCollection.Amount
+            };
+        }
+
+        public static WorkingCard FromProtobuf(CardInstance cardInstance, Player player)
+        {
+            CardPrototype cardPrototype = cardInstance.Prototype;
+
+            List<AbilityData> abilities = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.
+                Find(x => x.Id == cardPrototype.DataId).Clone().Abilities;
+
+            Card card = new Card
+            {
+                Id = cardPrototype.DataId,
+                Kind = cardPrototype.Kind,
+                Name = cardPrototype.Name,
+                Cost = cardPrototype.GooCost,
+                Description = cardPrototype.Description,
+                FlavorText = cardPrototype.FlavorText,
+                Picture = cardPrototype.Picture,
+                Damage = cardPrototype.InitialDamage,
+                Health = cardPrototype.InitialDefence,
+                Rank = cardPrototype.Rank,
+                Type = cardPrototype.Type,
+                CardViewInfo = new CardViewInfo
+                {
+                    Position = new FloatVector3 {
+                        X = cardPrototype.CardViewInfo.Position.X,
+                        Y = cardPrototype.CardViewInfo.Position.Y,
+                        Z = cardPrototype.CardViewInfo.Position.Z
+                    },
+                    Scale = new FloatVector3 {
+                        X = cardPrototype.CardViewInfo.Scale.X,
+                        Y = cardPrototype.CardViewInfo.Scale.Y,
+                        Z = cardPrototype.CardViewInfo.Scale.Z
+                    }
+                },
+                Frame = cardPrototype.Frame,
+                CardSetType = (Enumerators.SetType)cardPrototype.CardSetType,
+                CardRank = (Enumerators.CardRank)cardPrototype.CreatureRank,
+                CardType = (Enumerators.CardType)cardPrototype.CreatureType,
+                CardKind = (Enumerators.CardKind)cardPrototype.CardKind,
+                Abilities = abilities
+            };
+
+            return new WorkingCard(card, player, cardInstance.InstanceId);
+        }
+
+        public static List<Unit> FromProtobuf(this RepeatedField<Unit> repeatedListUnits)
+        {
+            List<Unit> units = new List<Unit>();
+
+            units.AddRange(repeatedListUnits);
+
+            return units;
         }
     }
 }

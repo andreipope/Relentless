@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         private List<IController> _controllers;
 
-        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
+        private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
 
         public event Action GameStarted;
 
@@ -113,6 +113,8 @@ namespace Loom.ZombieBattleground
             CurrentTurnPlayer = null;
             CurrentPlayer = null;
             OpponentPlayer = null;
+
+            GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
         }
@@ -238,8 +240,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-		private void StartInitializeGame()
+        private void StartInitializeGame()
         {
+            if (IsTutorial)
+            {
+                IsSpecificGameplayBattleground = true;
+            }
+
             GetController<PlayerController>().InitializePlayer(0);
 
             switch (_matchManager.MatchType)
@@ -257,10 +264,10 @@ namespace Loom.ZombieBattleground
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
 
+            UnityEngine.Debug.Log(IsTutorial + " IsTutorial");
+
             if (IsTutorial)
             {
-                IsSpecificGameplayBattleground = true;
-
                 CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 
                 GetController<PlayerController>().SetHand();
@@ -276,10 +283,7 @@ namespace Loom.ZombieBattleground
                         CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
                         break;
                     case Enumerators.MatchType.PVP:
-
-                        //todo implement logic from server
-
-                        CurrentTurnPlayer = CurrentPlayer;
+                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);

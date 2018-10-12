@@ -61,6 +61,9 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+            if (Self != null)
+                return;
+
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
@@ -86,9 +89,12 @@ namespace Loom.ZombieBattleground
             Self.SetActive(true);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
-
             IDataManager dataManager = GameClient.Get<IDataManager>();
-            int heroId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
+
+            int heroId = GameClient.Get<IGameplayManager>().IsTutorial
+                ? GameClient.Get<ITutorialManager>().CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId
+                : dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
+
             Hero currentPlayerHero = dataManager.CachedHeroesData.HeroesParsed[heroId];
             string heroName = currentPlayerHero.Element.ToLower();
             _selectHeroSpriteRenderer.sprite =
@@ -166,7 +172,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HORDE_SELECTION);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
         }
     }
 }

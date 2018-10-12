@@ -19,13 +19,16 @@ namespace Loom.ZombieBattleground
         public BoardSpell(GameObject obj, WorkingCard card)
         {
             GameObject = obj;
-            Transform = obj.transform;
-
             Card = card;
 
-            _eventHandler = GameObject.GetComponent<OnBehaviourHandler>();
+            if (GameObject != null)
+            {
+                Transform = obj.transform;
 
-            _eventHandler.Destroying += DestroyingHandler;
+                _eventHandler = GameObject.GetComponent<OnBehaviourHandler>();
+
+                _eventHandler.Destroying += DestroyingHandler;
+            }
         }
 
         public event Action Used;

@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
             string fileName = Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
             T asset = Load<T>(fileName, assetBundle, bundleName);
             if (asset == null)
-                throw new Exception($"Failed to load '{path}' from bundle '{bundleName}'");
+                UnityEngine.Debug.LogError($"Failed to load '{path}' from bundle '{bundleName}'");
 
             return asset;
         }
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
                 string fileName = Path.GetFileNameWithoutExtension(paths[i]).ToLowerInvariant();
                 assets[i] = Load<T>(fileName, assetBundle, bundleName);
                 if (assets[i] == null)
-                    throw new Exception($"Failed to load '{paths[i]}' from bundle '{bundleName}'");
+                    UnityEngine.Debug.LogError($"Failed to load '{paths[i]}' from bundle '{bundleName}'");
             }
 
             return assets;
