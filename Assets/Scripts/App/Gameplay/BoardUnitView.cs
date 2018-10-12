@@ -468,7 +468,10 @@ namespace Loom.ZombieBattleground
 
         public void SetSelectedUnit(bool status)
         {
-            _glowSelectedObject.SetActive(status);
+            if (_glowSelectedObject != null)
+            {
+                _glowSelectedObject.SetActive(status);
+            }
 
             if (status)
             {
