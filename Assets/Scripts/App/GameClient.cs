@@ -26,8 +26,6 @@ namespace Loom.ZombieBattleground
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose backend = BackendPurpose.Production;
-#elif USE_PVP_BACKEND
-            const BackendPurpose backend = BackendPurpose.PvP;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif
