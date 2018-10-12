@@ -145,12 +145,6 @@ namespace Loom.ZombieBattleground
             _pictureSprite.transform.localPosition = (Vector3)Model.Card.LibraryCard.CardViewInfo.Position;
             _pictureSprite.transform.localScale = (Vector3)Model.Card.LibraryCard.CardViewInfo.Scale;
 
-            if (Model.Card.Type == Enumerators.CardType.WALKER)
-            {
-                _sleepingParticles.transform.position += Vector3.up * 0.7f;
-            }
-
-
             _attackText.text = Model.CurrentDamage.ToString();
             _healthText.text = Model.CurrentHp.ToString();
 
