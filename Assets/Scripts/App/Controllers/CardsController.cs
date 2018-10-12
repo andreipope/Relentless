@@ -215,11 +215,11 @@ namespace Loom.ZombieBattleground
 
             handWidth += spacing * count - 1;
 
-            Vector3 pivot = new Vector3(-3f, 0, 0);
+            Vector3 pivot = new Vector3(-3f, 0, -0.25f);
 
             for (int i = 0; i < count; i++)
             {
-                Vector3 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
+                Vector3 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, -0.25f);
                 player.CardsPreparingToHand[i].Transform.DOMove(moveToPosition, 1f);
                 player.CardsPreparingToHand[i].Transform.DOScale(Vector3.one * 0.4f, 1);
 
