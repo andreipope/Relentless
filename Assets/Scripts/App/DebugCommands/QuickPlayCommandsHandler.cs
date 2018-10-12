@@ -30,8 +30,7 @@ static class QuickPlayCommandsHandler
         string playerDeckName = _dataManager.CachedDecksData.Decks.First(deck => deck.Id == playerDeckId).Name;
 
         int opponentDeckId = _gameplayManager.OpponentDeckId;
-        string opponentDeckName = "Default";
-            //dataManager.CachedOpponentDecksData.Decks.First(deck => deck.Id == opponentDeckId).Name;
+        string opponentDeckName = _dataManager.CachedOpponentDecksData.Decks.First(deck => deck.Id == opponentDeckId).Name;
 
         string playerStarterCards = "[ ";
         for (int i = 0; i < _gameplayManager.PlayerStarterCards.Count; i++)
@@ -93,7 +92,14 @@ static class QuickPlayCommandsHandler
     [CommandHandler(Description = "Set which enemy horde to fight with. Accepts deck name.")]
     private static void SetEnemyHorde(string deckName)
     {
+        int index = _dataManager.CachedOpponentDecksData.Decks.FindIndex(deck => deck.Name == deckName);
+        if (index == -1)
+        {
+            Debug.LogError(deckName + " Not found");
+            return;
+        }
 
+        GameClient.Get<IGameplayManager>().OpponentDeckId = (int)_dataManager.CachedOpponentDecksData.Decks[index].Id;
     }
 
     [CommandHandler(Description = "Adds starting cards in Player Starter")]

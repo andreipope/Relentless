@@ -116,7 +116,8 @@ namespace Loom.ZombieBattleground.Common
             COSTS_LESS_IF_CARD_TYPE_IN_HAND,
             RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS,
             REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES,
-            RESTORE_DEF_RANDOMLY_SPLIT
+            RESTORE_DEF_RANDOMLY_SPLIT,
+            ADJACENT_UNITS_GET_GUARD
         }
 
         public enum ActionType
