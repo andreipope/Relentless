@@ -493,7 +493,7 @@ namespace Loom.ZombieBattleground.Common
             UseOverlordAbility
         }
 
-        public enum VFXType
+        public enum VisualEffectType
         {
             Impact,
             Moving

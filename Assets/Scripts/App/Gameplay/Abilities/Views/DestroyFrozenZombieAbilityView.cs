@@ -15,11 +15,11 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            if (Ability.AbilityData.HasVFXType(Enumerators.VFXType.Moving))
+            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
                 Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
                 VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
@@ -37,11 +37,11 @@ namespace Loom.ZombieBattleground
         {
             ClearParticles();
 
-            if (Ability.AbilityData.HasVFXType(Enumerators.VFXType.Impact))
+            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = VfxObject.transform.position;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVFXByType(Enumerators.VFXType.Impact).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
                 VfxObject.transform.position = targetPosition;

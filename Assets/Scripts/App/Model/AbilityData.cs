@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground.Data
 
         public int Delay;
 
-        public List<VFXInfo> VFXToPlay;
+        public List<VisualEffectInfo> VisualEffectsToPlay;
 
         public void ParseData()
         {
@@ -154,31 +154,31 @@ namespace Loom.ZombieBattleground.Data
             }
         }
 
-        public bool HasVFXType(Enumerators.VFXType type)
+        public bool HasVisualEffectType(Enumerators.VisualEffectType type)
         {
-            if (VFXToPlay == null)
+            if (VisualEffectsToPlay == null)
                 return false;
 
-            return VFXToPlay.Find(vfx => vfx.VFXType == type) != null;
+            return VisualEffectsToPlay.Find(vfx => vfx.VisualEffectType == type) != null;
         }
 
-        public VFXInfo GetVFXByType(Enumerators.VFXType type)
+        public VisualEffectInfo GetVisualEffectByType(Enumerators.VisualEffectType type)
         {
-            if (VFXToPlay == null) 
+            if (VisualEffectsToPlay == null) 
             {
-                return new VFXInfo()
+                return new VisualEffectInfo()
                 {
                     Path = string.Empty, 
-                    VFXType = type
+                    VisualEffectType = type
                 };
             }
 
-            return VFXToPlay.Find(vfx => vfx.VFXType == type);
+            return VisualEffectsToPlay.Find(vfx => vfx.VisualEffectType == type);
         }
 
-        public class VFXInfo
+        public class VisualEffectInfo
         {
-            public Enumerators.VFXType VFXType;
+            public Enumerators.VisualEffectType VisualEffectType;
             public string Path;
         }
     }

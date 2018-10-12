@@ -680,13 +680,13 @@
               "targetType": "OPPONENT_CARD",
               "unitStatus": "FROZEN",
               "buffType": "ENTRY",
-              "VFXToPlay": [
+              "VisualEffectsToPlay": [
                 {
-                  "VFXType": "Moving",
+                  "VisualEffectType": "Moving",
                   "Path": "Prefabs/VFX/Skills/IceBoltVFX"
                 },
                 {
-                  "VFXType": "Impact",
+                  "VisualEffectType": "Impact",
                   "Path": "Prefabs/VFX/IceBolt_Impact"
                 }
               ]
@@ -2230,13 +2230,13 @@
               "targetType": "OPPONENT_CARD|OPPONENT",
               "value": 1,
               "buffType": "ENTRY",
-              "VFXToPlay": [
+              "VisualEffectsToPlay": [
                 {
-                  "VFXType": "Moving",
+                  "VisualEffectType": "Moving",
                   "Path": "Prefabs/VFX/Skills/PoisonDartVFX"
                 },
                 {
-                  "VFXType": "Impact",
+                  "VisualEffectType": "Impact",
                   "Path": "Prefabs/VFX/Skills/PoisonDart_ImpactVFX"
                 }
               ]
