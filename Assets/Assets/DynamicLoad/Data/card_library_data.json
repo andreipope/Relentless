@@ -682,11 +682,11 @@
               "buffType": "ENTRY",
               "VisualEffectsToPlay": [
                 {
-                  "VisualEffectType": "Moving",
+                  "Type": "Moving",
                   "Path": "Prefabs/VFX/Skills/IceBoltVFX"
                 },
                 {
-                  "VisualEffectType": "Impact",
+                  "Type": "Impact",
                   "Path": "Prefabs/VFX/IceBolt_Impact"
                 }
               ]
@@ -2232,11 +2232,11 @@
               "buffType": "ENTRY",
               "VisualEffectsToPlay": [
                 {
-                  "VisualEffectType": "Moving",
+                  "Type": "Moving",
                   "Path": "Prefabs/VFX/Skills/PoisonDartVFX"
                 },
                 {
-                  "VisualEffectType": "Impact",
+                  "Type": "Impact",
                   "Path": "Prefabs/VFX/Skills/PoisonDart_ImpactVFX"
                 }
               ]

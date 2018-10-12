@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground.Data
             if (VisualEffectsToPlay == null)
                 return false;
 
-            return VisualEffectsToPlay.Find(vfx => vfx.VisualEffectType == type) != null;
+            return VisualEffectsToPlay.Find(vfx => vfx.Type == type) != null;
         }
 
         public VisualEffectInfo GetVisualEffectByType(Enumerators.VisualEffectType type)
@@ -169,16 +169,16 @@ namespace Loom.ZombieBattleground.Data
                 return new VisualEffectInfo()
                 {
                     Path = string.Empty, 
-                    VisualEffectType = type
+                    Type = type
                 };
             }
 
-            return VisualEffectsToPlay.Find(vfx => vfx.VisualEffectType == type);
+            return VisualEffectsToPlay.Find(vfx => vfx.Type == type);
         }
 
         public class VisualEffectInfo
         {
-            public Enumerators.VisualEffectType VisualEffectType;
+            public Enumerators.VisualEffectType Type;
             public string Path;
         }
     }
