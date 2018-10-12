@@ -200,8 +200,8 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-            Debug.Log("Encryption:" + ConfigData.EncryptData);
-            Debug.Log("Skip Card Data Backend:" + ConfigData.SkipBackendCardData);
+            Debug.Log("Encryption: " + ConfigData.EncryptData);
+            Debug.Log("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
 
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();

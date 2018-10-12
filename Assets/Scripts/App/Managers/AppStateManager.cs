@@ -4,6 +4,8 @@ using App.Utilites;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Unity.Cloud.BugReporting;
+using Unity.Cloud.BugReporting.Plugin;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -108,6 +110,8 @@ namespace Loom.ZombieBattleground
             _previousState = AppState != Enumerators.AppState.SHOP ? AppState : Enumerators.AppState.MAIN_MENU;
 
             AppState = stateTo;
+
+            UnityBugReporting.CurrentClient.LogEvent(BugReportEventLevel.Info, "App state: " + AppState);
         }
 
         public void SetPausingApp(bool mustPause) {

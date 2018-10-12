@@ -1,0 +1,12 @@
+{
+    "name": "AdvancedFPSCounter.Editor",
+    "references": [
+        "AdvancedFPSCounter"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

@@ -107,6 +107,7 @@ namespace CodeStage.AdvancedFPSCounter
 		private SerializedProperty hotKeyShift;
 		private SerializedProperty hotKeyAlt;
 		private SerializedProperty circleGesture;
+		private SerializedProperty switchToBackgroundOnCircleGesture;
 		private SerializedProperty keepAlive;
 		private SerializedProperty forceFrameRate;
 		private SerializedProperty forcedFrameRate;
@@ -124,6 +125,7 @@ namespace CodeStage.AdvancedFPSCounter
 			hotKeyShift = serializedObject.FindProperty("hotKeyShift");
 			hotKeyAlt = serializedObject.FindProperty("hotKeyAlt");
             circleGesture = serializedObject.FindProperty("circleGesture");
+		    switchToBackgroundOnCircleGesture = serializedObject.FindProperty("switchToBackgroundOnCircleGesture");
 			keepAlive = serializedObject.FindProperty("keepAlive");
 			forceFrameRate = serializedObject.FindProperty("forceFrameRate");
 			forcedFrameRate = serializedObject.FindProperty("forcedFrameRate");
@@ -254,6 +256,7 @@ namespace CodeStage.AdvancedFPSCounter
 
 			EditorGUIUtility.labelWidth = 120;
 			EditorGUILayout.PropertyField(circleGesture);
+			EditorGUILayout.PropertyField(switchToBackgroundOnCircleGesture);
 
             EditorGUILayout.PropertyField(keepAlive);
 			if (me.transform.parent != null)
