@@ -244,7 +244,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string GlobalHeroesList = "ListHeroLibrary";
 
-        public async Task<ListHeroLibraryResponse> GetGlobalHeroesList(string userId)
+        public async Task<ListHeroLibraryResponse> GetGlobalHeroesList()
         {
             ListHeroLibraryRequest request = new ListHeroLibraryRequest
             {
