@@ -1,4 +1,5 @@
 ﻿using Loom.ZombieBattleground.Common;
+using mixpanel;
 
 public interface IAnalyticsManager
 {
@@ -13,4 +14,12 @@ public interface IAnalyticsManager
     void NotifyFinishedMatch(Enumerators.EndGameType endGameType);
 
     void Dispose();
+
+    void SetEvent(string identifyId, string propertyName, Value props);
+
+    void SetPoepleProperty(string identityId, string property, string value);
+
+    void SetSuperProperty(string property, string value);
+
+    void SetPoepleIncrement(string property, int value);
 }
