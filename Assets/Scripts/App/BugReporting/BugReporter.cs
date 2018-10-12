@@ -201,8 +201,8 @@ namespace Loom.ZombieBattleground
                 br.DeviceMetadata.Add(new BugReportNamedValue("Average FPS", _afpsCounter.fpsCounter.LastAverageValue.ToString()));
 
                 // Dimensions
-                string platform = BuildMetaInfo.Instance.DisplayVersionName;
-                string version = "0.0";
+                string platform = "Unknown";
+                string version = BuildMetaInfo.Instance.DisplayVersionName;
                 foreach (BugReportNamedValue deviceMetadata in br.DeviceMetadata)
                 {
                     if (deviceMetadata.Name == "Platform")
