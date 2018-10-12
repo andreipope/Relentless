@@ -272,7 +272,6 @@ namespace Loom.ZombieBattleground
         public IEnumerator DelayedCreateBugReport(bool isCrashReport)
         {
             yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
             CreateBugReport(isCrashReport);
         }
 
@@ -344,7 +343,7 @@ namespace Loom.ZombieBattleground
                 },
                 (success, br2) =>
                 {
-                    Debug.Log("Finished sending bug report");
+                    Debug.Log("Successfully sent bug report: " + success);
                     CurrentBugReport = null;
                     _isSubmitting = false;
 
