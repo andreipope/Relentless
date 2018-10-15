@@ -311,7 +311,6 @@ namespace Loom.ZombieBattleground
                             alreadyUsedUnits.Add(unit);
 
                             await LetsThink(cancellationToken);
-
                             if (!OpponentHasHeavyUnits())
                             {
                                 break;
@@ -336,7 +335,6 @@ namespace Loom.ZombieBattleground
                     while (UnitCanBeUsable(unit))
                     {
                         unit.DoCombat(_gameplayManager.CurrentPlayer);
-
                         await LetsThink(cancellationToken);
                     }
                 }
@@ -350,7 +348,6 @@ namespace Loom.ZombieBattleground
                         if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                         {
                             unit.DoCombat(_gameplayManager.CurrentPlayer);
-
                             await LetsThink(cancellationToken);
                         }
                         else
@@ -360,13 +357,11 @@ namespace Loom.ZombieBattleground
                             if (attackedCreature != null)
                             {
                                 unit.DoCombat(attackedCreature);
-
                                 await LetsThink(cancellationToken);
                             }
                             else
                             {
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
-
                                 await LetsThink(cancellationToken);
                             }
                         }
