@@ -242,6 +242,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
         }
 
+        private const string GlobalHeroesList = "ListHeroLibrary";
+
+        public async Task<ListHeroLibraryResponse> GetGlobalHeroesList()
+        {
+            ListHeroLibraryRequest request = new ListHeroLibraryRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.StaticCallAsync<ListHeroLibraryResponse>(GlobalHeroesList, request);
+        }
+
         #endregion
 
         #region Login
