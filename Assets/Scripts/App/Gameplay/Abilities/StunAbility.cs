@@ -41,11 +41,25 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitModel creature)
+            if (info is BoardUnitModel unit)
             {
-                creature.Stun(Enumerators.StunType.FREEZE, 1);
+                unit.Stun(Enumerators.StunType.FREEZE, 1);
 
-                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                            Target = unit,
+                        }
+                    }
+                });
             }
         }
     }

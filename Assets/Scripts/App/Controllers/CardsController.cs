@@ -802,7 +802,7 @@ namespace Loom.ZombieBattleground
             return string.Empty;
         }
 
-        public void CreateNewCardByNameAndAddToHand(Player player, string name)
+        public WorkingCard CreateNewCardByNameAndAddToHand(Player player, string name)
         {
             float animationDuration = 1.5f;
 
@@ -810,7 +810,7 @@ namespace Loom.ZombieBattleground
             WorkingCard workingCard = new WorkingCard(card, player);
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
-                return;
+                return workingCard;
 
             if (player.IsLocalPlayer)
             {
@@ -850,6 +850,8 @@ namespace Loom.ZombieBattleground
                     null,
                     animationDuration);
             }
+
+            return workingCard;
         }
 
         public BoardCard GetBoardCard(WorkingCard card)
