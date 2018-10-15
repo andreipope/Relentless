@@ -316,6 +316,7 @@ namespace Loom.ZombieBattleground
                                 break;
                             }
                         }
+                        else break;
                     }
                 }
             }
@@ -352,6 +353,7 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             BoardUnitModel attackedCreature = GetRandomOpponentUnit();
+
                             if (attackedCreature != null)
                             {
                                 unit.DoCombat(attackedCreature);
