@@ -3,9 +3,9 @@
 --- !u!1 &100000
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  serializedVersion: 6
   m_Component:
   - component: {fileID: 400000}
   - component: {fileID: 11400000}
@@ -19,10 +19,10 @@ GameObject:
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -32,7 +32,7 @@ Transform:
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
@@ -71,7 +71,7 @@ MonoBehaviour:
     anchor: 0
     color: {r: 0.91764706, g: 0.93333334, b: 0.39607844, a: 1}
     style: 1
-    updateInterval: 1
+    updateInterval: 10
     precise: 1
     total: 1
     allocated: 1
@@ -97,13 +97,14 @@ MonoBehaviour:
     screenDataNewLine: 1
     deviceModel: 1
     deviceModelNewLine: 1
-  hotKey: 96
+  hotKey: 0
   circleGesture: 1
-  hotKeyCtrl: 1
+  switchToBackgroundOnCircleGesture: 1
+  hotKeyCtrl: 0
   hotKeyShift: 0
   hotKeyAlt: 0
-  keepAlive: 1
-  operationMode: 0
+  keepAlive: 0
+  operationMode: 1
   forceFrameRate: 1
   forcedFrameRate: 60
   background: 1
@@ -162,6 +163,6 @@ Prefab:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
+  m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
-  m_IsPrefabParent: 1
+  m_IsPrefabAsset: 1
