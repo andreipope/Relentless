@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
+using DG.Tweening;
 using UnityEngine;
 using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
@@ -59,8 +60,6 @@ namespace Loom.ZombieBattleground
 
         private readonly Animator _regularAnimator;
 
-        private readonly FadeTool _gooBarFadeTool;
-
         private int _goo;
 
         private int _gooOnCurrentTurn;
@@ -87,7 +86,6 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
-            _pvpManager = GameClient.Get<IPvPManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -180,7 +178,6 @@ namespace Loom.ZombieBattleground
             _avatarAnimator = _avatarObject.GetComponent<Animator>();
             _deathAnimator = _overlordDeathObject.GetComponent<Animator>();
             _regularAnimator = _overlordRegularObject.GetComponent<Animator>();
-            _gooBarFadeTool = _avatarObject.GetComponent<FadeTool>();
 
             _avatarAnimator.enabled = false;
             _deathAnimator.enabled = false;
@@ -519,6 +516,17 @@ namespace Loom.ZombieBattleground
             FadeTool overlordFactionFrameFadeTool = _overlordFactionFrameAnimator.transform.GetComponent<FadeTool>();
             if (overlordFactionFrameFadeTool != null)
                 overlordFactionFrameFadeTool.FadeIn();
+
+            List<MeshRenderer> overlordImagePieces = _avatarObject.transform.GetComponentsInChildren<MeshRenderer>().ToList();
+            Color color = new Color(1, 1, 1, 1);
+            DOTween.ToAlpha(() => color, changedColor => color = changedColor, 0, 2).SetDelay(2).OnUpdate(
+                () => {
+                    foreach (MeshRenderer renderer in overlordImagePieces)
+                    {
+                        renderer.material.color = color;
+                    }
+                }
+            );
 
             _skillsController.DisableSkillsContent(this);
 
