@@ -475,7 +475,10 @@ namespace Loom.ZombieBattleground.Common
             Push,
             Reanimate,
             LowGooCost,
-            ReturnToHand
+            ReturnToHand,
+
+            SpawnOnBoard,
+            AddCardToHand
         }
         public enum ScreenMode
         {

@@ -28,6 +28,20 @@ namespace Loom.ZombieBattleground
                 return;
 
             ((BoardUnitModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                            Target = from,
+                        }
+                    }
+            });
         }
     }
 }
