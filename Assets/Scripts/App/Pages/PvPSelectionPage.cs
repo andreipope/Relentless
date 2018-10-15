@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
 
-            _stateManager.ChangeAppState(Enumerators.AppState.CustomGameModeList);
+            _stateManager.ChangeAppState(Enumerators.AppState.CustomModes);
         }
 
         private void BackButtonOnClickHandler()
