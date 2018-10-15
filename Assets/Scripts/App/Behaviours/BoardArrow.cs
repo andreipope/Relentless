@@ -104,13 +104,16 @@ public class BoardArrow : MonoBehaviour
 
     public virtual void Dispose()
     {
-        InputController.PlayerSelectingEvent -= PlayerSelectingEventHandler;
-        InputController.UnitSelectingEvent -= UnitSelectingEventHandler;
-        InputController.NoObjectsSelectedEvent -= NoObjectsSelectedEventHandler;
+        if (_selfObject != null)
+        {
+            InputController.PlayerSelectingEvent -= PlayerSelectingEventHandler;
+            InputController.UnitSelectingEvent -= UnitSelectingEventHandler;
+            InputController.NoObjectsSelectedEvent -= NoObjectsSelectedEventHandler;
 
-        ResetSelecting();
+            ResetSelecting();
 
-        Destroy(_selfObject);
+            Destroy(_selfObject);
+        }
     }
 
     protected void Init()

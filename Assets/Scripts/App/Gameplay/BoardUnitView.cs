@@ -630,9 +630,12 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialDataStep.UnitsCanAttack)
                 return;
 
+            if (!_arrivalDone)
+                return;
+
             if (Model.OwnerPlayer != null && Model.OwnerPlayer.IsLocalPlayer && _playerController.IsActive && Model.UnitCanBeUsable())
             {
-                _fightTargetingArrow = Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
+                _fightTargetingArrow = _boardArrowController.BeginTargetingArrowFrom<BattleBoardArrow>(Transform);
                 _fightTargetingArrow.TargetsType = new List<Enumerators.SkillTargetType>
                 {
                     Enumerators.SkillTargetType.OPPONENT,
@@ -640,7 +643,6 @@ namespace Loom.ZombieBattleground
                 };
                 _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
                 _fightTargetingArrow.Owner = this;
-                _fightTargetingArrow.Begin(Transform.position);
 
                 if (Model.AttackInfoType == Enumerators.AttackInfoType.ONLY_DIFFERENT)
                 {
@@ -667,9 +669,9 @@ namespace Loom.ZombieBattleground
 
         private void OnMouseUp()
         {
-            if (Model.OwnerPlayer != null && Model.OwnerPlayer.IsLocalPlayer && _playerController.IsActive && Model.UnitCanBeUsable())
+            if (_fightTargetingArrow != null)
             {
-                if (_fightTargetingArrow != null)
+                if (Model.OwnerPlayer != null && Model.OwnerPlayer.IsLocalPlayer && _playerController.IsActive && Model.UnitCanBeUsable())
                 {
                     _fightTargetingArrow.End(this);
 
@@ -677,6 +679,10 @@ namespace Loom.ZombieBattleground
                     {
                         _playerController.IsCardSelected = false;
                     }
+                }
+                else
+                {
+                    _fightTargetingArrow.Dispose();
                 }
             }
         }

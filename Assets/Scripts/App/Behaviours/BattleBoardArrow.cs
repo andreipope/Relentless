@@ -60,6 +60,9 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnitView unit)
         {
+            SelectedPlayer = null;
+            SelectedPlayer?.SetGlowStatus(false);
+
             if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnUnits)
                 return;
 
@@ -87,9 +90,6 @@ namespace Loom.ZombieBattleground
                         SelectedCard?.SetSelectedUnit(false);
 
                         SelectedCard = unit;
-                        SelectedPlayer?.SetGlowStatus(false);
-
-                        SelectedPlayer = null;
                         SelectedCard.SetSelectedUnit(true);
                     }
                 }
@@ -103,10 +103,16 @@ namespace Loom.ZombieBattleground
                 SelectedCard.SetSelectedUnit(false);
                 SelectedCard = null;
             }
+
+            SelectedPlayer?.SetGlowStatus(false);
+            SelectedPlayer = null;
         }
 
         public override void OnPlayerSelected(Player player)
         {
+            SelectedCard?.SetSelectedUnit(false);
+            SelectedCard = null;
+
             if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnPlayer)
                 return;
 
@@ -128,11 +134,7 @@ namespace Loom.ZombieBattleground
                 if (!opponentHasProvoke || IgnoreHeavy)
                 {
                     SelectedPlayer = player;
-
                     SelectedPlayer.SetGlowStatus(true);
-                    SelectedCard?.SetSelectedUnit(false);
-
-                    SelectedCard = null;
                 }
             }
         }
@@ -141,11 +143,12 @@ namespace Loom.ZombieBattleground
         {
             if (SelectedPlayer == player)
             {
-                SelectedCard?.SetSelectedUnit(false);
-                SelectedCard = null;
                 SelectedPlayer.SetGlowStatus(false);
                 SelectedPlayer = null;
             }
+
+            SelectedCard?.SetSelectedUnit(false);
+            SelectedCard = null;
         }
 
         protected bool OpponentBoardContainsProvokingCreatures()
