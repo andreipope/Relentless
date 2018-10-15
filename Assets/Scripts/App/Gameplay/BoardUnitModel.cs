@@ -512,7 +512,9 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun || CantAttackInThisTurnBlocker)
+            if (IsDead || CurrentHp <= 0 ||
+                CurrentDamage <= 0 || IsStun ||
+                CantAttackInThisTurnBlocker)
             {
                 return false;
             }
