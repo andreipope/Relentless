@@ -298,21 +298,37 @@ namespace Loom.ZombieBattleground
 
             unitsOnBoard.AddRange(GetUnitsOnBoard());
 
+            WriteLogsTool.WriteLogInLogFile("1");
+
             if (OpponentHasHeavyUnits())
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
+
+                    WriteLogsTool.WriteLogInLogFile("2");
+
                     while (UnitCanBeUsable(unit))
                     {
+                        WriteLogsTool.WriteLogInLogFile("3");
+
                         if (UnitCanBeUsable(unit))
                         {
                             BoardUnitModel attackedUnit = GetTargetOpponentUnit();
                             if (attackedUnit != null)
                             {
+
+                                WriteLogsTool.WriteLogInLogFile("4");
+
                                 unit.DoCombat(attackedUnit);
                                 alreadyUsedUnits.Add(unit);
 
+
+                                WriteLogsTool.WriteLogInLogFile("5" +
+                                    "");
                                 await LetsThink(cancellationToken);
+
+                                WriteLogsTool.WriteLogInLogFile("6");
+
                                 if (!OpponentHasHeavyUnits())
                                 {
                                     break;
@@ -332,39 +348,77 @@ namespace Loom.ZombieBattleground
             if ((totalValue >= _gameplayManager.OpponentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
                 _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
+                WriteLogsTool.WriteLogInLogFile("7");
+
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
-                    while (UnitCanBeUsable(unit)) {
-                        {
-                            unit.DoCombat(_gameplayManager.CurrentPlayer);
-                            await LetsThink(cancellationToken);
-                        }
+                    WriteLogsTool.WriteLogInLogFile("8");
+
+                    while (UnitCanBeUsable(unit))
+                    {
+                        WriteLogsTool.WriteLogInLogFile("9");
+
+                        unit.DoCombat(_gameplayManager.CurrentPlayer);
+
+                        WriteLogsTool.WriteLogInLogFile("10");
+
+                        await LetsThink(cancellationToken);
+
+                        WriteLogsTool.WriteLogInLogFile("11");
                     }
                 }
             }
             else
             {
+                WriteLogsTool.WriteLogInLogFile("12");
+
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
+                    WriteLogsTool.WriteLogInLogFile("13");
+
                     while (UnitCanBeUsable(unit))
                     {
+                        WriteLogsTool.WriteLogInLogFile("14");
+
                         if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                         {
+                            WriteLogsTool.WriteLogInLogFile("15");
+
                             unit.DoCombat(_gameplayManager.CurrentPlayer);
+
+                            WriteLogsTool.WriteLogInLogFile("15");
+
                             await LetsThink(cancellationToken);
+
+                            WriteLogsTool.WriteLogInLogFile("16");
                         }
                         else
                         {
                             BoardUnitModel attackedCreature = GetRandomOpponentUnit();
+
+                            WriteLogsTool.WriteLogInLogFile("17");
+
                             if (attackedCreature != null)
                             {
                                 unit.DoCombat(attackedCreature);
+
+                                WriteLogsTool.WriteLogInLogFile("18");
+
                                 await LetsThink(cancellationToken);
+
+                                WriteLogsTool.WriteLogInLogFile("19");
                             }
                             else
                             {
+                                WriteLogsTool.WriteLogInLogFile("20");
+
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
+
+                                WriteLogsTool.WriteLogInLogFile("21");
+
                                 await LetsThink(cancellationToken);
+
+                                WriteLogsTool.WriteLogInLogFile("22");
                             }
                         }
                     }

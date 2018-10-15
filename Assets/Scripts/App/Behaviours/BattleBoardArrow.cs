@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
                 TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) &&
                 unit.Transform.CompareTag("OpponentOwned"))
             {
-                bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
+                bool opponentHasProvoke = OpponentHasHeavyUnits();
                 if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
                     if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
@@ -124,8 +124,7 @@ namespace Loom.ZombieBattleground
                 TargetsType.Contains(Enumerators.SkillTargetType.PLAYER) &&
                 player.AvatarObject.CompareTag("PlayerOwned"))
             {
-                bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || IgnoreHeavy)
+                if (!OpponentHasHeavyUnits() || IgnoreHeavy)
                 {
                     SelectedPlayer = player;
 
@@ -148,10 +147,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected bool OpponentBoardContainsProvokingCreatures()
+        protected bool OpponentHasHeavyUnits()
         {
-            List<BoardUnitView> provokeCards = BoardCards.FindAll(x => x.Model.IsHeavyUnit);
-            return provokeCards.Count > 0;
+            return BoardCards?.FindAll(x => x.Model.IsHeavyUnit).Count > 0;
         }
 
         private void Awake()
