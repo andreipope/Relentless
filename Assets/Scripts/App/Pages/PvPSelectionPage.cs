@@ -25,7 +25,8 @@ namespace Loom.ZombieBattleground
         private Button _backButton,
                        _buttonCasualType,
                        _buttonRankedType,
-                       _buttonFriendlyType;
+                       _buttonFriendlyType,
+                       _buttonCustomType;
 
         private ButtonShiftingContent _buttonTutorial;
                                       
@@ -45,21 +46,24 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PvPSelectionPage"));
+            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PvPSelectionPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonCasualType = _selfPage.transform.Find("Button_CasualType").GetComponent<Button>();
             _buttonRankedType = _selfPage.transform.Find("Button_RankedType").GetComponent<Button>();
             _buttonFriendlyType = _selfPage.transform.Find("Button_FriendlyType").GetComponent<Button>();
+            _buttonCustomType = _selfPage.transform.Find("Button_CustomType").GetComponent<Button>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
 
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonCasualType.onClick.AddListener(CasualTypeButtonOnClickHandler);
             _buttonRankedType.onClick.AddListener(RankedTypeButtonOnClickHandler);
             _buttonFriendlyType.onClick.AddListener(FriendlyTypeButtonOnClickHandler);
+            _buttonCustomType.onClick.AddListener(CustomTypeButtonOnClickHandler);
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
+
+            GameClient.Get<IMatchManager>().CustomGameModeAddress = null;
         }
 
         public void Hide()
@@ -109,6 +113,14 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.DrawPopup<WarningPopup>(
                          $"Friendly Games are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+        }
+
+        private void CustomTypeButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
+
+            _stateManager.ChangeAppState(Enumerators.AppState.CustomGameModeList);
         }
 
         private void BackButtonOnClickHandler()

@@ -202,6 +202,12 @@ namespace Loom.ZombieBattleground
 
         public void UpdatePositionOfCardsForDistribution(Player player)
         {
+            if (player == null)
+                return;
+            else if (player.CardsPreparingToHand == null)
+                return;
+
+
             int count = player.CardsPreparingToHand.Count;
 
             float handWidth = 0.0f;
@@ -209,11 +215,11 @@ namespace Loom.ZombieBattleground
 
             handWidth += spacing * count - 1;
 
-            Vector3 pivot = new Vector3(-3f, 0, 0);
+            Vector3 pivot = new Vector3(-3f, 0, -0.25f);
 
             for (int i = 0; i < count; i++)
             {
-                Vector3 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, 0);
+                Vector3 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, -0.25f);
                 player.CardsPreparingToHand[i].Transform.DOMove(moveToPosition, 1f);
                 player.CardsPreparingToHand[i].Transform.DOScale(Vector3.one * 0.4f, 1);
 
@@ -798,7 +804,7 @@ namespace Loom.ZombieBattleground
             return string.Empty;
         }
 
-        public void CreateNewCardByNameAndAddToHand(Player player, string name)
+        public WorkingCard CreateNewCardByNameAndAddToHand(Player player, string name)
         {
             float animationDuration = 1.5f;
 
@@ -806,7 +812,7 @@ namespace Loom.ZombieBattleground
             WorkingCard workingCard = new WorkingCard(card, player);
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
-                return;
+                return workingCard;
 
             if (player.IsLocalPlayer)
             {
@@ -846,6 +852,8 @@ namespace Loom.ZombieBattleground
                     null,
                     animationDuration);
             }
+
+            return workingCard;
         }
 
         public BoardCard GetBoardCard(WorkingCard card)

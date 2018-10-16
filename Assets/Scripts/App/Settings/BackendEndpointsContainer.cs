@@ -12,47 +12,28 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     new BackendEndpoint(
                         "http://stage-auth.loom.games",
                         "ws://127.0.0.1:9999/queryws",
-                        "ws://127.0.0.1:46657/websocket"
+                        "ws://127.0.0.1:46657/websocket",
+                        "v1"
                         )
                 },
                 {
-                    BackendPurpose.PvP, new BackendEndpoint(
+                    BackendPurpose.Staging,
+                    new BackendEndpoint(
                         "http://stage-auth.loom.games",
                         "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
-                        "ws://battleground-testnet-asia2.dappchains.com:46657/websocket"
+                        "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
+                        "v1"
                     )
                 },
                 {
-                    BackendPurpose.Staging, new BackendEndpoint(
-                        "http://stage-auth.loom.games",
-                        "ws://gamechain-2.dappchains.com:9999/queryws",
-                        "ws://gamechain-2.dappchains.com:46657/websocket"
-                    )
-                },
-                {
-                    BackendPurpose.Production, new BackendEndpoint(
+                    BackendPurpose.Production,
+                    new BackendEndpoint(
                         "http://auth.loom.games",
-                        "ws://gamechain.dappchains.com:9999/queryws",
-                        "ws://gamechain.dappchains.com:46657/websocket"
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket",
+                        "v1"
                     )
                 }
             };
-
-        public class BackendEndpoint
-        {
-
-            public BackendEndpoint(string authHost, string readerHost, string writerHost)
-            {
-                AuthHost = authHost;
-                ReaderHost = readerHost;
-                WriterHost = writerHost;
-            }
-
-            public string AuthHost { get; }
-
-            public string ReaderHost { get; }
-
-            public string WriterHost { get; }
-        }
     }
 }

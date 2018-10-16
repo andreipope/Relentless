@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.Google.Protobuf;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -19,24 +20,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public delegate void PlayerActionHandler(byte[] bytes);
 
-        private const string ContractDataVersion = "v1";
-
-        public BackendFacade(string authBackendHost, string readerHost, string writerHost)
+        public BackendFacade(BackendEndpoint backendEndpoint)
         {
-            AuthBackendHost = authBackendHost;
-            ReaderHost = readerHost;
-            WriterHost = writerHost;
+            BackendEndpoint = backendEndpoint;
         }
 
         public event ContractCreatedEventHandler ContractCreated;
 
         public event PlayerActionHandler PlayerActionEvent;
 
-        public string ReaderHost { get; set; }
-
-        public string WriterHost { get; set; }
-
-        public string AuthBackendHost { get; set; }
+        public BackendEndpoint BackendEndpoint { get; set; }
 
         public Contract Contract { get; private set; }
 
@@ -48,6 +41,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public void Init()
         {
+            Debug.Log("Auth Host: " + BackendEndpoint.AuthHost);
+            Debug.Log("Reader Host: " + BackendEndpoint.ReaderHost);
+            Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
+            Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()
@@ -63,10 +60,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(WriterHost)
+            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.WriterHost)
                 .Create();
 
-            reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(ReaderHost)
+            reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.ReaderHost)
                 .Create();
 
             DAppChainClient client = new DAppChainClient(writer, reader)
@@ -113,7 +110,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             ListCardLibraryRequest request = new ListCardLibraryRequest
             {
-                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
+                Version = BackendEndpoint.DataVersion
             };
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
@@ -188,14 +185,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 },
                 LastModificationTimestamp = lastModificationTimestamp,
-                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
+                Version = BackendEndpoint.DataVersion
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
         }
 
-        private static EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
+        private EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
@@ -224,7 +221,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 },
                 LastModificationTimestamp = lastModificationTimestamp,
-                Version = GameClient.Get<IDataManager>().CachedConfigData.cardsDataVersion
+                Version = BackendEndpoint.DataVersion
             };
             return request;
         }
@@ -245,6 +242,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
         }
 
+        private const string GlobalHeroesList = "ListHeroLibrary";
+
+        public async Task<ListHeroLibraryResponse> GetGlobalHeroesList()
+        {
+            ListHeroLibraryRequest request = new ListHeroLibraryRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.StaticCallAsync<ListHeroLibraryResponse>(GlobalHeroesList, request);
+        }
+
         #endregion
 
         #region Login
@@ -255,7 +264,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             UpsertAccountRequest req = new UpsertAccountRequest
             {
-                Version = ContractDataVersion,
+                Version = BackendEndpoint.DataVersion,
                 UserId = userId
             };
 
@@ -290,7 +299,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
@@ -305,7 +314,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<BetaConfig> GetBetaConfig(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             if (!httpResponseMessage.IsSuccessStatusCode)
@@ -335,13 +344,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
          public UnityAction<byte[]> PlayerActionEventListner;
 
-         public async Task<FindMatchResponse> FindMatch(string userId, long deckId)
+         public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameModeAddress)
          {
+             Client.Protobuf.Address requestCustomGameAddress = null;
+             if (customGameModeAddress != null)
+             {
+                 requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
+             }
              FindMatchRequest request = new FindMatchRequest
              {
                  UserId = userId,
-                 DeckId = deckId
-
+                 DeckId = deckId,
+                 CustomGame = requestCustomGameAddress
              };
 
             const int timeout = 120000;
@@ -378,7 +392,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
              {
                  PlayerActionEventListner?.Invoke(e.Data);
              };
-             reader.SubscribeAsync(topics, handler);
+             reader.SubscribeAsync(handler, topics);
          }
 
          public void UnSubscribeEvent()
@@ -406,5 +420,39 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
+        #region Custom Game Modes
+
+        private const string ListGameModesMethod = "ListGameModes";
+        private const string CallCustomGameModeFunctionMethod = "CallCustomGameModeFunction";
+        private const string GetGameModeCustomUiMethod = "GetGameModeCustomUi";
+
+        public async Task<GameModeList> GetCustomGameModeList()
+        {
+            ListGameModesRequest request = new ListGameModesRequest();
+            return await Contract.StaticCallAsync<GameModeList>(ListGameModesMethod, request);
+        }
+
+        public async Task<GetCustomGameModeCustomUiResponse> GetGameModeCustomUi(Address address)
+        {
+            GetCustomGameModeCustomUiRequest request = new GetCustomGameModeCustomUiRequest
+            {
+                Address = address.ToProtobufAddress()
+            };
+
+            return await Contract.StaticCallAsync<GetCustomGameModeCustomUiResponse>(GetGameModeCustomUiMethod, request);
+        }
+
+        public async Task CallCustomGameModeFunction(Address address, string functionName)
+        {
+            CallCustomGameModeFunctionRequest request = new CallCustomGameModeFunctionRequest
+            {
+                Address = address.ToProtobufAddress(),
+                FunctionName = functionName
+            };
+
+            await Contract.CallAsync(CallCustomGameModeFunctionMethod, request);
+        }
+
+        #endregion
     }
 }

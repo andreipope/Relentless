@@ -351,21 +351,19 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
-                        if (UnitCanBeUsable(unit))
+                        BoardUnitModel attackedUnit = GetTargetOpponentUnit();
+                        if (attackedUnit != null)
                         {
-                            BoardUnitModel attackedUnit = GetTargetOpponentUnit();
-                            if (attackedUnit != null)
-                            {
-                                unit.DoCombat(attackedUnit);
-                                alreadyUsedUnits.Add(unit);
+                            unit.DoCombat(attackedUnit);
+                            alreadyUsedUnits.Add(unit);
 
-                                await LetsThink(cancellationToken);
-                                if (!OpponentHasHeavyUnits())
-                                {
-                                    break;
-                                }
+                            await LetsThink(cancellationToken);
+                            if (!OpponentHasHeavyUnits())
+                            {
+                                break;
                             }
                         }
+                        else break;
                     }
                 }
             }
@@ -381,11 +379,10 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
-                    while (UnitCanBeUsable(unit)) {
-                        {
-                            unit.DoCombat(_gameplayManager.CurrentPlayer);
-                            await LetsThink(cancellationToken);
-                        }
+                    while (UnitCanBeUsable(unit))
+                    {
+                        unit.DoCombat(_gameplayManager.CurrentPlayer);
+                        await LetsThink(cancellationToken);
                     }
                 }
             }
@@ -395,25 +392,24 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
+                        if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                         {
-                            if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
+                            unit.DoCombat(_gameplayManager.CurrentPlayer);
+                            await LetsThink(cancellationToken);
+                        }
+                        else
+                        {
+                            BoardUnitModel attackedCreature = GetRandomOpponentUnit();
+
+                            if (attackedCreature != null)
                             {
-                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                unit.DoCombat(attackedCreature);
                                 await LetsThink(cancellationToken);
                             }
                             else
                             {
-                                BoardUnitModel attackedCreature = GetRandomOpponentUnit();
-                                if (attackedCreature != null)
-                                {
-                                    unit.DoCombat(attackedCreature);
-                                    await LetsThink(cancellationToken);
-                                }
-                                else
-                                {
-                                    unit.DoCombat(_gameplayManager.CurrentPlayer);
-                                    await LetsThink(cancellationToken);
-                                }
+                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                await LetsThink(cancellationToken);
                             }
                         }
                     }
@@ -664,14 +660,16 @@ namespace Loom.ZombieBattleground
 
                     _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
 
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                        {
-                            ActionType = Enumerators.ActionType.PlayCardFromHand,
-                            Caller = boardUnitViewElement.Model,
-                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                        });
+                    _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    {
+                        ActionType = Enumerators.ActionType.PlayCardFromHand,
+                        Caller = boardUnitViewElement.Model,
+                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    });
 
-                        boardUnitViewElement.PlayArrivalAnimation();
+                    boardUnitViewElement.PlayArrivalAnimation();
+
+                    _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
 
                     _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
                         () =>

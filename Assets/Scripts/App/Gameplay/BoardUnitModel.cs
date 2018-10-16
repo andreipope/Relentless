@@ -441,14 +441,7 @@ namespace Loom.ZombieBattleground
         public void DoCombat(BoardObject target)
         {
             if (target == null)
-            {
-                if (_tutorialManager.IsTutorial)
-                {
-                    _tutorialManager.ActivateSelectTarget();
-                }
-
                 return;
-            }
 
             IsAttacking = true;
 
@@ -461,6 +454,15 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
+                            if (targetPlayer.Health <= 0)
+                            {
+                                IsPlayable = true;
+                                AttackedThisTurn = false;
+                                IsAttacking = false;
+                                completeCallback?.Invoke();
+                                return;
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetPlayer);
 
                             FightSequenceHandler.HandleAttackPlayer(
@@ -484,6 +486,15 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
+                            if(targetCardModel.CurrentHp <= 0)
+                            {
+                                IsPlayable = true;
+                                AttackedThisTurn = false;
+                                IsAttacking = false;
+                                completeCallback?.Invoke();
+                                return;
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
@@ -519,7 +530,9 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun || CantAttackInThisTurnBlocker)
+            if (IsDead || CurrentHp <= 0 ||
+                CurrentDamage <= 0 || IsStun ||
+                CantAttackInThisTurnBlocker)
             {
                 return false;
             }

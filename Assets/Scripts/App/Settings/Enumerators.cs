@@ -116,7 +116,8 @@ namespace Loom.ZombieBattleground.Common
             COSTS_LESS_IF_CARD_TYPE_IN_HAND,
             RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS,
             REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES,
-            RESTORE_DEF_RANDOMLY_SPLIT
+            RESTORE_DEF_RANDOMLY_SPLIT,
+            ADJACENT_UNITS_GET_GUARD
         }
 
         public enum ActionType
@@ -174,7 +175,9 @@ namespace Loom.ZombieBattleground.Common
             PACK_OPENER,
             CREDITS,
             PlaySelection,
-            PvPSelection
+            PvPSelection,
+            CustomGameModeList,
+            CustomGameModeCustomUi
         }
 
         public enum AttackInfoType
@@ -200,7 +203,6 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CacheDataType
         {
-            CONFIG_DATA,
             CARDS_LIBRARY_DATA,
             HEROES_DATA,
             COLLECTION_DATA,
@@ -473,7 +475,10 @@ namespace Loom.ZombieBattleground.Common
             Push,
             Reanimate,
             LowGooCost,
-            ReturnToHand
+            ReturnToHand,
+
+            SpawnOnBoard,
+            AddCardToHand
         }
         public enum ScreenMode
         {
@@ -491,7 +496,7 @@ namespace Loom.ZombieBattleground.Common
             UseOverlordAbility
         }
 
-        public enum VFXType
+        public enum VisualEffectType
         {
             Impact,
             Moving

@@ -791,6 +791,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.RESTORE_DEF_RANDOMLY_SPLIT:
                     ability = new RestoreDefRandomlySplitAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.ADJACENT_UNITS_GET_GUARD:
+                    ability = new AdjacentUnitsGetGuardAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }

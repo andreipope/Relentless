@@ -2,6 +2,7 @@
 	"decks": [{
 			"id" : 0,
 			"heroId": 1,
+      "name": "BLITZ_AI",
 			"type": "BLITZ_AI",
 			"actions": "TEST",
     "cards": [
@@ -66,6 +67,7 @@
 		{
 			"id" : 1,
 			"heroId": 0,
+            "name": "DEFENSE_AI",
 			"type": "DEFENSE_AI",
 			"actions": "TEST|TEST2",
 			"cards": [{
@@ -121,6 +123,7 @@
 		{
 			"id" : 2,
 			"heroId": 4,
+            "name": "MIXED_AI",
 			"type": "MIXED_AI",
 			"actions": "TEST",
 			"cards": [{
@@ -185,6 +188,7 @@
 		{
 			"id" : 3,
 			"heroId": 2,
+            "name": "MIXED_BLITZ_AI",
 			"type": "MIXED_BLITZ_AI",
 			"actions": "TEST|TEST2",
 			"cards": [{
@@ -247,6 +251,7 @@
 
 			"id" : 4,
 			"heroId": 3,
+            "name": "TIME_BLITZ_AI",
 			"type": "TIME_BLITZ_AI",
 			"actions": "TEST",
       "cards": [
@@ -331,6 +336,7 @@
 		{
 			"id" : 5,
 			"heroId": 5,
+            "name": "MIXED_DEFENSE_AI",
 			"type": "MIXED_DEFENSE_AI",
 			"actions": "TEST",
       "cards": [  

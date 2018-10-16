@@ -673,7 +673,9 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.LowGooCost,
-                        Target = card
+                        Target = card,
+                        HasValue = true,
+                        Value = skill.Value
                     }
                 }
             });
@@ -734,7 +736,9 @@ namespace Loom.ZombieBattleground
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.AttackBuff,
-                            Target = target
+                            Target = target,
+                            HasValue = true,
+                            Value = skill.Attack
                         }
                     }
                 });
@@ -776,7 +780,9 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = target
+                        Target = target,
+                        HasValue = true,
+                        Value = -skill.Value
                     }
                 }
             });
@@ -818,7 +824,9 @@ namespace Loom.ZombieBattleground
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                    Target = targetObject
+                    Target = targetObject,
+                    HasValue = true,
+                    Value = -skill.Value
                 });
             }
 
@@ -838,6 +846,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             BoardUnitView unit = units[UnityEngine.Random.Range(0, units.Count)];
+
+            BoardUnitView destroyedUnit = unit;
 
             int unitAtk = unit.Model.CurrentDamage;
 
@@ -861,7 +871,14 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = target
+                        Target = target,
+                        HasValue = true,
+                        Value = -unitAtk
+                    },
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                        Target = destroyedUnit,
                     }
                 }
             });
@@ -904,7 +921,9 @@ namespace Loom.ZombieBattleground
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = opponentUnitView
+                        Target = opponentUnitView,
+                        HasValue = true,
+                        Value = -skill.Value
                     });
 
                     opponentUnits.Remove(opponentUnitView);
@@ -960,8 +979,10 @@ namespace Loom.ZombieBattleground
                 {
                     new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.Feral,
-                        Target = target
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        Target = target,
+                        HasValue = true,
+                        Value = skill.Value
                     }
                 }
             });
@@ -987,6 +1008,15 @@ namespace Loom.ZombieBattleground
                 ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                   new PastActionsPopup.TargetEffectParam()
+                   {
+                       ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                       Target = owner,
+                       HasValue = true,
+                       Value = skill.Value
+                   }
+                }
             });
         }
 
@@ -1006,8 +1036,8 @@ namespace Loom.ZombieBattleground
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.None,
-                    Target = target
+                    ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
+                    Target = target, 
                 });
             }
 
@@ -1065,7 +1095,9 @@ namespace Loom.ZombieBattleground
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.LifeGain,
-                    Target = targetObject
+                    Target = targetObject,
+                    HasValue = true,
+                    Value = skill.Value
                 });
             }
 
@@ -1193,7 +1225,9 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = target
+                        Target = target,
+                        HasValue = true,
+                        Value = -skill.Value
                     },
                     new PastActionsPopup.TargetEffectParam()
                     {
@@ -1238,7 +1272,9 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                        Target = target
+                        Target = target,
+                        HasValue = true,
+                        Value = skill.Value
                     }
                 }
             });
@@ -1338,7 +1374,9 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = target
+                        Target = target,
+                        HasValue = true,
+                        Value = -skill.Value
                     }
                 }
             });
@@ -1409,7 +1447,9 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = target
+                        Target = target,
+                        HasValue = true,
+                        Value = -skill.Value
                     }
                 }
             });
@@ -1473,7 +1513,9 @@ namespace Loom.ZombieBattleground
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                    Target = unit
+                    Target = unit,
+                    HasValue = true,
+                    Value = -skill.Value
                 });
             }
 
@@ -1517,7 +1559,9 @@ namespace Loom.ZombieBattleground
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                            Target = target
+                            Target = target,
+                            HasValue = true,
+                            Value = skill.Value
                         }
                     }
                 });
@@ -1541,6 +1585,15 @@ namespace Loom.ZombieBattleground
                 ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        Target = owner,
+                        HasValue = true,
+                        Value = skill.Value
+                    }
+                }
             });
         }
 
@@ -1601,7 +1654,9 @@ namespace Loom.ZombieBattleground
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                    Target = unit
+                    Target = unit,
+                    HasValue = true,
+                    Value = skill.Value
                 });
             }
 
