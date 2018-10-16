@@ -25,13 +25,13 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
     private static void PlayerOverlordSetDef(int defenseValue)
     {
-        _gameplayManager.CurrentPlayer.Health = defenseValue;
+        _gameplayManager.CurrentPlayer.Defense = defenseValue;
     }
 
     [CommandHandler(Description = "Reduce the current def of the AI overlord")]
     private static void EnemyOverlordSetDef(int defenseValue)
     {
-        _gameplayManager.OpponentPlayer.Health = defenseValue;
+        _gameplayManager.OpponentPlayer.Defense = defenseValue;
     }
 
     [CommandHandler(Description = "Player Overlord Ability Slot (0 or 1) and Cool Down Timer")]
@@ -106,9 +106,9 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
 
         int gooDiff = playCardOnBoard.GooCost;
-        if (player.Goo < playCardOnBoard.GooCost)
+        if (player.CurrentGoo < playCardOnBoard.GooCost)
         {
-            gooDiff = player.Goo > 0 ? player.Goo : 0;
+            gooDiff = player.CurrentGoo > 0 ? player.CurrentGoo : 0;
         }
 
         playCardOnBoard.GooCost = gooDiff;
@@ -165,7 +165,7 @@ static class BattleCommandsHandler
         else
         {
             _cardsController.ReturnCardToHand(obj.Unit);
-            _gameplayManager.CurrentPlayer.Goo += obj.GooCost;
+            _gameplayManager.CurrentPlayer.CurrentGoo += obj.GooCost;
         }
     }
 
@@ -211,7 +211,7 @@ static class BattleCommandsHandler
         obj.UnitModel.NumTurnsOnBoard--;
         obj.UnitModel.OnStartTurn();
 
-        obj.AttackedPlayer.Health += obj.Damage;
+        obj.AttackedPlayer.Defense += obj.Damage;
     }
 
     private static void RevertOverlordSkill(IMove move)
@@ -434,7 +434,7 @@ static class BattleCommandsHandler
 
     private static void RevertAttackOnOverlordBySkill(Player player, BoardSkill boardSkill)
     {
-        player.Health += boardSkill.Skill.Value;
+        player.Defense += boardSkill.Skill.Value;
     }
 
     private static void RevertAttackOnUnitBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
@@ -448,7 +448,7 @@ static class BattleCommandsHandler
         if (player == null)
             return;
 
-        player.Health -= boardSkill.Skill.Value;
+        player.Defense -= boardSkill.Skill.Value;
     }
 
     private static void RevertHealUnityBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
