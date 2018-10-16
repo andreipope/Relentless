@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground.Data
                 {
                     InstanceId = cards[i].Id,
                     Prototype = ToProtobufExtensions.GetCardPrototype(cards[i]),
-                    Defence = cards[i].Health,
+                    Defense = cards[i].Health,
                     Attack = cards[i].Damage
                 };
             }

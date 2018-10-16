@@ -3,8 +3,6 @@ using Loom.ZombieBattleground.Protobuf;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +11,7 @@ namespace Loom.ZombieBattleground
     public class QueueManager : IService, IQueueManager
     {
 
-        private volatile Queue<Action> _mainThreadActions;
+        private volatile Queue<Func<Task>> _mainThreadActions;
 
         private BlockingCollection<PlayerActionRequest> _networkThreadActions;
 
@@ -23,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-            _mainThreadActions = new Queue<Action>();
+            _mainThreadActions = new Queue<Func<Task>>();
             _networkThreadActions = new BlockingCollection<PlayerActionRequest>();
         }
 
@@ -45,12 +43,12 @@ namespace Loom.ZombieBattleground
         }
 
         //Main Gameplay Thread
-        public void Update()
+        public async void Update()
         {
-            MainThread();
+            await MainThread();
         }
 
-        public void AddAction(Action action)
+        public void AddAction(Func<Task> action)
         {
             _mainThreadActions.Enqueue(action);
         }
@@ -60,11 +58,11 @@ namespace Loom.ZombieBattleground
             _networkThreadActions.Add(action);
         }
 
-        private void MainThread()
+        private async Task MainThread()
         {
             if (_mainThreadActions.Count > 0)
             {
-                _mainThreadActions.Dequeue().Invoke();
+                await _mainThreadActions.Dequeue().Invoke();
             }
         }
 

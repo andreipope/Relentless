@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
-using Loom.Google.Protobuf;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -355,7 +353,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
              {
                  UserId = userId,
                  DeckId = deckId,
-                 CustomGame = requestCustomGameAddress
+                 CustomGame = requestCustomGameAddress,
+                 Version = BackendEndpoint.DataVersion
              };
 
             const int timeout = 120000;
@@ -376,7 +375,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
 
-         public async Task<GetGameStateResponse> GetGameState(int matchId)
+         public async Task<GetGameStateResponse> GetGameState(long matchId)
          {
              GetGameStateRequest request = new GetGameStateRequest
              {

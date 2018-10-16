@@ -2,6 +2,9 @@
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using System;
+using System.Threading.Tasks;
+using Loom.Client;
+using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
 {
@@ -25,8 +28,11 @@ namespace Loom.ZombieBattleground
 
         event Action LeaveMatchReceived;
 
-        FindMatchResponse MatchResponse { get; set; }
-        GetGameStateResponse GameStateResponse { get; set; }
+        Address? CustomGameModeAddress { get; set; }
+
+        //FindMatchResponse MatchResponse { get; set; }
+        MatchMetadata MatchMetadata { get; }
+        GameState InitialGameState { get; }
 
         OpponentDeck OpponentDeck { get; set; }
         int OpponentDeckIndex { get; set; }
@@ -34,5 +40,7 @@ namespace Loom.ZombieBattleground
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
+
+        Task FindMatch();
     }
 }

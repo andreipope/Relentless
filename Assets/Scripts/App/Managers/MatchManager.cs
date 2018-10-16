@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -31,8 +29,6 @@ namespace Loom.ZombieBattleground
         private Enumerators.AppState _finishMatchAppState;
 
         public Enumerators.MatchType MatchType { get; set; }
-
-        public Address? CustomGameModeAddress { get; set; }
 
         // TODO : Find another solution, right now its tempraoray only....
         private bool _checkPlayerStatus;
@@ -73,15 +69,11 @@ namespace Loom.ZombieBattleground
                             GameClient.Get<IQueueManager>().StartNetworkThread();
                             _uiManager.DrawPopup<ConnectionPopup>();
                             _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
-                            _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
-                                _backendDataControlMediator.UserDataModel.UserId,
-                                _uiManager.GetPage<GameplayPage>().CurrentDeckId,
-                                CustomGameModeAddress);
+                            await _pvpManager.FindMatch();
 
-                            Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
-                            _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
+                            _backendFacade.SubscribeEvent(_pvpManager.MatchMetadata.Topics.ToList());
 
-                            if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                            if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
                             {
                                 OnStartGamePvP();
                             }
@@ -104,7 +96,7 @@ namespace Loom.ZombieBattleground
 
         }
 
-        public async void FindMatch(Enumerators.MatchType matchType)
+        public void FindMatch(Enumerators.MatchType matchType)
         {
             MatchType = matchType;
             FindMatch();
@@ -156,15 +148,12 @@ namespace Loom.ZombieBattleground
 
         private async void GetGameState()
         {
-
             // TODO : Quick fix... something wrong with backend side..
             // Need to remove delay
             await Task.Delay(3000);
-            _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
 
             _uiManager.HidePopup<ConnectionPopup>();
             CreateLocalMatch();
-
         }
 
         private void StartLoadMatch()
