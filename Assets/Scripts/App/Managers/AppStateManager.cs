@@ -96,7 +96,10 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<PvPSelectionPage>();
                     break;
                 case Enumerators.AppState.CustomModes:
-                    _uiManager.SetPage<CustomModesPage>();
+                    _uiManager.SetPage<CustomGameModeListPage>();
+                    break;
+                case Enumerators.AppState.CustomGameModeCustomUi:
+                    _uiManager.SetPage<CustomGameModeCustomUiPage>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);

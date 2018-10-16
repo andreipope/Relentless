@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -9,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class CustomModesPage : IUIElement
+    public class CustomGameModeListPage : IUIElement
     {
         private IUIManager _uiManager;
 
@@ -177,11 +179,14 @@ namespace Loom.ZombieBattleground
                 Object.Destroy(_selfObject);
             }
 
-            private void PlayButtonOnClickHandler()
+            private async void PlayButtonOnClickHandler()
             {
-                GameClient.Get<IUIManager>().DrawPopup<WarningPopup>(
-                    $"The Modes are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n " +
-                    $"Thanks for helping us make this game Awesome\n\n-Loom Team");
+                GetCustomGameModeCustomUiResponse customUiResponse =
+                 await GameClient.Get<BackendFacade>().GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
+
+                CustomGameModeCustomUiElement[] customUiElements = customUiResponse.UiElements.ToArray();
+                GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
+                GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(Mode, customUiElements);
             }
         }
     }
