@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.AppState _finishMatchAppState;
 
+        private float lookingForOpponentTimeout;
+
         public Enumerators.MatchType MatchType { get; set; }
 
         public Address? CustomGameModeAddress { get; set; }
@@ -57,6 +59,15 @@ namespace Loom.ZombieBattleground
             _gameplayManager.ResetWholeGameplayScene();
 
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
+        }
+
+        public void StopLookingForOpponent () {
+            _backendFacade.UnSubscribeEvent();
+            if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
+            {
+                _uiManager.HidePopup<ConnectionPopup>();
+            }
+            _uiManager.DrawPopup<WarningPopup>("Couldn't find an opponent.");
         }
 
         public async void FindMatch()
@@ -87,6 +98,7 @@ namespace Loom.ZombieBattleground
                             }
                             else
                             {
+                                lookingForOpponentTimeout = Constants.matchmakingTimeOut;
                                 _pvpManager.GameStartedActionReceived += OnStartGamePvP;
                             }
                         } 
@@ -128,6 +140,8 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
+
+            lookingForOpponentTimeout = 0;
         }
 
         public void Update()
@@ -136,6 +150,14 @@ namespace Loom.ZombieBattleground
             {
                 _checkPlayerStatus = false;
                 GetGameState();
+            }
+
+            if (lookingForOpponentTimeout > 0) {
+                lookingForOpponentTimeout -= Time.deltaTime;
+                if (lookingForOpponentTimeout <= 0) {
+                    lookingForOpponentTimeout = 0;
+                    StopLookingForOpponent();
+                }
             }
         }
 
@@ -151,6 +173,7 @@ namespace Loom.ZombieBattleground
 
         private void OnStartGamePvP()
         {
+            lookingForOpponentTimeout = 0;
             _checkPlayerStatus = true;
         }
 
