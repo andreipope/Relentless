@@ -136,5 +136,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
+        internal const float matchmakingTimeOut = 120;
+
     }
 }

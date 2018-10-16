@@ -129,7 +129,6 @@ namespace Loom.ZombieBattleground
         public void SetCoolDown(int coolDownValue)
         {
             _cooldown = coolDownValue;
-            _cooldownText.text = _cooldown.ToString();
             _coolDownTimer.SetAngle(_cooldown);
 
             SetHighlightingEnabled(IsSkillReady);
