@@ -518,7 +518,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard)
+        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard)
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
@@ -610,6 +610,8 @@ namespace Loom.ZombieBattleground
                                         null,
                                         0.1f);
                                 });
+
+                            OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
 
                             player.CurrentGoo -= card.ManaCost;
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
