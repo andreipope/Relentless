@@ -521,5 +521,13 @@ namespace Loom.ZombieBattleground.Common
             Player,
             Enemy
         }
+
+        public enum PlayerActionType
+        {
+            PlayCardOnBoard,
+            AttackOnUnit,
+            AttackOnOverlord,
+            PlayOverlordSkill
+        }
     }
 }

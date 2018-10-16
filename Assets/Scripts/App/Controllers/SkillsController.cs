@@ -153,6 +153,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void UnBlockSkill(Player player)
+        {
+            if (player.IsLocalPlayer)
+            {
+                PlayerPrimarySkill.UnBlockSkill();
+                PlayerSecondarySkill.UnBlockSkill();
+            }
+            else
+            {
+                OpponentPrimarySkill.UnBlockSkill();
+                OpponentSecondarySkill.UnBlockSkill();
+            }
+        }
+
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
             PlayerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
@@ -211,7 +225,12 @@ namespace Loom.ZombieBattleground
                             DoActionByType(skill, targetPlayer);
                         }, _isDirection);
 
-
+                    if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                    {
+                        PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetPlayer);
+                        _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
+                            playOverlordSkill));
+                    }
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
                 {
@@ -236,6 +255,13 @@ namespace Loom.ZombieBattleground
                         {
                             DoActionByType(skill, targetUnitView.Model);
                         }, _isDirection);
+
+                    if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                    {
+                        PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetUnitView.Model);
+                        _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
+                            playOverlordSkill));
+                    }
                 }
 
                 skill.CancelTargetingArrows();
@@ -258,6 +284,13 @@ namespace Loom.ZombieBattleground
                     {
                         DoActionByType(skill, target);
                     }, _isDirection);
+
+                if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                {
+                    PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, target);
+                    _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
+                        playOverlordSkill));
+                }
             }
         }
 

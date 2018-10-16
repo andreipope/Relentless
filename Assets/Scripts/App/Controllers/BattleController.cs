@@ -76,6 +76,12 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
+
+            if (attackingUnitModel.OwnerPlayer == _gameplayManager.CurrentPlayer)
+            {
+                _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.AttackOnOverlord,
+                    new AttackOverlord(attackingUnitModel, attackedPlayer, damageAttacking)));
+            }
         }
 
         public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0)
@@ -144,6 +150,12 @@ namespace Loom.ZombieBattleground
                 });
 
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
+
+                if (attackingUnitModel.OwnerPlayer == _gameplayManager.CurrentPlayer)
+                {
+                    _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.AttackOnUnit,
+                        new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking)));
+                }
             }
         }
 

@@ -66,6 +66,8 @@ namespace Loom.ZombieBattleground
         public List<string> PlayerStarterCards { get; set; }
         public List<string> OpponentStarterCards { get; set; }
 
+        public PlayerMoveAction PlayerMoves { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -120,6 +122,7 @@ namespace Loom.ZombieBattleground
             CurrentPlayer = null;
             OpponentPlayer = null;
             StartingTurn = Enumerators.StartingTurn.UnDecided;
+            PlayerMoves = null;
 
             GameClient.Get<IQueueManager>().StopNetworkThread();
 
@@ -255,6 +258,8 @@ namespace Loom.ZombieBattleground
             }
 
             GetController<PlayerController>().InitializePlayer(0);
+
+            PlayerMoves = new PlayerMoveAction();
 
             switch (_matchManager.MatchType)
             {

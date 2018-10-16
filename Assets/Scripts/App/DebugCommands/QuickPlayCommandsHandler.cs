@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
@@ -30,6 +31,7 @@ static class QuickPlayCommandsHandler
         string playerDeckName = _dataManager.CachedDecksData.Decks.First(deck => deck.Id == playerDeckId).Name;
 
         int opponentDeckId = _gameplayManager.OpponentDeckId;
+
         string opponentDeckName = _dataManager.CachedOpponentDecksData.Decks.First(deck => deck.Id == opponentDeckId).Name;
 
         string playerStarterCards = "[ ";
@@ -129,4 +131,5 @@ static class QuickPlayCommandsHandler
             _gameplayManager.OpponentStarterCards.Add(cards[i]);
         }
     }
+
 }

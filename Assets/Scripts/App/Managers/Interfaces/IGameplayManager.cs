@@ -65,5 +65,7 @@ namespace Loom.ZombieBattleground
         bool IsGameplayReady();
 
         Player GetPlayerById(int id);
+
+        PlayerMoveAction PlayerMoves { get; set; }
     }
 }
