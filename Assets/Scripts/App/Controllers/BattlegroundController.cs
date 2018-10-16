@@ -1011,14 +1011,14 @@ namespace Loom.ZombieBattleground
 
         private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
         {
-            _gameplayManager.OpponentPlayer.Health = specificBattlegroundInfo.OpponentInfo.Health;
-            _gameplayManager.OpponentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
-            _gameplayManager.OpponentPlayer.Goo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
+            _gameplayManager.OpponentPlayer.Defense = specificBattlegroundInfo.OpponentInfo.Health;
+            _gameplayManager.OpponentPlayer.GooVials = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
+            _gameplayManager.OpponentPlayer.CurrentGoo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
             _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AiType);
 
-            _gameplayManager.CurrentPlayer.Health = specificBattlegroundInfo.PlayerInfo.Health;
-            _gameplayManager.CurrentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
-            _gameplayManager.CurrentPlayer.Goo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
+            _gameplayManager.CurrentPlayer.Defense = specificBattlegroundInfo.PlayerInfo.Health;
+            _gameplayManager.CurrentPlayer.GooVials = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
+            _gameplayManager.CurrentPlayer.CurrentGoo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
         }
 
         private void SetupOverlordsHandsAsSpecific(List<string> playerCards, List<string> opponentCards)

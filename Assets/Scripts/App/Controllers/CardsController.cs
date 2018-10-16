@@ -244,7 +244,7 @@ namespace Loom.ZombieBattleground
                     if (!_tutorialManager.IsTutorial)
                     {
                         player.DamageByNoMoreCardsInDeck++;
-                        player.Health -= player.DamageByNoMoreCardsInDeck;
+                        player.Defense -= player.DamageByNoMoreCardsInDeck;
                         _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
                     }
                     return;
@@ -269,7 +269,7 @@ namespace Loom.ZombieBattleground
                     if (!_tutorialManager.IsTutorial)
                     {
                         otherPlayer.DamageByNoMoreCardsInDeck++;
-                        otherPlayer.Health -= otherPlayer.DamageByNoMoreCardsInDeck;
+                        otherPlayer.Defense -= otherPlayer.DamageByNoMoreCardsInDeck;
                         _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
                     }
                     return;
@@ -613,7 +613,7 @@ namespace Loom.ZombieBattleground
 
                             OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
 
-                            player.Goo -= card.ManaCost;
+                            player.CurrentGoo -= card.ManaCost;
                             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                             GameClient.Get<IOverlordManager>().ReportExperienceAction(player.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
                             break;

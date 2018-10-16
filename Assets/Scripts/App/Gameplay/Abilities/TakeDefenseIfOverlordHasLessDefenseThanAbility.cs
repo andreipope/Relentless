@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.Health <= Health)
+            if (PlayerCallerOfAbility.Defense <= Health)
             {
                 AbilityUnitOwner.BuffedHp += Value;
                 AbilityUnitOwner.CurrentHp += Value;

@@ -60,11 +60,11 @@ namespace Loom.ZombieBattleground
 
         private readonly Animator _regularAnimator;
 
-        private int _goo;
+        private int _currentGoo;
 
-        private int _gooOnCurrentTurn;
+        private int _gooVials;
 
-        private int _health;
+        private int _defense;
 
         private int _graveyardCardsCount;
 
@@ -86,6 +86,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -138,24 +139,33 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.MatchType.PVP:
                     PlayerState playerState =
-                        _pvpManager.MatchResponse.Match.PlayerStates
+                        _pvpManager.InitialGameState.PlayerStates
                         .First(state =>
                                 isOpponent ?
                                     state.Id != _backendDataControlMediator.UserDataModel.UserId :
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
-                    _health = playerState.Hp;
-                    _goo = playerState.Mana;
+                    _defense = playerState.Defense;
+                    _currentGoo = playerState.CurrentGoo;
+                    _gooVials = playerState.GooVials;
 
-                    Debug.Log($"Remote data: is local {IsLocalPlayer}, id {playerState.Id}, defense {playerState.Hp}, goo {playerState.Mana}");
+                    Debug.Log(
+                        $"Remote data: is local {IsLocalPlayer}, " +
+                        $"id {playerState.Id}, " +
+                        $"defense {playerState.Defense}, " +
+                        $"current goo {playerState.CurrentGoo}, " +
+                        $"goo vials {playerState.GooVials}"
+                        );
                     break;
                 default:
-                    _health = Constants.DefaultPlayerHp;
-                    _goo = Constants.DefaultPlayerGoo;
+                    _defense = Constants.DefaultPlayerHp;
+                    _currentGoo = Constants.DefaultPlayerGoo;
+                    _gooVials = _currentGoo;
                     break;
             }
 
-            InitialHp = _health;
+
+            InitialHp = _defense;
             BuffedHp = 0;
 
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
@@ -163,8 +173,6 @@ namespace Loom.ZombieBattleground
             _avatarObject = _overlordRegularObject.transform.Find("RegularPosition/Avatar/OverlordImage").gameObject;
             _avatarSelectedHighlight = _overlordRegularObject.transform.Find("RegularPosition/Avatar/SelectedHighlight").gameObject;
             _freezedHighlightObject = _overlordRegularObject.transform.Find("RegularPosition/Avatar/FreezedHighlight").gameObject;
-
-
 
             string name = SelfHero.HeroElement.ToString() + "HeroFrame";
             GameObject prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
@@ -184,7 +192,7 @@ namespace Loom.ZombieBattleground
             _regularAnimator.enabled = false;
             _deathAnimator.StopPlayback();
 
-            PlayerHpChanged += PlayerHpChangedHandler;
+            PlayerDefenseChanged += PlayerDefenseChangedHandler;
 
             DamageByNoMoreCardsInDeck = 0;
         }
@@ -193,11 +201,11 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEnded;
 
-        public event Action<int> PlayerHpChanged;
+        public event Action<int> PlayerDefenseChanged;
 
-        public event Action<int> PlayerGooChanged;
+        public event Action<int> PlayerCurrentGooChanged;
 
-        public event Action<int> PlayerVialGooChanged;
+        public event Action<int> PlayerGooVialsChanged;
 
         public event Action<int> DeckChanged;
 
@@ -223,37 +231,37 @@ namespace Loom.ZombieBattleground
 
         public Hero SelfHero { get; }
 
-        public int GooOnCurrentTurn
+        public int GooVials
         {
-            get => _gooOnCurrentTurn;
+            get => _gooVials;
             set
             {
-                _gooOnCurrentTurn = value;
-                _gooOnCurrentTurn = Mathf.Clamp(_gooOnCurrentTurn, 0, Constants.MaximumPlayerGoo);
+                _gooVials = value;
+                _gooVials = Mathf.Clamp(_gooVials, 0, Constants.MaximumPlayerGoo);
 
-                PlayerVialGooChanged?.Invoke(_gooOnCurrentTurn);
+                PlayerGooVialsChanged?.Invoke(_gooVials);
             }
         }
 
-        public int Goo
+        public int CurrentGoo
         {
-            get => _goo;
+            get => _currentGoo;
             set
             {
-                _goo = Mathf.Clamp(value, 0, 999999);
+                _currentGoo = Mathf.Clamp(value, 0, 999999);
 
-                PlayerGooChanged?.Invoke(_goo);
+                PlayerCurrentGooChanged?.Invoke(_currentGoo);
             }
         }
 
-        public int Health
+        public int Defense
         {
-            get => _health;
+            get => _defense;
             set
             {
-                _health = Mathf.Clamp(value, 0, 99);
+                _defense = Mathf.Clamp(value, 0, 99);
 
-                PlayerHpChanged?.Invoke(_health);
+                PlayerDefenseChanged?.Invoke(_defense);
             }
         }
 
@@ -292,9 +300,9 @@ namespace Loom.ZombieBattleground
         public void InvokeTurnEnded()
         {
             TurnEnded?.Invoke();
-            if (Goo > GooOnCurrentTurn)
+            if (CurrentGoo > GooVials)
             {
-                Goo = GooOnCurrentTurn;
+                CurrentGoo = GooVials;
             }
         }
 
@@ -304,8 +312,8 @@ namespace Loom.ZombieBattleground
 
             if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
-                GooOnCurrentTurn++;
-                Goo = GooOnCurrentTurn + CurrentGooModificator;
+                GooVials++;
+                CurrentGoo = GooVials + CurrentGooModificator;
                 CurrentGooModificator = 0;
 
                 if (_turnsLeftToFreeFromStun > 0 && IsStunned)
@@ -566,7 +574,7 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
 
                 await _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
-                                                (int)_pvpManager.MatchResponse.Match.Id,
+                                                (int)_pvpManager.MatchMetadata.Id,
                                                 IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
 
             }
@@ -637,7 +645,7 @@ namespace Loom.ZombieBattleground
 
         #region handlers
 
-        private void PlayerHpChangedHandler(int now)
+        private void PlayerDefenseChangedHandler(int now)
         {
             if (now <= 0 && !_isDead)
             {

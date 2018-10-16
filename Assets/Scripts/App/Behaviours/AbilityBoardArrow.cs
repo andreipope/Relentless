@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnPlayerSelected(Player player)
         {
-            if (player.Health <= 0)
+            if (player.Defense <= 0)
                 return;
 
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) &&
