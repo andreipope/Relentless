@@ -145,7 +145,15 @@ public class HandBoardCard : OwnableBoardObject
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this);
+                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this, PlayCardOnBoard =>
+                {
+                    if (OwnerPlayer == _gameplayManager.CurrentPlayer)
+                    {
+                        PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                        _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+                    }
+                });
+
                 CardView.SetHighlightingEnabled(false);
             }
             else

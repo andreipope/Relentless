@@ -52,6 +52,8 @@ namespace Loom.ZombieBattleground
 
         private CancellationTokenSource _aiBrainCancellationTokenSource;
 
+        private Enumerators.AiBrainType _aiBrainType;
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -71,6 +73,7 @@ namespace Loom.ZombieBattleground
 
             _normalUnitCardInHand = new List<WorkingCard>();
             _normalSpellCardInHand = new List<WorkingCard>();
+
         }
 
         public void Dispose()
@@ -114,8 +117,15 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
 
+            SetAiBrainType(Enumerators.AiBrainType.Normal);
+
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
+        }
+
+        public void SetAiBrainType(Enumerators.AiBrainType aiBrainType)
+        {
+            _aiBrainType = aiBrainType;
         }
 
         public async Task LaunchAIBrain()
@@ -125,7 +135,20 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+                switch (_aiBrainType)
+                {
+                    case Enumerators.AiBrainType.DoNothing:
+                        await DoNothingAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    case Enumerators.AiBrainType.Normal:
+                        await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    case Enumerators.AiBrainType.DontAttack:
+                        await DontAttackAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -242,6 +265,30 @@ namespace Loom.ZombieBattleground
                     _battlegroundController.StopTurn();
                 }
             }
+        }
+
+        private async Task DoNothingAiBrain(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            _battlegroundController.StopTurn();
+        }
+
+        private async Task DontAttackAiBrain(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await PlayCardsFromHand(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+
+            _battlegroundController.StopTurn();
         }
 
         // ai step 1

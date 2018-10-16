@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground
@@ -39,6 +40,11 @@ namespace Loom.ZombieBattleground
 
         bool IsGameplayInputBlocked { get; set; }
 
+        List<string> PlayerStarterCards { get; set; }
+        List<string> OpponentStarterCards { get; set; }
+
+        Enumerators.StartingTurn StartingTurn { get; set; }
+
         T GetController<T>()
             where T : IController;
 
@@ -59,5 +65,7 @@ namespace Loom.ZombieBattleground
         bool IsGameplayReady();
 
         Player GetPlayerById(int id);
+
+        PlayerMoveAction PlayerMoves { get; set; }
     }
 }

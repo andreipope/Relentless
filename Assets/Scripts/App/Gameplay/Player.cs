@@ -453,7 +453,7 @@ namespace Loom.ZombieBattleground
             {
                 _cardsController.SetNewCardInstanceId(0);
             }
-           
+
             foreach (string card in cards)
             {
                 CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
@@ -477,12 +477,37 @@ namespace Loom.ZombieBattleground
             return array;
         }
 
-        public void SetFirstHand(bool isTutorial = false)
+        public List<string> SetFirstHand(List<string> starterCards, bool isTutorial = false)
         {
             if (isTutorial)
-                return;
+                return null;
 
-            for (int i = 0; i < Constants.DefaultCardsInHandAtStartGame; i++)
+            List<string> finalStarterCardsList = new List<string>();
+
+            int numCardsAdded = 0;
+            if(starterCards != null)
+            {
+                for (int i = 0; i < starterCards.Count; i++)
+                {
+                    WorkingCard card = CardsInDeck.Find(workingCard => workingCard.LibraryCard.Name == starterCards[i]);
+                    if(card == null)
+                        continue;
+
+                    if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                    {
+                        _cardsController.AddCardToDistributionState(this, card);
+                    }
+                    else
+                    {
+                        _cardsController.AddCardToHand(this, card);
+                    }
+
+                    finalStarterCardsList.Add(starterCards[i]);
+                    numCardsAdded++;
+                }
+            }
+
+            for (int i = numCardsAdded; i < Constants.DefaultCardsInHandAtStartGame; i++)
             {
                 if (IsLocalPlayer && !_gameplayManager.IsTutorial)
                 {
@@ -492,9 +517,13 @@ namespace Loom.ZombieBattleground
                 {
                     _cardsController.AddCardToHand(this, CardsInDeck[0]);
                 }
+
+                finalStarterCardsList.Add(CardsInDeck[i].LibraryCard.Name);
             }
 
             ThrowMulliganCardsEvent(_cardsController.MulliganCards);
+
+            return finalStarterCardsList;
         }
 
         public void DistributeCard()
@@ -569,6 +598,16 @@ namespace Loom.ZombieBattleground
 
             _skillsController.BlockSkill(this, Enumerators.SkillType.PRIMARY);
             _skillsController.BlockSkill(this, Enumerators.SkillType.SECONDARY);
+        }
+
+        public void RevertStun()
+        {
+            IsStunned = false;
+            _freezedHighlightObject.SetActive(false);
+            _turnsLeftToFreeFromStun = 0;
+
+
+            _skillsController.UnBlockSkill(this);
         }
 
         public void ThrowPlayCardEvent(WorkingCard card, int position)
