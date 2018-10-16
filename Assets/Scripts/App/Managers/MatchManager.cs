@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
                             }
                         } 
                         catch (Exception e) {
-                            Debug.LogWarning(e.Message);
+                            Debug.LogWarning(e);
                             if (_uiManager.GetPopup<ConnectionPopup>().Self != null) {
                                 _uiManager.HidePopup<ConnectionPopup>();
                             }

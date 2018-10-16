@@ -44,11 +44,6 @@ namespace Loom.ZombieBattleground
 
         public event Action LeaveMatchReceived;
 
-        private IUIManager _uiManager;
-        private BackendFacade _backendFacade;
-        private BackendDataControlMediator _backendDataControlMediator;
-
-        //public FindMatchResponse MatchResponse { get; set; }
         public MatchMetadata MatchMetadata { get; set; }
 
         public GameState InitialGameState { get; set; }
@@ -58,6 +53,10 @@ namespace Loom.ZombieBattleground
         public int OpponentDeckIndex { get; set; }
 
         public Address? CustomGameModeAddress { get; set; }
+
+        private IUIManager _uiManager;
+        private BackendFacade _backendFacade;
+        private BackendDataControlMediator _backendDataControlMediator;
 
         public void Init()
         {
