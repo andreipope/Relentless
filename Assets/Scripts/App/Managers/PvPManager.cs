@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Newtonsoft.Json;
@@ -114,6 +115,9 @@ namespace Loom.ZombieBattleground
             MatchMetadata.Id = findMatchResponse.Match.Id;
             MatchMetadata.Topics = findMatchResponse.Match.Topics;
             MatchMetadata.Status = findMatchResponse.Match.Status;
+
+            await _backendFacade.SubscribeEvent(MatchMetadata.Topics.ToList());
+
             if (MatchMetadata.Status == Match.Types.Status.Started)
             {
                 await LoadInitialGameState();

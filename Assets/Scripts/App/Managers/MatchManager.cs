@@ -22,10 +22,6 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
-        private BackendFacade _backendFacade;
-
-        private BackendDataControlMediator _backendDataControlMediator;
-
         private Enumerators.AppState _finishMatchAppState;
 
         public Enumerators.MatchType MatchType { get; set; }
@@ -71,8 +67,6 @@ namespace Loom.ZombieBattleground
                             _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
                             await _pvpManager.FindMatch();
 
-                            _backendFacade.SubscribeEvent(_pvpManager.MatchMetadata.Topics.ToList());
-
                             if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
                             {
                                 OnStartGamePvP();
@@ -116,8 +110,6 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
         }
@@ -134,11 +126,6 @@ namespace Loom.ZombieBattleground
         private void CreateLocalMatch()
         {
             StartLoadMatch();
-        }
-
-        private static BackendFacade GetBackendFacade(BackendFacade backendFacade)
-        {
-            return backendFacade;
         }
 
         private void OnStartGamePvP()

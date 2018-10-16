@@ -385,20 +385,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
              return await Contract.CallAsync<GetGameStateResponse>(GetGameStateMethod, request);
          }
 
-        public void SubscribeEvent(List<string> topics)
+        public async Task SubscribeEvent(List<string> topics)
          {
              EventHandler<JsonRpcEventData> handler = (sender, e) =>
              {
                  PlayerActionEventListner?.Invoke(e.Data);
              };
-             reader.SubscribeAsync(handler, topics);
+             await reader.SubscribeAsync(handler, topics);
          }
 
-         public void UnSubscribeEvent()
+         public async Task UnsubscribeEvent()
          {
              EventHandler<JsonRpcEventData> handler = (sender, e) =>{ };
-             reader.UnsubscribeAsync(handler);
-
+             await reader.UnsubscribeAsync(handler);
     	 }
 
         public void AddAction(long matchId, PlayerAction playerAction)
