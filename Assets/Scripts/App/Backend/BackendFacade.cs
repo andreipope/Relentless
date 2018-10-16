@@ -355,6 +355,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
              {
                  UserId = userId,
                  DeckId = deckId,
+                 Version = BackendEndpoint.DataVersion,
                  CustomGame = requestCustomGameAddress
              };
 
