@@ -169,9 +169,8 @@ namespace Loom.ZombieBattleground
             _timerManager.AddTimer(
                 x =>
                 {
-                    //cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
-                    CreateDeadAnimation(cardToDestroy);
-
+                    cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
+                    // CreateDeadAnimation(cardToDestroy);
 
                     string cardDeathSoundName =
                         cardToDestroy.Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
@@ -185,31 +184,30 @@ namespace Loom.ZombieBattleground
                         soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
                     }
 
-                    _timerManager.AddTimer(
-                        t =>
+                    // do this trick untill we will sync zombie death animations
+                    soundLength = soundLength > 0 ? soundLength : 0.25f;
+
+                    InternalTools.DoActionDelayed(() =>
                         {
                             cardToDestroy.Model.OwnerPlayer.BoardCards.Remove(cardToDestroy);
                             cardToDestroy.Model.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Model.Card);
                             cardToDestroy.Model.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Model.Card);
 
                             cardToDestroy.Model.InvokeUnitDied();
+
                             cardToDestroy.Transform.DOKill();
                             Object.Destroy(cardToDestroy.GameObject);
 
-                            _timerManager.AddTimer(
-                                f =>
-                                {
-                                    UpdatePositionOfBoardUnitsOfOpponent();
-                                    UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-                                },
-                                null,
-                                Time.deltaTime);
-                        },
-                        null,
-                        soundLength);
+                            InternalTools.DoActionDelayed(() =>
+                            {
+                                UpdatePositionOfBoardUnitsOfOpponent();
+                                UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+                            }, Time.deltaTime);
+
+                        }, soundLength);
                 });
         }
-
+    
         private void CreateDeadAnimation(BoardUnitView cardToDestroy)
         {
             _vfxController.CreateDeathZombieAnimation(cardToDestroy);
@@ -987,6 +985,17 @@ namespace Loom.ZombieBattleground
 
                 return foundObject;
             }
+        }
+
+        public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
+        {
+            BoardUnitView targetView = GetBoardUnitViewByModel(targetUnit);
+
+            return targetUnit.OwnerPlayer.BoardCards.Where(unit =>
+            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
+            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)-1)||
+            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
+            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)+1)).ToList();
         }
 
         #region specific setup of battleground

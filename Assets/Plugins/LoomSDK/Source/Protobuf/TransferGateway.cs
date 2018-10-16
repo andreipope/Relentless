@@ -9,10 +9,10 @@ using pb = global::Loom.Google.Protobuf;
 using pbc = global::Loom.Google.Protobuf.Collections;
 using pbr = global::Loom.Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace Loom.Client.Internal.Protobuf {
+namespace Loom.Client.Protobuf {
 
   /// <summary>Holder for reflection information generated from proto/transfer_gateway.proto</summary>
-  internal static partial class TransferGatewayReflection {
+  public static partial class TransferGatewayReflection {
 
     #region Descriptor
     /// <summary>File descriptor for proto/transfer_gateway.proto</summary>
@@ -24,53 +24,53 @@ namespace Loom.Client.Internal.Protobuf {
     static TransferGatewayReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Chxwcm90by90cmFuc2Zlcl9nYXRld2F5LnByb3RvGhBwcm90by9sb29tLnBy",
-            "b3RvIm8KJ1RyYW5zZmVyR2F0ZXdheUNvbnRyYWN0TWFwcGluZ0NvbmZpcm1l",
-            "ZBIiChBmb3JlaWduX2NvbnRyYWN0GAEgASgLMgguQWRkcmVzcxIgCg5sb2Nh",
-            "bF9jb250cmFjdBgCIAEoCzIILkFkZHJlc3MivAEKJFRyYW5zZmVyR2F0ZXdh",
-            "eVRva2VuV2l0aGRyYXdhbFNpZ25lZBIdCgt0b2tlbl9vd25lchgBIAEoCzII",
-            "LkFkZHJlc3MSIAoOdG9rZW5fY29udHJhY3QYAiABKAsyCC5BZGRyZXNzEi0K",
-            "CnRva2VuX2tpbmQYAyABKA4yGS5UcmFuc2ZlckdhdGV3YXlUb2tlbktpbmQS",
-            "FwoFdmFsdWUYBCABKAsyCC5CaWdVSW50EgsKA3NpZxgFIAEoDCLjAQogVHJh",
-            "bnNmZXJHYXRld2F5V2l0aGRyYXdhbFJlY2VpcHQSHQoLdG9rZW5fb3duZXIY",
-            "ASABKAsyCC5BZGRyZXNzEiAKDnRva2VuX2NvbnRyYWN0GAIgASgLMgguQWRk",
-            "cmVzcxItCgp0b2tlbl9raW5kGAMgASgOMhkuVHJhbnNmZXJHYXRld2F5VG9r",
-            "ZW5LaW5kEhcKBXZhbHVlGAQgASgLMgguQmlnVUludBIcChB3aXRoZHJhd2Fs",
-            "X25vbmNlGAUgASgEQgIwARIYChBvcmFjbGVfc2lnbmF0dXJlGAYgASgMImQK",
-            "JFRyYW5zZmVyR2F0ZXdheVdpdGhkcmF3RVJDNzIxUmVxdWVzdBIaCgh0b2tl",
-            "bl9pZBgBIAEoCzIILkJpZ1VJbnQSIAoOdG9rZW5fY29udHJhY3QYAiABKAsy",
-            "CC5BZGRyZXNzIkIKJ1RyYW5zZmVyR2F0ZXdheVdpdGhkcmF3YWxSZWNlaXB0",
-            "UmVxdWVzdBIXCgVvd25lchgBIAEoCzIILkFkZHJlc3MiXgooVHJhbnNmZXJH",
-            "YXRld2F5V2l0aGRyYXdhbFJlY2VpcHRSZXNwb25zZRIyCgdyZWNlaXB0GAEg",
-            "ASgLMiEuVHJhbnNmZXJHYXRld2F5V2l0aGRyYXdhbFJlY2VpcHQiggEKLlRy",
-            "YW5zZmVyR2F0ZXdheUNvbmZpcm1XaXRoZHJhd2FsUmVjZWlwdFJlcXVlc3QS",
-            "HQoLdG9rZW5fb3duZXIYASABKAsyCC5BZGRyZXNzEhgKEG9yYWNsZV9zaWdu",
-            "YXR1cmUYAiABKAwSFwoPd2l0aGRyYXdhbF9oYXNoGAMgASgMIrgBCihUcmFu",
-            "c2ZlckdhdGV3YXlBZGRDb250cmFjdE1hcHBpbmdSZXF1ZXN0EiIKEGZvcmVp",
-            "Z25fY29udHJhY3QYASABKAsyCC5BZGRyZXNzEiAKDmxvY2FsX2NvbnRyYWN0",
-            "GAIgASgLMgguQWRkcmVzcxIkChxmb3JlaWduX2NvbnRyYWN0X2NyZWF0b3Jf",
-            "c2lnGAMgASgMEiAKGGZvcmVpZ25fY29udHJhY3RfdHhfaGFzaBgEIAEoDCo6",
-            "ChhUcmFuc2ZlckdhdGV3YXlUb2tlbktpbmQSBwoDRVRIEAASCQoFRVJDMjAQ",
-            "ARIKCgZFUkM3MjEQAkIgqgIdTG9vbS5DbGllbnQuSW50ZXJuYWwuUHJvdG9i",
-            "dWZiBnByb3RvMw=="));
+            "Chxwcm90by90cmFuc2Zlcl9nYXRld2F5LnByb3RvGhFwcm90by90eXBlcy5w",
+            "cm90byJvCidUcmFuc2ZlckdhdGV3YXlDb250cmFjdE1hcHBpbmdDb25maXJt",
+            "ZWQSIgoQZm9yZWlnbl9jb250cmFjdBgBIAEoCzIILkFkZHJlc3MSIAoObG9j",
+            "YWxfY29udHJhY3QYAiABKAsyCC5BZGRyZXNzIrwBCiRUcmFuc2ZlckdhdGV3",
+            "YXlUb2tlbldpdGhkcmF3YWxTaWduZWQSHQoLdG9rZW5fb3duZXIYASABKAsy",
+            "CC5BZGRyZXNzEiAKDnRva2VuX2NvbnRyYWN0GAIgASgLMgguQWRkcmVzcxIt",
+            "Cgp0b2tlbl9raW5kGAMgASgOMhkuVHJhbnNmZXJHYXRld2F5VG9rZW5LaW5k",
+            "EhcKBXZhbHVlGAQgASgLMgguQmlnVUludBILCgNzaWcYBSABKAwi4wEKIFRy",
+            "YW5zZmVyR2F0ZXdheVdpdGhkcmF3YWxSZWNlaXB0Eh0KC3Rva2VuX293bmVy",
+            "GAEgASgLMgguQWRkcmVzcxIgCg50b2tlbl9jb250cmFjdBgCIAEoCzIILkFk",
+            "ZHJlc3MSLQoKdG9rZW5fa2luZBgDIAEoDjIZLlRyYW5zZmVyR2F0ZXdheVRv",
+            "a2VuS2luZBIXCgV2YWx1ZRgEIAEoCzIILkJpZ1VJbnQSHAoQd2l0aGRyYXdh",
+            "bF9ub25jZRgFIAEoBEICMAESGAoQb3JhY2xlX3NpZ25hdHVyZRgGIAEoDCJk",
+            "CiRUcmFuc2ZlckdhdGV3YXlXaXRoZHJhd0VSQzcyMVJlcXVlc3QSGgoIdG9r",
+            "ZW5faWQYASABKAsyCC5CaWdVSW50EiAKDnRva2VuX2NvbnRyYWN0GAIgASgL",
+            "MgguQWRkcmVzcyJCCidUcmFuc2ZlckdhdGV3YXlXaXRoZHJhd2FsUmVjZWlw",
+            "dFJlcXVlc3QSFwoFb3duZXIYASABKAsyCC5BZGRyZXNzIl4KKFRyYW5zZmVy",
+            "R2F0ZXdheVdpdGhkcmF3YWxSZWNlaXB0UmVzcG9uc2USMgoHcmVjZWlwdBgB",
+            "IAEoCzIhLlRyYW5zZmVyR2F0ZXdheVdpdGhkcmF3YWxSZWNlaXB0IoIBCi5U",
+            "cmFuc2ZlckdhdGV3YXlDb25maXJtV2l0aGRyYXdhbFJlY2VpcHRSZXF1ZXN0",
+            "Eh0KC3Rva2VuX293bmVyGAEgASgLMgguQWRkcmVzcxIYChBvcmFjbGVfc2ln",
+            "bmF0dXJlGAIgASgMEhcKD3dpdGhkcmF3YWxfaGFzaBgDIAEoDCK4AQooVHJh",
+            "bnNmZXJHYXRld2F5QWRkQ29udHJhY3RNYXBwaW5nUmVxdWVzdBIiChBmb3Jl",
+            "aWduX2NvbnRyYWN0GAEgASgLMgguQWRkcmVzcxIgCg5sb2NhbF9jb250cmFj",
+            "dBgCIAEoCzIILkFkZHJlc3MSJAocZm9yZWlnbl9jb250cmFjdF9jcmVhdG9y",
+            "X3NpZxgDIAEoDBIgChhmb3JlaWduX2NvbnRyYWN0X3R4X2hhc2gYBCABKAwq",
+            "OgoYVHJhbnNmZXJHYXRld2F5VG9rZW5LaW5kEgcKA0VUSBAAEgkKBUVSQzIw",
+            "EAESCgoGRVJDNzIxEAJCF6oCFExvb20uQ2xpZW50LlByb3RvYnVmYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Loom.Client.Internal.Protobuf.LoomReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayTokenKind), }, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayContractMappingConfirmed), global::Loom.Client.Internal.Protobuf.TransferGatewayContractMappingConfirmed.Parser, new[]{ "ForeignContract", "LocalContract" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayTokenWithdrawalSigned), global::Loom.Client.Internal.Protobuf.TransferGatewayTokenWithdrawalSigned.Parser, new[]{ "TokenOwner", "TokenContract", "TokenKind", "Value", "Sig" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceipt), global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceipt.Parser, new[]{ "TokenOwner", "TokenContract", "TokenKind", "Value", "WithdrawalNonce", "OracleSignature" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawERC721Request), global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawERC721Request.Parser, new[]{ "TokenId", "TokenContract" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceiptRequest), global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceiptRequest.Parser, new[]{ "Owner" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceiptResponse), global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceiptResponse.Parser, new[]{ "Receipt" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayConfirmWithdrawalReceiptRequest), global::Loom.Client.Internal.Protobuf.TransferGatewayConfirmWithdrawalReceiptRequest.Parser, new[]{ "TokenOwner", "OracleSignature", "WithdrawalHash" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Internal.Protobuf.TransferGatewayAddContractMappingRequest), global::Loom.Client.Internal.Protobuf.TransferGatewayAddContractMappingRequest.Parser, new[]{ "ForeignContract", "LocalContract", "ForeignContractCreatorSig", "ForeignContractTxHash" }, null, null, null)
+          new pbr::FileDescriptor[] { global::Loom.Client.Protobuf.TypesReflection.Descriptor, },
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Loom.Client.Protobuf.TransferGatewayTokenKind), }, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayContractMappingConfirmed), global::Loom.Client.Protobuf.TransferGatewayContractMappingConfirmed.Parser, new[]{ "ForeignContract", "LocalContract" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayTokenWithdrawalSigned), global::Loom.Client.Protobuf.TransferGatewayTokenWithdrawalSigned.Parser, new[]{ "TokenOwner", "TokenContract", "TokenKind", "Value", "Sig" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceipt), global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceipt.Parser, new[]{ "TokenOwner", "TokenContract", "TokenKind", "Value", "WithdrawalNonce", "OracleSignature" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayWithdrawERC721Request), global::Loom.Client.Protobuf.TransferGatewayWithdrawERC721Request.Parser, new[]{ "TokenId", "TokenContract" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceiptRequest), global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceiptRequest.Parser, new[]{ "Owner" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceiptResponse), global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceiptResponse.Parser, new[]{ "Receipt" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayConfirmWithdrawalReceiptRequest), global::Loom.Client.Protobuf.TransferGatewayConfirmWithdrawalReceiptRequest.Parser, new[]{ "TokenOwner", "OracleSignature", "WithdrawalHash" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.Client.Protobuf.TransferGatewayAddContractMappingRequest), global::Loom.Client.Protobuf.TransferGatewayAddContractMappingRequest.Parser, new[]{ "ForeignContract", "LocalContract", "ForeignContractCreatorSig", "ForeignContractTxHash" }, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Enums
-  internal enum TransferGatewayTokenKind {
+  public enum TransferGatewayTokenKind {
     [pbr::OriginalName("ETH")] Eth = 0,
     [pbr::OriginalName("ERC20")] Erc20 = 1,
     [pbr::OriginalName("ERC721")] Erc721 = 2,
@@ -79,7 +79,7 @@ namespace Loom.Client.Internal.Protobuf {
   #endregion
 
   #region Messages
-  internal sealed partial class TransferGatewayContractMappingConfirmed : pb::IMessage<TransferGatewayContractMappingConfirmed> {
+  public sealed partial class TransferGatewayContractMappingConfirmed : pb::IMessage<TransferGatewayContractMappingConfirmed> {
     private static readonly pb::MessageParser<TransferGatewayContractMappingConfirmed> _parser = new pb::MessageParser<TransferGatewayContractMappingConfirmed>(() => new TransferGatewayContractMappingConfirmed());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -87,7 +87,7 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -116,12 +116,12 @@ namespace Loom.Client.Internal.Protobuf {
 
     /// <summary>Field number for the "foreign_contract" field.</summary>
     public const int ForeignContractFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.Address foreignContract_;
+    private global::Loom.Client.Protobuf.Address foreignContract_;
     /// <summary>
     /// Address of a contract on a foreign blockchain
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address ForeignContract {
+    public global::Loom.Client.Protobuf.Address ForeignContract {
       get { return foreignContract_; }
       set {
         foreignContract_ = value;
@@ -130,12 +130,12 @@ namespace Loom.Client.Internal.Protobuf {
 
     /// <summary>Field number for the "local_contract" field.</summary>
     public const int LocalContractFieldNumber = 2;
-    private global::Loom.Client.Internal.Protobuf.Address localContract_;
+    private global::Loom.Client.Protobuf.Address localContract_;
     /// <summary>
     /// Address of corresponding contract on the local blockchain
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address LocalContract {
+    public global::Loom.Client.Protobuf.Address LocalContract {
       get { return localContract_; }
       set {
         localContract_ = value;
@@ -208,17 +208,18 @@ namespace Loom.Client.Internal.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayContractMappingConfirmed other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.foreignContract_ != null) {
         if (foreignContract_ == null) {
-          foreignContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+          foreignContract_ = new global::Loom.Client.Protobuf.Address();
         }
         ForeignContract.MergeFrom(other.ForeignContract);
       }
       if (other.localContract_ != null) {
         if (localContract_ == null) {
-          localContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+          localContract_ = new global::Loom.Client.Protobuf.Address();
         }
         LocalContract.MergeFrom(other.LocalContract);
       }
@@ -235,14 +236,14 @@ return;
             break;
           case 10: {
             if (foreignContract_ == null) {
-              foreignContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+              foreignContract_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(foreignContract_);
             break;
           }
           case 18: {
             if (localContract_ == null) {
-              localContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+              localContract_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(localContract_);
             break;
@@ -257,7 +258,7 @@ return;
   /// Emitted when a withdrawal to the Mainnet Gateway has been signed.
   /// This event contains all the required data to complete a toke withdrawal via the Mainnet Gateway.
   /// </summary>
-  internal sealed partial class TransferGatewayTokenWithdrawalSigned : pb::IMessage<TransferGatewayTokenWithdrawalSigned> {
+  public sealed partial class TransferGatewayTokenWithdrawalSigned : pb::IMessage<TransferGatewayTokenWithdrawalSigned> {
     private static readonly pb::MessageParser<TransferGatewayTokenWithdrawalSigned> _parser = new pb::MessageParser<TransferGatewayTokenWithdrawalSigned>(() => new TransferGatewayTokenWithdrawalSigned());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -265,7 +266,7 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -297,12 +298,12 @@ return;
 
     /// <summary>Field number for the "token_owner" field.</summary>
     public const int TokenOwnerFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.Address tokenOwner_;
+    private global::Loom.Client.Protobuf.Address tokenOwner_;
     /// <summary>
     /// Mainnet address of token owner
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address TokenOwner {
+    public global::Loom.Client.Protobuf.Address TokenOwner {
       get { return tokenOwner_; }
       set {
         tokenOwner_ = value;
@@ -311,12 +312,12 @@ return;
 
     /// <summary>Field number for the "token_contract" field.</summary>
     public const int TokenContractFieldNumber = 2;
-    private global::Loom.Client.Internal.Protobuf.Address tokenContract_;
+    private global::Loom.Client.Protobuf.Address tokenContract_;
     /// <summary>
     /// Mainnet address of token contract, blank if ETH
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address TokenContract {
+    public global::Loom.Client.Protobuf.Address TokenContract {
       get { return tokenContract_; }
       set {
         tokenContract_ = value;
@@ -325,9 +326,9 @@ return;
 
     /// <summary>Field number for the "token_kind" field.</summary>
     public const int TokenKindFieldNumber = 3;
-    private global::Loom.Client.Internal.Protobuf.TransferGatewayTokenKind tokenKind_ = 0;
+    private global::Loom.Client.Protobuf.TransferGatewayTokenKind tokenKind_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.TransferGatewayTokenKind TokenKind {
+    public global::Loom.Client.Protobuf.TransferGatewayTokenKind TokenKind {
       get { return tokenKind_; }
       set {
         tokenKind_ = value;
@@ -336,12 +337,12 @@ return;
 
     /// <summary>Field number for the "value" field.</summary>
     public const int ValueFieldNumber = 4;
-    private global::Loom.Client.Internal.Protobuf.BigUInt value_;
+    private global::Loom.Client.Protobuf.BigUInt value_;
     /// <summary>
     /// ERC721 token ID, or amount of ERC20/ETH
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.BigUInt Value {
+    public global::Loom.Client.Protobuf.BigUInt Value {
       get { return value_; }
       set {
         value_ = value;
@@ -455,17 +456,18 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayTokenWithdrawalSigned other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.tokenOwner_ != null) {
         if (tokenOwner_ == null) {
-          tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
+          tokenOwner_ = new global::Loom.Client.Protobuf.Address();
         }
         TokenOwner.MergeFrom(other.TokenOwner);
       }
       if (other.tokenContract_ != null) {
         if (tokenContract_ == null) {
-          tokenContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+          tokenContract_ = new global::Loom.Client.Protobuf.Address();
         }
         TokenContract.MergeFrom(other.TokenContract);
       }
@@ -474,7 +476,7 @@ return;
       }
       if (other.value_ != null) {
         if (value_ == null) {
-          value_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
+          value_ = new global::Loom.Client.Protobuf.BigUInt();
         }
         Value.MergeFrom(other.Value);
       }
@@ -494,25 +496,25 @@ return;
             break;
           case 10: {
             if (tokenOwner_ == null) {
-              tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
+              tokenOwner_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(tokenOwner_);
             break;
           }
           case 18: {
             if (tokenContract_ == null) {
-              tokenContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+              tokenContract_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(tokenContract_);
             break;
           }
           case 24: {
-            tokenKind_ = (global::Loom.Client.Internal.Protobuf.TransferGatewayTokenKind) input.ReadEnum();
+            tokenKind_ = (global::Loom.Client.Protobuf.TransferGatewayTokenKind) input.ReadEnum();
             break;
           }
           case 34: {
             if (value_ == null) {
-              value_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
+              value_ = new global::Loom.Client.Protobuf.BigUInt();
             }
             input.ReadMessage(value_);
             break;
@@ -527,7 +529,7 @@ return;
 
   }
 
-  internal sealed partial class TransferGatewayWithdrawalReceipt : pb::IMessage<TransferGatewayWithdrawalReceipt> {
+  public sealed partial class TransferGatewayWithdrawalReceipt : pb::IMessage<TransferGatewayWithdrawalReceipt> {
     private static readonly pb::MessageParser<TransferGatewayWithdrawalReceipt> _parser = new pb::MessageParser<TransferGatewayWithdrawalReceipt>(() => new TransferGatewayWithdrawalReceipt());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -535,7 +537,7 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -568,12 +570,12 @@ return;
 
     /// <summary>Field number for the "token_owner" field.</summary>
     public const int TokenOwnerFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.Address tokenOwner_;
+    private global::Loom.Client.Protobuf.Address tokenOwner_;
     /// <summary>
     /// Mainnet address of token owner
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address TokenOwner {
+    public global::Loom.Client.Protobuf.Address TokenOwner {
       get { return tokenOwner_; }
       set {
         tokenOwner_ = value;
@@ -582,12 +584,12 @@ return;
 
     /// <summary>Field number for the "token_contract" field.</summary>
     public const int TokenContractFieldNumber = 2;
-    private global::Loom.Client.Internal.Protobuf.Address tokenContract_;
+    private global::Loom.Client.Protobuf.Address tokenContract_;
     /// <summary>
     /// Mainnet address of token contract
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address TokenContract {
+    public global::Loom.Client.Protobuf.Address TokenContract {
       get { return tokenContract_; }
       set {
         tokenContract_ = value;
@@ -596,9 +598,9 @@ return;
 
     /// <summary>Field number for the "token_kind" field.</summary>
     public const int TokenKindFieldNumber = 3;
-    private global::Loom.Client.Internal.Protobuf.TransferGatewayTokenKind tokenKind_ = 0;
+    private global::Loom.Client.Protobuf.TransferGatewayTokenKind tokenKind_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.TransferGatewayTokenKind TokenKind {
+    public global::Loom.Client.Protobuf.TransferGatewayTokenKind TokenKind {
       get { return tokenKind_; }
       set {
         tokenKind_ = value;
@@ -607,12 +609,12 @@ return;
 
     /// <summary>Field number for the "value" field.</summary>
     public const int ValueFieldNumber = 4;
-    private global::Loom.Client.Internal.Protobuf.BigUInt value_;
+    private global::Loom.Client.Protobuf.BigUInt value_;
     /// <summary>
     /// // ERC721 token ID, or amount of ERC20/ETH
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.BigUInt Value {
+    public global::Loom.Client.Protobuf.BigUInt Value {
       get { return value_; }
       set {
         value_ = value;
@@ -746,17 +748,18 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawalReceipt other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.tokenOwner_ != null) {
         if (tokenOwner_ == null) {
-          tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
+          tokenOwner_ = new global::Loom.Client.Protobuf.Address();
         }
         TokenOwner.MergeFrom(other.TokenOwner);
       }
       if (other.tokenContract_ != null) {
         if (tokenContract_ == null) {
-          tokenContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+          tokenContract_ = new global::Loom.Client.Protobuf.Address();
         }
         TokenContract.MergeFrom(other.TokenContract);
       }
@@ -765,7 +768,7 @@ return;
       }
       if (other.value_ != null) {
         if (value_ == null) {
-          value_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
+          value_ = new global::Loom.Client.Protobuf.BigUInt();
         }
         Value.MergeFrom(other.Value);
       }
@@ -788,25 +791,25 @@ return;
             break;
           case 10: {
             if (tokenOwner_ == null) {
-              tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
+              tokenOwner_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(tokenOwner_);
             break;
           }
           case 18: {
             if (tokenContract_ == null) {
-              tokenContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+              tokenContract_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(tokenContract_);
             break;
           }
           case 24: {
-            tokenKind_ = (global::Loom.Client.Internal.Protobuf.TransferGatewayTokenKind) input.ReadEnum();
+            tokenKind_ = (global::Loom.Client.Protobuf.TransferGatewayTokenKind) input.ReadEnum();
             break;
           }
           case 34: {
             if (value_ == null) {
-              value_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
+              value_ = new global::Loom.Client.Protobuf.BigUInt();
             }
             input.ReadMessage(value_);
             break;
@@ -825,7 +828,7 @@ return;
 
   }
 
-  internal sealed partial class TransferGatewayWithdrawERC721Request : pb::IMessage<TransferGatewayWithdrawERC721Request> {
+  public sealed partial class TransferGatewayWithdrawERC721Request : pb::IMessage<TransferGatewayWithdrawERC721Request> {
     private static readonly pb::MessageParser<TransferGatewayWithdrawERC721Request> _parser = new pb::MessageParser<TransferGatewayWithdrawERC721Request>(() => new TransferGatewayWithdrawERC721Request());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -833,7 +836,7 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -862,12 +865,12 @@ return;
 
     /// <summary>Field number for the "token_id" field.</summary>
     public const int TokenIdFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.BigUInt tokenId_;
+    private global::Loom.Client.Protobuf.BigUInt tokenId_;
     /// <summary>
     /// ID of ERC721 token
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.BigUInt TokenId {
+    public global::Loom.Client.Protobuf.BigUInt TokenId {
       get { return tokenId_; }
       set {
         tokenId_ = value;
@@ -876,12 +879,12 @@ return;
 
     /// <summary>Field number for the "token_contract" field.</summary>
     public const int TokenContractFieldNumber = 2;
-    private global::Loom.Client.Internal.Protobuf.Address tokenContract_;
+    private global::Loom.Client.Protobuf.Address tokenContract_;
     /// <summary>
     /// DAppChain address of ERC721 contract token belongs to
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address TokenContract {
+    public global::Loom.Client.Protobuf.Address TokenContract {
       get { return tokenContract_; }
       set {
         tokenContract_ = value;
@@ -954,17 +957,18 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawERC721Request other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.tokenId_ != null) {
         if (tokenId_ == null) {
-          tokenId_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
+          tokenId_ = new global::Loom.Client.Protobuf.BigUInt();
         }
         TokenId.MergeFrom(other.TokenId);
       }
       if (other.tokenContract_ != null) {
         if (tokenContract_ == null) {
-          tokenContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+          tokenContract_ = new global::Loom.Client.Protobuf.Address();
         }
         TokenContract.MergeFrom(other.TokenContract);
       }
@@ -981,14 +985,14 @@ return;
             break;
           case 10: {
             if (tokenId_ == null) {
-              tokenId_ = new global::Loom.Client.Internal.Protobuf.BigUInt();
+              tokenId_ = new global::Loom.Client.Protobuf.BigUInt();
             }
             input.ReadMessage(tokenId_);
             break;
           }
           case 18: {
             if (tokenContract_ == null) {
-              tokenContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+              tokenContract_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(tokenContract_);
             break;
@@ -999,7 +1003,7 @@ return;
 
   }
 
-  internal sealed partial class TransferGatewayWithdrawalReceiptRequest : pb::IMessage<TransferGatewayWithdrawalReceiptRequest> {
+  public sealed partial class TransferGatewayWithdrawalReceiptRequest : pb::IMessage<TransferGatewayWithdrawalReceiptRequest> {
     private static readonly pb::MessageParser<TransferGatewayWithdrawalReceiptRequest> _parser = new pb::MessageParser<TransferGatewayWithdrawalReceiptRequest>(() => new TransferGatewayWithdrawalReceiptRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1007,7 +1011,7 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1035,9 +1039,9 @@ return;
 
     /// <summary>Field number for the "owner" field.</summary>
     public const int OwnerFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.Address owner_;
+    private global::Loom.Client.Protobuf.Address owner_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address Owner {
+    public global::Loom.Client.Protobuf.Address Owner {
       get { return owner_; }
       set {
         owner_ = value;
@@ -1101,11 +1105,12 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawalReceiptRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.owner_ != null) {
         if (owner_ == null) {
-          owner_ = new global::Loom.Client.Internal.Protobuf.Address();
+          owner_ = new global::Loom.Client.Protobuf.Address();
         }
         Owner.MergeFrom(other.Owner);
       }
@@ -1122,7 +1127,7 @@ return;
             break;
           case 10: {
             if (owner_ == null) {
-              owner_ = new global::Loom.Client.Internal.Protobuf.Address();
+              owner_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(owner_);
             break;
@@ -1133,7 +1138,7 @@ return;
 
   }
 
-  internal sealed partial class TransferGatewayWithdrawalReceiptResponse : pb::IMessage<TransferGatewayWithdrawalReceiptResponse> {
+  public sealed partial class TransferGatewayWithdrawalReceiptResponse : pb::IMessage<TransferGatewayWithdrawalReceiptResponse> {
     private static readonly pb::MessageParser<TransferGatewayWithdrawalReceiptResponse> _parser = new pb::MessageParser<TransferGatewayWithdrawalReceiptResponse>(() => new TransferGatewayWithdrawalReceiptResponse());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1141,7 +1146,7 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1169,9 +1174,9 @@ return;
 
     /// <summary>Field number for the "receipt" field.</summary>
     public const int ReceiptFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceipt receipt_;
+    private global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceipt receipt_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceipt Receipt {
+    public global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceipt Receipt {
       get { return receipt_; }
       set {
         receipt_ = value;
@@ -1235,11 +1240,12 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayWithdrawalReceiptResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.receipt_ != null) {
         if (receipt_ == null) {
-          receipt_ = new global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceipt();
+          receipt_ = new global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceipt();
         }
         Receipt.MergeFrom(other.Receipt);
       }
@@ -1256,7 +1262,7 @@ return;
             break;
           case 10: {
             if (receipt_ == null) {
-              receipt_ = new global::Loom.Client.Internal.Protobuf.TransferGatewayWithdrawalReceipt();
+              receipt_ = new global::Loom.Client.Protobuf.TransferGatewayWithdrawalReceipt();
             }
             input.ReadMessage(receipt_);
             break;
@@ -1267,7 +1273,7 @@ return;
 
   }
 
-  internal sealed partial class TransferGatewayConfirmWithdrawalReceiptRequest : pb::IMessage<TransferGatewayConfirmWithdrawalReceiptRequest> {
+  public sealed partial class TransferGatewayConfirmWithdrawalReceiptRequest : pb::IMessage<TransferGatewayConfirmWithdrawalReceiptRequest> {
     private static readonly pb::MessageParser<TransferGatewayConfirmWithdrawalReceiptRequest> _parser = new pb::MessageParser<TransferGatewayConfirmWithdrawalReceiptRequest>(() => new TransferGatewayConfirmWithdrawalReceiptRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1275,7 +1281,7 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1305,12 +1311,12 @@ return;
 
     /// <summary>Field number for the "token_owner" field.</summary>
     public const int TokenOwnerFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.Address tokenOwner_;
+    private global::Loom.Client.Protobuf.Address tokenOwner_;
     /// <summary>
     /// DAppChain address of the entity attempting to make the withdrawal
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address TokenOwner {
+    public global::Loom.Client.Protobuf.Address TokenOwner {
       get { return tokenOwner_; }
       set {
         tokenOwner_ = value;
@@ -1420,11 +1426,12 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayConfirmWithdrawalReceiptRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.tokenOwner_ != null) {
         if (tokenOwner_ == null) {
-          tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
+          tokenOwner_ = new global::Loom.Client.Protobuf.Address();
         }
         TokenOwner.MergeFrom(other.TokenOwner);
       }
@@ -1447,7 +1454,7 @@ return;
             break;
           case 10: {
             if (tokenOwner_ == null) {
-              tokenOwner_ = new global::Loom.Client.Internal.Protobuf.Address();
+              tokenOwner_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(tokenOwner_);
             break;
@@ -1466,7 +1473,7 @@ return;
 
   }
 
-  internal sealed partial class TransferGatewayAddContractMappingRequest : pb::IMessage<TransferGatewayAddContractMappingRequest> {
+  public sealed partial class TransferGatewayAddContractMappingRequest : pb::IMessage<TransferGatewayAddContractMappingRequest> {
     private static readonly pb::MessageParser<TransferGatewayAddContractMappingRequest> _parser = new pb::MessageParser<TransferGatewayAddContractMappingRequest>(() => new TransferGatewayAddContractMappingRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1474,7 +1481,7 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.Client.Internal.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Loom.Client.Protobuf.TransferGatewayReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1505,12 +1512,12 @@ return;
 
     /// <summary>Field number for the "foreign_contract" field.</summary>
     public const int ForeignContractFieldNumber = 1;
-    private global::Loom.Client.Internal.Protobuf.Address foreignContract_;
+    private global::Loom.Client.Protobuf.Address foreignContract_;
     /// <summary>
     /// Address on foreign blockchain
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address ForeignContract {
+    public global::Loom.Client.Protobuf.Address ForeignContract {
       get { return foreignContract_; }
       set {
         foreignContract_ = value;
@@ -1519,12 +1526,12 @@ return;
 
     /// <summary>Field number for the "local_contract" field.</summary>
     public const int LocalContractFieldNumber = 2;
-    private global::Loom.Client.Internal.Protobuf.Address localContract_;
+    private global::Loom.Client.Protobuf.Address localContract_;
     /// <summary>
     /// Corresponding address on local blockchain
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.Client.Internal.Protobuf.Address LocalContract {
+    public global::Loom.Client.Protobuf.Address LocalContract {
       get { return localContract_; }
       set {
         localContract_ = value;
@@ -1643,17 +1650,18 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(TransferGatewayAddContractMappingRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.foreignContract_ != null) {
         if (foreignContract_ == null) {
-          foreignContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+          foreignContract_ = new global::Loom.Client.Protobuf.Address();
         }
         ForeignContract.MergeFrom(other.ForeignContract);
       }
       if (other.localContract_ != null) {
         if (localContract_ == null) {
-          localContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+          localContract_ = new global::Loom.Client.Protobuf.Address();
         }
         LocalContract.MergeFrom(other.LocalContract);
       }
@@ -1676,14 +1684,14 @@ return;
             break;
           case 10: {
             if (foreignContract_ == null) {
-              foreignContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+              foreignContract_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(foreignContract_);
             break;
           }
           case 18: {
             if (localContract_ == null) {
-              localContract_ = new global::Loom.Client.Internal.Protobuf.Address();
+              localContract_ = new global::Loom.Client.Protobuf.Address();
             }
             input.ReadMessage(localContract_);
             break;

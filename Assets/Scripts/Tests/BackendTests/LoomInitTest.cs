@@ -35,7 +35,7 @@ public class LoomUnitTest
         return LoomTestContext.AsyncTest(
             async () =>
             {
-                LoomTestContext.BackendFacade.WriterHost = string.Empty;
+                LoomTestContext.BackendFacade.BackendEndpoint.WriterHost = string.Empty;
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
@@ -51,7 +51,7 @@ public class LoomUnitTest
         return LoomTestContext.AsyncTest(
             async () =>
             {
-                LoomTestContext.BackendFacade.WriterHost = "https://www.google.com";
+                LoomTestContext.BackendFacade.BackendEndpoint.WriterHost = "https://www.google.com";
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
@@ -67,7 +67,7 @@ public class LoomUnitTest
         return LoomTestContext.AsyncTest(
             async () =>
             {
-                LoomTestContext.BackendFacade.ReaderHost = string.Empty;
+                LoomTestContext.BackendFacade.BackendEndpoint.ReaderHost = string.Empty;
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
@@ -83,7 +83,7 @@ public class LoomUnitTest
         return LoomTestContext.AsyncTest(
             async () =>
             {
-                LoomTestContext.BackendFacade.ReaderHost = "https://www.google.com";
+                LoomTestContext.BackendFacade.BackendEndpoint.ReaderHost = "https://www.google.com";
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {

@@ -43,11 +43,11 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
                         GetOpponentOverlord().Health -= Value;
-                        CreateVfx(GetOpponentOverlord().AvatarObject.transform.position, true, 5f, true);
+                        CreateVfx(Utilites.CastVfxPosition(GetOpponentOverlord().AvatarObject.transform.position), true, 5f, true);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
                         PlayerCallerOfAbility.Health -= Value;
-                        CreateVfx(PlayerCallerOfAbility.AvatarObject.transform.position, true, 5f, true);
+                        CreateVfx(Utilites.CastVfxPosition(PlayerCallerOfAbility.AvatarObject.transform.position), true, 5f, true);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);

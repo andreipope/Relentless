@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -502,54 +503,21 @@ namespace Loom.ZombieBattleground
         [MenuItem("Utilites/AOT/Generate Zb AOT Hint")]
         public static void GenerateZbAotHint()
         {
-            void GetPropertyFullType(StringBuilder stringBuilder, PropertyInfo propertyInfo)
-            {
-                string propertyTypeFullString = propertyInfo.PropertyType.FullName;
-                if (propertyInfo.PropertyType.IsGenericType)
-                {
-                    propertyTypeFullString = "";
-                    propertyTypeFullString = propertyInfo.PropertyType.GetGenericTypeDefinition().FullName;
-                    propertyTypeFullString = propertyTypeFullString.Substring(0, propertyTypeFullString.IndexOf("`", StringComparison.Ordinal));
-                    propertyTypeFullString += "<";
-                    for (int i = 0; i < propertyInfo.PropertyType.GenericTypeArguments.Length; i++)
-                    {
-                        Type type = propertyInfo.PropertyType.GenericTypeArguments[i];
-                        propertyTypeFullString += type.FullName;
-                        if (i != propertyInfo.PropertyType.GenericTypeArguments.Length - 1)
-                        {
-                            propertyTypeFullString += ", ";
-                        }
-                    }
+            IEnumerable<MessageDescriptor> messageDescriptors =
+                new MessageDescriptor[0]
+                .Concat(ZbReflection.Descriptor.MessageTypes)
+                .Concat(TypesReflection.Descriptor.MessageTypes)
+                .Concat(PlasmaCashReflection.Descriptor.MessageTypes)
+                .Concat(AddressMapperReflection.Descriptor.MessageTypes)
+                .Concat(LoomReflection.Descriptor.MessageTypes)
+                .Concat(EvmReflection.Descriptor.MessageTypes)
+                .Concat(TransferGatewayReflection.Descriptor.MessageTypes)
+                .Concat(TransferGatewayReflection.Descriptor.MessageTypes);
 
-                    propertyTypeFullString += ">";
-                }
-                stringBuilder.Append(
-                    $"new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::{propertyInfo.DeclaringType.FullName}, global::{propertyTypeFullString}>().ToString();\n");
-            }
+            string aotHint = ProtobufAotHintGenerator.GenerateAotHint(messageDescriptors);
 
-            StringBuilder sb = new StringBuilder();
-            void ProcessMessageDescriptor(MessageDescriptor messageDescriptor)
-            {
-                foreach (MessageDescriptor nestedMethodDescriptor in messageDescriptor.NestedTypes)
-                {
-                    ProcessMessageDescriptor(nestedMethodDescriptor);
-                }
-
-                foreach (FieldDescriptor fieldDescriptor in messageDescriptor.Fields.InFieldNumberOrder().Concat(messageDescriptor.Oneofs.SelectMany(of => of.Fields)))
-                {
-                    PropertyInfo propertyInfo = fieldDescriptor.ContainingType.ClrType.GetProperty(
-                        (string) fieldDescriptor.GetType().GetField("propertyName", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(fieldDescriptor)
-                        );
-                    GetPropertyFullType(sb, propertyInfo);
-                }
-            }
-
-            foreach (MessageDescriptor descriptorMessageType in ZbReflection.Descriptor.MessageTypes)
-            {
-                ProcessMessageDescriptor(descriptorMessageType);
-            }
-
-            File.WriteAllText("Library/aot_hint.txt", sb.ToString());
+            File.WriteAllText("Library/aot_hint.txt", aotHint);
+            Debug.Log("Generated Zb AOT hint in 'Library/aot_hint.txt'");
         }
 #endif
     }
