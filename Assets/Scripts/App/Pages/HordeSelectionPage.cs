@@ -4,6 +4,7 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using mixpanel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -63,6 +64,8 @@ namespace Loom.ZombieBattleground
 
         private Button _newHordeDeckButton;
 
+        private IAnalyticsManager _analyticsManager;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -73,6 +76,7 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
         }
 
         public void Update()
@@ -593,6 +597,16 @@ namespace Loom.ZombieBattleground
             }
 
             BattleButtonUpdate();
+
+            SendDeleteDeckAnalytics();
+        }
+
+        private void SendDeleteDeckAnalytics()
+        {
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventDeckDeleted, props);
         }
 
         #endregion

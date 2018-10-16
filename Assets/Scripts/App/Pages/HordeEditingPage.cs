@@ -5,6 +5,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using mixpanel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,6 +45,8 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
+
+        private IAnalyticsManager _analyticsManager;
 
         private IDataManager _dataManager;
 
@@ -118,6 +121,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -741,6 +745,7 @@ namespace Loom.ZombieBattleground
                         _currentDeck, _dataManager.CachedDecksLastModificationTimestamp);
                     _currentDeck.Id = newDeckId;
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
+                    SendAddDeckAnalytics();
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 }
                 catch (Exception e)
@@ -767,6 +772,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
+                    SendEditDeckAnalytics();
                     Debug.Log(" ====== Edit Deck Successfully ==== ");
                 }
                 catch (Exception e)
@@ -787,6 +793,22 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void SendAddDeckAnalytics()
+        {
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventDeckCreated, props);
+        }
+
+        private void SendEditDeckAnalytics()
+        {
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventDeckEdited, props);
+        }
+
         public void ScrollCardList(bool isHordeItem, Vector2 scrollDelta)
         {
             if (isHordeItem)
@@ -799,7 +821,7 @@ namespace Loom.ZombieBattleground
                 {
                     MoveHordeToLeft();
                 }
-            }   
+            }
             else
             {
                 MoveCardsPage(Mathf.RoundToInt(scrollDelta.y));

@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             await _backendDataControlMediator.LoginAndLoadData();
-                            LoginAnalytics();
+                            SendLoginAnalytics();
                         }
                         catch (GameVersionMismatchException e)
                         {
@@ -128,41 +128,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void LoginAnalytics()
+        private void SendLoginAnalytics()
         {
-            // TODO : Check all the events again with parameters
-
             Value props = new Value();
-
-            // last login date
-            string lastLoginDate = Utilites.GetStringFromPlayerPrefs(AnalyticsManager.LastLoginDateKey);
-            props[AnalyticsManager.PropertyLastLogin] = lastLoginDate;
-
-            // login date
-            string currentLoginDate = DateTime.Now.ToString("dd/MM/yyyy");
-            props[AnalyticsManager.PropertyFirstLogin] = currentLoginDate;
-            Utilites.SetStringInPlayerPrefs(AnalyticsManager.PropertyLastLogin, currentLoginDate);
-
-            // login count
-            int loginCount = Utilites.GetIntValueFromPlayerPrefs(AnalyticsManager.NumberOfLoginsKey);
-            loginCount = loginCount + 1;
-            Utilites.SetIntValueInPlayerPrefs(AnalyticsManager.NumberOfLoginsKey, loginCount);
-            props[AnalyticsManager.PropertyNumberOfLogins] = loginCount;
-            _analyticsManager.SetPoepleIncrement(AnalyticsManager.PropertyNumberOfLogins, loginCount);
-
-            //source
-            props[AnalyticsManager.PropertySource] = Application.platform.ToString();
-
-            // user id
-            props[AnalyticsManager.PropertyUserId] = string.Empty;
-
-            // email id
-            props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
-
-            // account type
-            props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
-
-            _analyticsManager.SetEvent("", AnalyticsManager.EventLogIn, props);
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = Application.platform.ToString();
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventLogIn, props);
         }
 
         public void Show()

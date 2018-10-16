@@ -507,12 +507,5 @@ namespace Loom.ZombieBattleground.Common
             Open,
             Close
         }
-
-        public enum AccountType
-        {
-            User,
-            KickstarterBacker,
-            Referral
-        }
     }
 }

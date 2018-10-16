@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using mixpanel;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -14,6 +16,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private IAnalyticsManager _analyticsManager;
 
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private PlayerEventListener _playerEventListener;
 
         private PlayerEventListener _opponentEventListener;
@@ -22,6 +28,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _gameplayManager.GameInitialized += GameplayManagerGameInitialized;
             _gameplayManager.GameEnded += GameplayManagerGameEnded;
@@ -44,6 +52,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener?.Dispose();
 
             _analyticsManager.NotifyFinishedMatch(obj);
+            SendEndedMatchAnalytics();
         }
 
         private void GameplayManagerGameInitialized()
@@ -57,6 +66,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _playerEventListener.OnGameInitializedEventHandler();
 
             _analyticsManager.NotifyStartedMatch();
+            SendStartedMatchAnalytics();
+        }
+
+        private void SendStartedMatchAnalytics()
+        {
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventStartedMatch, props);
+        }
+
+        private void SendEndedMatchAnalytics()
+        {
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventEndedMatch, props);
         }
 
         private class PlayerEventListener : IDisposable

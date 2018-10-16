@@ -26,17 +26,13 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public const string EventCompletedTutorial = "Completed Tutorial";
     public const string EventStartedMatch = "Started Match";
     public const string EventEndedMatch = "Ended Match";
+    public const string EventDeckCreated = "Create Deck";
+    public const string EventDeckDeleted = "Delete Deck";
+    public const string EventDeckEdited = "Edit Deck";
 
-    public const string PropertyFirstLogin = "First Login";
-    public const string PropertyLastLogin = "Last Login";
-    public const string PropertyNumberOfLogins = "Numbers Of Login";
-    public const string PropertySource = "Source";
-    public const string PropertyUserId = "User Id";
-    public const string PropertyAccountType = "Account Type";
-    public const string PropertyEmailAddress = "Email Address";
-    public const string PropertyTutorialCompleteDuration = "Tutorial Complete Duration";
-    public const string PropertyMatchDuration = "Match Duration";
-    public const string PropertyMatchResult = "Match Result";
+    public const string PropertyTesterKey = "Tester Key";
+    public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
+
 
     public void StartSession()
     {
@@ -91,16 +87,12 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _startedMatchCounter++;
         LogEvent("MatchStarted", "", _startedMatchCounter);
         PlayerPrefs.SetInt(MatchesInPreviousSittingKey, _startedMatchCounter);
-
-        StartedMatch();
     }
 
     public void NotifyFinishedMatch(Enumerators.EndGameType endGameType)
     {
         _finishedMatchCounter++;
         LogEvent("MatchFinished", "", _finishedMatchCounter);
-
-        EndedMatch();
     }
 
     void IAnalyticsManager.Dispose()
@@ -131,14 +123,19 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetEvent(string identifyId, string eventName, Value props)
     {
+        if (string.IsNullOrEmpty(identifyId))
+            return;
+
         Mixpanel.Identify(identifyId);
         Mixpanel.Track(eventName, props);
     }
 
     public void SetPoepleProperty(string identityId, string property, string value)
     {
-        Mixpanel.Identify(identityId);
+        if (string.IsNullOrEmpty(identityId))
+            return;
 
+        Mixpanel.Identify(identityId);
         Mixpanel.people.Set(property, value);
     }
 
@@ -150,51 +147,5 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetPoepleIncrement(string property, int value)
     {
         Mixpanel.people.Increment(property, value);
-    }
-
-    private void StartedMatch()
-    {
-        // TODO : Check all the events again with parameters
-        Value props = new Value();
-
-        // email id
-        props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
-
-        //source
-        props[AnalyticsManager.PropertySource] = Application.platform.ToString();
-
-        // user id
-        props[AnalyticsManager.PropertyUserId] = string.Empty;
-
-        // account type
-        props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
-
-        SetEvent("", AnalyticsManager.EventStartedMatch, props);
-    }
-
-    private void EndedMatch()
-    {
-        // TODO : Check all the events again with parameters
-        Value props = new Value();
-
-        // email id
-        props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
-
-        //source
-        props[AnalyticsManager.PropertySource] = Application.platform.ToString();
-
-        // duration
-        props[AnalyticsManager.PropertyMatchDuration] = "HH:MM:SS";
-
-        // result
-        props[AnalyticsManager.PropertyMatchResult] = "Won";
-
-        // user id
-        props[AnalyticsManager.PropertyUserId] = string.Empty;
-
-        // account type
-        props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
-
-        SetEvent("", AnalyticsManager.EventEndedMatch, props);
     }
 }

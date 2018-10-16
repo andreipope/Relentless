@@ -6,6 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using DG.Tweening;
+using Loom.ZombieBattleground.BackendCommunication;
 using mixpanel;
 
 namespace Loom.ZombieBattleground
@@ -19,6 +20,10 @@ namespace Loom.ZombieBattleground
         private ISoundManager _soundManager;
 
         private ILoadObjectsManager _loadObjectsManager;
+
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private IDataManager _dataManager;
 
@@ -66,6 +71,8 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
@@ -412,45 +419,18 @@ namespace Loom.ZombieBattleground
 
         private void StartTutorialAnaltyics()
         {
-            // TODO : Check all the events again with parameters
             Value props = new Value();
-
-            // email id
-            props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
-
-            //source
-            props[AnalyticsManager.PropertySource] = Application.platform.ToString();
-
-            // user id
-            props[AnalyticsManager.PropertyUserId] = string.Empty;
-
-            // account type
-            props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
-
-            _analyticsManager.SetEvent("", AnalyticsManager.EventStartedTutorial, props);
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventStartedTutorial, props);
         }
 
         private void EndTutorailAnalytics()
         {
-            // TODO : Check all the events again with parameters
             Value props = new Value();
-
-            // email id
-            props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
-
-            //source
-            props[AnalyticsManager.PropertySource] = Application.platform.ToString();
-
-            // duration
-            props[AnalyticsManager.PropertyTutorialCompleteDuration] = "HH:MM:SS";
-
-            // user id
-            props[AnalyticsManager.PropertyUserId] = string.Empty;
-
-            // account type
-            props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
-
-            _analyticsManager.SetEvent("", AnalyticsManager.EventCompletedTutorial, props);
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventCompletedTutorial, props);
         }
     }
 }

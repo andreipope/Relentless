@@ -4,6 +4,7 @@ using System.Numerics;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using mixpanel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
+
+        private IAnalyticsManager _analyticsManager;
 
         private BackendFacade _backendFacade;
 
@@ -49,6 +52,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
         }
 
         public void Dispose()
@@ -153,6 +157,8 @@ namespace Loom.ZombieBattleground
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
 
                     SuccessfulLogin();
+
+                    SendLoginAnalytics();
                 }
                 catch (GameVersionMismatchException e)
                 {
@@ -169,6 +175,14 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.DrawPopup<WarningPopup>("Input a valid Tester Key");
             }
+        }
+
+        private void SendLoginAnalytics()
+        {
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+            props[AnalyticsManager.PropertyDAppChainWalletAddress] = Application.platform.ToString();
+            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventLogIn, props);
         }
 
         private void SuccessfulLogin()

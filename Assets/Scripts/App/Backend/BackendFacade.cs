@@ -47,6 +47,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
+        public string DAppChainWalletAddress = string.Empty;
+
         public void Update()
         {
         }
@@ -59,6 +61,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
+
+            DAppChainWalletAddress = callerAddr.LocalAddress;
 
             IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.WriterHost)
                 .Create();
