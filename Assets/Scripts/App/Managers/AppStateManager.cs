@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.PvPSelection:
                     _uiManager.SetPage<PvPSelectionPage>();
                     break;
-                case Enumerators.AppState.CustomModes:
+                case Enumerators.AppState.CustomGameModeList:
                     _uiManager.SetPage<CustomGameModeListPage>();
                     break;
                 case Enumerators.AppState.CustomGameModeCustomUi:

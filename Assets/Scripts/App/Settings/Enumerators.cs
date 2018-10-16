@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground.Common
             CREDITS,
             PlaySelection,
             PvPSelection,
-            CustomModes,
+            CustomGameModeList,
             CustomGameModeCustomUi
         }
 
