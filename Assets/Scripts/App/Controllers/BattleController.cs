@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
 
             if (attackingUnitModel != null && attackedPlayer != null)
             {
-                attackedPlayer.Health -= damageAttacking;
+                attackedPlayer.Defense -= damageAttacking;
             }
 
             attackingUnitModel.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
@@ -173,7 +173,7 @@ namespace Loom.ZombieBattleground
             {
                 int damage = skill.Skill.Value;
 
-                attackedPlayer.Health -= damage;
+                attackedPlayer.Defense -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
             }
@@ -183,14 +183,14 @@ namespace Loom.ZombieBattleground
         {
             if (healingPlayer != null)
             {
-                healedPlayer.Health += skill.Skill.Value;
+                healedPlayer.Defense += skill.Skill.Value;
 
                 if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN ||
                     skill.Skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
                 {
-                    if (healingPlayer.Health > Constants.DefaultPlayerHp)
+                    if (healingPlayer.Defense > Constants.DefaultPlayerHp)
                     {
-                        healingPlayer.Health = Constants.DefaultPlayerHp;
+                        healingPlayer.Defense = Constants.DefaultPlayerHp;
                     }
                 }
             }
@@ -249,7 +249,7 @@ namespace Loom.ZombieBattleground
             {
                 int damage = ability.Value;
 
-                attackedPlayer.Health -= damage;
+                attackedPlayer.Defense -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
             }
@@ -264,10 +264,10 @@ namespace Loom.ZombieBattleground
 
             if (healedPlayer != null)
             {
-                healedPlayer.Health += healValue;
-                if (healedPlayer.Health > Constants.DefaultPlayerHp)
+                healedPlayer.Defense += healValue;
+                if (healedPlayer.Defense > Constants.DefaultPlayerHp)
                 {
-                    healedPlayer.Health = Constants.DefaultPlayerHp;
+                    healedPlayer.Defense = Constants.DefaultPlayerHp;
                 }
             }
         }

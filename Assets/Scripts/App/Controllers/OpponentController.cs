@@ -240,7 +240,7 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                _gameplayManager.OpponentPlayer.Goo -= card.RealCost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= card.RealCost;
             });
         }
 

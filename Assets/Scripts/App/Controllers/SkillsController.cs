@@ -518,9 +518,9 @@ namespace Loom.ZombieBattleground
 
         private void PushAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            int goo = owner.Goo;
+            int goo = owner.CurrentGoo;
 
-            owner.Goo -= goo;
+            owner.CurrentGoo -= goo;
 
             BoardUnitModel targetUnit = (BoardUnitModel) target;
             BoardUnitView targetUnitView = _battlegroundController.GetBoardUnitViewByModel(targetUnit);
@@ -957,7 +957,7 @@ namespace Loom.ZombieBattleground
 
         private void MendAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            owner.Health = Mathf.Clamp(owner.Health + skill.Value, 0, owner.MaxCurrentHp);
+            owner.Defense = Mathf.Clamp(owner.Defense + skill.Value, 0, owner.MaxCurrentHp);
 
             // TODO: remove this empty gameobject logic
             Transform transform = new GameObject().transform;

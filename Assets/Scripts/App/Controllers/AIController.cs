@@ -327,7 +327,7 @@ namespace Loom.ZombieBattleground
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if ((totalValue >= _gameplayManager.OpponentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
+            if ((totalValue >= _gameplayManager.OpponentPlayer.Defense || _aiType == Enumerators.AiType.BLITZ_AI ||
                 _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground
         {
             int benefit = 0;
             int boardCount = 0;
-            int gooAmount = _gameplayManager.OpponentPlayer.Goo;
+            int gooAmount = _gameplayManager.OpponentPlayer.CurrentGoo;
             List<WorkingCard> overflowGooCards = new List<WorkingCard>();
             List<WorkingCard> cards = new List<WorkingCard>();
             cards.AddRange(GetUnitCardsInHand());
@@ -427,7 +427,7 @@ namespace Loom.ZombieBattleground
                         .Find(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
                     if (attackOverlordAbility != null)
                     {
-                        if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
+                        if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
                             break;
                     }
 
@@ -450,8 +450,8 @@ namespace Loom.ZombieBattleground
             WorkingCard expensiveCard =
                 GetUnitCardsInHand()
                     .Find(
-                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.Goo &&
-                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo + benefit);
+                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
+                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
             if (expensiveCard != null)
             {
                 bool wasAction = false;
@@ -505,7 +505,7 @@ namespace Loom.ZombieBattleground
         private bool CardCanBePlayable(WorkingCard card)
         {
 #if !DEV_MODE
-            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo &&
+            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
 #else
             return true;
@@ -526,7 +526,7 @@ namespace Loom.ZombieBattleground
                     if (ability.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
                         // smart enough HP to use goo carriers
-                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
+                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
                         {
                             return false;
                         }
@@ -580,7 +580,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _gameplayManager.OpponentPlayer.Goo -= card.LibraryCard.Cost;
+            _gameplayManager.OpponentPlayer.CurrentGoo -= card.LibraryCard.Cost;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
@@ -1118,7 +1118,7 @@ namespace Loom.ZombieBattleground
                     target = _gameplayManager.OpponentPlayer;
                     selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                    if (_gameplayManager.OpponentPlayer.Health > 13)
+                    if (_gameplayManager.OpponentPlayer.Defense > 13)
                     {
                         if (skill.Skill.ElementTargetTypes.Count > 0)
                         {

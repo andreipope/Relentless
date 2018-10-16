@@ -433,7 +433,7 @@ namespace Loom.ZombieBattleground
                             {
                                 if (kind == Enumerators.CardKind.SPELL && isPlayer)
                                 {
-                                    card.WorkingCard.Owner.Goo -= card.ManaCost;
+                                    card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
                                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                                     GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
                                     handCard.GameObject.SetActive(true);
@@ -821,7 +821,7 @@ namespace Loom.ZombieBattleground
             {
                 if (kind == Enumerators.CardKind.SPELL)
                 {
-                    card.WorkingCard.Owner.Goo -= card.ManaCost;
+                    card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
                     _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                     GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 

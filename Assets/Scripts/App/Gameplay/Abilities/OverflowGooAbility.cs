@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
             if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement ||
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
-                PlayerCallerOfAbility.Goo += Value;
+                PlayerCallerOfAbility.CurrentGoo += Value;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

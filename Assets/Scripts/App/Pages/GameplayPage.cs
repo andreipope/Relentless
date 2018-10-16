@@ -371,24 +371,24 @@ namespace Loom.ZombieBattleground
             Player opponent = _gameplayManager.OpponentPlayer;
 
             player.DeckChanged += OnPlayerDeckChangedHandler;
-            player.PlayerHpChanged += OnPlayerHpChanged;
-            player.PlayerGooChanged += OnPlayerGooChanged;
-            player.PlayerVialGooChanged += OnPlayerVialGooChanged;
+            player.PlayerDefenseChanged += OnPlayerDefenseChanged;
+            player.PlayerCurrentGooChanged += OnPlayerCurrentGooChanged;
+            player.PlayerGooVialsChanged += OnPlayerGooVialsChanged;
             opponent.DeckChanged += OnOpponentDeckChangedHandler;
-            opponent.PlayerHpChanged += OnOpponentHpChanged;
-            opponent.PlayerGooChanged += OnOpponentGooChanged;
-            opponent.PlayerVialGooChanged += OnOpponentVialGooChanged;
+            opponent.PlayerDefenseChanged += OnOpponentDefenseChanged;
+            opponent.PlayerCurrentGooChanged += OnOpponentCurrentGooChanged;
+            opponent.PlayerGooVialsChanged += OnOpponentGooVialsChanged;
 
             player.TurnStarted += TurnStartedHandler;
 
             OnPlayerDeckChangedHandler(player.CardsInDeck.Count);
-            OnPlayerHpChanged(player.Health);
-            OnPlayerGooChanged(player.Goo);
-            OnPlayerVialGooChanged(player.GooOnCurrentTurn);
+            OnPlayerDefenseChanged(player.Defense);
+            OnPlayerGooVialsChanged(player.GooVials);
+            OnPlayerCurrentGooChanged(player.CurrentGoo);
             OnOpponentDeckChangedHandler(opponent.CardsInDeck.Count);
-            OnOpponentHpChanged(opponent.Health);
-            OnOpponentGooChanged(opponent.GooOnCurrentTurn);
-            OnOpponentVialGooChanged(opponent.GooOnCurrentTurn);
+            OnOpponentDefenseChanged(opponent.Defense);
+            OnOpponentGooVialsChanged(opponent.GooVials);
+            OnOpponentCurrentGooChanged(opponent.CurrentGoo);
         }
 
         private void OnPlayerDeckChangedHandler(int index)
@@ -498,7 +498,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerHpChanged(int health)
+        private void OnPlayerDefenseChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -515,7 +515,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerGooChanged(int goo)
+        private void OnPlayerCurrentGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
@@ -523,7 +523,7 @@ namespace Loom.ZombieBattleground
             _playerManaBar.SetGoo(goo);
         }
 
-        private void OnPlayerVialGooChanged(int currentTurnGoo)
+        private void OnPlayerGooVialsChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
                 return;
@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
             _playerManaBar.SetVialGoo(currentTurnGoo);
         }
 
-        private void OnOpponentHpChanged(int health)
+        private void OnOpponentDefenseChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnOpponentGooChanged(int goo)
+        private void OnOpponentCurrentGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
@@ -556,7 +556,7 @@ namespace Loom.ZombieBattleground
             _opponentManaBar.SetGoo(goo);
         }
 
-        private void OnOpponentVialGooChanged(int currentTurnGoo)
+        private void OnOpponentGooVialsChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
                 return;

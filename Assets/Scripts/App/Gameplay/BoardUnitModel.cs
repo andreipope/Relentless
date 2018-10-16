@@ -436,7 +436,7 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
-                            if (targetPlayer.Health <= 0)
+                            if (targetPlayer.Defense <= 0)
                             {
                                 IsPlayable = true;
                                 AttackedThisTurn = false;
