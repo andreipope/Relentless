@@ -1,4 +1,6 @@
-﻿#pragma warning disable 169
+﻿using System;
+
+#pragma warning disable 169
 
 namespace CodeStage.AdvancedFPSCounter
 {
@@ -66,6 +68,9 @@ namespace CodeStage.AdvancedFPSCounter
 		/// </summary>
 		[Tooltip("Used to enable / disable plugin at runtime.\nMake two circle gestures with your finger \\ mouse to switch plugin on and off.")]
 		public bool circleGesture;
+
+	    [Tooltip("If enabled, will switch operation mode to Background on circle gesture.")]
+	    public bool switchToBackgroundOnCircleGesture;
 
 		/// <summary>
 		/// Hot key modifier: any Control on Windows or any Command on Mac.
@@ -1177,14 +1182,20 @@ namespace CodeStage.AdvancedFPSCounter
 
 		private void SwitchCounter()
 		{
-			if (operationMode == OperationMode.Disabled)
-			{
-				OperationMode = OperationMode.Normal;
-			}
-			else if (operationMode == OperationMode.Normal)
-			{
-				OperationMode = OperationMode.Disabled;
-			}
+		    switch (operationMode)
+		    {
+		        case OperationMode.Disabled:
+		            OperationMode = OperationMode.Normal;
+		            break;
+		        case OperationMode.Background:
+		            OperationMode = OperationMode.Normal;
+		            break;
+		        case OperationMode.Normal:
+		            OperationMode = switchToBackgroundOnCircleGesture ? OperationMode.Background : OperationMode.Disabled;
+		            break;
+		        default:
+		            throw new ArgumentOutOfRangeException();
+		    }
 		}
 
 		private void ActivateCounters()

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 
@@ -68,24 +69,28 @@ namespace Loom.ZombieBattleground
 
         public void SetGoo(int gooValue)
         {
-            _currentValue = gooValue;
-            _gooAmountText.text = _currentValue + "/" + _maxValue;
-
-            UpdateGooOVerflow();
-
-            for (int i = 0; i < _gooBottles.Count; i++)
+            InternalTools.DoActionDelayed(() =>
             {
-                if (i < _currentValue)
+                _currentValue = gooValue;
+                _gooAmountText.text = _currentValue + "/" + _maxValue;
+
+                UpdateGooOVerflow();
+
+                for (int i = 0; i < _gooBottles.Count; i++)
                 {
-                    Active(_gooBottles[i]);
+                    if (i < _currentValue)
+                    {
+                        Active(_gooBottles[i]);
+                    }
+                    else
+                    {
+                        Disactive(_gooBottles[i]);
+                    }
                 }
-                else
-                {
-                    Disactive(_gooBottles[i]);
-                }
-            }
-            _isAfterOverflow = false;
-            UpdateGooMeter();
+                _isAfterOverflow = false;
+                UpdateGooMeter();
+
+            }, 0.1f);
         }
 
         public void SetVialGoo(int maxValue)
@@ -102,7 +107,7 @@ namespace Loom.ZombieBattleground
 
         public void Active(GooBottleItem item)
         {
-            if (item.selfAnimator.gameObject.activeInHierarchy)
+            if (item.Self.activeInHierarchy)
             {
                 item.selfAnimator.SetBool("IsFull", true);
                 if (_isAfterOverflow)

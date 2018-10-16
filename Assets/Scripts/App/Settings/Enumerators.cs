@@ -475,7 +475,10 @@ namespace Loom.ZombieBattleground.Common
             Push,
             Reanimate,
             LowGooCost,
-            ReturnToHand
+            ReturnToHand,
+
+            SpawnOnBoard,
+            AddCardToHand
         }
         public enum ScreenMode
         {
@@ -493,7 +496,7 @@ namespace Loom.ZombieBattleground.Common
             UseOverlordAbility
         }
 
-        public enum VFXType
+        public enum VisualEffectType
         {
             Impact,
             Moving

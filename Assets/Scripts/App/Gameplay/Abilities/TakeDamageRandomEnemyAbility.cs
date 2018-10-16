@@ -51,9 +51,9 @@ namespace Loom.ZombieBattleground
 
             VfxObject = null;
 
-            if (AbilityData.HasVFXType(Enumerators.VFXType.Moving))
+            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Moving).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
             }
 
             foreach (object target in _targets)
@@ -97,9 +97,9 @@ namespace Loom.ZombieBattleground
 
             GameObject vfxObject = null;
 
-            if (AbilityData.HasVFXType(Enumerators.VFXType.Impact))
+            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVFXByType(Enumerators.VFXType.Impact).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 vfxObject = Object.Instantiate(vfxObject);
                 vfxObject.transform.position = targetPosition;

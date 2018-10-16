@@ -34,7 +34,21 @@ namespace Loom.ZombieBattleground
                 (Name == "Corrupted Goo" || Name == "Tainted Goo") &&
                 CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement)
             {
-                CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
+                WorkingCard card = CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.AddCardToHand,
+                            Target = card,
+                        }
+                    }
+                });
             }
         }
     }

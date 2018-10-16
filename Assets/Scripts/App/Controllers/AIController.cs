@@ -304,21 +304,19 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
-                        if (UnitCanBeUsable(unit))
+                        BoardUnitModel attackedUnit = GetTargetOpponentUnit();
+                        if (attackedUnit != null)
                         {
-                            BoardUnitModel attackedUnit = GetTargetOpponentUnit();
-                            if (attackedUnit != null)
-                            {
-                                unit.DoCombat(attackedUnit);
-                                alreadyUsedUnits.Add(unit);
+                            unit.DoCombat(attackedUnit);
+                            alreadyUsedUnits.Add(unit);
 
-                                await LetsThink(cancellationToken);
-                                if (!OpponentHasHeavyUnits())
-                                {
-                                    break;
-                                }
+                            await LetsThink(cancellationToken);
+                            if (!OpponentHasHeavyUnits())
+                            {
+                                break;
                             }
                         }
+                        else break;
                     }
                 }
             }
@@ -334,11 +332,10 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
-                    while (UnitCanBeUsable(unit)) {
-                        {
-                            unit.DoCombat(_gameplayManager.CurrentPlayer);
-                            await LetsThink(cancellationToken);
-                        }
+                    while (UnitCanBeUsable(unit))
+                    {
+                        unit.DoCombat(_gameplayManager.CurrentPlayer);
+                        await LetsThink(cancellationToken);
                     }
                 }
             }
@@ -356,6 +353,7 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             BoardUnitModel attackedCreature = GetRandomOpponentUnit();
+
                             if (attackedCreature != null)
                             {
                                 unit.DoCombat(attackedCreature);

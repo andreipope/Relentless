@@ -27,7 +27,8 @@ namespace Loom.ZombieBattleground
                               _rightBlockCardSpellElement,
                               _leftBlockOverlordElement,
                               _rightBlockOverlordElement,
-                              _leftBlockOverlordSkillElement;
+                              _leftBlockOverlordSkillElement,
+                              _rightBlockOverlordSkillElement;
 
         private List<ActionElement> _rightBlockElements;
 
@@ -102,8 +103,9 @@ namespace Loom.ZombieBattleground
             _leftBlockOverlordSkillElement = new OverlordSkillElement(Self.transform.Find("Block_Who/Item_OverlordSkill").gameObject);
 
             _rightBlockCardUnitElement = new UnitCardElement(Self.transform.Find("Block_OnWho/Card_Unit").gameObject, true);
-            _rightBlockCardSpellElement = new SpellCardElement(Self.transform.Find("Block_OnWho/Card_Spell").gameObject, false);
+            _rightBlockCardSpellElement = new SpellCardElement(Self.transform.Find("Block_OnWho/Card_Spell").gameObject, true);
             _rightBlockOverlordElement = new OverlordElement(Self.transform.Find("Block_OnWho/Item_Overlord").gameObject, true);
+            _rightBlockOverlordSkillElement = new OverlordSkillElement(Self.transform.Find("Block_OnWho/Item_OverlordSkill").gameObject, true);
 
             if (_rightBlockElements != null)
             {
@@ -174,7 +176,7 @@ namespace Loom.ZombieBattleground
 
                 if (actionWithPlayer != null)
                 {
-                    _rightBlockOverlordElement.Init((Player)actionWithPlayer.Target, actionWithPlayer.ActionEffectType);
+                    _rightBlockOverlordElement.Init((Player)actionWithPlayer.Target, actionWithPlayer.ActionEffectType, actionWithPlayer.HasValue, actionWithPlayer.Value);
                 }
 
                 foreach (TargetEffectParam targetEffect in pastActionParam.TargetEffects)
@@ -190,15 +192,15 @@ namespace Loom.ZombieBattleground
                     {
                         case BoardCard card when card is SpellBoardCard:
                             actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
+                            actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardCard card when card is UnitBoardCard:
-                                actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                                actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
-                                break;
+                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                            actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            break;
                         case BoardUnitModel unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(unit.Card, targetEffect.ActionEffectType);
+                            actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
@@ -223,16 +225,29 @@ namespace Loom.ZombieBattleground
                 switch (targetEffect.Target)
                 {
                     case Player player:
-                        _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType);
+                        _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardCard card when card is SpellBoardCard:
-                        _rightBlockCardSpellElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
+                        _rightBlockCardSpellElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardCard card when card is UnitBoardCard:
-                        _rightBlockCardUnitElement.Init(card.WorkingCard, targetEffect.ActionEffectType);
+                        _rightBlockCardUnitElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardUnitModel unit:
-                        _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType);
+                        _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        break;
+                    case BoardSkill skill:
+                        _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        break;
+                    case WorkingCard workingCard:
+                        if(workingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
+                        {
+                            _rightBlockCardSpellElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        }
+                        else
+                        {
+                            _rightBlockCardUnitElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
@@ -251,6 +266,8 @@ namespace Loom.ZombieBattleground
         {
             public object Target;
             public Enumerators.ActionEffectType ActionEffectType;
+            public int Value;
+            public bool HasValue;
         }
 
         public class ActionElement
@@ -262,11 +279,14 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             }
 
-            public virtual void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None) { }
+            public virtual void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                     bool hasValue = false, int value = 0) { }
 
-            public virtual void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None) { }
+            public virtual void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                     bool hasValue = false, int value = 0) { }
 
-            public virtual void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None) { }
+            public virtual void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                     bool hasValue = false, int value = 0) { }
 
             public virtual void Dispose() { }
         }
@@ -279,7 +299,8 @@ namespace Loom.ZombieBattleground
                                     _titleText,
                                     _bodyText,
                                     _attackText,
-                                    _defenseText;
+                                    _defenseText,
+                                    _valueText;
 
             private Image _frameImage,
                           _unitTypeIconImage,
@@ -306,12 +327,14 @@ namespace Loom.ZombieBattleground
                 if (_withEffect)
                 {
                     _effectImage = _selfObject.transform.Find("Image_Effect").GetComponent<Image>();
+                    _valueText = _effectImage.transform.Find("Text_Value").GetComponent<TextMeshProUGUI>();
                 }
 
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                      bool hasValue = false, int value = 0)
             {
                 Card LibraryCard = workingCard.LibraryCard;
 
@@ -349,10 +372,17 @@ namespace Loom.ZombieBattleground
                             _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                                 "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
                         }
+
+                        if (hasValue)
+                        {
+                            _valueText.text = value.ToString();
+                        }
                     }
                     else
                     {
                         _effectImage.enabled = false;
+
+                        _valueText.text = string.Empty;
                     }
                 }
 
@@ -365,8 +395,9 @@ namespace Loom.ZombieBattleground
             private GameObject _selfObject;
 
             private TextMeshProUGUI _gooText,
-                        _titleText,
-                        _bodyText;
+                                    _titleText,
+                                    _bodyText,
+                                    _valueText;
 
             private Image _frameImage,
                           _pictureImage,
@@ -389,12 +420,14 @@ namespace Loom.ZombieBattleground
                 if (_withEffect)
                 {
                     _effectImage = _selfObject.transform.Find("Image_Effect").GetComponent<Image>();
+                    _valueText = _effectImage.transform.Find("Text_Value").GetComponent<TextMeshProUGUI>();
                 }
 
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                      bool hasValue = false, int value = 0)
             {
                 Card LibraryCard = workingCard.LibraryCard;
 
@@ -423,10 +456,17 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+
+                        if (hasValue)
+                        {
+                            _valueText.text = value.ToString();
+                        }
                     }
                     else
                     {
                         _effectImage.enabled = false;
+
+                        _valueText.text = string.Empty;
                     }
                 }
 
@@ -437,6 +477,8 @@ namespace Loom.ZombieBattleground
         public class OverlordElement : ActionElement
         {
             private GameObject _selfObject;
+
+            private TextMeshProUGUI _valueText;
 
             private Image _overlordImage,
                           _effectImage;
@@ -453,12 +495,14 @@ namespace Loom.ZombieBattleground
                 if (_withEffect)
                 {
                     _effectImage = _selfObject.transform.Find("Image_Effect").GetComponent<Image>();
+                    _valueText = _effectImage.transform.Find("Text_Value").GetComponent<TextMeshProUGUI>();
                 }
 
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
+            public override void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                      bool hasValue = false, int value = 0)
             {
                 _overlordImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("CZB_2D_Hero_Portrait_" + player.SelfHero.HeroElement.ToString() + "_EXP");
 
@@ -468,10 +512,17 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+
+                        if (hasValue)
+                        {
+                            _valueText.text = value.ToString();
+                        }
                     }
                     else
                     {
                         _effectImage.enabled = false;
+
+                        _valueText.text = string.Empty;
                     }
                 }
 
@@ -482,6 +533,8 @@ namespace Loom.ZombieBattleground
         public class OverlordSkillElement : ActionElement
         {
             private GameObject _selfObject;
+
+            private TextMeshProUGUI _valueText;
 
             private Image _skillImage,
                           _effectImage;
@@ -498,12 +551,14 @@ namespace Loom.ZombieBattleground
                 if (_withEffect)
                 {
                     _effectImage = _selfObject.transform.Find("Image_Effect").GetComponent<Image>();
+                    _valueText = _effectImage.transform.Find("Text_Value").GetComponent<TextMeshProUGUI>();
                 }
 
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
+            public override void Init(BoardSkill skill, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                      bool hasValue = false, int value = 0)
             {
                 _skillImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
 
@@ -513,10 +568,17 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+
+                        if (hasValue)
+                        {
+                            _valueText.text = value.ToString();
+                        }
                     }
                     else
                     {
                         _effectImage.enabled = false;
+
+                        _valueText.text = string.Empty;
                     }
                 }
 
@@ -532,7 +594,8 @@ namespace Loom.ZombieBattleground
                                     _titleText,
                                     _bodyText,
                                     _attackText,
-                                    _defenseText;
+                                    _defenseText,
+                                    _valueText;
 
             private Image _frameImage,
                           _unitTypeIconImage,
@@ -559,12 +622,14 @@ namespace Loom.ZombieBattleground
                 if (_withEffect)
                 {
                     _effectImage = _selfObject.transform.Find("Root/Image_Effect").GetComponent<Image>();
+                    _valueText = _effectImage.transform.Find("Text_Value").GetComponent<TextMeshProUGUI>();
                 }
 
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                      bool hasValue = false, int value = 0)
             {
                 Card LibraryCard = workingCard.LibraryCard;
 
@@ -596,10 +661,17 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+
+                        if (hasValue)
+                        {
+                            _valueText.text = value.ToString();
+                        }
                     }
                     else
                     {
                         _effectImage.enabled = false;
+
+                        _valueText.text = string.Empty;
                     }
                 }
 
@@ -618,8 +690,9 @@ namespace Loom.ZombieBattleground
             private GameObject _selfObject;
 
             private TextMeshProUGUI _gooText,
-                        _titleText,
-                        _bodyText;
+                                    _titleText,
+                                    _bodyText,
+                                    _valueText;
 
             private Image _frameImage,
                           _pictureImage,
@@ -642,12 +715,14 @@ namespace Loom.ZombieBattleground
                 if (_withEffect)
                 {
                     _effectImage = _selfObject.transform.Find("Root/Image_Effect").GetComponent<Image>();
+                    _valueText = _effectImage.transform.Find("Text_Value").GetComponent<TextMeshProUGUI>();
                 }
 
                 _selfObject.SetActive(false);
             }
 
-            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None)
+            public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
+                                      bool hasValue = false, int value = 0)
             {
                 Card LibraryCard = workingCard.LibraryCard;
 
@@ -676,10 +751,17 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+
+                        if (hasValue)
+                        {
+                            _valueText.text = value.ToString();
+                        }
                     }
                     else
                     {
                         _effectImage.enabled = false;
+
+                        _valueText.text = string.Empty;
                     }
                 }
 

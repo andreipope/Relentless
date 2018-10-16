@@ -34,6 +34,20 @@ namespace Loom.ZombieBattleground
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
                 PlayerCallerOfAbility.Goo += Value;
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingOverlord,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Overflow,
+                            Target = PlayerCallerOfAbility,
+                        }
+                    }
+                });
             }
         }
     }

@@ -70,7 +70,9 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = attackedPlayer
+                        Target = attackedPlayer,
+                        HasValue = true,
+                        Value = -damageAttacking
                     }
                 }
             });
@@ -134,7 +136,9 @@ namespace Loom.ZombieBattleground
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                            Target = attackedUnitModel
+                            Target = attackedUnitModel,
+                            HasValue = true,
+                            Value = -damageAttacking
                         }
                     }
                 });
