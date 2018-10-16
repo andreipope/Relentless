@@ -214,7 +214,6 @@ namespace Loom.Client.Internal
                                 ));
                             }
 
-                            Type typeT = typeof(T);
                             var fullMsg = JsonConvert.DeserializeObject<JsonRpcResponse<T>>(e.Data);
                             tcs.TrySetResult(fullMsg.Result);
                         }
