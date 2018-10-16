@@ -8,7 +8,6 @@ using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using NotImplementedException = System.NotImplementedException;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -25,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
+        private IPvPManager _pvpManager;
+
         private BackendFacade _backendFacade;
 
         private GameObject _selfPage;
@@ -34,6 +35,7 @@ namespace Loom.ZombieBattleground
         private Button _joinButton;
 
         private List<GameObject> _uiElements = new List<GameObject>();
+
         private Transform _customUiRoot;
 
         public GameMode GameMode { get; private set; }
@@ -46,6 +48,7 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _pvpManager = GameClient.Get<IPvPManager>();
         }
 
         public void Update()
@@ -170,7 +173,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().CustomGameModeAddress = Address.FromProtobufAddress(GameMode.Address);
+            _pvpManager.CustomGameModeAddress = Address.FromProtobufAddress(GameMode.Address);
             _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
         }
     }

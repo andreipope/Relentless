@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -26,15 +24,11 @@ namespace Loom.ZombieBattleground
 
         private BackendFacade _backendFacade;
 
-        private BackendDataControlMediator _backendDataControlMediator;
-
         private Enumerators.AppState _finishMatchAppState;
 
         private float lookingForOpponentTimeout;
 
         public Enumerators.MatchType MatchType { get; set; }
-
-        public Address? CustomGameModeAddress { get; set; }
 
         // TODO : Find another solution, right now its tempraoray only....
         private bool _checkPlayerStatus;
@@ -61,8 +55,8 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public void StopLookingForOpponent () {
-            _backendFacade.UnSubscribeEvent();
+        public async Task StopLookingForOpponent () {
+            await _backendFacade.UnsubscribeEvent();
             if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
             {
                 _uiManager.HidePopup<ConnectionPopup>();
@@ -84,15 +78,9 @@ namespace Loom.ZombieBattleground
                             GameClient.Get<IQueueManager>().StartNetworkThread();
                             _uiManager.DrawPopup<ConnectionPopup>();
                             _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
-                            _pvpManager.MatchResponse = await GetBackendFacade(_backendFacade).FindMatch(
-                                _backendDataControlMediator.UserDataModel.UserId,
-                                _uiManager.GetPage<GameplayPage>().CurrentDeckId,
-                                CustomGameModeAddress);
+                            await _pvpManager.FindMatch();
 
-                            Debug.LogWarning("=== Response = " + _pvpManager.MatchResponse);
-                            _backendFacade.SubscribeEvent(_pvpManager.MatchResponse.Match.Topics.ToList());
-
-                            if (_pvpManager.MatchResponse.Match.Status == Match.Types.Status.Started)
+                            if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
                             {
                                 OnStartGamePvP();
                             }
@@ -103,7 +91,7 @@ namespace Loom.ZombieBattleground
                             }
                         } 
                         catch (Exception e) {
-                            Debug.LogWarning(e.Message);
+                            Debug.LogWarning(e);
                             if (_uiManager.GetPopup<ConnectionPopup>().Self != null) {
                                 _uiManager.HidePopup<ConnectionPopup>();
                             }
@@ -116,7 +104,7 @@ namespace Loom.ZombieBattleground
 
         }
 
-        public async void FindMatch(Enumerators.MatchType matchType)
+        public void FindMatch(Enumerators.MatchType matchType)
         {
             MatchType = matchType;
             FindMatch();
@@ -137,14 +125,13 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
 
             lookingForOpponentTimeout = 0;
         }
 
-        public void Update()
+        public async void Update()
         {
             if (_checkPlayerStatus)
             {
@@ -156,7 +143,7 @@ namespace Loom.ZombieBattleground
                 lookingForOpponentTimeout -= Time.deltaTime;
                 if (lookingForOpponentTimeout <= 0) {
                     lookingForOpponentTimeout = 0;
-                    StopLookingForOpponent();
+                    await StopLookingForOpponent();
                 }
             }
         }
@@ -164,11 +151,6 @@ namespace Loom.ZombieBattleground
         private void CreateLocalMatch()
         {
             StartLoadMatch();
-        }
-
-        private static BackendFacade GetBackendFacade(BackendFacade backendFacade)
-        {
-            return backendFacade;
         }
 
         private void OnStartGamePvP()
@@ -179,15 +161,12 @@ namespace Loom.ZombieBattleground
 
         private async void GetGameState()
         {
-
             // TODO : Quick fix... something wrong with backend side..
             // Need to remove delay
             await Task.Delay(3000);
-            _pvpManager.GameStateResponse = await _backendFacade.GetGameState((int)_pvpManager.MatchResponse.Match.Id);
 
             _uiManager.HidePopup<ConnectionPopup>();
             CreateLocalMatch();
-
         }
 
         private void StartLoadMatch()

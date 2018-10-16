@@ -86,6 +86,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -138,7 +139,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.MatchType.PVP:
                     PlayerState playerState =
-                        _pvpManager.MatchResponse.Match.PlayerStates
+                        _pvpManager.InitialGameState.PlayerStates
                         .First(state =>
                                 isOpponent ?
                                     state.Id != _backendDataControlMediator.UserDataModel.UserId :
@@ -573,7 +574,7 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
 
                 await _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
-                                                (int)_pvpManager.MatchResponse.Match.Id,
+                                                (int)_pvpManager.MatchMetadata.Id,
                                                 IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
 
             }

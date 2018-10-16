@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -212,16 +211,17 @@ namespace Loom.ZombieBattleground
                     break;
 
                 case Enumerators.MatchType.PVP:
-                    for (int i = 0; i < _pvpManager.MatchResponse.Match.PlayerStates.Count; i++)
+                    for (int i = 0; i < _pvpManager.InitialGameState.PlayerStates.Count; i++)
                     {
-                        if (_pvpManager.MatchResponse.Match.PlayerStates[i].Id !=
+                        if (_pvpManager.InitialGameState.PlayerStates[i].Id !=
                             _backendDataControlMediator.UserDataModel.UserId)
                         {
                             _pvpManager.OpponentDeckIndex = i;
                             break;
                         }
                     }
-                    _pvpManager.OpponentDeck = FromProtobufExtensions.FromProtobuf(_pvpManager.MatchResponse.Match.PlayerStates[_pvpManager.OpponentDeckIndex].Deck);
+                    _pvpManager.OpponentDeck =
+                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].Deck.FromProtobuf();
 
                     randomOpponentDeck = _pvpManager.OpponentDeck;
                     _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
