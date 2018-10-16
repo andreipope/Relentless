@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using mixpanel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,8 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
+
+        private IAnalyticsManager _analyticsManager;
 
         private GameObject _selfPage, _loginForm;
 
@@ -46,6 +49,7 @@ namespace Loom.ZombieBattleground
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
 
             _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
             UpdateLocalization();
@@ -92,6 +96,7 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             await _backendDataControlMediator.LoginAndLoadData();
+                            LoginAnalytics();
                         }
                         catch (GameVersionMismatchException e)
                         {
@@ -121,6 +126,43 @@ namespace Loom.ZombieBattleground
                     _uiManager.DrawPopup<LoginPopup>();
                 }
             }
+        }
+
+        private void LoginAnalytics()
+        {
+            // TODO : Check all the events again with parameters
+
+            Value props = new Value();
+
+            // last login date
+            string lastLoginDate = Utilites.GetStringFromPlayerPrefs(AnalyticsManager.LastLoginDateKey);
+            props[AnalyticsManager.PropertyLastLogin] = lastLoginDate;
+
+            // login date
+            string currentLoginDate = DateTime.Now.ToString("dd/MM/yyyy");
+            props[AnalyticsManager.PropertyFirstLogin] = currentLoginDate;
+            Utilites.SetStringInPlayerPrefs(AnalyticsManager.PropertyLastLogin, currentLoginDate);
+
+            // login count
+            int loginCount = Utilites.GetIntValueFromPlayerPrefs(AnalyticsManager.NumberOfLoginsKey);
+            loginCount = loginCount + 1;
+            Utilites.SetIntValueInPlayerPrefs(AnalyticsManager.NumberOfLoginsKey, loginCount);
+            props[AnalyticsManager.PropertyNumberOfLogins] = loginCount;
+            _analyticsManager.SetPoepleIncrement(AnalyticsManager.PropertyNumberOfLogins, loginCount);
+
+            //source
+            props[AnalyticsManager.PropertySource] = Application.platform.ToString();
+
+            // user id
+            props[AnalyticsManager.PropertyUserId] = string.Empty;
+
+            // email id
+            props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
+
+            // account type
+            props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
+
+            _analyticsManager.SetEvent("", AnalyticsManager.EventLogIn, props);
         }
 
         public void Show()

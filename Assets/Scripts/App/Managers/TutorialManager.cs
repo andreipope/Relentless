@@ -6,6 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using DG.Tweening;
+using mixpanel;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,6 +36,8 @@ namespace Loom.ZombieBattleground
 
         private List<TutorialBoardArrow> _tutorialHelpBoardArrows;
 
+        private IAnalyticsManager _analyticsManager;
+
         public bool IsTutorial { get; private set; }
 
         public bool IsBubbleShow { get; set; }
@@ -62,6 +65,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
@@ -100,6 +104,8 @@ namespace Loom.ZombieBattleground
 
 
             IsTutorial = true;
+
+            StartTutorialAnaltyics();
         }
 
         public void StopTutorial()
@@ -125,6 +131,8 @@ namespace Loom.ZombieBattleground
 
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            EndTutorailAnalytics();
         }
 
         public void SkipTutorial(Enumerators.AppState state)
@@ -400,6 +408,49 @@ namespace Loom.ZombieBattleground
                 _targettingArrow.Dispose();
                 _targettingArrow = null;
             }
+        }
+
+        private void StartTutorialAnaltyics()
+        {
+            // TODO : Check all the events again with parameters
+            Value props = new Value();
+
+            // email id
+            props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
+
+            //source
+            props[AnalyticsManager.PropertySource] = Application.platform.ToString();
+
+            // user id
+            props[AnalyticsManager.PropertyUserId] = string.Empty;
+
+            // account type
+            props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
+
+            _analyticsManager.SetEvent("", AnalyticsManager.EventStartedTutorial, props);
+        }
+
+        private void EndTutorailAnalytics()
+        {
+            // TODO : Check all the events again with parameters
+            Value props = new Value();
+
+            // email id
+            props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
+
+            //source
+            props[AnalyticsManager.PropertySource] = Application.platform.ToString();
+
+            // duration
+            props[AnalyticsManager.PropertyTutorialCompleteDuration] = "HH:MM:SS";
+
+            // user id
+            props[AnalyticsManager.PropertyUserId] = string.Empty;
+
+            // account type
+            props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
+
+            _analyticsManager.SetEvent("", AnalyticsManager.EventCompletedTutorial, props);
         }
     }
 }

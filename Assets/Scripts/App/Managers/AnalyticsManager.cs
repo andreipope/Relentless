@@ -91,12 +91,16 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _startedMatchCounter++;
         LogEvent("MatchStarted", "", _startedMatchCounter);
         PlayerPrefs.SetInt(MatchesInPreviousSittingKey, _startedMatchCounter);
+
+        StartedMatch();
     }
 
     public void NotifyFinishedMatch(Enumerators.EndGameType endGameType)
     {
         _finishedMatchCounter++;
         LogEvent("MatchFinished", "", _finishedMatchCounter);
+
+        EndedMatch();
     }
 
     void IAnalyticsManager.Dispose()
@@ -146,5 +150,51 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetPoepleIncrement(string property, int value)
     {
         Mixpanel.people.Increment(property, value);
+    }
+
+    private void StartedMatch()
+    {
+        // TODO : Check all the events again with parameters
+        Value props = new Value();
+
+        // email id
+        props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
+
+        //source
+        props[AnalyticsManager.PropertySource] = Application.platform.ToString();
+
+        // user id
+        props[AnalyticsManager.PropertyUserId] = string.Empty;
+
+        // account type
+        props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
+
+        SetEvent("", AnalyticsManager.EventStartedMatch, props);
+    }
+
+    private void EndedMatch()
+    {
+        // TODO : Check all the events again with parameters
+        Value props = new Value();
+
+        // email id
+        props[AnalyticsManager.PropertyEmailAddress] = "gaurav@loomx.io";
+
+        //source
+        props[AnalyticsManager.PropertySource] = Application.platform.ToString();
+
+        // duration
+        props[AnalyticsManager.PropertyMatchDuration] = "HH:MM:SS";
+
+        // result
+        props[AnalyticsManager.PropertyMatchResult] = "Won";
+
+        // user id
+        props[AnalyticsManager.PropertyUserId] = string.Empty;
+
+        // account type
+        props[AnalyticsManager.PropertyAccountType] = Enumerators.AccountType.User.ToString();
+
+        SetEvent("", AnalyticsManager.EventEndedMatch, props);
     }
 }
