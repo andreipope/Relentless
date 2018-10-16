@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground
@@ -38,6 +39,11 @@ namespace Loom.ZombieBattleground
         bool CanDoDragActions { get; set; }
 
         bool IsGameplayInputBlocked { get; set; }
+
+        List<string> PlayerStarterCards { get; set; }
+        List<string> OpponentStarterCards { get; set; }
+
+        Enumerators.StartingTurn StartingTurn { get; set; }
 
         T GetController<T>()
             where T : IController;

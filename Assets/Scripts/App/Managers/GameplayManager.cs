@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
@@ -23,6 +24,8 @@ namespace Loom.ZombieBattleground
         private List<IController> _controllers;
 
         private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
+
+        public Enumerators.StartingTurn StartingTurn { get; set; }
 
         public event Action GameStarted;
 
@@ -59,6 +62,9 @@ namespace Loom.ZombieBattleground
         public bool CanDoDragActions { get; set; }
 
         public bool IsGameplayInputBlocked { get; set; }
+
+        public List<string> PlayerStarterCards { get; set; }
+        public List<string> OpponentStarterCards { get; set; }
 
         public T GetController<T>()
             where T : IController
@@ -113,6 +119,7 @@ namespace Loom.ZombieBattleground
             CurrentTurnPlayer = null;
             CurrentPlayer = null;
             OpponentPlayer = null;
+            StartingTurn = Enumerators.StartingTurn.UnDecided;
 
             GameClient.Get<IQueueManager>().StopNetworkThread();
 
@@ -280,7 +287,22 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                        switch (StartingTurn)
+                        {
+                            case Enumerators.StartingTurn.UnDecided:
+                                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                                StartingTurn = CurrentTurnPlayer == CurrentPlayer ?
+                                    Enumerators.StartingTurn.Player : Enumerators.StartingTurn.Enemy;
+                                break;
+                            case Enumerators.StartingTurn.Player:
+                                CurrentTurnPlayer = CurrentPlayer;
+                                break;
+                            case Enumerators.StartingTurn.Enemy:
+                                CurrentTurnPlayer = OpponentPlayer;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                         break;
                     case Enumerators.MatchType.PVP:
                         CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
@@ -289,7 +311,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
                 }
 
-                OpponentPlayer.SetFirstHand(false);
+                OpponentStarterCards = OpponentPlayer.SetFirstHand(OpponentStarterCards, false);
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {

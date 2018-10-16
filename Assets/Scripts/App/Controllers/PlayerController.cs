@@ -129,7 +129,8 @@ namespace Loom.ZombieBattleground
 
         public void SetHand()
         {
-            _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
+            _gameplayManager.PlayerStarterCards =
+                _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.PlayerStarterCards, _gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
 
             _timerManager.AddTimer(UpdateCardDistribution);
 
