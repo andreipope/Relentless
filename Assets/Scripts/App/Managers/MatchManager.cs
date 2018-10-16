@@ -22,6 +22,8 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
+        private BackendFacade _backendFacade;
+
         private Enumerators.AppState _finishMatchAppState;
 
         private float lookingForOpponentTimeout;
@@ -53,8 +55,8 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public void StopLookingForOpponent () {
-            _backendFacade.UnSubscribeEvent();
+        public async Task StopLookingForOpponent () {
+            await _backendFacade.UnsubscribeEvent();
             if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
             {
                 _uiManager.HidePopup<ConnectionPopup>();
@@ -122,13 +124,14 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
 
             lookingForOpponentTimeout = 0;
         }
 
-        public void Update()
+        public async void Update()
         {
             if (_checkPlayerStatus)
             {
@@ -140,7 +143,7 @@ namespace Loom.ZombieBattleground
                 lookingForOpponentTimeout -= Time.deltaTime;
                 if (lookingForOpponentTimeout <= 0) {
                     lookingForOpponentTimeout = 0;
-                    StopLookingForOpponent();
+                    await StopLookingForOpponent();
                 }
             }
         }

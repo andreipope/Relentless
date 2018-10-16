@@ -30,11 +30,12 @@ namespace Loom.ZombieBattleground
 
         Address? CustomGameModeAddress { get; set; }
 
-        //FindMatchResponse MatchResponse { get; set; }
         MatchMetadata MatchMetadata { get; }
+
         GameState InitialGameState { get; }
 
         OpponentDeck OpponentDeck { get; set; }
+
         int OpponentDeckIndex { get; set; }
 
         string GetOpponentUserId();

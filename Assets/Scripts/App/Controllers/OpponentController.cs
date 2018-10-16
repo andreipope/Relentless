@@ -264,7 +264,6 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IQueueManager>().AddAction(() =>
                 {
                     GotActionUseCardAbility(model);
-                    return Task.CompletedTask;
                 });
 
                 return;
