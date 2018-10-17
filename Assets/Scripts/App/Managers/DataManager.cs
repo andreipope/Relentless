@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private IUIManager _uiManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -207,6 +209,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -261,7 +264,36 @@ namespace Loom.ZombieBattleground
             }
 
             if (!versionMatch)
+            {
                 DeleteData();
+
+                Action[] actions = new Action[2];
+                actions[0] = () =>
+                {
+                    string url = string.Empty;
+
+                    #if UNITY_ANDROID
+                        url = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
+                    #elif UNITY_IOS
+                        url = "https://testflight.apple.com/join/T7zJgWOj";
+                    #elif UNITY_STANDALONE_WIN
+                        url = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
+                    #elif UNITY_STANDALONE_OSX
+                        url = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
+                    #endif
+
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        Application.OpenURL(url);
+                    }
+                };
+                actions[1] = () =>
+                {
+                    Application.Quit();
+                };
+
+                _uiManager.DrawPopup<UpdatePopup>(actions);
+            }
         }
 
         private async Task LoadCachedData(Enumerators.CacheDataType type)
