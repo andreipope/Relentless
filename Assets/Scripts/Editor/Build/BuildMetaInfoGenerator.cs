@@ -8,7 +8,7 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Editor
 {
     public class BuildMetaInfoGenerator : IPreprocessBuildWithReport
     {
@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
 
 #endif
 
-            EditorUtility.SetDirty(buildMetaInfo);
+            UnityEditor.EditorUtility.SetDirty(buildMetaInfo);
         }
 
         // ReSharper disable once RedundantNameQualifier
@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
                     gitShortHashLength :
                     buildMetaInfo.GitCommitHash.Length);
 
-            EditorUtility.SetDirty(buildMetaInfo);
+            UnityEditor.EditorUtility.SetDirty(buildMetaInfo);
         }
 
         private static BuildMetaInfo GetBuildMetaInfo()
