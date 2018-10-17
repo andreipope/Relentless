@@ -1,5 +1,4 @@
 using System;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
@@ -26,11 +25,9 @@ namespace Loom.ZombieBattleground
 
         private MenuButtonNoGlow _buttonArmy;
 
-        private Button _buttonPlay, _buttonDeck;
+        private Button _buttonPlay, _buttonSettings, _buttonCredits;
 
-        private ButtonShiftingContent _buttonBuy, _buttonOpen, _buttonCredits, _buttonTutorial, _buttonQuit;
-
-        private MenuButtonToggle _buttonMusic, _buttonSfx;
+        private ButtonShiftingContent _buttonBuy, _buttonOpen, _buttonTutorial, _buttonQuit;
 
         private TextMeshProUGUI _packsCount;
 
@@ -47,8 +44,8 @@ namespace Loom.ZombieBattleground
         }
 
         public void Update()
-        {
-        }
+        {  
+        } 
 
         public void Show()
         {
@@ -57,30 +54,27 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonPlay = _selfPage.transform.Find("Button_Play").GetComponent<Button>();
-            _buttonDeck = _selfPage.transform.Find("Button_Deck").GetComponent<Button>();
+
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
-            _buttonCredits = _selfPage.transform.Find("BackMetalLeft2/Button_Credits")
-                .GetComponent<ButtonShiftingContent>();
+            _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<Button>();
             _buttonQuit = _selfPage.transform.Find("BackMetalLeft/Button_Quit").GetComponent<ButtonShiftingContent>();
             _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
             _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
-            _buttonMusic = _selfPage.transform.Find("Button_Music").GetComponent<MenuButtonToggle>();
-            _buttonSfx = _selfPage.transform.Find("Button_SFX").GetComponent<MenuButtonToggle>();
+            _buttonSettings = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
             _buttonPlay.onClick.AddListener(OnClickPlay);
-            _buttonDeck.onClick.AddListener(OnClickPlay);
             _buttonArmy.Clicked.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
-            _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
             _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
-            _buttonMusic.ValueChanged.AddListener(OnValueChangedEventMusic);
-            _buttonSfx.ValueChanged.AddListener(OnValueChangedEventSfx);
+
+            _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
+            _buttonSettings.onClick.AddListener(SettingsButtonOnClickHandler);
 
             _buttonArmy.Interactable = true;
 
@@ -92,9 +86,6 @@ namespace Loom.ZombieBattleground
             {
                 _logoAnimator.SetBool("LogoShow", true);
             }
-
-            _buttonMusic.SetStatus(!_soundManager.MusicMuted);
-            _buttonSfx.SetStatus(!_soundManager.SfxMuted);
 
             if (!_dataManager.CachedUserLocalData.AgreedTerms)
             {
@@ -185,16 +176,13 @@ namespace Loom.ZombieBattleground
             _stateManager.ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
 
-        private void OnValueChangedEventMusic(bool value)
+        private void SettingsButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _soundManager.SetMusicMuted(!value);
-        }
 
-        private void OnValueChangedEventSfx(bool value)
-        {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _soundManager.SetSoundMuted(!value);
+#if !UNITY_ANDROID && !UNITY_IOS
+            _uiManager.DrawPopup<SettingsPopup>(true);
+#endif
         }
 
         #endregion
