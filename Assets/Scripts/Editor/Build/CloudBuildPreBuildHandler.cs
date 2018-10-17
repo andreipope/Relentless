@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground.Editor
 {
-    internal static class CloudBuildPreBuildHandler
+    public static class CloudBuildPreBuildHandler
     {
         public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
         {

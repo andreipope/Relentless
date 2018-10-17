@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground.Editor
         [MenuItem("Utility/AOT/Update AOT Hint")]
         public static void GenerateZbAotHint()
         {
-            new AotHintFileUpdater().OnPreprocessBuild(null);
+            AotHintFileUpdater.UpdateAotHint();
         }
 
         #endregion

@@ -1,6 +1,4 @@
-﻿#if ENABLE_IL2CPP
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,18 +7,12 @@ using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
-using UnityEditor.Build;
-using UnityEditor.Build.Reporting;
 
-namespace Loom.ZombieBattleground.Editor
-{
-    public class AotHintFileUpdater : IPreprocessBuildWithReport
-    {
-        private const string ProtobufAotCompilerHintFilePath = "Assets/Scripts/Generated/AotCompilerHint.cs";
-
-        public int callbackOrder { get; }
-
-        public void OnPreprocessBuild(BuildReport report)
+namespace Loom.ZombieBattleground.Editor {
+    public static class AotHintFileUpdater {
+        private const string ProtobufAotCompilerHintFilePath = "Assets/Scripts/Generated/AotCompilerHint.cs";  
+        
+        public static void UpdateAotHint()
         {
             MonoScript aotCompilerHintFileAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(ProtobufAotCompilerHintFilePath);
             if (aotCompilerHintFileAsset == null)
@@ -78,5 +70,3 @@ namespace Loom.ZombieBattleground.Editor
         }
     }
 }
-
-#endif
