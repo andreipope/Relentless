@@ -11,7 +11,6 @@ using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Editor
 {
@@ -23,9 +22,6 @@ namespace Loom.ZombieBattleground.Editor
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            if (report.summary.platform != )
-                Debug.Log("Updating AOT hint");
-
             MonoScript aotCompilerHintFileAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(ProtobufAotCompilerHintFilePath);
             if (aotCompilerHintFileAsset == null)
                 throw new FileNotFoundException(ProtobufAotCompilerHintFilePath);
