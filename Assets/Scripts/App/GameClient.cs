@@ -67,6 +67,7 @@ namespace Loom.ZombieBattleground
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
+            AddService<DebugCommandsManager>( new DebugCommandsManager());
         }
 
         public static GameClient Instance

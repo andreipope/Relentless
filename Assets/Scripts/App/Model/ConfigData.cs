@@ -6,6 +6,7 @@ namespace Loom.ZombieBattleground.Data
     {
         public bool EncryptData = true;
         public bool SkipBackendCardData;
+        public bool EnablePvP;
         public BackendEndpoint Backend;
     }
 }

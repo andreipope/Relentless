@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
             if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnPlayer)
                 return;
 
-            if (player.Health <= 0)
+            if (player.Defense <= 0)
                 return;
 
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(player))

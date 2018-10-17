@@ -329,11 +329,18 @@ namespace Loom.ZombieBattleground
             SetHighlightingEnabled(currentHighlight);
         }
 
-        private void BoardUnitOnStunned()
+        private void BoardUnitOnStunned(bool isStun)
         {
-            _frozenSprite.DOFade(1, 1);
+            if (isStun)
+            {
+                _frozenSprite.DOFade(1, 1);
+                SetHighlightingEnabled(false);
+            }
+            else
+            {
+                _frozenSprite.DOFade(0, 1);
+            }
 
-            SetHighlightingEnabled(false);
         }
 
         private void BoardUnitOnTurnStarted()

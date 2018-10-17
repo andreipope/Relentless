@@ -52,6 +52,8 @@ namespace Loom.ZombieBattleground
 
         private CancellationTokenSource _aiBrainCancellationTokenSource;
 
+        private Enumerators.AiBrainType _aiBrainType;
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -71,6 +73,7 @@ namespace Loom.ZombieBattleground
 
             _normalUnitCardInHand = new List<WorkingCard>();
             _normalSpellCardInHand = new List<WorkingCard>();
+
         }
 
         public void Dispose()
@@ -114,8 +117,15 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
 
+            SetAiBrainType(Enumerators.AiBrainType.Normal);
+
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
+        }
+
+        public void SetAiBrainType(Enumerators.AiBrainType aiBrainType)
+        {
+            _aiBrainType = aiBrainType;
         }
 
         public async Task LaunchAIBrain()
@@ -125,7 +135,20 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+                switch (_aiBrainType)
+                {
+                    case Enumerators.AiBrainType.DoNothing:
+                        await DoNothingAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    case Enumerators.AiBrainType.Normal:
+                        await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    case Enumerators.AiBrainType.DontAttack:
+                        await DontAttackAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -244,6 +267,30 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private async Task DoNothingAiBrain(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            _battlegroundController.StopTurn();
+        }
+
+        private async Task DontAttackAiBrain(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await PlayCardsFromHand(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+
+            _battlegroundController.StopTurn();
+        }
+
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
@@ -327,7 +374,7 @@ namespace Loom.ZombieBattleground
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if ((totalValue >= _gameplayManager.OpponentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
+            if ((totalValue >= _gameplayManager.OpponentPlayer.Defense || _aiType == Enumerators.AiType.BLITZ_AI ||
                 _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
@@ -412,7 +459,7 @@ namespace Loom.ZombieBattleground
         {
             int benefit = 0;
             int boardCount = 0;
-            int gooAmount = _gameplayManager.OpponentPlayer.Goo;
+            int gooAmount = _gameplayManager.OpponentPlayer.CurrentGoo;
             List<WorkingCard> overflowGooCards = new List<WorkingCard>();
             List<WorkingCard> cards = new List<WorkingCard>();
             cards.AddRange(GetUnitCardsInHand());
@@ -427,7 +474,7 @@ namespace Loom.ZombieBattleground
                         .Find(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
                     if (attackOverlordAbility != null)
                     {
-                        if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
+                        if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
                             break;
                     }
 
@@ -450,8 +497,8 @@ namespace Loom.ZombieBattleground
             WorkingCard expensiveCard =
                 GetUnitCardsInHand()
                     .Find(
-                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.Goo &&
-                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo + benefit);
+                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
+                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
             if (expensiveCard != null)
             {
                 bool wasAction = false;
@@ -505,7 +552,7 @@ namespace Loom.ZombieBattleground
         private bool CardCanBePlayable(WorkingCard card)
         {
 #if !DEV_MODE
-            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo &&
+            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
 #else
             return true;
@@ -526,7 +573,7 @@ namespace Loom.ZombieBattleground
                     if (ability.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
                         // smart enough HP to use goo carriers
-                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
+                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
                         {
                             return false;
                         }
@@ -580,7 +627,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _gameplayManager.OpponentPlayer.Goo -= card.LibraryCard.Cost;
+            _gameplayManager.OpponentPlayer.CurrentGoo -= card.LibraryCard.Cost;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
@@ -1118,7 +1165,7 @@ namespace Loom.ZombieBattleground
                     target = _gameplayManager.OpponentPlayer;
                     selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                    if (_gameplayManager.OpponentPlayer.Health > 13)
+                    if (_gameplayManager.OpponentPlayer.Defense > 13)
                     {
                         if (skill.Skill.ElementTargetTypes.Count > 0)
                         {

@@ -1,7 +1,4 @@
-using System;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -20,6 +17,8 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
+        private IPvPManager _pvpManager;
+
         private GameObject _selfPage;
 
         private Button _backButton,
@@ -29,7 +28,6 @@ namespace Loom.ZombieBattleground
                        _buttonCustomType;
 
         private ButtonShiftingContent _buttonTutorial;
-                                      
 
         public void Init()
         {
@@ -38,6 +36,7 @@ namespace Loom.ZombieBattleground
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
         }
 
         public void Update()
@@ -63,7 +62,7 @@ namespace Loom.ZombieBattleground
             _buttonCustomType.onClick.AddListener(CustomTypeButtonOnClickHandler);
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
 
-            GameClient.Get<IMatchManager>().CustomGameModeAddress = null;
+            _pvpManager.CustomGameModeAddress = null;
         }
 
         public void Hide()

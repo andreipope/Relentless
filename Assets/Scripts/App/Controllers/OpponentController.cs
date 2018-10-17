@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
-using Newtonsoft.Json;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -240,7 +237,7 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                _gameplayManager.OpponentPlayer.Goo -= card.RealCost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= card.RealCost;
             });
         }
 
