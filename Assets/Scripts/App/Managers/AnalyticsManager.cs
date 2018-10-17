@@ -12,9 +12,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 {
     private const string MatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
     private const string FirstTimeInstallKey = "Analytics_FirstTimeInstall";
-    public const string NumberOfLoginsKey = "Analytics_LoginCount";
-    public const string LastLoginDateKey = "Analytics_LastLoginDate";
-
+    
     private GoogleAnalyticsV4 _googleAnalytics;
 
     private int _startedMatchCounter;
