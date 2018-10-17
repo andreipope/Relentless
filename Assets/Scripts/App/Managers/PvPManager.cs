@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
-            _backendFacade.PlayerActionEventListner += OnGetPlayerActionEventListener;
+            _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
         }
 
         public void Update()
@@ -77,11 +77,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsCurrentPlayer()
         {
-            if (InitialGameState.PlayerStates[InitialGameState.CurrentPlayerIndex].Id ==
-                _backendDataControlMediator.UserDataModel.UserId)
-                return true;
-
-            return false;
+            return InitialGameState.PlayerStates[InitialGameState.CurrentPlayerIndex].Id ==
+                _backendDataControlMediator.UserDataModel.UserId;
         }
 
         public string GetOpponentUserId()
@@ -102,7 +99,6 @@ namespace Loom.ZombieBattleground
         public async Task FindMatch()
         {
             InitialGameState = null;
-            MatchMetadata = new MatchMetadata();
 
             FindMatchResponse findMatchResponse =
                 await _backendFacade.FindMatch(
@@ -110,12 +106,24 @@ namespace Loom.ZombieBattleground
                     _uiManager.GetPage<GameplayPage>().CurrentDeckId,
                     CustomGameModeAddress
                 );
+            Debug.LogWarning("FindMatchResponse:\n" + findMatchResponse);
 
-            MatchMetadata.Id = findMatchResponse.Match.Id;
-            MatchMetadata.Topics = findMatchResponse.Match.Topics;
-            MatchMetadata.Status = findMatchResponse.Match.Status;
+            await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
 
-            await _backendFacade.SubscribeEvent(MatchMetadata.Topics.ToList());
+            GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
+            MatchMetadata = new MatchMetadata(
+                findMatchResponse.Match.Id,
+                findMatchResponse.Match.Topics,
+                getMatchResponse.Match.Status
+            );
+
+            if (findMatchResponse.Match.Status != getMatchResponse.Match.Status)
+            {
+                Debug.Log(
+                    $"findMatchResponse.Match.Status = {findMatchResponse.Match.Status}, " +
+                    $"getMatchResponse.Match.Status = {getMatchResponse.Match.Status}"
+                );
+            }
 
             if (MatchMetadata.Status == Match.Types.Status.Started)
             {
@@ -123,16 +131,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnGetPlayerActionEventListener(byte[] data)
+        private void OnPlayerActionReceivedHandler(byte[] data)
         {
             GameClient.Get<IQueueManager>().AddAction(
                 async () =>
                 {
-                    string jsonStr = SystemText.Encoding.UTF8.GetString(data);
-
-                    Debug.LogWarning(jsonStr); // todo delete
-
-                    PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+                    PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+                    Debug.LogWarning("! " + playerActionEvent ); // todo delete
 
                     switch (playerActionEvent.Match.Status)
                     {
@@ -143,11 +148,16 @@ namespace Loom.ZombieBattleground
                             MatchingStartedActionReceived?.Invoke();
                             break;
                         case Match.Types.Status.Started:
-                            await LoadInitialGameState();
+                            // No need to reload if a match was found immediately
+                            if (InitialGameState != null)
+                            {
+                                await LoadInitialGameState();
+                            }
+
                             GameStartedActionReceived?.Invoke();
                             break;
                         case Match.Types.Status.Playing:
-                            if (playerActionEvent.UserId == _backendDataControlMediator.UserDataModel.UserId)
+                            if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                                 return;
 
                             OnReceivePlayerActionType(playerActionEvent);
@@ -176,7 +186,7 @@ namespace Loom.ZombieBattleground
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
         {
-            switch (playerActionEvent.PlayerActionType)
+            switch (playerActionEvent.PlayerAction.ActionType)
             {
                 case PlayerActionType.NoneAction:
                     break;
@@ -208,8 +218,10 @@ namespace Loom.ZombieBattleground
                     RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(playerActionEvent.PlayerActionType),
-                        playerActionEvent.PlayerActionType.ToString() + " not found");
+                    throw new ArgumentOutOfRangeException(
+                        nameof(playerActionEvent.PlayerAction.ActionType),
+                        playerActionEvent.PlayerAction.ActionType + " not found"
+                    );
             }
         }
     }

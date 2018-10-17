@@ -13,7 +13,6 @@ namespace Loom.ZombieBattleground
     public class OpponentController : IController
     {
         private IGameplayManager _gameplayManager;
-        private IDataManager _dataManager;
         private IPvPManager _pvpManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
