@@ -2,16 +2,10 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Editor
 {
-    public static class CloudBuildPreBuildHandler
+    internal static class CloudBuildPreBuildHandler
     {
-        [MenuItem("Utilites/Build/Pre Cloud Build Test")]
-        public static void PreCloudBuildExportTestRun()
-        {
-            BuildAssetBundles();
-        }
-
         public static void PreCloudBuildExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
         {
             Debug.Log($"{nameof(PreCloudBuildExport)} invoked");
@@ -20,7 +14,7 @@ namespace Loom.ZombieBattleground
             BuildAssetBundles();
         }
 
-        private static void BuildAssetBundles()
+        public static void BuildAssetBundles()
         {
             string outputPath = Utilites.GetAssetBundleLocalRoot();
             Debug.Log($"Building asset bundles, path: {outputPath}");
@@ -33,9 +27,10 @@ namespace Loom.ZombieBattleground
 
             BuildPipeline.BuildAssetBundles(
                 outputPath,
-                Utilites.GetBuildAssetBundleOptions(buildTarget) |
-                    BuildAssetBundleOptions.ForceRebuildAssetBundle,
-                buildTarget);
+                EditorUtility.GetBuildAssetBundleOptions(buildTarget) |
+                BuildAssetBundleOptions.ForceRebuildAssetBundle,
+                buildTarget
+            );
         }
     }
 }
