@@ -5,7 +5,7 @@ public class DebugCommandsManager : IService
 {
     public void Init()
     {
-        #if UNITY_EDITOR
+        #if UNITY_EDITOR || !RELEASE
         ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
         Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/DebugConsole"));
 
