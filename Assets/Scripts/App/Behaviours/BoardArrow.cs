@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 public class BoardArrow : MonoBehaviour
@@ -114,6 +115,12 @@ public class BoardArrow : MonoBehaviour
 
             Destroy(_selfObject);
         }
+
+        InternalTools.DoActionDelayed(() =>
+        {
+            BoardArrowController.CurrentBoardArrow = null;
+            BoardArrowController.SetStatusOfBoardArrowOnBoard(false);
+        }, 0.1f);
     }
 
     protected void Init()
@@ -153,14 +160,7 @@ public class BoardArrow : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        GameClient.Get<ITimerManager>().AddTimer(
-            x =>
-            {
-                BoardArrowController.CurrentBoardArrow = null;
-                BoardArrowController.SetStatusOfBoardArrowOnBoard(false);
-            },
-            null,
-            0.25f);
+
     }
 
     private void Awake()
