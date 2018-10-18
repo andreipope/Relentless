@@ -128,6 +128,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7ddcf2b634c36d044803bd172ae6b27a, type: 3}
   - {fileID: 21300000, guid: 0d0f6db6b099b48d9a298e2f2d19bd66, type: 3}
   - {fileID: 21300000, guid: ca27ddc6b969c8545b4e2141fe8eab65, type: 3}
+  - {fileID: 21300000, guid: 18bdb107b8cf7e04e874505d6c780bad, type: 3}
   - {fileID: 21300000, guid: 0c6d340792b15b443ae2ca1bf8482752, type: 3}
   - {fileID: 21300000, guid: 4ec63017400807e4c9cedbf7476d261b, type: 3}
   - {fileID: 21300000, guid: 40383a17b7df19a4a9f5c8ff873a0cbe, type: 3}
@@ -293,6 +294,7 @@ SpriteAtlas:
   - earth_minion_blocker
   - water_officer_jetter
   - toxic_minion_zpitter
+  - item_minion_placeholder
   - water_officer_igloo
   - air_minion_fumez
   - water_commander_embryo
