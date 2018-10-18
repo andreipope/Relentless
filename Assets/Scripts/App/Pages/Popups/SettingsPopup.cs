@@ -109,11 +109,13 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
+#if !UNITY_ANDROID && !UNITY_IOS
             if (data is bool isFromMainMenu && isFromMainMenu)
             {
                 _quitToMenuButton.gameObject.SetActive(false);
                 _settingsButton.gameObject.SetActive(false);
             }
+#endif
         }
 
         public void Update()
