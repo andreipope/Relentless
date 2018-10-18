@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground.Data
 
         public int Delay;
 
+        public List<VisualEffectInfo> VisualEffectsToPlay;
+
         public void ParseData()
         {
             AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(Type);
@@ -150,6 +152,34 @@ namespace Loom.ZombieBattleground.Data
             {
                 TargetUnitType = Utilites.CastStringTuEnum<Enumerators.CardType>(UnitType);
             }
+        }
+
+        public bool HasVisualEffectType(Enumerators.VisualEffectType type)
+        {
+            if (VisualEffectsToPlay == null)
+                return false;
+
+            return VisualEffectsToPlay.Find(vfx => vfx.Type == type) != null;
+        }
+
+        public VisualEffectInfo GetVisualEffectByType(Enumerators.VisualEffectType type)
+        {
+            if (VisualEffectsToPlay == null) 
+            {
+                return new VisualEffectInfo()
+                {
+                    Path = string.Empty, 
+                    Type = type
+                };
+            }
+
+            return VisualEffectsToPlay.Find(vfx => vfx.Type == type);
+        }
+
+        public class VisualEffectInfo
+        {
+            public Enumerators.VisualEffectType Type;
+            public string Path;
         }
     }
 }

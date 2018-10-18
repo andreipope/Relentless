@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -12,6 +13,13 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+        }
+
         protected override void UnitDamagedHandler(BoardObject from)
         {
             base.UnitDamagedHandler(from);
@@ -19,7 +27,21 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
                 return;
 
-            ((BoardUnitModel) from)?.Stun(Enumerators.StunType.FREEZE, Value);
+            ((BoardUnitModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                            Target = from,
+                        }
+                    }
+            });
         }
     }
 }

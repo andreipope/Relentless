@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,6 +18,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -27,8 +30,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            PlayerCallerOfAbility.Goo -= Value;
-            PlayerCallerOfAbility.GooOnCurrentTurn -= Value;
+            PlayerCallerOfAbility.CurrentGoo -= Value;
+            PlayerCallerOfAbility.GooVials -= Value;
         }
     }
 }

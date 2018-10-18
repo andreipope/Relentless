@@ -29,13 +29,15 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private Dictionary<Enumerators.CacheDataType, string> _cacheDataPathes;
+        private Dictionary<Enumerators.CacheDataType, string> _cacheDataPaths;
 
         private DirectoryInfo _dir;
 
-        public DataManager()
+        public DataManager(ConfigData configData)
         {
+            FillCacheDataPaths();
             InitCachedData();
+            ConfigData = configData;
         }
 
         private void InitCachedData()
@@ -65,6 +67,8 @@ namespace Loom.ZombieBattleground
         public OpponentDecksData CachedOpponentDecksData { get; set; }
 
         public CreditsData CachedCreditsData { get; set; }
+
+        public ConfigData ConfigData { get; set; }
 
         public BetaConfig BetaConfig { get; set; }
 
@@ -120,8 +124,12 @@ namespace Loom.ZombieBattleground
 
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains("json") || file.Name.Contains("dat") ||
-                    file.Name.Contains(Constants.VersionFileResolution)) file.Delete();
+                if (_cacheDataPaths.Values.Any(path => path.EndsWith(file.Name)) ||
+                    file.Extension.Equals("dat", StringComparison.InvariantCultureIgnoreCase) ||
+                    file.Name.Contains(Constants.VersionFileResolution))
+                {
+                    file.Delete();
+                }
             }
 
             using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
@@ -134,34 +142,34 @@ namespace Loom.ZombieBattleground
         public Task SaveCache(Enumerators.CacheDataType type)
         {
             Debug.Log("== Saving cache type " + type);
-            if (!File.Exists(_cacheDataPathes[type])) File.Create(_cacheDataPathes[type]).Close();
+            if (!File.Exists(_cacheDataPaths[type])) File.Create(_cacheDataPaths[type]).Close();
 
             switch (type)
             {
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedUserLocalData));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(CachedUserLocalData));
                     break;
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCardsLibraryData));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(CachedCardsLibraryData));
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedHeroesData));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(CachedHeroesData));
                     break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCollectionData));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(CachedCollectionData));
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
                     _decksDataWithTimestamp.DecksData = CachedDecksData;
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(_decksDataWithTimestamp));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(_decksDataWithTimestamp));
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedOpponentDecksData));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(CachedOpponentDecksData));
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedCreditsData));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(CachedCreditsData));
                     break;
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
-                    File.WriteAllText(_cacheDataPathes[type], SerializeObject(CachedBuffsTooltipData));
+                    File.WriteAllText(_cacheDataPaths[type], SerializeObject(CachedBuffsTooltipData));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -192,6 +200,9 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
+            Debug.Log("Encryption: " + ConfigData.EncryptData);
+            Debug.Log("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
+
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
@@ -201,7 +212,6 @@ namespace Loom.ZombieBattleground
 
             CheckVersion();
             CheckFirstLaunch();
-            FillCacheDataPathes();
         }
 
         public void Update()
@@ -259,14 +269,11 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-#if SKIP_CARDS_LIBRARY_DATA_FROM_BACKEND
-                    Debug.LogError("Skipping Card Library load from backend, using local data");
-                    if (File.Exists(_cacheDataPathes[type])) {
-                       CachedCardsLibraryData = DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
-                    }
-#else
                     try
                     {
+                        if (ConfigData.SkipBackendCardData) {
+                            throw new Exception("Config Set to Skip Backend Call");
+                        }
                         ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
                         Debug.Log(listCardLibraryResponse.ToString());
                         CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
@@ -274,11 +281,10 @@ namespace Loom.ZombieBattleground
                     catch (Exception ex)
                     {
                         Debug.LogError("===== Card Library Not Loaded, loading from cache ===== " + ex);
-                        if (File.Exists(_cacheDataPathes[type]))
+                        if (File.Exists(_cacheDataPaths[type]))
                             CachedCardsLibraryData =
-                                DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPathes[type]);
+                                DeserializeObjectFromPath<CardsLibraryData>(_cacheDataPaths[type]);
                     }
-#endif
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try
@@ -291,14 +297,14 @@ namespace Loom.ZombieBattleground
                     catch (Exception ex)
                     {
                         Debug.LogError("===== Heroes List not Loaded, loading from cache ===== " + ex);
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPathes[type]);
+                        if (File.Exists(_cacheDataPaths[type]))
+                            CachedHeroesData = DeserializeObjectFromPath<HeroesData>(_cacheDataPaths[type]);
                     }
 
                     break;
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    if (File.Exists(_cacheDataPathes[type]))
-                        CachedUserLocalData = DeserializeObjectFromPath<UserLocalData>(_cacheDataPathes[type]);
+                    if (File.Exists(_cacheDataPaths[type]))
+                        CachedUserLocalData = DeserializeObjectFromPath<UserLocalData>(_cacheDataPaths[type]);
 
                     break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
@@ -312,18 +318,18 @@ namespace Loom.ZombieBattleground
                     catch (Exception ex)
                     {
                         Debug.LogError("===== Card Collection Not Loaded, loading from cache ===== " + ex);
-                        if (File.Exists(_cacheDataPathes[type]))
-                            CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPathes[type]);
+                        if (File.Exists(_cacheDataPaths[type]))
+                            CachedCollectionData = DeserializeObjectFromPath<CollectionData>(_cacheDataPaths[type]);
                     }
 
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
                     DecksData localDecksData, remoteDecksData = null;
                     long localDecksDataTimestamp = 0, remoteDecksDataTimestamp = 0;
-                    if (File.Exists(_cacheDataPathes[type]))
+                    if (File.Exists(_cacheDataPaths[type]))
                     {
                         DecksDataWithTimestamp localDecksDataWithTimestamp =
-                            DeserializeObjectFromPath<DecksDataWithTimestamp>(_cacheDataPathes[type]);
+                            DeserializeObjectFromPath<DecksDataWithTimestamp>(_cacheDataPaths[type]);
                         localDecksData = localDecksDataWithTimestamp.DecksData;
                         localDecksDataTimestamp = localDecksDataWithTimestamp.LastModificationTimestamp;
                     }
@@ -415,19 +421,18 @@ namespace Loom.ZombieBattleground
 
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    if (File.Exists(_cacheDataPathes[type]))
-                        CachedOpponentDecksData = DeserializeObjectFromPath<OpponentDecksData>(_cacheDataPathes[type]);
+                    if (File.Exists(_cacheDataPaths[type]))
+                        CachedOpponentDecksData = DeserializeObjectFromPath<OpponentDecksData>(_cacheDataPaths[type]);
 
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
-                    if (File.Exists(_cacheDataPathes[type]))
-                        CachedCreditsData = DeserializeObjectFromPath<CreditsData>(_cacheDataPathes[type]);
+                    if (File.Exists(_cacheDataPaths[type]))
+                        CachedCreditsData = DeserializeObjectFromPath<CreditsData>(_cacheDataPaths[type]);
 
                     break;
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
-                    if (File.Exists(_cacheDataPathes[type]))
-                        CachedBuffsTooltipData = DeserializeObjectFromPath<TooltipContentData>(_cacheDataPathes[type]);
-
+                    if (File.Exists(_cacheDataPaths[type]))
+                        CachedBuffsTooltipData = DeserializeObjectFromPath<TooltipContentData>(_cacheDataPaths[type]);
                     break;
             }
         }
@@ -456,9 +461,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void FillCacheDataPathes()
+        private void FillCacheDataPaths()
         {
-            _cacheDataPathes = new Dictionary<Enumerators.CacheDataType, string>
+            _cacheDataPaths = new Dictionary<Enumerators.CacheDataType, string>
             {
                 {
                     Enumerators.CacheDataType.USER_LOCAL_DATA,
@@ -491,26 +496,24 @@ namespace Loom.ZombieBattleground
                 {
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA,
                     Path.Combine(Application.persistentDataPath, Constants.LocalBuffsTooltipDataFilePath)
-                },
+                }
             };
         }
 
         public string DecryptData(string data)
         {
-#if DISABLE_DATA_ENCRYPTION
-            return data;
-#else
+            if (!ConfigData.EncryptData)
+                return data;
+
             return Utilites.Decrypt(data, Constants.PrivateEncryptionKeyForApp);
-#endif
         }
 
         public string EncryptData(string data)
         {
-#if DISABLE_DATA_ENCRYPTION
-            return data;
-#else
+            if (!ConfigData.EncryptData)
+                return data;
+
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
-#endif
         }
 
         private T DeserializeObjectFromPath<T>(string path)
@@ -520,7 +523,8 @@ namespace Loom.ZombieBattleground
 
         private string SerializeObject(object obj)
         {
-            return EncryptData(JsonConvert.SerializeObject(obj, Formatting.Indented));
+            string data = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            return EncryptData(data);
         }
 
         private void FillFullCollection()

@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
 
             if (attackingUnitModel != null && attackedPlayer != null)
             {
-                attackedPlayer.Health -= damageAttacking;
+                attackedPlayer.Defense -= damageAttacking;
             }
 
             attackingUnitModel.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
@@ -70,10 +70,18 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = attackedPlayer
+                        Target = attackedPlayer,
+                        HasValue = true,
+                        Value = -damageAttacking
                     }
                 }
             });
+
+            if (attackingUnitModel.OwnerPlayer == _gameplayManager.CurrentPlayer)
+            {
+                _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.AttackOnOverlord,
+                    new AttackOverlord(attackingUnitModel, attackedPlayer, damageAttacking)));
+            }
         }
 
         public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0)
@@ -113,6 +121,7 @@ namespace Loom.ZombieBattleground
                     if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
                     {
                         damageAttacked = 0;
+                        attackingUnitModel.HasUsedBuffShield = true;
                     }
 
                     attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
@@ -133,12 +142,20 @@ namespace Loom.ZombieBattleground
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                            Target = attackedUnitModel
+                            Target = attackedUnitModel,
+                            HasValue = true,
+                            Value = -damageAttacking
                         }
                     }
                 });
 
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
+
+                if (attackingUnitModel.OwnerPlayer == _gameplayManager.CurrentPlayer)
+                {
+                    _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.AttackOnUnit,
+                        new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking)));
+                }
             }
         }
 
@@ -168,7 +185,7 @@ namespace Loom.ZombieBattleground
             {
                 int damage = skill.Skill.Value;
 
-                attackedPlayer.Health -= damage;
+                attackedPlayer.Defense -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
             }
@@ -178,14 +195,14 @@ namespace Loom.ZombieBattleground
         {
             if (healingPlayer != null)
             {
-                healedPlayer.Health += skill.Skill.Value;
+                healedPlayer.Defense += skill.Skill.Value;
 
                 if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN ||
                     skill.Skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
                 {
-                    if (healingPlayer.Health > Constants.DefaultPlayerHp)
+                    if (healingPlayer.Defense > Constants.DefaultPlayerHp)
                     {
-                        healingPlayer.Health = Constants.DefaultPlayerHp;
+                        healingPlayer.Defense = Constants.DefaultPlayerHp;
                     }
                 }
             }
@@ -244,7 +261,7 @@ namespace Loom.ZombieBattleground
             {
                 int damage = ability.Value;
 
-                attackedPlayer.Health -= damage;
+                attackedPlayer.Defense -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);
             }
@@ -259,10 +276,10 @@ namespace Loom.ZombieBattleground
 
             if (healedPlayer != null)
             {
-                healedPlayer.Health += healValue;
-                if (healedPlayer.Health > Constants.DefaultPlayerHp)
+                healedPlayer.Defense += healValue;
+                if (healedPlayer.Defense > Constants.DefaultPlayerHp)
                 {
-                    healedPlayer.Health = Constants.DefaultPlayerHp;
+                    healedPlayer.Defense = Constants.DefaultPlayerHp;
                 }
             }
         }

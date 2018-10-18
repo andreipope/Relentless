@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         protected BattlegroundController BattlegroundController;
 
-        protected SpriteRenderer GlowSprite;
+        protected GameObject GlowObject;
 
         protected SpriteRenderer BackgroundSprite;
 
@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
             CardAnimator = GameObject.GetComponent<Animator>();
             CardAnimator.enabled = false;
 
-            GlowSprite = Transform.Find("Glow").GetComponent<SpriteRenderer>();
+            GlowObject = Transform.Find("Glow").gameObject;
             PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
             BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
 
@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
             InitialCost = WorkingCard.InitialCost;
             ManaCost = InitialCost;
 
-            WorkingCard.Owner.PlayerGooChanged += PlayerGooChangedHandler;
+            WorkingCard.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.LibraryCard.CardRank);
 
@@ -347,7 +347,7 @@ namespace Loom.ZombieBattleground
         public virtual bool CanBeBuyed(Player owner)
         {
 #if !DEV_MODE
-            return owner.Goo >= ManaCost;
+            return owner.CurrentGoo >= ManaCost;
 #else
             return true;
 #endif
@@ -355,9 +355,9 @@ namespace Loom.ZombieBattleground
 
         public void SetHighlightingEnabled(bool enabled)
         {
-            if (GlowSprite != null && GlowSprite)
+            if (GlowObject!= null && GlowObject)
             {
-                GlowSprite.enabled = enabled;
+                GlowObject.SetActive(enabled);
             }
         }
 
@@ -746,7 +746,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private void PlayerGooChangedHandler(int obj)
+        private void PlayerCurrentGooChangedHandler(int obj)
         {
             UpdateCardsStatusEventHandler(WorkingCard.Owner);
         }

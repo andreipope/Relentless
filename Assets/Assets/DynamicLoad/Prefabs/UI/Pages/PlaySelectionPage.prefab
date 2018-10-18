@@ -121,11 +121,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224727504121618344}
-  - component: {fileID: 114596404978520098}
   - component: {fileID: 222655303859004756}
   - component: {fileID: 114600204186460598}
+  - component: {fileID: 114967397772377824}
   m_Layer: 0
-  m_Name: Button_Solo
+  m_Name: Button_SoloMode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,11 +206,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224479732133582312}
-  - component: {fileID: 114982820244807496}
   - component: {fileID: 222213804123661062}
   - component: {fileID: 114858521303042536}
+  - component: {fileID: 114501469639472954}
   m_Layer: 0
-  m_Name: Button_VS
+  m_Name: Button_PvPMode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -440,15 +440,15 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114596404978520098
+--- !u!114 &114501469639472954
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1537809833309868}
+  m_GameObject: {fileID: 1966510665894862}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d531b832618d7a4c867fd3f46fb386d, type: 3}
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -466,25 +466,22 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 21300000, guid: 5c0aa867d01f1cf48a8480768604302c, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: 21300000, guid: 041ab46db5c744073ad0b5e34d61ea3b,
+      type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 041ab46db5c744073ad0b5e34d61ea3b, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: 95d041341c5c44f16b2b0a1dc5466795, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 114600204186460598}
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 114858521303042536}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  ShiftValue: {x: 0, y: -15, z: 0}
-  ShiftedChild: {fileID: 224952521088279142}
-  ShiftOnHighlight: 0
-  ShiftOnPress: 1
 --- !u!114 &114600204186460598
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -885,15 +882,15 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114982820244807496
+--- !u!114 &114967397772377824
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1966510665894862}
+  m_GameObject: {fileID: 1537809833309868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d531b832618d7a4c867fd3f46fb386d, type: 3}
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -902,7 +899,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -912,7 +909,7 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 21300000, guid: 5c0aa867d01f1cf48a8480768604302c, type: 3}
+    m_PressedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
@@ -920,16 +917,12 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 114858521303042536}
+  m_TargetGraphic: {fileID: 114600204186460598}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  ShiftValue: {x: 0, y: -15, z: 0}
-  ShiftedChild: {fileID: 224144286550509244}
-  ShiftOnHighlight: 0
-  ShiftOnPress: 1
 --- !u!222 &222148340972286014
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -1110,10 +1103,10 @@ RectTransform:
   - {fileID: 224227147825772426}
   - {fileID: 224281115129450370}
   - {fileID: 224672676023120130}
-  - {fileID: 224802542713630902}
   - {fileID: 224876942368142308}
   - {fileID: 224727504121618344}
   - {fileID: 224479732133582312}
+  - {fileID: 224802542713630902}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1134,7 +1127,7 @@ RectTransform:
   m_Children:
   - {fileID: 224144286550509244}
   m_Father: {fileID: 224412494567760666}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1171,7 +1164,7 @@ RectTransform:
   m_Children:
   - {fileID: 224952521088279142}
   m_Father: {fileID: 224412494567760666}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1190,7 +1183,7 @@ RectTransform:
   m_Children:
   - {fileID: 224021207699576778}
   m_Father: {fileID: 224412494567760666}
-  m_RootOrder: 3
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1209,7 +1202,7 @@ RectTransform:
   m_Children:
   - {fileID: 224142374006641878}
   m_Father: {fileID: 224412494567760666}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}

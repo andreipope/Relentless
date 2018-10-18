@@ -52,6 +52,8 @@ namespace Loom.ZombieBattleground
 
         private CancellationTokenSource _aiBrainCancellationTokenSource;
 
+        private Enumerators.AiBrainType _aiBrainType;
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -71,6 +73,7 @@ namespace Loom.ZombieBattleground
 
             _normalUnitCardInHand = new List<WorkingCard>();
             _normalSpellCardInHand = new List<WorkingCard>();
+
         }
 
         public void Dispose()
@@ -109,13 +112,20 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck);
+                _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
 
+            SetAiBrainType(Enumerators.AiBrainType.Normal);
+
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
+        }
+
+        public void SetAiBrainType(Enumerators.AiBrainType aiBrainType)
+        {
+            _aiBrainType = aiBrainType;
         }
 
         public async Task LaunchAIBrain()
@@ -125,7 +135,20 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+                switch (_aiBrainType)
+                {
+                    case Enumerators.AiBrainType.DoNothing:
+                        await DoNothingAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    case Enumerators.AiBrainType.Normal:
+                        await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    case Enumerators.AiBrainType.DontAttack:
+                        await DontAttackAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -138,8 +161,16 @@ namespace Loom.ZombieBattleground
         private void SetAiTypeByDeck()
         {
             OpponentDeck deck =
-                _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId);
-            SetAiType((Enumerators.AiType) Enum.Parse(typeof(Enumerators.AiType), deck.Type));
+                _dataManager.CachedOpponentDecksData.Decks.Find(d => d.Id == _gameplayManager.OpponentDeckId);
+
+            if (deck != null)
+            {
+                SetAiType((Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type));
+            }
+            else
+            {
+                throw new NullReferenceException($"OpponentDeck with id {_gameplayManager.OpponentDeckId} is null!");
+            }
         }
 
         public void SetAiType(Enumerators.AiType aiType)
@@ -155,7 +186,7 @@ namespace Loom.ZombieBattleground
 
         private void GameStartedHandler()
         {
-            if (!_gameplayManager.IsTutorial)
+            if (!_gameplayManager.IsTutorial && GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 SetAiTypeByDeck();
             }
@@ -236,6 +267,30 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private async Task DoNothingAiBrain(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            _battlegroundController.StopTurn();
+        }
+
+        private async Task DontAttackAiBrain(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await PlayCardsFromHand(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+
+            _battlegroundController.StopTurn();
+        }
+
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
@@ -296,21 +351,19 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
-                        if (UnitCanBeUsable(unit))
+                        BoardUnitModel attackedUnit = GetTargetOpponentUnit();
+                        if (attackedUnit != null)
                         {
-                            BoardUnitModel attackedUnit = GetTargetOpponentUnit();
-                            if (attackedUnit != null)
-                            {
-                                unit.DoCombat(attackedUnit);
-                                alreadyUsedUnits.Add(unit);
+                            unit.DoCombat(attackedUnit);
+                            alreadyUsedUnits.Add(unit);
 
-                                await LetsThink(cancellationToken);
-                                if (!OpponentHasHeavyUnits())
-                                {
-                                    break;
-                                }
+                            await LetsThink(cancellationToken);
+                            if (!OpponentHasHeavyUnits())
+                            {
+                                break;
                             }
                         }
+                        else break;
                     }
                 }
             }
@@ -321,16 +374,15 @@ namespace Loom.ZombieBattleground
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if ((totalValue >= _gameplayManager.OpponentPlayer.Health || _aiType == Enumerators.AiType.BLITZ_AI ||
+            if ((totalValue >= _gameplayManager.OpponentPlayer.Defense || _aiType == Enumerators.AiType.BLITZ_AI ||
                 _aiType == Enumerators.AiType.TIME_BLITZ_AI))
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
-                    while (UnitCanBeUsable(unit)) {
-                        {
-                            unit.DoCombat(_gameplayManager.CurrentPlayer);
-                            await LetsThink(cancellationToken);
-                        }
+                    while (UnitCanBeUsable(unit))
+                    {
+                        unit.DoCombat(_gameplayManager.CurrentPlayer);
+                        await LetsThink(cancellationToken);
                     }
                 }
             }
@@ -340,25 +392,24 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
+                        if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
                         {
-                            if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
+                            unit.DoCombat(_gameplayManager.CurrentPlayer);
+                            await LetsThink(cancellationToken);
+                        }
+                        else
+                        {
+                            BoardUnitModel attackedCreature = GetRandomOpponentUnit();
+
+                            if (attackedCreature != null)
                             {
-                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                unit.DoCombat(attackedCreature);
                                 await LetsThink(cancellationToken);
                             }
                             else
                             {
-                                BoardUnitModel attackedCreature = GetRandomOpponentUnit();
-                                if (attackedCreature != null)
-                                {
-                                    unit.DoCombat(attackedCreature);
-                                    await LetsThink(cancellationToken);
-                                }
-                                else
-                                {
-                                    unit.DoCombat(_gameplayManager.CurrentPlayer);
-                                    await LetsThink(cancellationToken);
-                                }
+                                unit.DoCombat(_gameplayManager.CurrentPlayer);
+                                await LetsThink(cancellationToken);
                             }
                         }
                     }
@@ -408,7 +459,7 @@ namespace Loom.ZombieBattleground
         {
             int benefit = 0;
             int boardCount = 0;
-            int gooAmount = _gameplayManager.OpponentPlayer.Goo;
+            int gooAmount = _gameplayManager.OpponentPlayer.CurrentGoo;
             List<WorkingCard> overflowGooCards = new List<WorkingCard>();
             List<WorkingCard> cards = new List<WorkingCard>();
             cards.AddRange(GetUnitCardsInHand());
@@ -423,7 +474,7 @@ namespace Loom.ZombieBattleground
                         .Find(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
                     if (attackOverlordAbility != null)
                     {
-                        if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
+                        if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
                             break;
                     }
 
@@ -446,8 +497,8 @@ namespace Loom.ZombieBattleground
             WorkingCard expensiveCard =
                 GetUnitCardsInHand()
                     .Find(
-                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.Goo &&
-                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo + benefit);
+                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
+                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
             if (expensiveCard != null)
             {
                 bool wasAction = false;
@@ -501,7 +552,7 @@ namespace Loom.ZombieBattleground
         private bool CardCanBePlayable(WorkingCard card)
         {
 #if !DEV_MODE
-            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.Goo &&
+            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
 #else
             return true;
@@ -522,7 +573,7 @@ namespace Loom.ZombieBattleground
                     if (ability.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD)
                     {
                         // smart enough HP to use goo carriers
-                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Health)
+                        if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
                         {
                             return false;
                         }
@@ -576,13 +627,20 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _gameplayManager.OpponentPlayer.Goo -= card.LibraryCard.Cost;
+            _gameplayManager.OpponentPlayer.CurrentGoo -= card.LibraryCard.Cost;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
         {
-            WorkingCard workingCard =
-                _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
+            WorkingCard workingCard = null;
+
+            if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
+            {
+                workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
+            }
+
+            if (workingCard == null || card == null) 
+                return;
 
             switch (card.LibraryCard.CardKind)
             {
@@ -602,14 +660,16 @@ namespace Loom.ZombieBattleground
 
                     _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
 
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                        {
-                            ActionType = Enumerators.ActionType.PlayCardFromHand,
-                            Caller = boardUnitViewElement.Model,
-                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                        });
+                    _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    {
+                        ActionType = Enumerators.ActionType.PlayCardFromHand,
+                        Caller = boardUnitViewElement.Model,
+                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    });
 
-                        boardUnitViewElement.PlayArrivalAnimation();
+                    boardUnitViewElement.PlayArrivalAnimation();
+
+                    _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
 
                     _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
                         () =>
@@ -1074,7 +1134,7 @@ namespace Loom.ZombieBattleground
         {
             BoardObject target = null;
 
-            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.NONE;
+            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.None;
 
             switch (skill.Skill.OverlordSkill)
             {
@@ -1082,7 +1142,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.STONE_SKIN:
                 case Enumerators.OverlordSkill.DRAW:
                 {
-                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
                     target = _gameplayManager.OpponentPlayer;
                 }
 
@@ -1094,20 +1154,18 @@ namespace Loom.ZombieBattleground
                         if (units.Count > 0)
                         {
                             target = units[0];
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
                         }
                         else
-                        {
                             return;
-                        }
                     }
                     break;
                 case Enumerators.OverlordSkill.MEND:
                 {
                     target = _gameplayManager.OpponentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                    if (_gameplayManager.OpponentPlayer.Health > 13)
+                    if (_gameplayManager.OpponentPlayer.Defense > 13)
                     {
                         if (skill.Skill.ElementTargetTypes.Count > 0)
                         {
@@ -1123,9 +1181,13 @@ namespace Loom.ZombieBattleground
                         if (units.Count > 0)
                         {
                             target = units[0];
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                        }
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        } 
+                        else 
+                            return;
                     }
+                    else
+                        return;
                 }
 
                     break;
@@ -1143,8 +1205,10 @@ namespace Loom.ZombieBattleground
                     if (unit != null)
                     {
                         target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
                     }
+                    else
+                        return;
                 }
 
                     break;
@@ -1155,15 +1219,17 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.FIRE_BOLT:
                 {
                     target = _gameplayManager.CurrentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.PLAYER;
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
 
                     BoardUnitModel unit = GetRandomOpponentUnit();
 
-                    if (unit != null)
-                    {
-                        target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
-                    }
+                        if (unit != null)
+                        {
+                            target = unit;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else 
+                            return; 
                 }
 
                     break;
@@ -1186,7 +1252,7 @@ namespace Loom.ZombieBattleground
 
                         _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
 
-                        selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
                     }
                     else
                     {
@@ -1198,12 +1264,10 @@ namespace Loom.ZombieBattleground
 
                             _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
 
-                            selectedObjectType = Enumerators.AffectObjectType.CHARACTER;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
                         }
                         else
-                        {
                             return;
-                        }
                     }
                 }
 
@@ -1218,14 +1282,14 @@ namespace Loom.ZombieBattleground
             {
                 switch (selectedObjectType)
                 {
-                    case Enumerators.AffectObjectType.PLAYER:
+                    case Enumerators.AffectObjectType.Player:
                         skill.FightTargetingArrow.SelectedPlayer = (Player) target;
                         break;
-                    case Enumerators.AffectObjectType.CHARACTER:
+                    case Enumerators.AffectObjectType.Character:
                         BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
                         skill.FightTargetingArrow.SelectedCard = selectedCardView;
                         break;
-                    case Enumerators.AffectObjectType.NONE:
+                    case Enumerators.AffectObjectType.None:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(selectedObjectType), selectedObjectType, null);

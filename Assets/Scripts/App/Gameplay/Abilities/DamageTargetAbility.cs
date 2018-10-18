@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -80,7 +81,7 @@ namespace Loom.ZombieBattleground
             }
 
             Vector3 targetPosition =
-                AffectObjectType == Enumerators.AffectObjectType.CHARACTER ?
+                AffectObjectType == Enumerators.AffectObjectType.Character ?
                 BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position :
                 TargetPlayer.AvatarObject.transform.position;
 
@@ -101,17 +102,47 @@ namespace Loom.ZombieBattleground
         {
             object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
+            object target = null;
+
             switch (AffectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        TargetPlayer
+                    },  AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+
+                    target = TargetPlayer;
                     break;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        TargetUnit
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
+                    target = TargetUnit;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = target,
+                        HasValue = true,
+                        Value = -AbilityData.Value
+                    }
+                }
+            });
 
             Vector3 targetPosition = VfxObject.transform.position;
 

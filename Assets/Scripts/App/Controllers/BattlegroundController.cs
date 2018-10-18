@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IPvPManager _pvpManager;
+
         private Sequence _rearrangingTopRealTimeSequence, _rearrangingBottomRealTimeSequence;
 
         public event Action<int> PlayerGraveyardUpdated;
@@ -89,6 +91,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -99,6 +102,13 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GameEnded += GameEndedHandler;
 
             _gameplayManager.GameInitialized += OnGameInitializedHandler;
+
+            _pvpManager.EndTurnActionReceived += OnGetEndTurnHandler;
+        }
+
+        private void OnGetEndTurnHandler()
+        {
+            StopTurn();
         }
 
         public void Dispose()
@@ -159,9 +169,8 @@ namespace Loom.ZombieBattleground
             _timerManager.AddTimer(
                 x =>
                 {
-                    //cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
-                    CreateDeadAnimation(cardToDestroy);
-
+                    cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
+                    // CreateDeadAnimation(cardToDestroy);
 
                     string cardDeathSoundName =
                         cardToDestroy.Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
@@ -175,31 +184,30 @@ namespace Loom.ZombieBattleground
                         soundLength = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
                     }
 
-                    _timerManager.AddTimer(
-                        t =>
+                    // do this trick untill we will sync zombie death animations
+                    soundLength = soundLength > 0 ? soundLength : 0.25f;
+
+                    InternalTools.DoActionDelayed(() =>
                         {
                             cardToDestroy.Model.OwnerPlayer.BoardCards.Remove(cardToDestroy);
                             cardToDestroy.Model.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Model.Card);
                             cardToDestroy.Model.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Model.Card);
 
                             cardToDestroy.Model.InvokeUnitDied();
+
                             cardToDestroy.Transform.DOKill();
                             Object.Destroy(cardToDestroy.GameObject);
 
-                            _timerManager.AddTimer(
-                                f =>
-                                {
-                                    UpdatePositionOfBoardUnitsOfOpponent();
-                                    UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-                                },
-                                null,
-                                Time.deltaTime);
-                        },
-                        null,
-                        soundLength);
+                            InternalTools.DoActionDelayed(() =>
+                            {
+                                UpdatePositionOfBoardUnitsOfOpponent();
+                                UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+                            }, Time.deltaTime);
+
+                        }, soundLength);
                 });
         }
-
+    
         private void CreateDeadAnimation(BoardUnitView cardToDestroy)
         {
             _vfxController.CreateDeathZombieAnimation(cardToDestroy);
@@ -244,7 +252,7 @@ namespace Loom.ZombieBattleground
             CurrentTurn = Constants.FirstGameTurnIndex;
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.Health = 1;
+            _gameplayManager.OpponentPlayer.Health = 99;
             _gameplayManager.CurrentPlayer.Health = 99;
 #endif
 
@@ -366,10 +374,7 @@ namespace Loom.ZombieBattleground
                     card.Model.OnEndTurn();
                 }
 
-                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                {
-                    await _gameplayManager.GetController<OpponentController>().ActionEndTurn(_gameplayManager.CurrentPlayer);
-                }
+                TurnEnded?.Invoke();
             }
             else
             {
@@ -387,8 +392,6 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer;
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
-
-            TurnEnded?.Invoke();
         }
 
         public void StopTurn()
@@ -576,11 +579,11 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case BoardCard card:
-                    CurrentPreviewedCardId = card.WorkingCard.InstanceId;
+                    CurrentPreviewedCardId = card.WorkingCard.Id;
                     break;
                 case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
-                    CurrentPreviewedCardId = unit.Model.Card.InstanceId;
+                    CurrentPreviewedCardId = unit.Model.Card.Id;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -819,6 +822,9 @@ namespace Loom.ZombieBattleground
         /// <returns></returns>
         public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
         {
+            if (boardUnitModel == null)
+                return null;
+
             BoardUnitView cardToDestroy =
                 OpponentBoardCards
                     .Concat(OpponentBoardCards)
@@ -881,15 +887,15 @@ namespace Loom.ZombieBattleground
         {
             switch(affectObjectType)
             {
-                case Enumerators.AffectObjectType.PLAYER:
+                case Enumerators.AffectObjectType.Player:
                     return _gameplayManager.OpponentPlayer.Id == id ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-                case Enumerators.AffectObjectType.CHARACTER:
+                case Enumerators.AffectObjectType.Character:
                     {
                         List<BoardUnitView> units = new List<BoardUnitView>();
                         units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
                         units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-                        BoardUnitView unit = units.Find(u => u.Model.Id == id);
+                        BoardUnitView unit = units.Find(u => u.Model.Card.Id == id);
 
                         units.Clear();
 
@@ -897,11 +903,29 @@ namespace Loom.ZombieBattleground
                             return unit.Model;
                     }
                     break;
+                case Enumerators.AffectObjectType.Card:
+                    return null;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(affectObjectType), affectObjectType, null);
             }
 
             return null;
+        }
+
+        public List<BoardObject> GetTargetsById(List<Protobuf.Unit> targetUnits)
+        {
+            List<BoardObject> boardObjects = new List<BoardObject>();
+
+            if (targetUnits != null)
+            {
+                foreach (Protobuf.Unit targetUnit in targetUnits)
+                {
+                    boardObjects.Add(GetTargetById(targetUnit.InstanceId,
+                         Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(targetUnit.AffectObjectType.ToString(), true)));
+                }
+            }
+
+            return boardObjects;
         }
 
         public BoardSkill GetSkillById(Player owner, int id)
@@ -926,7 +950,12 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel GetBoardUnitById(Player owner, int id)
         {
-            return owner.BoardCards.Find(u => u.Model.Id == id).Model;
+            BoardUnitView view = owner.BoardCards.Find(u => u != null && u.Model.Card.Id == id);
+
+            if (view != null)
+                return view.Model;
+
+            return null;
         }
 
         public BoardObject GetBoardObjectById(int id)
@@ -935,11 +964,38 @@ namespace Loom.ZombieBattleground
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-            BoardUnitModel unit = units.Find(u => u.Model.Id == id).Model;
+            BoardUnitView unit = units.Find(u => u.Model.Card.Id == id);
 
-            units.Clear();
+            if(unit != null)
+            {
+                units.Clear();
+                return unit.Model;
+            }
+            else
+            {
+                List<BoardObject> boardObjects = new List<BoardObject>();
+                boardObjects.Add(_gameplayManager.CurrentPlayer);
+                boardObjects.Add(_gameplayManager.OpponentPlayer);
+                boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardSpellsInUse);
+                boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardSpellsInUse);
 
-            return unit;
+                BoardObject foundObject = boardObjects.Find(x => x is BoardSpell spell ? spell.Card.Id == id : x.Id == id);
+
+                boardObjects.Clear();
+
+                return foundObject;
+            }
+        }
+
+        public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
+        {
+            BoardUnitView targetView = GetBoardUnitViewByModel(targetUnit);
+
+            return targetUnit.OwnerPlayer.BoardCards.Where(unit =>
+            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
+            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)-1)||
+            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
+            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)+1)).ToList();
         }
 
         #region specific setup of battleground
@@ -955,14 +1011,14 @@ namespace Loom.ZombieBattleground
 
         private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
         {
-            _gameplayManager.OpponentPlayer.Health = specificBattlegroundInfo.OpponentInfo.Health;
-            _gameplayManager.OpponentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
-            _gameplayManager.OpponentPlayer.Goo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
+            _gameplayManager.OpponentPlayer.Defense = specificBattlegroundInfo.OpponentInfo.Health;
+            _gameplayManager.OpponentPlayer.GooVials = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
+            _gameplayManager.OpponentPlayer.CurrentGoo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
             _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AiType);
 
-            _gameplayManager.CurrentPlayer.Health = specificBattlegroundInfo.PlayerInfo.Health;
-            _gameplayManager.CurrentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
-            _gameplayManager.CurrentPlayer.Goo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
+            _gameplayManager.CurrentPlayer.Defense = specificBattlegroundInfo.PlayerInfo.Health;
+            _gameplayManager.CurrentPlayer.GooVials = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
+            _gameplayManager.CurrentPlayer.CurrentGoo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
         }
 
         private void SetupOverlordsHandsAsSpecific(List<string> playerCards, List<string> opponentCards)
@@ -976,8 +1032,8 @@ namespace Loom.ZombieBattleground
 
         private void SetupOverlordsDecksAsSpecific(List<string> playerCards, List<string> opponentCards)
         {
-            _gameplayManager.CurrentPlayer.SetDeck(playerCards);
-            _gameplayManager.OpponentPlayer.SetDeck(opponentCards);
+            _gameplayManager.CurrentPlayer.SetDeck(playerCards, false);
+            _gameplayManager.OpponentPlayer.SetDeck(opponentCards, true);
         }
 
         private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)

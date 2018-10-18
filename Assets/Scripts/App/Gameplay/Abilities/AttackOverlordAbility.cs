@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -40,12 +42,12 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        GetOpponentOverlord().Health -= Value;
-                        CreateVfx(GetOpponentOverlord().AvatarObject.transform.position, true, 5f, true);
+                        GetOpponentOverlord().Defense -= Value;
+                        CreateVfx(Utilites.CastVfxPosition(GetOpponentOverlord().AvatarObject.transform.position), true, 5f, true);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        PlayerCallerOfAbility.Health -= Value;
-                        CreateVfx(PlayerCallerOfAbility.AvatarObject.transform.position, true, 5f, true);
+                        PlayerCallerOfAbility.Defense -= Value;
+                        CreateVfx(Utilites.CastVfxPosition(PlayerCallerOfAbility.AvatarObject.transform.position), true, 5f, true);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);

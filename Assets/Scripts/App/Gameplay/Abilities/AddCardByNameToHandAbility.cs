@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,6 +18,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Card);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -31,7 +34,21 @@ namespace Loom.ZombieBattleground
                 (Name == "Corrupted Goo" || Name == "Tainted Goo") &&
                 CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement)
             {
-                CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
+                WorkingCard card = CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.AddCardToHand,
+                            Target = card,
+                        }
+                    }
+                });
             }
         }
     }

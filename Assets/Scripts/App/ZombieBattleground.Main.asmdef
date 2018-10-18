@@ -6,7 +6,8 @@
         "ZombieBattleground.Generated",
         "AsyncAwaitUtil",
         "GoogleAnalytics",
-        "DOTween.Modules"
+        "DOTween.Modules",
+        "AdvancedFPSCounter"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

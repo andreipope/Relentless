@@ -61,11 +61,9 @@ namespace Loom.ZombieBattleground
             GameObject effect;
             GameObject vfxPrefab;
 
-            Vector3 offset = Vector3.zero;
-            if (type == Enumerators.CardType.FERAL || type == Enumerators.CardType.HEAVY)
+            if (type == Enumerators.CardType.HEAVY)
             {
                 target = Utilites.CastVfxPosition(target);
-                offset = Vector3.forward * 1;
             }
 
             switch (type)
@@ -74,7 +72,7 @@ namespace Loom.ZombieBattleground
                 {
                     vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
                     effect = Object.Instantiate(vfxPrefab);
-                    effect.transform.position = target - offset;
+                    effect.transform.position = target;
                     _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume,
                         false, false, true);
 
@@ -86,7 +84,7 @@ namespace Loom.ZombieBattleground
                             a =>
                             {
                                 effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target - offset;
+                                effect.transform.position = target;
                                 effect.transform.localScale = new Vector3(-1, 1, 1);
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
                             },
@@ -100,7 +98,7 @@ namespace Loom.ZombieBattleground
                             a =>
                             {
                                 effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target - Vector3.right - offset;
+                                effect.transform.position = target - Vector3.right;
                                 effect.transform.eulerAngles = Vector3.forward * 90;
 
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
@@ -132,7 +130,7 @@ namespace Loom.ZombieBattleground
                 {
                     vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
                     effect = Object.Instantiate(vfxPrefab);
-                    effect.transform.position = target - offset;
+                    effect.transform.position = target;
 
                     _particlesController.RegisterParticleSystem(effect, true, 5f);
 
@@ -142,7 +140,7 @@ namespace Loom.ZombieBattleground
                             a =>
                             {
                                 effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target - offset;
+                                effect.transform.position = target;
 
                                 effect.transform.localScale = new Vector3(-1, 1, 1);
                                 _particlesController.RegisterParticleSystem(effect, true, 5f);
@@ -194,7 +192,7 @@ namespace Loom.ZombieBattleground
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
-        public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete)
+        public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
         {
             if (target == null)
                 return;
@@ -218,8 +216,23 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
+            Vector3 targetPosition = Utilites.CastVfxPosition(castVfxPosition);
+
+            if (isDirection)
+            {
+                float angle = AngleBetweenVector3(particleSystem.transform.position, targetPosition);
+                var main = particleSystem.GetComponent<ParticleSystem>().main;
+                main.startRotationZ = angle * Mathf.Deg2Rad;
+                ParticleSystem.MainModule subMain = new ParticleSystem.MainModule();
+                foreach (var item in particleSystem.GetComponentsInChildren<ParticleSystem>())
+                {
+                    subMain = item.main;
+                    subMain.startRotationZ = angle * Mathf.Deg2Rad;
+                }
+            }
+
             particleSystem.transform
-                .DOMove(Utilites.CastVfxPosition(castVfxPosition), .5f).OnComplete(
+                .DOMove(targetPosition, .5f).OnComplete(
                     () =>
                     {
                         callbackComplete(target);
@@ -272,11 +285,8 @@ namespace Loom.ZombieBattleground
             var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
             GameObject effect = MonoBehaviour.Instantiate(prefab);
             effect.transform.position = cardToDestroy.Transform.position;
-            effect.SetActive(false);
             cardToDestroy.Transform.SetParent(effect.transform, true);
-            cardToDestroy.Transform.position = effect.transform.position;
             _particlesController.RegisterParticleSystem(effect, true, 8f);
-            effect.SetActive(true);
         }
 
         private void ChechTouchOnBattleground()
@@ -307,5 +317,12 @@ namespace Loom.ZombieBattleground
             effect.transform.position = Utilites.CastVfxPosition(position);
             _particlesController.RegisterParticleSystem(effect, true, 5f);
 		}
+
+        public float AngleBetweenVector3(Vector3 from, Vector3 target)
+        {
+            Vector3 diference = target - from;
+            float sign = (target.x < from.x) ? -1.0f : 1.0f;
+            return Vector3.Angle(Vector3.forward, diference) * sign;
+        }
     }
 }

@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -30,6 +31,8 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
@@ -38,9 +41,25 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitModel creature)
+            if (info is BoardUnitModel unit)
             {
-                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
+                unit.Stun(Enumerators.StunType.FREEZE, 1);
+
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                            Target = unit,
+                        }
+                    }
+                });
             }
         }
     }

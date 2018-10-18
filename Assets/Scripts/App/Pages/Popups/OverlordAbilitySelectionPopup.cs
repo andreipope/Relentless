@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < AbilityListSize; i++)
             {
                 HeroSkill skill = null;
-                if (i < heroData.Skills.Count)
+                if (i < 2) // heroData.Skills.Count) // TODO: improve this functionality in general!
                 {
                     skill = heroData.Skills[i];
                 }
@@ -254,12 +254,12 @@ namespace Loom.ZombieBattleground
                 if (Skill != null)
                 {
                     _abilityIconImage.sprite =
-                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + Skill.IconPath);
+                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
                 }
                 else
                 {
                     _abilityIconImage.sprite =
-                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/overlordability_locked");
+                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_locked");
                 }
             }
         }

@@ -382,6 +382,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
             _currentSet = type;
+            _currentElementPage = 0;
             LoadCards(0, type);
         }
 

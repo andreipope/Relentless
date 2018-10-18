@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class PlayerManaBarItem
     {
-        private const int MeterArrowStep = 12;
+        private const int MeterArrowStep = 18;
 
         private readonly GameObject _selfObject;
 
@@ -38,14 +39,14 @@ namespace Loom.ZombieBattleground
 
         private bool _isInOverflow, _isAfterOverflow;
 
-        public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos, string name)
+        public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos, string name, string objectName)
         {
             _overflowPrefabPath = "Prefabs/" + overflowPrefabName;
             _overflowPos = overflowPos;
             _selfObject = gameObject;
-            _gooMeterObject = _selfObject.transform.Find("GooMeter").gameObject;
+            _gooMeterObject = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Gauge/CZB_3D_Overlord_gauge_LOD0").gameObject;
             _gooAmountText = _gooMeterObject.transform.Find("Text").GetComponent<TextMeshPro>();
-            _arrowObject = _gooMeterObject.transform.Find("ArrowCenter").gameObject;
+            _arrowObject = _gooMeterObject.transform.Find("gauge_indicator_LOD0").gameObject;
             _gooBottles = new List<GooBottleItem>();
             for (int i = 0; i < _selfObject.transform.childCount; i++)
             {
@@ -59,31 +60,37 @@ namespace Loom.ZombieBattleground
             _isInOverflow = false;
             _isAfterOverflow = false;
             _name = name;
-            _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
+            _arrowObject.transform.localEulerAngles = new Vector3(_arrowObject.transform.localEulerAngles.x,
+                                                                  _arrowObject.transform.localEulerAngles.y,
+                                                                  -90);
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }
 
         public void SetGoo(int gooValue)
         {
-            _currentValue = gooValue;
-            _gooAmountText.text = _currentValue + "/" + _maxValue;
-
-            UpdateGooOVerflow();
-
-            for (int i = 0; i < _gooBottles.Count; i++)
+            InternalTools.DoActionDelayed(() =>
             {
-                if (i < _currentValue)
+                _currentValue = gooValue;
+                _gooAmountText.text = _currentValue + "/" + _maxValue;
+
+                UpdateGooOVerflow();
+
+                for (int i = 0; i < _gooBottles.Count; i++)
                 {
-                    Active(_gooBottles[i]);
+                    if (i < _currentValue)
+                    {
+                        Active(_gooBottles[i]);
+                    }
+                    else
+                    {
+                        Disactive(_gooBottles[i]);
+                    }
                 }
-                else
-                {
-                    Disactive(_gooBottles[i]);
-                }
-            }
-            _isAfterOverflow = false;
-            UpdateGooMeter();
+                _isAfterOverflow = false;
+                UpdateGooMeter();
+
+            }, 0.1f);
         }
 
         public void SetVialGoo(int maxValue)
@@ -100,7 +107,7 @@ namespace Loom.ZombieBattleground
 
         public void Active(GooBottleItem item)
         {
-            if (item.selfAnimator.gameObject.activeInHierarchy)
+            if (item.Self.activeInHierarchy)
             {
                 item.selfAnimator.SetBool("IsFull", true);
                 if (_isAfterOverflow)
@@ -146,13 +153,14 @@ namespace Loom.ZombieBattleground
 
         private void UpdateGooMeter()
         {
-            int targetRotation = 90 - MeterArrowStep * _currentValue;
-            if (targetRotation < -90)
+            int targetRotation = -90 + MeterArrowStep * _currentValue;
+            if (targetRotation > 90)
             {
-                targetRotation = -90;
+                targetRotation = 90;
             }
-
-            _arrowObject.transform.DORotate(Vector3.forward * targetRotation, 1f);
+            Vector3 rotation = _arrowObject.transform.eulerAngles;
+            rotation.z = targetRotation;
+            _arrowObject.transform.DORotate(rotation, 1f);
         }
 
         private void CreateOverflow()

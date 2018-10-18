@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -78,7 +79,7 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEnded;
 
-        public event Action Stunned;
+        public event Action<bool> Stunned;
 
         public event Action UnitDied;
 
@@ -88,6 +89,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject> UnitDamaged;
 
+        public event Action<BoardObject> PrepairingToDie;
+
         public event Action UnitHpChanged;
 
         public event Action UnitDamageChanged;
@@ -96,7 +99,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<Enumerators.BuffType> BuffApplied;
 
-        public event Action BuffShieldAdded;
+        public event Action<bool> BuffShieldStateChanged;
 
         public event Action CreaturePlayableForceSet;
 
@@ -247,13 +250,14 @@ namespace Loom.ZombieBattleground
         {
             HasBuffShield = false;
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
+            BuffShieldStateChanged?.Invoke(false);
         }
 
         public void AddBuffShield()
         {
             AddBuff(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
-            BuffShieldAdded?.Invoke();
+            BuffShieldStateChanged?.Invoke(true);
         }
 
         public void UpdateCardType()
@@ -324,6 +328,17 @@ namespace Loom.ZombieBattleground
             {
                 IsPlayable = true;
             }
+        }
+
+        public void SetInitialUnitType()
+        {
+            HasHeavy = false;
+            HasBuffHeavy = false;
+            HasFeral = false;
+
+            InitialUnitType = Card.LibraryCard.CardType;
+
+            CardTypeChanged?.Invoke(InitialUnitType);
         }
 
         public void SetObjectInfo(WorkingCard card)
@@ -404,7 +419,14 @@ namespace Loom.ZombieBattleground
 
             UnitStatus = Enumerators.UnitStatusType.FROZEN;
 
-            Stunned?.Invoke();
+            Stunned?.Invoke(true);
+        }
+
+        public void RevertStun()
+        {
+            UnitStatus = Enumerators.UnitStatusType.NONE;
+            _stunTurns = 0;
+            Stunned?.Invoke(false);
         }
 
         public void ForceSetCreaturePlayable()
@@ -419,14 +441,7 @@ namespace Loom.ZombieBattleground
         public void DoCombat(BoardObject target)
         {
             if (target == null)
-            {
-                if (_tutorialManager.IsTutorial)
-                {
-                    _tutorialManager.ActivateSelectTarget();
-                }
-
                 return;
-            }
 
             IsAttacking = true;
 
@@ -439,18 +454,23 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
+                            if (targetPlayer.Defense <= 0)
+                            {
+                                IsPlayable = true;
+                                AttackedThisTurn = false;
+                                IsAttacking = false;
+                                completeCallback?.Invoke();
+                                return;
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetPlayer);
 
                             FightSequenceHandler.HandleAttackPlayer(
                                 completeCallback,
                                 targetPlayer,
-                                async () =>
+                                () =>
                                 {
                                     _battleController.AttackPlayerByUnit(this, targetPlayer);
-                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                                    {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetPlayer, Enumerators.AffectObjectType.PLAYER);
-                                    }
                                 },
                                 () =>
                                 {
@@ -466,18 +486,22 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
+                            if(targetCardModel.CurrentHp <= 0)
+                            {
+                                IsPlayable = true;
+                                AttackedThisTurn = false;
+                                IsAttacking = false;
+                                completeCallback?.Invoke();
+                                return;
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
                                 targetCardModel,
-                                async () =>
+                                () =>
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
-
-                                    if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                                    {
-                                        await _gameplayManager.GetController<OpponentController>().ActionCardAttack(OwnerPlayer, this, targetCardModel, Enumerators.AffectObjectType.PLAYER);
-                                    }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {
@@ -506,7 +530,9 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (CurrentHp <= 0 || CurrentDamage <= 0 || IsStun || CantAttackInThisTurnBlocker)
+            if (IsDead || CurrentHp <= 0 ||
+                CurrentDamage <= 0 || IsStun ||
+                CantAttackInThisTurnBlocker)
             {
                 return false;
             }
@@ -577,6 +603,11 @@ namespace Loom.ZombieBattleground
             OwnerPlayer.AddCardToGraveyard(Card);
 
             UnitFromDeckRemoved?.Invoke();
+        }
+
+        public void InvokeUnitPrepairingToDie()
+        {
+            PrepairingToDie?.Invoke(this);
         }
     }
 }

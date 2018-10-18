@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.4";
+        internal const string CurrentVersionBase = "0.1.5";
 
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground.Common
         internal const string LocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
 
         internal const string LocalTutorialDataFilePath = "tutorial_data.json";
+
+        internal const string LocalConfigDataFilePath = "config_data.json";
 
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
@@ -87,10 +89,15 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int DefaultCardsInHandAtStartGame = 3;
 
-        internal const float DelayBetweenGameplayActions = 0.01f;
+        internal const float DelayBetweenGameplayActions = 0.1f;
 
         internal const int DelayBetweenAiActions = 1100;
 
+        internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
+
+        internal static Vector3 VfxOffset = Vector3.zero;
+
+        // SOUNDS VOLUME'S
         internal const float TutorialSoundVolume = 1f;
 
         internal const float ArrivalSoundVolume = 0.1f;
@@ -111,12 +118,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float BattlegroundEffectsSoundVolume = 0.25f;
 
-        internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
-
-        internal static Vector3 VfxOffset = Vector3.zero;
-
-        // SOUNDS VOLUME'S
-
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;
         internal static float CreatureAttackSoundVolume = 0.05f;
@@ -126,5 +127,16 @@ namespace Loom.ZombieBattleground.Common
         internal const string AssetBundleLoadingScreen = "loadingscreen";
 
         internal const string Space = " ";
+
+        internal const string OverlordRegularNeckR = "OverlordRegularNeckR";
+
+        internal const string OverlordRegularNeckL = "OverlordRegularNeckL";
+
+        internal const string Player = "Player";
+
+        internal const string Opponent = "Opponent";
+
+        internal const float matchmakingTimeOut = 120;
+
     }
 }

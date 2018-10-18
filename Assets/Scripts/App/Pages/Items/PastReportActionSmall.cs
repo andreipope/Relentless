@@ -80,23 +80,30 @@ namespace Loom.ZombieBattleground
                         player.SelfHero.HeroElement + "_EXP");
                     break;
                 case BoardUnitModel unit:
-                {
-                    // FIXME
-                    string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
-                    string rank = unit.Card.LibraryCard.CardRank.ToString().ToLower();
-                    string picture = unit.Card.LibraryCard.Picture.ToLower();
+                    {
+                        string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
+                        string rank = unit.Card.LibraryCard.CardRank.ToString().ToLower();
+                        string picture = unit.Card.LibraryCard.Picture.ToLower();
 
-                    string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
-                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+                        sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
+                    }
                     break;
-                }
                 case BoardCard card:
                     sprite = card.PictureSprite.sprite;
                     break;
                 case BoardSkill skill:
-                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/HeroesIcons/heroability_" +
-                        skill.OwnerPlayer.SelfHero.HeroElement + "_" +
-                        skill.Skill.Skill.ToLower());
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
+                    break;
+                case BoardSpell spell:
+                    {
+                        string setName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
+                        string rank = spell.Card.LibraryCard.CardRank.ToString().ToLower();
+                        string picture = spell.Card.LibraryCard.Picture.ToLower();
+
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+                        sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(PastActionReport.Caller), PastActionReport.Caller, null);

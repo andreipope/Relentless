@@ -679,7 +679,17 @@
               "callType": "ENTRY",
               "targetType": "OPPONENT_CARD",
               "unitStatus": "FROZEN",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Moving",
+                  "Path": "Prefabs/VFX/Skills/IceBoltVFX"
+                },
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/IceBolt_Impact"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -1667,7 +1677,7 @@
               "buffType": "GUARD"
             },
             {
-              "type": "ADJACENT_UNITS_GET_HEAVY",
+              "type": "ADJACENT_UNITS_GET_GUARD",
               "activityType": "passive",
               "callType": "ENTRY",
               "buffType": "ENTRY"
@@ -2219,7 +2229,17 @@
               "callType": "ENTRY",
               "targetType": "OPPONENT_CARD|OPPONENT",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Moving",
+                  "Path": "Prefabs/VFX/Skills/PoisonDartVFX"
+                },
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/PoisonDart_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2705,7 +2725,7 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card",
               "value": 4,
-              "effectType": "TARGET_ADJUSTMENTS_BOMB",
+              "effectType": "NONE",
               "buffType": "SWING"
             }
           ],
