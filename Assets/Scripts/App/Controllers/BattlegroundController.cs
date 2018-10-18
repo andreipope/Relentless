@@ -147,19 +147,16 @@ namespace Loom.ZombieBattleground
                     if (!_tutorialManager.IsTutorial && _turnTimerCounting)
                     {
                         TurnTimer -= Time.unscaledDeltaTime;
-
-                        if (Mathf.CeilToInt(TurnTimer) == Constants.TimeForStartEndTurnAnimation)
-                        {
-                            if (!_endTurnAnimationObject.activeInHierarchy)
-                            {
-                                _endTurnAnimationObject.SetActive(true);
-                                _endTurnAnimationAnimator.enabled = true;
-                                _endTurnAnimationAnimator.Play("TurnTimer");
-                            }
-                        }
-                        else if (TurnTimer <= 0)
+                        
+                        if (TurnTimer <= 0)
                         {
                             StopTurn();
+                        }
+                        else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnAnimationObject.activeInHierarchy)
+                        {
+                            _endTurnAnimationObject.SetActive(true);
+                            _endTurnAnimationAnimator.enabled = true;
+                            _endTurnAnimationAnimator.Play("TurnTimer");
                         }
                     }
                 }
