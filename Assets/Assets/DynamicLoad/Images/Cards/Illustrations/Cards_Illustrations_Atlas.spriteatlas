@@ -66,8 +66,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 36f8fbf1a6ee740d58006b42e6c97795, type: 3}
   - {fileID: 21300000, guid: ca7bce0235c9b5243aaaa01bcbafee28, type: 3}
   - {fileID: 21300000, guid: d788165201d075f45939f09b181db1f9, type: 3}
+  - {fileID: 21300000, guid: e7583652fa2521948b8d82b2b9dabc49, type: 3}
   - {fileID: 21300000, guid: 3da1ee5284ef8ea408d5cacb20af55fa, type: 3}
   - {fileID: 21300000, guid: 40bdff5240df43140b1e7dd80c0ac032, type: 3}
+  - {fileID: 21300000, guid: 143c07727fbc8cc42b8d81a3af6a51af, type: 3}
   - {fileID: 21300000, guid: a348877236afbaa46bd45e546b037b66, type: 3}
   - {fileID: 21300000, guid: b8c43c726644c9948a49138afa6d1c09, type: 3}
   - {fileID: 21300000, guid: 7eca5992725060d4cb97b91ee81d7d51, type: 3}
@@ -79,6 +81,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d0b258d2c3ed27043a821968d33aa090, type: 3}
   - {fileID: 21300000, guid: 2d396c23da082f047ad8848b665ba35b, type: 3}
   - {fileID: 21300000, guid: 0172d253bd362024a9d1f50ef46384dd, type: 3}
+  - {fileID: 21300000, guid: 26e21863af54d26438fc9cf5618e6266, type: 3}
   - {fileID: 21300000, guid: d33449832ad7d42b8b608eec10699e7d, type: 3}
   - {fileID: 21300000, guid: bba8cba394c219e4fa2a0916fe9594ce, type: 3}
   - {fileID: 21300000, guid: e90f6cb3d662ed4469dfb636880415e5, type: 3}
@@ -107,13 +110,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6841e535161e10847aa211a998bb1ca9, type: 3}
   - {fileID: 21300000, guid: 8a528f65a986a4fc490ffae11f5ae43f, type: 3}
   - {fileID: 21300000, guid: d8de6295bdafaea4a979ecd63dfbb82f, type: 3}
+  - {fileID: 21300000, guid: e950daa5828aa0747a739813ce43ac21, type: 3}
   - {fileID: 21300000, guid: f62ef4c5ef9e9bf46814d62e27e885c4, type: 3}
   - {fileID: 21300000, guid: fb3089d55ba7e5649bca496af01f371b, type: 3}
   - {fileID: 21300000, guid: 189eaaf5892de8d42ac35534954b8134, type: 3}
   - {fileID: 21300000, guid: 37369126d1b4bc843965118a1dda532c, type: 3}
   - {fileID: 21300000, guid: 0f3d4736e704d9c4b8a65b05c88c2f87, type: 3}
+  - {fileID: 21300000, guid: fa8681562cf83ea4ab5bf6ca9d7035c1, type: 3}
   - {fileID: 21300000, guid: 6d84625639ead4e48a8e3997865f7f7b, type: 3}
   - {fileID: 21300000, guid: 85ac2456d3f157545afaec9dab75c03c, type: 3}
+  - {fileID: 21300000, guid: 772baf763710c6d4b8fdf1622fa1fede, type: 3}
   - {fileID: 21300000, guid: 4717468635366e8499a3402b7d4e4f8a, type: 3}
   - {fileID: 21300000, guid: d73bba86a02055748b91bf7cca7d6937, type: 3}
   - {fileID: 21300000, guid: 58570a96a4b8b6a439f33f928c791772, type: 3}
@@ -124,12 +130,14 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ca27ddc6b969c8545b4e2141fe8eab65, type: 3}
   - {fileID: 21300000, guid: 0c6d340792b15b443ae2ca1bf8482752, type: 3}
   - {fileID: 21300000, guid: 4ec63017400807e4c9cedbf7476d261b, type: 3}
+  - {fileID: 21300000, guid: 40383a17b7df19a4a9f5c8ff873a0cbe, type: 3}
   - {fileID: 21300000, guid: ee52c7270ce336046ab57f104ec8f5b2, type: 3}
   - {fileID: 21300000, guid: f9beed470da7a4e6292722449f1c136f, type: 3}
   - {fileID: 21300000, guid: 69d2da7764965254086af3740877ed3f, type: 3}
   - {fileID: 21300000, guid: c6ca6497e44c51d4689747a885076b5c, type: 3}
   - {fileID: 21300000, guid: 70b325b7e307e63428c9c419e8651096, type: 3}
   - {fileID: 21300000, guid: 48baefb7be0377b40bc01e12b576735b, type: 3}
+  - {fileID: 21300000, guid: badd90c7a3e1f544f8cd14a27cf18b8e, type: 3}
   - {fileID: 21300000, guid: b34ecef7e3aa02640a2b090e9e04040f, type: 3}
   - {fileID: 21300000, guid: 7d40e118eff5f4851bdfbe11f17df312, type: 3}
   - {fileID: 21300000, guid: 795a8948b89f1cc45941647246254981, type: 3}
@@ -138,7 +146,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: cfece3e8efe44174fbdc7bce0e30e3f1, type: 3}
   - {fileID: 21300000, guid: 1fc7603994bb34c1ca24b1eea95b8d8e, type: 3}
   - {fileID: 21300000, guid: c5e31e4912749c14b9759d2db630b559, type: 3}
+  - {fileID: 21300000, guid: e270277903bda264d82dd5574aab76ab, type: 3}
   - {fileID: 21300000, guid: 6be0f589984364b36a26940c7db4ebb4, type: 3}
+  - {fileID: 21300000, guid: e9c952c9674fdaf439f41eda021ca8fc, type: 3}
   - {fileID: 21300000, guid: b369f7d985ccd794d8bb612d71d903b8, type: 3}
   - {fileID: 21300000, guid: 15d3edf9633f401428ca0e407634b4e4, type: 3}
   - {fileID: 21300000, guid: fd606a0a1dc07c744b357cb6eaca644d, type: 3}
@@ -164,6 +174,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2e453d9b8e7b9b74aa28b49f131779e3, type: 3}
   - {fileID: 21300000, guid: d6526dab340853f4f92ad546a7def8f0, type: 3}
   - {fileID: 21300000, guid: 322c71cbdda5ac5469fabec3d222906f, type: 3}
+  - {fileID: 21300000, guid: 9d7b2cfb87d31924dbf86dfa6c601271, type: 3}
+  - {fileID: 21300000, guid: a28d440c52447cf40a7be131d562ad85, type: 3}
+  - {fileID: 21300000, guid: e3d2494c5866aeb4b87bee9b49850087, type: 3}
   - {fileID: 21300000, guid: ba277c5ce178c004b962f363f10485f2, type: 3}
   - {fileID: 21300000, guid: 2591226c78e411042a3c03908b64db9d, type: 3}
   - {fileID: 21300000, guid: 5651366cfa3b80a4186324a8e03f552a, type: 3}
@@ -194,6 +207,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1629e08f7c219f64fb1f844eb056a31c, type: 3}
   - {fileID: 21300000, guid: baa1b38fd21cc924fbaf3f33ac8b4d29, type: 3}
   - {fileID: 21300000, guid: 7e4ef9dfb4944ba4990e793185d53f81, type: 3}
+  - {fileID: 21300000, guid: 21cc68ef94feccf44addd3e5b8eeaa0c, type: 3}
   m_PackedSpriteNamesToIndex:
   - Toxic_officer_Hazzard
   - life_minion_Bloomer
@@ -217,8 +231,10 @@ SpriteAtlas:
   - earth_minion_rockky
   - air_officer_dragger
   - life_officer_sapper
+  - water_general_embryo
   - item_minion_shovel_damage
   - fire_minion_sparky
+  - earth_commander_embryo
   - others_minion_zombie
   - toxic_commander_zeeter
   - earth_minion_slab
@@ -230,6 +246,7 @@ SpriteAtlas:
   - life_minion_embryo
   - life_officer_healz
   - earth_minion_shale
+  - toxic_officer_embryo
   - fire_officer_burrrnn
   - fire_officer_embryo
   - air_minion_breezee
@@ -258,13 +275,16 @@ SpriteAtlas:
   - life_commander_rainz
   - life_minion_azuraz
   - toxic_officer_relentlezz
+  - toxic_commander_embryo
   - life_general_z-virus
   - others_minion_taintedgoo
   - water_officer_embryo
   - air_minion_whizpar
   - fire_officer_cynderman
+  - air_general_embryo
   - water_minion_znowman
   - water_commander_zubzero
+  - fire_general_embryo
   - toxic_officer_polluter
   - life_officer_cactuz
   - air_minion_whiffer
@@ -275,12 +295,14 @@ SpriteAtlas:
   - toxic_minion_zpitter
   - water_officer_igloo
   - air_minion_fumez
+  - water_commander_embryo
   - earth_officer_tiny
   - toxic_minion_poizom
   - item_minion_leash
   - item_minion_torch
   - fire_minion_embryo
   - air_general_zeuz
+  - air_commander_embryo
   - life_general_yggdrazil
   - fire_minion_pyromaz
   - item_minion_shovel_heal
@@ -289,7 +311,9 @@ SpriteAtlas:
   - air_minion_banshee
   - life_officer_shroom
   - toxic_commander_boomer
+  - earth_general_embryo
   - water_minion_izze
+  - life_commander_embryo
   - earth_minion_hardy
   - fire_general_cerberus
   - earth_general_gaea
@@ -315,6 +339,9 @@ SpriteAtlas:
   - water_commander_zpring
   - earth_minion_embryo
   - water_minnion_zhatterer
+  - toxic_general_embryo
+  - fire_commander_embryo
+  - toxic_minion_embryo
   - fire_minion_burzt
   - toxic_officer_azzazzin
   - life_officer_embryo
@@ -345,5 +372,6 @@ SpriteAtlas:
   - fire_minion_quazi
   - water_commander_maelstrom
   - item_minion_shoppingcart
+  - life_general_embryo
   m_Tag: Cards_Illustrations_Atlas
   m_IsVariant: 0
