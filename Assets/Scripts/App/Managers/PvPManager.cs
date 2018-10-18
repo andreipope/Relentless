@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -49,6 +50,11 @@ namespace Loom.ZombieBattleground
         public GameState InitialGameState { get; set; }
 
         public OpponentDeck OpponentDeck { get; set; }
+        public List<CardInstance> OpponentCardsInHand { get; set; }
+        public List<CardInstance> OpponentCardsInDeck { get; set; }
+
+        public List<CardInstance> PlayerCardsInHand { get; set; }
+        public List<CardInstance> PlayerCardsInDeck { get; set; }
 
         public int OpponentDeckIndex { get; set; }
 
@@ -65,6 +71,8 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _backendFacade.PlayerActionEventListner += OnGetPlayerActionEventListener;
+
+
         }
 
         public void Update()
@@ -102,6 +110,12 @@ namespace Loom.ZombieBattleground
         public async Task FindMatch()
         {
             InitialGameState = null;
+
+            OpponentCardsInHand = new List<CardInstance>();
+            OpponentCardsInDeck = new List<CardInstance>();
+            PlayerCardsInHand = new List<CardInstance>();
+            PlayerCardsInDeck = new List<CardInstance>();
+
             MatchMetadata = new MatchMetadata();
 
             FindMatchResponse findMatchResponse =
@@ -187,6 +201,7 @@ namespace Loom.ZombieBattleground
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
                     break;
                 case PlayerActionType.CardPlay:
+                    Debug.LogError("== Recieved msg for card Play == ");
                     CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
                     break;
                 case PlayerActionType.CardAttack:

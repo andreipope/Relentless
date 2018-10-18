@@ -211,17 +211,48 @@ namespace Loom.ZombieBattleground
                     break;
 
                 case Enumerators.MatchType.PVP:
+                    var playerIndex = -1;
                     for (int i = 0; i < _pvpManager.InitialGameState.PlayerStates.Count; i++)
                     {
                         if (_pvpManager.InitialGameState.PlayerStates[i].Id !=
                             _backendDataControlMediator.UserDataModel.UserId)
                         {
                             _pvpManager.OpponentDeckIndex = i;
-                            break;
                         }
+                        else if (_pvpManager.InitialGameState.PlayerStates[i].Id ==
+                                 _backendDataControlMediator.UserDataModel.UserId)
+                        {
+                            playerIndex = i;
+                        }
+
                     }
                     _pvpManager.OpponentDeck =
                         _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].Deck.FromProtobuf();
+
+                    _pvpManager.OpponentCardsInHand =
+                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].CardsInHand.FromProtobuf();
+
+                    _pvpManager.OpponentCardsInDeck =
+                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].CardsInDeck.FromProtobuf();
+
+                    _pvpManager.PlayerCardsInHand =
+                        _pvpManager.InitialGameState.PlayerStates[playerIndex].CardsInHand.FromProtobuf();
+
+                    _pvpManager.PlayerCardsInDeck =
+                        _pvpManager.InitialGameState.PlayerStates[playerIndex].CardsInDeck.FromProtobuf();
+
+                    _gameplayManager.PlayerStarterCards = new List<CardWithID>();
+                    _gameplayManager.OpponentStarterCards = new List<CardWithID>();
+
+                    for (int i = 0; i < _pvpManager.PlayerCardsInHand.Count; i++)
+                    {
+                        _gameplayManager.PlayerStarterCards.Add(new CardWithID(_pvpManager.PlayerCardsInHand[i].InstanceId, _pvpManager.PlayerCardsInHand[i].Prototype.Name));
+                    }
+
+                    for (int i = 0; i < _pvpManager.OpponentCardsInHand.Count; i++)
+                    {
+                        _gameplayManager.OpponentStarterCards.Add(new CardWithID(_pvpManager.OpponentCardsInHand[i].InstanceId, _pvpManager.OpponentCardsInHand[i].Prototype.Name));
+                    }
 
                     randomOpponentDeck = _pvpManager.OpponentDeck;
                     _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;

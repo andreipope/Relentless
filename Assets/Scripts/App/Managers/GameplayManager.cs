@@ -63,8 +63,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsGameplayInputBlocked { get; set; }
 
-        public List<string> PlayerStarterCards { get; set; }
-        public List<string> OpponentStarterCards { get; set; }
+        public List<CardWithID> PlayerStarterCards { get; set; }
+        public List<CardWithID> OpponentStarterCards { get; set; }
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
