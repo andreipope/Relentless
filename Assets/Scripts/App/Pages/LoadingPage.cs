@@ -39,6 +39,8 @@ namespace Loom.ZombieBattleground
 
         private Button _signUpButton, _loginButton;
 
+        private IDataManager _dataManager;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -46,6 +48,7 @@ namespace Loom.ZombieBattleground
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _dataManager = GameClient.Get<IDataManager>();
 
             _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
             UpdateLocalization();
@@ -60,8 +63,19 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                 return;
 
+            if (!_dataManager.IsBuildVersionMatch())
+            {
+                if(_progressBar.gameObject.activeSelf)
+                    _progressBar.gameObject.SetActive(false);
+
+                return;
+            }
+
             if (!_isLoaded)
             {
+                if(!_progressBar.gameObject.activeSelf)
+                    _progressBar.gameObject.SetActive(true);
+
                 _percentage += 1f;
                 _loaderBar.fillAmount = Mathf.Clamp(_percentage / 100f, 0.03f, 1f);
                 if (_percentage >= 100)

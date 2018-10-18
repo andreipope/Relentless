@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         private DirectoryInfo _dir;
 
+        private bool _isBuildVersionMatch = false;
+
         public DataManager(ConfigData configData)
         {
             FillCacheDataPaths();
@@ -256,31 +258,41 @@ namespace Loom.ZombieBattleground
         private void CheckVersion()
         {
             FileInfo[] files = _dir.GetFiles();
-            bool versionMatch = false;
+
+            FileInfo versionFile = null;
             foreach (FileInfo file in files)
             {
-                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
-                    versionMatch = true;
+                if (file.Name.Contains(Constants.VersionFileResolution))
+                {
+                    versionFile = file;
+                    break;
+                }
             }
 
-            if (!versionMatch)
+            if (versionFile != null)
+            {
+                if (versionFile.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
+                {
+                    _isBuildVersionMatch = true;
+                }
+            }
+            else
+            {
+                using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+                {
+                    _isBuildVersionMatch = true;
+                }
+            }
+
+
+            if (!_isBuildVersionMatch)
             {
                 DeleteData();
 
                 Action[] actions = new Action[2];
                 actions[0] = () =>
                 {
-                    string url = string.Empty;
-
-                    #if UNITY_ANDROID
-                        url = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
-                    #elif UNITY_IOS
-                        url = "https://testflight.apple.com/join/T7zJgWOj";
-                    #elif UNITY_STANDALONE_WIN
-                        url = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
-                    #elif UNITY_STANDALONE_OSX
-                        url = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
-                    #endif
+                    string url = GetPlatformSpecificGameLink();
 
                     if (!string.IsNullOrEmpty(url))
                     {
@@ -294,6 +306,23 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.DrawPopup<UpdatePopup>(actions);
             }
+        }
+
+        private string GetPlatformSpecificGameLink()
+        {
+            string gameLink = string.Empty;
+
+            #if UNITY_ANDROID
+                gameLink = Constants.GameLinkForAndroid;
+            #elif UNITY_IOS
+                gameLink = Constants.GameLinkForIOS;
+            #elif UNITY_STANDALONE_WIN
+                gameLink = Constants.GameLinkForWindows;
+            #elif UNITY_STANDALONE_OSX
+                gameLink = Constants.GameLinkForOSX;
+            #endif
+
+            return gameLink;
         }
 
         private async Task LoadCachedData(Enumerators.CacheDataType type)
@@ -546,6 +575,11 @@ namespace Loom.ZombieBattleground
                 return data;
 
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
+        }
+
+        public bool IsBuildVersionMatch()
+        {
+            return _isBuildVersionMatch;
         }
 
         private T DeserializeObjectFromPath<T>(string path)
