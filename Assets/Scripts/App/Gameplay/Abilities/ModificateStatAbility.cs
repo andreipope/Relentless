@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUhitsByFactionInPlay)
                 {
-
+                    // TODO write logic. do not ignore this if. because cards config can corrupt it
                 }
                 else
                 {
@@ -95,28 +95,12 @@ namespace Loom.ZombieBattleground
                             switch (StatType)
                             {
                                 case Enumerators.StatType.DAMAGE:
-                                    if (revert)
-                                    {
-                                        boardUnit.BuffedDamage -= Value;
-                                        boardUnit.CurrentDamage -= Value;
-                                    }
-                                    else
-                                    {
-                                        boardUnit.BuffedDamage += Value;
-                                        boardUnit.CurrentDamage += Value;
-                                    }
+                                    TargetUnit.BuffedDamage += revert ? -Value : Value;
+                                    TargetUnit.CurrentDamage += revert ? -Value : Value;
                                     break;
                                 case Enumerators.StatType.HEALTH:
-                                    if (revert)
-                                    {
-                                        boardUnit.BuffedHp -= Value;
-                                        boardUnit.CurrentHp -= Value;
-                                    }
-                                    else
-                                    {
-                                        boardUnit.BuffedHp += Value;
-                                        boardUnit.CurrentHp += Value;
-                                    }
+                                    TargetUnit.BuffedHp += revert ? -Value : Value;
+                                    TargetUnit.CurrentHp += revert ? -Value : Value;
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
