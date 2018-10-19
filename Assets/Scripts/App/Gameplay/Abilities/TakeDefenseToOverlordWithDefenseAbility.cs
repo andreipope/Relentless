@@ -4,14 +4,23 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    public class OverflowGooAbility : AbilityBase
+    public class TakeDefenseToOverlordWithDefenseAbility : AbilityBase
     {
-        public int Value;
+        public int Value { get; }
 
-        public OverflowGooAbility(Enumerators.CardKind cardKind, AbilityData ability)
+        public int Health { get; }
+
+        public int Defense { get; }
+
+        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+
+        public TakeDefenseToOverlordWithDefenseAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Value = AbilityData.Value;
+            Health = AbilityData.Health;
+            Defense = AbilityData.Defense;
+            TargetTypes = AbilityData.AbilityTargetTypes;
         }
 
         public override void Activate()
@@ -26,24 +35,21 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        protected override void UnitDiedHandler()
-        {
-            base.UnitDiedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
-
-            Action();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement ||
-                CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
+            if (TargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
             {
-                PlayerCallerOfAbility.CurrentGoo += Value;
+                int defenseToBuff = Value;
+
+                if(PlayerCallerOfAbility.Defense <= Defense)
+                {
+                    defenseToBuff = Health;
+                }
+
+                PlayerCallerOfAbility.Defense += defenseToBuff;
+                PlayerCallerOfAbility.BuffedHp += defenseToBuff;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
@@ -53,8 +59,10 @@ namespace Loom.ZombieBattleground
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
-                            ActionEffectType = Enumerators.ActionEffectType.Overflow,
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
                             Target = PlayerCallerOfAbility,
+                            HasValue = true,
+                            Value = defenseToBuff
                         }
                     }
                 });
