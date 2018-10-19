@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
                        _musicVolumeDropdown;
 
         private bool _initialInit = true;
+
+        private bool _fromMainMenu = false;
 #endif
 
         public GameObject Self { get; private set; }
@@ -112,6 +114,8 @@ namespace Loom.ZombieBattleground
 #if !UNITY_ANDROID && !UNITY_IOS
             if (data is bool isFromMainMenu && isFromMainMenu)
             {
+                _fromMainMenu = isFromMainMenu;
+
                 _quitToMenuButton.gameObject.SetActive(false);
                 _settingsButton.gameObject.SetActive(false);
             }
@@ -194,7 +198,10 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+            if (!_fromMainMenu)
+            {
+                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+            }
 
             _appStateManager.QuitApplication();
         }
