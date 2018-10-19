@@ -33,34 +33,36 @@ namespace Loom.ZombieBattleground
 
             List<BoardUnitModel> allies;
 
+            BoardUnitModel target = null;
             if (PredefinedTargets != null)
             {
                 allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
 
                 if (allies.Count > 0)
                 {
-                    TakeTypeToUnit(allies[0]);
+                    target = allies[0];
                 }
             }
             else
             {
-                 allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
-                .ToList();
+                allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+               .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
+               .ToList();
 
                 if (allies.Count > 0)
                 {
-                    int random = Random.Range(0, allies.Count);
-                    TakeTypeToUnit(allies[random]);
+                    target = allies[Random.Range(0, allies.Count)];
                 }
+            }
+
+            if (target == null)
+            {
+                TakeTypeToUnit(target);
             }
         }
 
         private void TakeTypeToUnit(BoardUnitModel unit)
         {
-            if (unit == null)
-                return;
-
             switch (UnitType)
             {
                 case Enumerators.CardType.HEAVY:

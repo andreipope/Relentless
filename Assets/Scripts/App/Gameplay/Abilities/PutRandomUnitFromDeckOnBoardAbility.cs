@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardCard boardCard = new UnitBoardCard(Object.Instantiate(CardsController.CreatureCardViewPrefab));
                 boardCard.Init(card);
-                boardCard.GameObject.transform.position = new Vector3(6, 0, 0);
+                boardCard.GameObject.transform.position = Constants.DefaultPositionOfBoardCard;
                 boardCard.GameObject.transform.localScale = Vector3.one * .3f;
                 boardCard.SetHighlightingEnabled(false);
 
