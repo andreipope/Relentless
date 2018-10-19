@@ -36,20 +36,16 @@ namespace Loom.ZombieBattleground
         {
             object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
 
-            object target = null;
+            BoardObject target = null;
 
             Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
             bool isFreezed = false;
+
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.Player:
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                    {
-                        TargetPlayer
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
-
                     target = TargetPlayer;
                     actionType = Enumerators.ActionType.CardAffectingOverlord;
 
@@ -61,11 +57,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                    {
-                        TargetUnit
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-
                     target = TargetUnit;
                     actionType = Enumerators.ActionType.CardAffectingCard;
 
@@ -79,6 +70,12 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
 
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+               target
+            }, AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString(), true));
+
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -89,11 +86,14 @@ namespace Loom.ZombieBattleground
                 Value = -AbilityData.Value
             });
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            if (isFreezed)
             {
-                ActionEffectType = Enumerators.ActionEffectType.Freeze,
-                Target = target,
-            });
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                    Target = target,
+                });
+            }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
