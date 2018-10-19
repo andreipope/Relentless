@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string UnitType;
 
+        public string TargetSet;
+
         public string SubTrigger;
 
         [JsonIgnore]
@@ -66,6 +68,10 @@ namespace Loom.ZombieBattleground.Data
         [JsonIgnore]
         public Enumerators.AbilitySubTrigger AbilitySubTrigger;
 
+        [JsonIgnore]
+        public Enumerators.SetType TargetSetType;
+        
+
         public int Value;
 
         public int Damage;
@@ -83,6 +89,8 @@ namespace Loom.ZombieBattleground.Data
         public int Delay;
 
         public int Defense;
+
+        public int Cost;
 
         public List<VisualEffectInfo> VisualEffectsToPlay;
 
@@ -167,6 +175,15 @@ namespace Loom.ZombieBattleground.Data
             else
             {
                 AbilitySubTrigger = Enumerators.AbilitySubTrigger.None;
+            }
+
+            if (!string.IsNullOrEmpty(TargetSet))
+            {
+                TargetSetType = Utilites.CastStringTuEnum<Enumerators.SetType>(TargetSet);
+            }
+            else
+            {
+                TargetSetType = Enumerators.SetType.NONE;
             }
         }
 
