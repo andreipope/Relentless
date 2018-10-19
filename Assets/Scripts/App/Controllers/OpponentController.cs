@@ -210,12 +210,9 @@ namespace Loom.ZombieBattleground
 
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
 
-                        if (position >= _gameplayManager.OpponentPlayer.BoardCards.Count)
-                        {
-                            position = _gameplayManager.OpponentPlayer.BoardCards.Count - 1;
-                        }
-
-                        _gameplayManager.OpponentPlayer.BoardCards.Insert(position, boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(
+                            Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count - 1),
+                            boardUnitViewElement);
 
                         boardUnitViewElement.PlayArrivalAnimation();
 

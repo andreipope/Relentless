@@ -7,6 +7,9 @@ namespace Loom.ZombieBattleground
 {
     public class ExtraGooIfUnitInPlayAbility : AbilityBase
     {
+        private const int MaxExtraGooValue = 9999;
+        private const int MinExtraGooValue = 0;
+
         public int Value { get; }
 
         public ExtraGooIfUnitInPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -31,14 +34,14 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo + Value, 0, 9999);
+            PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo + Value, MinExtraGooValue, MaxExtraGooValue);
         }
 
         protected override void UnitDiedHandler()
         {
             base.UnitDiedHandler();
 
-            PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo - Value, 0, 9999);
+            PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo - Value, MinExtraGooValue, MaxExtraGooValue);
         }
     }
 }

@@ -38,12 +38,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetUnit != null)
+            if (TargetUnit != null && TargetUnit.Card.RealCost <= Value)
             {
-                if (TargetUnit.Card.RealCost <= Value)
-                {
-                    BattlegroundController.DestroyBoardUnit(TargetUnit);
-                }
+                BattlegroundController.DestroyBoardUnit(TargetUnit);
             }
         }
     }
