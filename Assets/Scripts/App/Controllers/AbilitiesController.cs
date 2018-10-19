@@ -366,6 +366,15 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
+        public bool HasSpecialUnitFactionOnMainBoard(WorkingCard workingCard, AbilityData ability)
+        {
+            if (workingCard.Owner.BoardCards.
+                FindAll(x => x.Model.Card.LibraryCard.CardSetType == ability.TargetSetType).Count > 0)
+                return true;
+
+            return false;
+        }  
+
         public void CallAbility(
             Card libraryCard,
             BoardCard card,
@@ -412,7 +421,10 @@ namespace Loom.ZombieBattleground
                 if (ability.TargetCardType != Enumerators.CardType.NONE &&
                     !HasSpecialUnitOnBoard(workingCard, ability) ||
                     ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE &&
-                    !HasSpecialUnitStatusOnBoard(workingCard, ability))
+                    !HasSpecialUnitStatusOnBoard(workingCard, ability) ||
+                    (ability.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
+                     ability.TargetSetType != Enumerators.SetType.NONE &&
+                    !HasSpecialUnitFactionOnMainBoard(workingCard, ability)))
                 {
                     CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
 

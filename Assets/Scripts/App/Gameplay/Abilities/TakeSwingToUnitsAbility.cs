@@ -27,21 +27,28 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityUnitOwner.AddBuffSwing();
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+                foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
+                {
+                    unit.Model.AddBuffSwing();
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.Swing,
-                            Target = AbilityUnitOwner,
-                        }
-                    }
-            });
+                        ActionEffectType = Enumerators.ActionEffectType.Swing,
+                        Target = unit.Model,
+                    });
+                }
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
+            }
         }
     }
 }
