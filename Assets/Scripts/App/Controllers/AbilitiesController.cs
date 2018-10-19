@@ -635,7 +635,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.MASSIVE_DAMAGE:
                     ability = new MassiveDamageAbility(cardKind, abilityData);
-                    abilityView = new MassiveDamageAbilityView((MassiveDamageAbility) ability);
+                    abilityView = new MassiveDamageAbilityView((MassiveDamageAbility)ability);
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT:
                     ability = new ChangeStatAbility(cardKind, abilityData);
@@ -794,11 +794,59 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_GUARD:
                     ability = new AdjacentUnitsGetGuardAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.SUMMON_UNIT_FROM_HAND:
+                    ability = new SummonFromHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_AND_DISTRACT_TARGET:
+                    ability = new DamageAndDistractTargetAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DRAW_CARD_IF_DAMAGED_ZOMBIE_IN_PLAY:
+                    ability = new DrawCardIfDamagedUnitInPlayAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_STAT_IF_OVERLORD_HAS_LESS_DEFENSE_THAN:
+                    ability = new TakeStatIfOverlordHasLessDefenseThanAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED:
+                    ability = new DamageOverlordOnCountItemsPlayedAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.SHUFFLE_THIS_CARD_TO_DECK:
+                    ability = new ShuffleCardToDeckAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE:
+                    ability = new TakeDefenseToOverlordWithDefenseAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.PUT_RANDOM_UNIT_FROM_DECK_ON_BOARD:
+                    ability = new PutRandomUnitFromDeckOnBoardAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DISTRACT:
+                    ability = new DistractAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_TARGET_FREEZE_IT_IF_SURVIVES:
+                    ability = new DamageTargetFreezeItIfSurvivesAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DESTROY_UNIT_BY_COST:
+                    ability = new DestroyUnitByCostAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_ENEMY_OR_RESTORE_DEFENSE_ALLY:
+                    ability = new DamageEnemyOrRestoreDefenseAllyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_SWING_TO_UNITS:
+                    ability = new TakeSwingToUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DELAYED_PLACE_COPIES_IN_PLAY_DESTROY_UNIT:
+                    ability = new DelayedPlaceCopiesInPlayDestroyUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT:
+                    ability = new AdjacentUnitsGetStatAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.EXTRA_GOO_IF_UNIT_IN_PLAY:
+                    ability = new ExtraGooIfUnitInPlayAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
         }
-
+    
         public void ResolveAllAbilitiesOnUnit(BoardObject boardObject, bool status = true, bool inputDragStatus = true)
         {
             if (boardObject is BoardUnitModel unit)

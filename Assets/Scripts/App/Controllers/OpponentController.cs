@@ -209,6 +209,12 @@ namespace Loom.ZombieBattleground
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
+
+                        if (position >= _gameplayManager.OpponentPlayer.BoardCards.Count)
+                        {
+                            position = _gameplayManager.OpponentPlayer.BoardCards.Count - 1;
+                        }
+
                         _gameplayManager.OpponentPlayer.BoardCards.Insert(position, boardUnitViewElement);
 
                         boardUnitViewElement.PlayArrivalAnimation();
