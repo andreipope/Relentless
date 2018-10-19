@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         public bool HasUsedBuffShield;
 
+        public bool HasSwing;
+
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
@@ -110,6 +112,8 @@ namespace Loom.ZombieBattleground
         public event Action UnitDistracted;
 
         public event Action<BoardUnitModel> KilledUnit;
+
+        public event Action<bool> BuffSwingStateChanged;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -268,7 +272,8 @@ namespace Loom.ZombieBattleground
 
         public void AddBuffSwing()
         {
-            // TODO : make swing
+            HasSwing = true;
+            BuffSwingStateChanged?.Invoke(true);
         }
 
         public void UpdateCardType()
@@ -519,6 +524,16 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
+
+                                    if (HasSwing)
+                                    {
+                                        List<BoardUnitView> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+
+                                        foreach (BoardUnitView unit in adjacent)
+                                        {
+                                            _battleController.AttackUnitByUnit(this, unit.Model, AdditionalDamage, false);
+                                        }
+                                    }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {
