@@ -215,6 +215,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> BoardChanged;
 
+        public event Action<WorkingCard> DrawCard;
+
         public event Action<WorkingCard, int> CardPlayed;
 
         public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
@@ -638,6 +640,11 @@ namespace Loom.ZombieBattleground
 
 
             _skillsController.UnBlockSkill(this);
+        }
+
+        public void ThrowDrawCardEvent(WorkingCard card)
+        {
+            DrawCard?.Invoke(card);
         }
 
         public void ThrowPlayCardEvent(WorkingCard card, int position)
