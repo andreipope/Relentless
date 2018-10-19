@@ -138,6 +138,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
             TargettingArrow.UnitDefense = AbilityData.Defense;
+            TargettingArrow.UnitCost = AbilityData.Cost;
 
             switch (CardKind)
             {
