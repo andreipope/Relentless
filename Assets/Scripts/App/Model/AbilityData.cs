@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string UnitType;
 
+        public string SubTrigger;
+
         [JsonIgnore]
         public Enumerators.AbilityType AbilityType;
 
@@ -61,6 +63,9 @@ namespace Loom.ZombieBattleground.Data
         [JsonIgnore]
         public Enumerators.CardType TargetUnitType;
 
+        [JsonIgnore]
+        public Enumerators.AbilitySubTrigger AbilitySubTrigger;
+
         public int Value;
 
         public int Damage;
@@ -76,6 +81,8 @@ namespace Loom.ZombieBattleground.Data
         public int Count;
 
         public int Delay;
+
+        public int Defense;
 
         public List<VisualEffectInfo> VisualEffectsToPlay;
 
@@ -151,6 +158,15 @@ namespace Loom.ZombieBattleground.Data
             if (!string.IsNullOrEmpty(UnitType))
             {
                 TargetUnitType = Utilites.CastStringTuEnum<Enumerators.CardType>(UnitType);
+            }
+
+            if (!string.IsNullOrEmpty(SubTrigger))
+            {
+                AbilitySubTrigger = Utilites.CastStringTuEnum<Enumerators.AbilitySubTrigger>(SubTrigger);
+            }
+            else
+            {
+                AbilitySubTrigger = Enumerators.AbilitySubTrigger.None;
             }
         }
 

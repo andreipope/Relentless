@@ -53,6 +53,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
+        public bool IsDistracted { get; private set; }
+
         public BoardUnitModel()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -104,6 +106,10 @@ namespace Loom.ZombieBattleground
         public event Action CreaturePlayableForceSet;
 
         public event Action UnitFromDeckRemoved;
+
+        public event Action UnitDistracted;
+
+        public event Action<BoardUnitModel> KilledUnit;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -258,6 +264,11 @@ namespace Loom.ZombieBattleground
             AddBuff(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
             BuffShieldStateChanged?.Invoke(true);
+        }
+
+        public void AddBuffSwing()
+        {
+            // TODO : make swing
         }
 
         public void UpdateCardType()
@@ -429,6 +440,12 @@ namespace Loom.ZombieBattleground
             Stunned?.Invoke(false);
         }
 
+        public void Distract()
+        {
+            IsDistracted = true;
+            UnitDistracted?.Invoke();
+        }
+
         public void ForceSetCreaturePlayable()
         {
             if (IsStun)
@@ -584,6 +601,11 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
+        }
+
+        public void InvokeKilledUnit(BoardUnitModel boardUnit)
+        {
+            KilledUnit?.Invoke(boardUnit);
         }
 
         public List<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)

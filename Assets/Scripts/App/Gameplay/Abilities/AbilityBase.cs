@@ -137,6 +137,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.PossibleTargets = AbilityTargetTypes;
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
+            TargettingArrow.UnitDefense = AbilityData.Defense;
 
             switch (CardKind)
             {
@@ -195,6 +196,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
+                        AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
                     }
 
                     break;
@@ -356,6 +358,7 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
             AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
             AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
+            AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
 
             AbilitiesController.DeactivateAbility(ActivityId);
             Dispose();
@@ -371,6 +374,11 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDamagedHandler(BoardObject from)
         {
+        }
+
+        protected virtual void UnitKilledUnitHandler(BoardUnitModel unit)
+        {
+
         }
 
         protected virtual void PrepairingToDieHandler(BoardObject from)

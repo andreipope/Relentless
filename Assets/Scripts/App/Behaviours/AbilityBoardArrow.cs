@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType TargetUnitStatusType;
 
+        public int UnitDefense = 0;
+
         private IInputManager _inputManager;
 
         private int _onMouseDownInputIndex;
@@ -51,17 +53,20 @@ namespace Loom.ZombieBattleground
                     if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
                         unit.Model.UnitStatus == TargetUnitStatusType)
                     {
-                        if (SelfBoardCreature != unit)
+                        if ((UnitDefense > 0 && unit.Model.CurrentHp <= UnitDefense) || UnitDefense == 0)
                         {
-                            SelectedCard?.SetSelectedUnit(false);
+                            if (SelfBoardCreature != unit)
+                            {
+                                SelectedCard?.SetSelectedUnit(false);
 
-                            SelectedCard = unit;
-                            SelectedPlayer?.SetGlowStatus(false);
+                                SelectedCard = unit;
+                                SelectedPlayer?.SetGlowStatus(false);
 
-                            SelectedPlayer = null;
-                            SelectedCard.SetSelectedUnit(true);
+                                SelectedPlayer = null;
+                                SelectedCard.SetSelectedUnit(true);
 
-                            CardSelected?.Invoke(unit);
+                                CardSelected?.Invoke(unit);
+                            }
                         }
                     }
                 }

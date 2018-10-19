@@ -109,6 +109,11 @@ namespace Loom.ZombieBattleground
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
+                if (attackedUnitModel.CurrentHp <= 0)
+                {
+                    attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
+                }
+
                 _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
@@ -126,6 +131,11 @@ namespace Loom.ZombieBattleground
 
                     attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
                     attackingUnitModel.CurrentHp -= damageAttacked;
+
+                    if (attackingUnitModel.CurrentHp <= 0)
+                    {
+                        attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
+                    }
 
                     _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackingUnitModel), -damageAttacked);
 
