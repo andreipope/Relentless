@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    public class ShieldAbility : AbilityBase
+    public class DistractAbility : AbilityBase
     {
-        public ShieldAbility(Enumerators.CardKind cardKind, AbilityData ability)
+        public DistractAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
         }
@@ -15,19 +15,30 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
+        }
 
-            Action();
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action();
+            }
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            AbilityUnitOwner.AddBuffShield();
+            TargetUnit.Distract();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                TargetUnit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -37,8 +48,8 @@ namespace Loom.ZombieBattleground
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
-                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                            Target = AbilityUnitOwner,
+                            ActionEffectType = Enumerators.ActionEffectType.Distract,
+                            Target = TargetUnit,
                         }
                     }
             });
