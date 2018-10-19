@@ -673,7 +673,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
             boardUnitView.Transform.tag = SRTags.PlayerOwned;
             boardUnitView.Transform.parent = _playerBoard.transform;
-            boardUnitView.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
+            boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * player.BoardCards.Count, 0);
             boardUnitView.Model.OwnerPlayer = card.WorkingCard.Owner;
             boardUnitView.SetObjectInfo(card.WorkingCard);
 
