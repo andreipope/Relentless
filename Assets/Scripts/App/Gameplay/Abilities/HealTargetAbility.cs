@@ -104,13 +104,14 @@ namespace Loom.ZombieBattleground
             int value = 0;
             foreach (BoardObject boardObject in allies)
             {
-                if(boardObject is BoardUnitModel unit)
+                switch(boardObject)
                 {
-                    value = unit.MaxCurrentHp - unit.CurrentHp;
-                }
-                else if(boardObject is Player player)
-                {
-                    value = player.MaxCurrentHp - player.Defense;
+                    case BoardUnitModel unit:
+                        value = unit.MaxCurrentHp - unit.CurrentHp;
+                        break;
+                    case Player player:
+                        value = player.MaxCurrentHp - player.Defense;
+                        break;
                 }
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()

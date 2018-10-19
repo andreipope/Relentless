@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUhitsByFactionInPlay)
                 {
-                    List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
+                   List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
 
                     foreach(BoardUnitView unit in units)
                     {
@@ -100,28 +100,12 @@ namespace Loom.ZombieBattleground
                             switch (StatType)
                             {
                                 case Enumerators.StatType.DAMAGE:
-                                    if (revert)
-                                    {
-                                        boardUnit.BuffedDamage -= Value;
-                                        boardUnit.CurrentDamage -= Value;
-                                    }
-                                    else
-                                    {
-                                        boardUnit.BuffedDamage += Value;
-                                        boardUnit.CurrentDamage += Value;
-                                    }
+                                    TargetUnit.BuffedDamage += revert ? -Value : Value;
+                                    TargetUnit.CurrentDamage += revert ? -Value : Value;
                                     break;
                                 case Enumerators.StatType.HEALTH:
-                                    if (revert)
-                                    {
-                                        boardUnit.BuffedHp -= Value;
-                                        boardUnit.CurrentHp -= Value;
-                                    }
-                                    else
-                                    {
-                                        boardUnit.BuffedHp += Value;
-                                        boardUnit.CurrentHp += Value;
-                                    }
+                                    TargetUnit.BuffedHp += revert ? -Value : Value;
+                                    TargetUnit.CurrentHp += revert ? -Value : Value;
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
