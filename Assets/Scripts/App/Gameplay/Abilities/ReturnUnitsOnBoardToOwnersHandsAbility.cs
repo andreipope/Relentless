@@ -7,12 +7,9 @@ namespace Loom.ZombieBattleground
 {
     public class ReturnUnitsOnBoardToOwnersHandsAbility : AbilityBase
     {
-        public int Value { get; }
-
         public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
         }
 
         public override void Activate()
@@ -38,11 +35,6 @@ namespace Loom.ZombieBattleground
                 units
                     .Where(x => x.Model != AbilityUnitOwner)
                     .ToList();
-
-            if (Value > 0)
-            {
-                units = units.Where(x => x.Model.Card.RealCost <= Value).ToList();
-            }
 
             foreach (BoardUnitView unit in units)
             {
