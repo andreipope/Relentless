@@ -3,25 +3,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
-using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public static class ProtobufAotHintGenerator
+    public class ProtobufAotHintGenerator
     {
-        public static string GenerateAotHint(IEnumerable<MessageDescriptor> messageDescriptors)
+        public string ProtobufNamespace { get; }
+
+        public IEnumerable<MessageDescriptor> MessageDescriptors { get; }
+
+        public uint LeadingSpaces { get; set; } = 8;
+
+        public ProtobufAotHintGenerator(string protobufNamespace, IEnumerable<MessageDescriptor> messageDescriptors)
+        {
+            ProtobufNamespace = protobufNamespace;
+            MessageDescriptors = messageDescriptors;
+        }
+
+        public string GenerateAotHint()
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (MessageDescriptor descriptorMessageType in messageDescriptors)
+            foreach (MessageDescriptor descriptorMessageType in MessageDescriptors)
             {
                 ProcessMessageDescriptor(sb, descriptorMessageType);
             }
 
             return sb.ToString();
+        }
+
+        private void WriteReflectionHelperForTypes(StringBuilder stringBuilder, Type declaringType, Type type)
+        {
+            string declaringTypeFullString = GetGenericTypeName(declaringType, true, true);
+            string propertyTypeFullString = GetGenericTypeName(type, true, true);
+            stringBuilder.Append(' ', (int) LeadingSpaces);
+            stringBuilder.Append(
+                $"new {ProtobufNamespace}.Reflection.ReflectionUtil.ReflectionHelper" +
+                $"<{declaringTypeFullString}, {propertyTypeFullString}>().ToString();" + Environment.NewLine);
+        }
+
+        private void ProcessMessageDescriptor(StringBuilder sb, MessageDescriptor messageDescriptor)
+        {
+            foreach (MessageDescriptor nestedMethodDescriptor in messageDescriptor.NestedTypes)
+            {
+                ProcessMessageDescriptor(sb, nestedMethodDescriptor);
+            }
+
+            foreach (FieldDescriptor fieldDescriptor in messageDescriptor.Fields.InFieldNumberOrder()
+                .Concat(messageDescriptor.Oneofs.SelectMany(of => of.Fields)))
+            {
+                PropertyInfo propertyInfo = fieldDescriptor.ContainingType.ClrType.GetProperty(
+                    (string) fieldDescriptor
+                        .GetType()
+                        .GetField("propertyName", BindingFlags.NonPublic | BindingFlags.Instance)
+                        .GetValue(fieldDescriptor)
+                );
+                WriteReflectionHelperForTypes(sb, propertyInfo.DeclaringType, propertyInfo.PropertyType);
+            }
+
+            foreach (OneofDescriptor oneof in messageDescriptor.Oneofs)
+            {
+                string oneofPascalCaseName = oneof.Name.First().ToString().ToUpper() + oneof.Name.Substring(1);
+                string oneofCaseName = oneofPascalCaseName + "OneofCase";
+                Type oneofCaseType = oneof.ContainingType.ClrType.GetNestedType(oneofCaseName);
+                if (oneofCaseType == null)
+                    throw new Exception(oneofCaseName + " not found");
+
+                WriteReflectionHelperForTypes(sb, oneof.ContainingType.ClrType, oneofCaseType);
+            }
         }
 
         private static string GetUsualTypeName(string name)
@@ -118,47 +168,6 @@ namespace Loom.ZombieBattleground
             }
 
             return genericTypeName;
-        }
-
-
-        private static void WriteProperty(StringBuilder stringBuilder, Type declaringType, Type type)
-        {
-            string declaringTypeFullString = GetGenericTypeName(declaringType, true, true);
-            string propertyTypeFullString = GetGenericTypeName(type, true, true);
-            stringBuilder.Append(
-                "new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper" +
-                $"<{declaringTypeFullString}, {propertyTypeFullString}>().ToString();\n");
-        }
-
-        private static void ProcessMessageDescriptor(StringBuilder sb, MessageDescriptor messageDescriptor)
-        {
-            foreach (MessageDescriptor nestedMethodDescriptor in messageDescriptor.NestedTypes)
-            {
-                ProcessMessageDescriptor(sb, nestedMethodDescriptor);
-            }
-
-            foreach (FieldDescriptor fieldDescriptor in messageDescriptor.Fields.InFieldNumberOrder()
-                .Concat(messageDescriptor.Oneofs.SelectMany(of => of.Fields)))
-            {
-                PropertyInfo propertyInfo = fieldDescriptor.ContainingType.ClrType.GetProperty(
-                    (string) fieldDescriptor
-                        .GetType()
-                        .GetField("propertyName", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .GetValue(fieldDescriptor)
-                );
-                WriteProperty(sb, propertyInfo.DeclaringType, propertyInfo.PropertyType);
-            }
-
-            foreach (OneofDescriptor oneof in messageDescriptor.Oneofs)
-            {
-                string oneofPascalCaseName = oneof.Name.First().ToString().ToUpper() + oneof.Name.Substring(1);
-                string oneofCaseName = oneofPascalCaseName + "OneofCase";
-                Type oneofCaseType = oneof.ContainingType.ClrType.GetNestedType(oneofCaseName);
-                if (oneofCaseType == null)
-                    throw new Exception(oneofCaseName + " not found");
-
-                WriteProperty(sb, oneof.ContainingType.ClrType, oneofCaseType);
-            }
         }
     }
 }

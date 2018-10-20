@@ -507,5 +507,27 @@ namespace Loom.ZombieBattleground.Common
             Open,
             Close
         }
+
+        public enum AiBrainType
+        {
+            DoNothing,
+            Normal,
+            DontAttack
+        }
+
+        public enum StartingTurn
+        {
+            UnDecided,
+            Player,
+            Enemy
+        }
+
+        public enum PlayerActionType
+        {
+            PlayCardOnBoard,
+            AttackOnUnit,
+            AttackOnOverlord,
+            PlayOverlordSkill
+        }
     }
 }

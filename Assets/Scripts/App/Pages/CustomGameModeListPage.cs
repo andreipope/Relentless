@@ -7,7 +7,7 @@ using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using NotImplementedException = System.NotImplementedException;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,51 +17,59 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private IAppStateManager _stateManager;
+        private ILocalizationManager _localizationManager;
+
+        private IAppStateManager _appStateManager;
 
         private ISoundManager _soundManager;
 
-        private IDataManager _dataManager;
-
         private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private GameObject _selfPage;
 
         private Button _backButton;
 
-        private List<CustomGameModeListItem> _listItems = new List<CustomGameModeListItem>();
+        private Transform _parentOfModesList;
+
+        private List<CustomModeItem> _customModesList;
 
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _stateManager = GameClient.Get<IAppStateManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-            _dataManager = GameClient.Get<IDataManager>();
+
             _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
+            UpdateLocalization();
+
+            _customModesList = new List<CustomModeItem>();
         }
 
         public void Update()
         {
+
         }
 
-        public async void Show()
+        public void Show()
         {
-            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CustomGameModeListPage"));
+            _selfPage = Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CustomModesPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            _parentOfModesList = _selfPage.transform.Find("Panel_ModesList/Group");
+
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-            Transform customGameModeItemsRoot = _selfPage.transform.Find("ContentPanel/ScrollView_List/Viewport/Content");
+
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
 
-
-            GameModeList gameModeList = await _backendFacade.GetCustomGameModeList();
-            if (gameModeList != null)
-            {
-                foreach (GameMode gameMode in gameModeList.GameModes)
-                {
-                    _listItems.Add(new CustomGameModeListItem(customGameModeItemsRoot, gameMode));
-                }
-            }
+            FillCustomModes();
         }
 
         public void Hide()
@@ -72,74 +80,113 @@ namespace Loom.ZombieBattleground
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
-            Dispose();
         }
 
         public void Dispose()
         {
-            foreach (CustomGameModeListItem gameModeListItem in _listItems)
-            {
-                gameModeListItem.Dispose();
-            }
+        }
 
-            _listItems.Clear();
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
         }
 
         private void BackButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.BackAppState();
+            _appStateManager.BackAppState();
         }
 
-        private class CustomGameModeListItem
+        private async void FillCustomModes()
         {
+            ResetCustomModes();
+
+            GameModeList gameModeList = await _backendFacade.GetCustomGameModeList();
+
+            if (gameModeList != null)
+            {
+                foreach (GameMode gameMode in gameModeList.GameModes)
+                {
+                    _customModesList.Add(new CustomModeItem(_parentOfModesList, gameMode));
+                }
+            }
+        }
+
+        private void ResetCustomModes()
+        {
+            foreach (CustomModeItem gameModeListItem in _customModesList)
+            {
+                gameModeListItem.Dispose();
+            }
+
+            _customModesList.Clear();
+        }
+
+        public class CustomModeItem
+        {
+            private GameObject _selfObject;
+
             private ILoadObjectsManager _loadObjectsManager;
+
             private IAppStateManager _stateManager;
 
             private ISoundManager _soundManager;
 
-            private TextMeshProUGUI _nameText;
-            private TextMeshProUGUI _descriptionText;
-            private Button _chooseButton;
+            private TextMeshProUGUI _titleText,
+                                    _descriptionText;
 
-            public CustomGameModeListItem(Transform parent, GameMode gameMode)
+            private Image _modePictureImage;
+
+            private Button _playButton;
+
+            public GameMode Mode;
+
+            public CustomModeItem(Transform parent, GameMode mode)
             {
+                Mode = mode;
+
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
                 _stateManager = GameClient.Get<IAppStateManager>();
                 _soundManager = GameClient.Get<ISoundManager>();
 
-                GameMode = gameMode;
-                GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CustomGameModeListItem"));
-                GameObject.GetComponent<RectTransform>().SetParent(parent, false);
+                _selfObject = Object.Instantiate(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Item_CustomMode"), parent, false);
 
-                _nameText = GameObject.transform.Find("Name").GetComponent<TextMeshProUGUI>();
-                _descriptionText = GameObject.transform.Find("Description").GetComponent<TextMeshProUGUI>();
-                _chooseButton = GameObject.transform.Find("Button_Choose").GetComponent<Button>();
 
-                _chooseButton.onClick.AddListener(ChooseButtonOnClickHandler);
+                _titleText = _selfObject.transform.Find("Text_ModeTitle").GetComponent<TextMeshProUGUI>();
+                _descriptionText = _selfObject.transform.Find("Text_ModeDescription").GetComponent<TextMeshProUGUI>();
 
-                _nameText.text = $"{gameMode.Name} v.{gameMode.Version}";
-                _descriptionText.text = gameMode.Description;
+                _modePictureImage = _selfObject.transform.Find("Image_ModePicture").GetComponent<Image>();
+
+                _playButton = _selfObject.transform.Find("Button_Play").GetComponent<Button>();
+
+                _playButton.onClick.AddListener(PlayButtonOnClickHandler);
+
+                _titleText.text = $"{Mode.Name} v.{Mode.Version}";
+                _descriptionText.text = Mode.Description;
+
+                //_modePictureImage.sprite = null; // TODO: implement pictures logic
             }
 
-            public GameObject GameObject { get; }
-            public GameMode GameMode { get; }
 
             public void Dispose()
             {
-                Object.Destroy(GameObject);
+                Object.Destroy(_selfObject);
             }
 
-            private async void ChooseButtonOnClickHandler()
+            private async void PlayButtonOnClickHandler()
             {
                 GetCustomGameModeCustomUiResponse customUiResponse =
-                    await GameClient.Get<BackendFacade>().GetGameModeCustomUi(Address.FromProtobufAddress(GameMode.Address));
+                 await GameClient.Get<BackendFacade>().GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
 
                 CustomGameModeCustomUiElement[] customUiElements = customUiResponse.UiElements.ToArray();
                 GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
-                GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(GameMode, customUiElements);
-
-                Debug.Log(customUiResponse.ToString());
+                GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(Mode, customUiElements);
             }
         }
     }

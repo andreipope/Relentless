@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -212,16 +211,17 @@ namespace Loom.ZombieBattleground
                     break;
 
                 case Enumerators.MatchType.PVP:
-                    for (int i = 0; i < _pvpManager.MatchResponse.Match.PlayerStates.Count; i++)
+                    for (int i = 0; i < _pvpManager.InitialGameState.PlayerStates.Count; i++)
                     {
-                        if (_pvpManager.MatchResponse.Match.PlayerStates[i].Id !=
+                        if (_pvpManager.InitialGameState.PlayerStates[i].Id !=
                             _backendDataControlMediator.UserDataModel.UserId)
                         {
                             _pvpManager.OpponentDeckIndex = i;
                             break;
                         }
                     }
-                    _pvpManager.OpponentDeck = FromProtobufExtensions.FromProtobuf(_pvpManager.MatchResponse.Match.PlayerStates[_pvpManager.OpponentDeckIndex].Deck);
+                    _pvpManager.OpponentDeck =
+                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].Deck.FromProtobuf();
 
                     randomOpponentDeck = _pvpManager.OpponentDeck;
                     _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
@@ -269,7 +269,7 @@ namespace Loom.ZombieBattleground
             _playerCardDeckCountText = GameObject.Find("Player/CardDeckText").GetComponent<TextMeshPro>();
             _opponentCardDeckCountText = GameObject.Find("Opponent/CardDeckText").GetComponent<TextMeshPro>();
 
-            _endTurnButton = GameObject.Find("EndTurnButton");
+            _endTurnButton = GameObject.Find("EndTurnButton/_1_btn_endturn");
             
             PlayerPrimarySkillHandler =
                 GameObject.Find(Constants.Player).transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
@@ -371,24 +371,24 @@ namespace Loom.ZombieBattleground
             Player opponent = _gameplayManager.OpponentPlayer;
 
             player.DeckChanged += OnPlayerDeckChangedHandler;
-            player.PlayerHpChanged += OnPlayerHpChanged;
-            player.PlayerGooChanged += OnPlayerGooChanged;
-            player.PlayerVialGooChanged += OnPlayerVialGooChanged;
+            player.PlayerDefenseChanged += OnPlayerDefenseChanged;
+            player.PlayerCurrentGooChanged += OnPlayerCurrentGooChanged;
+            player.PlayerGooVialsChanged += OnPlayerGooVialsChanged;
             opponent.DeckChanged += OnOpponentDeckChangedHandler;
-            opponent.PlayerHpChanged += OnOpponentHpChanged;
-            opponent.PlayerGooChanged += OnOpponentGooChanged;
-            opponent.PlayerVialGooChanged += OnOpponentVialGooChanged;
+            opponent.PlayerDefenseChanged += OnOpponentDefenseChanged;
+            opponent.PlayerCurrentGooChanged += OnOpponentCurrentGooChanged;
+            opponent.PlayerGooVialsChanged += OnOpponentGooVialsChanged;
 
             player.TurnStarted += TurnStartedHandler;
 
             OnPlayerDeckChangedHandler(player.CardsInDeck.Count);
-            OnPlayerHpChanged(player.Health);
-            OnPlayerGooChanged(player.Goo);
-            OnPlayerVialGooChanged(player.GooOnCurrentTurn);
+            OnPlayerDefenseChanged(player.Defense);
+            OnPlayerGooVialsChanged(player.GooVials);
+            OnPlayerCurrentGooChanged(player.CurrentGoo);
             OnOpponentDeckChangedHandler(opponent.CardsInDeck.Count);
-            OnOpponentHpChanged(opponent.Health);
-            OnOpponentGooChanged(opponent.GooOnCurrentTurn);
-            OnOpponentVialGooChanged(opponent.GooOnCurrentTurn);
+            OnOpponentDefenseChanged(opponent.Defense);
+            OnOpponentGooVialsChanged(opponent.GooVials);
+            OnOpponentCurrentGooChanged(opponent.CurrentGoo);
         }
 
         private void OnPlayerDeckChangedHandler(int index)
@@ -498,7 +498,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerHpChanged(int health)
+        private void OnPlayerDefenseChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -515,7 +515,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerGooChanged(int goo)
+        private void OnPlayerCurrentGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
@@ -523,7 +523,7 @@ namespace Loom.ZombieBattleground
             _playerManaBar.SetGoo(goo);
         }
 
-        private void OnPlayerVialGooChanged(int currentTurnGoo)
+        private void OnPlayerGooVialsChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
                 return;
@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
             _playerManaBar.SetVialGoo(currentTurnGoo);
         }
 
-        private void OnOpponentHpChanged(int health)
+        private void OnOpponentDefenseChanged(int health)
         {
             if (!_isPlayerInited)
                 return;
@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnOpponentGooChanged(int goo)
+        private void OnOpponentCurrentGooChanged(int goo)
         {
             if (!_isPlayerInited)
                 return;
@@ -556,7 +556,7 @@ namespace Loom.ZombieBattleground
             _opponentManaBar.SetGoo(goo);
         }
 
-        private void OnOpponentVialGooChanged(int currentTurnGoo)
+        private void OnOpponentGooVialsChanged(int currentTurnGoo)
         {
             if (!_isPlayerInited)
                 return;

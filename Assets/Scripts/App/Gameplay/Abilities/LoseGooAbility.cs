@@ -30,8 +30,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            PlayerCallerOfAbility.Goo -= Value;
-            PlayerCallerOfAbility.GooOnCurrentTurn -= Value;
+            PlayerCallerOfAbility.CurrentGoo -= Value;
+            PlayerCallerOfAbility.GooVials -= Value;
         }
     }
 }

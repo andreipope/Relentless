@@ -32,14 +32,14 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo)
+            if (PlayerCallerOfAbility.GooVials == Constants.MaximumPlayerGoo)
             {
                 for (int i = 0; i < Count; i++)
                 {
                     CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }
             }
-            else if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo - 1)
+            else if (PlayerCallerOfAbility.GooVials == Constants.MaximumPlayerGoo - 1)
             {
                 for (int i = 0; i < Count - 1; i++)
                 {
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            PlayerCallerOfAbility.GooOnCurrentTurn += Value;
+            PlayerCallerOfAbility.GooVials += Value;
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string Type;
 
+        public string Name;
+
         public List<DeckCardData> Cards;
     }
 }

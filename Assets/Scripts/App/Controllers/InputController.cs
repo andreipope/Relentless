@@ -96,6 +96,14 @@ namespace Loom.ZombieBattleground
 
                     _selectedUnitsList.Clear();
                 }
+
+                if (_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
+                {
+                    if (_gameplayManager.GetController<BoardArrowController>().CurrentBoardArrow is AbilityBoardArrow)
+                    {
+                        CastRay(Input.mousePosition, SRLayerMask.Battleground, true);
+                    }
+                }
             }
         }
 

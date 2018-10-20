@@ -136,5 +136,10 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
+        internal const float matchmakingTimeOut = 120;
+
+        internal const float TurnTime = 120;
+
+        internal const float TimeForStartEndTurnAnimation = 15;  
     }
 }

@@ -113,8 +113,6 @@ namespace Loom.ZombieBattleground
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
-
-
         }
 
         public BoardUnitModel Model { get; }
@@ -329,11 +327,18 @@ namespace Loom.ZombieBattleground
             SetHighlightingEnabled(currentHighlight);
         }
 
-        private void BoardUnitOnStunned()
+        private void BoardUnitOnStunned(bool isStun)
         {
-            _frozenSprite.DOFade(1, 1);
+            if (isStun)
+            {
+                _frozenSprite.DOFade(1, 1);
+                SetHighlightingEnabled(false);
+            }
+            else
+            {
+                _frozenSprite.DOFade(0, 1);
+            }
 
-            SetHighlightingEnabled(false);
         }
 
         private void BoardUnitOnTurnStarted()
@@ -683,6 +688,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     _fightTargetingArrow.Dispose();
+                    _fightTargetingArrow = null;
                 }
             }
         }
@@ -719,11 +725,12 @@ namespace Loom.ZombieBattleground
                         Model.CurrentDamage);
 
                     hitCallback();
+
+                    _fightTargetingArrow = null;
+                    SetHighlightingEnabled(true);
                 },
                 () =>
                 {
-                    _fightTargetingArrow = null;
-                    SetHighlightingEnabled(true);
                     attackCompleteCallback();
 
                     completeCallback?.Invoke();
@@ -744,11 +751,12 @@ namespace Loom.ZombieBattleground
                         targetCardView.Transform.position, Model.CurrentDamage);
 
                     hitCallback();
+
+                    _fightTargetingArrow = null;
+                    SetHighlightingEnabled(true);
                 },
                 () =>
                 {
-                    _fightTargetingArrow = null;
-                    SetHighlightingEnabled(true);
                     attackCompleteCallback();
 
                     if (targetCardView.Model.CurrentHp <= 0)

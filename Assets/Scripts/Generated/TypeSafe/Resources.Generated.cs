@@ -42,15 +42,43 @@ namespace Loom.ZombieBattleground {
                 }
             }
             
-            public static global::TypeSafe.PrefabResource OverlordSiloShuttersOpponent {
+            public static global::TypeSafe.PrefabResource OverlordDeathSingleOpponent {
                 get {
                     return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[1]));
                 }
             }
             
+            public static global::TypeSafe.PrefabResource RegularModel2DOpponent {
+                get {
+                    return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[2]));
+                }
+            }
+            
+            public static global::TypeSafe.PrefabResource RegularModel2DPlayer {
+                get {
+                    return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[3]));
+                }
+            }
+            
+            public static global::TypeSafe.PrefabResource OverlordSiloShuttersOpponent {
+                get {
+                    return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[4]));
+                }
+            }
+            
+            public static global::TypeSafe.PrefabResource OverlordDeathSinglePlayer {
+                get {
+                    return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[5]));
+                }
+            }
+            
             private static global::System.Collections.Generic.IList<global::TypeSafe.IResource> @__ts_internal_resources = new global::System.Collections.ObjectModel.ReadOnlyCollection<global::TypeSafe.IResource>(new global::TypeSafe.IResource[] {
                         new global::TypeSafe.PrefabResource("OverlordSiloShuttersPlayer", "Prefabs/OverlordSiloShuttersPlayer"),
-                        new global::TypeSafe.PrefabResource("OverlordSiloShuttersOpponent", "Prefabs/OverlordSiloShuttersOpponent")});
+                        new global::TypeSafe.PrefabResource("OverlordDeathSingleOpponent", "Prefabs/OverlordDeathSingleOpponent"),
+                        new global::TypeSafe.PrefabResource("RegularModel2DOpponent", "Prefabs/RegularModel2DOpponent"),
+                        new global::TypeSafe.PrefabResource("RegularModel2DPlayer", "Prefabs/RegularModel2DPlayer"),
+                        new global::TypeSafe.PrefabResource("OverlordSiloShuttersOpponent", "Prefabs/OverlordSiloShuttersOpponent"),
+                        new global::TypeSafe.PrefabResource("OverlordDeathSinglePlayer", "Prefabs/OverlordDeathSinglePlayer")});
             
             public sealed class VFX {
                 
@@ -63,8 +91,15 @@ namespace Loom.ZombieBattleground {
                     }
                 }
                 
+                public static global::TypeSafe.PrefabResource ZB_ActiveOverlordAbility {
+                    get {
+                        return ((global::TypeSafe.PrefabResource)(@__ts_internal_resources[1]));
+                    }
+                }
+                
                 private static global::System.Collections.Generic.IList<global::TypeSafe.IResource> @__ts_internal_resources = new global::System.Collections.ObjectModel.ReadOnlyCollection<global::TypeSafe.IResource>(new global::TypeSafe.IResource[] {
-                            new global::TypeSafe.PrefabResource("gooFilling", "Prefabs/VFX/gooFilling")});
+                            new global::TypeSafe.PrefabResource("gooFilling", "Prefabs/VFX/gooFilling"),
+                            new global::TypeSafe.PrefabResource("ZB_ActiveOverlordAbility", "Prefabs/VFX/ZB_ActiveOverlordAbility")});
                 
                 /// <summary>
                 /// Return a list of all resources in this folder.

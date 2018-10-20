@@ -72,7 +72,15 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
+        private IMatchManager _matchManager;
+
         private Sequence _rearrangingTopRealTimeSequence, _rearrangingBottomRealTimeSequence;
+
+        private bool _turnTimerCounting = false;
+
+        private GameObject _endTurnAnimationObject;
+
+        private Animator _endTurnAnimationAnimator;
 
         public event Action<int> PlayerGraveyardUpdated;
 
@@ -81,6 +89,8 @@ namespace Loom.ZombieBattleground
         public event Action TurnStarted;
 
         public event Action TurnEnded;
+
+        public float TurnTimer { get; private set; }
 
         public void Init()
         {
@@ -92,6 +102,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -129,6 +140,25 @@ namespace Loom.ZombieBattleground
                 foreach (BoardUnitView item in OpponentBoardCards)
                 {
                     item.Update();
+                }
+
+                if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+                {
+                    if (!_tutorialManager.IsTutorial && _turnTimerCounting)
+                    {
+                        TurnTimer -= Time.unscaledDeltaTime;
+                        
+                        if (TurnTimer <= 0)
+                        {
+                            StopTurn();
+                        }
+                        else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnAnimationObject.activeInHierarchy)
+                        {
+                            _endTurnAnimationObject.SetActive(true);
+                            _endTurnAnimationAnimator.enabled = true;
+                            _endTurnAnimationAnimator.Play("TurnTimer");
+                        }
+                    }
                 }
             }
         }
@@ -262,6 +292,12 @@ namespace Loom.ZombieBattleground
             OpponentBoardObject = GameObject.Find("OpponentBoard");
             PlayerGraveyardObject = GameObject.Find("GraveyardPlayer");
             OpponentGraveyardObject = GameObject.Find("GraveyardOpponent");
+
+            _endTurnAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
+            _endTurnAnimationObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
+
+            _endTurnAnimationObject.SetActive(false);
+            _endTurnAnimationAnimator.enabled = false;
         }
 
         public void StartGameplayTurns()
@@ -288,6 +324,15 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.IsGameEnded)
                 return;
+
+            if (!_tutorialManager.IsTutorial &&
+                _matchManager.MatchType == Enumerators.MatchType.PVP &&
+                !_turnTimerCounting &&
+                _gameplayManager.CurrentTurnPlayer.IsLocalPlayer)
+            {
+                TurnTimer = Constants.TurnTime;
+                _turnTimerCounting = true;
+            }
 
             CurrentTurn++;
 
@@ -364,6 +409,19 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.IsGameEnded)
                 return;
+
+            if (!_tutorialManager.IsTutorial &&
+                _matchManager.MatchType == Enumerators.MatchType.PVP && _turnTimerCounting)
+            {
+                _turnTimerCounting = false;
+
+                if (_endTurnAnimationObject.activeInHierarchy)
+                {
+                    _endTurnAnimationObject.SetActive(false);
+                }
+
+                _endTurnAnimationAnimator.enabled = false;
+            }
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
@@ -1011,14 +1069,14 @@ namespace Loom.ZombieBattleground
 
         private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
         {
-            _gameplayManager.OpponentPlayer.Health = specificBattlegroundInfo.OpponentInfo.Health;
-            _gameplayManager.OpponentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
-            _gameplayManager.OpponentPlayer.Goo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
+            _gameplayManager.OpponentPlayer.Defense = specificBattlegroundInfo.OpponentInfo.Health;
+            _gameplayManager.OpponentPlayer.GooVials = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
+            _gameplayManager.OpponentPlayer.CurrentGoo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
             _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AiType);
 
-            _gameplayManager.CurrentPlayer.Health = specificBattlegroundInfo.PlayerInfo.Health;
-            _gameplayManager.CurrentPlayer.GooOnCurrentTurn = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
-            _gameplayManager.CurrentPlayer.Goo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
+            _gameplayManager.CurrentPlayer.Defense = specificBattlegroundInfo.PlayerInfo.Health;
+            _gameplayManager.CurrentPlayer.GooVials = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
+            _gameplayManager.CurrentPlayer.CurrentGoo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
         }
 
         private void SetupOverlordsHandsAsSpecific(List<string> playerCards, List<string> opponentCards)
