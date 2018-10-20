@@ -10,13 +10,11 @@ namespace Loom.ZombieBattleground
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
         public Enumerators.CardType UnitType;
-        public Enumerators.SetType SetType;
 
         public TakeUnitTypeToAllyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
-            SetType = ability.AbilitySetType; 
         }
 
         public override void Activate()
@@ -29,80 +27,32 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        protected override void UnitDiedHandler()
-        {
-            base.UnitDiedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
-
-            Action();
-        }
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            switch (AbilityData.AbilitySubTrigger)
+            List<BoardUnitModel> allies;
+
+            if (PredefinedTargets != null)
             {
-                case Enumerators.AbilitySubTrigger.RandomUnit:
-                    {
-                        List<BoardUnitModel> allies;
+                allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
 
-                        if (PredefinedTargets != null)
-                        {
-                            allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+                if (allies.Count > 0)
+                {
+                    TakeTypeToUnit(allies[0]);
+                }
+            }
+            else
+            {
+                 allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
+                .ToList();
 
-                            if (allies.Count > 0)
-                            {
-                                TakeTypeToUnit(allies[0]);
-
-                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                                {
-                                   allies[0]
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-                            }
-                        }
-                        else
-                        {
-                            allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                           .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
-                           .ToList();
-
-                            if (allies.Count > 0)
-                            {
-                                int random = Random.Range(0, allies.Count);
-                                TakeTypeToUnit(allies[random]);
-
-                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                                {
-                                   allies[random]
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-                            }
-                        }
-                    }
-                    break;
-                case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner).Count() == 0)
-                    {
-                        TakeTypeToUnit(AbilityUnitOwner);
-                    }
-                    break;
-                case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
-                    {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                           .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.Card.LibraryCard.CardSetType == SetType)
-                           .ToList();
-
-                        foreach(BoardUnitModel unit in allies)
-                        {
-                            TakeTypeToUnit(unit);
-                        }
-
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
-                            AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-                    }
-                    break;
+                if (allies.Count > 0)
+                {
+                    int random = Random.Range(0, allies.Count);
+                    TakeTypeToUnit(allies[random]);
+                }
             }
         }
 
@@ -122,6 +72,11 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+               unit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }
