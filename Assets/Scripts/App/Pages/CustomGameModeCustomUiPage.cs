@@ -108,7 +108,8 @@ namespace Loom.ZombieBattleground
                         {
                             await _backendFacade.CallCustomGameModeFunction(
                                 Address.FromProtobufAddress(GameMode.Address),
-                                customUiElement.Button.OnClickFunctionName);
+                                customUiElement.Button.CallData.ToByteArray()
+                                );
                             GetCustomGameModeCustomUiResponse customUiResponse =
                                 await _backendFacade.GetGameModeCustomUi(Address.FromProtobufAddress(GameMode.Address));
                             RefreshCustomUi(customUiResponse.UiElements.ToArray());

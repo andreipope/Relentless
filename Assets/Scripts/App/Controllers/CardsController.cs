@@ -461,7 +461,8 @@ namespace Loom.ZombieBattleground
         public void HoverPlayerCardOnBattleground(Player player, BoardCard card, HandBoardCard handCard)
         {
             Card libraryCard = card.WorkingCard.LibraryCard;
-            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE && _gameplayManager.CurrentPlayer.BoardCards.Count < Constants.MaxBoardUnits)
+            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE &&
+                _gameplayManager.CurrentPlayer.BoardCards.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
                 int newIndexOfCard = 0;
                 float newCreatureCardPosition = card.Transform.position.x;
@@ -1045,7 +1046,7 @@ namespace Loom.ZombieBattleground
 
         private bool CheckIsMoreThanMaxCards(WorkingCard workingCard, Player player)
         {
-            if (player.CardsInHand.Count >= Constants.MaxCardsInHand)
+            if (player.CardsInHand.Count >= player.MaxCardsInHand)
             {
                 // IMPROVE ANIMATION
                 return true;
@@ -1056,7 +1057,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitView SpawnUnitOnBoard(Player owner, string name)
         {
-            if (owner.BoardCards.Count >= Constants.MaxBoardUnits)
+            if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
                 return null;
 
             Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
