@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground
             StartingTurn = Enumerators.StartingTurn.UnDecided;
             PlayerMoves = null;
 
-            GameClient.Get<IQueueManager>().StopNetworkThread();
+            //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
         }

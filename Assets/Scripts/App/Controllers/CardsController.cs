@@ -259,15 +259,15 @@ namespace Loom.ZombieBattleground
             if (CheckIsMoreThanMaxCards(card, player))
                 return;
 
+            /*
             if (_matchManager.MatchType == Enumerators.MatchType.PVP)
             {
                 player.ThrowDrawCardEvent(card);
             }
+*/
 
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
-
-            Debug.LogError("add card to hand =  " + player.IsLocalPlayer + " card = " + card.LibraryCard.Name);
         }
 
         public async void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)

@@ -144,7 +144,16 @@ namespace Loom.ZombieBattleground
                 {
                     string jsonStr = SystemText.Encoding.UTF8.GetString(data);
 
-                    Debug.LogWarning(jsonStr); // todo delete
+                    Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
+
+                    if (!jsonStr.ToLower().Contains("actiontype") && jsonStr.ToLower().Contains("winnerid"))
+                    {
+                        MatchEndEvent matchEndEvent = JsonConvert.DeserializeObject<MatchEndEvent>(jsonStr);
+
+                        Debug.LogError(matchEndEvent.MatchId + " , " + matchEndEvent.UserId + " , " + matchEndEvent.WinnerId);
+                        GameClient.Get<IQueueManager>().StopNetworkThread();
+                        return;
+                    }
 
                     PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
 

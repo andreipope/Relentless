@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void DrawCardHandler(WorkingCard card)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
                     ActionType = PlayerActionType.DrawCard,
@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);*/
             }
 
             public Player Player { get; }
