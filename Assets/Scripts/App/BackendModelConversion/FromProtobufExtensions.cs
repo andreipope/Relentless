@@ -129,6 +129,13 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
+        public static List<CardInstance> FromProtobuf(this RepeatedField<CardInstance> repeatedFieldCardInstance)
+        {
+            List<CardInstance> cardInstances = new List<CardInstance>();
+            cardInstances.AddRange(repeatedFieldCardInstance);
+            return cardInstances;
+        }
+
         public static WorkingCard FromProtobuf(CardInstance cardInstance, Player player)
         {
             CardPrototype cardPrototype = cardInstance.Prototype;

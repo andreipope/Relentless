@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "http://stage-auth.loom.games",
                         "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
                         "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
-                        "v2"
+                        "v1"
                     )
                 },
                 {
