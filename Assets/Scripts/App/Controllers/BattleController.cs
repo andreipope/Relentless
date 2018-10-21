@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0, bool hasCounterAttack = true)
+        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0)
         {
             int damageAttacked = 0;
             int damageAttacking;
@@ -109,41 +109,28 @@ namespace Loom.ZombieBattleground
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                if (attackedUnitModel.CurrentHp <= 0)
-                {
-                    attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
-                }
-
                 _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
 
-                if (hasCounterAttack)
+                if (attackedUnitModel.CurrentHp > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
                 {
-                    if (attackedUnitModel.CurrentHp > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
+                    damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
+
+                    if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
                     {
-                        damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
-
-                        if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
-                        {
-                            damageAttacked = 0;
-                            attackingUnitModel.HasUsedBuffShield = true;
-                        }
-
-                        attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
-                        attackingUnitModel.CurrentHp -= damageAttacked;
-
-                        if (attackingUnitModel.CurrentHp <= 0)
-                        {
-                            attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
-                        }
-
-                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackingUnitModel), -damageAttacked);
-
-                        attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
-                        attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
+                        damageAttacked = 0;
+                        attackingUnitModel.HasUsedBuffShield = true;
                     }
+
+                    attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
+                    attackingUnitModel.CurrentHp -= damageAttacked;
+
+                    _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackingUnitModel), -damageAttacked);
+
+                    attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
+                    attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
                 }
 
                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -236,7 +223,12 @@ namespace Loom.ZombieBattleground
         public void AttackUnitByAbility(
             object attacker, AbilityData ability, BoardUnitModel attackedUnitModel, int damageOverride = -1)
         {
-            int damage= damageOverride != -1 ? damageOverride : ability.Value;
+            int damage = ability.Value;
+
+            if (damageOverride > 0)
+            {
+                damage = damageOverride;
+            }
 
             if (attackedUnitModel != null)
             {
@@ -263,12 +255,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
+        public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer)
         {
-            int damage = damageOverride != -1 ? damageOverride : ability.Value;
-
             if (attackedPlayer != null)
             {
+                int damage = ability.Value;
+
                 attackedPlayer.Defense -= damage;
 
                 _vfxController.SpawnGotDamageEffect(attackedPlayer, -damage);

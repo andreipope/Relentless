@@ -5,7 +5,6 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
-using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
@@ -563,6 +562,7 @@ namespace Loom.ZombieBattleground
                             _battlegroundController.PlayerBoardCards.Add(boardUnitView);
                             player.AddCardToBoard(card.WorkingCard);
                             player.RemoveCardFromHand(card.WorkingCard);
+
                             player.BoardCards.Insert(indexOfCard, boardUnitView);
 
                             _timerManager.AddTimer(
@@ -643,84 +643,6 @@ namespace Loom.ZombieBattleground
             {
                 card.HandBoardCard.ResetToInitialPosition();
             }
-        }
-
-        public void SummonUnitFromHand(Player player, BoardCard card)
-        {
-            Card libraryCard = card.WorkingCard.LibraryCard;
-
-            card.Transform.DORotate(Vector3.zero, .1f);
-            card.HandBoardCard.Enabled = false;
-
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
-                Constants.CardsMoveSoundVolume);
-
-            int indexOfCard = 0;
-            float newCreatureCardPosition = card.Transform.position.x;
-
-            // set correct position on board depends from card view position
-            for (int i = 0; i < player.BoardCards.Count; i++)
-            {
-                if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
-                {
-                    indexOfCard = i + 1;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
-            boardUnitView.Transform.tag = SRTags.PlayerOwned;
-            boardUnitView.Transform.parent = _playerBoard.transform;
-            boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * player.BoardCards.Count, 0);
-            boardUnitView.Model.OwnerPlayer = card.WorkingCard.Owner;
-            boardUnitView.SetObjectInfo(card.WorkingCard);
-
-            _battlegroundController.PlayerHandCards.Remove(card);
-            _battlegroundController.PlayerBoardCards.Add(boardUnitView);
-            player.AddCardToBoard(card.WorkingCard);
-            player.RemoveCardFromHand(card.WorkingCard);
-            player.BoardCards.Insert(indexOfCard, boardUnitView);
-
-            InternalTools.DoActionDelayed(() =>
-            {
-                card.WorkingCard.Owner.GraveyardCardsCount++;
-            }, 1f);
-
-            card.RemoveCardParticle.Play();
-
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = Enumerators.ActionType.PlayCardFromHand,
-                Caller = boardUnitView.Model,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-            });
-
-            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, true, true);
-
-            Sequence animationSequence = DOTween.Sequence();
-            animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-            animationSequence.OnComplete(() =>
-                {
-                    RemoveCard(new object[]
-                    {
-                        card
-                    });
-
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        boardUnitView.PlayArrivalAnimation();
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-                    }, 0.1f);
-                });
-        }
-
-
-        public void ShuffleCardToPlayerHand(WorkingCard card, Player player)
-        {
-            player.AddCardToDeck(card, true);
         }
 
         public void PlayOpponentCard(

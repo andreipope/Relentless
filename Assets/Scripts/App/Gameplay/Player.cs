@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         public int CurrentGooModificator { get; set; }
 
-        public int DamageByNoMoreCardsInDeck { get; set; }
+        public int DamageByNoMoreCardsInDeck  { get; set; }
 
         public int ExtraGoo { get; set; }
 
@@ -325,7 +325,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooVials++;
-                CurrentGoo = GooVials + CurrentGooModificator + ExtraGoo;
+                CurrentGoo = GooVials + CurrentGooModificator;
                 CurrentGooModificator = 0;
 
                 if (_turnsLeftToFreeFromStun > 0 && IsStunned)
@@ -344,16 +344,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AddCardToDeck(WorkingCard card, bool shuffle = false)
+        public void AddCardToDeck(WorkingCard card)
         {
-            if (shuffle)
-            {
-                CardsInDeck.Insert(Random.Range(0, CardsInDeck.Count), card);
-            }
-            else
-            {
-                CardsInDeck.Add(card);
-            }
+            CardsInDeck.Add(card);
 
             DeckChanged?.Invoke(CardsInDeck.Count);
         }

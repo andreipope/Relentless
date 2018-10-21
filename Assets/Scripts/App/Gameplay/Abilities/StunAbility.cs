@@ -22,9 +22,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-
-
             switch (AbilityEffectType)
             {
                 case Enumerators.AbilityEffectType.STUN_FREEZES:
@@ -35,37 +32,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
-
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS))
-            {
-                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
-
-                foreach (BoardUnitView unit in GetOpponentOverlord().BoardCards)
-                {
-                    StunUnit(unit.Model);
-
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.Freeze,
-                        Target = unit.Model,
-                    });
-                }
-
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                {
-                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                    Caller = GetCaller(),
-                    TargetEffects = TargetEffects
-                });
-            }
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
@@ -76,7 +43,9 @@ namespace Loom.ZombieBattleground
 
             if (info is BoardUnitModel unit)
             {
-                StunUnit(unit);
+                unit.Stun(Enumerators.StunType.FREEZE, 1);
+
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
@@ -92,13 +61,6 @@ namespace Loom.ZombieBattleground
                     }
                 });
             }
-        }
-
-        private void StunUnit(BoardUnitModel unit)
-        {
-            unit.Stun(Enumerators.StunType.FREEZE, 1);
-
-            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position);
         }
     }
 }
