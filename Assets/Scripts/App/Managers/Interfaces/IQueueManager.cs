@@ -9,7 +9,9 @@ namespace Loom.ZombieBattleground
     {
         void AddAction(Action action);
         void AddAction(PlayerActionRequest action);
+        bool Active { get; set; }
         void StartNetworkThread();
         void StopNetworkThread();
+        void Clear();
     }
 }

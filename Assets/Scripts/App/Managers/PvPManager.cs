@@ -50,10 +50,13 @@ namespace Loom.ZombieBattleground
         public GameState InitialGameState { get; set; }
 
         public OpponentDeck OpponentDeck { get; set; }
+
         public List<CardInstance> OpponentCardsInHand { get; set; }
+
         public List<CardInstance> OpponentCardsInDeck { get; set; }
 
         public List<CardInstance> PlayerCardsInHand { get; set; }
+
         public List<CardInstance> PlayerCardsInDeck { get; set; }
 
         public int OpponentDeckIndex { get; set; }
@@ -63,16 +66,16 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
+        private IQueueManager _queueManager;
 
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
-
-
         }
 
         public void Update()
@@ -106,99 +109,117 @@ namespace Loom.ZombieBattleground
 
         public async Task FindMatch()
         {
-            InitialGameState = null;
-
-            OpponentCardsInHand = new List<CardInstance>();
-            OpponentCardsInDeck = new List<CardInstance>();
-            PlayerCardsInHand = new List<CardInstance>();
-            PlayerCardsInDeck = new List<CardInstance>();
-            FindMatchResponse findMatchResponse =
-                await _backendFacade.FindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId,
-                    CustomGameModeAddress
-                );
-            Debug.LogWarning("FindMatchResponse:\n" + findMatchResponse);
-
-            await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
-
-            GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
-            MatchMetadata = new MatchMetadata(
-                findMatchResponse.Match.Id,
-                findMatchResponse.Match.Topics,
-                getMatchResponse.Match.Status
-            );
-
-            if (findMatchResponse.Match.Status != getMatchResponse.Match.Status)
+            try
             {
-                Debug.Log(
-                    $"findMatchResponse.Match.Status = {findMatchResponse.Match.Status}, " +
-                    $"getMatchResponse.Match.Status = {getMatchResponse.Match.Status}"
+                _queueManager.Active = false;
+                _queueManager.Clear();
+
+                InitialGameState = null;
+
+                OpponentCardsInHand = new List<CardInstance>();
+                OpponentCardsInDeck = new List<CardInstance>();
+                PlayerCardsInHand = new List<CardInstance>();
+                PlayerCardsInDeck = new List<CardInstance>();
+                FindMatchResponse findMatchResponse =
+                    await _backendFacade.FindMatch(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        _uiManager.GetPage<GameplayPage>().CurrentDeckId,
+                        CustomGameModeAddress
+                    );
+                Debug.LogWarning("FindMatchResponse:\n" + findMatchResponse);
+
+                await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
+
+                GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
+                MatchMetadata = new MatchMetadata(
+                    findMatchResponse.Match.Id,
+                    findMatchResponse.Match.Topics,
+                    getMatchResponse.Match.Status
                 );
+
+                if (findMatchResponse.Match.Status != getMatchResponse.Match.Status)
+                {
+                    Debug.Log(
+                        $"findMatchResponse.Match.Status = {findMatchResponse.Match.Status}, " +
+                        $"getMatchResponse.Match.Status = {getMatchResponse.Match.Status}"
+                    );
+                }
+
+                if (MatchMetadata.Status == Match.Types.Status.Started)
+                {
+                    await LoadInitialGameState();
+                }
             }
-
-            if (MatchMetadata.Status == Match.Types.Status.Started)
+            catch (Exception)
             {
-                await LoadInitialGameState();
+                _queueManager.Clear();
+                throw;
+            }
+            finally
+            {
+                _queueManager.Active = true;
             }
         }
 
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
-            GameClient.Get<IQueueManager>().AddAction(
-                async () =>
+            Action action = async () =>
+            {
+                string jsonStr = SystemText.Encoding.UTF8.GetString(data);
+
+                Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
+
+                if (!jsonStr.ToLower().Contains("actiontype") && jsonStr.ToLower().Contains("winnerid"))
                 {
-                    string jsonStr = SystemText.Encoding.UTF8.GetString(data);
+                    MatchEndEvent matchEndEvent = JsonConvert.DeserializeObject<MatchEndEvent>(jsonStr);
 
-                    Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
+                    Debug.LogError(matchEndEvent.MatchId + " , " + matchEndEvent.UserId + " , " + matchEndEvent.WinnerId);
+                    GameClient.Get<IQueueManager>().StopNetworkThread();
+                    return;
+                }
 
-                    if (!jsonStr.ToLower().Contains("actiontype") && jsonStr.ToLower().Contains("winnerid"))
-                    {
-                        MatchEndEvent matchEndEvent = JsonConvert.DeserializeObject<MatchEndEvent>(jsonStr);
+                PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
 
-                        Debug.LogError(matchEndEvent.MatchId + " , " + matchEndEvent.UserId + " , " + matchEndEvent.WinnerId);
-                        GameClient.Get<IQueueManager>().StopNetworkThread();
-                        return;
-                    }
+                switch (playerActionEvent.Match.Status)
+                {
+                    case Match.Types.Status.Created:
+                        MatchCreatedActionReceived?.Invoke();
+                        break;
+                    case Match.Types.Status.Matching:
+                        MatchingStartedActionReceived?.Invoke();
+                        break;
+                    case Match.Types.Status.Started:
+                        // No need to reload if a match was found immediately
+                        if (InitialGameState == null)
+                        {
+                            await LoadInitialGameState();
+                        }
 
-                    PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+                        Debug.LogWarning("Match Starting");
 
-                    switch (playerActionEvent.Match.Status)
-                    {
-                        case Match.Types.Status.Created:
-                            MatchCreatedActionReceived?.Invoke();
-                            break;
-                        case Match.Types.Status.Matching:
-                            MatchingStartedActionReceived?.Invoke();
-                            break;
-                        case Match.Types.Status.Started:
-                            // No need to reload if a match was found immediately
-                            if (InitialGameState == null)
-                            {
-                                await LoadInitialGameState();
-                            }
+                        GameStartedActionReceived?.Invoke();
+                        break;
+                    case Match.Types.Status.Playing:
+                        if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
+                            return;
 
-                            GameStartedActionReceived?.Invoke();
-                            break;
-                        case Match.Types.Status.Playing:
-                            if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
-                                return;
+                        OnReceivePlayerActionType(playerActionEvent);
+                        break;
+                    case Match.Types.Status.PlayerLeft:
+                        PlayerLeftGameActionReceived?.Invoke();
+                        break;
+                    case Match.Types.Status.Ended:
+                        GameEndedActionReceived?.Invoke();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(
+                            nameof(playerActionEvent.Match.Status),
+                            playerActionEvent.Match.Status + " not found"
+                        );
+                }
+            };
 
-                            OnReceivePlayerActionType(playerActionEvent);
-                            break;
-                        case Match.Types.Status.PlayerLeft:
-                            PlayerLeftGameActionReceived?.Invoke();
-                            break;
-                        case Match.Types.Status.Ended:
-                            GameEndedActionReceived?.Invoke();
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(
-                                nameof(playerActionEvent.Match.Status),
-                                playerActionEvent.Match.Status + " not found"
-                            );
-                    }
-                });
+            GameClient.Get<IQueueManager>().AddAction(action);
         }
 
         private async Task LoadInitialGameState()
