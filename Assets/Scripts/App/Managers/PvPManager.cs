@@ -210,7 +210,6 @@ namespace Loom.ZombieBattleground
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
                     break;
                 case PlayerActionType.CardPlay:
-                    Debug.LogError("== Recieved msg for card Play == ");
                     CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
                     break;
                 case PlayerActionType.CardAttack:

@@ -329,7 +329,11 @@ namespace Loom.ZombieBattleground
             {
                 SetHeroInfo(currentOpponentHero, Constants.Opponent, OpponentPrimarySkillHandler.gameObject,
                     OpponentSecondarySkillHandler.gameObject);
-                _opponentNameText.text = currentOpponentHero.FullName;
+
+                if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+                    _opponentNameText.text = _pvpManager.GetOpponentUserId();
+                else
+                    _opponentNameText.text = currentOpponentHero.FullName;
             }
 
 			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
