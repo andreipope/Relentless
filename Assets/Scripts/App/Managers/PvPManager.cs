@@ -173,7 +173,7 @@ namespace Loom.ZombieBattleground
                             break;
                         case Match.Types.Status.Started:
                             // No need to reload if a match was found immediately
-                            if (InitialGameState != null)
+                            if (InitialGameState == null)
                             {
                                 await LoadInitialGameState();
                             }
