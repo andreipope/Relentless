@@ -136,8 +136,11 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IQueueManager>().AddAction(
                 async () =>
                 {
-                    PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
-                    Debug.LogWarning("! " + playerActionEvent ); // todo delete
+                    string jsonStr = SystemText.Encoding.UTF8.GetString(data);
+
+                    Debug.LogWarning(jsonStr); // todo delete
+
+                    PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
 
                     switch (playerActionEvent.Match.Status)
                     {
