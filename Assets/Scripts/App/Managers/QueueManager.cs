@@ -12,8 +12,7 @@ namespace Loom.ZombieBattleground
 {
     public class QueueManager : IService, IQueueManager
     {
-
-        private volatile Queue<Action> _mainThreadActions;
+        private Queue<Action> _mainThreadActions;
 
         private BlockingCollection<PlayerActionRequest> _networkThreadActions;
 
@@ -44,6 +43,15 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void Clear()
+        {
+            _mainThreadActions.Clear();
+            while (_networkThreadActions.Count > 0)
+            {
+                _networkThreadActions.Take();
+            }
+        }
+
         //Main Gameplay Thread
         public void Update()
         {
@@ -60,9 +68,11 @@ namespace Loom.ZombieBattleground
             _networkThreadActions.Add(action);
         }
 
+        public bool Active { get; set; }
+
         private void MainThread()
         {
-            if (_mainThreadActions.Count > 0)
+            if (Active && _mainThreadActions.Count > 0)
             {
                 _mainThreadActions.Dequeue().Invoke();
             }
@@ -74,7 +84,8 @@ namespace Loom.ZombieBattleground
             {
                 while (_networkThreadActions.Count > 0)
                 {
-                    await GameClient.Get<BackendFacade>().SendAction(_networkThreadActions.Take());
+                    PlayerActionRequest request = _networkThreadActions.Take();
+                    await GameClient.Get<BackendFacade>().SendAction(request);
                 }
             }
         }

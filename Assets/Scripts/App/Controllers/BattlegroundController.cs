@@ -405,7 +405,7 @@ namespace Loom.ZombieBattleground
             TurnStarted?.Invoke();
         }
 
-        public async void EndTurn()
+        public void EndTurn()
         {
             if (_gameplayManager.IsGameEnded)
                 return;

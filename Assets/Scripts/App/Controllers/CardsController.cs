@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground
             callback?.Invoke();
         }
 
-        public async void AddCardToHand(Player player, WorkingCard card = null)
+        public void AddCardToHand(Player player, WorkingCard card = null)
         {
             if (card == null)
             {
@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
             player.AddCardToHand(card);
         }
 
-        public async void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
+        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
         {
             if (card == null)
             {
