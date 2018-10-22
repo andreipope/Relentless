@@ -356,8 +356,10 @@ namespace Loom.ZombieBattleground
             CalculateNumberOfPages();
             LoadCards(0, 0);
 
-            _cardCounter.text = _dataManager.CachedCollectionData.Cards.Count + "/" +
-                _dataManager.CachedCardsLibraryData.Cards.Count;
+            //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
+            //we'll have to change this.
+            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount + "/" +
+                _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount;
         }
 
         private void HighlightCorrectIcon()
