@@ -130,12 +130,16 @@ namespace Loom.ZombieBattleground
 
                 await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
 
+                Debug.LogWarning("SubscribeEvent complete:");
+
                 GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
                 MatchMetadata = new MatchMetadata(
                     findMatchResponse.Match.Id,
                     findMatchResponse.Match.Topics,
                     getMatchResponse.Match.Status
                 );
+
+                Debug.LogWarning("GetMatch complete");
 
                 if (findMatchResponse.Match.Status != getMatchResponse.Match.Status)
                 {
@@ -147,11 +151,13 @@ namespace Loom.ZombieBattleground
 
                 if (MatchMetadata.Status == Match.Types.Status.Started)
                 {
+                    Debug.LogWarning("Status == Started, loading initial state immediately");
                     await LoadInitialGameState();
                 }
             }
             catch (Exception)
             {
+                await _backendFacade.UnsubscribeEvent();
                 _queueManager.Clear();
                 throw;
             }
