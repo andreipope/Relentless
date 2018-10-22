@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Loom.Client;
+using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -187,10 +188,11 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
                 GetCustomGameModeCustomUiResponse customUiResponse =
-                    await GameClient.Get<BackendFacade>().GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
+                    await GameClient.Get<BackendFacade>()
+                        .GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
 
-                CustomGameModeCustomUiElement[] customUiElements = customUiResponse.UiElements.ToArray();
-                if (customUiElements.Length > 0)
+                RepeatedField<CustomGameModeCustomUiElement> customUiElements = customUiResponse?.UiElements;
+                if (customUiElements?.Count> 0)
                 {
                     GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
                     GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(Mode, customUiElements);

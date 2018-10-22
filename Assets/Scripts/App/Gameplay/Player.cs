@@ -228,6 +228,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> BoardChanged;
 
+        public event Action<WorkingCard> DrawCard;
+
         public event Action<WorkingCard, int> CardPlayed;
 
         public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
@@ -490,6 +492,31 @@ namespace Loom.ZombieBattleground
             DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
+
+        public void SetDeck(List<CardWithID> cards, bool isMainTurnSecond)
+        {
+            CardsInDeck = new List<WorkingCard>();
+
+            cards = ShuffleCardsList(cards);
+
+            if(isMainTurnSecond)
+            {
+                _cardsController.SetNewCardInstanceId(Constants.MinDeckSize);
+            }
+            else
+            {
+                _cardsController.SetNewCardInstanceId(0);
+            }
+
+            foreach (CardWithID card in cards)
+            {
+                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card.Name), this, card.Id));
+            }
+
+            DeckChanged?.Invoke(CardsInDeck.Count);
+        }
+
+
         public List<T> ShuffleCardsList<T>(List<T> cards)
         {
             if (cards.Count == 0)
@@ -505,65 +532,53 @@ namespace Loom.ZombieBattleground
             return array;
         }
 
-        public List<string> SetFirstHand(List<string> starterCards, bool skip = false)
+        public List<CardWithID> SetFirstHand(List<CardWithID> starterCards, bool isTutorial = false)
         {
-            if (skip)
+            if (isTutorial)
                 return null;
 
-            List<string> finalStarterCardsList = new List<string>();
+            List<CardWithID> finalStarterCardsList = new List<CardWithID>();
 
-
-            switch (_matchManager.MatchType)
+            int numCardsAdded = 0;
+            if(starterCards != null)
             {
-                case Enumerators.MatchType.LOCAL:
-                    int numCardsAdded = 0;
-                    if(starterCards != null)
+                for (int i = 0; i < starterCards.Count; i++)
+                {
+                    WorkingCard card = null;
+                    if(_matchManager.MatchType == Enumerators.MatchType.PVP)
+                        card = CardsInDeck.Find(workingCard => workingCard.LibraryCard.Name == starterCards[i].Name && workingCard.Id == starterCards[i].Id);
+                    else
+                        card = CardsInDeck.Find(workingCard => workingCard.LibraryCard.Name == starterCards[i].Name);
+
+                    if(card == null)
+                        continue;
+
+                    if (IsLocalPlayer && !_gameplayManager.IsTutorial)
                     {
-                        for (int i = 0; i < starterCards.Count; i++)
-                        {
-                            WorkingCard card = CardsInDeck.Find(workingCard => workingCard.LibraryCard.Name == starterCards[i]);
-                            if(card == null)
-                                continue;
-
-                            if (IsLocalPlayer && !_gameplayManager.IsTutorial)
-                            {
-                                _cardsController.AddCardToDistributionState(this, card);
-                            }
-                            else
-                            {
-                                _cardsController.AddCardToHand(this, card);
-                            }
-
-                            finalStarterCardsList.Add(starterCards[i]);
-                            numCardsAdded++;
-                        }
+                        _cardsController.AddCardToDistributionState(this, card);
+                    }
+                    else
+                    {
+                        _cardsController.AddCardToHand(this, card);
                     }
 
-                    for (int i = numCardsAdded; i < InitialCardsInHandCount; i++)
-                    {
-                        if (IsLocalPlayer && !_gameplayManager.IsTutorial)
-                        {
-                            _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
-                        }
-                        else
-                        {
-                            _cardsController.AddCardToHand(this, CardsInDeck[0]);
-                        }
+                    finalStarterCardsList.Add(starterCards[i]);
+                    numCardsAdded++;
+                }
+            }
 
-                        finalStarterCardsList.Add(CardsInDeck[i].LibraryCard.Name);
-                    }
-                    break;
-                case Enumerators.MatchType.PVP:
-                    foreach (CardInstance cardInstance in _pvpPlayerState.CardsInHand)
-                    {
-                        WorkingCard workingCard = _cardsController.GetWorkingCardFromName(this, cardInstance.Prototype.Name);
-                        _cardsController.AddCardToDistributionState(this, workingCard);
-                        finalStarterCardsList.Add(workingCard.LibraryCard.Name);
-                    }
+            for (int i = numCardsAdded; i < Constants.DefaultCardsInHandAtStartGame; i++)
+            {
+                if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                {
+                    _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
+                }
+                else
+                {
+                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                }
 
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                finalStarterCardsList.Add(new CardWithID(CardsInDeck[i].Id, CardsInDeck[i].LibraryCard.Name));
             }
 
             ThrowMulliganCardsEvent(_cardsController.MulliganCards);
@@ -652,6 +667,11 @@ namespace Loom.ZombieBattleground
 
 
             _skillsController.UnBlockSkill(this);
+        }
+
+        public void ThrowDrawCardEvent(WorkingCard card)
+        {
+            DrawCard?.Invoke(card);
         }
 
         public void ThrowPlayCardEvent(WorkingCard card, int position)
