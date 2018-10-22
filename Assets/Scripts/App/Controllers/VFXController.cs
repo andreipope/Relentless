@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CreateVfx(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
+        public void CreateVfx(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f, bool isIgnoreCastVfx = false)
         {
             if (prefab == null)
                 return;
@@ -188,7 +188,14 @@ namespace Loom.ZombieBattleground
             }
 
             GameObject particle = Object.Instantiate(prefab);
-            particle.transform.position = Utilites.CastVfxPosition(position + Vector3.forward);
+            if(isIgnoreCastVfx)
+            {
+                particle.transform.position = position;
+            }
+            else
+            {
+                particle.transform.position = Utilites.CastVfxPosition(position + Vector3.forward);
+            }
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 

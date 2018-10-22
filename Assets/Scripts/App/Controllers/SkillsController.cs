@@ -1242,42 +1242,47 @@ namespace Loom.ZombieBattleground
         {
             Enumerators.ActionType actionType;
 
-            switch (target)
-            {
-                case BoardUnitModel unit:
-                    unit.BuffedHp += skill.Value;
-                    unit.CurrentHp += skill.Value;
-                    actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
-                    break;
-                case Player player:
-                    _battleController.HealPlayerBySkill(owner, boardSkill, player);
-                    actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
-            }
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceWallVFX"), target, delay: 8, isIgnoreCastVfx: true);
 
-            _soundManager.PlaySound(
-                Enumerators.SoundType.OVERLORD_ABILITIES,
-                skill.Title.Trim().ToLower(),
-                Constants.OverlordAbilitySoundVolume,
-                Enumerators.CardSoundType.NONE);
-
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            InternalTools.DoActionDelayed(() =>
             {
-                ActionType = actionType,
-                Caller = boardSkill,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                switch (target)
                 {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                        Target = target,
-                        HasValue = true,
-                        Value = skill.Value
-                    }
+                    case BoardUnitModel unit:
+                        unit.BuffedHp += skill.Value;
+                        unit.CurrentHp += skill.Value;
+                        actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
+                        break;
+                    case Player player:
+                        _battleController.HealPlayerBySkill(owner, boardSkill, player);
+                        actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
-            });
+
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.Title.Trim().ToLower(),
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
+
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = boardSkill,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                            Target = target,
+                            HasValue = true,
+                            Value = skill.Value
+                        }
+                    }
+                });
+            }, 2f);
         }
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
