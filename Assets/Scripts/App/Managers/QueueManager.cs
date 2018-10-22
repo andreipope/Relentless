@@ -96,6 +96,7 @@ namespace Loom.ZombieBattleground
             {
                 _networkThreadAlive = false;
                 _networkThread.Interrupt();
+                _networkThreadActions.Dispose();
             }
             _mainThreadActions.Clear();
         }
