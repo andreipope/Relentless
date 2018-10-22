@@ -99,6 +99,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                     _abilitiesController.AbilityUsed += AbilityUsedHandler;
 
+                    Player.DrawCard += DrawCardHandler;
                     Player.CardPlayed += CardPlayedHandler;
                     Player.CardAttacked += CardAttackedHandler;
                     Player.LeaveMatch += LeaveMatchHandler;
@@ -108,6 +109,28 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                     _ranksController.RanksUpdated += RanksUpdatedHandler;
                 }
+            }
+
+            private void DrawCardHandler(WorkingCard card)
+            {
+                /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                PlayerAction playerAction = new PlayerAction
+                {
+                    ActionType = PlayerActionType.DrawCard,
+                    PlayerId = playerId,
+                    DrawCard = new PlayerActionDrawCard
+                    {
+                        CardInstance = new CardInstance
+                        {
+                            InstanceId = card.Id,
+                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                            Defense = card.Health,
+                            Attack = card.Damage
+                        }
+                    }
+                };
+
+                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);*/
             }
 
             public Player Player { get; }
@@ -127,6 +150,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                     _abilitiesController.AbilityUsed -= AbilityUsedHandler;
 
+                    Player.DrawCard -= DrawCardHandler;
                     Player.CardPlayed -= CardPlayedHandler;
                     Player.CardAttacked -= CardAttackedHandler;
                     Player.LeaveMatch -= LeaveMatchHandler;

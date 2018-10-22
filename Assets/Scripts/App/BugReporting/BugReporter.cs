@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground
 
         private bool _isCrashing;
 
+        private string _exceptionStacktrace;
+
         #endregion
 
         #region Properties
@@ -150,6 +152,11 @@ namespace Loom.ZombieBattleground
             // Set Creating Flag
             _isCreatingBugReport = true;
 
+            if (!String.IsNullOrEmpty(_exceptionStacktrace))
+            {
+                Debug.LogError(_exceptionStacktrace);
+            }
+
             // Take Main Screenshot
             UnityBugReporting.CurrentClient.TakeScreenshot(1280,
                 1280,
@@ -193,7 +200,16 @@ namespace Loom.ZombieBattleground
                 }
 
                 // Attachments
-                //br.Attachments.Add(new BugReportAttachment("Sample Attachment.txt", "SampleAttachment.txt", "text/plain", System.Text.Encoding.UTF8.GetBytes("This is a sample attachment.")));
+                if (!String.IsNullOrEmpty(_exceptionStacktrace))
+                {
+                    br.Attachments.Add(
+                        new BugReportAttachment(
+                            "Exception",
+                            "Exception.txt",
+                            "text/plain",
+                            global::System.Text.Encoding.UTF8.GetBytes(_exceptionStacktrace)
+                            ));
+                }
 
                 br.DeviceMetadata.Add(new BugReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
                 br.DeviceMetadata.Add(new BugReportNamedValue("Min FPS", _afpsCounter.fpsCounter.LastMinimumValue.ToString()));
@@ -266,6 +282,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             _isCrashing = true;
+            _exceptionStacktrace = stacktrace;
             StartCoroutine(DelayedCreateBugReport(true));
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -49,6 +50,11 @@ namespace Loom.ZombieBattleground
         public GameState InitialGameState { get; set; }
 
         public OpponentDeck OpponentDeck { get; set; }
+        public List<CardInstance> OpponentCardsInHand { get; set; }
+        public List<CardInstance> OpponentCardsInDeck { get; set; }
+
+        public List<CardInstance> PlayerCardsInHand { get; set; }
+        public List<CardInstance> PlayerCardsInDeck { get; set; }
 
         public int OpponentDeckIndex { get; set; }
 
@@ -65,6 +71,8 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
+
+
         }
 
         public void Update()
@@ -100,6 +108,10 @@ namespace Loom.ZombieBattleground
         {
             InitialGameState = null;
 
+            OpponentCardsInHand = new List<CardInstance>();
+            OpponentCardsInDeck = new List<CardInstance>();
+            PlayerCardsInHand = new List<CardInstance>();
+            PlayerCardsInDeck = new List<CardInstance>();
             FindMatchResponse findMatchResponse =
                 await _backendFacade.FindMatch(
                     _backendDataControlMediator.UserDataModel.UserId,
@@ -138,7 +150,16 @@ namespace Loom.ZombieBattleground
                 {
                     string jsonStr = SystemText.Encoding.UTF8.GetString(data);
 
-                    Debug.LogWarning(jsonStr); // todo delete
+                    Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
+
+                    if (!jsonStr.ToLower().Contains("actiontype") && jsonStr.ToLower().Contains("winnerid"))
+                    {
+                        MatchEndEvent matchEndEvent = JsonConvert.DeserializeObject<MatchEndEvent>(jsonStr);
+
+                        Debug.LogError(matchEndEvent.MatchId + " , " + matchEndEvent.UserId + " , " + matchEndEvent.WinnerId);
+                        GameClient.Get<IQueueManager>().StopNetworkThread();
+                        return;
+                    }
 
                     PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
 
@@ -200,6 +221,7 @@ namespace Loom.ZombieBattleground
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
                     break;
                 case PlayerActionType.CardPlay:
+                    Debug.LogError("== Recieved msg for card Play == ");
                     CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
                     break;
                 case PlayerActionType.CardAttack:

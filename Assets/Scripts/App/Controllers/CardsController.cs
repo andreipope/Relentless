@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IMatchManager _matchManager;
+
         private BattlegroundController _battlegroundController;
 
         private VfxController _vfxController;
@@ -67,6 +69,7 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -255,6 +258,13 @@ namespace Loom.ZombieBattleground
 
             if (CheckIsMoreThanMaxCards(card, player))
                 return;
+
+            /*
+            if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+            {
+                player.ThrowDrawCardEvent(card);
+            }
+*/
 
             player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);

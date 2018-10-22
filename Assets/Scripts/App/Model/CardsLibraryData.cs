@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Data
 
         public Card GetCardFromName(string name)
         {
-            return Cards.Find(x => x.Name == name);
+            return Cards.Find(x => x.Name.ToLower() == name.ToLower());
         }
 
         public void FillAllCards()

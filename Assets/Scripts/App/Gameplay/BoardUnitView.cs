@@ -113,8 +113,6 @@ namespace Loom.ZombieBattleground
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
-
-
         }
 
         public BoardUnitModel Model { get; }
@@ -690,6 +688,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     _fightTargetingArrow.Dispose();
+                    _fightTargetingArrow = null;
                 }
             }
         }
@@ -726,11 +725,12 @@ namespace Loom.ZombieBattleground
                         Model.CurrentDamage);
 
                     hitCallback();
+
+                    _fightTargetingArrow = null;
+                    SetHighlightingEnabled(true);
                 },
                 () =>
                 {
-                    _fightTargetingArrow = null;
-                    SetHighlightingEnabled(true);
                     attackCompleteCallback();
 
                     completeCallback?.Invoke();
@@ -751,11 +751,12 @@ namespace Loom.ZombieBattleground
                         targetCardView.Transform.position, Model.CurrentDamage);
 
                     hitCallback();
+
+                    _fightTargetingArrow = null;
+                    SetHighlightingEnabled(true);
                 },
                 () =>
                 {
-                    _fightTargetingArrow = null;
-                    SetHighlightingEnabled(true);
                     attackCompleteCallback();
 
                     if (targetCardView.Model.CurrentHp <= 0)
