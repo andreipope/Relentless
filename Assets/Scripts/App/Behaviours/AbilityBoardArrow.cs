@@ -15,10 +15,6 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType TargetUnitStatusType;
 
-        public int UnitDefense = 0;
-
-        public int UnitCost = 999;
-
         private IInputManager _inputManager;
 
         private int _onMouseDownInputIndex;
@@ -55,23 +51,17 @@ namespace Loom.ZombieBattleground
                     if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
                         unit.Model.UnitStatus == TargetUnitStatusType)
                     {
-                        if ((UnitDefense > 0 && unit.Model.CurrentHp <= UnitDefense) || UnitDefense == 0)
+                        if (SelfBoardCreature != unit)
                         {
-                            if (unit.Model.Card.RealCost <= UnitCost)
-                            {
-                                if (SelfBoardCreature != unit)
-                                {
-                                    SelectedCard?.SetSelectedUnit(false);
+                            SelectedCard?.SetSelectedUnit(false);
 
-                                    SelectedCard = unit;
-                                    SelectedPlayer?.SetGlowStatus(false);
+                            SelectedCard = unit;
+                            SelectedPlayer?.SetGlowStatus(false);
 
-                                    SelectedPlayer = null;
-                                    SelectedCard.SetSelectedUnit(true);
+                            SelectedPlayer = null;
+                            SelectedCard.SetSelectedUnit(true);
 
-                                    CardSelected?.Invoke(unit);
-                                }
-                            }
+                            CardSelected?.Invoke(unit);
                         }
                     }
                 }

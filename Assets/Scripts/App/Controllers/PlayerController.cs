@@ -8,11 +8,25 @@ using UnityEngine.Rendering;
 
 namespace Loom.ZombieBattleground
 {
+    public class CardWithID
+    {
+        public int Id;
+        public string Name;
+
+        public CardWithID(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+    }
+
     public class PlayerController : IController
     {
         private IGameplayManager _gameplayManager;
 
         private IDataManager _dataManager;
+
+        private IPvPManager _pvpManager;
 
         private ITutorialManager _tutorialManager;
 
@@ -52,6 +66,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -96,7 +111,7 @@ namespace Loom.ZombieBattleground
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
-                List<string> playerDeck = new List<string>();
+                List<CardWithID> playerDeck = new List<CardWithID>();
 
                 int deckId = _gameplayManager.PlayerDeckId;
                 foreach (DeckCardData card in _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId).Cards)
@@ -109,12 +124,28 @@ namespace Loom.ZombieBattleground
 // playerDeck.Add("Nail Bomb");
 #endif
 
-                        playerDeck.Add(card.CardName);
+                        playerDeck.Add(new CardWithID(-1, card.CardName));
                     }
                 }
 
                 if (_matchManager.MatchType == Enumerators.MatchType.PVP)
                 {
+                    for (int i = 0; i < _pvpManager.PlayerCardsInHand.Count; i++)
+                    {
+                        int index = playerDeck.FindIndex(card =>
+                            card.Name == _pvpManager.PlayerCardsInHand[i].Prototype.Name && card.Id == -1);
+                        if (index != -1)
+                            playerDeck[index].Id = _pvpManager.PlayerCardsInHand[i].InstanceId;
+                    }
+
+                    for (int i = 0; i < _pvpManager.PlayerCardsInDeck.Count; i++)
+                    {
+                        int index = playerDeck.FindIndex(card =>
+                            card.Name == _pvpManager.PlayerCardsInDeck[i].Prototype.Name && card.Id == -1);
+                        if (index != -1)
+                            playerDeck[index].Id = _pvpManager.PlayerCardsInDeck[i].InstanceId;
+                    }
+
                     _gameplayManager.CurrentPlayer.SetDeck(playerDeck, !GameClient.Get<IPvPManager>().IsCurrentPlayer());
                 }
                 else

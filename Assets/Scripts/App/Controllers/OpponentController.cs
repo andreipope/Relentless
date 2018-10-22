@@ -66,19 +66,35 @@ namespace Loom.ZombieBattleground
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
-                List<string> playerDeck = new List<string>();
+                List<CardWithID> playerDeck = new List<CardWithID>();
                 OpponentDeck opponentDeck = _pvpManager.OpponentDeck;
 
                 foreach (DeckCardData card in opponentDeck.Cards)
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        playerDeck.Add(card.CardName);
+                        playerDeck.Add(new CardWithID(-1, card.CardName));
                     }
                 }
 
                 if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                 {
+                    for (int i = 0; i < _pvpManager.OpponentCardsInHand.Count; i++)
+                    {
+                        int index = playerDeck.FindIndex(card =>
+                            card.Name == _pvpManager.OpponentCardsInHand[i].Prototype.Name && card.Id == -1);
+                        if (index != -1)
+                            playerDeck[index].Id = _pvpManager.OpponentCardsInHand[i].InstanceId;
+                    }
+
+                    for (int i = 0; i < _pvpManager.OpponentCardsInDeck.Count; i++)
+                    {
+                        int index = playerDeck.FindIndex(card =>
+                            card.Name == _pvpManager.OpponentCardsInDeck[i].Prototype.Name && card.Id == -1);
+                        if (index != -1)
+                            playerDeck[index].Id = _pvpManager.OpponentCardsInDeck[i].InstanceId;
+                    }
+
                     _gameplayManager.OpponentPlayer.SetDeck(playerDeck, GameClient.Get<IPvPManager>().IsCurrentPlayer());
                 }
                 else
@@ -119,7 +135,6 @@ namespace Loom.ZombieBattleground
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
             GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer),
-                              cardPlay.Card.InstanceId,
                               cardPlay.Position);
         }
 
@@ -191,8 +206,9 @@ namespace Loom.ZombieBattleground
             _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
-        public void GotActionPlayCard(WorkingCard card, int instanceId, int position)
+        public void GotActionPlayCard(WorkingCard card, int position)
         {
+            Debug.LogError("Played card = " + card.Id);
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
                 switch (workingCard.LibraryCard.CardKind)
@@ -203,16 +219,12 @@ namespace Loom.ZombieBattleground
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.zero;
                         boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
-                        workingCard.Id = instanceId;
                         boardUnitViewElement.SetObjectInfo(workingCard);
 
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-
-                        _gameplayManager.OpponentPlayer.BoardCards.Insert(
-                            Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count - 1),
-                            boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(position, boardUnitViewElement);
 
                         boardUnitViewElement.PlayArrivalAnimation();
 

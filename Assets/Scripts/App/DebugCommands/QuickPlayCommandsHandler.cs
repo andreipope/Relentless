@@ -107,28 +107,28 @@ static class QuickPlayCommandsHandler
     [CommandHandler(Description = "Adds starting cards in Player Starter")]
     private static void AddPlayerStarter(params string[] cards)
     {
-        _gameplayManager.PlayerStarterCards = new List<string>();
+        _gameplayManager.PlayerStarterCards = new List<CardWithID>();
 
         for (int i = 0; i < cards.Length; i++)
         {
             if (_gameplayManager.PlayerStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
                 break;
 
-            _gameplayManager.PlayerStarterCards.Add(cards[i]);
+            _gameplayManager.PlayerStarterCards.Add(new CardWithID(-1, cards[i]));
         }
     }
 
     [CommandHandler(Description = "Adds starting cards in Enemy Starter")]
     private static void AddEnemyStarter(string[] cards)
     {
-        _gameplayManager.OpponentStarterCards = new List<string>();
+        _gameplayManager.OpponentStarterCards = new List<CardWithID>();
 
         for (int i = 0; i < cards.Length; i++)
         {
             if (_gameplayManager.OpponentStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
                 break;
 
-            _gameplayManager.OpponentStarterCards.Add(cards[i]);
+            _gameplayManager.OpponentStarterCards.Add(new CardWithID(-1, cards[i]));
         }
     }
 
