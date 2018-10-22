@@ -592,6 +592,9 @@ namespace Loom.ZombieBattleground
                 () => {
                     foreach (MeshRenderer renderer in overlordImagePieces)
                     {
+                        if (renderer == null || !renderer)
+                            continue;
+
                         renderer.material.color = color;
                     }
                 }
