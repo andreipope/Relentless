@@ -1,4 +1,4 @@
-﻿#if !UNITY_WEBGL || UNITY_EDITOR
+#if !UNITY_WEBGL || UNITY_EDITOR
 
 using System.Threading.Tasks;
 using System;
@@ -152,9 +152,9 @@ namespace Loom.Client.Internal
         public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics = null)
         {
             var isFirstSub = this.eventReceived == null;
-            this.eventReceived += handler;
             if (isFirstSub)
             {
+                this.eventReceived += handler;
                 this.webSocket.OnMessage += WSSharpRPCClient_OnMessage;
             }
             // TODO: once re-sub on reconnect is implemented this should only
@@ -171,9 +171,9 @@ namespace Loom.Client.Internal
 
         public override Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler)
         {
-            this.eventReceived -= handler;
-            if (this.eventReceived == null)
+            if (this.eventReceived != null)
             {
+                this.eventReceived -= handler;
                 this.webSocket.OnMessage -= WSSharpRPCClient_OnMessage;
                 return SendAsync<object, object>("unsubevents", null);
             }
