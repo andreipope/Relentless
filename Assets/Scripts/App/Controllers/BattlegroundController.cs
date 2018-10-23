@@ -1097,7 +1097,7 @@ namespace Loom.ZombieBattleground
                     .ToList();
 
             List<WorkingCard> workingOpponentCards =
-                playerCards
+                opponentCards
                     .Select(cardName =>
                         new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), _gameplayManager.OpponentPlayer))
                     .ToList();

@@ -174,9 +174,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         Card = new CardInstance
                         {
                             InstanceId = card.Id,
-                            Prototype = card.GetCardPrototype(),
+                            Prototype = card.LibraryCard.GetCardPrototype(),
                             Defense = card.Health,
-                            Attack = card.Damage
+                            Attack = card.Damage,
                         },
                         Position = position
                     }
@@ -211,16 +211,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 
-            private ActionLogModel CreateBasicActionLogModel(string eventName)
-            {
-                return
-                    new ActionLogModel()
-                        .Add("UserId", _backendDataControlMediator.UserDataModel.UserId)
-                        .Add("CurrentTurnPlayer", IsOpponent ? "Opponent" : "Player")
-                        .Add("Event", eventName);
-            }
-
-
             private void CardAttackedHandler(WorkingCard attacker, AffectObjectType type, int instanceId)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
@@ -233,7 +223,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         Attacker = new CardInstance
                         {
                             InstanceId = attacker.Id,
-                            Prototype = ToProtobufExtensions.GetCardPrototype(attacker),
+                            Prototype = attacker.LibraryCard.GetCardPrototype(),
                             Defense = attacker.Health,
                             Attack = attacker.Damage
                         },
@@ -260,7 +250,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Card = new CardInstance
                     {
                         InstanceId = card.Id,
-                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                        Prototype = card.LibraryCard.GetCardPrototype(),
                         Defense = card.Health,
                         Attack = card.Damage
                     }
@@ -373,7 +363,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Card = new CardInstance
                     {
                         InstanceId = card.Id,
-                        Prototype = ToProtobufExtensions.GetCardPrototype(card),
+                        Prototype = card.LibraryCard.GetCardPrototype(),
                         Defense = card.Health,
                         Attack = card.Damage
                     }

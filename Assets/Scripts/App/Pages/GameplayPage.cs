@@ -207,13 +207,24 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
-                    OpponentDeck opponentDeck =
-                        _dataManager
-                            .CachedOpponentDecksData
-                            .Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
-                    opponentHeroId = opponentDeck.HeroId;
-                    _gameplayManager.OpponentDeckId = opponentDeck.Id;
+                    if (_gameplayManager.IsTutorial) {
+                        heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
+                        opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
+
+                        // HACK: Set to any valid opponent deck ID, it will get overwritten later anyway
+                        _gameplayManager.OpponentDeckId = _dataManager.CachedOpponentDecksData.Decks[0].Id;
+                    }
+                    else
+                    {
+                        heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
+                        OpponentDeck opponentDeck =
+                            _dataManager
+                                .CachedOpponentDecksData
+                                .Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
+                        opponentHeroId = opponentDeck.HeroId;
+                        _gameplayManager.OpponentDeckId = opponentDeck.Id;
+                    }
+
                     break;
                 case Enumerators.MatchType.PVP:
                     foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
@@ -233,11 +244,6 @@ namespace Loom.ZombieBattleground
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-
-            if (_gameplayManager.IsTutorial) {
-                heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
-                opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
             }
 
             if (heroId == -1)
@@ -299,11 +305,11 @@ namespace Loom.ZombieBattleground
                 _opponentNameText.text = currentOpponentHero.FullName;
             }
 
-			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
+           _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
                 _playerManaBarsPosition, _playerNameText.text, Constants.Player);
             _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
                 _opponentManaBarsPosition, _opponentNameText.text, Constants.Opponent);
-			
+
             _isPlayerInited = true;
         }
 

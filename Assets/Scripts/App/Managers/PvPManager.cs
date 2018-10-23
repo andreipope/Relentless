@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using Card = Loom.ZombieBattleground.Data.Card;
 using SystemText = System.Text;
 
 namespace Loom.ZombieBattleground
@@ -84,17 +85,15 @@ namespace Loom.ZombieBattleground
 
         public string GetOpponentUserId()
         {
-            string opponentId = string.Empty;
             for (int i = 0; i < InitialGameState.PlayerStates.Count; i++)
             {
                 if (InitialGameState.PlayerStates[i].Id != _backendDataControlMediator.UserDataModel.UserId)
                 {
-                    opponentId = InitialGameState.PlayerStates[i].Id;
-                    break;
+                    return InitialGameState.PlayerStates[i].Id;
                 }
             }
 
-            return opponentId;
+            return "";
         }
 
         public async Task FindMatch()
@@ -155,16 +154,23 @@ namespace Loom.ZombieBattleground
 
         public WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer)
         {
+            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInstance.Prototype.Name).Clone();
+            // FIXME: fill with Prototype data when backend supports that
+            /*card.Damage = cardInstance.Prototype.InitialDamage;
+            card.Health = cardInstance.Prototype.InitialDefence;*/
+            card.Damage = cardInstance.Attack;
+            card.Health = cardInstance.Defense;
+            card.Cost = cardInstance.Prototype.GooCost;
+
             WorkingCard workingCard =
                 new WorkingCard(
-                    _dataManager.CachedCardsLibraryData.GetCardFromName(cardInstance.Prototype.Name),
+                    card,
                     ownerPlayer,
                     cardInstance.InstanceId
                 );
 
             workingCard.Health = workingCard.InitialHealth = cardInstance.Defense;
             workingCard.Damage = workingCard.InitialDamage = cardInstance.Attack;
-            workingCard.RealCost = workingCard.InitialCost = cardInstance.Prototype.GooCost;
 
             return workingCard;
         }

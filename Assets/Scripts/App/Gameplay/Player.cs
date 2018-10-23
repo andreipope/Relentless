@@ -116,37 +116,6 @@ namespace Loom.ZombieBattleground
 
             CardsPreparingToHand = new List<BoardCard>();
 
-            int heroId;
-
-            if (!isOpponent)
-            {
-                if (!_gameplayManager.IsTutorial)
-                {
-                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId)
-                        .HeroId;
-                }
-                else
-                {
-                    heroId = Constants.TutorialPlayerHeroId;
-                }
-            }
-            else
-            {
-                switch (_matchManager.MatchType)
-                {
-                    case Enumerators.MatchType.LOCAL:
-                        heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId).HeroId;
-                        break;
-                    case Enumerators.MatchType.PVP:
-                        heroId = _pvpManager.OpponentDeck.HeroId;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
-
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.PVP:
@@ -178,6 +147,37 @@ namespace Loom.ZombieBattleground
                     GooVials = _currentGoo;
                     break;
             }
+
+            int heroId;
+
+            if (!isOpponent)
+            {
+                if (!_gameplayManager.IsTutorial)
+                {
+                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId)
+                        .HeroId;
+                }
+                else
+                {
+                    heroId = Constants.TutorialPlayerHeroId;
+                }
+            }
+            else
+            {
+                switch (_matchManager.MatchType)
+                {
+                    case Enumerators.MatchType.LOCAL:
+                        heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId).HeroId;
+                        break;
+                    case Enumerators.MatchType.PVP:
+                        heroId = (int) PvPPlayerState.Deck.HeroId;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
 
             InitialHp = _defense;
             BuffedHp = 0;
@@ -531,7 +531,14 @@ namespace Loom.ZombieBattleground
         {
             foreach (WorkingCard workingCard in workingCards)
             {
-                _cardsController.AddCardToDistributionState(this, workingCard);
+                if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                {
+                    _cardsController.AddCardToDistributionState(this, workingCard);
+                }
+                else
+                {
+                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                }
             }
 
             ThrowMulliganCardsEvent(_cardsController.MulliganCards);
