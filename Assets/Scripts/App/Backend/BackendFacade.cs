@@ -366,7 +366,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 MatchId = matchId
             };
 
-            return await Contract.CallAsync<GetGameStateResponse>(GetGameStateMethod, request);
+            return await Contract.StaticCallAsync<GetGameStateResponse>(GetGameStateMethod, request);
         }
 
         public async Task<GetMatchResponse> GetMatch(long matchId)
@@ -376,24 +376,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 MatchId = matchId
             };
 
-            return await Contract.CallAsync<GetMatchResponse>(GetMatchMethod, request);
+            return await Contract.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
         }
 
         public async Task SubscribeEvent(List<string> topics)
-        {
-            EventHandler<JsonRpcEventData> handler = (sender, e) =>
-            {
-                PlayerActionDataReceived?.Invoke(e.Data);
-            };
-            await reader.SubscribeAsync(handler, topics);
-        }
+         {
+             await reader.SubscribeAsync(EventHandler, topics);
+         }
 
-        public async Task UnsubscribeEvent()
+         public async Task UnsubscribeEvent()
+         {
+             await reader.UnsubscribeAsync(EventHandler);
+    	   }
+
+        public void EventHandler(object sender, JsonRpcEventData e)
         {
-            EventHandler<JsonRpcEventData> handler = (sender, e) =>
-            {
-            };
-            await reader.UnsubscribeAsync(handler);
+            PlayerActionDataReceived?.Invoke(e.Data);
         }
 
         public void AddAction(long matchId, PlayerAction playerAction)

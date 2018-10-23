@@ -575,6 +575,7 @@ namespace Loom.ZombieBattleground
                                                                card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
 
             activeAbility.Ability.PredefinedTargets = targets;
+            activeAbility.Ability.IsPVPAbility = true;
 
             if (targets.Count > 0)
             {

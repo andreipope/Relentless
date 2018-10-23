@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
 
         public ulong ActivityId;
 
+        public bool IsPVPAbility;
+
         public Enumerators.AbilityActivityType AbilityActivityType;
 
         public Enumerators.AbilityCallType AbilityCallType;

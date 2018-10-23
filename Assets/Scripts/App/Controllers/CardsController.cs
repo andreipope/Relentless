@@ -106,6 +106,11 @@ namespace Loom.ZombieBattleground
             return _cardInstanceId++;
         }
 
+        public int GetCardInstanceId()
+        {
+            return _cardInstanceId;
+        }
+
         public void SetNewCardInstanceId(int id)
         {
             _cardInstanceId = id;
@@ -987,7 +992,7 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public BoardUnitView SpawnUnitOnBoard(Player owner, string name)
+        public BoardUnitView SpawnUnitOnBoard(Player owner, string name, bool isPVPNetwork = false)
         {
             if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
                 return null;
@@ -998,7 +1003,15 @@ namespace Loom.ZombieBattleground
             BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
 
             owner.AddCardToBoard(card);
-            owner.BoardCards.Add(unit);
+
+            if (isPVPNetwork)
+            {
+                owner.BoardCards.Insert(0, unit);
+            }
+            else
+            {
+                owner.BoardCards.Add(unit);
+            }
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
