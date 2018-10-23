@@ -145,17 +145,16 @@ namespace Loom.ZombieBattleground
         public virtual void Init(WorkingCard card)
         {
             WorkingCard = card;
-
             LibraryCard = WorkingCard.LibraryCard;
-
-            NameText.text = LibraryCard.Name;
-            BodyText.text = LibraryCard.Description;
-            CostText.text = LibraryCard.Cost.ToString();
-
-            IsNewCard = true;
 
             InitialCost = WorkingCard.InitialCost;
             ManaCost = InitialCost;
+
+            NameText.text = LibraryCard.Name;
+            BodyText.text = LibraryCard.Description;
+            CostText.text = InitialCost.ToString();
+
+            IsNewCard = true;
 
             WorkingCard.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
