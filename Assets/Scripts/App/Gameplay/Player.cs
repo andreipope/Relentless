@@ -684,7 +684,7 @@ namespace Loom.ZombieBattleground
 
         #region handlers
 
-        private void PlayerDefenseChangedHandler(int now)
+        private async void PlayerDefenseChangedHandler(int now)
         {
             if (now <= 0 && !_isDead)
             {
@@ -693,7 +693,7 @@ namespace Loom.ZombieBattleground
                     GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
                 }
 
-                PlayerDie();
+                await PlayerDie();
 
                 _isDead = true;
             }

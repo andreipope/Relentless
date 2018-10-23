@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
     {
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
-        public delegate void PlayerActionHandler(byte[] bytes);
+        public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
 
         public BackendFacade(BackendEndpoint backendEndpoint)
         {
@@ -25,17 +25,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public event ContractCreatedEventHandler ContractCreated;
 
-        public event PlayerActionHandler PlayerActionEvent;
-
         public BackendEndpoint BackendEndpoint { get; set; }
 
         public Contract Contract { get; private set; }
 
-        private IRpcClient reader;
-
         public bool IsConnected => Contract != null &&
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
+
+        private IRpcClient reader;
 
         public void Init()
         {
@@ -271,23 +269,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
-        #region Turn Logs
-
-        private const string UploadActionLogMethod = "UploadHistory"; // just a random method for now
-
-        public async Task UploadActionLog(string userId, ActionLogModel actionLogModel)
-        {
-            string actionLogModelJson = JsonConvert.SerializeObject(actionLogModel, Formatting.Indented);
-            Dictionary<string, object> actionLogModelJsonDictionary =
-                JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
-            actionLogModelJson =
-                JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)],
-                    Formatting.Indented);
-            await Task.Delay(1000);
-        }
-
-        #endregion
-
         #region Auth
 
         private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
@@ -335,32 +316,35 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #endregion
 
         #region PVP
-         private const string FindMatchMethod = "FindMatch";
-         private const string EndMatchMethod = "EndMatch";
-         private const string SendPlayerActionMethod = "SendPlayerAction";
-         private const string GetGameStateMethod = "GetGameState";
 
-         public UnityAction<byte[]> PlayerActionEventListner;
+        private const string FindMatchMethod = "FindMatch";
+        private const string EndMatchMethod = "EndMatch";
+        private const string SendPlayerActionMethod = "SendPlayerAction";
+        private const string GetGameStateMethod = "GetGameState";
+        private const string GetMatchMethod = "GetMatch";
 
-         public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameModeAddress)
-         {
-             Client.Protobuf.Address requestCustomGameAddress = null;
-             if (customGameModeAddress != null)
-             {
-                 requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
-             }
-             FindMatchRequest request = new FindMatchRequest
-             {
-                 UserId = userId,
-                 DeckId = deckId,
-                 CustomGame = requestCustomGameAddress,
-                 Version = BackendEndpoint.DataVersion
-             };
+        public PlayerActionDataReceivedHandler PlayerActionDataReceived;
+
+        public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameModeAddress)
+        {
+            Client.Protobuf.Address requestCustomGameAddress = null;
+            if (customGameModeAddress != null)
+            {
+                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
+            }
+
+            FindMatchRequest request = new FindMatchRequest
+            {
+                UserId = userId,
+                DeckId = deckId,
+                CustomGame = requestCustomGameAddress,
+                Version = BackendEndpoint.DataVersion
+            };
 
             const int timeout = 120000;
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request, timeout);
-         }
+        }
 
         public async Task<EndMatchResponse> EndMatch(string userId, int matchId, string winnerId)
         {
@@ -374,16 +358,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<EndMatchResponse>(EndMatchMethod, request);
         }
 
+        public async Task<GetGameStateResponse> GetGameState(long matchId)
+        {
+            GetGameStateRequest request = new GetGameStateRequest
+            {
+                MatchId = matchId
+            };
 
-         public async Task<GetGameStateResponse> GetGameState(long matchId)
-         {
-             GetGameStateRequest request = new GetGameStateRequest
-             {
-                 MatchId = matchId
-             };
+            return await Contract.StaticCallAsync<GetGameStateResponse>(GetGameStateMethod, request);
+        }
 
-             return await Contract.CallAsync<GetGameStateResponse>(GetGameStateMethod, request);
-         }
+        public async Task<GetMatchResponse> GetMatch(long matchId)
+        {
+            GetMatchRequest request = new GetMatchRequest
+            {
+                MatchId = matchId
+            };
+
+            return await Contract.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
+        }
 
         public async Task SubscribeEvent(List<string> topics)
          {
@@ -393,11 +386,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
          public async Task UnsubscribeEvent()
          {
              await reader.UnsubscribeAsync(EventHandler);
-    	 }
+    	   }
 
         public void EventHandler(object sender, JsonRpcEventData e)
         {
-            PlayerActionEventListner?.Invoke(e.Data);
+            PlayerActionDataReceived?.Invoke(e.Data);
         }
 
         public void AddAction(long matchId, PlayerAction playerAction)

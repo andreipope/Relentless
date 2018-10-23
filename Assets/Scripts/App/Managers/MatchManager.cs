@@ -92,9 +92,8 @@ namespace Loom.ZombieBattleground
                         } 
                         catch (Exception e) {
                             Debug.LogWarning(e);
-                            if (_uiManager.GetPopup<ConnectionPopup>().Self != null) {
-                                _uiManager.HidePopup<ConnectionPopup>();
-                            }
+                            _uiManager.GetPopup<ConnectionPopup>().Hide();
+                            _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
                         }
                     }
                     break;
