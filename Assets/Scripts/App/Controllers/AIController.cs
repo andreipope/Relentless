@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
-                List<string> playerDeck = new List<string>();
+                List<WorkingCard> deck = new List<WorkingCard>();
 
                 int deckId = _gameplayManager.OpponentDeckId;
                 foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId)
@@ -108,11 +108,16 @@ namespace Loom.ZombieBattleground
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        playerDeck.Add(card.CardName);
+                        deck.Add(
+                            new WorkingCard(
+                                _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName),
+                                _gameplayManager.OpponentPlayer
+                                )
+                            );
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
+                _gameplayManager.OpponentPlayer.SetDeck(deck, true);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }

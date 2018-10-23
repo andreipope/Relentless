@@ -36,18 +36,13 @@ namespace Loom.ZombieBattleground
         GameState InitialGameState { get; }
 
         OpponentDeck OpponentDeck { get; set; }
-        List<CardInstance> OpponentCardsInHand { get; set; }
-        List<CardInstance> OpponentCardsInDeck { get; set; }
-
-        List<CardInstance> PlayerCardsInHand { get; set; }
-        List<CardInstance> PlayerCardsInDeck { get; set; }
-
-        int OpponentDeckIndex { get; set; }
 
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
 
         Task FindMatch();
+
+        WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer);
     }
 }

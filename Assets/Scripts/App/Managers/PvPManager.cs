@@ -51,19 +51,12 @@ namespace Loom.ZombieBattleground
 
         public OpponentDeck OpponentDeck { get; set; }
 
-        public List<CardInstance> OpponentCardsInHand { get; set; }
-
-        public List<CardInstance> OpponentCardsInDeck { get; set; }
-
-        public List<CardInstance> PlayerCardsInHand { get; set; }
-
-        public List<CardInstance> PlayerCardsInDeck { get; set; }
-
         public int OpponentDeckIndex { get; set; }
 
         public Address? CustomGameModeAddress { get; set; }
 
         private IUIManager _uiManager;
+        private IDataManager _dataManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
@@ -71,6 +64,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
+            _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -116,10 +110,6 @@ namespace Loom.ZombieBattleground
 
                 InitialGameState = null;
 
-                OpponentCardsInHand = new List<CardInstance>();
-                OpponentCardsInDeck = new List<CardInstance>();
-                PlayerCardsInHand = new List<CardInstance>();
-                PlayerCardsInDeck = new List<CardInstance>();
                 FindMatchResponse findMatchResponse =
                     await _backendFacade.FindMatch(
                         _backendDataControlMediator.UserDataModel.UserId,
@@ -165,6 +155,22 @@ namespace Loom.ZombieBattleground
             {
                 _queueManager.Active = true;
             }
+        }
+
+        public WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer)
+        {
+            WorkingCard workingCard =
+                new WorkingCard(
+                    _dataManager.CachedCardsLibraryData.GetCardFromName(cardInstance.Prototype.Name),
+                    ownerPlayer,
+                    cardInstance.InstanceId
+                );
+
+            workingCard.Health = workingCard.InitialHealth = cardInstance.Defense;
+            workingCard.Damage = workingCard.InitialDamage = cardInstance.Attack;
+            workingCard.RealCost = workingCard.InitialCost = cardInstance.Prototype.GooCost;
+
+            return workingCard;
         }
 
         private void OnPlayerActionReceivedHandler(byte[] data)

@@ -1090,8 +1090,20 @@ namespace Loom.ZombieBattleground
 
         private void SetupOverlordsDecksAsSpecific(List<string> playerCards, List<string> opponentCards)
         {
-            _gameplayManager.CurrentPlayer.SetDeck(playerCards, false);
-            _gameplayManager.OpponentPlayer.SetDeck(opponentCards, true);
+            List<WorkingCard> workingPlayerCards =
+                playerCards
+                    .Select(cardName =>
+                        new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), _gameplayManager.CurrentPlayer))
+                    .ToList();
+
+            List<WorkingCard> workingOpponentCards =
+                playerCards
+                    .Select(cardName =>
+                        new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), _gameplayManager.OpponentPlayer))
+                    .ToList();
+
+            _gameplayManager.CurrentPlayer.SetDeck(workingPlayerCards, false);
+            _gameplayManager.OpponentPlayer.SetDeck(workingOpponentCards, true);
         }
 
         private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)
