@@ -35,8 +35,6 @@ namespace Loom.ZombieBattleground
 
         GameState InitialGameState { get; }
 
-        OpponentDeck OpponentDeck { get; set; }
-
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();

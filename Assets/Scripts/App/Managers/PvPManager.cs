@@ -49,10 +49,6 @@ namespace Loom.ZombieBattleground
 
         public GameState InitialGameState { get; set; }
 
-        public OpponentDeck OpponentDeck { get; set; }
-
-        public int OpponentDeckIndex { get; set; }
-
         public Address? CustomGameModeAddress { get; set; }
 
         private IUIManager _uiManager;
