@@ -457,36 +457,20 @@ namespace Loom.ZombieBattleground
         {
             CardsInDeck = new List<WorkingCard>();
 
-            switch (_matchManager.MatchType)
+            cards = ShuffleCardsList(cards);
+
+            if(isMainTurnSecond)
             {
-                case Enumerators.MatchType.LOCAL:
-                    cards = ShuffleCardsList(cards);
+                _cardsController.SetNewCardInstanceId(Constants.MinDeckSize);
+            }
+            else
+            {
+                _cardsController.SetNewCardInstanceId(0);
+            }
 
-                    if(isMainTurnSecond)
-                    {
-                        _cardsController.SetNewCardInstanceId(Constants.MinDeckSize);
-                    }
-                    else
-                    {
-                        _cardsController.SetNewCardInstanceId(0);
-                    }
-
-                    foreach (string card in cards)
-                    {
-                        CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
-                    }
-                    break;
-                case Enumerators.MatchType.PVP:
-                    foreach (CardInstance cardInstance in _pvpPlayerState.CardsInDeck)
-                    {
-                        WorkingCard workingCard = _cardsController.GetWorkingCardFromName(this, cardInstance.Prototype.Name);
-                        workingCard.Id = cardInstance.InstanceId;
-                        CardsInDeck.Add(workingCard);
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+            foreach (string card in cards)
+            {
+                CardsInDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card), this));
             }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
