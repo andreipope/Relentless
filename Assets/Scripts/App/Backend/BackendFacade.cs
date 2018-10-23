@@ -382,7 +382,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                  MatchId = matchId
              };
 
-             return await Contract.CallAsync<GetGameStateResponse>(GetGameStateMethod, request);
+             return await Contract.StaticCallAsync<GetGameStateResponse>(GetGameStateMethod, request);
          }
 
         public async Task SubscribeEvent(List<string> topics)
