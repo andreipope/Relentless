@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.Google.Protobuf;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -438,13 +439,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<GetCustomGameModeCustomUiResponse>(GetGameModeCustomUiMethod, request);
         }
 
-        public async Task CallCustomGameModeFunction(Address address, string functionName)
+        public async Task CallCustomGameModeFunction(Address address, byte[] callData)
         {
             CallCustomGameModeFunctionRequest request = new CallCustomGameModeFunctionRequest
             {
                 Address = address.ToProtobufAddress(),
-                //TODO: Not match with currrent protobuf
-                //FunctionName = functionName
+                CallData = ByteString.CopyFrom(callData)
             };
 
             await Contract.CallAsync(CallCustomGameModeFunctionMethod, request);

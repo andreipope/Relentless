@@ -303,7 +303,7 @@ namespace Loom.ZombieBattleground
             bool wasAction = false;
             foreach (WorkingCard card in cardsInHand)
             {
-                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
+                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= _gameplayManager.OpponentPlayer.MaxCardsInPlay)
                 {
                     break;
                 }
@@ -482,7 +482,7 @@ namespace Loom.ZombieBattleground
                         .Find(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
                     if (overflowGooAbility != null)
                     {
-                        if (_gameplayManager.OpponentPlayer.BoardCards.Count + boardCount < Constants.MaxBoardUnits - 1)
+                        if (_gameplayManager.OpponentPlayer.BoardCards.Count + boardCount < _gameplayManager.OpponentPlayer.MaxCardsInPlay - 1)
                         {
                             boardCount++;
                             gooAmount -= cards[i].LibraryCard.Cost;
@@ -504,7 +504,7 @@ namespace Loom.ZombieBattleground
                 bool wasAction = false;
                 foreach (WorkingCard card in overflowGooCards)
                 {
-                    if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
+                    if (_gameplayManager.OpponentPlayer.BoardCards.Count >= _gameplayManager.OpponentPlayer.MaxCardsInPlay)
                         break;
                     if (CardCanBePlayable(card))
                     {
@@ -603,8 +603,7 @@ namespace Loom.ZombieBattleground
 
             switch (card.LibraryCard.CardKind)
             {
-                case Enumerators.CardKind.CREATURE
-                    when _battlegroundController.OpponentBoardCards.Count < Constants.MaxBoardUnits:
+                case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
                     _gameplayManager.OpponentPlayer.AddCardToBoard(card);
 
