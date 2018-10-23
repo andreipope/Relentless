@@ -36,12 +36,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private IRpcClient reader;
 
+        private IQueueManager _queueManager;
+
         public void Init()
         {
             Debug.Log("Auth Host: " + BackendEndpoint.AuthHost);
             Debug.Log("Reader Host: " + BackendEndpoint.ReaderHost);
             Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
             Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
+
+            _queueManager = GameClient.Get<IQueueManager>();
         }
 
         public void Update()
@@ -386,8 +390,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
          public async Task UnsubscribeEvent()
          {
-             await reader.UnsubscribeAsync(EventHandler);
-    	   }
+            await reader.UnsubscribeAsync(EventHandler);
+            _queueManager.StopNetworkThread();
+        }
 
         public void EventHandler(object sender, JsonRpcEventData e)
         {
@@ -402,7 +407,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 PlayerAction = playerAction
             };
 
-            GameClient.Get<IQueueManager>().AddAction(request);
+            _queueManager.AddAction(request);
         }
 
         public async Task SendAction(PlayerActionRequest request)

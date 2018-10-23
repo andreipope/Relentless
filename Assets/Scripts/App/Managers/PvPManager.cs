@@ -181,17 +181,18 @@ namespace Loom.ZombieBattleground
 
                 Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
 
-                if (!jsonStr.ToLower().Contains("actiontype") && jsonStr.ToLower().Contains("winnerid"))
-                {
-                    MatchEndEvent matchEndEvent = JsonConvert.DeserializeObject<MatchEndEvent>(jsonStr);
-
-                    Debug.LogError(matchEndEvent.MatchId + " , " + matchEndEvent.UserId + " , " + matchEndEvent.WinnerId);
-                    GameClient.Get<IQueueManager>().StopNetworkThread();
-                    return;
-                }
-
                 PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
-
+                foreach(HistoryData historyData in playerActionEvent.Block.List)
+                {
+                    HistoryEndGame endGameData = historyData.EndGame;
+                    if(endGameData != null)
+                    {
+                        Debug.LogError(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                        await _backendFacade.UnsubscribeEvent();
+                        return;
+                    }
+                }
+               
                 switch (playerActionEvent.Match.Status)
                 {
                     case Match.Types.Status.Created:
