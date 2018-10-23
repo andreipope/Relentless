@@ -609,6 +609,8 @@ namespace Loom.ZombieBattleground
                                                 (int)_pvpManager.MatchMetadata.Id,
                                                 IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
 
+                await _backendFacade.UnsubscribeEvent();
+
             }
             else
             {
