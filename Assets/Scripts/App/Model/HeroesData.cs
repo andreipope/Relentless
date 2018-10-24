@@ -61,21 +61,31 @@ namespace Loom.ZombieBattleground.Data
 
         public List<HeroSkill> Skills;
 
-        public int PrimarySkill;
+        public string PrimarySkill;
 
-        public int SecondarySkill;
+        public string SecondarySkill;
 
         public string FullName => $"{Name}, {ShortDescription}";
 
+        public HeroSkill GetSkill(string skill)
+        {
+            return Skills.Find(x => x.Skill == skill);
+        }
+
+        public HeroSkill GetSkill(int id)
+        {
+            return Skills.Find(x => x.Id == id);
+        }
+
         public void ValidateSkillLocking()
         {
-            //TODO: commented now in perspective of lock funcitonality for release stage
+          /*  //TODO: commented now in perspective of lock funcitonality for release stage
             //int skillId = Level % 4;
-            int skillId = 2;
+            int skillId = 5;
             for (int i = 0; i < skillId; i++)
             {
                 Skills[i].Unlocked = true;
-            }
+            } */
         }
 
         public void CastSkills()
@@ -89,6 +99,8 @@ namespace Loom.ZombieBattleground.Data
 
     public class HeroSkill
     {
+        public int Id;
+
         public string Title;
 
         public string Skill;
@@ -122,7 +134,6 @@ namespace Loom.ZombieBattleground.Data
         [JsonIgnore]
         public Enumerators.UnitStatusType TargetUnitStatusType;
 
-        [JsonIgnore]
         public bool Unlocked;
 
         public List<Enumerators.SetType> ElementTargetTypes;

@@ -289,6 +289,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try
                     {
+                        throw new Exception("TEST!!!");
+
+
                         ListHeroesResponse heroesList =
                             await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
                         Debug.Log(heroesList.ToString());

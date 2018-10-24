@@ -100,26 +100,20 @@ namespace Loom.ZombieBattleground
             rootPage.OpponentSecondarySkillHandler.MouseUpTriggered +=
                 OpponentSecondarySkillHandlerMouseUpTriggeredHandler;
 
-            int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
-            int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
+            HeroSkill primary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayer.SelfHero.PrimarySkill);
+            HeroSkill secondary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayer.SelfHero.SecondarySkill);
 
-            if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
-                secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
+            if (primary != null && secondary != null)
             {
-                SetPlayerSkills(rootPage,
-                    _gameplayManager.CurrentPlayer.SelfHero.Skills[primary],
-                    _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary]);
+                SetPlayerSkills(rootPage, primary, secondary);
             }
 
-            primary = _gameplayManager.OpponentPlayer.SelfHero.PrimarySkill;
-            secondary = _gameplayManager.OpponentPlayer.SelfHero.SecondarySkill;
+            primary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayer.SelfHero.PrimarySkill);
+            secondary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayer.SelfHero.SecondarySkill);
 
-            if (primary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count &&
-                secondary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count)
+            if (primary != null && secondary != null)
             {
-                SetOpponentSkills(rootPage,
-                    _gameplayManager.OpponentPlayer.SelfHero.Skills[primary],
-                    _gameplayManager.OpponentPlayer.SelfHero.Skills[secondary]);
+                SetOpponentSkills(rootPage, primary, secondary);
             }
 
             _skillsInitialized = true;

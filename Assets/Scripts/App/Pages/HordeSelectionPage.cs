@@ -526,8 +526,8 @@ namespace Loom.ZombieBattleground
             if (deck != null)
             {
                 HeroSkill skill = skillIndex == 0 ?
-                    deck.SelfHero.Skills[deck.SelfHero.PrimarySkill] :
-                    deck.SelfHero.Skills[deck.SelfHero.SecondarySkill];
+                    deck.SelfHero.GetSkill(deck.SelfHero.PrimarySkill) :
+                    deck.SelfHero.GetSkill(deck.SelfHero.SecondarySkill);
 
                 _uiManager.DrawPopup<OverlordAbilityTooltipPopup>(skill);
             }
@@ -539,8 +539,13 @@ namespace Loom.ZombieBattleground
             _editingDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (_editingDeck != null)
             {
-                //_uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
-                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_editingDeck.SelfHero);
+                _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
+                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(new object[]
+                {
+                    true,
+                    _editingDeck.SelfHero,
+                    skillIndex  == 0 ? true : false
+                });
             }
         }
 
@@ -596,6 +601,12 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+
+
+        private void AbilityPopupClosedEvent()
+        {
+
+        }
 
     }
 }

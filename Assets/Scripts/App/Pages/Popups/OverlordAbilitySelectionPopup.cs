@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private ISoundManager _soundManager;
+
         private Button _continueButton;
 
         private Button _cancelButton;
@@ -35,7 +37,7 @@ namespace Loom.ZombieBattleground
 
         private Image _heroImage;
 
-        private List<AbilityInstance> _abilities;
+        private List<OverlordAbilityItem> _overlordAbilities;
 
         private Hero _selectedHero;
 
@@ -43,22 +45,24 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
+        private bool _singleSelectionMode = false;
+
+        private bool _isPrimarySkillSelected = true;
+
+        private List<HeroSkill> _selectedSkills;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
 
-            _abilities = new List<AbilityInstance>();
+            _overlordAbilities = new List<OverlordAbilityItem>();
         }
 
         public void Dispose()
         {
-            foreach (AbilityInstance abilityInstance in _abilities)
-            {
-                abilityInstance.Dispose();
-            }
-
-            _abilities.Clear();
+            ResetOverlordAbilities();
         }
 
         public void Hide()
@@ -96,34 +100,63 @@ namespace Loom.ZombieBattleground
             _abilitiesGroup = Self.transform.Find("Abilities").gameObject;
 
             _heroImage = _backLayerCanvas.transform.Find("HeroImage").GetComponent<Image>();
-
-            _abilities.Clear();
-
-            for (int i = 0; i < AbilityListSize; i++)
-            {
-                AbilityInstance abilityInstance = new AbilityInstance(_abilitiesGroup.transform);
-                abilityInstance.SelectionChanged += AbilityInstanceOnSelectionChanged;
-                _abilities.Add(abilityInstance);
-            }
         }
 
         public void Show(object data)
         {
+            if (data is object[] param)
+            {
+                _singleSelectionMode = (bool)param[0];
+                _selectedHero = (Hero)param[1];
+
+                if (_singleSelectionMode)
+                {
+                    _isPrimarySkillSelected = (bool)param[2];
+                }
+                else
+                {
+                    _selectedSkills = (List<HeroSkill>)param[2];
+                }
+            }
+
+
             Show();
-            _selectedHero = (Hero)data;
-            FillInfo(_selectedHero);
-            _abilities[0].IsSelected = true;
-            AbilityInstanceOnSelectionChanged(_abilities[0]);
+
+            FillOverlordInfo(_selectedHero);
+            FillOverlordAbilities();
+
+            if (_singleSelectionMode)
+            {
+                OverlordAbilityItem ability = _overlordAbilities.Find(x => x.Skill.Skill == (_isPrimarySkillSelected ?
+                 _selectedHero.PrimarySkill : _selectedHero.SecondarySkill));
+
+                ability = ability == null ? _overlordAbilities[0] : ability;
+
+                OverlordAbilitySelkectedHandler(ability);
+            }
+            else
+            {
+                if (_selectedSkills != null)
+                {
+                    OverlordAbilityItem ability;
+                    foreach (HeroSkill skill in _selectedSkills)
+                    {
+                        ability = _overlordAbilities.Find(x => x.Skill.Skill == skill.Skill);
+                        OverlordAbilitySelkectedHandler(ability);
+                    }
+                }
+            }
         }
 
         public void Update()
         {
         }
 
+
+        #region button handlers
         public void ContinueButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             PopupHiding?.Invoke();
 
@@ -132,135 +165,152 @@ namespace Loom.ZombieBattleground
 
         public void CancelButtonOnClickHandler()
         {
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }
 
-        private void FillInfo(Hero heroData)
+        #endregion
+
+        private void FillOverlordAbilities()
+        {
+            ResetOverlordAbilities();
+
+            OverlordAbilityItem abilityInstance;
+            HeroSkill ability = null;
+
+            for (int i = 0; i < AbilityListSize; i++)
+            {
+                ability = null;
+
+                if (i < _selectedHero.Skills.Count)
+                {
+                    ability = _selectedHero.Skills[i];
+                }
+
+                abilityInstance = new OverlordAbilityItem(_abilitiesGroup.transform, ability);
+                abilityInstance.OverlordAbilitySelected += OverlordAbilitySelkectedHandler;
+
+                _overlordAbilities.Add(abilityInstance);
+            }
+        }
+
+        private void ResetOverlordAbilities()
+        {
+            foreach (OverlordAbilityItem abilityInstance in _overlordAbilities)
+            {
+                abilityInstance.Dispose();
+            }
+
+            _overlordAbilities.Clear();
+        }
+
+        private void FillOverlordInfo(Hero heroData)
         {
             _heroImage.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
             _heroImage.SetNativeSize();
-
-            for (int i = 0; i < AbilityListSize; i++)
-            {
-                HeroSkill skill = null;
-                if (i < 2) // heroData.Skills.Count) // TODO: improve this functionality in general!
-                {
-                    skill = heroData.Skills[i];
-                }
-
-                _abilities[i].Skill = skill;
-                _abilities[i].AllowMultiSelect = false;
-            }
         }
 
-        private void AbilityInstanceOnSelectionChanged(AbilityInstance ability)
+        private void OverlordAbilitySelkectedHandler(OverlordAbilityItem ability)
         {
             _skillName.text = ability.Skill.Title;
             _skillDescription.text = ability.Skill.Description;
-            int index = _selectedHero.Skills.IndexOf(ability.Skill);
-            _selectedHero.PrimarySkill = index;
+
+            if (_singleSelectionMode)
+            {
+                foreach (OverlordAbilityItem item in _overlordAbilities)
+                {
+                    if (ability != item)
+                    {
+                        item.Deselect();
+                    }
+                }
+
+                ability.Select();
+
+
+                if (_isPrimarySkillSelected)
+                {
+                    _selectedHero.PrimarySkill = ability.Skill.Skill;
+                }
+                else
+                {
+                    _selectedHero.SecondarySkill = ability.Skill.Skill;
+                }
+            }
+            else
+            {
+            }
         }
 
-        private class AbilityInstance : IDisposable
+        private class OverlordAbilityItem : IDisposable
         {
-            public readonly GameObject SelfObject;
+            public event Action<OverlordAbilityItem> OverlordAbilitySelected;
 
             private readonly ILoadObjectsManager _loadObjectsManager;
 
-            private readonly Toggle _abilityToggle;
+            private readonly GameObject _selfObject;
+
+            private readonly Button _selectButton;
 
             private readonly GameObject _glowObj;
 
             private readonly Image _abilityIconImage;
 
-            private readonly Transform _parentGameObject;
+            public readonly HeroSkill Skill;
 
-            private HeroSkill _skill;
+            public bool IsSelected { get; private set; }
 
-            private bool _isSelected;
+            public bool IsUnlocked { get; private set; }
 
-            public AbilityInstance(Transform root)
+            public OverlordAbilityItem(Transform root, HeroSkill skill)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                _parentGameObject = root;
-                SelfObject =
+                Skill = skill;
+
+                _selfObject =
                     Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>(
                             "Prefabs/UI/Elements/OverlordAbilityPopupAbilityItem"), root, false);
 
-                _abilityToggle = SelfObject.GetComponent<Toggle>();
-                _abilityToggle.group = root.GetComponent<ToggleGroup>();
+                _glowObj = _selfObject.transform.Find("Glow").gameObject;
+                _abilityIconImage = _selfObject.transform.Find("AbilityIcon").GetComponent<Image>();
+                _selectButton = _selfObject.transform.Find("").GetComponent<Button>();
 
-                _glowObj = SelfObject.transform.Find("Glow").gameObject;
-                _abilityIconImage = SelfObject.transform.Find("AbilityIcon").GetComponent<Image>();
+                _selectButton.onClick.AddListener(SelectButtonOnClickHandler);
 
-                _abilityToggle.onValueChanged.AddListener(OnToggleValueChanged);
+                IsUnlocked = Skill != null ? Skill.Unlocked : false;
 
-                UpdateUIState();
-            }
+                _abilityIconImage.sprite = IsUnlocked ?
+                            _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath) :
+                             _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_locked");
 
-            public event Action<AbilityInstance> SelectionChanged;
-
-            public bool IsSelected
-            {
-                get => _isSelected;
-                set
-                {
-                    _isSelected = value;
-                    _abilityToggle.isOn = value;
-                }
-            }
-
-            public bool AllowMultiSelect
-            {
-                set => _abilityToggle.group = value ? null : _parentGameObject.GetComponent<ToggleGroup>();
-            }
-
-            public HeroSkill Skill
-            {
-                get => _skill;
-                set
-                {
-                    if (_skill == value)
-                        return;
-
-                    _skill = value;
-                    UpdateUIState();
-                }
+                _selectButton.interactable = IsUnlocked;
             }
 
             public void Dispose()
             {
-                Object.Destroy(SelfObject);
+                Object.Destroy(_selfObject);
             }
 
-            private void OnToggleValueChanged(bool selected)
+            public void Select()
             {
-                _isSelected = selected;
-                UpdateUIState();
+                IsSelected = true;
 
-                SelectionChanged?.Invoke(this);
+                _glowObj.SetActive(IsSelected);
             }
 
-            private void UpdateUIState()
+            public void Deselect()
             {
-                _glowObj.SetActive(_isSelected);
+                IsSelected = false;
 
-                _abilityToggle.interactable = Skill != null;
-                if (Skill != null)
-                {
-                    _abilityIconImage.sprite =
-                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
-                }
-                else
-                {
-                    _abilityIconImage.sprite =
-                        _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_locked");
-                }
+                _glowObj.SetActive(IsSelected);
+            }
+
+            private void SelectButtonOnClickHandler()
+            {
+                OverlordAbilitySelected?.Invoke(this);
             }
         }
     }

@@ -418,7 +418,14 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
+
             _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_currentOverlordObject.SelfHero);
+            _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(new object[]
+            {
+                false,
+                _currentOverlordObject.SelfHero,
+                null
+            });
         }
 
         private void AbilityPopupClosedEvent()

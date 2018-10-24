@@ -78,29 +78,24 @@ namespace Loom.ZombieBattleground
                 switch (levelReward.Reward)
                 {
                     case LevelReward.UnitRewardItem unitReward:
+                        List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(x => x.CardRank == unitReward.Rank);
+                        Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
+                        CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
+                        if (foundCard != null)
                         {
-                            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(x => x.CardRank == unitReward.Rank);
-                            Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
-                            CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
-                            if (foundCard != null)
+                            foundCard.Amount += unitReward.Count;
+                        }
+                        else
+                        {
+                            _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
                             {
-                                foundCard.Amount += unitReward.Count;
-                            }
-                            else
-                            {
-                                _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
-                                {
-                                    Amount = unitReward.Count,
-                                    CardName = card.Name
-                                });
-                            }
+                                Amount = unitReward.Count,
+                                CardName = card.Name
+                            });
                         }
                         break;
                     case LevelReward.OverlordSkillRewardItem skillReward:
-                        {
-                            //TODO: commented now in perspective of lock funcitonality for release stage
-                            //hero.Skills[skillReward.SkillIndex].Unlocked = true;
-                        }
+                        hero.GetSkill(skillReward.SkillIndex).Unlocked = true;
                         break;
                     case LevelReward.ItemReward itemReward:
                         break;
