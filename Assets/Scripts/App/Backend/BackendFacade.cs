@@ -36,16 +36,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private IRpcClient reader;
 
-        private IQueueManager _queueManager;
-
         public void Init()
         {
             Debug.Log("Auth Host: " + BackendEndpoint.AuthHost);
             Debug.Log("Reader Host: " + BackendEndpoint.ReaderHost);
             Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
             Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
-
-            _queueManager = GameClient.Get<IQueueManager>();
         }
 
         public void Update()
@@ -351,18 +347,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request, timeout);
         }
 
-        public async Task<EndMatchResponse> EndMatch(string userId, int matchId, string winnerId)
-        {
-            EndMatchRequest request = new EndMatchRequest
-            {
-                UserId = userId,
-                MatchId = matchId,
-                WinnerId = winnerId
-            };
-
-            return await Contract.CallAsync<EndMatchResponse>(EndMatchMethod, request);
-        }
-
         public async Task<GetGameStateResponse> GetGameState(long matchId)
         {
             GetGameStateRequest request = new GetGameStateRequest
@@ -391,13 +375,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
          public async Task UnsubscribeEvent()
          {
             await reader.UnsubscribeAsync(EventHandler);
-            _queueManager.StopNetworkThread();
+            GameClient.Get<IQueueManager>().StopNetworkThread();
         }
 
         public void EventHandler(object sender, JsonRpcEventData e)
         {
             PlayerActionDataReceived?.Invoke(e.Data);
         }
+
 
         public void AddAction(long matchId, PlayerAction playerAction)
         {
@@ -407,12 +392,33 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 PlayerAction = playerAction
             };
 
-            _queueManager.AddAction(request);
+            GameClient.Get<IQueueManager>().AddAction(request);
         }
 
-        public async Task SendAction(PlayerActionRequest request)
+        public void EndMatch(string userId, int matchId, string winnerId)
         {
-            await Contract.CallAsync(SendPlayerActionMethod, request);
+            EndMatchRequest request = new EndMatchRequest
+            {
+                UserId = userId,
+                MatchId = matchId,
+                WinnerId = winnerId
+            };
+
+            GameClient.Get<IQueueManager>().AddAction(request);
+        }
+
+        public async Task SendAction(IMessage request)
+        {
+            switch (request)
+            {
+                case PlayerActionRequest playerActionMessage:
+                    await Contract.CallAsync(SendPlayerActionMethod, playerActionMessage);
+                    break;
+
+                case EndMatchRequest endMatchMessage:
+                    await Contract.CallAsync(EndMatchMethod, endMatchMessage);
+                    break;
+            }
         }
 
         #endregion
