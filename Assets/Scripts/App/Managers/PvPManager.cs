@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
             card.Health = cardInstance.Prototype.InitialDefence;*/
             card.Damage = cardInstance.Attack;
             card.Health = cardInstance.Defense;
-            card.Cost = cardInstance.Prototype.GooCost;
+            card.Cost = cardInstance.GooCost;
 
             WorkingCard workingCard =
                 new WorkingCard(
