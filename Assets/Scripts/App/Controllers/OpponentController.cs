@@ -16,6 +16,7 @@ namespace Loom.ZombieBattleground
         private IPvPManager _pvpManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
+        private IMatchManager _matchManager;
 
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
@@ -36,6 +37,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
@@ -61,45 +63,29 @@ namespace Loom.ZombieBattleground
 
         public void InitializePlayer(int playerId)
         {
-            _gameplayManager.OpponentPlayer = new Player(playerId, GameObject.Find("Opponent"), true);
+            Player player = new Player(playerId, GameObject.Find("Opponent"), true);
+            _gameplayManager.OpponentPlayer = player;
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
-                List<CardWithID> playerDeck = new List<CardWithID>();
-                OpponentDeck opponentDeck = _pvpManager.OpponentDeck;
+                List<WorkingCard> deck = new List<WorkingCard>();
 
-                foreach (DeckCardData card in opponentDeck.Cards)
+                bool isMainTurnSecond;
+                switch (_matchManager.MatchType)
                 {
-                    for (int i = 0; i < card.Amount; i++)
-                    {
-                        playerDeck.Add(new CardWithID(-1, card.CardName));
-                    }
+                    case Enumerators.MatchType.PVP:
+                        foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
+                        {
+                            deck.Add(_pvpManager.GetWorkingCardFromCardInstance(cardInstance, player));
+                        }
+
+                        isMainTurnSecond = GameClient.Get<IPvPManager>().IsCurrentPlayer();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                {
-                    for (int i = 0; i < _pvpManager.OpponentCardsInHand.Count; i++)
-                    {
-                        int index = playerDeck.FindIndex(card =>
-                            card.Name == _pvpManager.OpponentCardsInHand[i].Prototype.Name && card.Id == -1);
-                        if (index != -1)
-                            playerDeck[index].Id = _pvpManager.OpponentCardsInHand[i].InstanceId;
-                    }
-
-                    for (int i = 0; i < _pvpManager.OpponentCardsInDeck.Count; i++)
-                    {
-                        int index = playerDeck.FindIndex(card =>
-                            card.Name == _pvpManager.OpponentCardsInDeck[i].Prototype.Name && card.Id == -1);
-                        if (index != -1)
-                            playerDeck[index].Id = _pvpManager.OpponentCardsInDeck[i].InstanceId;
-                    }
-
-                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, GameClient.Get<IPvPManager>().IsCurrentPlayer());
-                }
-                else
-                {
-                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
-                }
+                player.SetDeck(deck, isMainTurnSecond);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }

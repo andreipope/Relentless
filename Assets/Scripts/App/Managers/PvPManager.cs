@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using Card = Loom.ZombieBattleground.Data.Card;
 using SystemText = System.Text;
 
 namespace Loom.ZombieBattleground
@@ -49,21 +50,10 @@ namespace Loom.ZombieBattleground
 
         public GameState InitialGameState { get; set; }
 
-        public OpponentDeck OpponentDeck { get; set; }
-
-        public List<CardInstance> OpponentCardsInHand { get; set; }
-
-        public List<CardInstance> OpponentCardsInDeck { get; set; }
-
-        public List<CardInstance> PlayerCardsInHand { get; set; }
-
-        public List<CardInstance> PlayerCardsInDeck { get; set; }
-
-        public int OpponentDeckIndex { get; set; }
-
         public Address? CustomGameModeAddress { get; set; }
 
         private IUIManager _uiManager;
+        private IDataManager _dataManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
@@ -71,6 +61,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
+            _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -94,17 +85,15 @@ namespace Loom.ZombieBattleground
 
         public string GetOpponentUserId()
         {
-            string opponentId = string.Empty;
             for (int i = 0; i < InitialGameState.PlayerStates.Count; i++)
             {
                 if (InitialGameState.PlayerStates[i].Id != _backendDataControlMediator.UserDataModel.UserId)
                 {
-                    opponentId = InitialGameState.PlayerStates[i].Id;
-                    break;
+                    return InitialGameState.PlayerStates[i].Id;
                 }
             }
 
-            return opponentId;
+            return "";
         }
 
         public async Task FindMatch()
@@ -116,10 +105,6 @@ namespace Loom.ZombieBattleground
 
                 InitialGameState = null;
 
-                OpponentCardsInHand = new List<CardInstance>();
-                OpponentCardsInDeck = new List<CardInstance>();
-                PlayerCardsInHand = new List<CardInstance>();
-                PlayerCardsInDeck = new List<CardInstance>();
                 FindMatchResponse findMatchResponse =
                     await _backendFacade.FindMatch(
                         _backendDataControlMediator.UserDataModel.UserId,
@@ -165,6 +150,29 @@ namespace Loom.ZombieBattleground
             {
                 _queueManager.Active = true;
             }
+        }
+
+        public WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer)
+        {
+            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInstance.Prototype.Name).Clone();
+            // FIXME: fill with Prototype data when backend supports that
+            /*card.Damage = cardInstance.Prototype.InitialDamage;
+            card.Health = cardInstance.Prototype.InitialDefence;*/
+            card.Damage = cardInstance.Attack;
+            card.Health = cardInstance.Defense;
+            card.Cost = cardInstance.Prototype.GooCost;
+
+            WorkingCard workingCard =
+                new WorkingCard(
+                    card,
+                    ownerPlayer,
+                    cardInstance.InstanceId
+                );
+
+            workingCard.Health = workingCard.InitialHealth = cardInstance.Defense;
+            workingCard.Damage = workingCard.InitialDamage = cardInstance.Attack;
+
+            return workingCard;
         }
 
         private void OnPlayerActionReceivedHandler(byte[] data)

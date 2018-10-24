@@ -40,9 +40,6 @@ namespace Loom.ZombieBattleground
 
         bool IsGameplayInputBlocked { get; set; }
 
-        List<CardWithID> PlayerStarterCards { get; set; }
-        List<CardWithID> OpponentStarterCards { get; set; }
-
         Enumerators.StartingTurn StartingTurn { get; set; }
 
         T GetController<T>()
