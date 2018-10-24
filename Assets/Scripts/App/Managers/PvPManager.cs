@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace Loom.ZombieBattleground
         public event Action MatchingStartedActionReceived;
 
         public event Action PlayerLeftGameActionReceived;
+
+        public event Action MatchingFailed;
 
         // game status actions
         public event Action GameStartedActionReceived;
@@ -58,6 +61,9 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
 
+        private bool _isMatchmakingInProgress;
+        private float _matchmakingTimeoutCounter;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -69,8 +75,17 @@ namespace Loom.ZombieBattleground
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
         }
 
-        public void Update()
+        public async void Update()
         {
+            if (_isMatchmakingInProgress)
+            {
+                _matchmakingTimeoutCounter += Time.deltaTime;
+                if (_matchmakingTimeoutCounter > Constants.MatchmakingTimeOut)
+                {
+                    await StopMatch();
+                    MatchingFailed?.Invoke();
+                }
+            }
         }
 
         public void Dispose()
@@ -100,6 +115,9 @@ namespace Loom.ZombieBattleground
         {
             try
             {
+                _isMatchmakingInProgress = true;
+                _matchmakingTimeoutCounter = 0;
+
                 _queueManager.Active = false;
                 _queueManager.Clear();
 
@@ -138,12 +156,12 @@ namespace Loom.ZombieBattleground
                 {
                     Debug.LogWarning("Status == Started, loading initial state immediately");
                     await LoadInitialGameState();
+                    _isMatchmakingInProgress = false;
                 }
             }
             catch (Exception)
             {
-                await _backendFacade.UnsubscribeEvent();
-                _queueManager.Clear();
+                await StopMatch();
                 throw;
             }
             finally
@@ -175,6 +193,14 @@ namespace Loom.ZombieBattleground
             return workingCard;
         }
 
+        private async Task StopMatch()
+        {
+            _queueManager.Active = false;
+            _isMatchmakingInProgress = false;
+            await _backendFacade.UnsubscribeEvent();
+            _queueManager.Clear();
+        }
+
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Action action = async () =>
@@ -204,6 +230,8 @@ namespace Loom.ZombieBattleground
                         MatchingStartedActionReceived?.Invoke();
                         break;
                     case Match.Types.Status.Started:
+                        _isMatchmakingInProgress = false;
+
                         // No need to reload if a match was found immediately
                         if (InitialGameState == null)
                         {
