@@ -556,7 +556,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public async Task PlayerDie()
+        public void PlayerDie()
         {
             _avatarAnimator.enabled = true;
             _overlordDeathObject.SetActive(true);
@@ -589,10 +589,13 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
-
-                await _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
+                if (!IsLocalPlayer)
+                {
+                    Debug.LogWarning("END MATCH!!!");
+                    _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
                                                 (int)_pvpManager.MatchMetadata.Id,
                                                 IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
+                }
             }
             else
             {
@@ -666,7 +669,7 @@ namespace Loom.ZombieBattleground
 
         #region handlers
 
-        private async void PlayerDefenseChangedHandler(int now)
+        private void PlayerDefenseChangedHandler(int now)
         {
             if (now <= 0 && !_isDead)
             {
@@ -675,7 +678,7 @@ namespace Loom.ZombieBattleground
                     GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
                 }
 
-                await PlayerDie();
+                PlayerDie();
 
                 _isDead = true;
             }

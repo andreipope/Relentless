@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.Google.Protobuf;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Loom.ZombieBattleground
     {
         private Queue<Action> _mainThreadActions;
 
-        private BlockingCollection<PlayerActionRequest> _networkThreadActions;
+        private BlockingCollection<IMessage> _networkThreadActions;
 
         private Thread _networkThread;
 
@@ -23,7 +24,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _mainThreadActions = new Queue<Action>();
-            _networkThreadActions = new BlockingCollection<PlayerActionRequest>();
+            _networkThreadActions = new BlockingCollection<IMessage>();
         }
 
         public void StartNetworkThread()
@@ -63,7 +64,7 @@ namespace Loom.ZombieBattleground
             _mainThreadActions.Enqueue(action);
         }
 
-        public void AddAction(PlayerActionRequest action)
+        public void AddAction(IMessage action)
         {
             _networkThreadActions.Add(action);
         }
@@ -84,7 +85,7 @@ namespace Loom.ZombieBattleground
             {
                 while (_networkThreadActions.Count > 0)
                 {
-                    PlayerActionRequest request = _networkThreadActions.Take();
+                    IMessage request = _networkThreadActions.Take();
                     await GameClient.Get<BackendFacade>().SendAction(request);
                 }
             }

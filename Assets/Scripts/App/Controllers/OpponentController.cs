@@ -123,9 +123,9 @@ namespace Loom.ZombieBattleground
                               cardPlay.Position);
         }
 
-        private async void OnLeaveMatchHandler()
+        private void OnLeaveMatchHandler()
         {
-            await _gameplayManager.OpponentPlayer.PlayerDie();
+            _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
