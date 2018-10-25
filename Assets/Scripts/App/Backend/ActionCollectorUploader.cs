@@ -239,7 +239,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
 
             private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
-                                                  AffectObjectType affectObjectType, List<BoardObject> targets = null)
+                                                  AffectObjectType affectObjectType, List<ParametrizedAbilityBoardObject> targets = null)
             {
                 await Task.Delay(300);
 
@@ -259,27 +259,40 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Unit targetUnit;
                 if (targets != null)
                 {
-                    foreach(BoardObject boardObject in targets)
+                    foreach(ParametrizedAbilityBoardObject parametrizedAbility in targets)
                     {
+                        if (parametrizedAbility.BoardObject == null)
+                            continue;
+
                         targetUnit = new Unit();
 
-                        if (boardObject is BoardUnitModel model)
+                        if (parametrizedAbility.BoardObject is BoardUnitModel model)
                         {
                             targetUnit = new Unit()
                             {
                                 InstanceId = model.Card.Id,
-                                AffectObjectType =  AffectObjectType.Character
+                                AffectObjectType =  AffectObjectType.Character,
+                                Parameter = new Parameter()
+                                {
+                                    Damage = parametrizedAbility.Parameters.Damage,
+                                    Defense = parametrizedAbility.Parameters.Defense
+                                }
                             };
                         }
-                        else if (boardObject is Player player)
+                        else if (parametrizedAbility.BoardObject is Player player)
                         {
                             targetUnit = new Unit()
                             {
                                 InstanceId = player.Id == 0 ? 1 : 0,
-                                AffectObjectType = AffectObjectType.Player
+                                AffectObjectType = AffectObjectType.Player,
+                                Parameter = new Parameter()
+                                {
+                                    Damage = parametrizedAbility.Parameters.Damage,
+                                    Defense = parametrizedAbility.Parameters.Defense
+                                }
                             };
                         }
-                        else if(boardObject is HandBoardCard handCard)
+                        else if(parametrizedAbility.BoardObject is HandBoardCard handCard)
                         {
                             targetUnit = new Unit()
                             {

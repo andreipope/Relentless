@@ -271,9 +271,25 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
+
+            foreach(Unit unit in model.Targets)
+            {
+                parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject()
+                {
+                    BoardObject = _battlegroundController.GetTargetById(unit.InstanceId,
+                             Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(unit.AffectObjectType.ToString(), true)),
+                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                    {
+                      Damage = unit.Parameter.Damage,
+                      Defense = unit.Parameter.Defense,
+                    }
+                });
+            }
+
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
                                                       boardObjectCaller,
-                                                      _battlegroundController.GetTargetsById(model.Targets),
+                                                      parametrizedAbilityObjects,
                                                       model.Card,
                                                       _gameplayManager.OpponentPlayer);
         }
