@@ -203,7 +203,7 @@ namespace Loom.ZombieBattleground
                     // CreateDeadAnimation(cardToDestroy);
 
                     string cardDeathSoundName =
-                        cardToDestroy.Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
+                        cardToDestroy.Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
                     float soundLength = 0f;
 
                     if (!cardToDestroy.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))

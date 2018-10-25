@@ -418,10 +418,10 @@ namespace Loom.ZombieBattleground
 
                 _setTypeIcon.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" +
-                        SelfHero.Element.ToLower());
+                        SelfHero.Element.ToLowerInvariant());
                 _hordePicture.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" +
-                        SelfHero.Element.ToLower());
+                        SelfHero.Element.ToLowerInvariant());
 
                 _buttonSelect.onClick.AddListener(SelectButtonOnClickHandler);
             }
