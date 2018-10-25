@@ -30,9 +30,13 @@ public class EndTurnButton : MonoBehaviour
     [SerializeField] private GameObject _endButtonGlowObject;
 
 
+    private IGameplayManager _gameplayManager;
+
     private bool _hovering;
 
     private bool _active;
+
+    private bool _wasClicked;
 
     private SpriteRenderer _thisRenderer;
 
@@ -49,6 +53,8 @@ public class EndTurnButton : MonoBehaviour
         Assert.IsNotNull(_defaultSprite);
         Assert.IsNotNull(_pressedSprite);
         _thisRenderer = GetComponent<SpriteRenderer>();
+
+        _gameplayManager = GameClient.Get<IGameplayManager>();
     }
 
     private void OnMouseEnter()
@@ -68,11 +74,13 @@ public class EndTurnButton : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!_active)
+        if (_gameplayManager.IsGameplayInputBlocked ||
+            !_active ||
+            _gameplayManager.IsGameEnded ||
+            !_gameplayManager.CanDoDragActions)
             return;
 
-        if (GameClient.Get<IGameplayManager>().IsGameEnded)
-            return;
+        _wasClicked = true;
 
         _thisRenderer.sprite = _pressedSprite;
         _buttonText.transform.localPosition = _textPressedPosition;
@@ -80,21 +88,24 @@ public class EndTurnButton : MonoBehaviour
             Constants.EndTurnClickSoundVolume, dropOldBackgroundMusic: false);
     }
 
-    // was OnMouseDown
     private void OnMouseUp()
     {
-        if (GameClient.Get<ITutorialManager>().IsTutorial && !GameClient.Get<ITutorialManager>().CurrentTutorialDataStep.CanClickEndTurn)
-            return;
-
-        if (GameClient.Get<IGameplayManager>().IsGameEnded)
+        if (!_wasClicked ||
+           _gameplayManager.IsGameplayInputBlocked ||
+           _gameplayManager.IsGameEnded ||
+            (GameClient.Get<ITutorialManager>().IsTutorial &&
+             !GameClient.Get<ITutorialManager>().CurrentTutorialDataStep.CanClickEndTurn) ||
+             !_gameplayManager.CanDoDragActions)
             return;
 
         if (_active && _hovering)
         {
-            GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().StopTurn();
+            _gameplayManager.GetController<BattlegroundController>().StopTurn();
             SetEnabled(false);
         }
 
         _buttonText.transform.localPosition = _textDefaultPosition;
+
+        _wasClicked = false;
     }
 }
