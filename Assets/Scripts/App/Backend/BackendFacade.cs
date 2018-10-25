@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 new NonceTxMiddleware(publicKey, client), new SignedTxMiddleware(privateKey)
             });
 
-            client.AutoReconnect = false;
+            client.Configuration.AutoReconnect = false;
 
             await client.ReadClient.ConnectAsync();
             await client.WriteClient.ConnectAsync();
@@ -342,9 +342,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            const int timeout = 120000;
-
-            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request, timeout);
+            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
         }
 
         public async Task<GetGameStateResponse> GetGameState(long matchId)
