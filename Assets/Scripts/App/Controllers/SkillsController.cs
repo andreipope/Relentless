@@ -1670,6 +1670,8 @@ namespace Loom.ZombieBattleground
 
         private void FortressAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
+            const float offset = 0;//3.3f;
+
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<BoardUnitView> units =
@@ -1680,6 +1682,15 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitView unit in units)
             {
                 unit.Model.SetAsHeavyUnit();
+
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortressVFX"),
+                      new Vector3()
+                      {
+                          x = unit.Transform.position.x,
+                          y = unit.Transform.position.y - offset,
+                          z = unit.Transform.position.z
+                      }, ignoreCastPosition: true); // vfx phalanx
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
