@@ -589,9 +589,8 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
-                if (!IsLocalPlayer)
+                if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
                 {
-                    Debug.LogWarning("END MATCH!!!");
                     _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
                                                 (int)_pvpManager.MatchMetadata.Id,
                                                 IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
