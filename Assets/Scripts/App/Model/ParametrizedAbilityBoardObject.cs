@@ -15,6 +15,7 @@ namespace Loom.ZombieBattleground.Data
         {
             public int Damage;
             public int Defense;
+            public string CardName;
         }
     }
 }

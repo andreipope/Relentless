@@ -275,7 +275,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 Parameter = new Parameter()
                                 {
                                     Damage = parametrizedAbility.Parameters.Damage,
-                                    Defense = parametrizedAbility.Parameters.Defense
+                                    Defense = parametrizedAbility.Parameters.Defense,
+                                    CardName = parametrizedAbility.Parameters.CardName
                                 }
                             };
                         }
@@ -288,7 +289,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 Parameter = new Parameter()
                                 {
                                     Damage = parametrizedAbility.Parameters.Damage,
-                                    Defense = parametrizedAbility.Parameters.Defense
+                                    Defense = parametrizedAbility.Parameters.Defense,
+                                    CardName = parametrizedAbility.Parameters.CardName
                                 }
                             };
                         }
@@ -297,7 +299,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             targetUnit = new Unit()
                             {
                                 InstanceId = handCard.Id,
-                                AffectObjectType = AffectObjectType.Card
+                                AffectObjectType = AffectObjectType.Card,
+                                Parameter = new Parameter()
+                                {
+                                    Damage = parametrizedAbility.Parameters.Damage,
+                                    Defense = parametrizedAbility.Parameters.Defense,
+                                    CardName = parametrizedAbility.Parameters.CardName
+                                }
                             };
                         }
 
