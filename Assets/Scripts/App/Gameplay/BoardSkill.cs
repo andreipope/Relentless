@@ -171,7 +171,11 @@ namespace Loom.ZombieBattleground
             if (!IsSkillCanUsed() || !IsUsing)
                 return;
 
-            DoOnUpSkillAction();
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+                 (parameter, completeCallback) =>
+                 {
+                     DoOnUpSkillAction();
+                 });
 
             IsUsing = false;
         }

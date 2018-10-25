@@ -282,8 +282,8 @@ namespace Loom.ZombieBattleground
             CurrentTurn = Constants.FirstGameTurnIndex;
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.Health = 99;
-            _gameplayManager.CurrentPlayer.Health = 99;
+            _gameplayManager.OpponentPlayer.Defense = 99;
+            _gameplayManager.CurrentPlayer.Defense = 99;
 #endif
 
             _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;
@@ -454,21 +454,25 @@ namespace Loom.ZombieBattleground
 
         public void StopTurn()
         {
-            EndTurn();
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+                 (parameter, completeCallback) =>
+                 {
+                     EndTurn();
 
-            if (_gameplayManager.IsLocalPlayerTurn())
-            {
-                _uiManager.DrawPopup<YourTurnPopup>();
+                     if (_gameplayManager.IsLocalPlayerTurn())
+                     {
+                         _uiManager.DrawPopup<YourTurnPopup>();
 
-                _timerManager.AddTimer((x) =>
-                {
-                    StartTurn();
-                }, null, 4f);
-            }
-            else
-            {
-                StartTurn();
-            }            
+                         _timerManager.AddTimer((x) =>
+                         {
+                             StartTurn();
+                         }, null, 4f);
+                     }
+                     else
+                     {
+                         StartTurn();
+                     }
+                 });
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)

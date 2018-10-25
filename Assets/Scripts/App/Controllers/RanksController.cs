@@ -35,23 +35,32 @@ namespace Loom.ZombieBattleground
 
         public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card)
         {
-            if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 if (!card.Owner.IsLocalPlayer)
                     return;
             }
 
-            List<BoardUnitView> filter = units.Where(unit =>
-                unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
-                (int) unit.Model.Card.LibraryCard.CardRank < (int) card.LibraryCard.CardRank).ToList();
-            if (filter.Count > 0)
-            {
-                DoRankUpgrades(filter, card);
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+               (parameter, completeCallback) =>
+                   {
 
-                GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+                       List<BoardUnitView> filter = units.Where(unit =>
+                                    unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
+                                    (int)unit.Model.Card.LibraryCard.CardRank < (int)card.LibraryCard.CardRank).ToList();
+                       if (filter.Count > 0)
+                       {
+                           DoRankUpgrades(filter, card);
 
-                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_OF_RANK_UPGRADE);
-            }
+                           GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero,
+                            Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+
+                           _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_OF_RANK_UPGRADE);
+                       }
+
+                       completeCallback?.Invoke();
+
+                   });
         }
 
         public void DoRankUpgrades(List<BoardUnitView> units, WorkingCard card, bool randomly = true)
