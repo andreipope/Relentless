@@ -1079,7 +1079,7 @@ namespace Loom.ZombieBattleground
                             _battleController.HealPlayerBySkill(owner, boardSkill, player);
                             Transform transform = new GameObject().transform;
                             transform.position = owner.AvatarObject.transform.position;
-                            transform.position += Vector3.up * 2;
+                            transform.position += Vector3.up * 2.25f;
                             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"), transform);
                             _soundManager.PlaySound(
                                 Enumerators.SoundType.OVERLORD_ABILITIES,
