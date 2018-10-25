@@ -806,28 +806,37 @@ namespace Loom.ZombieBattleground
 
             targets.AddRange(boardCradsModels);
 
-            targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
+            targets = InternalTools.GetRandomElementsFromList(targets, 5);// skill.Count);
+
+            GameObject prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
 
             foreach (object targetObject in targets)
             {
-                AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
-
-                _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                    targetObject);
-                _soundManager.PlaySound(
-                    Enumerators.SoundType.OVERLORD_ABILITIES,
-                    skill.Title.Trim().ToLower() + "_Impact",
-                    Constants.OverlordAbilitySoundVolume,
-                    Enumerators.CardSoundType.NONE);
-
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                _vfxController.CreateSkillVfx(
+                prefab,
+                boardSkill.SelfObject.transform.position,
+                targetObject,
+                (x) =>
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                    Target = targetObject,
-                    HasValue = true,
-                    Value = -skill.Value
-                });
+                    AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+
+                    _vfxController.CreateVfx(
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
+                        targetObject);
+                    _soundManager.PlaySound(
+                        Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skill.Title.Trim().ToLower() + "_Impact",
+                        Constants.OverlordAbilitySoundVolume,
+                        Enumerators.CardSoundType.NONE);
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = targetObject,
+                        HasValue = true,
+                        Value = -skill.Value
+                    });
+                }, true);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
