@@ -806,7 +806,7 @@ namespace Loom.ZombieBattleground
 
             targets.AddRange(boardCradsModels);
 
-            targets = InternalTools.GetRandomElementsFromList(targets, 5);// skill.Count);
+            targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
 
             GameObject prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
 
