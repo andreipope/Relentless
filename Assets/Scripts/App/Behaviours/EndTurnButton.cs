@@ -77,7 +77,7 @@ public class EndTurnButton : MonoBehaviour
         if (_gameplayManager.IsGameplayInputBlocked ||
             !_active ||
             _gameplayManager.IsGameEnded ||
-            !_gameplayManager.CanDoDragActions)
+            _gameplayManager.GetController<AbilitiesController>().BlockEndTurnButton)
             return;
 
         _wasClicked = true;
@@ -95,7 +95,7 @@ public class EndTurnButton : MonoBehaviour
            _gameplayManager.IsGameEnded ||
             (GameClient.Get<ITutorialManager>().IsTutorial &&
              !GameClient.Get<ITutorialManager>().CurrentTutorialDataStep.CanClickEndTurn) ||
-             !_gameplayManager.CanDoDragActions)
+             _gameplayManager.GetController<AbilitiesController>().BlockEndTurnButton)
             return;
 
         if (_active && _hovering)
