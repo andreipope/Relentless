@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
 
         public uint MaxGooVials { get; private set; }
 
+        public uint TurnTime { get; private set; }
+
         public PlayerState PvPPlayerState { get; }
 
         private readonly GameObject _freezedHighlightObject;
@@ -135,6 +137,7 @@ namespace Loom.ZombieBattleground
                     Defense = PvPPlayerState.Defense;
                     CurrentGoo = PvPPlayerState.CurrentGoo;
                     GooVials = PvPPlayerState.GooVials;
+                    TurnTime = (uint) PvPPlayerState.TurnTime;
                     break;
                 default:
                     InitialCardsInHandCount = Constants.DefaultCardsInHandAtStartGame;
@@ -145,6 +148,7 @@ namespace Loom.ZombieBattleground
                     Defense = Constants.DefaultPlayerHp;
                     CurrentGoo = Constants.DefaultPlayerGoo;
                     GooVials = _currentGoo;
+                    TurnTime = (uint) Constants.TurnTime;
                     break;
             }
 
