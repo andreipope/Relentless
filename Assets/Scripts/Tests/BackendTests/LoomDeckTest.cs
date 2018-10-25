@@ -77,7 +77,7 @@ public class LoomDeckTest
                 listDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
                 Assert.IsNotNull(listDecksResponse);
 
-                await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
+                await LoomTestContext.BackendFacade.DeleteDeck(user, 0);
 
                 ListDecksResponse newListDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
                 Assert.IsNull(newListDecksResponse);
@@ -99,7 +99,7 @@ public class LoomDeckTest
                     Name = "Gaurav"
                 };
 
-                await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+                await LoomTestContext.BackendFacade.AddDeck(user, deck);
             });
     }
 
@@ -119,7 +119,7 @@ public class LoomDeckTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+                        await LoomTestContext.BackendFacade.AddDeck(user, deck);
                     });
             });
     }
@@ -150,7 +150,7 @@ public class LoomDeckTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.AddDeck(user, deck, 0);
+                        await LoomTestContext.BackendFacade.AddDeck(user, deck);
                     });
             });
     }
@@ -168,7 +168,7 @@ public class LoomDeckTest
                 {
                     Name = "Default"
                 };
-                await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+                await LoomTestContext.BackendFacade.EditDeck(user, deck);
             });
     }
 
@@ -188,7 +188,7 @@ public class LoomDeckTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+                        await LoomTestContext.BackendFacade.EditDeck(user, deck);
                     });
             });
     }
@@ -211,7 +211,7 @@ public class LoomDeckTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.EditDeck(user, deck, 0);
+                        await LoomTestContext.BackendFacade.EditDeck(user, deck);
                     });
             });
     }
@@ -225,7 +225,7 @@ public class LoomDeckTest
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
+                await LoomTestContext.BackendFacade.DeleteDeck(user, 0);
             });
     }
 
@@ -239,7 +239,7 @@ public class LoomDeckTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.DeleteDeck(user, 0, 0);
+                        await LoomTestContext.BackendFacade.DeleteDeck(user, 0);
                     });
             });
     }
@@ -256,7 +256,7 @@ public class LoomDeckTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.DeleteDeck(user, 123, 0);
+                        await LoomTestContext.BackendFacade.DeleteDeck(user, 123);
                     });
             });
     }
