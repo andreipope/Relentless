@@ -14,6 +14,7 @@ namespace Loom.ZombieBattleground
         event Action MatchCreatedActionReceived;
         event Action MatchingStartedActionReceived;
         event Action PlayerLeftGameActionReceived;
+        event Action MatchingFailed;
 
         event Action GameStartedActionReceived;
         event Action GameEndedActionReceived;
@@ -35,19 +36,12 @@ namespace Loom.ZombieBattleground
 
         GameState InitialGameState { get; }
 
-        OpponentDeck OpponentDeck { get; set; }
-        List<CardInstance> OpponentCardsInHand { get; set; }
-        List<CardInstance> OpponentCardsInDeck { get; set; }
-
-        List<CardInstance> PlayerCardsInHand { get; set; }
-        List<CardInstance> PlayerCardsInDeck { get; set; }
-
-        int OpponentDeckIndex { get; set; }
-
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
 
         Task FindMatch();
+
+        WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer);
     }
 }

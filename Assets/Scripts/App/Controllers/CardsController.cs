@@ -106,6 +106,11 @@ namespace Loom.ZombieBattleground
             return _cardInstanceId++;
         }
 
+        public int GetCardInstanceId()
+        {
+            return _cardInstanceId;
+        }
+
         public void SetNewCardInstanceId(int id)
         {
             _cardInstanceId = id;
@@ -238,7 +243,7 @@ namespace Loom.ZombieBattleground
             callback?.Invoke();
         }
 
-        public async void AddCardToHand(Player player, WorkingCard card = null)
+        public void AddCardToHand(Player player, WorkingCard card = null)
         {
             if (card == null)
             {
@@ -270,7 +275,7 @@ namespace Loom.ZombieBattleground
             player.AddCardToHand(card);
         }
 
-        public async void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
+        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
         {
             if (card == null)
             {
@@ -470,7 +475,8 @@ namespace Loom.ZombieBattleground
         public void HoverPlayerCardOnBattleground(Player player, BoardCard card, HandBoardCard handCard)
         {
             Card libraryCard = card.WorkingCard.LibraryCard;
-            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE && _gameplayManager.CurrentPlayer.BoardCards.Count < Constants.MaxBoardUnits)
+            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE &&
+                _gameplayManager.CurrentPlayer.BoardCards.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
                 int newIndexOfCard = 0;
                 float newCreatureCardPosition = card.Transform.position.x;
@@ -977,7 +983,7 @@ namespace Loom.ZombieBattleground
 
         private bool CheckIsMoreThanMaxCards(WorkingCard workingCard, Player player)
         {
-            if (player.CardsInHand.Count >= Constants.MaxCardsInHand)
+            if (player.CardsInHand.Count >= player.MaxCardsInHand)
             {
                 // IMPROVE ANIMATION
                 return true;
@@ -986,9 +992,9 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public BoardUnitView SpawnUnitOnBoard(Player owner, string name)
+        public BoardUnitView SpawnUnitOnBoard(Player owner, string name, bool isPVPNetwork = false)
         {
-            if (owner.BoardCards.Count >= Constants.MaxBoardUnits)
+            if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
                 return null;
 
             Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
@@ -997,7 +1003,15 @@ namespace Loom.ZombieBattleground
             BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
 
             owner.AddCardToBoard(card);
-            owner.BoardCards.Add(unit);
+
+            if (isPVPNetwork)
+            {
+                owner.BoardCards.Insert(0, unit);
+            }
+            else
+            {
+                owner.BoardCards.Add(unit);
+            }
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
