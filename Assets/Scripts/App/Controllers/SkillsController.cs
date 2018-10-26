@@ -103,9 +103,6 @@ namespace Loom.ZombieBattleground
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
 
-            _gameplayManager.CurrentPlayer.SelfHero.Skills[primary].OverlordSkill = Enumerators.OverlordSkill.EPIDEMIC;
-            _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary].OverlordSkill = Enumerators.OverlordSkill.EPIDEMIC;
-
             if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
                 secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
             {
