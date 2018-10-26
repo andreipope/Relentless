@@ -851,6 +851,10 @@ namespace Loom.ZombieBattleground
 
             int unitAtk = unit.Model.CurrentDamage;
 
+            _vfxController.CreateVfx(
+            _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
+            destroyedUnit);
+
             _battlegroundController.DestroyBoardUnit(unit.Model);
 
             List<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
