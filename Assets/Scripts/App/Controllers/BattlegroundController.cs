@@ -481,6 +481,8 @@ namespace Loom.ZombieBattleground
                      {
                          StartTurn();
                      }
+
+                     completeCallback?.Invoke();
                  });
         }
 

@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private IGameplayManager _gameplayManager;
 
+        private Action _ranksUpgradeCompleteAction;
+
         public void Dispose()
         {
         }
@@ -44,6 +46,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                (parameter, completeCallback) =>
                    {
+                       _ranksUpgradeCompleteAction = completeCallback;
 
                        List<BoardUnitView> filter = units.Where(unit =>
                                     unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
@@ -57,9 +60,11 @@ namespace Loom.ZombieBattleground
 
                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_OF_RANK_UPGRADE);
                        }
-
-                       completeCallback?.Invoke();
-
+                       else
+                       {
+                           _ranksUpgradeCompleteAction?.Invoke();
+                           _ranksUpgradeCompleteAction = null;
+                       }
                    });
         }
 
@@ -248,7 +253,7 @@ namespace Loom.ZombieBattleground
                                     List<Enumerators.BuffType> buffTypes,
                                     WorkingCard card, bool randomly = true)
         {
-            if(_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
                 units = units.FindAll(x => x.Model.UnitCanBeUsable());
             }
@@ -270,15 +275,28 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 if (!card.Owner.IsLocalPlayer)
+                {
+                    _ranksUpgradeCompleteAction?.Invoke();
+                    _ranksUpgradeCompleteAction = null;
                     return;
+                }
             }
 
             RanksUpdated?.Invoke(card, units);
+
+            _ranksUpgradeCompleteAction?.Invoke();
+            _ranksUpgradeCompleteAction = null;
         }
 
         public void BuffAllyManually(List<BoardUnitView> units, WorkingCard card)
         {
-            DoRankUpgrades(units, card, false);
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+                 (parameter, completeCallback) =>
+                 {
+                     DoRankUpgrades(units, card, false);
+
+                     completeCallback?.Invoke();
+                 });
         }
     }
 }

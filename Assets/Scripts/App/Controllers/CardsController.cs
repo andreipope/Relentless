@@ -5,6 +5,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
@@ -546,113 +547,122 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-                switch (libraryCard.CardKind)
-                {
-                    case Enumerators.CardKind.CREATURE:
-                        {
-                            int indexOfCard = 0;
-                            float newCreatureCardPosition = card.Transform.position.x;
+                _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+                       (parameter, completeCallback) =>
+                       {
+                           switch (libraryCard.CardKind)
+                           {
+                               case Enumerators.CardKind.CREATURE:
+                                   {
+                                       int indexOfCard = 0;
+                                       float newCreatureCardPosition = card.Transform.position.x;
 
-                            // set correct position on board depends from card view position
-                            for (int i = 0; i < player.BoardCards.Count; i++)
-                            {
-                                if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
-                                {
-                                    indexOfCard = i + 1;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
+                                       // set correct position on board depends from card view position
+                                       for (int i = 0; i < player.BoardCards.Count; i++)
+                                       {
+                                           if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
+                                           {
+                                               indexOfCard = i + 1;
+                                           }
+                                           else
+                                           {
+                                               break;
+                                           }
+                                       }
 
-                            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
-                            boardUnitView.Transform.tag = SRTags.PlayerOwned;
-                            boardUnitView.Transform.parent = _playerBoard.transform;
-                            boardUnitView.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
-                            boardUnitView.Model.OwnerPlayer = card.WorkingCard.Owner;
-                            boardUnitView.SetObjectInfo(card.WorkingCard);
+                                       BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
+                                       boardUnitView.Transform.tag = SRTags.PlayerOwned;
+                                       boardUnitView.Transform.parent = _playerBoard.transform;
+                                       boardUnitView.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
+                                       boardUnitView.Model.OwnerPlayer = card.WorkingCard.Owner;
+                                       boardUnitView.SetObjectInfo(card.WorkingCard);
 
-                            _battlegroundController.PlayerHandCards.Remove(card);
-                            _battlegroundController.PlayerBoardCards.Add(boardUnitView);
-                            player.AddCardToBoard(card.WorkingCard);
-                            player.RemoveCardFromHand(card.WorkingCard);
+                                       _battlegroundController.PlayerHandCards.Remove(card);
+                                       _battlegroundController.PlayerBoardCards.Add(boardUnitView);
+                                       player.AddCardToBoard(card.WorkingCard);
+                                       player.RemoveCardFromHand(card.WorkingCard);
 
-                            player.BoardCards.Insert(indexOfCard, boardUnitView);
+                                       player.BoardCards.Insert(indexOfCard, boardUnitView);
 
-                            _timerManager.AddTimer(
-                                creat =>
-                                {
-                                    card.WorkingCard.Owner.GraveyardCardsCount++;
-                                });
-
-                            card.RemoveCardParticle.Play();
-
-                            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                            {
-                                ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                Caller = boardUnitView.Model,
-                                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                            });
-
-                            UpdateCardsStatusEvent?.Invoke(player);
-
-                            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
-
-                            player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
-
-                            Sequence animationSequence = DOTween.Sequence();
-                            animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-                            animationSequence.OnComplete(
-                                () =>
-                                {
-                                    RemoveCard(new object[]
-                                    {
-                                    card
-                                    });
-
-                                    _timerManager.AddTimer(
-                                        param =>
-                                        {
-                                            boardUnitView.PlayArrivalAnimation();
-                                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
-                                                _gameplayManager.CurrentPlayer.BoardCards,
+                                       InternalTools.DoActionDelayed(
                                                 () =>
                                                 {
-                                                    _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                                        Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, null);
-                                                });
-                                        },
-                                        null,
-                                        0.1f);
-                                });
+                                                    card.WorkingCard.Owner.GraveyardCardsCount++;
+                                                }, 1f);
 
-                            OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
+                                       card.RemoveCardParticle.Play();
 
-                            player.CurrentGoo -= card.ManaCost;
-                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-                            GameClient.Get<IOverlordManager>().ReportExperienceAction(player.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
-                            break;
-                        }
-                    case Enumerators.CardKind.SPELL:
-                        {
-                            player.CardsInHand.Remove(card.WorkingCard);
-                            _battlegroundController.PlayerHandCards.Remove(card);
-                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                                       _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                                       {
+                                           ActionType = Enumerators.ActionType.PlayCardFromHand,
+                                           Caller = boardUnitView.Model,
+                                           TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                                       });
 
-                            card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
-                            card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
+                                       UpdateCardsStatusEvent?.Invoke(player);
 
-                            BoardSpell boardSpell = new BoardSpell(card.GameObject, card.WorkingCard);
-                            boardSpell.Transform.position = Vector3.zero;
+                                       _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
-                            _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
-                            break;
-                        }
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                                       boardUnitView.ArrivalEndCallback = completeCallback;
+
+                                       _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card);
+
+                                       player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
+
+                                       Sequence animationSequence = DOTween.Sequence();
+                                       animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
+                                       animationSequence.OnComplete(
+                                           () =>
+                                           {
+                                               RemoveCard(new object[]
+                                               {
+                                                    card
+                                               });
+
+                                               InternalTools.DoActionDelayed(
+                                                   () =>
+                                                   {
+                                                       boardUnitView.PlayArrivalAnimation();
+                                                       _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
+                                                           _gameplayManager.CurrentPlayer.BoardCards,
+                                                           () =>
+                                                           {
+                                                               _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
+                                                                   Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, null);
+                                                           });
+                                                   }, 0.1f);
+                                           });
+
+                                       OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
+
+                                       player.CurrentGoo -= card.ManaCost;
+                                       _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                                       GameClient.Get<IOverlordManager>().ReportExperienceAction(player.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                                       break;
+                                   }
+                               case Enumerators.CardKind.SPELL:
+                                   {
+                                       player.CardsInHand.Remove(card.WorkingCard);
+                                       _battlegroundController.PlayerHandCards.Remove(card);
+                                       _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+
+                                       card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                                       card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
+
+                                       BoardSpell boardSpell = new BoardSpell(card.GameObject, card.WorkingCard);
+                                       boardSpell.Transform.position = Vector3.zero;
+
+                                       completeCallback?.Invoke();
+
+                                       _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
+                                           Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, null, handCard: handCard);
+                                       break;
+                                   }
+                               default:
+                                   completeCallback?.Invoke();
+                                   throw new ArgumentOutOfRangeException();
+                           }
+                       });
             }
             else
             {
