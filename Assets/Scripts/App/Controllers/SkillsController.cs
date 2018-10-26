@@ -1572,13 +1572,11 @@ namespace Loom.ZombieBattleground
         {
             _battleController.HealPlayerBySkill(owner, boardSkill, owner);
 
-            // TODO: remove this empty gameobject logic
-            Transform transform = new GameObject().transform;
-            transform.position = owner.AvatarObject.transform.position;
-            transform.position -= Vector3.up * 3.3f;
+            Vector3 position = owner.AvatarObject.transform.position;
+            position -= Vector3.up * 3.7f;
 
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"),
-                transform);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),
+                position, ignoreCastPosition: true);
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
