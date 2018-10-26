@@ -1537,11 +1537,11 @@ namespace Loom.ZombieBattleground
                 unit.CurrentHp += skill.Value;
 
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
-                position -= Vector3.up * 3.3f;
+                position -= Vector3.up * 3.7f;
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"),
-                    position);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),
+                    position, ignoreCastPosition:true);
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.OverlordSkill.ToString().ToLower(),
