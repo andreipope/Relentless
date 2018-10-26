@@ -293,9 +293,9 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     DoRankUpgrades(units, card, false);
+                     _ranksUpgradeCompleteAction = completeCallback;
 
-                     completeCallback?.Invoke();
+                     DoRankUpgrades(units, card, false);
                  });
         }
     }
