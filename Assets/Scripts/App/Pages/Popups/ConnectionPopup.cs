@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
 {
     public class ConnectionPopup : IUIPopup
     {
+        public event Action CancelMatchmakingClicked;
+
         public Func<Task> ConnectFunc;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -20,6 +22,8 @@ namespace Loom.ZombieBattleground
         private Button _quitButton;
 
         private Button _closeButton;
+
+        private Button _cancelMatchmakingButton;
 
         private Transform _failedGroup;
 
@@ -68,10 +72,12 @@ namespace Loom.ZombieBattleground
             _reconnectButton = _failedGroup.Find("Button_Reconnect").GetComponent<Button>();
             _quitButton = _failedGroup.Find("Button_Quit").GetComponent<Button>();
             _closeButton = _failedGroup.Find("Button_Close").GetComponent<Button>();
+            _cancelMatchmakingButton = _matchMakingGroup.Find("Button_Cancel").GetComponent<Button>();
 
             _reconnectButton.onClick.AddListener(PressedReconnectHandler);
             _quitButton.onClick.AddListener(PressedQuitHandler);
             _closeButton.onClick.AddListener(PressedCloseHandler);
+            _cancelMatchmakingButton.onClick.AddListener(PressedCancelMatchmakingHandler);
 
             _state = ConnectionState.Connecting;
             SetUIState(ConnectionState.Connecting);
@@ -135,6 +141,11 @@ namespace Loom.ZombieBattleground
             Hide();
         }
 
+        private void PressedCancelMatchmakingHandler()
+        {
+            CancelMatchmakingClicked?.Invoke();
+        }
+
         private void SetUIState(ConnectionState state)
         {
             _state = state;
@@ -144,10 +155,13 @@ namespace Loom.ZombieBattleground
             {
                 case ConnectionState.Connecting:
                     _connectingGroup.gameObject.SetActive(true);
+                    _failedGroup.gameObject.SetActive(false);
+                    _matchMakingGroup.gameObject.SetActive(false);
                     break;
                 case ConnectionState.ConnectionFailed:
                     _connectingGroup.gameObject.SetActive(false);
                     _failedGroup.gameObject.SetActive(true);
+                    _matchMakingGroup.gameObject.SetActive(false);
                     _closeButton.gameObject.SetActive(true);
                     _reconnectButton.gameObject.SetActive(false);
                     _quitButton.gameObject.SetActive(false);
@@ -155,6 +169,7 @@ namespace Loom.ZombieBattleground
                 case ConnectionState.ConnectionFailedInGame:
                     _connectingGroup.gameObject.SetActive(false);
                     _failedGroup.gameObject.SetActive(true);
+                    _matchMakingGroup.gameObject.SetActive(false);
                     _closeButton.gameObject.SetActive(false);
                     _reconnectButton.gameObject.SetActive(true);
                     _quitButton.gameObject.SetActive(true);
