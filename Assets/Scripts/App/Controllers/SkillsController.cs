@@ -1536,14 +1536,12 @@ namespace Loom.ZombieBattleground
                 unit.BuffedHp += skill.Value;
                 unit.CurrentHp += skill.Value;
 
-                // TODO: remove this empty gameobject logic
-                Transform transform = new GameObject().transform;
-                transform.position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
-                transform.position -= Vector3.up * 3.3f;
+                Vector3 position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                position -= Vector3.up * 3.3f;
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"),
-                    transform);
+                    position);
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.OverlordSkill.ToString().ToLower(),
