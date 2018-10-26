@@ -86,7 +86,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 $"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
 #if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !USE_LOCAL_BACKEND && !FORCE_DISABLE_VERSION_CHECK
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion)) 
-                throw new GameVersionMismatchException(BuildMetaInfo.Instance.Version.ToString(), _dataManager.BetaConfig.LatestVersion.ToString());
+                throw new GameVersionMismatchException(
+                    BuildMetaInfo.Instance.Version.ToString(),
+                    _dataManager.BetaConfig.LatestVersion.ToString()
+                 );
+#elif UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion))
+            {
+                Debug.LogWarning("Remote and local versions mismatch!");
+            }
 #endif
 
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
