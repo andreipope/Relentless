@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
         bool IsCurrentPlayer();
 
-        Task FindMatch();
+        Task<bool> FindMatch();
 
         Task CancelFindMatch();
 

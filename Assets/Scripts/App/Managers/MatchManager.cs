@@ -66,7 +66,10 @@ namespace Loom.ZombieBattleground
                             connectionPopup.ShowLookingForMatch();
                             connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
 
-                            await _pvpManager.FindMatch();
+                            bool success = await _pvpManager.FindMatch();
+                            if (!success)
+                                return;
+
                             if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
                             {
                                 StartPvPMatch();
