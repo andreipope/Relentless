@@ -103,6 +103,9 @@ namespace Loom.ZombieBattleground
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
 
+            _gameplayManager.CurrentPlayer.SelfHero.Skills[primary].OverlordSkill = Enumerators.OverlordSkill.EPIDEMIC;
+            _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary].OverlordSkill = Enumerators.OverlordSkill.EPIDEMIC;
+
             if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
                 secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
             {
@@ -902,10 +905,12 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
+            List<BoardUnitView> units = owner.BoardCards;//.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
 
             if (units.Count == 0)
                 return;
+
+            skill.Count = 2;
 
             units = InternalTools.GetRandomElementsFromList(units, skill.Count);
             List<BoardUnitView> opponentUnits =
@@ -914,11 +919,12 @@ namespace Loom.ZombieBattleground
             int unitAtk = 0;
 
             BoardUnitView opponentUnitView = null;
+            BoardUnitView unitView = null;
+
             for (int i = 0; i < units.Count; i++)
             {
-                unitAtk = units[i].Model.CurrentDamage;
-
-                _battlegroundController.DestroyBoardUnit(units[i].Model);
+                unitView = units[i];
+                unitAtk = units[i].Model.CurrentDamage;                   
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -930,8 +936,6 @@ namespace Loom.ZombieBattleground
                 {
                     opponentUnitView = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
 
-                    _battleController.AttackUnitBySkill(owner, boardSkill, opponentUnitView.Model, 0);
-
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
@@ -941,6 +945,8 @@ namespace Loom.ZombieBattleground
                     });
 
                     opponentUnits.Remove(opponentUnitView);
+
+                    EpidemicUnit(owner, boardSkill, skill, unitView, opponentUnitView);
                 }
             }
 
@@ -950,6 +956,35 @@ namespace Loom.ZombieBattleground
                 Caller = boardSkill,
                 TargetEffects = TargetEffects
             });
+        }
+
+        private void EpidemicUnit(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardUnitView unit, BoardUnitView target)
+        {
+            int unitAtk = unit.Model.CurrentDamage;
+
+            _vfxController.CreateVfx(
+            _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/InfectVFX"),
+            unit, delay: 8f, isIgnoreCastVfx: true);
+
+            InternalTools.DoActionDelayed(() =>
+            {
+                _vfxController.CreateVfx(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
+                unit, delay: 6f, isIgnoreCastVfx: true);
+                _battlegroundController.DestroyBoardUnit(unit.Model);
+
+                _vfxController.CreateSkillVfx(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"),
+                _battlegroundController.GetBoardUnitViewByModel(unit.Model).Transform.position,
+                target,
+                (x) =>
+                {
+                    _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
+                    target);
+                    _battleController.AttackUnitBySkill(owner, boardSkill, target.Model, 0);
+                }, true);
+            }, 3.5f);
         }
 
         // LIFE
