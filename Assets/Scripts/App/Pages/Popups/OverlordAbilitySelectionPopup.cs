@@ -140,7 +140,7 @@ namespace Loom.ZombieBattleground
         private void FillInfo(Hero heroData)
         {
             _heroImage.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLowerInvariant());
             _heroImage.SetNativeSize();
 
             for (int i = 0; i < AbilityListSize; i++)

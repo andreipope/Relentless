@@ -135,10 +135,10 @@ namespace Loom.ZombieBattleground
             Model.SetObjectInfo(card);
 
             string setName = _cardsController.GetSetOfCard(card.LibraryCard);
-            string rank = Model.Card.LibraryCard.CardRank.ToString().ToLower();
-            string picture = Model.Card.LibraryCard.Picture.ToLower();
+            string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
+            string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
 
@@ -431,16 +431,18 @@ namespace Loom.ZombieBattleground
                 if (Model.Card.LibraryCard.CardRank == Enumerators.CardRank.COMMANDER)
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "1",
+
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "1",
                     Constants.ZombiesSoundVolume, false, true);
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "2",
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "2",
                     Constants.ZombiesSoundVolume / 2f, false, true);
                 }
                 else
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
+
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
                     false, true);
                 }
 
@@ -672,7 +674,7 @@ namespace Loom.ZombieBattleground
 
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
                 _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
                     false, true);
             }
         }

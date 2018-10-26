@@ -583,7 +583,7 @@ namespace Loom.ZombieBattleground
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
                 OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.CardRank.ToString().ToLower() + " card in your deck.");
+                    card.CardRank.ToString().ToLowerInvariant() + " card in your deck.");
                 return;
             }
 
@@ -663,7 +663,7 @@ namespace Loom.ZombieBattleground
 
             string setName = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
-            if (setName.ToLower().Equals("item"))
+            if (setName.ToLowerInvariant().Equals("item"))
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
