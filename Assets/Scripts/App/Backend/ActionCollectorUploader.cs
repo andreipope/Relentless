@@ -352,10 +352,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 
-            private async void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
+            private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
-                await Task.Delay(1000);
-
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
 
                 PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
