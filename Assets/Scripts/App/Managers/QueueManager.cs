@@ -8,6 +8,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -81,13 +82,21 @@ namespace Loom.ZombieBattleground
 
         private async void NetworkThread()
         {
-            while (_networkThreadAlive)
+            try
             {
-                while (_networkThreadActions.Count > 0)
+                while (_networkThreadAlive)
                 {
-                    IMessage request = _networkThreadActions.Take();
-                    await GameClient.Get<BackendFacade>().SendAction(request);
+                    while (_networkThreadActions.Count > 0)
+                    {
+                        IMessage request = _networkThreadActions.Take();
+                        await GameClient.Get<BackendFacade>().SendAction(request);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                throw;
             }
         }
 
