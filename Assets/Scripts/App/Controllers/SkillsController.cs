@@ -840,18 +840,8 @@ namespace Loom.ZombieBattleground
 
         private void InfectAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            //List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
-
-            //if (units.Count == 0)
-            //    return;
-
-            Debug.LogError(1111);
-
             if (target != null && target is BoardUnitModel unit)
             {
-
-                Debug.LogError(222);
-
                 int unitAtk = unit.CurrentDamage;
 
                 _vfxController.CreateVfx(
