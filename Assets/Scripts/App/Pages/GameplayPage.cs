@@ -274,7 +274,7 @@ namespace Loom.ZombieBattleground
             _opponentCardDeckCountText = GameObject.Find("Opponent/CardDeckText").GetComponent<TextMeshPro>();
 
             _endTurnButton = GameObject.Find("EndTurnButton/_1_btn_endturn");
-            
+
             PlayerPrimarySkillHandler =
                 GameObject.Find(Constants.Player).transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             PlayerSecondarySkillHandler =
@@ -303,10 +303,8 @@ namespace Loom.ZombieBattleground
                 SetHeroInfo(currentOpponentHero, Constants.Opponent, OpponentPrimarySkillHandler.gameObject,
                     OpponentSecondarySkillHandler.gameObject);
 
-                if (_matchManager.MatchType == Enumerators.MatchType.PVP)
-                    _opponentNameText.text = _pvpManager.GetOpponentUserId();
-                else
-                    _opponentNameText.text = currentOpponentHero.FullName;
+                _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ? 
+                                                        _pvpManager.GetOpponentUserId() : currentOpponentHero.FullName;
             }
 
            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
