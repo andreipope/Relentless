@@ -664,6 +664,15 @@ namespace Loom.ZombieBattleground
         {
             WorkingCard card = _cardsController.LowGooCostOfCardInHand(owner, null, skill.Value);
 
+            if (owner.IsLocalPlayer)
+            {
+                BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
+                GameObject particle = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/LevitateVFX"));
+                particle.transform.position = boardCard.Transform.position;
+                particle.transform.SetParent(boardCard.Transform, true);
+                _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(particle, true, 5f);
+            }
+
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
