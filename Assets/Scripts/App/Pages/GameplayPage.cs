@@ -4,9 +4,11 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Hero = Loom.ZombieBattleground.Data.Hero;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -199,85 +201,56 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            OpponentDeck randomOpponentDeck = null;
+            int heroId = -1;
+            int opponentHeroId = -1;
 
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    randomOpponentDeck =
-                        _dataManager.CachedOpponentDecksData.Decks[
-                            Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
-                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
-                    break;
+                    if (_gameplayManager.IsTutorial) {
+                        heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
+                        opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
 
+                        // HACK: Set to any valid opponent deck ID, it will get overwritten later anyway
+                        _gameplayManager.OpponentDeckId = _dataManager.CachedOpponentDecksData.Decks[0].Id;
+                    }
+                    else
+                    {
+                        heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
+                        OpponentDeck opponentDeck =
+                            _dataManager
+                                .CachedOpponentDecksData
+                                .Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
+                        opponentHeroId = opponentDeck.HeroId;
+                        _gameplayManager.OpponentDeckId = opponentDeck.Id;
+                    }
+
+                    break;
                 case Enumerators.MatchType.PVP:
-                    var playerIndex = -1;
-                    for (int i = 0; i < _pvpManager.InitialGameState.PlayerStates.Count; i++)
+                    foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
                     {
-                        if (_pvpManager.InitialGameState.PlayerStates[i].Id !=
-                            _backendDataControlMediator.UserDataModel.UserId)
+                        if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            _pvpManager.OpponentDeckIndex = i;
+                            opponentHeroId = (int) playerState.Deck.HeroId;
                         }
-                        else if (_pvpManager.InitialGameState.PlayerStates[i].Id ==
-                                 _backendDataControlMediator.UserDataModel.UserId)
+                        else
                         {
-                            playerIndex = i;
+                            heroId = (int) playerState.Deck.HeroId;
                         }
-
-                    }
-                    _pvpManager.OpponentDeck =
-                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].Deck.FromProtobuf();
-
-                    _pvpManager.OpponentCardsInHand =
-                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].CardsInHand.FromProtobuf();
-
-                    _pvpManager.OpponentCardsInDeck =
-                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].CardsInDeck.FromProtobuf();
-
-                    _pvpManager.PlayerCardsInHand =
-                        _pvpManager.InitialGameState.PlayerStates[playerIndex].CardsInHand.FromProtobuf();
-
-                    _pvpManager.PlayerCardsInDeck =
-                        _pvpManager.InitialGameState.PlayerStates[playerIndex].CardsInDeck.FromProtobuf();
-
-                    _gameplayManager.PlayerStarterCards = new List<CardWithID>();
-                    _gameplayManager.OpponentStarterCards = new List<CardWithID>();
-
-                    for (int i = 0; i < _pvpManager.PlayerCardsInHand.Count; i++)
-                    {
-                        _gameplayManager.PlayerStarterCards.Add(new CardWithID(_pvpManager.PlayerCardsInHand[i].InstanceId, _pvpManager.PlayerCardsInHand[i].Prototype.Name));
                     }
 
-                    for (int i = 0; i < _pvpManager.OpponentCardsInHand.Count; i++)
-                    {
-                        _gameplayManager.OpponentStarterCards.Add(new CardWithID(_pvpManager.OpponentCardsInHand[i].InstanceId, _pvpManager.OpponentCardsInHand[i].Prototype.Name));
-                    }
-
-                    randomOpponentDeck = _pvpManager.OpponentDeck;
-                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
-                    break;
-
-                case Enumerators.MatchType.PVE:
+                    // Deck ID doesn't make any sense for PvP
+                    _gameplayManager.OpponentDeckId = -1;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            int heroId = 0; //Constants.TutorialPlayerHeroId; // TUTORIAL
-            int opponentHeroId = 0;
+            if (heroId == -1)
+                throw new Exception($"{nameof(heroId)} == -1");
 
-            if (!_gameplayManager.IsTutorial)
-            {
-                heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
-                opponentHeroId = randomOpponentDeck.HeroId;
-            }
-            else
-            {
-                heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
-                opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
-            }
-
+            if (opponentHeroId == -1)
+                throw new Exception($"{nameof(opponentHeroId)} == -1");
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.HeroesParsed[opponentHeroId];
@@ -336,11 +309,11 @@ namespace Loom.ZombieBattleground
                     _opponentNameText.text = currentOpponentHero.FullName;
             }
 
-			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
+           _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
                 _playerManaBarsPosition, _playerNameText.text, Constants.Player);
             _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
                 _opponentManaBarsPosition, _opponentNameText.text, Constants.Opponent);
-			
+
             _isPlayerInited = true;
         }
 

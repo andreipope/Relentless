@@ -71,6 +71,9 @@ public class EndTurnButton : MonoBehaviour
         if (!_active)
             return;
 
+        if (GameClient.Get<IGameplayManager>().IsGameEnded)
+            return;
+
         _thisRenderer.sprite = _pressedSprite;
         _buttonText.transform.localPosition = _textPressedPosition;
         GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.END_TURN, 128,
