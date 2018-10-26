@@ -60,14 +60,12 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CustomModesPage"));
+            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CustomModesPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _parentOfModesList = _selfPage.transform.Find("Panel_ModesList/Group");
+            _parentOfModesList = _selfPage.transform.Find("Panel_ModesList/Viewport/Content");
 
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
 
             FillCustomModes();

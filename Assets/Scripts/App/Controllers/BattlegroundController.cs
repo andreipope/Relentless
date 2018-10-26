@@ -78,9 +78,11 @@ namespace Loom.ZombieBattleground
 
         private bool _turnTimerCounting = false;
 
-        private GameObject _endTurnAnimationObject;
+        private GameObject _endTurnRingsAnimationGameObject;
 
-        private Animator _endTurnAnimationAnimator;
+        private Animator _endTurnButtonAnimationAnimator;
+
+        private ParticleSystem[] _endTurnRingsAnimationParticleSystems;
 
         public event Action<int> PlayerGraveyardUpdated;
 
@@ -152,11 +154,18 @@ namespace Loom.ZombieBattleground
                         {
                             StopTurn();
                         }
-                        else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnAnimationObject.activeInHierarchy)
+                        else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnRingsAnimationGameObject.activeInHierarchy)
                         {
-                            _endTurnAnimationObject.SetActive(true);
-                            _endTurnAnimationAnimator.enabled = true;
-                            _endTurnAnimationAnimator.Play("TurnTimer");
+                            _endTurnRingsAnimationGameObject.SetActive(true);
+                            _endTurnButtonAnimationAnimator.enabled = true;
+                            _endTurnButtonAnimationAnimator.Play("TurnTimer");
+
+                            float speed = Constants.TimeForStartEndTurnAnimation / TurnTimer;
+                            foreach (ParticleSystem particleSystem in _endTurnRingsAnimationParticleSystems)
+                            {
+                                ParticleSystem.MainModule mainModule = particleSystem.main;
+                                mainModule.simulationSpeed = speed;
+                            }
                         }
                     }
                 }
@@ -293,11 +302,11 @@ namespace Loom.ZombieBattleground
             PlayerGraveyardObject = GameObject.Find("GraveyardPlayer");
             OpponentGraveyardObject = GameObject.Find("GraveyardOpponent");
 
-            _endTurnAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
-            _endTurnAnimationObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
-
-            _endTurnAnimationObject.SetActive(false);
-            _endTurnAnimationAnimator.enabled = false;
+            _endTurnButtonAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
+            _endTurnRingsAnimationGameObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
+            _endTurnRingsAnimationParticleSystems = _endTurnRingsAnimationGameObject.gameObject.GetComponentsInChildren<ParticleSystem>();
+            _endTurnRingsAnimationGameObject.SetActive(false);
+            _endTurnButtonAnimationAnimator.enabled = false;
         }
 
         public void StartGameplayTurns()
@@ -330,7 +339,7 @@ namespace Loom.ZombieBattleground
                 !_turnTimerCounting &&
                 _gameplayManager.CurrentTurnPlayer.IsLocalPlayer)
             {
-                TurnTimer = Constants.TurnTime;
+                TurnTimer = _gameplayManager.CurrentTurnPlayer.TurnTime;
                 _turnTimerCounting = true;
             }
 
@@ -415,12 +424,12 @@ namespace Loom.ZombieBattleground
             {
                 _turnTimerCounting = false;
 
-                if (_endTurnAnimationObject.activeInHierarchy)
+                if (_endTurnRingsAnimationGameObject.activeInHierarchy)
                 {
-                    _endTurnAnimationObject.SetActive(false);
+                    _endTurnRingsAnimationGameObject.SetActive(false);
                 }
 
-                _endTurnAnimationAnimator.enabled = false;
+                _endTurnButtonAnimationAnimator.enabled = false;
             }
 
             if (_gameplayManager.IsLocalPlayerTurn())
