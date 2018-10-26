@@ -61,10 +61,12 @@ namespace Loom.ZombieBattleground
                         {
                             GameClient.Get<IQueueManager>().StartNetworkThread();
                             _uiManager.DrawPopup<ConnectionPopup>();
-                            _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
+
+                            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                            connectionPopup.ShowLookingForMatch();
+                            connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
 
                             await _pvpManager.FindMatch();
-
                             if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
                             {
                                 StartPvPMatch();
@@ -73,7 +75,7 @@ namespace Loom.ZombieBattleground
                             {
                                 _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
                             }
-                        } 
+                        }
                         catch (Exception e) {
                             Debug.LogWarning(e);
                             _uiManager.GetPopup<ConnectionPopup>().Hide();
@@ -85,6 +87,23 @@ namespace Loom.ZombieBattleground
                     throw new NotImplementedException(MatchType + " not implemented yet.");
             }
 
+        }
+
+        private async void ConnectionPopupOnCancelMatchmakingClicked()
+        {
+            try
+            {
+                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
+                connectionPopup.Hide();
+                await _pvpManager.CancelFindMatch();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                _uiManager.GetPopup<ConnectionPopup>().Hide();
+                _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
+            }
         }
 
         public void FindMatch(Enumerators.MatchType matchType)
@@ -109,7 +128,6 @@ namespace Loom.ZombieBattleground
             _pvpManager = GameClient.Get<IPvPManager>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
-
             _pvpManager.MatchingFailed += OnPvPManagerMatchingFailed;
         }
 

@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                 _matchmakingTimeoutCounter += Time.deltaTime;
                 if (_matchmakingTimeoutCounter > Constants.MatchmakingTimeOut)
                 {
-                    await StopMatch();
+                    await StopMatchmaking(MatchMetadata?.Id);
                     MatchingFailed?.Invoke();
                 }
             }
@@ -122,6 +122,7 @@ namespace Loom.ZombieBattleground
                 _queueManager.Clear();
 
                 InitialGameState = null;
+                MatchMetadata = null;
 
                 FindMatchResponse findMatchResponse =
                     await _backendFacade.FindMatch(
@@ -161,13 +162,18 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception)
             {
-                await StopMatch();
+                await StopMatchmaking(MatchMetadata?.Id);
                 throw;
             }
             finally
             {
                 _queueManager.Active = true;
             }
+        }
+
+        public async Task CancelFindMatch()
+        {
+            await StopMatchmaking(MatchMetadata?.Id);
         }
 
         public WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer)
@@ -193,11 +199,19 @@ namespace Loom.ZombieBattleground
             return workingCard;
         }
 
-        private async Task StopMatch()
+        private async Task StopMatchmaking(long? matchIdToCancel)
         {
             _queueManager.Active = false;
             _isMatchmakingInProgress = false;
             await _backendFacade.UnsubscribeEvent();
+            if (matchIdToCancel != null)
+            {
+                await _backendFacade.CancelFindMatch(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    matchIdToCancel.Value
+                );
+            }
+
             _queueManager.Clear();
         }
 
