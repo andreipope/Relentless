@@ -276,7 +276,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 {
                                     Damage = parametrizedAbility.Parameters.Damage,
                                     Defense = parametrizedAbility.Parameters.Defense,
-                                   // CardName = parametrizedAbility.Parameters.CardName
+                                    CardName = parametrizedAbility.Parameters.CardName
                                 }
                             };
                         }
@@ -290,7 +290,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 {
                                     Damage = parametrizedAbility.Parameters.Damage,
                                     Defense = parametrizedAbility.Parameters.Defense,
-                                 //   CardName = parametrizedAbility.Parameters.CardName
+                                    CardName = parametrizedAbility.Parameters.CardName
                                 }
                             };
                         }
@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 {
                                     Damage = parametrizedAbility.Parameters.Damage,
                                     Defense = parametrizedAbility.Parameters.Defense,
-                                  //  CardName = parametrizedAbility.Parameters.CardName
+                                    CardName = parametrizedAbility.Parameters.CardName
                                 }
                             };
                         }
