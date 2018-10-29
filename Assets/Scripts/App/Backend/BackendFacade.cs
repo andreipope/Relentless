@@ -15,6 +15,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
+        private int _subscribeCount;
+
+        public int SubscribeCount
+        {
+            get { return _subscribeCount; }
+        }
+
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
         public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
@@ -379,12 +386,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SubscribeEvent(List<string> topics)
          {
-             await reader.SubscribeAsync(EventHandler, topics);
+            for (int i = _subscribeCount; i > 0; i--) {
+                await UnsubscribeEvent();
+            }
+
+            await reader.SubscribeAsync(EventHandler, topics);
+            _subscribeCount++;
          }
 
          public async Task UnsubscribeEvent()
          {
-            await reader.UnsubscribeAsync(EventHandler);
+            if (_subscribeCount > 0)
+            {
+                await reader.UnsubscribeAsync(EventHandler);
+                _subscribeCount--;
+            }
             GameClient.Get<IQueueManager>().StopNetworkThread();
         }
 
