@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             } 
             else 
             {
-                Debug.Log("Tried to Unsubscribe, count > 0");
+                Debug.Log("Tried to Unsubscribe, count <= 0");
                 Debug.Log(_subscribeCount);
             }
             GameClient.Get<IQueueManager>().StopNetworkThread();
