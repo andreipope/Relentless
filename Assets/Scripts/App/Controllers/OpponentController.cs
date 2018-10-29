@@ -193,7 +193,6 @@ namespace Loom.ZombieBattleground
 
         public void GotActionPlayCard(WorkingCard card, int position)
         {
-            Debug.LogError("Played card = " + card.Id);
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
                 switch (workingCard.LibraryCard.CardKind)
