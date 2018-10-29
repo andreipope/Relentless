@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         private List<ActiveAbility> _activeAbilities;
 
+        public bool BlockEndTurnButton { get; private set; }
+
         public void Init()
         {
             _activeAbilities = new List<ActiveAbility>();
@@ -428,6 +430,8 @@ namespace Loom.ZombieBattleground
 
                     if (isPlayer)
                     {
+                        BlockEndTurnButton = true;
+
                         activeAbility.Ability.ActivateSelectTarget(
                             callback: () =>
                             {
@@ -465,6 +469,8 @@ namespace Loom.ZombieBattleground
                                         1.5f);
                                 }
 
+                                BlockEndTurnButton = false;
+
                                 action?.Invoke(card);
 
                                 onCompleteCallback?.Invoke();
@@ -492,6 +498,8 @@ namespace Loom.ZombieBattleground
                                 }
 
                                 onCompleteCallback?.Invoke();
+
+                                BlockEndTurnButton = false;
 
                                 ResolveAllAbilitiesOnUnit(boardObject);
                             });
