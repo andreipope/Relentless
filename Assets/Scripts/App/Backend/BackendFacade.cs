@@ -402,6 +402,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
          public async Task UnsubscribeEvent()
          {
+            //TODO Remove the logs once we fix the multiple subscription issue once and for all
             if (_subscribeCount > 0)
             {
                 Debug.Log("Unsubscribing from Event");
@@ -410,6 +411,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await reader.UnsubscribeAsync(EventHandler);
                 _subscribeCount--;
                 Debug.Log("Final Subscriptions");
+                Debug.Log(_subscribeCount);
+            } 
+            else 
+            {
+                Debug.Log("Tried to Unsubscribe, count > 0");
                 Debug.Log(_subscribeCount);
             }
             GameClient.Get<IQueueManager>().StopNetworkThread();
