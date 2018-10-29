@@ -205,7 +205,6 @@ namespace Loom.ZombieBattleground
             }
 
             _packsObject.GetComponent<DragableObject>().Locked = _lock;
-            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
             _cardsTurned = 0;
         }
 

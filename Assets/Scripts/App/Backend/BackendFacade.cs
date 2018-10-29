@@ -135,26 +135,26 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
         }
 
-        public async Task DeleteDeck(string userId, long deckId, long lastModificationTimestamp)
+        public async Task DeleteDeck(string userId, long deckId)
         {
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
                 DeckId = deckId,
-                LastModificationTimestamp = lastModificationTimestamp
+                LastModificationTimestamp = 0
             };
 
             await Contract.CallAsync(DeleteDeckMethod, request);
         }
 
-        public async Task EditDeck(string userId, Data.Deck deck, long lastModificationTimestamp)
+        public async Task EditDeck(string userId, Data.Deck deck)
         {
-            EditDeckRequest request = EditDeckRequest(userId, deck, lastModificationTimestamp);
+            EditDeckRequest request = EditDeckRequest(userId, deck, 0);
 
             await Contract.CallAsync(EditDeckMethod, request);
         }
 
-        public async Task<long> AddDeck(string userId, Data.Deck deck, long lastModificationTimestamp)
+        public async Task<long> AddDeck(string userId, Data.Deck deck)
         {
             RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
 
@@ -181,7 +181,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         cards
                     }
                 },
-                LastModificationTimestamp = lastModificationTimestamp,
+                LastModificationTimestamp = 0,
                 Version = BackendEndpoint.DataVersion
             };
 
@@ -319,6 +319,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region PVP
 
         private const string FindMatchMethod = "FindMatch";
+        private const string CancelFindMatchMethod = "CancelFindMatch";
         private const string EndMatchMethod = "EndMatch";
         private const string SendPlayerActionMethod = "SendPlayerAction";
         private const string GetGameStateMethod = "GetGameState";
@@ -343,6 +344,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+        }
+
+        public async Task<CancelFindMatchResponse> CancelFindMatch(string userId, long matchId)
+        {
+            CancelFindMatchRequest request = new CancelFindMatchRequest
+            {
+                UserId = userId,
+                MatchId = matchId
+            };
+
+            return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
         }
 
         public async Task<GetGameStateResponse> GetGameState(long matchId)

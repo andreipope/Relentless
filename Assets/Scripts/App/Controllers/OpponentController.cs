@@ -283,6 +283,7 @@ namespace Loom.ZombieBattleground
                     {
                       Damage = unit.Parameter.Damage,
                       Defense = unit.Parameter.Defense,
+                    //  CardName = unit.Parameter.CardName,
                     }
                 });
             }

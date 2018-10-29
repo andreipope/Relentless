@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
 
         public uint MaxGooVials { get; private set; }
 
+        public uint TurnTime { get; private set; }
+
         public PlayerState PvPPlayerState { get; }
 
         private readonly GameObject _freezedHighlightObject;
@@ -135,6 +137,7 @@ namespace Loom.ZombieBattleground
                     Defense = PvPPlayerState.Defense;
                     CurrentGoo = PvPPlayerState.CurrentGoo;
                     GooVials = PvPPlayerState.GooVials;
+                    TurnTime = (uint) PvPPlayerState.TurnTime;
                     break;
                 default:
                     InitialCardsInHandCount = Constants.DefaultCardsInHandAtStartGame;
@@ -145,6 +148,7 @@ namespace Loom.ZombieBattleground
                     Defense = Constants.DefaultPlayerHp;
                     CurrentGoo = Constants.DefaultPlayerGoo;
                     GooVials = _currentGoo;
+                    TurnTime = (uint) Constants.TurnTime;
                     break;
             }
 
@@ -589,9 +593,8 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsTutorial)
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
-                if (!IsLocalPlayer)
+                if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
                 {
-                    Debug.LogWarning("END MATCH!!!");
                     _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
                                                 (int)_pvpManager.MatchMetadata.Id,
                                                 IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
