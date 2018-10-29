@@ -231,11 +231,11 @@ namespace Loom.ZombieBattleground
                     {
                         if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            opponentHeroId = (int) playerState.Deck.HeroId;
+                            heroId = (int) playerState.Deck.HeroId;
                         }
                         else
                         {
-                            heroId = (int) playerState.Deck.HeroId;
+                            opponentHeroId = (int) playerState.Deck.HeroId;
                         }
                     }
 
