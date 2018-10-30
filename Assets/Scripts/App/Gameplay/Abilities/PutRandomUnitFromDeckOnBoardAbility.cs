@@ -1,9 +1,11 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -28,39 +30,64 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            WorkingCard card = InternalTools.GetRandomElementsFromList(
-                PlayerCallerOfAbility.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE),
-                1).First(x => x != null && x != default(WorkingCard));
+            List<HandBoardCard> boardCards = new List<HandBoardCard>();
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            if (card != null)
+            WorkingCard card;
+            BoardCard boardCard;
+            foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
             {
-                BoardCard boardCard = new UnitBoardCard(Object.Instantiate(CardsController.CreatureCardViewPrefab));
-                boardCard.Init(card);
-                boardCard.GameObject.transform.position = Constants.DefaultPositionOfBoardCard;
-                boardCard.GameObject.transform.localScale = Vector3.one * .3f;
-                boardCard.SetHighlightingEnabled(false);
-
-                CardsController.SummonUnitFromHand(PlayerCallerOfAbility, boardCard);
-
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                card = null;
+                switch (targetType)
                 {
-                    boardCard.HandBoardCard
-                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Card);
+                    case Enumerators.AbilityTargetType.PLAYER:
+                        card = InternalTools.GetRandomElementsFromList(
+                    PlayerCallerOfAbility.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE),
+                    1).First(x => x != null && x != default(WorkingCard));
+                        break;
+                    case Enumerators.AbilityTargetType.OPPONENT:
+                        card = InternalTools.GetRandomElementsFromList(
+                      GetOpponentOverlord().CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE),
+                      1).First(x => x != null && x != default(WorkingCard));
+                        break;
+                    default:
+                        throw new NotImplementedException(nameof(targetType) + " not implemented!");
+                }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                boardCard = PutCardOnBoard(card);
+
+                boardCards.Add(boardCard.HandBoardCard);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
-                    ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
-                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                            Target = boardCard,
-                        }
-                    }
+                    ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
+                    Target = boardCard,
                 });
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(),
+            AbilityData.AbilityType, Protobuf.AffectObjectType.Card);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
+
+        }
+
+        private BoardCard PutCardOnBoard(WorkingCard card)
+        {
+            BoardCard boardCard = new UnitBoardCard(Object.Instantiate(CardsController.CreatureCardViewPrefab));
+            boardCard.Init(card);
+            boardCard.GameObject.transform.position = Constants.DefaultPositionOfBoardCard;
+            boardCard.GameObject.transform.localScale = Vector3.one * .3f;
+            boardCard.SetHighlightingEnabled(false);
+
+            CardsController.SummonUnitFromHand(PlayerCallerOfAbility, boardCard);
+
+            return boardCard;
         }
     }
 }
