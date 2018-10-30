@@ -807,6 +807,24 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_GUARD:
                     ability = new AdjacentUnitsGetGuardAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DRAW_CARD_IF_DAMAGED_ZOMBIE_IN_PLAY:
+                    ability = new DrawCardIfDamagedUnitInPlayAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.PUT_RANDOM_UNIT_FROM_DECK_ON_BOARD:
+                    ability = new PutRandomUnitFromDeckOnBoardAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_TARGET_FREEZE_IT_IF_SURVIVES:
+                    ability = new DamageTargetFreezeItIfSurvivesAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DESTROY_UNIT_BY_COST:
+                    ability = new DestroyUnitByCostAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DELAYED_PLACE_COPIES_IN_PLAY_DESTROY_UNIT:
+                    ability = new DelayedPlaceCopiesInPlayDestroyUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.EXTRA_GOO_IF_UNIT_IN_PLAY:
+                    ability = new ExtraGooIfUnitInPlayAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
