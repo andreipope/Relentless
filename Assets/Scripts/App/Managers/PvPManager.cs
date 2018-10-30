@@ -66,6 +66,9 @@ namespace Loom.ZombieBattleground
         private bool _isMatchmakingInProgress;
         private float _matchmakingTimeoutCounter;
 
+        private bool _isEndTurnMsgSend;
+        private float _lastEndTurnMsgSendTimer;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -86,6 +89,16 @@ namespace Loom.ZombieBattleground
                 {
                     await StopMatchmaking(MatchMetadata?.Id);
                     MatchingFailed?.Invoke();
+                }
+            }
+
+            if (_isEndTurnMsgSend)
+            {
+                _lastEndTurnMsgSendTimer += Time.deltaTime;
+                if (_lastEndTurnMsgSendTimer > Constants.PvPLastMsgRecievedPassedTime)
+                {
+                    _isEndTurnMsgSend = false;
+                    await _backendFacade.CheckPlayerStatus(MatchMetadata.Id);
                 }
             }
         }
@@ -225,6 +238,12 @@ namespace Loom.ZombieBattleground
             _queueManager.Clear();
         }
 
+        private async Task CheckPlayerStatus()
+        {
+            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
+
+        }
+
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Action action = async () =>
@@ -244,7 +263,7 @@ namespace Loom.ZombieBattleground
                         return;
                     }
                 }
-               
+
                 switch (playerActionEvent.Match.Status)
                 {
                     case Match.Types.Status.Created:
@@ -268,7 +287,13 @@ namespace Loom.ZombieBattleground
                         break;
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
+                        {
+                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.EndTurn)
+                            {
+                                _isEndTurnMsgSend = true;
+                            }
                             return;
+                        }
 
                         OnReceivePlayerActionType(playerActionEvent);
                         break;
@@ -303,6 +328,7 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.NoneAction:
                     break;
                 case PlayerActionType.EndTurn:
+                    ResetEndTurnMsgSend();
                     EndTurnActionReceived?.Invoke();
                     break;
                 case PlayerActionType.Mulligan:
@@ -335,6 +361,12 @@ namespace Loom.ZombieBattleground
                         playerActionEvent.PlayerAction.ActionType + " not found"
                     );
             }
+        }
+
+        private void ResetEndTurnMsgSend()
+        {
+            _isEndTurnMsgSend = false;
+            _lastEndTurnMsgSendTimer = 0f;
         }
     }
 }
