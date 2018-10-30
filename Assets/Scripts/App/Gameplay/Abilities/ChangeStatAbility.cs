@@ -33,6 +33,24 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
+            Action();
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+                return;
+
+            Action();
+        }
+
+
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
             switch (StatType)
             {
                 case Enumerators.StatType.HEALTH:

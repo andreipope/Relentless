@@ -824,6 +824,20 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.EXTRA_GOO_IF_UNIT_IN_PLAY:
                     ability = new ExtraGooIfUnitInPlayAbility(cardKind, abilityData);
+                case Enumerators.AbilityType.SUMMON_UNIT_FROM_HAND:
+                    ability = new SummonFromHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_STAT_IF_OVERLORD_HAS_LESS_DEFENSE_THAN:
+                    ability = new TakeStatIfOverlordHasLessDefenseThanAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.SHUFFLE_THIS_CARD_TO_DECK:
+                    ability = new ShuffleCardToDeckAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE:
+                    ability = new TakeDefenseToOverlordWithDefenseAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_SWING_TO_UNITS:
+                    ability = new TakeSwingToUnitsAbility(cardKind, abilityData);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
