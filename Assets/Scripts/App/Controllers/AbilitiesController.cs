@@ -807,6 +807,21 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_GUARD:
                     ability = new AdjacentUnitsGetGuardAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DAMAGE_AND_DISTRACT_TARGET:
+                    ability = new DamageAndDistractTargetAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED:
+                    ability = new DamageOverlordOnCountItemsPlayedAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DISTRACT:
+                    ability = new DistractAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_ENEMY_OR_RESTORE_DEFENSE_ALLY:
+                    ability = new DamageEnemyOrRestoreDefenseAllyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT:
+                    ability = new AdjacentUnitsGetStatAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
