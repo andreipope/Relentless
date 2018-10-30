@@ -38,7 +38,8 @@ namespace Loom.ZombieBattleground.Common
             STUN_OR_DAMAGE_FREEZES,
             TARGET_ADJUSTMENTS_AIR,
             HEAL_DIRECTLY,
-            HEAL
+            HEAL,
+            SWING_LIGHTNING
         }
 
         public enum AbilityTargetType

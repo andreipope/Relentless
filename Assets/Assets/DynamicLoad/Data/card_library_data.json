@@ -1460,7 +1460,14 @@
               "activityType": "passive",
               "callType": "ATTACK",
               "value": 1,
-              "buffType": "SWING"
+              "effectType": "SWING_LIGHTNING",
+              "buffType": "SWING",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ZtormmcallerVFX"
+                }
+              ]
             },
             {
               "type": "DAMAGE_TARGET",
@@ -1468,7 +1475,7 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY" 
             }
           ],
           "cardViewInfo": {

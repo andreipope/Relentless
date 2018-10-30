@@ -749,6 +749,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.SWING:
                     ability = new SwingAbility(cardKind, abilityData);
+                    abilityView = new SwingAbilityView((SwingAbility)ability);
                     break;
                 case Enumerators.AbilityType.TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN:
                     ability = new TakeDefenseIfOverlordHasLessDefenseThanAbility(cardKind, abilityData);
