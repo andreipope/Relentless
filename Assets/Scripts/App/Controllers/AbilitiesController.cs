@@ -685,6 +685,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.RAGE:
                     ability = new RageAbility(cardKind, abilityData);
+                    abilityView = new RageAbilityView((RageAbility)ability);
                     break;
                 case Enumerators.AbilityType.FREEZE_UNITS:
                     ability = new FreezeUnitsAbility(cardKind, abilityData);
