@@ -824,6 +824,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.EXTRA_GOO_IF_UNIT_IN_PLAY:
                     ability = new ExtraGooIfUnitInPlayAbility(cardKind, abilityData);
+                    break;
                 case Enumerators.AbilityType.SUMMON_UNIT_FROM_HAND:
                     ability = new SummonFromHandAbility(cardKind, abilityData);
                     break;
