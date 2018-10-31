@@ -615,8 +615,8 @@ namespace Loom.ZombieBattleground
         {
             _cardsController.AddCardToHand(owner);
 
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/DrawCardVFX"),
-                owner);
+            owner.PlayDrawCardVFX();
+
             _soundManager.PlaySound(
                 Enumerators.SoundType.OVERLORD_ABILITIES,
                 skill.OverlordSkill.ToString().ToLowerInvariant(),
