@@ -1,10 +1,8 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground
 {
@@ -90,6 +88,37 @@ namespace Loom.ZombieBattleground
                     throw new NotImplementedException(MatchType + " not implemented yet.");
             }
 
+        }
+
+        public async void DebugFindPvPMatch(Deck deck)
+        {
+            try
+            {
+                GameClient.Get<IQueueManager>().StartNetworkThread();
+                _uiManager.DrawPopup<ConnectionPopup>();
+
+                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                connectionPopup.ShowLookingForMatch();
+                connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
+
+                bool success = await _pvpManager.DebugFindMatch(deck);
+                if (!success)
+                    return;
+
+                if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
+                {
+                    StartPvPMatch();
+                }
+                else
+                {
+                    _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
+                }
+            }
+            catch (Exception e) {
+                Debug.LogWarning(e);
+                _uiManager.GetPopup<ConnectionPopup>().Hide();
+                _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
+            }
         }
 
         private async void ConnectionPopupOnCancelMatchmakingClicked()

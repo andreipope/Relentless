@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,10 +6,10 @@ using Loom.Client;
 using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
+using Deck = Loom.ZombieBattleground.Data.Deck;
 using SystemText = System.Text;
 
 namespace Loom.ZombieBattleground
@@ -178,6 +177,70 @@ namespace Loom.ZombieBattleground
 
             return true;
         }
+
+        public async Task<bool> DebugFindMatch(Deck deck)
+        {
+            long? matchId = null;
+            try
+            {
+                _matchmakingCancellationTokenSource?.Dispose();
+                _matchmakingCancellationTokenSource = new CancellationTokenSource();
+                _isMatchmakingInProgress = true;
+                _matchmakingTimeoutCounter = 0;
+
+                _queueManager.Active = false;
+                _queueManager.Clear();
+
+                InitialGameState = null;
+                MatchMetadata = null;
+
+                FindMatchResponse findMatchResponse =
+                    await _backendFacade.DebugFindMatch(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        deck,
+                        CustomGameModeAddress
+                    );
+
+                matchId = findMatchResponse.Match.Id;
+                if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                    return false;
+
+                await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
+                if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                    return false;
+
+                GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
+                if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                    return false;
+
+                MatchMetadata = new MatchMetadata(
+                    findMatchResponse.Match.Id,
+                    findMatchResponse.Match.Topics,
+                    getMatchResponse.Match.Status
+                );
+
+                if (MatchMetadata.Status == Match.Types.Status.Started)
+                {
+                    await LoadInitialGameState();
+                    if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                        return false;
+
+                    _isMatchmakingInProgress = false;
+                }
+            }
+            catch (Exception)
+            {
+                await StopMatchmaking(matchId);
+                throw;
+            }
+            finally
+            {
+                _queueManager.Active = true;
+            }
+
+            return true;
+        }
+
 
         public async Task CancelFindMatch()
         {

@@ -9,7 +9,6 @@ using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -346,6 +345,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 UserId = userId,
                 DeckId = deckId,
+                CustomGame = requestCustomGameAddress,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+        }
+
+        public async Task<FindMatchResponse> DebugFindMatch(string userId, Loom.ZombieBattleground.Data.Deck deck, Address? customGameModeAddress)
+        {
+            Client.Protobuf.Address requestCustomGameAddress = null;
+            if (customGameModeAddress != null)
+            {
+                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
+            }
+
+            FindMatchRequest request = new FindMatchRequest
+            {
+                UserId = userId,
+                //Deck = deck,
                 CustomGame = requestCustomGameAddress,
                 Version = BackendEndpoint.DataVersion
             };
