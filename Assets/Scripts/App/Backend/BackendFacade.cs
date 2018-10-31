@@ -15,6 +15,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
+        private int _subscribeCount;
+
+        public int SubscribeCount
+        {
+            get { return _subscribeCount; }
+        }
+
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
         public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
@@ -380,12 +387,31 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SubscribeEvent(List<string> topics)
          {
-             await reader.SubscribeAsync(EventHandler, topics);
-         }
+            //TODO Remove the logs once we fix the multiple subscription issue once and for all
+            Debug.Log("Subscribing to Event - Current Subscriptions = " + _subscribeCount);
+            for (int i = _subscribeCount; i > 0; i--) {
+                await UnsubscribeEvent();
+            }
+
+            await reader.SubscribeAsync(EventHandler, topics);
+            _subscribeCount++;
+            Debug.Log("Final Subscriptions = " + _subscribeCount);
+        }
 
          public async Task UnsubscribeEvent()
          {
-            await reader.UnsubscribeAsync(EventHandler);
+            //TODO Remove the logs once we fix the multiple subscription issue once and for all
+            if (_subscribeCount > 0)
+            {
+                Debug.Log("Unsubscribing from Event - Current Subscriptions = " + _subscribeCount);
+                await reader.UnsubscribeAsync(EventHandler);
+                _subscribeCount--;
+                Debug.Log("Final Subscriptions = " + _subscribeCount);
+            } 
+            else 
+            {
+                Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
+            }
             GameClient.Get<IQueueManager>().StopNetworkThread();
         }
 
