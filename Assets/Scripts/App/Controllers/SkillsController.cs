@@ -1028,15 +1028,25 @@ namespace Loom.ZombieBattleground
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
+            BoardUnitView unit = null;
+
             foreach (WorkingCard card in cards)
             {
-                _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name);
-
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                unit = _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name, onComplete: () =>
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                    Target = target, 
+                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ResurrectVFX"), unit, delay: 6, isIgnoreCastVfx: true);
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        unit.ChangeModelVisibility(true);
+                    }, 3f);
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
+                        Target = target,
+                    });
                 });
+                unit.ChangeModelVisibility(false);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
