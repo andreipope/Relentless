@@ -14,10 +14,16 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; } = 1;
 
+        public int Damage { get; }
+
+        public Enumerators.SetType SetType;
+
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
+            Damage = ability.Damage;
+            SetType = ability.AbilitySetType;
         }
 
         public override void Activate()
@@ -67,7 +73,7 @@ namespace Loom.ZombieBattleground
                         targetPosition = player.AvatarObject.transform.position;
                         break;
                     case BoardUnitModel unit:
-                        targetPosition =  BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                        targetPosition = BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -91,7 +97,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-    private void ActionCompleted(object target, Vector3 targetPosition)
+        private void ActionCompleted(object target, Vector3 targetPosition)
         {
             ClearParticles();
 
@@ -106,13 +112,20 @@ namespace Loom.ZombieBattleground
                 ParticlesController.RegisterParticleSystem(vfxObject, true);
             }
 
+            int damageOverride = -1;
+
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
+            {
+                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType).Count;
+            }
+
             switch (target)
             {
                 case Player allyPlayer:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer, damageOverride);
                     break;
                 case BoardUnitModel allyUnit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit);
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit, damageOverride);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);

@@ -82,10 +82,10 @@ namespace Loom.ZombieBattleground
                 case BoardUnitModel unit:
                     {
                         string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
-                        string rank = unit.Card.LibraryCard.CardRank.ToString().ToLower();
-                        string picture = unit.Card.LibraryCard.Picture.ToLower();
+                        string rank = unit.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
+                        string picture = unit.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;
@@ -98,10 +98,10 @@ namespace Loom.ZombieBattleground
                 case BoardSpell spell:
                     {
                         string setName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
-                        string rank = spell.Card.LibraryCard.CardRank.ToString().ToLower();
-                        string picture = spell.Card.LibraryCard.Picture.ToLower();
+                        string rank = spell.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
+                        string picture = spell.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;

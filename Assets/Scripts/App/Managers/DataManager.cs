@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground
             if (string.IsNullOrEmpty(type))
                 return null;
 
-            return CachedBuffsTooltipData.Buffs.Find(x => x.Type.ToLower().Equals(type.ToLower()));
+            return CachedBuffsTooltipData.Buffs.Find(x => x.Type.ToLowerInvariant().Equals(type.ToLowerInvariant()));
         }
 
         public TooltipContentData.RankInfo GetRankInfoByType(string type)
@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
             if (string.IsNullOrEmpty(type))
                 return null;
 
-            return CachedBuffsTooltipData.Ranks.Find(x => x.Type.ToLower().Equals(type.ToLower()));
+            return CachedBuffsTooltipData.Ranks.Find(x => x.Type.ToLowerInvariant().Equals(type.ToLowerInvariant()));
         }
 
         public void Dispose()
@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            if (setName.ToLower().Equals("item"))
+            if (setName.ToLowerInvariant().Equals("item"))
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;

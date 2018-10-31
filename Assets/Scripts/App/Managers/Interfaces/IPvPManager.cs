@@ -40,7 +40,9 @@ namespace Loom.ZombieBattleground
 
         bool IsCurrentPlayer();
 
-        Task FindMatch();
+        Task<bool> FindMatch();
+
+        Task CancelFindMatch();
 
         WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer);
     }

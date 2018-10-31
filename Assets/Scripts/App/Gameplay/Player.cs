@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
 
         public uint MaxGooVials { get; private set; }
 
+        public uint TurnTime { get; private set; }
+
         public PlayerState PvPPlayerState { get; }
 
         private readonly GameObject _freezedHighlightObject;
@@ -135,6 +137,7 @@ namespace Loom.ZombieBattleground
                     Defense = PvPPlayerState.Defense;
                     CurrentGoo = PvPPlayerState.CurrentGoo;
                     GooVials = PvPPlayerState.GooVials;
+                    TurnTime = (uint) PvPPlayerState.TurnTime;
                     break;
                 default:
                     InitialCardsInHandCount = Constants.DefaultCardsInHandAtStartGame;
@@ -145,6 +148,7 @@ namespace Loom.ZombieBattleground
                     Defense = Constants.DefaultPlayerHp;
                     CurrentGoo = Constants.DefaultPlayerGoo;
                     GooVials = _currentGoo;
+                    TurnTime = (uint) Constants.TurnTime;
                     break;
             }
 
@@ -347,9 +351,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AddCardToDeck(WorkingCard card)
+        public void AddCardToDeck(WorkingCard card, bool shuffle = false)
         {
-            CardsInDeck.Add(card);
+            if (shuffle)
+            {
+                CardsInDeck.Insert(Random.Range(0, CardsInDeck.Count), card);
+            }
+            else
+            {
+                CardsInDeck.Add(card);
+            }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
         }
@@ -577,6 +588,9 @@ namespace Loom.ZombieBattleground
                 () => {
                     foreach (MeshRenderer renderer in overlordImagePieces)
                     {
+                        if (renderer == null || !renderer)
+                            continue;
+
                         renderer.material.color = color;
                     }
                 }

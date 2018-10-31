@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             string type = cardToDestroy.Model.LastAttackingSetType.ToString();
-            type = type.First().ToString().ToUpper() + type.Substring(1).ToLower();
+            type = type.First().ToString().ToUpperInvariant() + type.Substring(1).ToLowerInvariant();
             var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
             GameObject effect = MonoBehaviour.Instantiate(prefab);
             effect.transform.position = cardToDestroy.Transform.position;
