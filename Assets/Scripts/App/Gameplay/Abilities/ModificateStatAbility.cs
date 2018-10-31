@@ -8,6 +8,8 @@ namespace Loom.ZombieBattleground
 {
     public class ModificateStatAbility : AbilityBase
     {
+        private bool _canBeReverted = false;
+
         public Enumerators.SetType SetType;
 
         public Enumerators.StatType StatType;
@@ -28,50 +30,50 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            if(AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
             {
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
             }
+            else if(AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
+                    AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            {
+                if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUhitsByFactionInPlay)
+                {
+                    List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
+
+                    foreach(BoardUnitView unit in units)
+                    {
+                        ModificateStats(unit.Model);
+                    }
+                }
+                else
+                {
+                    if (SetType != Enumerators.SetType.NONE)
+                    {
+                        if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count > 0)
+                        {
+                            ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
+                        }
+                    }
+                }
+            }
+        }
+
+        protected override void TurnStartedHandler()
+        {
+            base.TurnStartedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.TURN)
+                return;
+
+            ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            switch (AffectObjectType)
-            {
-                case Enumerators.AffectObjectType.Character:
-                    {
-                        if (TargetUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
-                        {
-                            switch (StatType)
-                            {
-                                case Enumerators.StatType.DAMAGE:
-                                    TargetUnit.BuffedDamage += Value;
-                                    TargetUnit.CurrentDamage += Value;
-                                    break;
-                                case Enumerators.StatType.HEALTH:
-                                    TargetUnit.BuffedHp += Value;
-                                    TargetUnit.CurrentHp += Value;
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
-                            }
-
-                            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
-
-                            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
-                            {
-                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                                {
-                                    TargetUnit
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
-                            }
-                        }
-                    }
-
-                    break;
-            }
+            ModificateStats(TargetUnit);
         }
 
         protected override void InputEndedHandler()
@@ -81,6 +83,48 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 Action();
+            }
+        }
+
+        private void ModificateStats(BoardObject boardObject, bool revert = false)
+        {
+            if (revert && !_canBeReverted)
+                return;
+
+            switch (boardObject)
+            {
+                case BoardUnitModel boardUnit:
+                    {
+                        if (boardUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
+                        {
+                            switch (StatType)
+                            {
+                                case Enumerators.StatType.DAMAGE:
+                                    boardUnit.BuffedDamage += revert ? -Value : Value;
+                                    boardUnit.CurrentDamage += revert ? -Value : Value;
+                                    break;
+                                case Enumerators.StatType.HEALTH:
+                                    boardUnit.BuffedHp += revert ? -Value : Value;
+                                    boardUnit.CurrentHp += revert ? -Value : Value;
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
+                            }
+
+                            _canBeReverted = !revert;
+
+                            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(boardUnit).Transform.position);
+
+                            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+                            {
+                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                                {
+                                    boardUnit
+                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                            }
+                        }
+                    }
+                    break;
             }
         }
     }
