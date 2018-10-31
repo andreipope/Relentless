@@ -245,12 +245,6 @@ namespace Loom.ZombieBattleground
             _queueManager.Clear();
         }
 
-        private async Task CheckPlayerStatus()
-        {
-            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-
-        }
-
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Action action = async () =>
