@@ -720,8 +720,8 @@ namespace Loom.ZombieBattleground
                 unit.CurrentDamage += skill.Attack;
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                    unit);
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicPowerVFX"),
+                    unit, isIgnoreCastVfx: true);
 
                 _battlegroundController.GetBoardUnitViewByModel(unit).EnabledToxicPowerGlow();
 
