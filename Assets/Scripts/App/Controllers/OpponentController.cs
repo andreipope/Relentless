@@ -101,6 +101,12 @@ namespace Loom.ZombieBattleground
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
+            _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
+        }
+
+        private void OnPlayerLeftGameActionHandler()
+        {
+            _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -113,6 +119,8 @@ namespace Loom.ZombieBattleground
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
+            _pvpManager.PlayerLeftGameActionReceived -= OnPlayerLeftGameActionHandler;
+
         }
 
         #region event handlers

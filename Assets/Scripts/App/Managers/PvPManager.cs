@@ -66,8 +66,8 @@ namespace Loom.ZombieBattleground
         private bool _isMatchmakingInProgress;
         private float _matchmakingTimeoutCounter;
 
-        private bool _isEndTurnMsgSend;
-        private float _lastEndTurnMsgSendTimer;
+        private bool _isWaitForTurnTimerStart;
+        private float _waitForTurnTimer;
 
         public void Init()
         {
@@ -92,12 +92,12 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (_isEndTurnMsgSend)
+            if (_isWaitForTurnTimerStart)
             {
-                _lastEndTurnMsgSendTimer += Time.deltaTime;
-                if (_lastEndTurnMsgSendTimer > Constants.PvPLastMsgRecievedPassedTime)
+                _waitForTurnTimer += Time.deltaTime;
+                if (_waitForTurnTimer > Constants.PvPWaitForTurnMaxTime)
                 {
-                    _isEndTurnMsgSend = false;
+                    ResetWaitForTurnTimer();
                     await _backendFacade.CheckPlayerStatus(MatchMetadata.Id);
                 }
             }
@@ -177,6 +177,13 @@ namespace Loom.ZombieBattleground
                         return false;
 
                     _isMatchmakingInProgress = false;
+
+                    // if its not player turn, start timer to check later if other player left the game or not
+                    if (!IsCurrentPlayer())
+                    {
+                        _isWaitForTurnTimerStart = true;
+                    }
+
                 }
             }
             catch (Exception)
@@ -284,13 +291,20 @@ namespace Loom.ZombieBattleground
                         Debug.LogWarning("Match Starting");
 
                         GameStartedActionReceived?.Invoke();
+
+                        // if its not player turn, start timer to check later if other player left the game or not
+                        if (!IsCurrentPlayer())
+                        {
+                            _isWaitForTurnTimerStart = true;
+                        }
+
                         break;
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
                             if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.EndTurn)
                             {
-                                _isEndTurnMsgSend = true;
+                                _isWaitForTurnTimerStart = true;
                             }
                             return;
                         }
@@ -328,7 +342,7 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.NoneAction:
                     break;
                 case PlayerActionType.EndTurn:
-                    ResetEndTurnMsgSend();
+                    ResetWaitForTurnTimer();
                     EndTurnActionReceived?.Invoke();
                     break;
                 case PlayerActionType.Mulligan:
@@ -363,10 +377,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ResetEndTurnMsgSend()
+        private void ResetWaitForTurnTimer()
         {
-            _isEndTurnMsgSend = false;
-            _lastEndTurnMsgSendTimer = 0f;
+            _isWaitForTurnTimerStart = false;
+            _waitForTurnTimer = 0f;
         }
     }
 }
