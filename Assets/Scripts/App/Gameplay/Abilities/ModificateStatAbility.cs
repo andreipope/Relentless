@@ -100,28 +100,12 @@ namespace Loom.ZombieBattleground
                             switch (StatType)
                             {
                                 case Enumerators.StatType.DAMAGE:
-                                    if (revert)
-                                    {
-                                        boardUnit.BuffedDamage -= Value;
-                                        boardUnit.CurrentDamage -= Value;
-                                    }
-                                    else
-                                    {
-                                        boardUnit.BuffedDamage += Value;
-                                        boardUnit.CurrentDamage += Value;
-                                    }
+                                    boardUnit.BuffedDamage += revert ? -Value : Value;
+                                    boardUnit.CurrentDamage += revert ? -Value : Value;
                                     break;
                                 case Enumerators.StatType.HEALTH:
-                                    if (revert)
-                                    {
-                                        boardUnit.BuffedHp -= Value;
-                                        boardUnit.CurrentHp -= Value;
-                                    }
-                                    else
-                                    {
-                                        boardUnit.BuffedHp += Value;
-                                        boardUnit.CurrentHp += Value;
-                                    }
+                                    boardUnit.BuffedHp += revert ? -Value : Value;
+                                    boardUnit.CurrentHp += revert ? -Value : Value;
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
