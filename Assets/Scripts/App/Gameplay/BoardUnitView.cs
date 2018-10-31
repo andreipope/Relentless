@@ -61,6 +61,10 @@ namespace Loom.ZombieBattleground
 
         private GameObject _glowSelectedObject;
 
+        private GameObject _arrivalModelObject;
+
+        private GameObject _arrivaVfxObject;
+
         private GameObject _distractObject;
 
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
@@ -400,6 +404,8 @@ namespace Loom.ZombieBattleground
             GameObject arrivalPrefab =
           _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
             _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+            _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
+            _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
             Transform spriteContainerTransform =
                 _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
             Vector3 scale = spriteContainerTransform.transform.localScale;
@@ -538,6 +544,13 @@ namespace Loom.ZombieBattleground
         public void EnabledToxicPowerGlow()
         {
             _toxicPowerGlowParticles.Play();
+        }
+
+        public void ChangeModelVisibility(bool state)
+        {
+            _unitContentObject.SetActive(state);
+            _arrivalModelObject.SetActive(state);
+            _arrivaVfxObject.SetActive(state);
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)
