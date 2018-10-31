@@ -199,6 +199,16 @@ namespace Loom.ZombieBattleground
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
         }
 
+        public void CreateVfx(GameObject prefab, Vector3 position, bool autoDestroy = true, float delay = 3f)
+        {
+            if (prefab == null)
+                return;
+
+            GameObject particle = Object.Instantiate(prefab);
+            particle.transform.position = position;
+            _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
+        }
+
         public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
         {
             if (target == null)

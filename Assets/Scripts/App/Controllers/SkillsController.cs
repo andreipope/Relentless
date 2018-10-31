@@ -687,25 +687,36 @@ namespace Loom.ZombieBattleground
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
 
-            foreach (BoardUnitView unit in units)
+            Vector3 position = Vector3.left * 2f;
+
+            _vfxController.CreateVfx(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RetreatVFX"),
+                position, delay: 6f);
+
+            InternalTools.DoActionDelayed(() =>
             {
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unit); // retreat vfx
-
-                _cardsController.ReturnCardToHand(unit);
-
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                foreach (BoardUnitView unit in units)
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.ReturnToHand,
-                    Target = unit
-                });
-            }
+                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unit); // retreat vfx
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    _cardsController.ReturnCardToHand(unit);
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ReturnToHand,
+                        Target = unit
+                    });
+                }
+            }, 2f);
+            InternalTools.DoActionDelayed(() =>
             {
-                ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
-                Caller = boardSkill,
-                TargetEffects = TargetEffects
-            });
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
+                    Caller = boardSkill,
+                    TargetEffects = TargetEffects
+                });
+            }, 4f);
         }
 
         // TOXIC
