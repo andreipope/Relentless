@@ -155,6 +155,7 @@ namespace Loom.ZombieBattleground
 
         public void QuitApplication()
         {
+            GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
         

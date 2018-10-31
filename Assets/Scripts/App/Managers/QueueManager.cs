@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.Google.Protobuf;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,15 +8,15 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class QueueManager : IService, IQueueManager
     {
+        private Queue<Action> _mainThreadActions;
 
-        private volatile Queue<Action> _mainThreadActions;
-
-        private BlockingCollection<PlayerActionRequest> _networkThreadActions;
+        private BlockingCollection<IMessage> _networkThreadActions;
 
         private Thread _networkThread;
 
@@ -24,7 +25,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _mainThreadActions = new Queue<Action>();
-            _networkThreadActions = new BlockingCollection<PlayerActionRequest>();
+            _networkThreadActions = new BlockingCollection<IMessage>();
         }
 
         public void StartNetworkThread()
@@ -44,6 +45,15 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void Clear()
+        {
+            _mainThreadActions.Clear();
+            while (_networkThreadActions.Count > 0)
+            {
+                _networkThreadActions.Take();
+            }
+        }
+
         //Main Gameplay Thread
         public void Update()
         {
@@ -55,14 +65,16 @@ namespace Loom.ZombieBattleground
             _mainThreadActions.Enqueue(action);
         }
 
-        public void AddAction(PlayerActionRequest action)
+        public void AddAction(IMessage action)
         {
             _networkThreadActions.Add(action);
         }
 
+        public bool Active { get; set; }
+
         private void MainThread()
         {
-            if (_mainThreadActions.Count > 0)
+            if (Active && _mainThreadActions.Count > 0)
             {
                 _mainThreadActions.Dequeue().Invoke();
             }
@@ -70,12 +82,21 @@ namespace Loom.ZombieBattleground
 
         private async void NetworkThread()
         {
-            while (_networkThreadAlive)
+            try
             {
-                while (_networkThreadActions.Count > 0)
+                while (_networkThreadAlive)
                 {
-                    await GameClient.Get<BackendFacade>().SendAction(_networkThreadActions.Take());
+                    while (_networkThreadActions.Count > 0)
+                    {
+                        IMessage request = _networkThreadActions.Take();
+                        await GameClient.Get<BackendFacade>().SendAction(request);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                throw;
             }
         }
 

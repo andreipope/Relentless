@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
         {
             Player playerOwner = workingCard.Owner;
 
-            if (playerOwner.BoardCards.Count >= Constants.MaxBoardUnits)
+            if (playerOwner.BoardCards.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
             Card libraryCard = workingCard.LibraryCard.Clone();

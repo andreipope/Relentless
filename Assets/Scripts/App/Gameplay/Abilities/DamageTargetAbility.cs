@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
 
             object target = null;
 
+            Enumerators.ActionType actionType = Enumerators.ActionType.None;
+
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.Player:
@@ -47,6 +49,7 @@ namespace Loom.ZombieBattleground
                     }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
 
                     target = TargetPlayer;
+                    actionType = Enumerators.ActionType.CardAffectingOverlord;
                     break;
                 case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
@@ -56,6 +59,7 @@ namespace Loom.ZombieBattleground
                     }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
                     target = TargetUnit;
+                    actionType = Enumerators.ActionType.CardAffectingCard;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
@@ -63,7 +67,7 @@ namespace Loom.ZombieBattleground
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
+                ActionType = actionType,
                 Caller = GetCaller(),
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {

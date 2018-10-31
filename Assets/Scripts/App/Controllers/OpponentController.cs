@@ -13,10 +13,10 @@ namespace Loom.ZombieBattleground
     public class OpponentController : IController
     {
         private IGameplayManager _gameplayManager;
-        private IDataManager _dataManager;
         private IPvPManager _pvpManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
+        private IMatchManager _matchManager;
 
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
@@ -37,6 +37,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
@@ -62,29 +63,29 @@ namespace Loom.ZombieBattleground
 
         public void InitializePlayer(int playerId)
         {
-            _gameplayManager.OpponentPlayer = new Player(playerId, GameObject.Find("Opponent"), true);
+            Player player = new Player(playerId, GameObject.Find("Opponent"), true);
+            _gameplayManager.OpponentPlayer = player;
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
-                List<string> playerDeck = new List<string>();
-                OpponentDeck opponentDeck = _pvpManager.OpponentDeck;
+                List<WorkingCard> deck = new List<WorkingCard>();
 
-                foreach (DeckCardData card in opponentDeck.Cards)
+                bool isMainTurnSecond;
+                switch (_matchManager.MatchType)
                 {
-                    for (int i = 0; i < card.Amount; i++)
-                    {
-                        playerDeck.Add(card.CardName);
-                    }
+                    case Enumerators.MatchType.PVP:
+                        foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
+                        {
+                            deck.Add(_pvpManager.GetWorkingCardFromCardInstance(cardInstance, player));
+                        }
+
+                        isMainTurnSecond = GameClient.Get<IPvPManager>().IsCurrentPlayer();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                {
-                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, GameClient.Get<IPvPManager>().IsCurrentPlayer());
-                }
-                else
-                {
-                    _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
-                }
+                player.SetDeck(deck, isMainTurnSecond);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -119,13 +120,12 @@ namespace Loom.ZombieBattleground
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
             GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer),
-                              cardPlay.Card.InstanceId,
                               cardPlay.Position);
         }
 
-        private async void OnLeaveMatchHandler()
+        private void OnLeaveMatchHandler()
         {
-            await _gameplayManager.OpponentPlayer.PlayerDie();
+            _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -191,8 +191,9 @@ namespace Loom.ZombieBattleground
             _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
-        public void GotActionPlayCard(WorkingCard card, int instanceId, int position)
+        public void GotActionPlayCard(WorkingCard card, int position)
         {
+            Debug.LogError("Played card = " + card.Id);
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
                 switch (workingCard.LibraryCard.CardKind)
@@ -203,13 +204,14 @@ namespace Loom.ZombieBattleground
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.zero;
                         boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
-                        workingCard.Id = instanceId;
                         boardUnitViewElement.SetObjectInfo(workingCard);
 
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-                        _gameplayManager.OpponentPlayer.BoardCards.Insert(position, boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(
+                            Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count),
+                            boardUnitViewElement);
 
                         boardUnitViewElement.PlayArrivalAnimation();
 
