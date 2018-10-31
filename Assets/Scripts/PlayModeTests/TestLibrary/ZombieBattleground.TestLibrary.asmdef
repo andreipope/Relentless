@@ -1,0 +1,8 @@
+{
+    "name": "ZombieBattleground.TestLibrary",
+    "references": [],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}
