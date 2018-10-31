@@ -365,8 +365,6 @@ namespace Loom.ZombieBattleground
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
-                    break;
                 case Enumerators.OverlordSkill.MEND:
                 case Enumerators.OverlordSkill.HARDEN:
                 case Enumerators.OverlordSkill.STONE_SKIN:
