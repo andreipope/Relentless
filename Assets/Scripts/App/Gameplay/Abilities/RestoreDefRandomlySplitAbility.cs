@@ -78,14 +78,7 @@ namespace Loom.ZombieBattleground
 
             while (maxCount > 0)
             {
-                if (_targets.Count == 1)
-                {
-                    defenseValue = maxCount;
-                }
-                else
-                {
-                    defenseValue = UnityEngine.Random.Range(1, blocksCount > Count ? maxCount : _targets.Count + 1);
-                }
+                defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, blocksCount > Count ? maxCount : _targets.Count + 1);
 
                 currentTarget = _targets[UnityEngine.Random.Range(0, _targets.Count)];
                 maxCount -= defenseValue;
