@@ -36,6 +36,25 @@ public class TutorialTests
         yield return null;
     }
 
+    private IEnumerator TestTearDown ()
+    {
+        _testScene = SceneManager.CreateScene ("testScene");
+        _testerGameObject.GetComponent<TestScriptProtector> ().enabled = false;
+        SceneManager.MoveGameObjectToScene (_testerGameObject, _testScene);
+        Scene currentScene = SceneManager.GetActiveScene ();
+
+        SceneManager.SetActiveScene (_testScene);
+        yield return SceneManager.UnloadSceneAsync (currentScene);
+
+        Debug.LogFormat (
+            "\"{0}\" test successfully finished in {1} seconds.",
+            _testName,
+            Time.unscaledTime - _testStartTime
+        );
+    }
+
+    #endregion
+
     private IEnumerator AddVirtualInputModule ()
     {
         GameObject testSetup = GameObject.Instantiate (Resources.Load<GameObject> ("Prefabs/TestSetup"));
@@ -46,6 +65,39 @@ public class TutorialTests
         _virtualInputModule = inputModule.gameObject.AddComponent<UnityEngine.EventSystems.VirtualInputModule> ();
         inputModule.enabled = false;
         _virtualInputModule.SetLinks (_fakeCursorTransform, uiCamera);
+
+        yield return null;
+    }
+
+    private float _positionalTolerance = 5f;
+
+    private IEnumerator MoveCursorToObject (string objectName, float duration)
+    {
+        GameObject targetObject = GameObject.Find (objectName);
+
+        Vector2 from = _fakeCursorTransform.position;
+        Vector2 to = targetObject.transform.position;
+
+        Vector2 cursorPosition = from;
+        float interpolation = 0f;
+        while (Vector2.Distance (cursorPosition, to) >= _positionalTolerance)
+        {
+            cursorPosition = Vector2.Lerp (from, to, interpolation / duration);
+            _fakeCursorTransform.position = cursorPosition;
+
+            interpolation = Mathf.Min(interpolation + Time.unscaledTime, duration);
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator FakeClick ()
+    {
+        _virtualInputModule.Press ();
+
+        yield return null;
+
+        _virtualInputModule.Release ();
 
         yield return null;
     }
@@ -67,72 +119,266 @@ public class TutorialTests
         yield return null;
     }
 
+    private IEnumerator ClickGenericButton (string buttonName)
+    {
+        GameObject menuButtonGameObject = null;
+
+        yield return new WaitUntil (() => {
+            menuButtonGameObject = GameObject.Find (buttonName);
+
+            if (menuButtonGameObject == null)
+            {
+                return false;
+            }
+            else if (menuButtonGameObject.GetComponent<ButtonShiftingContent> () != null)
+            {
+                menuButtonGameObject.GetComponent<ButtonShiftingContent> ().onClick.Invoke ();
+
+                return true;
+            }
+            else if (menuButtonGameObject.GetComponent<Button> () != null)
+            {
+                menuButtonGameObject.GetComponent<Button> ().onClick.Invoke ();
+
+                return true;
+            }
+
+            return false;
+        });
+
+        yield return null;
+    }
+
     private IEnumerator MainMenuTransition (string transitionPath, float delay = 0.5f)
     {
-        GameObject menuButtonGameObject;
-        ButtonShiftingContent menuButton;
         foreach (string buttonName in transitionPath.Split ('/'))
         {
-            menuButtonGameObject = null;
-            yield return new WaitUntil (() => {
-                menuButtonGameObject = GameObject.Find (buttonName);
-
-                if (menuButtonGameObject == null)
-                {
-                    return false;
-                }
-                else if (menuButtonGameObject.GetComponent<ButtonShiftingContent> () != null)
-                {
-                    menuButtonGameObject.GetComponent<ButtonShiftingContent> ().onClick.Invoke ();
-
-                    return true;
-                }
-                else if (menuButtonGameObject.GetComponent<Button> () != null)
-                {
-                    menuButtonGameObject.GetComponent<Button> ().onClick.Invoke ();
-
-                    return true;
-                }
-
-                return false;
-            });
+            yield return ClickGenericButton (buttonName);
 
             yield return new WaitForSeconds (delay);
         }
     }
 
-    private IEnumerator TestTearDown ()
+    private IEnumerator RespondToOverlay (bool isResponseYes)
     {
-        _testScene = SceneManager.CreateScene ("testScene");
-        _testerGameObject.GetComponent<TestScriptProtector> ().enabled = false;
-        SceneManager.MoveGameObjectToScene (_testerGameObject, _testScene);
-        Scene currentScene = SceneManager.GetActiveScene ();
+        string buttonName = isResponseYes ? "Button_Yes" : "Button_No";
 
-        SceneManager.SetActiveScene (_testScene);
-        yield return SceneManager.UnloadSceneAsync (currentScene);
+        ButtonShiftingContent overlayButton = null;
+        yield return new WaitUntil (() => { overlayButton = GameObject.Find (buttonName)?.GetComponent<ButtonShiftingContent> (); return overlayButton != null; });
 
-        Debug.LogFormat (
-            "\"{0}\" test successfully finished in {1} seconds.",
-            _testName,
-            Time.unscaledTime - _testStartTime
-        );
+        overlayButton.onClick.Invoke ();
+
+        yield return null;
     }
 
-    #endregion
+    private IEnumerator SkipTutorial ()
+    {
+        ButtonShiftingContent skipTutorialButton = null;
+        yield return new WaitUntil (() => { skipTutorialButton = GameObject.Find ("Button_Skip")?.GetComponent<ButtonShiftingContent> (); return skipTutorialButton != null; });
+
+        skipTutorialButton.onClick.Invoke ();
+
+        yield return null;
+
+        yield return RespondToOverlay (true);
+
+        skipTutorialButton = null;
+        yield return new WaitUntil (() => { skipTutorialButton = GameObject.Find ("Button_Skip")?.GetComponent<ButtonShiftingContent> (); return skipTutorialButton != null; });
+
+        skipTutorialButton.onClick.Invoke ();
+
+        yield return RespondToOverlay (true);
+
+        yield return null;
+    }
+
+    private string lastCheckedPageName;
+
+    private IEnumerator AssertCurrentPageName (string expectedPageName)
+    {
+        GameObject canvas1GameObject = null;
+        yield return new WaitUntil (() => {
+            canvas1GameObject = GameObject.Find ("Canvas1");
+
+            if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
+            {
+                if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        });
+        string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
+
+        Assert.AreEqual (expectedPageName, actualPageName);
+
+        lastCheckedPageName = actualPageName;
+    }
+
+    private IEnumerator WaitUntilPageUnloads ()
+    {
+        GameObject canvas1GameObject;
+        yield return new WaitUntil (() => {
+            canvas1GameObject = GameObject.Find ("Canvas1");
+
+            if (canvas1GameObject != null && canvas1GameObject.transform.childCount <= 1)
+            {
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    private IGameplayManager gameplayManager;
+    private BattlegroundController battlegroundController;
+
+    private void SetGameplayManagers ()
+    {
+        gameplayManager = GameClient.Get<IGameplayManager> ();
+        battlegroundController = gameplayManager.GetController<BattlegroundController> ();
+    }
+
+    private IEnumerator PlayCardFromHandToBoard (int[] cardIndices)
+    {
+        foreach (int index in cardIndices)
+        {
+            BoardCard cardToPlay = battlegroundController.PlayerHandCards[index];
+
+            HandBoardCard handBoardCard = cardToPlay.HandBoardCard;
+            handBoardCard.Enabled = true;
+            handBoardCard.OnSelected ();
+
+            cardToPlay.Transform.position = Vector3.zero;
+
+            handBoardCard.MouseUp (cardToPlay.GameObject);
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator PlayCardFromBoardToOpponentBoard (int[] attackingCardIndices, int[] attackedCardIndices)
+    {
+        for (int i = 0; i < attackedCardIndices.Length; i++)
+        {
+            int attackingCardIndex = attackingCardIndices[i];
+            int attackedCardIndex = attackedCardIndices[i];
+
+            BoardUnitView cardToPlayView = battlegroundController.PlayerBoardCards[attackingCardIndex];
+            BoardUnitView cardPlayedAgainstView = battlegroundController.OpponentBoardCards[attackedCardIndex];
+
+            cardToPlayView.SetSelectedUnit (true);
+
+            BoardUnitModel cardToPlayModel = cardToPlayView.Model;
+            BoardUnitModel cardPlayedAgainstModel = cardPlayedAgainstView.Model;
+
+            cardToPlayModel.DoCombat (cardPlayedAgainstModel);
+
+            yield return new WaitForSeconds (5);
+        }
+    }
+
+    private IEnumerator EndTurn ()
+    {
+        battlegroundController.StopTurn ();
+        GameObject.Find ("_1_btn_endturn").GetComponent<EndTurnButton> ().SetEnabled (false);
+
+        yield return null;
+    }
+
+    private IEnumerator WaitUntilInputIsUnblocked ()
+    {
+        yield return new WaitUntil (() => gameplayManager.IsLocalPlayerTurn ());
+    }
+
+    private IEnumerator PlayTutorial ()
+    {
+        SetGameplayManagers ();
+
+        for (int i = 0; i < 3; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        yield return ClickGenericButton ("Button_Play");
+
+        for (int i = 0; i < 4; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        yield return PlayCardFromHandToBoard (new[] { 0 });
+
+        yield return ClickGenericButton ("Button_Next");
+
+        /* yield return MoveCursorToObject ("_1_btn_endturn", 3f);
+
+        yield return FakeClick (); */
+
+        yield return EndTurn ();
+
+        yield return new WaitUntil (() => battlegroundController.OpponentBoardCards.Count >= 1);
+
+        yield return WaitUntilInputIsUnblocked ();
+
+        yield return ClickGenericButton ("Button_Next");
+
+        yield return WaitUntilInputIsUnblocked ();
+
+        yield return PlayCardFromBoardToOpponentBoard (new[] { 0 }, new[] { 0 });
+    }
 
     [UnityTest]
-    [Timeout (100000)]
-    public IEnumerator SkipTutorial ()
+    [Timeout (500000)]
+    public IEnumerator Test_Tutorial ()
     {
-        yield return TestSetup ("APP_INIT", "SkipTutorial");
+        yield return TestSetup ("APP_INIT", "Tutorial - Skip & Non-Skip");
 
         yield return AddVirtualInputModule ();
 
+        #region Login
+
+        yield return AssertCurrentPageName ("LoadingPage");
+
         yield return HandleLogin ();
 
-        yield return MainMenuTransition ("Button_Play/Button_Back");
+        yield return AssertCurrentPageName ("MainMenuPage");
 
-        // yield return MainMenuTransition ("Button_Tutorial");
+        #endregion
+
+        /* #region Tutorial Skip
+
+        yield return MainMenuTransition ("Button_Tutorial");
+
+        yield return AssertCurrentPageName ("GameplayPage");
+
+        yield return SkipTutorial ();
+
+        yield return AssertCurrentPageName ("HordeSelectionPage");
+
+        #endregion
+
+        yield return MainMenuTransition ("Button_Back");
+
+        yield return AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return MainMenuTransition ("Button_Back");
+
+        yield return AssertCurrentPageName ("MainMenuPage");*/ 
+
+        #region Tutorial Non-Skip
+
+        yield return MainMenuTransition ("Button_Tutorial");
+
+        yield return AssertCurrentPageName ("GameplayPage");
+
+        yield return PlayTutorial ();
+
+        #endregion
 
         /* Vector2 from = new Vector2 (10f, 10f);
         Vector2 to = new Vector2 (600f, 600f);
@@ -155,8 +401,6 @@ public class TutorialTests
         yield return null;
 
         _virtualInputModule.Release (); */
-
-        yield return new WaitForSeconds (10);
 
         yield return TestTearDown ();
     }
