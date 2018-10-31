@@ -152,9 +152,11 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1b4c7b48f9685764fa228f387b27d8b2, type: 3}
   - {fileID: 21300000, guid: f61499c8f57a1d8479b46efdbe4722c6, type: 3}
   - {fileID: 21300000, guid: cfece3e8efe44174fbdc7bce0e30e3f1, type: 3}
+  - {fileID: 21300000, guid: 1fc53129a060d5d4ba48f8a9cc876199, type: 3}
   - {fileID: 21300000, guid: 1fc7603994bb34c1ca24b1eea95b8d8e, type: 3}
   - {fileID: 21300000, guid: c5e31e4912749c14b9759d2db630b559, type: 3}
   - {fileID: 21300000, guid: e270277903bda264d82dd5574aab76ab, type: 3}
+  - {fileID: 21300000, guid: 3d504489beb8d1d479481583b38602ab, type: 3}
   - {fileID: 21300000, guid: 6be0f589984364b36a26940c7db4ebb4, type: 3}
   - {fileID: 21300000, guid: e9c952c9674fdaf439f41eda021ca8fc, type: 3}
   - {fileID: 21300000, guid: b369f7d985ccd794d8bb612d71d903b8, type: 3}
@@ -178,7 +180,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b0a9660ba41665f4d9a6e559a83186d6, type: 3}
   - {fileID: 21300000, guid: a5a9c64b1e88dbc4d98894e746cdc7b0, type: 3}
   - {fileID: 21300000, guid: 3368ff5b5491f6a4fa2995b810462cc9, type: 3}
-  - {fileID: 21300000, guid: b966127b581f22949a7b2ea511f49612, type: 3}
   - {fileID: 21300000, guid: d01ca28b72a452b4cacfc09b659f673b, type: 3}
   - {fileID: 21300000, guid: 2e453d9b8e7b9b74aa28b49f131779e3, type: 3}
   - {fileID: 21300000, guid: d6526dab340853f4f92ad546a7def8f0, type: 3}
@@ -330,9 +331,11 @@ SpriteAtlas:
   - earth_minion_bolderr
   - item_minion_junk_spear
   - air_minion_banshee
+  - fire_minion_rabiez
   - life_officer_shroom
   - toxic_commander_boomer
   - earth_general_embryo
+  - air_general_mindflayer
   - water_minion_izze
   - life_commander_embryo
   - earth_minion_hardy
@@ -356,7 +359,6 @@ SpriteAtlas:
   - toxic_minion_spikez
   - life_officer_puffer
   - earth_minion_crumbz
-  - air_general_mindflayer
   - earth_commander_pyrite
   - water_commander_zpring
   - earth_minion_embryo

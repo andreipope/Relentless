@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground.Data
 
         private List<Card> _allCards;
 
+        public int CardsInActiveSetsCount;
+
         [JsonIgnore]
         public List<Card> Cards
         {
@@ -75,6 +77,7 @@ namespace Loom.ZombieBattleground.Data
                         if (card.CardSetType != Enumerators.SetType.OTHERS)
                         {
                             card.Id = id;
+                            CardsInActiveSetsCount++;
                         }
 
                         id++;
