@@ -65,6 +65,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _arrivaVfxObject;
 
+        private GameObject _distractObject;
+
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private bool _ignoreArrivalEndEvents;
@@ -107,6 +109,8 @@ namespace Loom.ZombieBattleground
             _pictureSprite = GameObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
             _frozenSprite = GameObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
             _shieldSprite = GameObject.transform.Find("Other/Shield").gameObject;
+
+            _distractObject = GameObject.transform.Find("Other/ZB_ANM_Distract").gameObject;
 
             _attackText = GameObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
@@ -163,6 +167,7 @@ namespace Loom.ZombieBattleground
             Model.BuffShieldStateChanged += BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet += BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved += BoardUnitOnUnitFromDeckRemoved;
+            Model.UnitDistracted += BoardUnitOnUnitDistracted;
 
             Model.FightSequenceHandler = this;
 
@@ -253,6 +258,11 @@ namespace Loom.ZombieBattleground
         private void BoardUnitOnBuffShieldStateChanged(bool status)
         {
             _shieldSprite.SetActive(status);
+        }
+
+        private void BoardUnitOnUnitDistracted()
+        {
+            _distractObject.SetActive(true);
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
