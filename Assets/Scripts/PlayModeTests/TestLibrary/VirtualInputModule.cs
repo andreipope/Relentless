@@ -235,7 +235,6 @@ namespace UnityEngine.EventSystems
         {
             float time = Time.unscaledTime;
 
-            // if (!AllowMoveEventProcessing(time))
             Vector2 movement = GetRawMoveVector();
             if (Mathf.Approximately(movement.x, 0f) && Mathf.Approximately(movement.y, 0f))
             {
