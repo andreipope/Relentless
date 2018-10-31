@@ -934,9 +934,24 @@ namespace Loom.ZombieBattleground
             unit?.Die();
         }
 
-        public void TakeControlUnit(Player to, BoardUnitModel unit)
+        public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit)
         {
-            // implement functionality of the take control
+            unit.OwnerPlayer.BoardCards.Remove(GetBoardUnitViewByModel(unit));
+            unit.OwnerPlayer.CardsOnBoard.Remove(unit.Card);
+
+            unit.OwnerPlayer = newPlayerOwner;
+
+            newPlayerOwner.CardsOnBoard.Add(unit.Card);
+            newPlayerOwner.BoardCards.Add(GetBoardUnitViewByModel(unit));
+
+            if (newPlayerOwner.IsLocalPlayer)
+            {
+                UpdatePositionOfBoardUnitsOfPlayer(newPlayerOwner.BoardCards);
+            }
+            else
+            {
+                UpdatePositionOfBoardUnitsOfOpponent();
+            }
         }
 
         public BoardUnitView CreateBoardUnit(Player owner, WorkingCard card)
