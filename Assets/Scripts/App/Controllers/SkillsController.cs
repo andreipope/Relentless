@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Loom.ZombieBattleground.View;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -1491,16 +1492,22 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            List<BoardUnitView> units = new List<BoardUnitView>();
+            List<BoardUnitModel> units = new List<BoardUnitModel>();
+            List<BoardUnitView> unitsViews = new List<BoardUnitView>();
 
-            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
-            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+            unitsViews.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+            unitsViews.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
 
-            foreach (BoardUnitView unit in units)
+            units = unitsViews.Select((x) => x.Model).ToList();
+
+            foreach (BoardUnitModel unit in units)
             {
-                AttackWithModifiers(owner, boardSkill, skill, unit, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
+                InternalTools.DoActionDelayed(() =>
+                {
+                    AttackWithModifiers(owner, boardSkill, skill, unit, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
+                }, 2.5f);
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX"), unit); // meteor
+                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MeteorShowerVFX"), unit, delay: 8f, isIgnoreCastVfx: true); // meteor
 
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
