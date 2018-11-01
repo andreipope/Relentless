@@ -65,7 +65,13 @@
               "activityType": "passive",
               "callType": "END",
               "value": 2,
-              "buffType": "END"
+              "buffType": "END",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/FireBolt_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -202,7 +208,13 @@
               "activityType": "passive",
               "callType": "END",
               "value": 4,
-              "buffType": "END"
+              "buffType": "END",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/FireBolt_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
