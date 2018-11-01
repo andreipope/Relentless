@@ -138,6 +138,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
+        internal const float PvPWaitForTurnMaxTime = 150;
+
         internal const float TimeForStartEndTurnAnimation = 15;
 
         internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;

@@ -64,12 +64,6 @@ namespace Loom.Client
         }
 
         /// <summary>
-        /// Maximum number of times a tx should be resent after being rejected because of a bad nonce.
-        /// Defaults to 5.
-        /// </summary>
-        public int NonceRetries { get; set; } = 5;
-
-        /// <summary>
         /// Events emitted by the DAppChain.
         /// </summary>
         public event EventHandler<RawChainEventArgs> ChainEventReceived
@@ -154,7 +148,7 @@ namespace Loom.Client
         /// </summary>
         /// <param name="tx">Transaction to commit.</param>
         /// <returns>Commit metadata.</returns>
-        /// <exception cref="InvalidTxNonceException">Thrown if transaction is rejected due to a bad nonce after <see cref="NonceRetries"/> attempts.</exception>
+        /// <exception cref="InvalidTxNonceException">Thrown if transaction is rejected due to a bad nonce after allowed number of attempts.</exception>
         internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx)
         {
             int badNonceCount = 0;
@@ -166,7 +160,7 @@ namespace Loom.Client
                 }
                 catch (InvalidTxNonceException)
                 {
-                    ++badNonceCount;
+                    badNonceCount++;
                 }
 
                 // WaitForSecondsRealtime can throw a "get_realtimeSinceStartup can only be called from the main thread." error.
@@ -177,7 +171,7 @@ namespace Loom.Client
 #else
                 await Task.Delay(TimeSpan.FromSeconds(delay));
 #endif
-            } while (this.NonceRetries != 0 && badNonceCount <= this.NonceRetries);
+            } while (this.Configuration.InvalidNonceTxRetries != 0 && badNonceCount <= this.Configuration.InvalidNonceTxRetries);
 
             throw new InvalidTxNonceException(1, "sequence number does not match");
         }

@@ -6,6 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using DG.Tweening;
+using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
 {
@@ -18,6 +19,10 @@ namespace Loom.ZombieBattleground
         private ISoundManager _soundManager;
 
         private ILoadObjectsManager _loadObjectsManager;
+
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private IDataManager _dataManager;
 
@@ -34,6 +39,8 @@ namespace Loom.ZombieBattleground
         private Sequence _helpArrowsDelay;
 
         private List<TutorialBoardArrow> _tutorialHelpBoardArrows;
+
+        private IAnalyticsManager _analyticsManager;
 
         public bool IsTutorial { get; private set; }
 
@@ -62,6 +69,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
@@ -100,6 +110,8 @@ namespace Loom.ZombieBattleground
 
 
             IsTutorial = true;
+
+            _analyticsManager.SetEvent( AnalyticsManager.EventStartedTutorial);
         }
 
         public void StopTutorial()
@@ -125,6 +137,8 @@ namespace Loom.ZombieBattleground
 
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial);
         }
 
         public void SkipTutorial(Enumerators.AppState state)
