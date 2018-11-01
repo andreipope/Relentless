@@ -1228,7 +1228,7 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBolt_Impact"),
-                    unit);
+                    unit, isIgnoreCastVfx: true);
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.OverlordSkill.ToString().ToLowerInvariant() + "_Impact",
