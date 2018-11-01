@@ -1170,7 +1170,7 @@ namespace Loom.ZombieBattleground
 
                     _vfxController.CreateVfx(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"),
-                        unit);
+                        unit, isIgnoreCastVfx: true);
 
                     _soundManager.PlaySound(
                         Enumerators.SoundType.OVERLORD_ABILITIES,
@@ -1186,7 +1186,7 @@ namespace Loom.ZombieBattleground
 
                     _vfxController.CreateVfx(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"),
-                        player);
+                        player, isIgnoreCastVfx: true);
                     _soundManager.PlaySound(
                         Enumerators.SoundType.OVERLORD_ABILITIES,
                         skill.OverlordSkill.ToString().ToLowerInvariant() + "_Impact",
