@@ -1942,7 +1942,13 @@
               "activityType": "passive",
               "callType": "ATTACK",
               "value": 1,
-              "buffType": "ATTACK"
+              "buffType": "ATTACK",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/HealingTouchVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
