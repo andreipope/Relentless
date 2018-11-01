@@ -314,6 +314,24 @@ public class TutorialTests
         }
     }
 
+    private IEnumerator PlayNonSleepingCardsFromBoardToOpponentPlayer ()
+    {
+        for (int i = 0; i < _battlegroundController.PlayerBoardCards.Count; i++)
+        {
+            BoardUnitView cardToPlayView = _battlegroundController.PlayerBoardCards[i];
+            BoardUnitModel cardToPlayModel = cardToPlayView.Model;
+
+            Player opponentPlayer = _gameplayManager.OpponentPlayer;
+
+            if (cardToPlayModel.IsPlayable)
+            {
+                cardToPlayModel.DoCombat (opponentPlayer);
+
+                yield return null;
+            }
+        }
+    }
+
     private IEnumerator UseSkillToOpponentPlayer (bool isPrimary)
     {
         BoardSkill boardSkill = _battlegroundController.GetSkillById (
@@ -362,7 +380,7 @@ public class TutorialTests
         yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") == null);
     }
 
-    private IEnumerator PlayTutorial ()
+    private IEnumerator PlayTutorial_Part1 ()
     {
         SetGameplayManagers ();
 
@@ -453,13 +471,59 @@ public class TutorialTests
         {
             yield return ClickGenericButton ("Button_Next");
         }
+
+        yield return ClickGenericButton ("Button_Continue");
+
+        yield return null;
+    }
+
+    private IEnumerator PlayTutorial_Part2 ()
+    {
+        yield return ClickGenericButton ("Button_Next");
+
+        yield return WaitUntilOurTurnStarts ();
+        yield return WaitUntilInputIsUnblocked ();
+
+        for (int i = 0; i < 11; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        yield return PlayCardFromHandToBoard (new[] { 1 });
+
+        yield return ClickGenericButton ("Button_Next");
+
+        yield return new WaitForSeconds (2);
+
+        yield return PlayCardFromHandToBoard (new[] { 0 });
+
+        for (int i = 0; i < 11; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        yield return PlayNonSleepingCardsFromBoardToOpponentPlayer ();
+
+        for (int i = 0; i < 5; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        yield return ClickGenericButton ("Button_Continue");
+
+        yield return null;
+    }
+
+    private IEnumerable SoloGameplay ()
+    {
+        yield return ClickGenericButton ("Button_Keep");
     }
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test_Tutorial ()
+    public IEnumerator Test_TutorialSkip ()
     {
-        yield return TestSetup ("APP_INIT", "Tutorial - Skip & Non-Skip");
+        yield return TestSetup ("APP_INIT", "Tutorial - Skip");
 
         yield return AddVirtualInputModule ();
 
@@ -473,7 +537,7 @@ public class TutorialTests
 
         #endregion
 
-        /* #region Tutorial Skip
+        #region Tutorial Skip
 
         yield return MainMenuTransition ("Button_Tutorial");
 
@@ -485,13 +549,26 @@ public class TutorialTests
 
         #endregion
 
-        yield return MainMenuTransition ("Button_Back");
+        yield return TestTearDown ();
+    }
 
-        yield return AssertCurrentPageName ("PlaySelectionPage");
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_TutorialNonSkip ()
+    {
+        yield return TestSetup ("APP_INIT", "Tutorial - Non-Skip");
 
-        yield return MainMenuTransition ("Button_Back");
+        yield return AddVirtualInputModule ();
 
-        yield return AssertCurrentPageName ("MainMenuPage");*/ 
+        #region Login
+
+        yield return AssertCurrentPageName ("LoadingPage");
+
+        yield return HandleLogin ();
+
+        yield return AssertCurrentPageName ("MainMenuPage");
+
+        # endregion
 
         #region Tutorial Non-Skip
 
@@ -499,31 +576,52 @@ public class TutorialTests
 
         yield return AssertCurrentPageName ("GameplayPage");
 
-        yield return PlayTutorial ();
+        yield return PlayTutorial_Part1 ();
+
+        yield return PlayTutorial_Part2 ();
+
+        yield return AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
 
-        /* Vector2 from = new Vector2 (10f, 10f);
-        Vector2 to = new Vector2 (600f, 600f);
-        float moveTime = 5f;
+        yield return TestTearDown ();
+    }
 
-        Vector2 position = from;
-        float moveTimeCounter = 0f;
-        while (Vector2.Distance (position, to) >= 50f)
-        {
-            position = Vector2.Lerp (from, to, moveTimeCounter / moveTime);
-            _fakeCursorTransform.anchoredPosition = position;
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_SoloGameplay ()
+    {
+        yield return TestSetup ("APP_INIT", "Tutorial - Solo Gameplay");
 
-            moveTimeCounter = Mathf.Min (moveTime, moveTimeCounter + Time.deltaTime);
+        yield return AddVirtualInputModule ();
 
-            yield return null;
-        }
+        #region Login
 
-        _virtualInputModule.Press ();
+        yield return AssertCurrentPageName ("LoadingPage");
 
-        yield return null;
+        yield return HandleLogin ();
 
-        _virtualInputModule.Release (); */
+        yield return AssertCurrentPageName ("MainMenuPage");
+
+        #endregion
+
+        #region Solo Gameplay
+
+        yield return MainMenuTransition ("Button_Play");
+
+        yield return AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return MainMenuTransition ("Button_SoloMode");
+
+        yield return AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return MainMenuTransition ("Button_Battle");
+
+        yield return AssertCurrentPageName ("GameplayPage");
+
+        yield return SoloGameplay ();
+
+        #endregion
 
         yield return new WaitForSeconds (5);
 
