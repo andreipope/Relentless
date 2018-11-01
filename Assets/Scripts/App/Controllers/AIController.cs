@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
     {
         public BoardCard CurrentSpellCard;
 
+        public bool IsBrainWorking = false;
+
         private const int MinTurnForAttack = 0;
 
         private readonly Random _random = new Random();
@@ -138,6 +140,8 @@ namespace Loom.ZombieBattleground
             _aiBrainCancellationTokenSource = new CancellationTokenSource();
             Debug.Log("brain started");
 
+            IsBrainWorking = true;
+
             try
             {
                 switch (_aiBrainType)
@@ -161,6 +165,8 @@ namespace Loom.ZombieBattleground
             }
 
             Debug.Log("brain finished");
+
+            IsBrainWorking = false;
         }
 
         private void SetAiTypeByDeck()

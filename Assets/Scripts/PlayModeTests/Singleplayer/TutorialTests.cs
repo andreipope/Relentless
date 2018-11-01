@@ -234,20 +234,24 @@ public class TutorialTests
         });
     }
 
-    private IGameplayManager gameplayManager;
-    private BattlegroundController battlegroundController;
+    private IGameplayManager _gameplayManager;
+    private BattlegroundController _battlegroundController;
+    private SkillsController _skillsController;
 
     private void SetGameplayManagers ()
     {
-        gameplayManager = GameClient.Get<IGameplayManager> ();
-        battlegroundController = gameplayManager.GetController<BattlegroundController> ();
+        _gameplayManager = GameClient.Get<IGameplayManager> ();
+        _battlegroundController = _gameplayManager.GetController<BattlegroundController> ();
+        _skillsController = _gameplayManager.GetController<SkillsController> ();
     }
 
     private IEnumerator PlayCardFromHandToBoard (int[] cardIndices)
     {
+        int playerBoardCardCount = _battlegroundController.PlayerBoardCards.Count;
+
         foreach (int index in cardIndices)
         {
-            BoardCard cardToPlay = battlegroundController.PlayerHandCards[index];
+            BoardCard cardToPlay = _battlegroundController.PlayerHandCards[index];
 
             HandBoardCard handBoardCard = cardToPlay.HandBoardCard;
             handBoardCard.Enabled = true;
@@ -257,19 +261,30 @@ public class TutorialTests
 
             handBoardCard.MouseUp (cardToPlay.GameObject);
 
+            yield return new WaitUntil (() => _battlegroundController.PlayerBoardCards.Count > playerBoardCardCount);
+            playerBoardCardCount = _battlegroundController.PlayerBoardCards.Count;
+
+            BoardUnitModel newPlayedCardModel = _battlegroundController.PlayerBoardCards[playerBoardCardCount - 1].Model;
+            if (newPlayedCardModel.HasFeral)
+            {
+                yield return new WaitUntil (() => newPlayedCardModel.IsPlayable);
+            }
+
             yield return null;
         }
     }
 
     private IEnumerator PlayCardFromBoardToOpponentBoard (int[] attackingCardIndices, int[] attackedCardIndices)
     {
+        Assert.AreEqual (attackingCardIndices.Length, attackedCardIndices.Length) ;
+
         for (int i = 0; i < attackedCardIndices.Length; i++)
         {
             int attackingCardIndex = attackingCardIndices[i];
             int attackedCardIndex = attackedCardIndices[i];
 
-            BoardUnitView cardToPlayView = battlegroundController.PlayerBoardCards[attackingCardIndex];
-            BoardUnitView cardPlayedAgainstView = battlegroundController.OpponentBoardCards[attackedCardIndex];
+            BoardUnitView cardToPlayView = _battlegroundController.PlayerBoardCards[attackingCardIndex];
+            BoardUnitView cardPlayedAgainstView = _battlegroundController.OpponentBoardCards[attackedCardIndex];
 
             cardToPlayView.SetSelectedUnit (true);
 
@@ -278,21 +293,73 @@ public class TutorialTests
 
             cardToPlayModel.DoCombat (cardPlayedAgainstModel);
 
-            yield return new WaitForSeconds (5);
+            yield return null;
         }
+    }
+
+    private IEnumerator PlayCardFromBoardToOpponentPlayer (int[] attackingCardIndices)
+    {
+        for (int i = 0; i < attackingCardIndices.Length; i++)
+        {
+            int attackingCardIndex = attackingCardIndices[i];
+
+            BoardUnitView cardToPlayView = _battlegroundController.PlayerBoardCards[attackingCardIndex];
+            BoardUnitModel cardToPlayModel = cardToPlayView.Model;
+
+            Player opponentPlayer = _gameplayManager.OpponentPlayer;
+
+            cardToPlayModel.DoCombat (opponentPlayer);
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator UseSkillToOpponentPlayer (bool isPrimary)
+    {
+        BoardSkill boardSkill = _battlegroundController.GetSkillById (
+            _gameplayManager.CurrentPlayer,
+            isPrimary ? _skillsController.PlayerPrimarySkill.Id : _skillsController.PlayerSecondarySkill.Id);
+        BoardObject target = _gameplayManager.OpponentPlayer;
+        boardSkill.UseSkill (target);
+
+        yield return new WaitForSeconds (2);
+
+        // _skillsController.DoSkillAction (boardSkill, _gameplayManager.OpponentPlayer);
+
+        yield return null;
     }
 
     private IEnumerator EndTurn ()
     {
-        battlegroundController.StopTurn ();
+        _battlegroundController.StopTurn ();
         GameObject.Find ("_1_btn_endturn").GetComponent<EndTurnButton> ().SetEnabled (false);
 
         yield return null;
     }
 
+    private IEnumerator WaitUntilCardIsAddedToBoard (string boardName)
+    {
+        Transform boardTransform = GameObject.Find (boardName).transform;
+        int boardChildrenCount = boardTransform.childCount;
+
+        yield return new WaitUntil (() => (boardChildrenCount < boardTransform.childCount) && (boardChildrenCount < _battlegroundController.OpponentBoardCards.Count));
+    }
+
     private IEnumerator WaitUntilInputIsUnblocked ()
     {
-        yield return new WaitUntil (() => gameplayManager.IsLocalPlayerTurn ());
+        yield return new WaitUntil (() => _gameplayManager.IsLocalPlayerTurn ());
+    }
+
+    private IEnumerator WaitUntilAIBrainStops ()
+    {
+        yield return new WaitUntil (() => _gameplayManager.GetController<AIController> ().IsBrainWorking == false);
+    }
+
+    private IEnumerator WaitUntilOurTurnStarts ()
+    {
+        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") != null);
+
+        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") == null);
     }
 
     private IEnumerator PlayTutorial ()
@@ -321,15 +388,71 @@ public class TutorialTests
 
         yield return EndTurn ();
 
-        yield return new WaitUntil (() => battlegroundController.OpponentBoardCards.Count >= 1);
-
-        yield return WaitUntilInputIsUnblocked ();
+        yield return WaitUntilCardIsAddedToBoard ("OpponentBoard");
+        yield return WaitUntilAIBrainStops ();
 
         yield return ClickGenericButton ("Button_Next");
 
         yield return WaitUntilInputIsUnblocked ();
 
+        yield return new WaitForSeconds (4);
+
         yield return PlayCardFromBoardToOpponentBoard (new[] { 0 }, new[] { 0 });
+
+        for (int i = 0; i < 2; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        yield return EndTurn ();
+
+        yield return WaitUntilOurTurnStarts ();
+        yield return WaitUntilInputIsUnblocked ();
+
+        yield return ClickGenericButton ("Button_Next");
+
+        yield return PlayCardFromBoardToOpponentPlayer (new[] { 0 });
+
+        yield return ClickGenericButton ("Button_Next");
+
+        yield return EndTurn ();
+
+        yield return WaitUntilOurTurnStarts ();
+        yield return WaitUntilInputIsUnblocked ();
+
+        yield return ClickGenericButton ("Button_Next");
+
+        yield return PlayCardFromBoardToOpponentBoard (new[] { 0 }, new[] { 0 });
+
+        for (int i = 0; i < 3; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        // yield return WaitUntilOurTurnStarts ();
+
+        yield return WaitUntilAIBrainStops ();
+        yield return WaitUntilInputIsUnblocked ();
+
+        yield return new WaitForSeconds (4); // we should wait for any card that's damaged to disappear before we add anything, because otherwise it gets complicated to understand if anything has been added (one card is being added, while another one is being removed in some cases)
+
+        yield return PlayCardFromHandToBoard (new[] { 1 });
+
+        // yield return new WaitForSeconds (4);
+
+        yield return PlayCardFromBoardToOpponentPlayer (new[] { 0 });
+
+        for (int i = 0; i < 3; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
+
+        yield return UseSkillToOpponentPlayer (true);
+
+        for (int i = 0; i < 4; i++)
+        {
+            yield return ClickGenericButton ("Button_Next");
+        }
     }
 
     [UnityTest]
@@ -401,6 +524,8 @@ public class TutorialTests
         yield return null;
 
         _virtualInputModule.Release (); */
+
+        yield return new WaitForSeconds (5);
 
         yield return TestTearDown ();
     }
