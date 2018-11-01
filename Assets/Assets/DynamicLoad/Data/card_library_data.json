@@ -2281,7 +2281,13 @@
               "callType": "ENTRY",
               "targetType": "player",
               "value": 2,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2394,7 +2400,13 @@
               "callType": "ENTRY",
               "targetType": "player",
               "value": 4,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
