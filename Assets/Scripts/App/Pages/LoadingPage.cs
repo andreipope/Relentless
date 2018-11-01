@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
 
+        private IAnalyticsManager _analyticsManager;
+
         private GameObject _selfPage, _loginForm;
 
         private Transform _progressBar;
@@ -48,6 +50,7 @@ namespace Loom.ZombieBattleground
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
             _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
@@ -106,6 +109,7 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             await _backendDataControlMediator.LoginAndLoadData();
+                            _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
                         }
                         catch (GameVersionMismatchException e)
                         {

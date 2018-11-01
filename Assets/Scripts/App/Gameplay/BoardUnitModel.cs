@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         public bool HasUsedBuffShield;
 
+        public bool HasSwing;
+
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
@@ -52,6 +54,8 @@ namespace Loom.ZombieBattleground
         private int _stunTurns;
 
         public bool IsDead { get; private set; }
+
+        public bool IsDistracted { get; private set; }
 
         public BoardUnitModel()
         {
@@ -104,6 +108,12 @@ namespace Loom.ZombieBattleground
         public event Action CreaturePlayableForceSet;
 
         public event Action UnitFromDeckRemoved;
+
+        public event Action UnitDistracted;
+
+        public event Action<BoardUnitModel> KilledUnit;
+
+        public event Action<bool> BuffSwingStateChanged;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -258,6 +268,12 @@ namespace Loom.ZombieBattleground
             AddBuff(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
             BuffShieldStateChanged?.Invoke(true);
+        }
+
+        public void AddBuffSwing()
+        {
+            HasSwing = true;
+            BuffSwingStateChanged?.Invoke(true);
         }
 
         public void UpdateCardType()
@@ -429,6 +445,12 @@ namespace Loom.ZombieBattleground
             Stunned?.Invoke(false);
         }
 
+        public void Distract()
+        {
+            IsDistracted = true;
+            UnitDistracted?.Invoke();
+        }
+
         public void ForceSetCreaturePlayable()
         {
             if (IsStun)
@@ -502,6 +524,16 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
+
+                                    if (HasSwing)
+                                    {
+                                        List<BoardUnitView> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+
+                                        foreach (BoardUnitView unit in adjacent)
+                                        {
+                                            _battleController.AttackUnitByUnit(this, unit.Model, AdditionalDamage, false);
+                                        }
+                                    }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {
@@ -584,6 +616,11 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
+        }
+
+        public void InvokeKilledUnit(BoardUnitModel boardUnit)
+        {
+            KilledUnit?.Invoke(boardUnit);
         }
 
         public List<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
