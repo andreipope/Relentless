@@ -587,7 +587,7 @@ namespace Loom.ZombieBattleground
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
                 OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.CardRank.ToString().ToLower() + " card in your deck.");
+                    card.CardRank.ToString().ToLowerInvariant() + " card in your deck.");
                 return;
             }
 
@@ -667,7 +667,7 @@ namespace Loom.ZombieBattleground
 
             string setName = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
-            if (setName.ToLower().Equals("item"))
+            if (setName.ToLowerInvariant().Equals("item"))
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
@@ -722,12 +722,10 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-
             foreach (Deck deck in _dataManager.CachedDecksData.Decks)
             {
-                if (_currentDeckId != deck.Id && deck.Name.Trim()
-                    .Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                if (_currentDeckId != deck.Id &&
+                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
                 {
                     OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
                     return;
@@ -741,8 +739,7 @@ namespace Loom.ZombieBattleground
 
                 try
                 {
-                    long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId,
-                        _currentDeck, _dataManager.CachedDecksLastModificationTimestamp);
+                    long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
                     _currentDeck.Id = newDeckId;
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
                     SendAddDeckAnalytics();
@@ -760,8 +757,7 @@ namespace Loom.ZombieBattleground
             {
                 try
                 {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck,
-                        _dataManager.CachedDecksLastModificationTimestamp);
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
 
                     for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
                     {
@@ -787,7 +783,6 @@ namespace Loom.ZombieBattleground
             if (success)
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }

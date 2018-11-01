@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Loom.Client;
+using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
@@ -59,14 +60,12 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CustomModesPage"));
+            _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CustomModesPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
-            _parentOfModesList = _selfPage.transform.Find("Panel_ModesList/Group");
+            _parentOfModesList = _selfPage.transform.Find("Panel_ModesList/Viewport/Content");
 
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
-
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
 
             FillCustomModes();
@@ -137,6 +136,8 @@ namespace Loom.ZombieBattleground
 
             private ISoundManager _soundManager;
 
+            private IPvPManager _pvpManager;
+
             private TextMeshProUGUI _titleText,
                                     _descriptionText;
 
@@ -153,6 +154,7 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
                 _stateManager = GameClient.Get<IAppStateManager>();
                 _soundManager = GameClient.Get<ISoundManager>();
+                _pvpManager = GameClient.Get<IPvPManager>();
 
                 _selfObject = Object.Instantiate(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Item_CustomMode"), parent, false);
@@ -181,12 +183,23 @@ namespace Loom.ZombieBattleground
 
             private async void PlayButtonOnClickHandler()
             {
-                GetCustomGameModeCustomUiResponse customUiResponse =
-                 await GameClient.Get<BackendFacade>().GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
+                _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-                CustomGameModeCustomUiElement[] customUiElements = customUiResponse.UiElements.ToArray();
-                GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
-                GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(Mode, customUiElements);
+                GetCustomGameModeCustomUiResponse customUiResponse =
+                    await GameClient.Get<BackendFacade>()
+                        .GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
+
+                RepeatedField<CustomGameModeCustomUiElement> customUiElements = customUiResponse?.UiElements;
+                if (customUiElements?.Count> 0)
+                {
+                    GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
+                    GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(Mode, customUiElements);
+                }
+                else
+                {
+                    _pvpManager.CustomGameModeAddress = Address.FromProtobufAddress(Mode.Address);
+                    _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
+                }
             }
         }
     }

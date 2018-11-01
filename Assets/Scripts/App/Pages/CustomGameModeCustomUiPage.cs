@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
             throw new NotSupportedException();
         }
 
-        public void Show(GameMode gameMode, CustomGameModeCustomUiElement[] customUiElements)
+        public void Show(GameMode gameMode, ICollection<CustomGameModeCustomUiElement> customUiElements)
         {
             GameMode = gameMode;
             _selfPage = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/CustomGameModeCustomUiPage"));
@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
             RefreshCustomUi(customUiElements);
         }
 
-        private void RefreshCustomUi(CustomGameModeCustomUiElement[] customUiElements)
+        private void RefreshCustomUi(ICollection<CustomGameModeCustomUiElement> customUiElements)
         {
             foreach (GameObject go in _uiElements)
             {
@@ -108,7 +108,8 @@ namespace Loom.ZombieBattleground
                         {
                             await _backendFacade.CallCustomGameModeFunction(
                                 Address.FromProtobufAddress(GameMode.Address),
-                                customUiElement.Button.OnClickFunctionName);
+                                customUiElement.Button.CallData.ToByteArray()
+                                );
                             GetCustomGameModeCustomUiResponse customUiResponse =
                                 await _backendFacade.GetGameModeCustomUi(Address.FromProtobufAddress(GameMode.Address));
                             RefreshCustomUi(customUiResponse.UiElements.ToArray());

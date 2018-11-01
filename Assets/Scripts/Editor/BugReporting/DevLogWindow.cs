@@ -7,24 +7,8 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Editor.BugReporting
 {
-    public class DevLogWindow : EditorWindow
+    internal class DevLogWindow : EditorWindow
     {
-        #region Static Methods
-
-        [MenuItem("Utilites/Bug Reporting/Dev Log Window")]
-        public static void ShowWindow()
-        {
-            EditorWindow.GetWindow(typeof(DevLogWindow));
-        }
-
-        [MenuItem("Utilites/Bug Reporting/Throw Exception")]
-        public static void ThrowException()
-        {
-            throw new Exception($"Awful exception {Random.Range(10000, 99999)}!");
-        }
-
-        #endregion
-
         #region Constructors
 
         public DevLogWindow()

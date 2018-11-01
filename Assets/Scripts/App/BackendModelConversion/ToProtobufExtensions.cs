@@ -6,9 +6,8 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
-        public static CardPrototype GetCardPrototype(this WorkingCard workingCard)
+        public static CardPrototype GetCardPrototype(this Card card)
         {
-            Card card = workingCard.LibraryCard;
             CardPrototype cardPrototype = new CardPrototype
             {
                 DataId = card.Id,
@@ -49,7 +48,7 @@ namespace Loom.ZombieBattleground.Data
                 cardInstances[i] = new CardInstance
                 {
                     InstanceId = cards[i].Id,
-                    Prototype = ToProtobufExtensions.GetCardPrototype(cards[i]),
+                    Prototype = cards[i].LibraryCard.GetCardPrototype(),
                     Defense = cards[i].Health,
                     Attack = cards[i].Damage
                 };
