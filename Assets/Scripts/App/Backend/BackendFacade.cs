@@ -64,11 +64,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.WriterHost)
-                .Create();
+            IRpcClient writer =
+                RpcClientFactory
+                    .Configure()
+                    .WithLogger(Debug.unityLogger)
+                    .WithWebSocket(BackendEndpoint.WriterHost)
+                    .Create();
 
-            reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.ReaderHost)
-                .Create();
+            reader =
+                RpcClientFactory
+                    .Configure()
+                    .WithLogger(Debug.unityLogger)
+                    .WithWebSocket(BackendEndpoint.ReaderHost)
+                    .Create();
 
             DAppChainClient client = new DAppChainClient(writer, reader)
             {
@@ -412,7 +420,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
             }
-            GameClient.Get<IQueueManager>().StopNetworkThread();
+            GameClient.Get<IQueueManager>().Clear();
         }
 
         public void EventHandler(object sender, JsonRpcEventData e)

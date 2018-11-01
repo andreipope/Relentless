@@ -247,7 +247,7 @@ namespace Loom.ZombieBattleground
 
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
-            Action action = async () =>
+            Func<Task> taskFunc = async () =>
             {
                 string jsonStr = SystemText.Encoding.UTF8.GetString(data);
 
@@ -319,7 +319,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            GameClient.Get<IQueueManager>().AddAction(action);
+            GameClient.Get<IQueueManager>().AddTask(taskFunc);
         }
 
         private async Task LoadInitialGameState()
