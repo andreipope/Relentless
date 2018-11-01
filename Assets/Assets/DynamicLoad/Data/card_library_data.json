@@ -609,7 +609,13 @@
               "callType": "ENTRY",
               "targetType": "opponent_card",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
