@@ -2696,7 +2696,13 @@
               "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "HEAL",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/HealingTouchVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
