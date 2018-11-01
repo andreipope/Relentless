@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
             BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
 
-            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFilePath);
+            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
             ConfigData configData = new ConfigData();
             if (File.Exists(configDataFilePath))
             {

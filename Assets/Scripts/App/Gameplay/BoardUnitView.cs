@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
 
         private const string _greenGlow = "Green";
 
+        public Action ArrivalEndCallback;
+
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
@@ -113,8 +115,6 @@ namespace Loom.ZombieBattleground
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
-
-
         }
 
         public BoardUnitModel Model { get; }
@@ -135,10 +135,10 @@ namespace Loom.ZombieBattleground
             Model.SetObjectInfo(card);
 
             string setName = _cardsController.GetSetOfCard(card.LibraryCard);
-            string rank = Model.Card.LibraryCard.CardRank.ToString().ToLower();
-            string picture = Model.Card.LibraryCard.Picture.ToLower();
+            string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
+            string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
 
@@ -388,7 +388,7 @@ namespace Loom.ZombieBattleground
         public void PlayArrivalAnimation(bool firstAppear = true)
         {
             GameObject arrivalPrefab =
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
+          _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
             _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
             Transform spriteContainerTransform =
                 _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
@@ -396,10 +396,12 @@ namespace Loom.ZombieBattleground
             scale.x *= -1;
             spriteContainerTransform.transform.localScale = scale;
             _pictureSprite.transform.SetParent(spriteContainerTransform, false);
+
             if (firstAppear)
             {
                 GameObject.transform.position += Vector3.back * 5f;
             }
+
         }
 
         public void ArrivalAnimationEventHandler()
@@ -429,23 +431,25 @@ namespace Loom.ZombieBattleground
                 if (Model.Card.LibraryCard.CardRank == Enumerators.CardRank.COMMANDER)
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                        Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "1",
-                        Constants.ZombiesSoundVolume, false, true);
+
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "1",
+                    Constants.ZombiesSoundVolume, false, true);
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                        Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "2",
-                        Constants.ZombiesSoundVolume / 2f, false, true);
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "2",
+                    Constants.ZombiesSoundVolume / 2f, false, true);
                 }
                 else
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                        Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
-                        false, true);
+
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
+                    false, true);
                 }
 
                 if (Model.Card.LibraryCard.Name.Equals("Freezzee"))
                 {
                     List<BoardUnitView> freezzees = Model.GetEnemyUnitsList(Model)
-                        .FindAll(x => x.Model.Card.LibraryCard.Id == Model.Card.LibraryCard.Id);
+                    .FindAll(x => x.Model.Card.LibraryCard.Id == Model.Card.LibraryCard.Id);
 
                     if (freezzees.Count > 0)
                     {
@@ -456,8 +460,6 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 }
-
-                _ranksController.UpdateRanksByElements(Model.OwnerPlayer.BoardCards, Model.Card);
             }
 
             _initialScale = GameObject.transform.localScale;
@@ -465,6 +467,9 @@ namespace Loom.ZombieBattleground
             _ignoreArrivalEndEvents = false;
 
             _arrivalDone = true;
+
+            ArrivalEndCallback?.Invoke();
+            ArrivalEndCallback = null;
         }
 
         public void SetSelectedUnit(bool status)
@@ -669,7 +674,7 @@ namespace Loom.ZombieBattleground
 
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
                 _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
                     false, true);
             }
         }
@@ -690,6 +695,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     _fightTargetingArrow.Dispose();
+                    _fightTargetingArrow = null;
                 }
             }
         }
@@ -726,11 +732,12 @@ namespace Loom.ZombieBattleground
                         Model.CurrentDamage);
 
                     hitCallback();
+
+                    _fightTargetingArrow = null;
+                    SetHighlightingEnabled(true);
                 },
                 () =>
                 {
-                    _fightTargetingArrow = null;
-                    SetHighlightingEnabled(true);
                     attackCompleteCallback();
 
                     completeCallback?.Invoke();
@@ -751,11 +758,12 @@ namespace Loom.ZombieBattleground
                         targetCardView.Transform.position, Model.CurrentDamage);
 
                     hitCallback();
+
+                    _fightTargetingArrow = null;
+                    SetHighlightingEnabled(true);
                 },
                 () =>
                 {
-                    _fightTargetingArrow = null;
-                    SetHighlightingEnabled(true);
                     attackCompleteCallback();
 
                     if (targetCardView.Model.CurrentHp <= 0)

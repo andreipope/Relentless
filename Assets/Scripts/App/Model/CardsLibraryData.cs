@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Data
 
         public Card GetCardFromName(string name)
         {
-            return Cards.Find(x => x.Name == name);
+            return Cards.Find(x => x.Name.ToLowerInvariant() == name.ToLower());
         }
 
         public void FillAllCards()
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Data
                     {
                         card.CardSetType =
                             (Enumerators.SetType) Enum.Parse(typeof(Enumerators.SetType),
-                                set.Name.ToUpper()); // todo improve this shit!
+                                set.Name.ToUpperInvariant()); // todo improve this shit!
 
                         if (card.Kind != null)
                         {

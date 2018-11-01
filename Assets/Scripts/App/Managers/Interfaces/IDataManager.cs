@@ -23,8 +23,6 @@ namespace Loom.ZombieBattleground
 
         ConfigData ConfigData { get; set; }
 
-        long CachedDecksLastModificationTimestamp { get; set; }
-
         BetaConfig BetaConfig { get; set; }
 
         Task LoadRemoteConfig();

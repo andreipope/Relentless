@@ -22,16 +22,9 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
-        private BackendFacade _backendFacade;
-
         private Enumerators.AppState _finishMatchAppState;
 
-        private float lookingForOpponentTimeout;
-
         public Enumerators.MatchType MatchType { get; set; }
-
-        // TODO : Find another solution, right now its tempraoray only....
-        private bool _checkPlayerStatus;
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
@@ -55,15 +48,6 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public async Task StopLookingForOpponent () {
-            await _backendFacade.UnsubscribeEvent();
-            if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
-            {
-                _uiManager.HidePopup<ConnectionPopup>();
-            }
-            _uiManager.DrawPopup<WarningPopup>("Couldn't find an opponent.");
-        }
-
         public async void FindMatch()
         {
             switch (MatchType)
@@ -77,24 +61,28 @@ namespace Loom.ZombieBattleground
                         {
                             GameClient.Get<IQueueManager>().StartNetworkThread();
                             _uiManager.DrawPopup<ConnectionPopup>();
-                            _uiManager.GetPopup<ConnectionPopup>().ShowLookingForMatch();
-                            await _pvpManager.FindMatch();
+
+                            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                            connectionPopup.ShowLookingForMatch();
+                            connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
+
+                            bool success = await _pvpManager.FindMatch();
+                            if (!success)
+                                return;
 
                             if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
                             {
-                                OnStartGamePvP();
+                                StartPvPMatch();
                             }
                             else
                             {
-                                lookingForOpponentTimeout = Constants.matchmakingTimeOut;
-                                _pvpManager.GameStartedActionReceived += OnStartGamePvP;
+                                _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
                             }
-                        } 
+                        }
                         catch (Exception e) {
                             Debug.LogWarning(e);
-                            if (_uiManager.GetPopup<ConnectionPopup>().Self != null) {
-                                _uiManager.HidePopup<ConnectionPopup>();
-                            }
+                            _uiManager.GetPopup<ConnectionPopup>().Hide();
+                            _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
                         }
                     }
                     break;
@@ -102,6 +90,23 @@ namespace Loom.ZombieBattleground
                     throw new NotImplementedException(MatchType + " not implemented yet.");
             }
 
+        }
+
+        private async void ConnectionPopupOnCancelMatchmakingClicked()
+        {
+            try
+            {
+                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
+                connectionPopup.Hide();
+                await _pvpManager.CancelFindMatch();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                _uiManager.GetPopup<ConnectionPopup>().Hide();
+                _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
+            }
         }
 
         public void FindMatch(Enumerators.MatchType matchType)
@@ -124,28 +129,14 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
-
-            lookingForOpponentTimeout = 0;
+            _pvpManager.MatchingFailed += OnPvPManagerMatchingFailed;
         }
 
-        public async void Update()
+        public void Update()
         {
-            if (_checkPlayerStatus)
-            {
-                _checkPlayerStatus = false;
-                GetGameState();
-            }
 
-            if (lookingForOpponentTimeout > 0) {
-                lookingForOpponentTimeout -= Time.deltaTime;
-                if (lookingForOpponentTimeout <= 0) {
-                    lookingForOpponentTimeout = 0;
-                    await StopLookingForOpponent();
-                }
-            }
         }
 
         private void CreateLocalMatch()
@@ -153,20 +144,22 @@ namespace Loom.ZombieBattleground
             StartLoadMatch();
         }
 
-        private void OnStartGamePvP()
+        private void StartPvPMatch()
         {
-            lookingForOpponentTimeout = 0;
-            _checkPlayerStatus = true;
-        }
-
-        private async void GetGameState()
-        {
-            // TODO : Quick fix... something wrong with backend side..
-            // Need to remove delay
-            await Task.Delay(3000);
-
             _uiManager.HidePopup<ConnectionPopup>();
             CreateLocalMatch();
+        }
+
+        private void OnPvPManagerGameStartedActionReceived()
+        {
+            _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
+            StartPvPMatch();
+        }
+
+        private void OnPvPManagerMatchingFailed()
+        {
+            _uiManager.GetPopup<ConnectionPopup>().Hide();
+            _uiManager.DrawPopup<WarningPopup>("Couldn't find an opponent.");
         }
 
         private void StartLoadMatch()
@@ -191,7 +184,6 @@ namespace Loom.ZombieBattleground
                         _appStateManager.ChangeAppState(_finishMatchAppState);
                     }
                     break;
-
             }
         }
 

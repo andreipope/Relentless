@@ -34,27 +34,9 @@ static class QuickPlayCommandsHandler
 
         string opponentDeckName = _dataManager.CachedOpponentDecksData.Decks.First(deck => deck.Id == opponentDeckId).Name;
 
-        string playerStarterCards = "[ ";
-        for (int i = 0; i < _gameplayManager.PlayerStarterCards.Count; i++)
-        {
-            playerStarterCards += _gameplayManager.PlayerStarterCards[i] + " ,";
-        }
-        playerStarterCards = playerStarterCards.TrimEnd(',');
-        playerStarterCards += "]";
-
-        string opponentStarterCards = "[ ";
-        for (int i = 0; i < _gameplayManager.OpponentStarterCards.Count; i++)
-        {
-            opponentStarterCards += _gameplayManager.OpponentStarterCards[i] + " ,";
-        }
-        opponentStarterCards = opponentStarterCards.TrimEnd(',');
-        opponentStarterCards += "]";
-
         Debug.Log($"(1). Player Horde : {playerDeckName}\n"+
                   $"(2). Enemy AI Horde : {opponentDeckName}\n" +
-                  $"(3). Starting Turn : {_gameplayManager.StartingTurn}\n"+
-                  $"(4). Player Starter Zombies : {playerStarterCards}\n"+
-                  $"(5). Enemy Starter Zombies : {opponentStarterCards}\n");
+                  $"(3). Starting Turn : {_gameplayManager.StartingTurn}\n");
     }
 
     [CommandHandler(Description = "Starts the battle")]
@@ -103,33 +85,4 @@ static class QuickPlayCommandsHandler
 
         GameClient.Get<IGameplayManager>().OpponentDeckId = (int)_dataManager.CachedOpponentDecksData.Decks[index].Id;
     }
-
-    [CommandHandler(Description = "Adds starting cards in Player Starter")]
-    private static void AddPlayerStarter(params string[] cards)
-    {
-        _gameplayManager.PlayerStarterCards = new List<string>();
-
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (_gameplayManager.PlayerStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
-                break;
-
-            _gameplayManager.PlayerStarterCards.Add(cards[i]);
-        }
-    }
-
-    [CommandHandler(Description = "Adds starting cards in Enemy Starter")]
-    private static void AddEnemyStarter(string[] cards)
-    {
-        _gameplayManager.OpponentStarterCards = new List<string>();
-
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (_gameplayManager.OpponentStarterCards.Count >= Constants.DefaultCardsInHandAtStartGame)
-                break;
-
-            _gameplayManager.OpponentStarterCards.Add(cards[i]);
-        }
-    }
-
 }

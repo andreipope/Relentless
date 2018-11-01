@@ -2,6 +2,7 @@
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -13,6 +14,7 @@ namespace Loom.ZombieBattleground
         event Action MatchCreatedActionReceived;
         event Action MatchingStartedActionReceived;
         event Action PlayerLeftGameActionReceived;
+        event Action MatchingFailed;
 
         event Action GameStartedActionReceived;
         event Action GameEndedActionReceived;
@@ -34,14 +36,14 @@ namespace Loom.ZombieBattleground
 
         GameState InitialGameState { get; }
 
-        OpponentDeck OpponentDeck { get; set; }
-
-        int OpponentDeckIndex { get; set; }
-
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
 
-        Task FindMatch();
+        Task<bool> FindMatch();
+
+        Task CancelFindMatch();
+
+        WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer);
     }
 }

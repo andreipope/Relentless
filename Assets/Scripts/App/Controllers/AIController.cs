@@ -100,19 +100,24 @@ namespace Loom.ZombieBattleground
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
-                List<string> playerDeck = new List<string>();
+                List<WorkingCard> workingDeck = new List<WorkingCard>();
 
                 int deckId = _gameplayManager.OpponentDeckId;
-                foreach (DeckCardData card in _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId)
-                    .Cards)
+                OpponentDeck deck = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId);
+                foreach (DeckCardData card in deck.Cards)
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        playerDeck.Add(card.CardName);
+                        workingDeck.Add(
+                            new WorkingCard(
+                                _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName),
+                                _gameplayManager.OpponentPlayer
+                                )
+                            );
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(playerDeck, true);
+                _gameplayManager.OpponentPlayer.SetDeck(workingDeck, true);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -303,7 +308,7 @@ namespace Loom.ZombieBattleground
             bool wasAction = false;
             foreach (WorkingCard card in cardsInHand)
             {
-                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
+                if (_gameplayManager.OpponentPlayer.BoardCards.Count >= _gameplayManager.OpponentPlayer.MaxCardsInPlay)
                 {
                     break;
                 }
@@ -482,7 +487,7 @@ namespace Loom.ZombieBattleground
                         .Find(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
                     if (overflowGooAbility != null)
                     {
-                        if (_gameplayManager.OpponentPlayer.BoardCards.Count + boardCount < Constants.MaxBoardUnits - 1)
+                        if (_gameplayManager.OpponentPlayer.BoardCards.Count + boardCount < _gameplayManager.OpponentPlayer.MaxCardsInPlay - 1)
                         {
                             boardCount++;
                             gooAmount -= cards[i].LibraryCard.Cost;
@@ -504,7 +509,7 @@ namespace Loom.ZombieBattleground
                 bool wasAction = false;
                 foreach (WorkingCard card in overflowGooCards)
                 {
-                    if (_gameplayManager.OpponentPlayer.BoardCards.Count >= Constants.MaxBoardUnits)
+                    if (_gameplayManager.OpponentPlayer.BoardCards.Count >= _gameplayManager.OpponentPlayer.MaxCardsInPlay)
                         break;
                     if (CardCanBePlayable(card))
                     {
@@ -603,8 +608,7 @@ namespace Loom.ZombieBattleground
 
             switch (card.LibraryCard.CardKind)
             {
-                case Enumerators.CardKind.CREATURE
-                    when _battlegroundController.OpponentBoardCards.Count < Constants.MaxBoardUnits:
+                case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
                     _gameplayManager.OpponentPlayer.AddCardToBoard(card);
 

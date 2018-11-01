@@ -10,25 +10,23 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string VersionFileResolution = ".ver";
 
-        internal const string LocalUserDataFilePath = "0412DD0.dat";
+        internal const string LocalUserDataFileName = "0412DD0.dat";
 
-        internal const string LocalCardsLibraryDataFilePath = "card_library_data.json";
+        internal const string LocalCardsLibraryDataFileName = "card_library_data.json";
 
-        internal const string LocalCollectionDataFilePath = "collection_data.json";
+        internal const string LocalCollectionDataFileName = "collection_data.json";
 
-        internal const string LocalHeroesDataFilePath = "heroes_data.json";
+        internal const string LocalHeroesDataFileName = "heroes_data.json";
 
-        internal const string LocalDecksDataFilePath = "decks_data.json";
+        internal const string LocalDecksDataFileName = "decks_data.json";
 
-        internal const string LocalOpponentDecksDataFilePath = "opponent_decks_data.json";
+        internal const string LocalOpponentDecksDataFileName = "opponent_decks_data.json";
 
-        internal const string LocalCreditsDataFilePath = "credits_data.json";
+        internal const string LocalCreditsDataFileName = "credits_data.json";
 
-        internal const string LocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
+        internal const string LocalBuffsTooltipDataFileName = "buffs_tooltip_data.json";
 
-        internal const string LocalTutorialDataFilePath = "tutorial_data.json";
-
-        internal const string LocalConfigDataFilePath = "config_data.json";
+        internal const string LocalConfigDataFileName = "config_data.json";
 
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
@@ -136,8 +134,14 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
-        internal const float matchmakingTimeOut = 120;
+        internal const float MatchmakingTimeOut = 120;
 
+        internal const float TurnTime = 120;
+
+        internal const float PvPWaitForTurnMaxTime = 150;
+
+        internal const float TimeForStartEndTurnAnimation = 15;
+        
         internal const string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
         internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";

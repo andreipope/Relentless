@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground
 {
@@ -13,6 +16,8 @@ namespace Loom.ZombieBattleground
         private IGameplayManager _gameplayManager;
 
         private IDataManager _dataManager;
+
+        private IPvPManager _pvpManager;
 
         private ITutorialManager _tutorialManager;
 
@@ -52,6 +57,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -92,48 +98,76 @@ namespace Loom.ZombieBattleground
 
         public void InitializePlayer(int playerId)
         {
-            _gameplayManager.CurrentPlayer = new Player(playerId, GameObject.Find("Player"), false);
+            Player player = new Player(playerId, GameObject.Find("Player"), false);
+
+            _gameplayManager.CurrentPlayer = player;
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
-                List<string> playerDeck = new List<string>();
+                List<WorkingCard> workingDeck = new List<WorkingCard>();
 
-                int deckId = _gameplayManager.PlayerDeckId;
-                foreach (DeckCardData card in _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId).Cards)
+                bool isMainTurnSecond;
+                switch (_matchManager.MatchType)
                 {
-                    for (int i = 0; i < card.Amount; i++)
-                    {
+                    case Enumerators.MatchType.LOCAL:
+                        int deckId = _gameplayManager.PlayerDeckId;
+                        Deck deck = _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId);
+                        foreach (DeckCardData card in deck.Cards)
+                        {
+                            for (int i = 0; i < card.Amount; i++)
+                            {
 #if DEV_MODE
 
 // playerDeck.Add("Whizpar");
 // playerDeck.Add("Nail Bomb");
 #endif
 
-                        playerDeck.Add(card.CardName);
-                    }
+                                workingDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName), player));
+                            }
+                        }
+
+                        isMainTurnSecond = false;
+                        break;
+                    case Enumerators.MatchType.PVP:
+                        foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
+                        {
+                            workingDeck.Add(_pvpManager.GetWorkingCardFromCardInstance(cardInstance, player));
+                        }
+
+                        isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                if (_matchManager.MatchType == Enumerators.MatchType.PVP)
-                {
-                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, !GameClient.Get<IPvPManager>().IsCurrentPlayer());
-                }
-                else
-                {
-                    _gameplayManager.CurrentPlayer.SetDeck(playerDeck, false);
-                }
+                player.SetDeck(workingDeck, isMainTurnSecond);
             }
 
-            _gameplayManager.CurrentPlayer.TurnStarted += OnTurnStartedStartedHandler;
-            _gameplayManager.CurrentPlayer.TurnEnded += OnTurnEndedEndedHandler;
+            player.TurnStarted += OnTurnStartedStartedHandler;
+            player.TurnEnded += OnTurnEndedEndedHandler;
         }
 
         public void SetHand()
         {
-            _gameplayManager.PlayerStarterCards =
-                _gameplayManager.CurrentPlayer.SetFirstHand(_gameplayManager.PlayerStarterCards, _gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
+            Player player = _gameplayManager.CurrentPlayer;
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.LOCAL:
+                    player.SetFirstHandForLocalMatch(_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
+                    break;
+                case Enumerators.MatchType.PVP:
+                    List<WorkingCard> workingCards =
+                        player.PvPPlayerState.CardsInHand
+                        .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, player))
+                        .ToList();
+
+                    player.SetFirstHandForPvPMatch(workingCards);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             _timerManager.AddTimer(UpdateCardDistribution);
-
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
