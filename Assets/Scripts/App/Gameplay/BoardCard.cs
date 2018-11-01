@@ -113,6 +113,8 @@ namespace Loom.ZombieBattleground
 
             ParentOfEditingGroupUI = Transform.Find("DeckEditingGroupUI");
 
+            costHighlightObject = Transform.Find("CostHighlight").gameObject;
+
             AnimationEventTriggering = GameObject.GetComponent<AnimationEventTriggering>();
             BehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
@@ -135,6 +137,8 @@ namespace Loom.ZombieBattleground
         public Transform Transform => GameObject.transform;
 
         public GameObject GameObject { get; }
+
+        public GameObject costHighlightObject { get; protected set; }
 
         public int CurrentTurn { get; set; }
 
