@@ -93,6 +93,7 @@ namespace Loom.ZombieBattleground
         private void SoloModeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.LOCAL;
             _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
         }
 

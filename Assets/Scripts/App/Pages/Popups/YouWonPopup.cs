@@ -96,9 +96,9 @@ namespace Loom.ZombieBattleground
                 : dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
 
             Hero currentPlayerHero = dataManager.CachedHeroesData.HeroesParsed[heroId];
-            string heroName = currentPlayerHero.Element.ToLower();
+            string heroName = currentPlayerHero.Element.ToLowerInvariant();
             _selectHeroSpriteRenderer.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
 
             // TODO : instead of 1000, should be a value accordint to Level
             // TODO : instead of 400, should be how much player experinece on wining game
@@ -169,8 +169,6 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.HidePopup<YouWonPopup>();
-
-            GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
         }

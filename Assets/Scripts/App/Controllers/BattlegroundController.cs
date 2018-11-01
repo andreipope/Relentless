@@ -78,9 +78,11 @@ namespace Loom.ZombieBattleground
 
         private bool _turnTimerCounting = false;
 
-        private GameObject _endTurnAnimationObject;
+        private GameObject _endTurnRingsAnimationGameObject;
 
-        private Animator _endTurnAnimationAnimator;
+        private Animator _endTurnButtonAnimationAnimator;
+
+        private ParticleSystem[] _endTurnRingsAnimationParticleSystems;
 
         public event Action<int> PlayerGraveyardUpdated;
 
@@ -152,11 +154,18 @@ namespace Loom.ZombieBattleground
                         {
                             StopTurn();
                         }
-                        else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnAnimationObject.activeInHierarchy)
+                        else if (TurnTimer <= Constants.TimeForStartEndTurnAnimation && !_endTurnRingsAnimationGameObject.activeInHierarchy)
                         {
-                            _endTurnAnimationObject.SetActive(true);
-                            _endTurnAnimationAnimator.enabled = true;
-                            _endTurnAnimationAnimator.Play("TurnTimer");
+                            _endTurnRingsAnimationGameObject.SetActive(true);
+                            _endTurnButtonAnimationAnimator.enabled = true;
+                            _endTurnButtonAnimationAnimator.Play("TurnTimer");
+
+                            float speed = Constants.TimeForStartEndTurnAnimation / TurnTimer;
+                            foreach (ParticleSystem particleSystem in _endTurnRingsAnimationParticleSystems)
+                            {
+                                ParticleSystem.MainModule mainModule = particleSystem.main;
+                                mainModule.simulationSpeed = speed;
+                            }
                         }
                     }
                 }
@@ -203,7 +212,7 @@ namespace Loom.ZombieBattleground
                     // CreateDeadAnimation(cardToDestroy);
 
                     string cardDeathSoundName =
-                        cardToDestroy.Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundDeath;
+                        cardToDestroy.Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
                     float soundLength = 0f;
 
                     if (!cardToDestroy.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
@@ -282,8 +291,8 @@ namespace Loom.ZombieBattleground
             CurrentTurn = Constants.FirstGameTurnIndex;
 
 #if DEV_MODE
-            _gameplayManager.OpponentPlayer.Health = 99;
-            _gameplayManager.CurrentPlayer.Health = 99;
+            _gameplayManager.OpponentPlayer.Defense = 99;
+            _gameplayManager.CurrentPlayer.Defense = 99;
 #endif
 
             _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;
@@ -293,11 +302,11 @@ namespace Loom.ZombieBattleground
             PlayerGraveyardObject = GameObject.Find("GraveyardPlayer");
             OpponentGraveyardObject = GameObject.Find("GraveyardOpponent");
 
-            _endTurnAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
-            _endTurnAnimationObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
-
-            _endTurnAnimationObject.SetActive(false);
-            _endTurnAnimationAnimator.enabled = false;
+            _endTurnButtonAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
+            _endTurnRingsAnimationGameObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
+            _endTurnRingsAnimationParticleSystems = _endTurnRingsAnimationGameObject.gameObject.GetComponentsInChildren<ParticleSystem>();
+            _endTurnRingsAnimationGameObject.SetActive(false);
+            _endTurnButtonAnimationAnimator.enabled = false;
         }
 
         public void StartGameplayTurns()
@@ -330,7 +339,7 @@ namespace Loom.ZombieBattleground
                 !_turnTimerCounting &&
                 _gameplayManager.CurrentTurnPlayer.IsLocalPlayer)
             {
-                TurnTimer = Constants.TurnTime;
+                TurnTimer = _gameplayManager.CurrentTurnPlayer.TurnTime;
                 _turnTimerCounting = true;
             }
 
@@ -405,7 +414,7 @@ namespace Loom.ZombieBattleground
             TurnStarted?.Invoke();
         }
 
-        public async void EndTurn()
+        public void EndTurn()
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -415,12 +424,12 @@ namespace Loom.ZombieBattleground
             {
                 _turnTimerCounting = false;
 
-                if (_endTurnAnimationObject.activeInHierarchy)
+                if (_endTurnRingsAnimationGameObject.activeInHierarchy)
                 {
-                    _endTurnAnimationObject.SetActive(false);
+                    _endTurnRingsAnimationGameObject.SetActive(false);
                 }
 
-                _endTurnAnimationAnimator.enabled = false;
+                _endTurnButtonAnimationAnimator.enabled = false;
             }
 
             if (_gameplayManager.IsLocalPlayerTurn())
@@ -454,21 +463,27 @@ namespace Loom.ZombieBattleground
 
         public void StopTurn()
         {
-            EndTurn();
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+                 (parameter, completeCallback) =>
+                 {
+                     EndTurn();
 
-            if (_gameplayManager.IsLocalPlayerTurn())
-            {
-                _uiManager.DrawPopup<YourTurnPopup>();
+                     if (_gameplayManager.IsLocalPlayerTurn())
+                     {
+                         _uiManager.DrawPopup<YourTurnPopup>();
 
-                _timerManager.AddTimer((x) =>
-                {
-                    StartTurn();
-                }, null, 4f);
-            }
-            else
-            {
-                StartTurn();
-            }            
+                         _timerManager.AddTimer((x) =>
+                         {
+                             StartTurn();
+                         }, null, 4f);
+                     }
+                     else
+                     {
+                         StartTurn();
+                     }
+
+                     completeCallback?.Invoke();
+                 });
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
@@ -1090,8 +1105,20 @@ namespace Loom.ZombieBattleground
 
         private void SetupOverlordsDecksAsSpecific(List<string> playerCards, List<string> opponentCards)
         {
-            _gameplayManager.CurrentPlayer.SetDeck(playerCards, false);
-            _gameplayManager.OpponentPlayer.SetDeck(opponentCards, true);
+            List<WorkingCard> workingPlayerCards =
+                playerCards
+                    .Select(cardName =>
+                        new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), _gameplayManager.CurrentPlayer))
+                    .ToList();
+
+            List<WorkingCard> workingOpponentCards =
+                opponentCards
+                    .Select(cardName =>
+                        new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), _gameplayManager.OpponentPlayer))
+                    .ToList();
+
+            _gameplayManager.CurrentPlayer.SetDeck(workingPlayerCards, false);
+            _gameplayManager.OpponentPlayer.SetDeck(workingOpponentCards, true);
         }
 
         private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)

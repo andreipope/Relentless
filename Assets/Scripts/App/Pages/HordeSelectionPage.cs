@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         private Button _newHordeDeckButton;
 
+        private IAnalyticsManager _analyticsManager;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -73,6 +75,7 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
         }
 
         public void Update()
@@ -209,13 +212,10 @@ namespace Loom.ZombieBattleground
             {
                 await _backendFacade.DeleteDeck(
                     _backendDataControlMediator.UserDataModel.UserId,
-                    deck.SelfDeck.Id,
-                    _dataManager.CachedDecksLastModificationTimestamp
+                    deck.SelfDeck.Id
                 );
                 _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
@@ -421,10 +421,10 @@ namespace Loom.ZombieBattleground
 
                 _setTypeIcon.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" +
-                        SelfHero.Element.ToLower());
+                        SelfHero.Element.ToLowerInvariant());
                 _hordePicture.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" +
-                        SelfHero.Element.ToLower());
+                        SelfHero.Element.ToLowerInvariant());
 
                 _buttonSelect.onClick.AddListener(SelectButtonOnClickHandler);
             }
@@ -593,6 +593,8 @@ namespace Loom.ZombieBattleground
             }
 
             BattleButtonUpdate();
+
+            _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
         }
 
         #endregion
