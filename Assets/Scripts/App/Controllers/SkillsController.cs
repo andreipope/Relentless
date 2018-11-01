@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         private bool _isDirection;
 
+        private GameObject _buildParticlePrefab;
+
         public BoardSkill OpponentPrimarySkill { get; private set; }
 
         public BoardSkill OpponentSecondarySkill { get; private set; }
@@ -103,6 +105,8 @@ namespace Loom.ZombieBattleground
 
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
+
+            _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary].OverlordSkill = Enumerators.OverlordSkill.SHATTER;
 
             if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
                 secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
@@ -217,7 +221,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     skill.UseSkill(targetPlayer);
-                    _vfxController.CreateSkillVfx(
+                    CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
                         targetPlayer,
@@ -248,7 +252,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     skill.UseSkill(targetUnitView.Model);
-                    _vfxController.CreateSkillVfx(
+                    CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
                         targetUnitView,
@@ -277,7 +281,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 skill.UseSkill(target);
-                _vfxController.CreateSkillVfx(
+                CreateSkillVfx(
                     GetVfxPrefabBySkill(skill),
                     skill.SelfObject.transform.position,
                     target,
@@ -292,6 +296,18 @@ namespace Loom.ZombieBattleground
                     _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
                         playOverlordSkill));
                 }
+            }
+        }
+
+        private void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
+        {
+            if (_buildParticlePrefab == null)
+            {
+                _vfxController.CreateSkillVfx(prefab, from, target, callbackComplete, isDirection);
+            }
+            else
+            {
+                _vfxController.CreateSkillBuildVfx(_buildParticlePrefab, prefab, from, target, callbackComplete, isDirection);
             }
         }
 
@@ -343,6 +359,7 @@ namespace Loom.ZombieBattleground
         private GameObject GetVfxPrefabBySkill(BoardSkill skill)
         {
             _isDirection = false;
+            _buildParticlePrefab = null;
             GameObject prefab;
             switch (skill.Skill.OverlordSkill)
             {
@@ -351,8 +368,12 @@ namespace Loom.ZombieBattleground
                     _isDirection = true;
                     break;
                 case Enumerators.OverlordSkill.FREEZE:
-                case Enumerators.OverlordSkill.SHATTER:
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FreezeVFX");
+                    break;
+                case Enumerators.OverlordSkill.SHATTER:
+                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Shatter_Projectile");
+                    _buildParticlePrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Shatter_BuildUp");
+                    _isDirection = true;
                     break;
                 case Enumerators.OverlordSkill.POISON_DART:
                 case Enumerators.OverlordSkill.TOXIC_POWER:
@@ -1308,10 +1329,14 @@ namespace Loom.ZombieBattleground
 
         private void ShatterAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), target);
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Shatter_ImpactVFX"), target, isIgnoreCastVfx: true);
 
             if (target is BoardUnitModel boardUnitModel)
             {
+                Vector3 position = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target).Transform.position + Vector3.up * 0.34f;
+
+                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ShatterCardDestroyVFX"), position, delay: 5f);
+
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
                 _battlegroundController.DestroyBoardUnit(boardUnitModel);
             }
