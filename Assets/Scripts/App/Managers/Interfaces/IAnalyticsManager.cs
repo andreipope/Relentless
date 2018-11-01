@@ -1,5 +1,4 @@
 ﻿using Loom.ZombieBattleground.Common;
-using mixpanel;
 
 public interface IAnalyticsManager
 {
@@ -15,7 +14,7 @@ public interface IAnalyticsManager
 
     void Dispose();
 
-    void SetEvent(string identifyId, string propertyName, Value props);
+    void SetEvent(string propertyName);
 
     void SetPoepleProperty(string identityId, string property, string value);
 

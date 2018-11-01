@@ -4,7 +4,6 @@ using System.Numerics;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using mixpanel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -158,7 +157,7 @@ namespace Loom.ZombieBattleground
 
                     SuccessfulLogin();
 
-                    SendLoginAnalytics();
+                    _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
                 }
                 catch (GameVersionMismatchException e)
                 {
@@ -175,14 +174,6 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.DrawPopup<WarningPopup>("Input a valid Tester Key");
             }
-        }
-
-        private void SendLoginAnalytics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = Application.platform.ToString();
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventLogIn, props);
         }
 
         private void SuccessfulLogin()

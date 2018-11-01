@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
-using mixpanel;
 
 namespace Loom.ZombieBattleground
 {
@@ -112,7 +111,7 @@ namespace Loom.ZombieBattleground
 
             IsTutorial = true;
 
-            StartTutorialAnaltyics();
+            _analyticsManager.SetEvent( AnalyticsManager.EventStartedTutorial);
         }
 
         public void StopTutorial()
@@ -139,7 +138,7 @@ namespace Loom.ZombieBattleground
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
-            EndTutorailAnalytics();
+            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial);
         }
 
         public void SkipTutorial(Enumerators.AppState state)
@@ -415,22 +414,6 @@ namespace Loom.ZombieBattleground
                 _targettingArrow.Dispose();
                 _targettingArrow = null;
             }
-        }
-
-        private void StartTutorialAnaltyics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventStartedTutorial, props);
-        }
-
-        private void EndTutorailAnalytics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventCompletedTutorial, props);
         }
     }
 }

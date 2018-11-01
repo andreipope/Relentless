@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using mixpanel;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -50,7 +48,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener?.Dispose();
 
             _analyticsManager.NotifyFinishedMatch(obj);
-            SendEndedMatchAnalytics();
+            _analyticsManager.SetEvent(AnalyticsManager.EventEndedMatch);
         }
 
         private void GameplayManagerGameInitialized()
@@ -62,23 +60,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener = new PlayerEventListener(_gameplayManager.OpponentPlayer, true);
 
             _analyticsManager.NotifyStartedMatch();
-            SendStartedMatchAnalytics();
-        }
-
-        private void SendStartedMatchAnalytics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventStartedMatch, props);
-        }
-
-        private void SendEndedMatchAnalytics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventEndedMatch, props);
+            _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch);
         }
 
         private class PlayerEventListener : IDisposable

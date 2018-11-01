@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -12,7 +13,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 {
     private const string MatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
     private const string FirstTimeInstallKey = "Analytics_FirstTimeInstall";
-    
+
     private GoogleAnalyticsV4 _googleAnalytics;
 
     private int _startedMatchCounter;
@@ -30,6 +31,9 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public const string PropertyTesterKey = "Tester Key";
     public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
+
+    private BackendFacade _backendFacade;
+    private BackendDataControlMediator _backendDataControlMediator;
 
 
     public void StartSession()
@@ -108,6 +112,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
             throw new Exception("GoogleAnalyticsV4 object not found");
 
         ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+        _backendFacade = GameClient.Get<BackendFacade>();
+        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel"));
     }
 
@@ -119,12 +125,13 @@ public class AnalyticsManager : IAnalyticsManager, IService
     {
     }
 
-    public void SetEvent(string identifyId, string eventName, Value props)
+    public void SetEvent(string eventName)
     {
-        if (string.IsNullOrEmpty(identifyId))
-            return;
+        Value props = new Value();
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
 
-        Mixpanel.Identify(identifyId);
+        Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);
     }
 

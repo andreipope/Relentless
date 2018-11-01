@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using mixpanel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -96,7 +95,7 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             await _backendDataControlMediator.LoginAndLoadData();
-                            SendLoginAnalytics();
+                            _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
                         }
                         catch (GameVersionMismatchException e)
                         {
@@ -126,14 +125,6 @@ namespace Loom.ZombieBattleground
                     _uiManager.DrawPopup<LoginPopup>();
                 }
             }
-        }
-
-        private void SendLoginAnalytics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = Application.platform.ToString();
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventLogIn, props);
         }
 
         public void Show()

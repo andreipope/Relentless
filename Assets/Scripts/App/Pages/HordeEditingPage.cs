@@ -5,7 +5,6 @@ using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using mixpanel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -742,7 +741,7 @@ namespace Loom.ZombieBattleground
                     long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
                     _currentDeck.Id = newDeckId;
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
-                    SendAddDeckAnalytics();
+                    _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 }
                 catch (Exception e)
@@ -768,7 +767,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
-                    SendEditDeckAnalytics();
+                    _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
                     Debug.Log(" ====== Edit Deck Successfully ==== ");
                 }
                 catch (Exception e)
@@ -786,22 +785,6 @@ namespace Loom.ZombieBattleground
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }
-        }
-
-        private void SendAddDeckAnalytics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventDeckCreated, props);
-        }
-
-        private void SendEditDeckAnalytics()
-        {
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-            props[AnalyticsManager.PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
-            _analyticsManager.SetEvent(_backendDataControlMediator.UserDataModel.UserId, AnalyticsManager.EventDeckEdited, props);
         }
 
         public void ScrollCardList(bool isHordeItem, Vector2 scrollDelta)
