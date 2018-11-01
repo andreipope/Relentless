@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4201398098264416}
   - component: {fileID: 198826971665596192}
   - component: {fileID: 199692067865105716}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4287481198526328}
   - component: {fileID: 198067516890265458}
   - component: {fileID: 199599845604271774}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4227261394085548}
   - component: {fileID: 198990251920568640}
   - component: {fileID: 199222254571113602}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FreezeVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4328267784857108}
   - component: {fileID: 198514254331510782}
   - component: {fileID: 199005527016082364}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: shape_ice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
