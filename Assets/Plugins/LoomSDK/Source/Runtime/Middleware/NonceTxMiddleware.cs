@@ -35,7 +35,7 @@ namespace Loom.Client
 
         public virtual async Task<byte[]> Handle(byte[] txData)
         {
-            var nonce = await this.Client.GetNonceAsync(this.publicKeyHex);
+            var nonce = await this.Client.GetNonceAsyncUnsafe(this.publicKeyHex);
             var tx = new NonceTx
             {
                 Inner = ByteString.CopyFrom(txData),
