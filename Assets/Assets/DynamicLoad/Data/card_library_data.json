@@ -453,7 +453,13 @@
               "callType": "ENTRY",
               "value": 1,
               "turns": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
@@ -567,7 +573,13 @@
               "callType": "ENTRY",
               "value": 2,
               "turns": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
