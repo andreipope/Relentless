@@ -40,11 +40,11 @@ namespace Loom.ZombieBattleground
         {
             ClearParticles();
 
-            //if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = Vector3.zero;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");//(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 Player player;
 
