@@ -126,7 +126,7 @@ public class TutorialTests
         yield return new WaitUntil (() => {
             menuButtonGameObject = GameObject.Find (buttonName);
 
-            if (menuButtonGameObject == null)
+            if (menuButtonGameObject == null || !menuButtonGameObject.activeInHierarchy)
             {
                 return false;
             }
@@ -514,9 +514,76 @@ public class TutorialTests
         yield return null;
     }
 
-    private IEnumerable SoloGameplay ()
+    private IEnumerator WaitUntilPlayerOrderIsDecided ()
     {
+
+        yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
+
+        yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
+    }
+
+    private IEnumerator IdentifyWhoseTurnItIsAndProceed ()
+    {
+        if (_gameplayManager.CurrentTurnPlayer.Id == _gameplayManager.CurrentPlayer.Id)
+        {
+            yield return MakeADumbMove ();
+
+            yield return EndTurn ();
+        }
+        else
+        {
+            yield return WaitUntilOurTurnStarts ();
+            yield return WaitUntilInputIsUnblocked ();
+
+            yield return MakeADumbMove ();
+
+            yield return EndTurn ();
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator MakeADumbMove ()
+    {
+        // Go through cards in the hand and pick highest card player can play
+        int availableGoo = _gameplayManager.CurrentPlayer.CurrentGoo;
+
+        int maxCost = 0;
+        int maxIndex = -1;
+
+        for (int i = _battlegroundController.PlayerHandCards.Count - 1; i >= 0; i--)
+        {
+            BoardCard boardCard = _battlegroundController.PlayerHandCards[i];
+
+            int cost = boardCard.ManaCost;
+
+            if (cost <= availableGoo && cost > maxCost)
+            {
+                maxCost = cost;
+                maxIndex = i;
+            }
+        }
+
+        if (maxIndex != -1)
+        {
+            yield return PlayCardFromHandToBoard (new[] { maxIndex });
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator SoloGameplay ()
+    {
+        SetGameplayManagers ();
+
+        yield return WaitUntilPlayerOrderIsDecided ();
+
         yield return ClickGenericButton ("Button_Keep");
+
+        yield return IdentifyWhoseTurnItIsAndProceed ();
+
+        yield return WaitUntilOurTurnStarts ();
+        yield return WaitUntilInputIsUnblocked ();
     }
 
     [UnityTest]
