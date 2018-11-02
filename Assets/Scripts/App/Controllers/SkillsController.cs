@@ -760,7 +760,7 @@ namespace Loom.ZombieBattleground
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
             _vfxController.CreateVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                target);
+                target, isIgnoreCastVfx: true);
             _soundManager.PlaySound(
                 Enumerators.SoundType.OVERLORD_ABILITIES,
                 skill.OverlordSkill.ToString().ToLowerInvariant() + "_Impact",
