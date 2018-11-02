@@ -818,12 +818,13 @@ namespace Loom.ZombieBattleground
 
             targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
 
-            GameObject prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
+            GameObject prefabMovedVfx = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
+            GameObject prefabImpactVfx = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX");
 
             foreach (object targetObject in targets)
             {
                 _vfxController.CreateSkillVfx(
-                prefab,
+                prefabMovedVfx,
                 boardSkill.SelfObject.transform.position,
                 targetObject,
                 (x) =>
@@ -831,8 +832,8 @@ namespace Loom.ZombieBattleground
                     AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
 
                     _vfxController.CreateVfx(
-                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                        targetObject);
+                        prefabImpactVfx,
+                        targetObject, isIgnoreCastVfx: true);
                     _soundManager.PlaySound(
                         Enumerators.SoundType.OVERLORD_ABILITIES,
                         skill.Title.Trim().ToLowerInvariant() + "_Impact",
