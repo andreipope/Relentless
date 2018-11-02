@@ -332,17 +332,29 @@ public class TutorialTests
         }
     }
 
-    private IEnumerator UseSkillToOpponentPlayer (bool isPrimary)
+    private IEnumerator UseSkillToOpponentPlayer (bool isPrimary, int targetOpponentCard = -1)
     {
         BoardSkill boardSkill = _battlegroundController.GetSkillById (
             _gameplayManager.CurrentPlayer,
             isPrimary ? _skillsController.PlayerPrimarySkill.Id : _skillsController.PlayerSecondarySkill.Id);
-        BoardObject target = _gameplayManager.OpponentPlayer;
-        boardSkill.UseSkill (target);
 
-        yield return new WaitForSeconds (2);
+        if (boardSkill.IsSkillReady)
+        {
+            BoardObject target;
 
-        // _skillsController.DoSkillAction (boardSkill, _gameplayManager.OpponentPlayer);
+            if (targetOpponentCard != -1 && _battlegroundController.OpponentBoardCards.Count >= 1)
+            {
+                target = _battlegroundController.OpponentBoardCards[0].Model;
+            }
+            else
+            {
+                target = _gameplayManager.OpponentPlayer;
+            }
+
+            boardSkill.UseSkill (target);
+
+            yield return new WaitForSeconds (2);
+        }
 
         yield return null;
     }
@@ -365,7 +377,7 @@ public class TutorialTests
 
     private IEnumerator WaitUntilInputIsUnblocked ()
     {
-        yield return new WaitUntil (() => _gameplayManager.IsLocalPlayerTurn ());
+        yield return new WaitUntil (() => _gameplayManager.IsLocalPlayerTurn () || GameEnded ());
     }
 
     private IEnumerator WaitUntilAIBrainStops ()
@@ -375,9 +387,9 @@ public class TutorialTests
 
     private IEnumerator WaitUntilOurTurnStarts ()
     {
-        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") != null);
+        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") != null || GameEnded ());
 
-        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") == null);
+        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") == null || GameEnded ());
     }
 
     private IEnumerator PlayTutorial_Part1 ()
@@ -555,6 +567,11 @@ public class TutorialTests
         {
             BoardCard boardCard = _battlegroundController.PlayerHandCards[i];
 
+            if (boardCard.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
+            {
+                continue;
+            }
+
             int cost = boardCard.ManaCost;
 
             if (cost <= availableGoo && cost > maxCost)
@@ -579,6 +596,9 @@ public class TutorialTests
             BoardUnitView attackingCard = null;
             for (int i = _battlegroundController.PlayerBoardCards.Count - 1; i >= 0; i--)
             {
+                if (_battlegroundController.PlayerBoardCards[i].Model.Card.Damage == 0)
+                    continue;
+
                 if (_battlegroundController.PlayerBoardCards[i].Model.IsPlayable)
                 {
                     attackingCard = _battlegroundController.PlayerBoardCards[i];
@@ -589,11 +609,26 @@ public class TutorialTests
 
             if (attackingCard != null)
             {
-                if (_battlegroundController.OpponentBoardCards.Count >= 1)
+                int attackedIndex = -1;
+                for (int i = 0; i < _battlegroundController.OpponentBoardCards.Count; i++)
+                {
+                    BoardUnitView attackedCard = _battlegroundController.OpponentBoardCards[i];
+
+                    if (attackedCard.Model.Card.Health >= 1)
+                    {
+                        attackedIndex = i;
+
+                        break;
+                    }
+                }
+
+                if (attackedIndex != -1)
                 {
                     BoardUnitModel attackedCard = _battlegroundController.OpponentBoardCards[0].Model;
 
                     attackingCard.Model.DoCombat (attackedCard);
+
+                    cardAttackCounter++;
 
                     yield return new WaitForSeconds (2);
                 }
@@ -603,6 +638,8 @@ public class TutorialTests
 
                     attackingCard.Model.DoCombat (attackedPlayer);
 
+                    cardAttackCounter++;
+
                     yield return new WaitForSeconds (2);
                 }
             }
@@ -611,13 +648,87 @@ public class TutorialTests
         yield return null;
     }
 
-    private IEnumerator MakeADumbMove ()
+    private IEnumerator ConsiderUsingPrimarySkill ()
     {
-        yield return ConsiderDrawingOneCardFromHand ();
+        // Poison Dart: Deal 1 damage to a unit/player
 
-        yield return ConsiderPlayingOneCardFromBoard ();
+        int indexWithDamage = -1;
+
+        if (_battlegroundController.OpponentBoardCards.Count >= 1)
+        {
+
+            for (int i = 0; i < _battlegroundController.OpponentBoardCards.Count; i++)
+            {
+                if (_battlegroundController.OpponentBoardCards[i].Model.Card.Damage >= 1)
+                {
+                    indexWithDamage = i;
+
+                    break;
+                }
+            }
+        }
+
+        if (indexWithDamage != -1)
+        {
+            UseSkillToOpponentPlayer (true, indexWithDamage);
+        }
+        else
+        {
+            UseSkillToOpponentPlayer (true);
+        }
 
         yield return null;
+    }
+
+    int cardAttackCounter;
+
+    private IEnumerator MakeADumbMove ()
+    {
+        int cardsInHand;
+
+        do
+        {
+            cardsInHand = _battlegroundController.PlayerBoardCards.Count;
+
+            yield return ConsiderDrawingOneCardFromHand ();
+        }
+        while (_battlegroundController.PlayerBoardCards.Count > cardsInHand);
+
+        cardAttackCounter = 0;
+        int oldCardAttackCounter = 0;
+        do
+        {
+            oldCardAttackCounter = cardAttackCounter;
+
+            yield return ConsiderPlayingOneCardFromBoard ();
+        }
+        while (cardAttackCounter > oldCardAttackCounter);
+
+        yield return null;
+    }
+
+    private bool GameEnded ()
+    {
+        if (_gameplayManager == null || _gameplayManager.IsGameEnded)
+        {
+            return true;
+        }
+        else if (_gameplayManager.CurrentPlayer == null || _gameplayManager.OpponentPlayer == null)
+        {
+            return true;
+        }
+
+        int playerHP = _gameplayManager.CurrentPlayer.Defense;
+        int opponentHP = _gameplayManager.OpponentPlayer.Defense;
+
+        if (playerHP <= 0 || opponentHP <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private IEnumerator SoloGameplay ()
@@ -630,15 +741,36 @@ public class TutorialTests
 
         yield return IdentifyWhoseTurnItIsAndProceed ();
 
-        for (int turns = 1; turns <= 4; turns++)
+        // if it doesn't end in 100 moves, end the game anyway
+        for (int turns = 1; turns <= 100; turns++)
         {
+            if (GameEnded ())
+                break;
+
             yield return WaitUntilOurTurnStarts ();
+
+            if (GameEnded ())
+                break;
+
             yield return WaitUntilInputIsUnblocked ();
+
+            if (GameEnded ())
+                break;
 
             yield return MakeADumbMove ();
 
+            if (GameEnded ())
+                break;
+
             yield return EndTurn ();
+
+            if (GameEnded ())
+                break;
         }
+
+        yield return ClickGenericButton ("Button_Continue");
+
+        yield return null;
     }
 
     [UnityTest]
@@ -742,6 +874,8 @@ public class TutorialTests
         yield return AssertCurrentPageName ("GameplayPage");
 
         yield return SoloGameplay ();
+
+        yield return AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
 
