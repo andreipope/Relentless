@@ -1107,7 +1107,13 @@
               "callType": "ENTRY",
               "targetType": "opponent_card|player_card",
               "cardType": "HEAVY",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/EarthshakerVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
