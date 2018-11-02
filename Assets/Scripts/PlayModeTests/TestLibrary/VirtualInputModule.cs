@@ -11,8 +11,6 @@ namespace UnityEngine.EventSystems
         Vector2 m_LastMoveVector;
         int m_ConsecutiveMoveCount = 0;
 
-        private float m_NextAction;
-
         private Vector2 m_LastMousePosition;
         private Vector2 m_MousePosition;
 
@@ -158,8 +156,6 @@ namespace UnityEngine.EventSystems
             m_LastMousePosition = m_VirtualCursor.anchoredPosition;
 
             var toSelect = eventSystem.currentSelectedGameObject;
-            if (toSelect == null)
-                toSelect = eventSystem.lastSelectedGameObject;
             if (toSelect == null)
                 toSelect = eventSystem.firstSelectedGameObject;
 
