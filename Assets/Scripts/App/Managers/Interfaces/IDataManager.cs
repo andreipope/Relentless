@@ -40,5 +40,7 @@ namespace Loom.ZombieBattleground
         string DecryptData(string data);
 
         string EncryptData(string data);
+
+        bool IsBuildVersionMatch();
     }
 }

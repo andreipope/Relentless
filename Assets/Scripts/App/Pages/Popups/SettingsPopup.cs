@@ -197,12 +197,6 @@ namespace Loom.ZombieBattleground
         private void QuitToDesktopButtonHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
-            if (!_fromMainMenu)
-            {
-                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
-            }
-
             _appStateManager.QuitApplication();
         }
 
