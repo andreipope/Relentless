@@ -174,11 +174,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     DoOnUpSkillAction();
-
-
-                     // improve it - good way to make this call after done all actions - this is the quick hack
-                     completeCallback?.Invoke();
+                     DoOnUpSkillAction(completeCallback);
                  });
 
             IsUsing = false;
@@ -335,7 +331,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void DoOnUpSkillAction()
+        private void DoOnUpSkillAction(Action completeCallback)
         {
             if (OwnerPlayer.IsLocalPlayer && _tutorialManager.IsTutorial)
             {
@@ -344,7 +340,7 @@ namespace Loom.ZombieBattleground
 
             if (Skill.SkillTargetTypes.Count == 0)
             {
-                _skillsController.DoSkillAction(this, OwnerPlayer);
+                _skillsController.DoSkillAction(this, completeCallback, OwnerPlayer);
             }
             else
             {
@@ -352,13 +348,17 @@ namespace Loom.ZombieBattleground
                 {
                     if (FightTargetingArrow != null)
                     {
-                        _skillsController.DoSkillAction(this);
+                        _skillsController.DoSkillAction(this, completeCallback);
                         _playerController.IsCardSelected = false;
+                    }
+                    else
+                    {
+                        completeCallback?.Invoke();
                     }
                 }
                 else
                 {
-                    _skillsController.DoSkillAction(this);
+                    _skillsController.DoSkillAction(this, completeCallback);
                 }
             }
         }
