@@ -61,6 +61,12 @@ namespace Loom.ZombieBattleground
 
         private GameObject _glowSelectedObject;
 
+        private GameObject _arrivalModelObject;
+
+        private GameObject _arrivaVfxObject;
+
+        private GameObject _distractObject;
+
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private bool _ignoreArrivalEndEvents;
@@ -104,6 +110,8 @@ namespace Loom.ZombieBattleground
             _frozenSprite = GameObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
             _shieldSprite = GameObject.transform.Find("Other/Shield").gameObject;
 
+            _distractObject = GameObject.transform.Find("Other/ZB_ANM_Distract").gameObject;
+
             _attackText = GameObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
@@ -135,10 +143,10 @@ namespace Loom.ZombieBattleground
             Model.SetObjectInfo(card);
 
             string setName = _cardsController.GetSetOfCard(card.LibraryCard);
-            string rank = Model.Card.LibraryCard.CardRank.ToString().ToLower();
-            string picture = Model.Card.LibraryCard.Picture.ToLower();
+            string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
+            string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rank, picture);
+            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
 
@@ -159,6 +167,7 @@ namespace Loom.ZombieBattleground
             Model.BuffShieldStateChanged += BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet += BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved += BoardUnitOnUnitFromDeckRemoved;
+            Model.UnitDistracted += BoardUnitOnUnitDistracted;
 
             Model.FightSequenceHandler = this;
 
@@ -249,6 +258,11 @@ namespace Loom.ZombieBattleground
         private void BoardUnitOnBuffShieldStateChanged(bool status)
         {
             _shieldSprite.SetActive(status);
+        }
+
+        private void BoardUnitOnUnitDistracted()
+        {
+            _distractObject.SetActive(true);
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
@@ -390,6 +404,8 @@ namespace Loom.ZombieBattleground
             GameObject arrivalPrefab =
           _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
             _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+            _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
+            _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
             Transform spriteContainerTransform =
                 _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
             Vector3 scale = spriteContainerTransform.transform.localScale;
@@ -431,16 +447,18 @@ namespace Loom.ZombieBattleground
                 if (Model.Card.LibraryCard.CardRank == Enumerators.CardRank.COMMANDER)
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "1",
+
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "1",
                     Constants.ZombiesSoundVolume, false, true);
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay + "2",
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "2",
                     Constants.ZombiesSoundVolume / 2f, false, true);
                 }
                 else
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
+
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
                     false, true);
                 }
 
@@ -526,6 +544,13 @@ namespace Loom.ZombieBattleground
         public void EnabledToxicPowerGlow()
         {
             _toxicPowerGlowParticles.Play();
+        }
+
+        public void ChangeModelVisibility(bool state)
+        {
+            _unitContentObject.SetActive(state);
+            _arrivalModelObject.SetActive(state);
+            _arrivaVfxObject.SetActive(state);
         }
 
         private void ChangeTypeFrame(float playerTime, float opponentTime)
@@ -672,7 +697,7 @@ namespace Loom.ZombieBattleground
 
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
                 _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLower() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
+                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
                     false, true);
             }
         }

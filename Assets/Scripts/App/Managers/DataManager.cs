@@ -22,6 +22,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private IUIManager _uiManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -29,6 +31,8 @@ namespace Loom.ZombieBattleground
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataFileNames;
 
         private DirectoryInfo _dir;
+
+        private bool _isBuildVersionMatch = false;
 
         public DataManager(ConfigData configData)
         {
@@ -146,7 +150,7 @@ namespace Loom.ZombieBattleground
             if (string.IsNullOrEmpty(type))
                 return null;
 
-            return CachedBuffsTooltipData.Buffs.Find(x => x.Type.ToLower().Equals(type.ToLower()));
+            return CachedBuffsTooltipData.Buffs.Find(x => x.Type.ToLowerInvariant().Equals(type.ToLowerInvariant()));
         }
 
         public TooltipContentData.RankInfo GetRankInfoByType(string type)
@@ -154,7 +158,7 @@ namespace Loom.ZombieBattleground
             if (string.IsNullOrEmpty(type))
                 return null;
 
-            return CachedBuffsTooltipData.Ranks.Find(x => x.Type.ToLower().Equals(type.ToLower()));
+            return CachedBuffsTooltipData.Ranks.Find(x => x.Type.ToLowerInvariant().Equals(type.ToLowerInvariant()));
         }
 
         public void Dispose()
@@ -170,6 +174,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -185,7 +190,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            if (setName.ToLower().Equals("item"))
+            if (setName.ToLowerInvariant().Equals("item"))
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
@@ -215,17 +220,71 @@ namespace Loom.ZombieBattleground
         private void CheckVersion()
         {
             FileInfo[] files = _dir.GetFiles();
-            bool versionMatch = false;
+
+            FileInfo versionFile = null;
             foreach (FileInfo file in files)
             {
-                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
-                    versionMatch = true;
+                if (file.Name.Contains(Constants.VersionFileResolution))
+                {
+                    versionFile = file;
+                    break;
+                }
             }
 
-            if (!versionMatch)
+            if (versionFile != null)
+            {
+                if (versionFile.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
+                {
+                    _isBuildVersionMatch = true;
+                }
+            }
+            else
+            {
+                using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+                {
+                    _isBuildVersionMatch = true;
+                }
+            }
+
+
+            if (!_isBuildVersionMatch)
             {
                 DeleteData();
+
+                Action[] actions = new Action[2];
+                actions[0] = () =>
+                {
+                    string url = GetPlatformSpecificGameLink();
+
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        Application.OpenURL(url);
+                    }
+                };
+                actions[1] = () =>
+                {
+                    Application.Quit();
+                };
+
+                _uiManager.DrawPopup<UpdatePopup>(actions);
             }
+        }
+
+        private string GetPlatformSpecificGameLink()
+        {
+            string gameLink = string.Empty;
+
+            #if UNITY_ANDROID
+            gameLink = Constants.GameLinkForAndroid;
+            #elif UNITY_IOS
+            gameLink = Constants.GameLinkForIOS;
+            #elif UNITY_STANDALONE_WIN
+            gameLink = Constants.GameLinkForWindows;
+            #elif UNITY_STANDALONE_OSX
+            gameLink = Constants.GameLinkForOSX;
+            #endif
+
+            return gameLink;
         }
 
         private async Task LoadCachedData(Enumerators.CacheDataType type)
@@ -330,6 +389,11 @@ namespace Loom.ZombieBattleground
                 return data;
 
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
+        }
+
+        public bool IsBuildVersionMatch()
+        {
+            return _isBuildVersionMatch;
         }
 
         private T DeserializeObjectFromAssets<T>(string fileName)

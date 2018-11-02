@@ -33,7 +33,7 @@ namespace Loom.Client
             this.publicKeyHex = CryptoUtils.BytesToHexString(this.PublicKey);
         }
 
-        public async Task<byte[]> Handle(byte[] txData)
+        public virtual async Task<byte[]> Handle(byte[] txData)
         {
             var nonce = await this.Client.GetNonceAsync(this.publicKeyHex);
             var tx = new NonceTx

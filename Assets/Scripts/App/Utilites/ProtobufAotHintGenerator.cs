@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
 
             foreach (OneofDescriptor oneof in messageDescriptor.Oneofs)
             {
-                string oneofPascalCaseName = oneof.Name.First().ToString().ToUpper() + oneof.Name.Substring(1);
+                string oneofPascalCaseName = oneof.Name.First().ToString().ToUpperInvariant() + oneof.Name.Substring(1);
                 string oneofCaseName = oneofPascalCaseName + "OneofCase";
                 Type oneofCaseType = oneof.ContainingType.ClrType.GetNestedType(oneofCaseName);
                 if (oneofCaseType == null)

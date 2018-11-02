@@ -1,10 +1,13 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Analytics;
 using Object = UnityEngine.Object;
+using mixpanel;
 
 public class AnalyticsManager : IAnalyticsManager, IService
 {
@@ -16,6 +19,22 @@ public class AnalyticsManager : IAnalyticsManager, IService
     private int _startedMatchCounter;
 
     private int _finishedMatchCounter;
+
+    public const string EventLogIn = "Log In";
+    public const string EventStartedTutorial = "Started Tutorial";
+    public const string EventCompletedTutorial = "Completed Tutorial";
+    public const string EventStartedMatch = "Started Match";
+    public const string EventEndedMatch = "Ended Match";
+    public const string EventDeckCreated = "Create Deck";
+    public const string EventDeckDeleted = "Delete Deck";
+    public const string EventDeckEdited = "Edit Deck";
+
+    public const string PropertyTesterKey = "Tester Key";
+    public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
+
+    private BackendFacade _backendFacade;
+    private BackendDataControlMediator _backendDataControlMediator;
+
 
     public void StartSession()
     {
@@ -44,6 +63,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
         Debug.Log("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
+
+        Mixpanel.Track(title);
     }
 
     public void LogEvent(string eventAction, string eventLabel, long value)
@@ -89,6 +110,11 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _googleAnalytics = Object.FindObjectOfType<GoogleAnalyticsV4>();
         if (_googleAnalytics == null)
             throw new Exception("GoogleAnalyticsV4 object not found");
+
+        ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+        _backendFacade = GameClient.Get<BackendFacade>();
+        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+        Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel"));
     }
 
     public void Update()
@@ -97,5 +123,34 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     void IService.Dispose()
     {
+    }
+
+    public void SetEvent(string eventName)
+    {
+        Value props = new Value();
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+
+        Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
+        Mixpanel.Track(eventName, props);
+    }
+
+    public void SetPoepleProperty(string identityId, string property, string value)
+    {
+        if (string.IsNullOrEmpty(identityId))
+            return;
+
+        Mixpanel.Identify(identityId);
+        Mixpanel.people.Set(property, value);
+    }
+
+    public void SetSuperProperty(string property, string value)
+    {
+        Mixpanel.Register(property, value);
+    }
+
+    public void SetPoepleIncrement(string property, int value)
+    {
+        Mixpanel.people.Increment(property, value);
     }
 }
