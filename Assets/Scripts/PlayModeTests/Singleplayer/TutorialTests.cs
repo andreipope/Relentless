@@ -543,7 +543,7 @@ public class TutorialTests
         yield return null;
     }
 
-    private IEnumerator MakeADumbMove ()
+    private IEnumerator ConsiderDrawingOneCardFromHand ()
     {
         // Go through cards in the hand and pick highest card player can play
         int availableGoo = _gameplayManager.CurrentPlayer.CurrentGoo;
@@ -569,6 +569,54 @@ public class TutorialTests
             yield return PlayCardFromHandToBoard (new[] { maxIndex });
         }
 
+        yield return new WaitForSeconds (2); // might be required for Arrival Animation
+    }
+
+    private IEnumerator ConsiderPlayingOneCardFromBoard ()
+    {
+        if (_battlegroundController.PlayerBoardCards.Count >= 1)
+        {
+            BoardUnitView attackingCard = null;
+            for (int i = _battlegroundController.PlayerBoardCards.Count - 1; i >= 0; i--)
+            {
+                if (_battlegroundController.PlayerBoardCards[i].Model.IsPlayable)
+                {
+                    attackingCard = _battlegroundController.PlayerBoardCards[i];
+
+                    break;
+                }
+            }
+
+            if (attackingCard != null)
+            {
+                if (_battlegroundController.OpponentBoardCards.Count >= 1)
+                {
+                    BoardUnitModel attackedCard = _battlegroundController.OpponentBoardCards[0].Model;
+
+                    attackingCard.Model.DoCombat (attackedCard);
+
+                    yield return new WaitForSeconds (2);
+                }
+                else
+                {
+                    Player attackedPlayer = _gameplayManager.OpponentPlayer;
+
+                    attackingCard.Model.DoCombat (attackedPlayer);
+
+                    yield return new WaitForSeconds (2);
+                }
+            }
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator MakeADumbMove ()
+    {
+        yield return ConsiderDrawingOneCardFromHand ();
+
+        yield return ConsiderPlayingOneCardFromBoard ();
+
         yield return null;
     }
 
@@ -582,8 +630,15 @@ public class TutorialTests
 
         yield return IdentifyWhoseTurnItIsAndProceed ();
 
-        yield return WaitUntilOurTurnStarts ();
-        yield return WaitUntilInputIsUnblocked ();
+        for (int turns = 1; turns <= 4; turns++)
+        {
+            yield return WaitUntilOurTurnStarts ();
+            yield return WaitUntilInputIsUnblocked ();
+
+            yield return MakeADumbMove ();
+
+            yield return EndTurn ();
+        }
     }
 
     [UnityTest]
