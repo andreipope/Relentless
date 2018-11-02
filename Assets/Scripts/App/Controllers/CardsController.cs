@@ -244,7 +244,7 @@ namespace Loom.ZombieBattleground
             callback?.Invoke();
         }
 
-        public void AddCardToHand(Player player, WorkingCard card = null)
+        public void AddCardToHand(Player player, WorkingCard card = null, bool removeCardsFromDeck = true)
         {
             if (card == null)
             {
@@ -271,8 +271,11 @@ namespace Loom.ZombieBattleground
                 player.ThrowDrawCardEvent(card);
             }
 */
+            if (removeCardsFromDeck)
+            {
+                player.RemoveCardFromDeck(card);
+            }
 
-            player.RemoveCardFromDeck(card);
             player.AddCardToHand(card);
         }
 
@@ -993,6 +996,11 @@ namespace Loom.ZombieBattleground
 
         private bool CheckIsMoreThanMaxCards(WorkingCard workingCard, Player player)
         {
+            // TODO : Temp fix to not to check max cards in hand for now
+            // TODO : because the cards in hand is not matching on both the clients
+            if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+                return false;
+
             if (player.CardsInHand.Count >= player.MaxCardsInHand)
             {
                 // IMPROVE ANIMATION
