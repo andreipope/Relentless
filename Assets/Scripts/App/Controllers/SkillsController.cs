@@ -104,9 +104,6 @@ namespace Loom.ZombieBattleground
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
 
-            _gameplayManager.CurrentPlayer.SelfHero.Skills[primary].OverlordSkill = Enumerators.OverlordSkill.BLIZZARD;
-            _gameplayManager.CurrentPlayer.SelfHero.Skills[primary].SkillTargetTypes = new List<Enumerators.SkillTargetType>();
-
             if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
                 secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
             {
@@ -1337,8 +1334,6 @@ namespace Loom.ZombieBattleground
         private void BlizzardAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
-
-            skill.Count = 2;
 
             List<BoardUnitView> units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
             units = InternalTools.GetRandomElementsFromList(units, skill.Count);
