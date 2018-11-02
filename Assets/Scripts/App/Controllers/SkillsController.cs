@@ -1713,6 +1713,9 @@ namespace Loom.ZombieBattleground
             {
                 unit.Model.SetAsHeavyUnit();
 
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortressVFX"), unit.Transform.position, true, 6f);
+
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Heavy,
