@@ -2428,7 +2428,13 @@
               "activityType": "passive",
               "callType": "GOT_DAMAGE",
               "value": 2,
-              "buffType": "RAGE"
+              "buffType": "RAGE",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/RageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {

@@ -729,9 +729,9 @@ namespace Reuniter
         private static int PenaltyFor(string item, string searchTerm)
         {
             String initials = CamelCaseFor(item);
-            if (initials == searchTerm.ToUpper())
+            if (initials == searchTerm.ToUpperInvariant())
                 return 20;
-            if (initials.StartsWith(searchTerm.ToUpper()))
+            if (initials.StartsWith(searchTerm.ToUpperInvariant()))
                 return 22;
 
             if (searchTerm.Contains("*") || searchTerm.Contains("?") && searchTerm.ToCharArray().Any(x=> x!=' ' && x!= '?' && x!='*'))
@@ -983,7 +983,7 @@ namespace Reuniter
             }
 
             var initials = CamelCaseFor(item);
-            if (initials.StartsWith(term.ToUpper()))
+            if (initials.StartsWith(term.ToUpperInvariant()))
             {
                 lettersToHighlight[0] = true;
                 int count = term.Length-1;
@@ -1013,7 +1013,7 @@ namespace Reuniter
         private static string CamelCaseFor(string text)
         {
             var initials = new StringBuilder();
-            initials.Append(text[0].ToString().ToUpper());
+            initials.Append(text[0].ToString().ToUpperInvariant());
             for (int index = 1; index < text.ToCharArray().Length; index++)
             {
                 var character = text.ToCharArray()[index];

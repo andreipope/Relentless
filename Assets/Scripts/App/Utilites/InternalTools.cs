@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground.Helpers
 
             char[] chars = origin.Replace("_", Constants.Space).ToCharArray();
 
-            string newValue = chars[0].ToString().ToUpper();
+            string newValue = chars[0].ToString().ToUpperInvariant();
 
             for(int i = 1; i < chars.Length; i++)
             {
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground.Helpers
                     newValue += Constants.Space;
                 }
 
-                newValue += chars[i].ToString().ToLower();
+                newValue += chars[i].ToString().ToLowerInvariant();
             }
           
             return newValue;
