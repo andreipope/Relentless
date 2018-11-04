@@ -2,7 +2,6 @@
 using System.Collections;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -10,7 +9,7 @@ using UnityEngine.UI;
 
 public class TutorialTests
 {
-    private const string _testerKey = "f12249ff43e4";
+    private const string _testerKey = "f32ef9a2cfcb";
 
     private Scene _testScene;
     private GameObject _testerGameObject;
@@ -334,24 +333,33 @@ public class TutorialTests
 
     private IEnumerator UseSkillToOpponentPlayer (bool isPrimary, int targetOpponentCard = -1)
     {
-        BoardSkill boardSkill = _battlegroundController.GetSkillById (
-            _gameplayManager.CurrentPlayer,
-            isPrimary ? _skillsController.PlayerPrimarySkill.Id : _skillsController.PlayerSecondarySkill.Id);
+        BoardSkill boardSkill = isPrimary ? _skillsController.PlayerPrimarySkill : _skillsController.PlayerSecondarySkill;
 
         if (boardSkill.IsSkillReady)
         {
+            BoardUnitView targetView;
             BoardObject target;
+
+            boardSkill.StartDoSkill ();
 
             if (targetOpponentCard != -1 && _battlegroundController.OpponentBoardCards.Count >= 1)
             {
                 target = _battlegroundController.OpponentBoardCards[0].Model;
+                targetView = _battlegroundController.OpponentBoardCards[0];
+
+                boardSkill.FightTargetingArrow.SelectedCard = targetView;
             }
             else
             {
                 target = _gameplayManager.OpponentPlayer;
+
+                boardSkill.FightTargetingArrow.SelectedPlayer = _gameplayManager.OpponentPlayer;
             }
 
-            boardSkill.UseSkill (target);
+            _skillsController.DoSkillAction (boardSkill, target);
+            boardSkill.EndDoSkill ();
+
+            BoardArrowController boardArrowController = _gameplayManager.GetController<BoardArrowController> ();
 
             yield return new WaitForSeconds (2);
         }
@@ -534,6 +542,34 @@ public class TutorialTests
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
     }
 
+    private IEnumerator DecideWhichCardsToPick ()
+    {
+        CardsController cardsController = _gameplayManager.GetController<CardsController> ();
+
+        int highCardCounter = 0;
+
+        Player currentPlayer = _gameplayManager.CurrentPlayer;
+        for (int i = currentPlayer.CardsPreparingToHand.Count - 1; i >= 0; i--)
+        {
+            BoardCard boardCard = currentPlayer.CardsPreparingToHand[i];
+
+            if (boardCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL || highCardCounter >= 1)
+            {
+                Debug.LogWarning ("Rejected: " + boardCard.LibraryCard.Name);
+
+                boardCard.ReturnCardToDeck ();
+
+                yield return new WaitForSeconds (2);
+            }
+            else if (boardCard.LibraryCard.Cost >= 4)
+            {
+                highCardCounter++;
+            }
+        }
+
+        yield return null;
+    }
+
     private IEnumerator IdentifyWhoseTurnItIsAndProceed ()
     {
         if (_gameplayManager.CurrentTurnPlayer.Id == _gameplayManager.CurrentPlayer.Id)
@@ -656,7 +692,6 @@ public class TutorialTests
 
         if (_battlegroundController.OpponentBoardCards.Count >= 1)
         {
-
             for (int i = 0; i < _battlegroundController.OpponentBoardCards.Count; i++)
             {
                 if (_battlegroundController.OpponentBoardCards[i].Model.Card.Damage >= 1)
@@ -670,11 +705,11 @@ public class TutorialTests
 
         if (indexWithDamage != -1)
         {
-            UseSkillToOpponentPlayer (true, indexWithDamage);
+            yield return UseSkillToOpponentPlayer (true, indexWithDamage);
         }
         else
         {
-            UseSkillToOpponentPlayer (true);
+            yield return UseSkillToOpponentPlayer (true);
         }
 
         yield return null;
@@ -685,6 +720,8 @@ public class TutorialTests
     private IEnumerator MakeADumbMove ()
     {
         int cardsInHand;
+
+        yield return ConsiderUsingPrimarySkill ();
 
         do
         {
@@ -736,6 +773,8 @@ public class TutorialTests
         SetGameplayManagers ();
 
         yield return WaitUntilPlayerOrderIsDecided ();
+
+        yield return DecideWhichCardsToPick ();
 
         yield return ClickGenericButton ("Button_Keep");
 
