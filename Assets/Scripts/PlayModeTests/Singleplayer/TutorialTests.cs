@@ -536,7 +536,6 @@ public class TutorialTests
 
     private IEnumerator WaitUntilPlayerOrderIsDecided ()
     {
-
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
 
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
@@ -553,11 +552,11 @@ public class TutorialTests
         {
             BoardCard boardCard = currentPlayer.CardsPreparingToHand[i];
 
-            if (boardCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL || highCardCounter >= 1)
+            if ((boardCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL) ||
+                (highCardCounter >= 1 && boardCard.LibraryCard.Cost >= 4) ||
+                boardCard.LibraryCard.Cost >= 8)
             {
-                Debug.LogWarning ("Rejected: " + boardCard.LibraryCard.Name);
-
-                boardCard.ReturnCardToDeck ();
+                currentPlayer.CardsPreparingToHand[i].CardShouldBeChanged = !boardCard.CardShouldBeChanged;
 
                 yield return new WaitForSeconds (2);
             }
