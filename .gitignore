@@ -57,3 +57,14 @@ Assets/Resources/BuildMetaInfo.asset.meta
 
 TypeCache.asset
 TypeCache.asset.meta
+
+# AltUnityTester
+Assets/Scripts/Tests/AltUnityTests/screenshots
+Assets/Scripts/Tests/AltUnityTests/test-package*.zip
+Assets/Scripts/Tests/AltUnityTests/*.apk
+Assets/Scripts/Tests/AltUnityTests/*.ipa
+Assets/Scripts/Tests/AltUnityTests/test-reports/
+Assets/Scripts/Tests/AltUnityTests/run-tests.sh
+Assets/Scripts/Tests/AltUnityTests/*.pyc
+Assets/Scripts/Tests/AltUnityTests/*.xml
+Assets/Scripts/Tests/AltUnityTests/.vscode
