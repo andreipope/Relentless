@@ -758,6 +758,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.ATTACK_OVERLORD:
                     ability = new AttackOverlordAbility(cardKind, abilityData);
+                    abilityView = new AttackOverlordAbilityView((AttackOverlordAbility)ability);
                     break;
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_HEAVY:
                     ability = new AdjacentUnitsGetHeavyAbility(cardKind, abilityData);
