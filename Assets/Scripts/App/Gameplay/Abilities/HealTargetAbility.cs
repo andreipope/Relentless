@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
         {
             BoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit;
 
-            HealTarget(boardObject);
+            HealTarget(boardObject, Value);
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground
                     Value = value
                 });
 
-                HealTarget(boardObject);
+                HealTarget(boardObject, value);
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies,
@@ -136,15 +136,15 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void HealTarget(BoardObject boardObject)
+        private void HealTarget(BoardObject boardObject, int value)
         {
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.Player:
-                    BattleController.HealPlayerByAbility(GetCaller(), AbilityData, (Player)boardObject);
+                    BattleController.HealPlayerByAbility(GetCaller(), AbilityData, (Player)boardObject, value);
                     break;
                 case Enumerators.AffectObjectType.Character:
-                    BattleController.HealUnitByAbility(GetCaller(), AbilityData, (BoardUnitModel)boardObject);
+                    BattleController.HealUnitByAbility(GetCaller(), AbilityData, (BoardUnitModel)boardObject, value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);

@@ -136,6 +136,8 @@ namespace Loom.ZombieBattleground.Common
             DELAYED_PLACE_COPIES_IN_PLAY_DESTROY_UNIT,
             ADJACENT_UNITS_GET_STAT,
             EXTRA_GOO_IF_UNIT_IN_PLAY,
+            DESTROY_UNITS,
+            DEAL_DAMAGE_TO_UNIT_AND_SWING
         }
 
         public enum ActionType
