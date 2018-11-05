@@ -17,7 +17,6 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            Debug.LogError(2222);
             if(info != null)
             {
                 _opponent = info as Player;
@@ -46,7 +45,7 @@ namespace Loom.ZombieBattleground
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            base.CreateVfx(pos, true, 5f);
+            base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
     }
 }

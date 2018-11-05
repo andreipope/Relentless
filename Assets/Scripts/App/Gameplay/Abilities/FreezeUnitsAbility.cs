@@ -49,10 +49,6 @@ namespace Loom.ZombieBattleground
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
-
-            if (IsAbilityResolved)
-            {
-            }
         }
     }
 }
