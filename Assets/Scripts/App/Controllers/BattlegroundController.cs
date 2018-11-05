@@ -172,12 +172,6 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 }
-
-
-                if(Input.GetKeyDown(KeyCode.M))
-                {
-                    TakeControlUnit(_gameplayManager.CurrentPlayer, _gameplayManager.OpponentPlayer.BoardCards[0].Model);
-                }
             }
         }
 
