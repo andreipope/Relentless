@@ -710,6 +710,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.FREEZE_UNITS:
                     ability = new FreezeUnitsAbility(cardKind, abilityData);
+                    abilityView = new FreezeUnitsAbilityView((FreezeUnitsAbility)ability);
                     break;
                 case Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY:
                     ability = new TakeDamageRandomEnemyAbility(cardKind, abilityData);
