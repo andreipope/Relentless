@@ -6,9 +6,17 @@ namespace Loom.ZombieBattleground
 {
     public class DamageEnemyOrRestoreDefenseAllyAbility : AbilityBase
     {
+        public int Health { get; }
+        public int Damage { get; }
+
+        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+
         public DamageEnemyOrRestoreDefenseAllyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            Health = AbilityData.Health;
+            Damage = AbilityData.Damage;
+            TargetTypes = AbilityData.AbilityTargetTypes;
         }
 
         public override void Activate()
@@ -26,8 +34,6 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
-
-            AbilityUnitOwner.AddBuffShield();
         }
     }
 }

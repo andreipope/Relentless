@@ -36,6 +36,16 @@ namespace Loom.ZombieBattleground
             Action(null);
         }
 
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END)
+                return;
+
+            Action(null);
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);

@@ -19,6 +19,14 @@ namespace Loom.ZombieBattleground
             TargetUnitStatusType = ability.TargetUnitStatusType;
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+                return;
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
@@ -29,11 +37,53 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END)
+                return;
+
+            DealDamageToUnitOwner();
+        }
+
+        private void DealDamageToUnitOwner()
+        {
+            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
+            {
+                if (GetCaller() == AbilityUnitOwner)
+                {
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
+
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        AbilityUnitOwner
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
+                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    {
+                        ActionType = Enumerators.ActionType.CardAffectingCard,
+                        Caller = GetCaller(),
+                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        {
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                                Target = AbilityUnitOwner,
+                                HasValue = true,
+                                Value = -AbilityData.Value
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
 
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+            object caller = GetCaller();
 
             object target = null;
 

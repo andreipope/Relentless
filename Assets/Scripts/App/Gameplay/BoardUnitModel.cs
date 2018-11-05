@@ -55,8 +55,6 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
-        public bool IsDistracted { get; private set; }
-
         public BoardUnitModel()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -110,6 +108,8 @@ namespace Loom.ZombieBattleground
         public event Action UnitFromDeckRemoved;
 
         public event Action UnitDistracted;
+
+        public event Action<bool> UnitDistractEffectStateChanged;
 
         public event Action<BoardUnitModel> KilledUnit;
 
@@ -258,6 +258,9 @@ namespace Loom.ZombieBattleground
 
         public void UseShieldFromBuff()
         {
+            if (!HasBuffShield)
+                return;
+
             HasBuffShield = false;
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             BuffShieldStateChanged?.Invoke(false);
@@ -447,8 +450,13 @@ namespace Loom.ZombieBattleground
 
         public void Distract()
         {
-            IsDistracted = true;
+            UpdateVisualStateOfDistract(true);
             UnitDistracted?.Invoke();
+        }
+
+        public void UpdateVisualStateOfDistract(bool status)
+        {
+            UnitDistractEffectStateChanged?.Invoke(status);
         }
 
         public void ForceSetCreaturePlayable()

@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
             Model.BuffShieldStateChanged += BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet += BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved += BoardUnitOnUnitFromDeckRemoved;
-            Model.UnitDistracted += BoardUnitOnUnitDistracted;
+            Model.UnitDistractEffectStateChanged += BoardUnitDistractEffectStateChanged;
 
             Model.FightSequenceHandler = this;
 
@@ -260,10 +260,11 @@ namespace Loom.ZombieBattleground
             _shieldSprite.SetActive(status);
         }
 
-        private void BoardUnitOnUnitDistracted()
+        private void BoardUnitDistractEffectStateChanged(bool status)
         {
-            _distractObject.SetActive(true);
+            _distractObject.SetActive(status);
         }
+
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
         {

@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
+        public int Health;
+
         public int Damage;
 
         public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -16,6 +18,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
             Damage = ability.Damage;
+            Health = ability.Health;
         }
 
         public override void Activate()
@@ -31,6 +34,9 @@ namespace Loom.ZombieBattleground
 
             TargetUnit.CurrentDamage += Value;
             TargetUnit.BuffedDamage += Value;
+
+            TargetUnit.CurrentHp += Health;
+            TargetUnit.BuffedHp += Health;
 
             CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
         }
