@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
                 Vector3 targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-                CreateVfx(targetPosition, true);
+                CreateVfx(targetPosition, true, 5f);
             }
 
             Ability.InvokeVFXAnimationEnded();
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            base.CreateVfx(pos, true, 5f);
+            base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
     }
 }
