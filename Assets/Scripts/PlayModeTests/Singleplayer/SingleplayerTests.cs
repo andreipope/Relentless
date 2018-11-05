@@ -7,9 +7,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-public class TutorialTests
+public class SingleplayerTests
 {
     private const string _testerKey = "f32ef9a2cfcb";
+
+    private bool _initialized = false;
 
     private Scene _testScene;
     private GameObject _testerGameObject;
@@ -21,38 +23,104 @@ public class TutorialTests
 
     #region Setup & TearDown
 
-    private IEnumerator TestSetup (string sceneToLoadFirst, string testName = "")
+    [UnitySetUp]
+    public IEnumerator PerTestSetup ()
     {
-        _testName = testName;
+        if (!_initialized)
+        {
+            _testScene = SceneManager.GetActiveScene ();
+            _testerGameObject = _testScene.GetRootGameObjects ()[0];
+            _testerGameObject.AddComponent<TestScriptProtector> ();
+
+            yield return SceneManager.LoadSceneAsync ("APP_INIT", LoadSceneMode.Single);
+
+            // RemoveGoogleAnalyticsModule ();
+
+            yield return AddVirtualInputModule ();
+
+            #region Login
+
+            yield return AssertCurrentPageName ("LoadingPage");
+
+            yield return HandleLogin ();
+
+            yield return AssertCurrentPageName ("MainMenuPage");
+
+            #endregion
+
+            SetGameplayManagers ();
+
+            _initialized = true;
+        }
+
         _testStartTime = Time.unscaledTime;
-
-        _testScene = SceneManager.GetActiveScene ();
-        _testerGameObject = _testScene.GetRootGameObjects ()[0];
-        _testerGameObject.AddComponent<TestScriptProtector> ();
-
-        yield return SceneManager.LoadSceneAsync (sceneToLoadFirst, LoadSceneMode.Single);
 
         yield return null;
     }
 
-    private IEnumerator TestTearDown ()
+    [UnityTearDown]
+    public IEnumerator PerTestTearDown ()
     {
-        _testScene = SceneManager.CreateScene ("testScene");
-        _testerGameObject.GetComponent<TestScriptProtector> ().enabled = false;
-        SceneManager.MoveGameObjectToScene (_testerGameObject, _testScene);
-        Scene currentScene = SceneManager.GetActiveScene ();
+        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
+        {
+            Scene dontDestroyOnLoadScene = _testerGameObject.scene;
 
-        SceneManager.SetActiveScene (_testScene);
-        yield return SceneManager.UnloadSceneAsync (currentScene);
+            _testScene = SceneManager.CreateScene ("testScene");
+            GameObject.Destroy (_testerGameObject.GetComponent<TestScriptProtector> ());
+            SceneManager.MoveGameObjectToScene (_testerGameObject, _testScene);
+            Scene currentScene = SceneManager.GetActiveScene ();
+
+            foreach (GameObject rootGameObject in currentScene.GetRootGameObjects ())
+            {
+                GameObject.Destroy (rootGameObject);
+            }
+            foreach (GameObject rootGameObject in dontDestroyOnLoadScene.GetRootGameObjects ())
+            {
+                GameObject.Destroy (rootGameObject);
+            }
+
+            yield return new WaitForSeconds (1);
+
+            SceneManager.SetActiveScene (_testScene);
+            yield return SceneManager.UnloadSceneAsync (currentScene);
+        }
+        else
+        {
+            yield return MainMenuTransition ("Button_Back");
+
+            yield return AssertCurrentPageName ("PlaySelectionPage");
+
+            yield return MainMenuTransition ("Button_Back");
+
+            yield return AssertCurrentPageName ("MainMenuPage");
+        }
 
         Debug.LogFormat (
             "\"{0}\" test successfully finished in {1} seconds.",
             _testName,
             Time.unscaledTime - _testStartTime
         );
+
+        yield return new WaitForSeconds (2);
     }
 
     #endregion
+
+    private void SetTestName (string testName = "")
+    {
+        _testName = testName;
+    }
+
+    // Google Analytics isn't required for testing and in case of multiple tests it starts being overloaded and providing error on number of requests.
+    private void RemoveGoogleAnalyticsModule ()
+    {
+        GameObject googleAnalyticsGameObject = GameObject.Find ("GAv4");
+
+        if (googleAnalyticsGameObject != null)
+        {
+            GameObject.Destroy (googleAnalyticsGameObject);
+        }
+    }
 
     private IEnumerator AddVirtualInputModule ()
     {
@@ -148,7 +216,7 @@ public class TutorialTests
         yield return null;
     }
 
-    private IEnumerator MainMenuTransition (string transitionPath, float delay = 0.5f)
+    private IEnumerator MainMenuTransition (string transitionPath, float delay = 2f)
     {
         foreach (string buttonName in transitionPath.Split ('/'))
         {
@@ -216,6 +284,8 @@ public class TutorialTests
         Assert.AreEqual (expectedPageName, actualPageName);
 
         lastCheckedPageName = actualPageName;
+
+        yield return null;
     }
 
     private IEnumerator WaitUntilPageUnloads ()
@@ -234,12 +304,16 @@ public class TutorialTests
     }
 
     private IGameplayManager _gameplayManager;
+    private IUIManager _uiManager;
+
     private BattlegroundController _battlegroundController;
     private SkillsController _skillsController;
 
     private void SetGameplayManagers ()
     {
         _gameplayManager = GameClient.Get<IGameplayManager> ();
+        _uiManager = GameClient.Get<IUIManager> ();
+
         _battlegroundController = _gameplayManager.GetController<BattlegroundController> ();
         _skillsController = _gameplayManager.GetController<SkillsController> ();
     }
@@ -402,8 +476,6 @@ public class TutorialTests
 
     private IEnumerator PlayTutorial_Part1 ()
     {
-        SetGameplayManagers ();
-
         for (int i = 0; i < 3; i++)
         {
             yield return ClickGenericButton ("Button_Next");
@@ -419,10 +491,6 @@ public class TutorialTests
         yield return PlayCardFromHandToBoard (new[] { 0 });
 
         yield return ClickGenericButton ("Button_Next");
-
-        /* yield return MoveCursorToObject ("_1_btn_endturn", 3f);
-
-        yield return FakeClick (); */
 
         yield return EndTurn ();
 
@@ -769,8 +837,6 @@ public class TutorialTests
 
     private IEnumerator SoloGameplay ()
     {
-        SetGameplayManagers ();
-
         yield return WaitUntilPlayerOrderIsDecided ();
 
         yield return DecideWhichCardsToPick ();
@@ -813,21 +879,9 @@ public class TutorialTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test_TutorialSkip ()
+    public IEnumerator Test1_TutorialSkip ()
     {
-        yield return TestSetup ("APP_INIT", "Tutorial - Skip");
-
-        yield return AddVirtualInputModule ();
-
-        #region Login
-
-        yield return AssertCurrentPageName ("LoadingPage");
-
-        yield return HandleLogin ();
-
-        yield return AssertCurrentPageName ("MainMenuPage");
-
-        #endregion
+        SetTestName ("Tutorial - Skip");
 
         #region Tutorial Skip
 
@@ -840,27 +894,13 @@ public class TutorialTests
         yield return AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
-
-        yield return TestTearDown ();
     }
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test_TutorialNonSkip ()
+    public IEnumerator Test2_TutorialNonSkip ()
     {
-        yield return TestSetup ("APP_INIT", "Tutorial - Non-Skip");
-
-        yield return AddVirtualInputModule ();
-
-        #region Login
-
-        yield return AssertCurrentPageName ("LoadingPage");
-
-        yield return HandleLogin ();
-
-        yield return AssertCurrentPageName ("MainMenuPage");
-
-        # endregion
+        SetTestName ("Tutorial - Non-Skip");
 
         #region Tutorial Non-Skip
 
@@ -875,27 +915,13 @@ public class TutorialTests
         yield return AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
-
-        yield return TestTearDown ();
     }
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test_SoloGameplay ()
+    public IEnumerator Test3_SoloGameplay ()
     {
-        yield return TestSetup ("APP_INIT", "Tutorial - Solo Gameplay");
-
-        yield return AddVirtualInputModule ();
-
-        #region Login
-
-        yield return AssertCurrentPageName ("LoadingPage");
-
-        yield return HandleLogin ();
-
-        yield return AssertCurrentPageName ("MainMenuPage");
-
-        #endregion
+        SetTestName ("Tutorial - Solo Gameplay");
 
         #region Solo Gameplay
 
@@ -916,9 +942,13 @@ public class TutorialTests
         yield return AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
+    }
 
-        yield return new WaitForSeconds (5);
+    [UnityTest]
+    public IEnumerator TestN_Cleanup ()
+    {
+        // Nothing, just to ascertain cleanup
 
-        yield return TestTearDown ();
+        yield return null;
     }
 }
