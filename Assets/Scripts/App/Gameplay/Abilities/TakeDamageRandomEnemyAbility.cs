@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action(null);
+            Action();
         }
 
         protected override void TurnEndedHandler()
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.END)
                 return;
 
-            Action(null);
+            Action();
         }
 
         public override void Action(object info = null)

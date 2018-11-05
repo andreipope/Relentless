@@ -832,9 +832,6 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.DISTRACT:
                     ability = new DistractAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.DAMAGE_ENEMY_OR_RESTORE_DEFENSE_ALLY:
-                    ability = new DamageEnemyOrRestoreDefenseAllyAbility(cardKind, abilityData);
-                    break;
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT:
                     ability = new AdjacentUnitsGetStatAbility(cardKind, abilityData);
                     break;
