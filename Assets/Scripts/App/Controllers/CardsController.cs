@@ -1080,7 +1080,7 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public BoardUnitView SpawnUnitOnBoard(Player owner, string name, bool isPVPNetwork = false)
+        public BoardUnitView SpawnUnitOnBoard(Player owner, string name, bool isPVPNetwork = false, Action onComplete = null)
         {
             if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
                 return null;
@@ -1106,12 +1106,12 @@ namespace Loom.ZombieBattleground
             if (!owner.IsLocalPlayer)
             {
                 _battlegroundController.OpponentBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(onComplete);
             }
             else
             {
                 _battlegroundController.PlayerBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(owner.BoardCards);
+                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(owner.BoardCards, onComplete);
             }
 
             return unit;

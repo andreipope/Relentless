@@ -66,6 +66,9 @@ namespace Loom.ZombieBattleground
         private bool _isMatchmakingInProgress;
         private float _matchmakingTimeoutCounter;
 
+        private bool _isWaitForTurnTimerStart;
+        private float _waitForTurnTimer;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -86,6 +89,16 @@ namespace Loom.ZombieBattleground
                 {
                     await StopMatchmaking(MatchMetadata?.Id);
                     MatchingFailed?.Invoke();
+                }
+            }
+
+            if (_isWaitForTurnTimerStart)
+            {
+                _waitForTurnTimer += Time.deltaTime;
+                if (_waitForTurnTimer > Constants.PvPWaitForTurnMaxTime)
+                {
+                    ResetWaitForTurnTimer();
+                    await _backendFacade.CheckPlayerStatus(MatchMetadata.Id);
                 }
             }
         }
@@ -164,6 +177,13 @@ namespace Loom.ZombieBattleground
                         return false;
 
                     _isMatchmakingInProgress = false;
+
+                    // if its not player turn, start timer to check later if other player left the game or not
+                    if (!IsCurrentPlayer())
+                    {
+                        _isWaitForTurnTimerStart = true;
+                    }
+
                 }
             }
             catch (Exception)
@@ -244,7 +264,7 @@ namespace Loom.ZombieBattleground
                         return;
                     }
                 }
-               
+
                 switch (playerActionEvent.Match.Status)
                 {
                     case Match.Types.Status.Created:
@@ -265,10 +285,23 @@ namespace Loom.ZombieBattleground
                         Debug.LogWarning("Match Starting");
 
                         GameStartedActionReceived?.Invoke();
+
+                        // if its not player turn, start timer to check later if other player left the game or not
+                        if (!IsCurrentPlayer())
+                        {
+                            _isWaitForTurnTimerStart = true;
+                        }
+
                         break;
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
+                        {
+                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.EndTurn)
+                            {
+                                _isWaitForTurnTimerStart = true;
+                            }
                             return;
+                        }
 
                         OnReceivePlayerActionType(playerActionEvent);
                         break;
@@ -303,13 +336,13 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.NoneAction:
                     break;
                 case PlayerActionType.EndTurn:
+                    ResetWaitForTurnTimer();
                     EndTurnActionReceived?.Invoke();
                     break;
                 case PlayerActionType.Mulligan:
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
                     break;
                 case PlayerActionType.CardPlay:
-                    Debug.LogError("== Recieved msg for card Play == ");
                     CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
                     break;
                 case PlayerActionType.CardAttack:
@@ -336,6 +369,12 @@ namespace Loom.ZombieBattleground
                         playerActionEvent.PlayerAction.ActionType + " not found"
                     );
             }
+        }
+
+        private void ResetWaitForTurnTimer()
+        {
+            _isWaitForTurnTimerStart = false;
+            _waitForTurnTimer = 0f;
         }
     }
 }

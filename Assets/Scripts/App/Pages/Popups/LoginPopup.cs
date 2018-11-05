@@ -19,6 +19,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IAnalyticsManager _analyticsManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -49,6 +51,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
         }
 
         public void Dispose()
@@ -153,6 +156,8 @@ namespace Loom.ZombieBattleground
                     _backendDataControlMediator.SetUserDataModel(userDataModel);
 
                     SuccessfulLogin();
+
+                    _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
                 }
                 catch (GameVersionMismatchException e)
                 {

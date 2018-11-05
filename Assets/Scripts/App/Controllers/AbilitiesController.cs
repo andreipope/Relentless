@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         private List<ActiveAbility> _activeAbilities;
 
+        public bool BlockEndTurnButton { get; private set; }
+
         public void Init()
         {
             _activeAbilities = new List<ActiveAbility>();
@@ -440,6 +442,8 @@ namespace Loom.ZombieBattleground
 
                     if (isPlayer)
                     {
+                        BlockEndTurnButton = true;
+
                         activeAbility.Ability.ActivateSelectTarget(
                             callback: () =>
                             {
@@ -477,6 +481,8 @@ namespace Loom.ZombieBattleground
                                         1.5f);
                                 }
 
+                                BlockEndTurnButton = false;
+
                                 action?.Invoke(card);
 
                                 onCompleteCallback?.Invoke();
@@ -504,6 +510,8 @@ namespace Loom.ZombieBattleground
                                 }
 
                                 onCompleteCallback?.Invoke();
+
+                                BlockEndTurnButton = false;
 
                                 ResolveAllAbilitiesOnUnit(boardObject);
                             });
@@ -636,6 +644,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DAMAGE_TARGET:
                     ability = new DamageTargetAbility(cardKind, abilityData);
+                    abilityView = new DamageTargetAbilityView((DamageTargetAbility)ability);
                     break;
                 case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
                     ability = new DamageTargetAdjustmentsAbility(cardKind, abilityData);
@@ -697,6 +706,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.RAGE:
                     ability = new RageAbility(cardKind, abilityData);
+                    abilityView = new RageAbilityView((RageAbility)ability);
                     break;
                 case Enumerators.AbilityType.FREEZE_UNITS:
                     ability = new FreezeUnitsAbility(cardKind, abilityData);
@@ -806,6 +816,21 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_GUARD:
                     ability = new AdjacentUnitsGetGuardAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_AND_DISTRACT_TARGET:
+                    ability = new DamageAndDistractTargetAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED:
+                    ability = new DamageOverlordOnCountItemsPlayedAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DISTRACT:
+                    ability = new DistractAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_ENEMY_OR_RESTORE_DEFENSE_ALLY:
+                    ability = new DamageEnemyOrRestoreDefenseAllyAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT:
+                    ability = new AdjacentUnitsGetStatAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.DRAW_CARD_IF_DAMAGED_ZOMBIE_IN_PLAY:
                     ability = new DrawCardIfDamagedUnitInPlayAbility(cardKind, abilityData);
