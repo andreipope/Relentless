@@ -875,6 +875,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_UNIT_AND_SWING:
                     ability = new DealDamageToUnitAndSwing(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.SET_ATTACK_AVAILABILITY:
+                    ability = new SetAttackAvailabilityAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
