@@ -65,7 +65,13 @@
               "activityType": "passive",
               "callType": "END",
               "value": 2,
-              "buffType": "END"
+              "buffType": "END",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/FireBolt_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -212,7 +218,13 @@
               "activityType": "passive",
               "callType": "END",
               "value": 4,
-              "buffType": "END"
+              "buffType": "END",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/FireBolt_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -463,7 +475,13 @@
               "callType": "ENTRY",
               "value": 1,
               "turns": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
@@ -552,7 +570,13 @@
               "targetType": "opponent_card",
               "value": 2,
               "effectType": "STUN_OR_DAMAGE_FREEZES",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -587,7 +611,13 @@
               "callType": "ENTRY",
               "value": 2,
               "turns": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
@@ -629,7 +659,13 @@
               "callType": "ENTRY",
               "targetType": "opponent_card",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
