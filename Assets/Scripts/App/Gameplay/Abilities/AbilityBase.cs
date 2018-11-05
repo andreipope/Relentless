@@ -200,6 +200,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
+                        AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
                     }
                     break;
                 case Enumerators.CardKind.SPELL:
@@ -242,6 +243,7 @@ namespace Loom.ZombieBattleground
                 AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
                 AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
                 AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
+                AbilityUnitOwner.UnitAttackedEnded -= UnitAttackedEndedHandler;
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);
@@ -382,6 +384,10 @@ namespace Loom.ZombieBattleground
         }
 
         protected virtual void UnitDamagedHandler(BoardObject from)
+        {
+        }
+
+        protected virtual void UnitAttackedEndedHandler()
         {
         }
 
