@@ -552,7 +552,13 @@
               "targetType": "opponent_card",
               "value": 2,
               "effectType": "STUN_OR_DAMAGE_FREEZES",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
