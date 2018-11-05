@@ -126,7 +126,17 @@
               "targetType": "player_card|opponent_card",
               "value": 2,
               "effectType": "TARGET_FIRE",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+			  "VisualEffectsToPlay": [
+                {
+                  "Type": "Moving",
+                  "Path": "Prefabs/VFX/Spells/SpellTargetFireAttack"
+                },
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -496,7 +506,17 @@
               "targetType": "player_card|opponent_card",
               "value": 1,
               "effectType": "TARGET_WATER",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+			  "VisualEffectsToPlay": [
+                {
+                  "Type": "Moving",
+                  "Path": "Prefabs/VFX/Skills/IceBoltVFX"
+                },
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/IceBolt_Impact"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -837,7 +857,17 @@
               "targetType": "player_card|opponent_card",
               "value": 1,
               "effectType": "TARGET_ROCK",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+			  "VisualEffectsToPlay": [
+                {
+                  "Type": "Moving",
+                  "Path": "Prefabs/VFX/Spells/SpellTargetFireAttack"
+                },
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -1841,7 +1871,17 @@
               "targetType": "player_card|opponent_card",
               "value": 2,
               "effectType": "TARGET_LIFE",
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+			  "VisualEffectsToPlay": [
+                {
+                  "Type": "Moving",
+                  "Path": "Prefabs/VFX/Spells/SpellTargetLifeAttack"
+                },
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
