@@ -2309,8 +2309,9 @@
               "type": "TAKE_DAMAGE_RANDOM_ENEMY",
               "activityType": "passive",
               "callType": "ENTRY",
-              "targetType": "OPPONENT_CARD|OPPONENT",
+              "targetType": "OPPONENT_ALL_CARDS|OPPONENT",
               "value": 1,
+              "Count": 1,
               "buffType": "ENTRY",
               "VisualEffectsToPlay": [
                 {
