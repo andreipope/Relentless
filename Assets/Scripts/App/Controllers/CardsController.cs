@@ -888,6 +888,9 @@ namespace Loom.ZombieBattleground
                 }
 
                 boardCard.SetCardCost(value);
+
+                bool isActive = boardCard.WorkingCard.RealCost < boardCard.WorkingCard.InitialCost;
+                boardCard.costHighlightObject.SetActive(isActive);
             }
             else
             {
