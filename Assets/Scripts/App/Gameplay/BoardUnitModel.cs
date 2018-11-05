@@ -91,6 +91,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject, int, bool> UnitAttacked;
 
+        public event Action UnitAttackedEnded;
+
         public event Action<BoardObject> UnitDamaged;
 
         public event Action<BoardObject> PrepairingToDie;
@@ -497,6 +499,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                             );
                         });
@@ -551,6 +554,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                                 );
                         });

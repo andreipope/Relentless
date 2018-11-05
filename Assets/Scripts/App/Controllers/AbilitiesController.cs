@@ -784,6 +784,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS:
                     ability = new GainNumberOfLifeForEachDamageThisDealsAbility(cardKind, abilityData);
+                    abilityView = new GainNumberOfLifeForEachDamageThisDealsAbilityView((GainNumberOfLifeForEachDamageThisDealsAbility)ability);
                     break;
                 case Enumerators.AbilityType.UNIT_WEAPON:
                     ability = new UnitWeaponAbility(cardKind, abilityData);

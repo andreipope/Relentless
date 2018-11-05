@@ -200,6 +200,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
+                        AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
                     }
 
                     break;
@@ -362,6 +363,7 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
             AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
             AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
+            AbilityUnitOwner.UnitAttackedEnded -= UnitAttackedEndedHandler;
 
             AbilitiesController.DeactivateAbility(ActivityId);
             Dispose();
@@ -376,6 +378,10 @@ namespace Loom.ZombieBattleground
         }
 
         protected virtual void UnitDamagedHandler(BoardObject from)
+        {
+        }
+
+        protected virtual void UnitAttackedEndedHandler()
         {
         }
 
