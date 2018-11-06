@@ -756,6 +756,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN:
                     ability = new ChangeStatUntillEndOfTurnAbility(cardKind, abilityData);
+                    abilityView = new ChangeStatUntillEndOfTurnAbilityView((ChangeStatUntillEndOfTurnAbility)ability);
                     break;
                 case Enumerators.AbilityType.ATTACK_OVERLORD:
                     ability = new AttackOverlordAbility(cardKind, abilityData);
