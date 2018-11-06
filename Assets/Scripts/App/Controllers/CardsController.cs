@@ -68,6 +68,8 @@ namespace Loom.ZombieBattleground
 
         public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
 
+        private Transform _parentOfSelectableCards;
+        
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -1155,12 +1157,14 @@ namespace Loom.ZombieBattleground
         {
             ResetChoosalbeCardsList();
 
+            _parentOfSelectableCards = new GameObject("[Container]ChoosableAbiltiies").transform;
+
             foreach (AbilityData.ChoosableAbility ability in choosableAbilities)
             {
-                _currentListOfChoosableCards.Add(new ChoosableCardForAbility(ability, card));
+                _currentListOfChoosableCards.Add(new ChoosableCardForAbility(_parentOfSelectableCards, ability, card));
             }
 
-            SortGameObjectsInCenter(_currentListOfChoosableCards.Select(x => x.SelfObject).ToList());
+            InternalTools.GroupHorizontalObjects(_parentOfSelectableCards, 3f, 5, 0);
         }
 
         public void ResetChoosalbeCardsList()
@@ -1173,34 +1177,22 @@ namespace Loom.ZombieBattleground
                 }
                 _currentListOfChoosableCards.Clear();
             }
+            else
+            {
+                _currentListOfChoosableCards = new List<ChoosableCardForAbility>();
+            }
+
+            if (_parentOfSelectableCards != null && _parentOfSelectableCards)
+            {
+                Object.Destroy(_parentOfSelectableCards.gameObject);
+            }
         }
 
         public void ChooseAbilityOfCard(AbilityData.ChoosableAbility choosableAbility)
         {
+            ResetChoosalbeCardsList();
+
             CardForAbilityChoosed?.Invoke(choosableAbility);
-        }
-
-        private void SortGameObjectsInCenter(List<GameObject> gameObjects)
-        {
-            float width = 0.0f;
-            float spacing = -1.5f;
-            float scaling = 0.25f;
-            Vector3 pivot = new Vector3(0f, 0f, 0f);
-
-            for (int i = 0; i < gameObjects.Count; i++)
-            {
-                width += spacing;
-            }
-
-            width -= spacing;
-
-            for (int i = 0; i < gameObjects.Count; i++)
-            {
-                gameObjects[i].transform.position = new Vector3(pivot.x - width / 2, 0f, (gameObjects.Count - i) * 0.1f); ;
-                gameObjects[i].transform.localScale = Vector3.one * scaling;
-
-                pivot.x += width / gameObjects.Count;
-            }
         }
     }
 
@@ -1226,7 +1218,7 @@ namespace Loom.ZombieBattleground
         private OnBehaviourHandler _behaviourHandler;
         private AbilityData.ChoosableAbility _mainChoosableAbility;
 
-        public ChoosableCardForAbility(AbilityData.ChoosableAbility choosableAbility, WorkingCard card)
+        public ChoosableCardForAbility(Transform parent, AbilityData.ChoosableAbility choosableAbility, WorkingCard card)
         {
             _mainChoosableAbility = choosableAbility;
 
@@ -1236,7 +1228,9 @@ namespace Loom.ZombieBattleground
 
             string prefabName = card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
 
-            SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ForChooseAbilities/" + prefabName));
+            SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ForChooseAbilities/" + prefabName),
+                                            parent,
+                                            false);
 
             _picture = SelfObject.transform.Find("Image_Picture").GetComponent<SpriteRenderer>();
             _frame = SelfObject.transform.Find("Image_Frame").GetComponent<SpriteRenderer>();

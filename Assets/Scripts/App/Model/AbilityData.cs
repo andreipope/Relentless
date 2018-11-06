@@ -171,7 +171,7 @@ namespace Loom.ZombieBattleground.Data
 
             if (!string.IsNullOrEmpty(SubTrigger))
             {
-                AbilitySubTrigger = Utilites.CastStringTuEnum<Enumerators.AbilitySubTrigger>(SubTrigger);
+                AbilitySubTrigger = Utilites.CastStringTuEnum<Enumerators.AbilitySubTrigger>(SubTrigger, true);
             }
             else
             {
