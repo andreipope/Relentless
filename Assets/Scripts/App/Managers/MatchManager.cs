@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.AppState _finishMatchAppState;
 
+        private int _onPvPManagerGameStartedActionHandlerCounter;
+
         public Enumerators.MatchType MatchType { get; set; }
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
@@ -59,6 +61,17 @@ namespace Loom.ZombieBattleground
                     {
                         try
                         {
+                            if (_onPvPManagerGameStartedActionHandlerCounter < 0) {
+                                _onPvPManagerGameStartedActionHandlerCounter = 0;
+                                Debug.Log("OnPvPManagerGameStartedActionReceived was unsubscribed more than required.");
+                            }
+
+                            while (_onPvPManagerGameStartedActionHandlerCounter > 0) {
+                                _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
+                                _onPvPManagerGameStartedActionHandlerCounter--;
+                                Debug.Log("Unsubscribing on PVP, OnPvPManagerGameStartedActionReceived.");
+                            }
+
                             GameClient.Get<IQueueManager>().StartNetworkThread();
                             _uiManager.DrawPopup<ConnectionPopup>();
 
@@ -77,6 +90,7 @@ namespace Loom.ZombieBattleground
                             else
                             {
                                 _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
+                                _onPvPManagerGameStartedActionHandlerCounter++;
                             }
                         }
                         catch (Exception e) {
@@ -99,6 +113,7 @@ namespace Loom.ZombieBattleground
             try
             {
                 _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
+                _onPvPManagerGameStartedActionHandlerCounter--;
                 ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
                 connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
                 connectionPopup.Hide();
@@ -156,6 +171,7 @@ namespace Loom.ZombieBattleground
         private void OnPvPManagerGameStartedActionReceived()
         {
             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
+            _onPvPManagerGameStartedActionHandlerCounter--;
             StartPvPMatch();
         }
 

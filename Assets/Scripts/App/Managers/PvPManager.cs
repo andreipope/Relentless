@@ -254,14 +254,18 @@ namespace Loom.ZombieBattleground
                 Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
 
                 PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
-                foreach(HistoryData historyData in playerActionEvent.Block.List)
+
+                if (playerActionEvent.Block != null)
                 {
-                    HistoryEndGame endGameData = historyData.EndGame;
-                    if(endGameData != null)
+                    foreach (HistoryData historyData in playerActionEvent.Block.List)
                     {
-                        Debug.LogError(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
-                        await _backendFacade.UnsubscribeEvent();
-                        return;
+                        HistoryEndGame endGameData = historyData.EndGame;
+                        if (endGameData != null)
+                        {
+                            Debug.Log(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                            await _backendFacade.UnsubscribeEvent();
+                            return;
+                        }
                     }
                 }
 
@@ -310,6 +314,14 @@ namespace Loom.ZombieBattleground
                         break;
                     case Match.Types.Status.Ended:
                         GameEndedActionReceived?.Invoke();
+                        break;
+                    case Match.Types.Status.Canceled:
+                        await StopMatchmaking(MatchMetadata?.Id);
+                        MatchingFailed?.Invoke();
+                        break;
+                    case Match.Types.Status.Timedout:
+                        await StopMatchmaking(MatchMetadata?.Id);
+                        MatchingFailed?.Invoke();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(
