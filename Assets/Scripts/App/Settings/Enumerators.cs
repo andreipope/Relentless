@@ -564,7 +564,7 @@ namespace Loom.ZombieBattleground.Common
             AllAllyUnitsInPlay,
             RandomUnit,
             AllEnemyUnitsInPlay,
-            AllAllyUhitsByFactionInPlay,
+            AllAllyUnitsByFactionInPlay,
             ForEachFactionOfUnitInHand,
             IfHasUnitsWithFactionInPlay,
             AllyUnitsByFactionThatCost,

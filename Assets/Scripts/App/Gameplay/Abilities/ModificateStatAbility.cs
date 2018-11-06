@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
             else if(AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
                     AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
             {
-                if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUhitsByFactionInPlay)
+                if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
                     List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
 
