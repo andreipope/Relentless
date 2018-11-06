@@ -568,7 +568,8 @@ namespace Loom.ZombieBattleground.Common
             AllAllyUhitsByFactionInPlay,
             ForEachFactionOfUnitInHand,
             IfHasUnitsWithFactionInPlay,
-            AllyUnitsByFactionThatCost
+            AllyUnitsByFactionThatCost,
+            YourOverlord
         }
     }
 }

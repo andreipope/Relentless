@@ -12,24 +12,42 @@ namespace Loom.ZombieBattleground
     public class HealTargetAbility : AbilityBase
     {
         public int Value { get; }
+
         public int Count { get; }
+
+        public Enumerators.AbilitySubTrigger SubTrigger { get; }
 
         public HealTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Count = ability.Count;
+            SubTrigger = ability.AbilitySubTrigger;
         }
 
         public override void Activate()
         {
             base.Activate();
+            
+            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            {
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+            }
 
-            if(AbilityCallType != Enumerators.AbilityCallType.ENTRY &&
-               AbilityActivityType != Enumerators.AbilityActivityType.PASSIVE)
-                return;
-
-            HealRandomCountOfAllies();
+            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            {
+                if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+                {
+                   if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
+                   {
+                       HealOverlord();
+                   }
+                   else
+                   {
+                       HealRandomCountOfAllies();
+                   }
+                }
+             }
         }
 
         protected override void InputEndedHandler()
@@ -42,9 +60,38 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void HealOverlord()
+        {
+            HealTarget(PlayerCallerOfAbility, Value);
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                PlayerCallerOfAbility
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingOverlord,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        Target = PlayerCallerOfAbility,
+                        HasValue = true,
+                        Value = AbilityData.Value
+                    }
+                }
+            });
+        }
+
         private void HealSelectedTarget()
         {
             BoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit;
+
+            Enumerators.ActionType actionType = AffectObjectType == Enumerators.AffectObjectType.Player ?
+                                Enumerators.ActionType.CardAffectingOverlord : Enumerators.ActionType.CardAffectingCard;
 
             HealTarget(boardObject, Value);
 
@@ -55,7 +102,7 @@ namespace Loom.ZombieBattleground
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
+                ActionType = actionType,
                 Caller = GetCaller(),
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
