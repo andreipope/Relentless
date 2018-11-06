@@ -12,11 +12,14 @@ namespace Loom.ZombieBattleground
         public Enumerators.CardType UnitType;
         public Enumerators.SetType SetType;
 
+        public int Cost { get; }
+
         public TakeUnitTypeToAllyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
-            SetType = ability.AbilitySetType; 
+            SetType = ability.AbilitySetType;
+            Cost = ability.Cost;
         }
 
         public override void Activate()
@@ -91,10 +94,26 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                           .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.Card.LibraryCard.CardSetType == SetType)
+                           .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType)
                            .ToList();
 
                         foreach(BoardUnitModel unit in allies)
+                        {
+                            TakeTypeToUnit(unit);
+                        }
+
+                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
+                            AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                    }
+                    break;
+                case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
+                    {
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                               .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType &&
+                                      unit.Card.RealCost <= Cost)
+                               .ToList();
+
+                        foreach (BoardUnitModel unit in allies)
                         {
                             TakeTypeToUnit(unit);
                         }
