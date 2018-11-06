@@ -79,7 +79,9 @@ namespace Loom.ZombieBattleground
                         }
                         catch (Exception e) {
                             Debug.LogWarning(e);
-                            _uiManager.GetPopup<ConnectionPopup>().Hide();
+                            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                            connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
+                            connectionPopup.Hide();
                             _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
                         }
                     }
@@ -125,6 +127,7 @@ namespace Loom.ZombieBattleground
         {
             try
             {
+                _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
                 ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
                 connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
                 connectionPopup.Hide();
