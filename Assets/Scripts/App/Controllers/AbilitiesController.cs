@@ -641,6 +641,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AbilityType.HEAL:
                     ability = new HealTargetAbility(cardKind, abilityData);
+                    abilityView = new HealTargetAbilityView((HealTargetAbility)ability);
                     break;
                 case Enumerators.AbilityType.DAMAGE_TARGET:
                     ability = new DamageTargetAbility(cardKind, abilityData);

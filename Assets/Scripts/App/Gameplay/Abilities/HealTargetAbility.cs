@@ -25,11 +25,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
-            {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-            }
-
             if(AbilityCallType != Enumerators.AbilityCallType.ENTRY &&
                AbilityActivityType != Enumerators.AbilityActivityType.PASSIVE)
                 return;
@@ -43,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                HealSelectedTarget();
+                InvokeActionTriggered();
             }
         }
 
@@ -73,6 +68,13 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            HealSelectedTarget();
         }
 
         private void HealRandomCountOfAllies()
