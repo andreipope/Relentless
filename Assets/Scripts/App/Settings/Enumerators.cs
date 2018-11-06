@@ -529,5 +529,11 @@ namespace Loom.ZombieBattleground.Common
             AttackOnOverlord,
             PlayOverlordSkill
         }
+
+        public enum MatchPlayer
+        {
+            CurrentPlayer,
+            OpponentPlayer
+        }
     }
 }
