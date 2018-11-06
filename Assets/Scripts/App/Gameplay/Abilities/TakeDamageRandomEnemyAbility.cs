@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        public int Count { get; } = 1;
+        public int Count { get; }
 
         public Enumerators.SetType SetType;
 
