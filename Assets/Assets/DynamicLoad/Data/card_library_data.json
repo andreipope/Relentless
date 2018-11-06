@@ -2904,7 +2904,14 @@
               "callType": "ENTRY",
               "targetType": "opponent_all_cards",
               "damage": -3,
-              "buffType": "ENTRY"
+              "effectType": "CHANGE_STAT_FRESH_MEAT",
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/FreshMeatVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
