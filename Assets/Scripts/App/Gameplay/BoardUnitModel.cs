@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         public bool HasSwing;
 
+        public bool CanAttackByDefault;
+
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
@@ -69,6 +71,8 @@ namespace Loom.ZombieBattleground
             AttackedBoardObjectsThisTurn = new List<BoardObject>();
 
             IsCreatedThisTurn = true;
+
+            CanAttackByDefault = true;
 
             UnitStatus = Enumerators.UnitStatusType.NONE;
 
@@ -576,7 +580,7 @@ namespace Loom.ZombieBattleground
         {
             if (IsDead || CurrentHp <= 0 ||
                 CurrentDamage <= 0 || IsStun ||
-                CantAttackInThisTurnBlocker)
+                CantAttackInThisTurnBlocker  || !CanAttackByDefault)
             {
                 return false;
             }
