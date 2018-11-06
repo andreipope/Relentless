@@ -60,6 +60,8 @@ namespace Loom.ZombieBattleground
 
         private VfxController _vfxController;
 
+        private AbilitiesController _abilitiesController;
+
         private IPlayerManager _playerManager;
 
         private ISoundManager _soundManager;
@@ -111,6 +113,7 @@ namespace Loom.ZombieBattleground
             _cardsController = _gameplayManager.GetController<CardsController>();
             _aiController = _gameplayManager.GetController<AIController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
 
@@ -934,9 +937,61 @@ namespace Loom.ZombieBattleground
             unit?.Die();
         }
 
-        public void TakeControlUnit(Player to, BoardUnitModel unit)
+        public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit)
         {
-            // implement functionality of the take control
+            BoardUnitView view = GetBoardUnitViewByModel(unit);
+
+            if (unit.OwnerPlayer.Equals(PlayerBoardCards))
+            {
+                PlayerBoardCards.Remove(view);
+                OpponentBoardCards.Add(view);
+            }
+            else
+            {
+                OpponentBoardCards.Remove(view);
+                PlayerBoardCards.Add(view);
+            }
+
+            unit.OwnerPlayer.BoardCards.Remove(view);
+            unit.OwnerPlayer.CardsOnBoard.Remove(unit.Card);
+
+            unit.OwnerPlayer = newPlayerOwner;
+            unit.Card.Owner = newPlayerOwner;
+
+            newPlayerOwner.CardsOnBoard.Add(unit.Card);
+            newPlayerOwner.BoardCards.Add(view);
+
+            if (newPlayerOwner.IsLocalPlayer)
+            {
+                UpdatePositionOfBoardUnitsOfPlayer(newPlayerOwner.BoardCards);
+            }
+            else
+            {
+                UpdatePositionOfBoardUnitsOfOpponent();
+            }
+        }
+
+        public void DistractUnit(BoardUnitView boardUnit)
+        {
+            boardUnit.Model.BuffedDamage = 0;
+            boardUnit.Model.BuffedHp = 0;
+            boardUnit.Model.HasSwing = false;
+            boardUnit.Model.TakeFreezeToAttacked = false;
+            boardUnit.Model.HasBuffRush = false;
+            boardUnit.Model.HasBuffHeavy = false;
+            boardUnit.Model.SetAsWalkerUnit();
+            boardUnit.Model.UseShieldFromBuff();
+            boardUnit.Model.BuffsOnUnit.Clear();
+
+            List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit.Model);
+
+            foreach(AbilityBase ability in abilities)
+            {
+                ability.Deactivate();
+                ability.Dispose();
+            }
+
+            boardUnit.Model.Distract();
         }
 
         public BoardUnitView CreateBoardUnit(Player owner, WorkingCard card)

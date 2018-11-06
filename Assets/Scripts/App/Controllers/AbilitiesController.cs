@@ -758,12 +758,14 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.ATTACK_OVERLORD:
                     ability = new AttackOverlordAbility(cardKind, abilityData);
+                    abilityView = new AttackOverlordAbilityView((AttackOverlordAbility)ability);
                     break;
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_HEAVY:
                     ability = new AdjacentUnitsGetHeavyAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.FREEZE_NUMBER_OF_RANDOM_ALLY:
                     ability = new FreezeNumberOfRandomAllyAbility(cardKind, abilityData);
+                    abilityView = new FreezeNumberOfRandomAllyAbilityView((FreezeNumberOfRandomAllyAbility)ability);
                     break;
                 case Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND:
                     ability = new AddCardByNameToHandAbility(cardKind, abilityData);
@@ -783,6 +785,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS:
                     ability = new GainNumberOfLifeForEachDamageThisDealsAbility(cardKind, abilityData);
+                    abilityView = new GainNumberOfLifeForEachDamageThisDealsAbilityView((GainNumberOfLifeForEachDamageThisDealsAbility)ability);
                     break;
                 case Enumerators.AbilityType.UNIT_WEAPON:
                     ability = new UnitWeaponAbility(cardKind, abilityData);
@@ -831,9 +834,6 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.DISTRACT:
                     ability = new DistractAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.DAMAGE_ENEMY_OR_RESTORE_DEFENSE_ALLY:
-                    ability = new DamageEnemyOrRestoreDefenseAllyAbility(cardKind, abilityData);
-                    break;
                 case Enumerators.AbilityType.ADJACENT_UNITS_GET_STAT:
                     ability = new AdjacentUnitsGetStatAbility(cardKind, abilityData);
                     break;
@@ -869,6 +869,15 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.TAKE_SWING_TO_UNITS:
                     ability = new TakeSwingToUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DESTROY_UNITS:
+                    ability = new DestroyUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DEAL_DAMAGE_TO_UNIT_AND_SWING:
+                    ability = new DealDamageToUnitAndSwing(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.SET_ATTACK_AVAILABILITY:
+                    ability = new SetAttackAvailabilityAbility(cardKind, abilityData);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);

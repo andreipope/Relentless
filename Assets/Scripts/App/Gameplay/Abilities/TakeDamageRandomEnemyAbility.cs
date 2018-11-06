@@ -12,9 +12,9 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value { get; } = 1;
+        public int Value { get; }
 
-        public int Damage { get; }
+        public int Count { get; }
 
         public Enumerators.SetType SetType;
 
@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            Damage = ability.Damage;
+            Count = ability.Count;
             SetType = ability.AbilitySetType;
         }
 
@@ -33,7 +33,17 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action(null);
+            Action();
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END)
+                return;
+
+            Action();
         }
 
         public override void Action(object info = null)
@@ -49,10 +59,27 @@ namespace Loom.ZombieBattleground
             else
             {
                 _targets = new List<BoardObject>();
-                _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
-                _targets.Add(GetOpponentOverlord());
 
-                _targets = InternalTools.GetRandomElementsFromList(_targets, Value);
+                foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
+                {
+                    switch (abilityTarget)
+                    {
+                        case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                            _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER:
+                            _targets.Add(PlayerCallerOfAbility);
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                            _targets.Add(GetOpponentOverlord());
+                            break;
+                    }
+                }
+
+                _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
 
             VfxObject = null;

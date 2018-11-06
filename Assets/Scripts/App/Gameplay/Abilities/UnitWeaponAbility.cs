@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
+        public int Health;
+
         public int Damage;
 
         public event Action TurnEndedEvent;
@@ -19,6 +21,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
             Damage = ability.Damage;
+            Health = ability.Health;
         }
 
         public override void Activate()
@@ -34,6 +37,9 @@ namespace Loom.ZombieBattleground
 
             TargetUnit.CurrentDamage += Value;
             TargetUnit.BuffedDamage += Value;
+
+            TargetUnit.CurrentHp += Health;
+            TargetUnit.BuffedHp += Health;
 
             InvokeActionTriggered();
         }

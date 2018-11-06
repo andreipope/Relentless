@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         public bool HasSwing;
 
+        public bool CanAttackByDefault;
+
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
@@ -55,8 +57,6 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
-        public bool IsDistracted { get; private set; }
-
         public BoardUnitModel()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -71,6 +71,8 @@ namespace Loom.ZombieBattleground
             AttackedBoardObjectsThisTurn = new List<BoardObject>();
 
             IsCreatedThisTurn = true;
+
+            CanAttackByDefault = true;
 
             UnitStatus = Enumerators.UnitStatusType.NONE;
 
@@ -91,6 +93,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject, int, bool> UnitAttacked;
 
+        public event Action UnitAttackedEnded;
+
         public event Action<BoardObject> UnitDamaged;
 
         public event Action<BoardObject> PrepairingToDie;
@@ -110,6 +114,8 @@ namespace Loom.ZombieBattleground
         public event Action UnitFromDeckRemoved;
 
         public event Action UnitDistracted;
+
+        public event Action<bool> UnitDistractEffectStateChanged;
 
         public event Action<BoardUnitModel> KilledUnit;
 
@@ -258,6 +264,9 @@ namespace Loom.ZombieBattleground
 
         public void UseShieldFromBuff()
         {
+            if (!HasBuffShield)
+                return;
+
             HasBuffShield = false;
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             BuffShieldStateChanged?.Invoke(false);
@@ -447,8 +456,13 @@ namespace Loom.ZombieBattleground
 
         public void Distract()
         {
-            IsDistracted = true;
+            UpdateVisualStateOfDistract(true);
             UnitDistracted?.Invoke();
+        }
+
+        public void UpdateVisualStateOfDistract(bool status)
+        {
+            UnitDistractEffectStateChanged?.Invoke(status);
         }
 
         public void ForceSetCreaturePlayable()
@@ -497,6 +511,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                             );
                         });
@@ -551,6 +566,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                                 );
                         });
@@ -564,7 +580,7 @@ namespace Loom.ZombieBattleground
         {
             if (IsDead || CurrentHp <= 0 ||
                 CurrentDamage <= 0 || IsStun ||
-                CantAttackInThisTurnBlocker)
+                CantAttackInThisTurnBlocker  || !CanAttackByDefault)
             {
                 return false;
             }

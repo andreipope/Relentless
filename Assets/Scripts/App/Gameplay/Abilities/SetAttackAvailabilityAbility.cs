@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    public class DamageEnemyOrRestoreDefenseAllyAbility : AbilityBase
+    public class SetAttackAvailabilityAbility : AbilityBase
     {
-        public DamageEnemyOrRestoreDefenseAllyAbility(Enumerators.CardKind cardKind, AbilityData ability)
+        public SetAttackAvailabilityAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
         }
@@ -20,14 +20,12 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action();
+            SetAttackAvailability(AbilityUnitOwner);
         }
 
-        public override void Action(object info = null)
+        private void SetAttackAvailability(BoardUnitModel boardUnit)
         {
-            base.Action(info);
-
-            AbilityUnitOwner.AddBuffShield();
+            boardUnit.CanAttackByDefault = false;
         }
     }
 }

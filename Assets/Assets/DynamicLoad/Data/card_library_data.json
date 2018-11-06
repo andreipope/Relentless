@@ -475,7 +475,13 @@
               "callType": "ENTRY",
               "value": 1,
               "turns": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
@@ -605,7 +611,13 @@
               "callType": "ENTRY",
               "value": 2,
               "turns": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/Freeze_ImpactVFX"
+                }
+              ]
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
@@ -2006,7 +2018,13 @@
               "activityType": "passive",
               "callType": "ATTACK",
               "value": 1,
-              "buffType": "ATTACK"
+              "buffType": "ATTACK",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/HealingTouchVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2291,8 +2309,9 @@
               "type": "TAKE_DAMAGE_RANDOM_ENEMY",
               "activityType": "passive",
               "callType": "ENTRY",
-              "targetType": "OPPONENT_CARD|OPPONENT",
+              "targetType": "OPPONENT_ALL_CARDS|OPPONENT",
               "value": 1,
+              "Count": 1,
               "buffType": "ENTRY",
               "VisualEffectsToPlay": [
                 {
@@ -2345,7 +2364,13 @@
               "callType": "ENTRY",
               "targetType": "player",
               "value": 2,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2458,7 +2483,13 @@
               "callType": "ENTRY",
               "targetType": "player",
               "value": 4,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
