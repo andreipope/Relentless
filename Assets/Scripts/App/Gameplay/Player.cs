@@ -152,14 +152,26 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            int heroId;
+            int heroId = -1;
 
             if (!isOpponent)
             {
                 if (!_gameplayManager.IsTutorial)
                 {
-                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId)
-                        .HeroId;
+                    if(_matchManager.MatchType == Enumerators.MatchType.PVP)
+                    {
+                        foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
+                        {
+                            if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
+                            {
+                                heroId = (int) playerState.Deck.HeroId;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId).HeroId;
+                    }
                 }
                 else
                 {
