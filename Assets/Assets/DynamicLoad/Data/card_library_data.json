@@ -2827,7 +2827,13 @@
               "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "NONE",
-              "buffType": "SWING"
+              "buffType": "SWING",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/NailBomb_ItemEntry"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
