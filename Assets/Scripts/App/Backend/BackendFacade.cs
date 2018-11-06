@@ -5,10 +5,12 @@ using Loom.Client;
 using Loom.Google.Protobuf;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
+using Deck = Loom.ZombieBattleground.Protobuf.Deck;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -325,6 +327,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region PVP
 
         private const string FindMatchMethod = "FindMatch";
+        private const string DebugFindMatchMethod = "DebugFindMatch";
         private const string CancelFindMatchMethod = "CancelFindMatch";
         private const string EndMatchMethod = "EndMatch";
         private const string SendPlayerActionMethod = "SendPlayerAction";
@@ -360,15 +363,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
             }
 
-            FindMatchRequest request = new FindMatchRequest
+            DebugFindMatchRequest request = new DebugFindMatchRequest
             {
                 UserId = userId,
-                //Deck = deck,
+                Deck = deck.GetDeck(),
                 CustomGame = requestCustomGameAddress,
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+            return await Contract.CallAsync<FindMatchResponse>(DebugFindMatchMethod, request);
         }
 
         public async Task<CancelFindMatchResponse> CancelFindMatch(string userId, long matchId)
