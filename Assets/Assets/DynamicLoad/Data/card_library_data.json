@@ -1902,14 +1902,14 @@
               "value": 2,
               "effectType": "TARGET_LIFE",
               "buffType": "ENTRY",
-			  "VisualEffectsToPlay": [
+              "VisualEffectsToPlay": [
                 {
                   "Type": "Moving",
-                  "Path": "Prefabs/VFX/Spells/SpellTargetLifeAttack"
+                  "Path": "Prefabs/VFX/Shroom_trail"
                 },
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                  "Path": "Prefabs/VFX/Shroom_Impact"
                 }
               ]
             }
@@ -2719,7 +2719,21 @@
               "targetType": "player_card|opponent_card",
               "value": 4,
               "damage": 4,
-              "buffType": "END"
+              "buffType": "END",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Chainsaw_Entry_Walker"
+                },
+                {
+                  "Type": "Impact_Feral",
+                  "Path": "Prefabs/VFX/Chainsaw_Entry_Feral"
+                },
+                {
+                  "Type": "Impact_Heavy",
+                  "Path": "Prefabs/VFX/Chainsaw_Entry_Heavy"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2833,7 +2847,13 @@
               "targetType": "player_card|opponent_card",
               "value": 4,
               "effectType": "NONE",
-              "buffType": "SWING"
+              "buffType": "SWING",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/NailBomb_ItemEntry"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2904,7 +2924,14 @@
               "callType": "ENTRY",
               "targetType": "opponent_all_cards",
               "damage": -3,
-              "buffType": "ENTRY"
+              "effectType": "CHANGE_STAT_FRESH_MEAT",
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/FreshMeatVFX"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
