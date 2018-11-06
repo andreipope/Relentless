@@ -57,6 +57,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3f9aabe01908316419cd4f3a620fdbde, type: 3}
   - {fileID: 21300000, guid: bc425111938bac843b5a8e626686df7a, type: 3}
   - {fileID: 21300000, guid: 7ae27a41d256fbf42b074b0c6b6da160, type: 3}
+  - {fileID: 21300000, guid: db05236167db16742811d65ef3319df7, type: 3}
   - {fileID: 21300000, guid: 00652a9172ef32b4a8d1147c2c5c9534, type: 3}
   - {fileID: 21300000, guid: 0e95ee915710a214897cac2add80aa1e, type: 3}
   - {fileID: 21300000, guid: 76143fa1dcdc874488ab3c4a7c29348a, type: 3}
@@ -74,6 +75,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b8c43c726644c9948a49138afa6d1c09, type: 3}
   - {fileID: 21300000, guid: 7eca5992725060d4cb97b91ee81d7d51, type: 3}
   - {fileID: 21300000, guid: 375428a29e5f8dd4a8b177eae8cc58eb, type: 3}
+  - {fileID: 21300000, guid: 57c7a8b2f158c4849b4e362c577405e1, type: 3}
   - {fileID: 21300000, guid: 02151fb275119b44ab8e5f5519f5aebe, type: 3}
   - {fileID: 21300000, guid: 2fb1b9c24f9a832498611fbde7cd3e2c, type: 3}
   - {fileID: 21300000, guid: 885becc24d8fecf46aad84d7505818ae, type: 3}
@@ -95,6 +97,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 8a58772414535c04fa03133cfd031515, type: 3}
   - {fileID: 21300000, guid: 5b2f2a24290bb57468171c70018cfcc6, type: 3}
   - {fileID: 21300000, guid: 6451bd44e78bec5479999ca3607152c6, type: 3}
+  - {fileID: 21300000, guid: 86577b549c1953740b6ac9438cd8374d, type: 3}
   - {fileID: 21300000, guid: 7623f5644e7867048afc59215db4870f, type: 3}
   - {fileID: 21300000, guid: 9343fc74ae90f374b98f918e720eec8b, type: 3}
   - {fileID: 21300000, guid: 313765840803cbe4dbf75a9ddc0faf57, type: 3}
@@ -146,6 +149,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 70b325b7e307e63428c9c419e8651096, type: 3}
   - {fileID: 21300000, guid: 48baefb7be0377b40bc01e12b576735b, type: 3}
   - {fileID: 21300000, guid: badd90c7a3e1f544f8cd14a27cf18b8e, type: 3}
+  - {fileID: 21300000, guid: 55b616c7e4b98a648b336756429c84ae, type: 3}
+  - {fileID: 21300000, guid: d0700ac78b52ac942a187a7da97170db, type: 3}
+  - {fileID: 21300000, guid: 956c12f7f4d08d34d954318cf09608ab, type: 3}
   - {fileID: 21300000, guid: b34ecef7e3aa02640a2b090e9e04040f, type: 3}
   - {fileID: 21300000, guid: 7d40e118eff5f4851bdfbe11f17df312, type: 3}
   - {fileID: 21300000, guid: 795a8948b89f1cc45941647246254981, type: 3}
@@ -178,6 +184,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3d7517fa7b4c2164d8a85cb97705b5c9, type: 3}
   - {fileID: 21300000, guid: 9298640b519256f4095cc403d205d3e7, type: 3}
   - {fileID: 21300000, guid: b0a9660ba41665f4d9a6e559a83186d6, type: 3}
+  - {fileID: 21300000, guid: 24d4413be59279244ba5f6490c8c41f0, type: 3}
   - {fileID: 21300000, guid: a5a9c64b1e88dbc4d98894e746cdc7b0, type: 3}
   - {fileID: 21300000, guid: 3368ff5b5491f6a4fa2995b810462cc9, type: 3}
   - {fileID: 21300000, guid: d01ca28b72a452b4cacfc09b659f673b, type: 3}
@@ -219,6 +226,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 170c5a6f3b04f8841bcb9bc9eecd4b62, type: 3}
   - {fileID: 21300000, guid: 1629e08f7c219f64fb1f844eb056a31c, type: 3}
   - {fileID: 21300000, guid: baa1b38fd21cc924fbaf3f33ac8b4d29, type: 3}
+  - {fileID: 21300000, guid: 8c3ba89f84f5e084c9bddd951a6bce9e, type: 3}
   - {fileID: 21300000, guid: 1eaf73af5a488b443b000fd20dfc7a06, type: 3}
   - {fileID: 21300000, guid: 7e4ef9dfb4944ba4990e793185d53f81, type: 3}
   - {fileID: 21300000, guid: 21cc68ef94feccf44addd3e5b8eeaa0c, type: 3}
@@ -236,6 +244,7 @@ SpriteAtlas:
   - toxic_commander_zlopper
   - earth_minion_pit
   - item_minion_boomstick
+  - water_minion_slider
   - item_minion_fullgoobottles
   - toxic_minion_hazmaz
   - item_minion_shovel_normal
@@ -253,6 +262,7 @@ SpriteAtlas:
   - toxic_commander_zeeter
   - earth_minion_slab
   - item_minion_molotov
+  - water_minion_znowy
   - fire_commander_volcan
   - toxic_general_cherno-bill
   - fire_general_gargantua
@@ -274,6 +284,7 @@ SpriteAtlas:
   - air_minion_wheezy
   - fire_officer_werezomb
   - toxic_commander_zteroid
+  - item_minion_bat
   - water_general_tzunamy
   - water_officer_geyzer
   - earth_officer_spiker
@@ -325,11 +336,14 @@ SpriteAtlas:
   - fire_minion_embryo
   - air_general_zeuz
   - air_commander_embryo
+  - water_minion_frozen
+  - water_minion_hozer
+  - water_minion_ztalagmite
   - life_general_yggdrazil
   - fire_minion_pyromaz
   - item_minion_shovel_heal
   - earth_minion_bolderr
-  - item_minion_junk_spear
+  - item_minion_junkspear
   - air_minion_banshee
   - fire_minion_rabiez
   - life_officer_shroom
@@ -357,6 +371,7 @@ SpriteAtlas:
   - item_minion_supplydrop
   - water_general_tsunami
   - toxic_minion_spikez
+  - item_minion_zedkit
   - life_officer_puffer
   - earth_minion_crumbz
   - earth_commander_pyrite
@@ -398,6 +413,7 @@ SpriteAtlas:
   - earth_commander_defender
   - fire_minion_quazi
   - water_commander_maelstrom
+  - toxic_minion_zcavenger
   - toxic_minion_zmiley
   - item_minion_shoppingcart
   - life_general_embryo
