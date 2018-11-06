@@ -1379,17 +1379,27 @@ namespace Loom.ZombieBattleground
             List<BoardUnitView> units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
             units = InternalTools.GetRandomElementsFromList(units, skill.Count);
 
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/BlizzardVFX"), Vector3.zero, true, 8);
+
+            GameObject prefabFreeze = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Blizzard_Freeze");
+            Vector3 targetPosition = Vector3.zero;
+
             foreach (BoardUnitView unit in units)
             {
-                unit.Model.Stun(Enumerators.StunType.FREEZE, skill.Value);
+                targetPosition = unit.Transform.position + Vector3.up * 0.7f;
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"), unit);
+                _vfxController.CreateVfx(prefabFreeze, targetPosition, true, 6);
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                InternalTools.DoActionDelayed(() =>
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.Freeze,
-                    Target = unit
-                });
+                    unit.Model.Stun(Enumerators.StunType.FREEZE, skill.Value);
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                        Target = unit
+                    });
+                }, 3.5f);
             }
 
             _soundManager.PlaySound(
@@ -1677,6 +1687,10 @@ namespace Loom.ZombieBattleground
             {
                 unit.SetAsHeavyUnit();
 
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortressVFX"),
+                    unit, isIgnoreCastVfx: true);
+
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.OverlordSkill.ToString().ToLowerInvariant(),
@@ -1754,6 +1768,9 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitView unit in units)
             {
                 unit.Model.SetAsHeavyUnit();
+
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortressVFX"), unit.Transform.position, true, 6f);
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
