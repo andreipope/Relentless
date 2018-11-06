@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
                         HistoryEndGame endGameData = historyData.EndGame;
                         if (endGameData != null)
                         {
-                            Debug.LogError(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                            Debug.Log(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
                             await _backendFacade.UnsubscribeEvent();
                             return;
                         }
