@@ -1,6 +1,7 @@
 #!/bin/bash
 export TESTPLATFORM=android
-TEST=${TEST:="test-runner.py"} #Name of the test file
+# TEST=${TEST:="test-runner.py"} #Name of the test file
+TEST=${TEST:="tests/horde_tests.py"} #Name of the test file
 
 ##### Cloud testrun dependencies start
 echo "Extracting tests.zip..."
@@ -52,6 +53,10 @@ echo "Running tests..."
 rm -rf screenshots
 mkdir screenshots
 
+echo $TEST_CLOUD
+echo ${TEST_CLOUD}
+
 python ${TEST}
+
 
 ./combine-junit-xml.sh -i test-reports -o TEST-all.xml

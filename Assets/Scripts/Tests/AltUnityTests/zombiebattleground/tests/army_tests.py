@@ -3,7 +3,6 @@ from appium import webdriver
 from altunityrunner import AltrunUnityDriver, AltElement
 import xmlrunner
 from base import CZBTests
-from tutorial_tests import CZBTutorialTests
 import time
 
 
@@ -45,17 +44,6 @@ class CZBArmyTests(CZBTests):
         # card_number=text_card_counter.split('/')
         # self.assertEqual(len(army_cards),card_number[0])
         self.assertEqual(len(army_cards),101)
-
-    
-
-        
-
-
-
-  
-
-
-
 
 if __name__ == '__main__':
    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))

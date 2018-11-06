@@ -181,10 +181,9 @@ class CZBTutorialTests(CZBTests):
     def check_drag_from_circles(self,step,tutorial):
         if(step ==28 and tutorial ==1):
             self.wait_for_audio_to_finish()
-        if(step ==15 and tutorial ==2):
-            self.wait_for_audio_to_finish()
         self.check_description(step,tutorial)
         self.drag_from_circle_to_circle()
+        time.sleep(2)
     
     def check_wait_turn(self,step,tutorial):
         self.check_description(step,tutorial)

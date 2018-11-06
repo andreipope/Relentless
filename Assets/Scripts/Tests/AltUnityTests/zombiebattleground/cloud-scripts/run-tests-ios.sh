@@ -61,11 +61,7 @@ rm -rf screenshots
 ## Start test execution
 echo "Running tests..."
 
-if [[ -z "${TEST_CLOUD}" ]]; then
-  python ${TEST_CLOUD}
-else
-  python ${TEST}
-fi
+python ${TEST}
 
 
 ./combine-junit-xml.sh -i test-reports -o TEST-all.xml

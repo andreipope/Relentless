@@ -53,6 +53,9 @@ from the main folder.
 
 ### Creating the test package
 
+If you want to run all the tests in the suite, edit `run-tests-android.sh` (or `run-tests-ios.sh`) and set `TEST=${TEST:="test-runner.py"}` in the beginning of the file. If you want to run a specific suite only, edit the same file and set `TEST=${TEST:="tests/tutorial_tests.py"}` for example, to run the tutorial tests only. 
+
+
   1. From the command line, cd into the `cloud-scripts` folder (the scripts won't work from outside the folder)
   2. Use the `./create-cloud-zip.sh android` or `./create-cloud-zip.sh ios` to create the package
   3. A `test-package-android.zip` or `test-package-ios.zip` will be created. This is the zip file you need to upload to Testdroid cloud
