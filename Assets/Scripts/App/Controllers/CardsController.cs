@@ -6,6 +6,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground
 {
     public class CardsController : IController
     {
+        public event Action<AbilityData.ChoosableAbility> CardForAbilityChoosed;
+
         public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
 
         private IGameplayManager _gameplayManager;
@@ -61,6 +64,10 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> MulliganCards;
 
+        private List<ChoosableCardForAbility> _currentListOfChoosableCards;
+
+        public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -96,6 +103,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetAll()
         {
+            ResetChoosalbeCardsList();
         }
 
         public void Update()
@@ -371,7 +379,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume);
 
-            BoardCard card = (BoardCard) param[0];
+            BoardCard card = (BoardCard)param[0];
             GameObject go = card.GameObject;
 
             SortingGroup sortingGroup = card.GameObject.GetComponent<SortingGroup>();
@@ -438,7 +446,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume);
 
-            GameObject go = (GameObject) param[0];
+            GameObject go = (GameObject)param[0];
             SortingGroup sortingGroup = go.GetComponent<SortingGroup>();
 
             Sequence animationSequence3 = DOTween.Sequence();
@@ -762,8 +770,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                #warning hot fix - visual bug will appear! temp solution!
-                if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+#warning hot fix - visual bug will appear! temp solution!
+                if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
                 {
                     randomCard = CreateOpponentBoardCard();
 
@@ -1141,6 +1149,145 @@ namespace Loom.ZombieBattleground
             boardUnitView.PlayArrivalAnimation();
 
             return boardUnitView;
+        }
+
+        public void CreateChoosableCardsForAbilities(List<AbilityData.ChoosableAbility> choosableAbilities, WorkingCard card)
+        {
+            ResetChoosalbeCardsList();
+
+            foreach (AbilityData.ChoosableAbility ability in choosableAbilities)
+            {
+                _currentListOfChoosableCards.Add(new ChoosableCardForAbility(ability, card));
+            }
+
+            SortGameObjectsInCenter(_currentListOfChoosableCards.Select(x => x.SelfObject).ToList());
+        }
+
+        public void ResetChoosalbeCardsList()
+        {
+            if (_currentListOfChoosableCards != null)
+            {
+                foreach (ChoosableCardForAbility card in _currentListOfChoosableCards)
+                {
+                    card.Dispose();
+                }
+                _currentListOfChoosableCards.Clear();
+            }
+        }
+
+        public void ChooseAbilityOfCard(AbilityData.ChoosableAbility choosableAbility)
+        {
+            CardForAbilityChoosed?.Invoke(choosableAbility);
+        }
+
+        private void SortGameObjectsInCenter(List<GameObject> gameObjects)
+        {
+            float width = 0.0f;
+            float spacing = -1.5f;
+            float scaling = 0.25f;
+            Vector3 pivot = new Vector3(0f, 0f, 0f);
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                width += spacing;
+            }
+
+            width -= spacing;
+
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                gameObjects[i].transform.position = new Vector3(pivot.x - width / 2, 0f, (gameObjects.Count - i) * 0.1f); ;
+                gameObjects[i].transform.localScale = Vector3.one * scaling;
+
+                pivot.x += width / gameObjects.Count;
+            }
+        }
+    }
+
+
+    public class ChoosableCardForAbility
+    {
+        private ILoadObjectsManager _loadObjectsManager;
+        private AbilitiesController _abilitiesController;
+        private CardsController _cardsController;
+
+        public GameObject SelfObject { get; }
+
+        private SpriteRenderer _picture;
+        private SpriteRenderer _frame;
+        private SpriteRenderer _unitType;
+
+        private TextMeshPro _gooCostText;
+        private TextMeshPro _titleText;
+        private TextMeshPro _descriptionText;
+        private TextMeshPro _attackText;
+        private TextMeshPro _defenseText;
+
+        private OnBehaviourHandler _behaviourHandler;
+        private AbilityData.ChoosableAbility _mainChoosableAbility;
+
+        public ChoosableCardForAbility(AbilityData.ChoosableAbility choosableAbility, WorkingCard card)
+        {
+            _mainChoosableAbility = choosableAbility;
+
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
+            _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
+
+            string prefabName = card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
+
+            SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ForChooseAbilities/" + prefabName));
+
+            _picture = SelfObject.transform.Find("Image_Picture").GetComponent<SpriteRenderer>();
+            _frame = SelfObject.transform.Find("Image_Frame").GetComponent<SpriteRenderer>();
+
+            _gooCostText = SelfObject.transform.Find("Text_GooCost").GetComponent<TextMeshPro>();
+            _titleText = SelfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
+            _descriptionText = SelfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
+
+            _behaviourHandler = SelfObject.GetComponent<OnBehaviourHandler>();
+            _behaviourHandler.MouseUpTriggered += MouseUpTriggered;
+
+            string setName = card.LibraryCard.CardSetType.ToString();
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.LibraryCard.CardRank);
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+
+            if (!string.IsNullOrEmpty(card.LibraryCard.Frame))
+            {
+                frameName = "Images/Cards/Frames/" + card.LibraryCard.Frame;
+            }
+
+            _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
+                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
+                card.LibraryCard.Picture.ToLowerInvariant()));
+
+            _titleText.text = card.LibraryCard.Name;
+            _descriptionText.text = choosableAbility.Description;
+            _gooCostText.text = card.Damage.ToString();
+
+            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            {
+                _unitType = SelfObject.transform.Find("Image_Type").GetComponent<SpriteRenderer>();
+
+                _attackText = SelfObject.transform.Find("Text_Attack").GetComponent<TextMeshPro>();
+                _defenseText = SelfObject.transform.Find("Text_Defense").GetComponent<TextMeshPro>();
+
+                _attackText.text = card.Damage.ToString();
+                _defenseText.text = card.Health.ToString();
+
+                _unitType.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+            }
+        }
+
+        public void Dispose()
+        {
+            Object.Destroy(SelfObject);
+        }
+
+        private void MouseUpTriggered(GameObject gameObject)
+        {
+            _cardsController.ChooseAbilityOfCard(_mainChoosableAbility);
         }
     }
 }
