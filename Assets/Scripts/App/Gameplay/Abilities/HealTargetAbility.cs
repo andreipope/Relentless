@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 boardObject
-            }, AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString()));
+            }, AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString(), true));
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
