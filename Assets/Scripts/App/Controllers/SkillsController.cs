@@ -1687,6 +1687,10 @@ namespace Loom.ZombieBattleground
             {
                 unit.SetAsHeavyUnit();
 
+                _vfxController.CreateVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortressVFX"),
+                    unit, isIgnoreCastVfx: true);
+
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.OverlordSkill.ToString().ToLowerInvariant(),
