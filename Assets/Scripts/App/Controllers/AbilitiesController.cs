@@ -652,6 +652,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
+                    abilityView = new AddGooVialsAbilityView((AddGooVialsAbility)ability);
                     break;
                 case Enumerators.AbilityType.MODIFICATOR_STATS:
                     ability = new ModificateStatAbility(cardKind, abilityData);

@@ -2869,7 +2869,13 @@
               "targetType": "none",
               "value": 2,
               "buffType": "ENTRY",
-              "count": 2
+              "count": 2,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/GooBeaker"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
