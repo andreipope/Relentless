@@ -1157,14 +1157,30 @@ namespace Loom.ZombieBattleground
         {
             ResetChoosalbeCardsList();
 
-            _parentOfSelectableCards = new GameObject("[Container]ChoosableAbiltiies").transform;
+            GameObject container = new GameObject("[Container]ChoosableAbiltiies");
+            BoxCollider2D collider = container.AddComponent<BoxCollider2D>();
+            SortingGroup group = container.AddComponent<SortingGroup>();
+
+            _parentOfSelectableCards = container.transform;
+            collider.size = Vector2.one * 100f;
+            group.sortingOrder = 22;
+            group.sortingLayerID = SRSortingLayers.GameUI3;
 
             foreach (AbilityData.ChoosableAbility ability in choosableAbilities)
             {
                 _currentListOfChoosableCards.Add(new ChoosableCardForAbility(_parentOfSelectableCards, ability, card));
             }
 
-            InternalTools.GroupHorizontalObjects(_parentOfSelectableCards, 3f, 5, 0);
+            float offset = 3.25f;
+            float spacing = 6.5f;
+            float zOffset = -0.5f;
+            float yOffset = 0f;
+
+            InternalTools.GroupHorizontalObjects(_parentOfSelectableCards, offset, spacing, yOffset, offsetZ: zOffset);
+
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
+
+            _gameplayManager.CanDoDragActions = false;
         }
 
         public void ResetChoosalbeCardsList()
@@ -1191,6 +1207,10 @@ namespace Loom.ZombieBattleground
         public void ChooseAbilityOfCard(AbilityData.ChoosableAbility choosableAbility)
         {
             ResetChoosalbeCardsList();
+
+            GameClient.Get<ICameraManager>().FadeOut(null, 1);
+
+            _gameplayManager.CanDoDragActions = true; 
 
             CardForAbilityChoosed?.Invoke(choosableAbility);
         }

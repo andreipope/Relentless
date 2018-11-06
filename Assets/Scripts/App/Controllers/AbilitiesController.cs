@@ -562,62 +562,6 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-
-    /*        libraryCard.Abilities = new List<AbilityData>()
-            {
-                new AbilityData()
-                {
-                    AbilityCallType = Enumerators.AbilityCallType.ENTRY,
-                    AbilityActivityType = Enumerators.AbilityActivityType.PASSIVE,
-                    BuffType = "ENTRY",
-                    AbilityType= Enumerators.AbilityType.CHOOSABLE_ABILITIES,
-                    ChoosableAbilities = new List<AbilityData.ChoosableAbility>()
-                    {
-                        new AbilityData.ChoosableAbility()
-                        {
-                            Description = "damage to an enemy",
-                            AbilityData = new AbilityData()
-                            {
-                                AbilityCallType = Enumerators.AbilityCallType.ENTRY,
-                                AbilityActivityType = Enumerators.AbilityActivityType.ACTIVE,
-                                BuffType = "ENTRY",
-                                AbilityType= Enumerators.AbilityType.DAMAGE_TARGET,
-                                Value = 4,
-                                AbilityTargetTypes = new List<Enumerators.AbilityTargetType>()
-                                {
-                                    Enumerators.AbilityTargetType.OPPONENT,
-                                    Enumerators.AbilityTargetType.OPPONENT_CARD
-                                },
-                                TargetCardType = Enumerators.CardType.NONE,
-                                TargetUnitStatusType = Enumerators.UnitStatusType.NONE,
-                                AbilitySubTrigger = Enumerators.AbilitySubTrigger.None
-                            }
-                        },
-                        new AbilityData.ChoosableAbility()
-                        {
-                            Description = "restore 5 Def to an ally",
-                            AbilityData = new AbilityData()
-                            {
-                                AbilityCallType = Enumerators.AbilityCallType.ENTRY,
-                                AbilityActivityType = Enumerators.AbilityActivityType.ACTIVE,
-                                BuffType = "ENTRY",
-                                AbilityType= Enumerators.AbilityType.HEAL,
-                                Value = 5,
-                                AbilityTargetTypes = new List<Enumerators.AbilityTargetType>()
-                                {
-                                    Enumerators.AbilityTargetType.PLAYER,
-                                    Enumerators.AbilityTargetType.PLAYER_CARD
-                                },
-                                TargetCardType = Enumerators.CardType.NONE,
-                                TargetUnitStatusType = Enumerators.UnitStatusType.NONE,
-                                AbilitySubTrigger = Enumerators.AbilitySubTrigger.None,
-                                Aff
-                            }
-                        }
-                    }
-                }
-           };  */
-
             AbilityData choosableAbility = libraryCard.Abilities.Find(x => x.HasChoosableAbilities());
 
             if (choosableAbility != null)
