@@ -2719,7 +2719,21 @@
               "targetType": "player_card|opponent_card",
               "value": 4,
               "damage": 4,
-              "buffType": "END"
+              "buffType": "END",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Chainsaw_Entry_Walker"
+                },
+                {
+                  "Type": "Impact_Feral",
+                  "Path": "Prefabs/VFX/Chainsaw_Entry_Feral"
+                },
+                {
+                  "Type": "Impact_Heavy",
+                  "Path": "Prefabs/VFX/Chainsaw_Entry_Heavy"
+                }
+              ]
             }
           ],
           "cardViewInfo": {

@@ -526,7 +526,9 @@ namespace Loom.ZombieBattleground.Common
         public enum VisualEffectType
         {
             Impact,
-            Moving
+            Moving,
+            Impact_Heavy,
+            Impact_Feral
         }
 
         public enum ShutterState
