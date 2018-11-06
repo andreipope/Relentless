@@ -1902,14 +1902,14 @@
               "value": 2,
               "effectType": "TARGET_LIFE",
               "buffType": "ENTRY",
-			  "VisualEffectsToPlay": [
+              "VisualEffectsToPlay": [
                 {
                   "Type": "Moving",
-                  "Path": "Prefabs/VFX/Spells/SpellTargetLifeAttack"
+                  "Path": "Prefabs/VFX/Shroom_trail"
                 },
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                  "Path": "Prefabs/VFX/Shroom_Impact"
                 }
               ]
             }
