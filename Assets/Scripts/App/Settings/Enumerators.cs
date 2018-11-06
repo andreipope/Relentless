@@ -39,7 +39,8 @@ namespace Loom.ZombieBattleground.Common
             STUN_OR_DAMAGE_FREEZES,
             TARGET_ADJUSTMENTS_AIR,
             HEAL_DIRECTLY,
-            HEAL
+            HEAL,
+            CHANGE_STAT_FRESH_MEAT
         }
 
         public enum AbilityTargetType
@@ -139,6 +140,7 @@ namespace Loom.ZombieBattleground.Common
             DESTROY_UNITS,
             DEAL_DAMAGE_TO_UNIT_AND_SWING,
             SET_ATTACK_AVAILABILITY,
+            CHOOSABLE_ABILITIES
         }
 
         public enum ActionType
@@ -525,7 +527,9 @@ namespace Loom.ZombieBattleground.Common
         public enum VisualEffectType
         {
             Impact,
-            Moving
+            Moving,
+            Impact_Heavy,
+            Impact_Feral
         }
 
         public enum ShutterState
@@ -564,7 +568,7 @@ namespace Loom.ZombieBattleground.Common
             AllAllyUnitsInPlay,
             RandomUnit,
             AllEnemyUnitsInPlay,
-            AllAllyUhitsByFactionInPlay,
+            AllAllyUnitsByFactionInPlay,
             ForEachFactionOfUnitInHand,
             IfHasUnitsWithFactionInPlay,
             AllyUnitsByFactionThatCost,

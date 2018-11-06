@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action();
+            InvokeActionTriggered();
         }
 
 
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
-            Action();
+            InvokeActionTriggered();
         }
 
         public override void Action(object info = null)
@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitView unit in opponent.BoardCards)
             {
                 if (Damage != 0)
-                {
+                {                    
                     unit.Model.DamageDebuffUntillEndOfTurn += Damage;
                     int buffresult = unit.Model.CurrentDamage + Damage;
 
@@ -92,6 +92,13 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

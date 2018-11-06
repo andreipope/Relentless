@@ -391,153 +391,163 @@ namespace Loom.ZombieBattleground
         {
             ResolveAllAbilitiesOnUnit(boardObject, false);
 
-            bool canUseAbility = false;
-            ActiveAbility activeAbility = null;
-            foreach (AbilityData item in libraryCard.Abilities)
+            Action abilityEndAction = () =>
             {
-                // todo improve it bcoz can have queue of abilities with targets
-                activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
-
-                if (IsAbilityCanActivateTargetAtStart(item))
+                bool canUseAbility = false;
+                ActiveAbility activeAbility = null;
+                foreach (AbilityData item in libraryCard.Abilities)
                 {
-                    canUseAbility = true;
-                }
-                else
-                {
-                    activeAbility.Ability.Activate();
-                }
-            }
+                    // todo improve it bcoz can have queue of abilities with targets
+                    activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
 
-            if (kind == Enumerators.CardKind.SPELL)
-            {
-                if (handCard != null && isPlayer)
-                {
-                    handCard.GameObject.SetActive(false);
-                }
-            }
-
-            if (canUseAbility)
-            {
-                AbilityData ability = libraryCard.Abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
-
-                if (ability.TargetCardType != Enumerators.CardType.NONE &&
-                    !HasSpecialUnitOnBoard(workingCard, ability) ||
-                    ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE &&
-                    !HasSpecialUnitStatusOnBoard(workingCard, ability) ||
-                    (ability.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
-                     ability.TargetSetType != Enumerators.SetType.NONE &&
-                    !HasSpecialUnitFactionOnMainBoard(workingCard, ability)))
-                {
-                    CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
-
-                    onCompleteCallback?.Invoke();
-
-                    ResolveAllAbilitiesOnUnit(boardObject);
-                    return;
-                }
-
-                if (CheckActivateAvailability(kind, ability, workingCard.Owner))
-                {
-                    activeAbility.Ability.Activate();
-
-                    if (isPlayer)
+                    if (IsAbilityCanActivateTargetAtStart(item))
                     {
-                        BlockEndTurnButton = true;
-
-                        activeAbility.Ability.ActivateSelectTarget(
-                            callback: () =>
-                            {
-                                if (kind == Enumerators.CardKind.SPELL && isPlayer)
-                                {
-                                    card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
-                                    _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-                                    GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
-                                    handCard.GameObject.SetActive(true);
-                                    card.RemoveCardParticle.Play(); // move it when card should call hide action
-
-                                    workingCard.Owner.RemoveCardFromHand(workingCard, true);
-                                    workingCard.Owner.AddCardToBoard(workingCard);
-
-                                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
-
-                                    GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
-                                    {
-                                        card
-                                    }, 0.5f);
-
-                                    GameClient.Get<ITimerManager>().AddTimer(
-                                        creat =>
-                                        {
-                                            workingCard.Owner.GraveyardCardsCount++;
-
-                                            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                                            {
-                                                ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                                Caller = card,
-                                                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                                            });
-                                        },
-                                        null,
-                                        1.5f);
-                                }
-
-                                BlockEndTurnButton = false;
-
-                                action?.Invoke(card);
-
-                                onCompleteCallback?.Invoke();
-
-                                ResolveAllAbilitiesOnUnit(boardObject);
-                            },
-                            failedCallback: () =>
-                            {
-                                if (kind == Enumerators.CardKind.SPELL && isPlayer)
-                                {
-                                    handCard.GameObject.SetActive(true);
-                                    handCard.ResetToHandAnimation();
-                                    handCard.CheckStatusOfHighlight();
-
-                                    workingCard.Owner.CardsInHand.Add(card.WorkingCard);
-                                    _battlegroundController.PlayerHandCards.Add(card);
-                                    _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-
-                                    _playerController.IsCardSelected = false;
-                                }
-                                else
-                                {
-                                    Debug.Log("RETURN CARD TO HAND MAYBE. SHOULD BE CASE !!!!!");
-                                    action?.Invoke(card);
-                                }
-
-                                onCompleteCallback?.Invoke();
-
-                                BlockEndTurnButton = false;
-
-                                ResolveAllAbilitiesOnUnit(boardObject);
-                            });
+                        canUseAbility = true;
                     }
                     else
                     {
-                        switch (target)
+                        activeAbility.Ability.Activate();
+                    }
+                }
+
+                if (kind == Enumerators.CardKind.SPELL)
+                {
+                    if (handCard != null && isPlayer)
+                    {
+                        handCard.GameObject.SetActive(false);
+                    }
+                }
+
+                if (canUseAbility)
+                {
+                    AbilityData ability = libraryCard.Abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
+
+                    if (ability.TargetCardType != Enumerators.CardType.NONE &&
+                        !HasSpecialUnitOnBoard(workingCard, ability) ||
+                        ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE &&
+                        !HasSpecialUnitStatusOnBoard(workingCard, ability) ||
+                        (ability.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
+                         ability.TargetSetType != Enumerators.SetType.NONE &&
+                        !HasSpecialUnitFactionOnMainBoard(workingCard, ability)))
+                    {
+                        CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+
+                        onCompleteCallback?.Invoke();
+
+                        ResolveAllAbilitiesOnUnit(boardObject);
+                        return;
+                    }
+
+                    if (CheckActivateAvailability(kind, ability, workingCard.Owner))
+                    {
+                        activeAbility.Ability.Activate();
+
+                        if (isPlayer)
                         {
-                            case BoardUnitModel unit:
-                                activeAbility.Ability.TargetUnit = unit;
-                                break;
-                            case Player player:
-                                activeAbility.Ability.TargetPlayer = player;
-                                break;
-                            case null:
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                            BlockEndTurnButton = true;
+
+                            activeAbility.Ability.ActivateSelectTarget(
+                                callback: () =>
+                                {
+                                    if (kind == Enumerators.CardKind.SPELL && isPlayer)
+                                    {
+                                        card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
+                                        _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
+                                        GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                                        handCard.GameObject.SetActive(true);
+                                        card.RemoveCardParticle.Play(); // move it when card should call hide action
+
+                                        workingCard.Owner.RemoveCardFromHand(workingCard, true);
+                                        workingCard.Owner.AddCardToBoard(workingCard);
+
+                                        card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
+
+                                        GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
+                                        {
+                                        card
+                                        }, 0.5f);
+
+                                        GameClient.Get<ITimerManager>().AddTimer(
+                                            creat =>
+                                            {
+                                                workingCard.Owner.GraveyardCardsCount++;
+
+                                                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                                                {
+                                                    ActionType = Enumerators.ActionType.PlayCardFromHand,
+                                                    Caller = card,
+                                                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                                                });
+                                            },
+                                            null,
+                                            1.5f);
+                                    }
+
+                                    BlockEndTurnButton = false;
+
+                                    action?.Invoke(card);
+
+                                    onCompleteCallback?.Invoke();
+
+                                    ResolveAllAbilitiesOnUnit(boardObject);
+                                },
+                                failedCallback: () =>
+                                {
+                                    if (kind == Enumerators.CardKind.SPELL && isPlayer)
+                                    {
+                                        handCard.GameObject.SetActive(true);
+                                        handCard.ResetToHandAnimation();
+                                        handCard.CheckStatusOfHighlight();
+
+                                        workingCard.Owner.CardsInHand.Add(card.WorkingCard);
+                                        _battlegroundController.PlayerHandCards.Add(card);
+                                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+
+                                        _playerController.IsCardSelected = false;
+                                    }
+                                    else
+                                    {
+                                        Debug.Log("RETURN CARD TO HAND MAYBE. SHOULD BE CASE !!!!!");
+                                        action?.Invoke(card);
+                                    }
+
+                                    onCompleteCallback?.Invoke();
+
+                                    BlockEndTurnButton = false;
+
+                                    ResolveAllAbilitiesOnUnit(boardObject);
+                                });
                         }
+                        else
+                        {
+                            switch (target)
+                            {
+                                case BoardUnitModel unit:
+                                    activeAbility.Ability.TargetUnit = unit;
+                                    break;
+                                case Player player:
+                                    activeAbility.Ability.TargetPlayer = player;
+                                    break;
+                                case null:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                            }
 
-                        activeAbility.Ability.SelectedTargetAction(true);
+                            activeAbility.Ability.SelectedTargetAction(true);
 
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
-                            .BoardCards);
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
+                                .BoardCards);
+                            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
 
+                            onCompleteCallback?.Invoke();
+
+                            ResolveAllAbilitiesOnUnit(boardObject);
+                        }
+                    }
+                    else
+                    {
+                        CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
                         onCompleteCallback?.Invoke();
 
                         ResolveAllAbilitiesOnUnit(boardObject);
@@ -550,13 +560,36 @@ namespace Loom.ZombieBattleground
 
                     ResolveAllAbilitiesOnUnit(boardObject);
                 }
+            };
+
+            AbilityData choosableAbility = libraryCard.Abilities.Find(x => x.HasChoosableAbilities());
+
+            if (choosableAbility != null)
+            {
+                if (isPlayer)
+                {
+                    Action<AbilityData.ChoosableAbility> callback = null;
+
+                    callback = (x) =>
+                    {
+                        libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
+                        abilityEndAction.Invoke();
+                        _cardsController.CardForAbilityChoosed -= callback;
+                    };
+
+                    _cardsController.CardForAbilityChoosed += callback;
+                    _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);
+                }
+                else
+                {
+                    // TODO: improve functionality for the AI
+                    libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
+                    abilityEndAction.Invoke();
+                }
             }
             else
             {
-                CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
-                onCompleteCallback?.Invoke();
-
-                ResolveAllAbilitiesOnUnit(boardObject);
+                abilityEndAction.Invoke();
             }
         }
 
@@ -649,6 +682,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
                     ability = new DamageTargetAdjustmentsAbility(cardKind, abilityData);
+                    abilityView = new DamageTargetAdjustmentsAbilityView((DamageTargetAdjustmentsAbility) ability);
                     break;
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
@@ -757,6 +791,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN:
                     ability = new ChangeStatUntillEndOfTurnAbility(cardKind, abilityData);
+                    abilityView = new ChangeStatUntillEndOfTurnAbilityView((ChangeStatUntillEndOfTurnAbility)ability);
                     break;
                 case Enumerators.AbilityType.ATTACK_OVERLORD:
                     ability = new AttackOverlordAbility(cardKind, abilityData);
@@ -791,6 +826,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.UNIT_WEAPON:
                     ability = new UnitWeaponAbility(cardKind, abilityData);
+                    abilityView = new UnitWeaponAbilityView((UnitWeaponAbility)ability);
                     break;
                 case Enumerators.AbilityType.TAKE_DAMAGE_AT_END_OF_TURN_TO_THIS:
                     ability = new TakeDamageAtEndOfTurnToThis(cardKind, abilityData);
@@ -879,6 +915,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.SET_ATTACK_AVAILABILITY:
                     ability = new SetAttackAvailabilityAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHOOSABLE_ABILITIES:
+                    ability = new ChoosableAbilitiesAbility(cardKind, abilityData);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
