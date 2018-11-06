@@ -1157,9 +1157,15 @@ namespace Loom.ZombieBattleground
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
+            List<BoardUnitView> units = new List<BoardUnitView>();
+
             foreach (WorkingCard card in cards)
             {
-                _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name);
+                units.Add(_cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name, onComplete: () =>
+                {
+                    ReanimateUnit(units);
+                }));
+                units[units.Count - 1].ChangeModelVisibility(false);
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -1174,6 +1180,18 @@ namespace Loom.ZombieBattleground
                 Caller = boardSkill,
                 TargetEffects = TargetEffects
             });
+        }
+
+        private void ReanimateUnit(List<BoardUnitView> units)
+        {
+            foreach (var unit in units)
+            {
+                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ResurrectVFX"), unit, delay: 6, isIgnoreCastVfx: true);
+                InternalTools.DoActionDelayed(() =>
+                {
+                    unit.ChangeModelVisibility(true);
+                }, 3f);
+            }
         }
 
         // WATER
