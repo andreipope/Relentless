@@ -1,6 +1,11 @@
 {
     "name": "ZombieBattleground.TestLibrary",
-    "references": [],
+    "references": [
+        "ZombieBattleground.Main",
+        "LoomSDK",
+        "ZombieBattleground.Editor",
+        "ZombieBattleground.Generated"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
