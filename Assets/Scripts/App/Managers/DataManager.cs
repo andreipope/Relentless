@@ -225,14 +225,9 @@ namespace Loom.ZombieBattleground
                     Version clientVersion = Version.Parse(clientVersionStr);
                     Version clientBaseVersion = new Version(clientVersion.Major, clientVersion.Minor, clientVersion.Build);
 
-                    if (clientBaseVersion.CompareTo(BuildMetaInfo.Instance.BaseVersion) == 0 ||
-                        clientBaseVersion.CompareTo(Version.Parse(Constants.MinVersionBase)) >= 0)
+                    if (clientBaseVersion.CompareTo(BuildMetaInfo.Instance.BaseVersion) >= 0)
                     {
                         versionMatch = true;
-                    }
-                    else
-                    {
-                        // TODO : Show pop up here regarding version not matched...
                     }
 
                     break;

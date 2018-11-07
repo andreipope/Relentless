@@ -6,8 +6,6 @@ namespace Loom.ZombieBattleground.Common
     {
         internal const string CurrentVersionBase = "0.1.5";
 
-        internal const string MinVersionBase = "0.1.5";
-
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
         internal const string VersionFileResolution = ".ver";
