@@ -6,7 +6,9 @@
         "ZombieBattleground.Editor",
         "ZombieBattleground.Generated"
     ],
-    "optionalUnityReferences": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true

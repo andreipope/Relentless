@@ -1315,36 +1315,34 @@ public class SingleplayerTests
                         boardUnit.tag = _testBroker.GetSRTags (_player);
                         boardUnit.transform.position = Vector3.zero;
 
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (
-                            _testBroker.GetPlayer (_player).BoardCards,
-                            () => {
-                                bool createTargetArrow = false;
+                        bool createTargetArrow = false;
 
-                                if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
-                                {
-                                    createTargetArrow =
-                                        _abilitiesController.IsAbilityCanActivateTargetAtStart (
-                                            card.LibraryCard.Abilities[0]);
-                                }
+                        if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+                        {
+                            createTargetArrow =
+                                _abilitiesController.IsAbilityCanActivateTargetAtStart (
+                                    card.LibraryCard.Abilities[0]);
+                        }
 
-                                if (target != null)
-                                {
-                                    Debug.Log ("Target");
+                        if (target != null)
+                        {
+                            Debug.Log ("Target");
 
-                                    Action callback = () => {
-                                        _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, target);
-                                    };
+                            Action callback = () => {
+                                _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, target);
+                            };
 
-                                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, 1f, action: callback);
-                                }
-                                else
-                                {
-                                    Debug.Log ("No target");
+                            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, 1f, action: callback);
+                        }
+                        else
+                        {
+                            Debug.Log ("No target");
 
-                                    _abilitiesController.CallAbility (card.LibraryCard, null, workingCard,
-                                        Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null);
-                                }
-                            });
+                            _abilitiesController.CallAbility (card.LibraryCard, null, workingCard,
+                                Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, target);
+                            _abilitiesController.CallAbility (card.LibraryCard, null, workingCard,
+                                Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null);
+                        }
                     }
                 }
                 else
