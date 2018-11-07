@@ -57,6 +57,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public Version BaseVersion => Version.Parse(Constants.CurrentVersionBase);
+
         public static BuildMetaInfo Instance
         {
             get
