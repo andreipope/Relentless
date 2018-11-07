@@ -2815,7 +2815,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/HealingTouchVFX"
+                  "Path": "Prefabs/VFX/Skills/StaplerVFX"
                 }
               ]
             }
