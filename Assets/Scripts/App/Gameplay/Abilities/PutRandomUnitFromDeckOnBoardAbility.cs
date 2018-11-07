@@ -11,9 +11,12 @@ namespace Loom.ZombieBattleground
 {
     public class PutRandomUnitFromDeckOnBoardAbility : AbilityBase
     {
+        public int Count { get; }
+
         public PutRandomUnitFromDeckOnBoardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            Count = ability.Count;
         }
 
         public override void Activate()
@@ -35,24 +38,29 @@ namespace Loom.ZombieBattleground
 
             WorkingCard card;
             BoardCard boardCard;
+            Player playerOwner;
             foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
             {
                 card = null;
+                playerOwner = null;
                 switch (targetType)
                 {
                     case Enumerators.AbilityTargetType.PLAYER:
-                        card = InternalTools.GetRandomElementsFromList(
-                    PlayerCallerOfAbility.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE),
-                    1).First(x => x != null && x != default(WorkingCard));
+                        playerOwner = PlayerCallerOfAbility;
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        card = InternalTools.GetRandomElementsFromList(
-                      GetOpponentOverlord().CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE),
-                      1).First(x => x != null && x != default(WorkingCard));
+                        playerOwner = GetOpponentOverlord();
                         break;
                     default:
                         throw new NotImplementedException(nameof(targetType) + " not implemented!");
                 }
+
+                card = InternalTools.GetRandomElementsFromList(
+                   playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE),
+                   Count).First(x => x != null && x != default(WorkingCard));
+
+                if (card == null)
+                    continue;
 
                 boardCard = PutCardOnBoard(card);
 
@@ -74,7 +82,6 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = TargetEffects
             });
-
         }
 
         private BoardCard PutCardOnBoard(WorkingCard card)
@@ -85,7 +92,10 @@ namespace Loom.ZombieBattleground
             boardCard.GameObject.transform.localScale = Vector3.one * .3f;
             boardCard.SetHighlightingEnabled(false);
 
-            CardsController.SummonUnitFromHand(PlayerCallerOfAbility, boardCard);
+            InternalTools.DoActionDelayed(() =>
+            {
+                CardsController.SummonUnitFromHand(PlayerCallerOfAbility, boardCard);
+            }, 0.25f);
 
             return boardCard;
         }
