@@ -668,6 +668,8 @@ namespace Loom.ZombieBattleground
 
         private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
         {
+            Debug.LogError(Newtonsoft.Json.JsonConvert.SerializeObject(abilityData));
+
             ability = null;
             abilityView = null;
             switch (abilityData.AbilityType)

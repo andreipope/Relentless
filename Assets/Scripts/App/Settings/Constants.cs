@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int FirstGameTurnIndex = 1;
 
-        internal const int DefaultCardsInHandAtStartGame = 3;
+        internal const int DefaultCardsInHandAtStartGame = 10;
 
         internal const float DelayBetweenGameplayActions = 0.1f;
 

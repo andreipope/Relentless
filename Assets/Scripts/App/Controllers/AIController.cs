@@ -82,6 +82,19 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+
+            if(Input.GetKeyDown(KeyCode.L))
+            {
+                SetAiBrainType(Enumerators.AiBrainType.DontAttack);
+            }
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                SetAiBrainType(Enumerators.AiBrainType.Normal);
+            }
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                SetAiBrainType(Enumerators.AiBrainType.DoNothing);
+            }
         }
 
         public void ResetAll()
