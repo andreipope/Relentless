@@ -218,25 +218,33 @@ namespace Loom.ZombieBattleground
             bool versionMatch = false;
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains(Constants.VersionFileResolution))
+                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
                 {
-                    var clientVersionStr = file.Name;
-                    clientVersionStr = clientVersionStr.Replace(Constants.VersionFileResolution, "");
-                    Version clientVersion = Version.Parse(clientVersionStr);
-                    Version clientBaseVersion = new Version(clientVersion.Major, clientVersion.Minor, clientVersion.Build);
-
-                    if (clientBaseVersion.CompareTo(BuildMetaInfo.Instance.BaseVersion) >= 0)
-                    {
-                        versionMatch = true;
-                    }
-
+                    versionMatch = true;
                     break;
                 }
             }
 
             if (!versionMatch)
             {
-                DeleteData();
+                DeleteVersionFile();
+            }
+        }
+
+        private void DeleteVersionFile()
+        {
+            FileInfo[] files = _dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                if (file.Name.Contains(Constants.VersionFileResolution))
+                {
+                    file.Delete();
+                    break;
+                }
+            }
+
+            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+            {
             }
         }
 
