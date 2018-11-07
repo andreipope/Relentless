@@ -914,28 +914,6 @@ namespace Loom.ZombieBattleground
         {
             AbilityData abilityData = null;
 
-            /*
-            Enumerators.BuffType buffType,
-            Enumerators.AbilityType abilityType,
-            Enumerators.AbilityActivityType activityType,
-            Enumerators.AbilityCallType callType,
-            List<Enumerators.AbilityTargetType> abilityTargetTypes,
-            Enumerators.StatType abilityStatType,
-            Enumerators.SetType abilitySetType,
-            Enumerators.AbilityEffectType abilityEffectType,
-            Enumerators.AttackRestriction attackRestriction,
-            Enumerators.CardType targetCardType,
-            Enumerators.UnitStatusType targetUnitStatusType,
-            Enumerators.CardType targetUnitType,
-            int value,
-            int damage,
-            int health,
-            string name,
-            int turns,
-            int count,
-            int delay,
-            List<VisualEffectInfo> visualEffectsToPlay
-             */
             // FIXME: why is this hardcoded?? should probably be in a separate JSON file
             switch (ability)
             {
