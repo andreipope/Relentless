@@ -191,13 +191,13 @@ namespace Loom.ZombieBattleground
                 false);
         }
 
-        public void DoSkillAction(BoardSkill skill, BoardObject target = null)
+        public void DoSkillAction(BoardSkill skill, Action completeCallback, BoardObject target = null)
         {
-            if (skill == null)
+            if (skill == null || !skill.IsUsing)
+            {
+                completeCallback?.Invoke();
                 return;
-
-            if (!skill.IsUsing)
-                return;
+            }
 
             if (skill.FightTargetingArrow != null)
             {
@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground
                         targetPlayer,
                         (x) =>
                         {
-                            DoActionByType(skill, targetPlayer);
+                            DoActionByType(skill, targetPlayer, completeCallback);
                         }, _isDirection);
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
                         targetUnitView,
                         (x) =>
                         {
-                            DoActionByType(skill, targetUnitView.Model);
+                            DoActionByType(skill, targetUnitView.Model, completeCallback);
                         }, _isDirection);
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -282,7 +282,7 @@ namespace Loom.ZombieBattleground
                     target,
                     (x) =>
                     {
-                        DoActionByType(skill, target);
+                        DoActionByType(skill, target, completeCallback);
                     }, _isDirection);
 
                 if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -291,6 +291,10 @@ namespace Loom.ZombieBattleground
                     _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
                         playOverlordSkill));
                 }
+            }
+            else
+            {
+                completeCallback?.Invoke();
             }
         }
 
@@ -365,8 +369,6 @@ namespace Loom.ZombieBattleground
                     prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBoltVFX");
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
-                    prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX");
-                    break;
                 case Enumerators.OverlordSkill.MEND:
                 case Enumerators.OverlordSkill.HARDEN:
                 case Enumerators.OverlordSkill.STONE_SKIN:
@@ -422,9 +424,8 @@ namespace Loom.ZombieBattleground
             return soundFileName;
         }
 
-        private void DoActionByType(BoardSkill skill, BoardObject target)
+        private void DoActionByType(BoardSkill skill, BoardObject target, Action completeCallback)
         {
-            Debug.Log(target);
             switch (skill.Skill.OverlordSkill)
             {
                 case Enumerators.OverlordSkill.FREEZE:
@@ -520,6 +521,8 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(skill.Skill.OverlordSkill), skill.Skill.OverlordSkill, null);
             }
+
+            completeCallback?.Invoke();
         }
 
         #region actions
