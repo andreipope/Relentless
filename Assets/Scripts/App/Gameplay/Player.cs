@@ -152,14 +152,26 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            int heroId;
+            int heroId = -1;
 
             if (!isOpponent)
             {
                 if (!_gameplayManager.IsTutorial)
                 {
-                    heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId)
-                        .HeroId;
+                    if(_matchManager.MatchType == Enumerators.MatchType.PVP)
+                    {
+                        foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
+                        {
+                            if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
+                            {
+                                heroId = (int) playerState.Deck.HeroId;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId).HeroId;
+                    }
                 }
                 else
                 {
@@ -531,7 +543,7 @@ namespace Loom.ZombieBattleground
             ThrowMulliganCardsEvent(_cardsController.MulliganCards);
         }
 
-        public void SetFirstHandForPvPMatch(List<WorkingCard> workingCards)
+        public void SetFirstHandForPvPMatch(List<WorkingCard> workingCards, bool removeCardsFromDeck = true)
         {
             foreach (WorkingCard workingCard in workingCards)
             {
@@ -541,7 +553,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    _cardsController.AddCardToHand(this, CardsInDeck[0]);
+                    _cardsController.AddCardToHand(this, CardsInDeck[0], removeCardsFromDeck);
                 }
             }
 

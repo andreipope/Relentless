@@ -218,12 +218,32 @@ namespace Loom.ZombieBattleground
             foreach (FileInfo file in files)
             {
                 if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
+                {
                     versionMatch = true;
+                    break;
+                }
             }
 
             if (!versionMatch)
             {
-                DeleteData();
+                DeleteVersionFile();
+            }
+        }
+
+        private void DeleteVersionFile()
+        {
+            FileInfo[] files = _dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                if (file.Name.Contains(Constants.VersionFileResolution))
+                {
+                    file.Delete();
+                    break;
+                }
+            }
+
+            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+            {
             }
         }
 
