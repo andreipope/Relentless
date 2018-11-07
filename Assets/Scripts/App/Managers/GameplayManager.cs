@@ -319,7 +319,7 @@ namespace Loom.ZombieBattleground
                                 .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, OpponentPlayer))
                                 .ToList();
 
-                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand);
+                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
