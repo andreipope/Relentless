@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value { get; }
+        public int Damage { get; }
 
         public int Count { get; }
 
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Damage = ability.Damage;
             Count = ability.Count;
             SetType = ability.AbilitySetType;
         }
@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
                 ParticlesController.RegisterParticleSystem(vfxObject, true);
             }
 
-            int damageOverride = -1;
+            int damageOverride = Damage;
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {

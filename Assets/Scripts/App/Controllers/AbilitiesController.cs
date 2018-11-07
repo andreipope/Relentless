@@ -459,6 +459,7 @@ namespace Loom.ZombieBattleground
 
                                         workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                         workingCard.Owner.AddCardToBoard(workingCard);
+                                        workingCard.Owner.AddCardToGraveyard(workingCard);
 
                                         card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
 
@@ -955,6 +956,7 @@ namespace Loom.ZombieBattleground
 
                     card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                     card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
+                    card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
 
                     card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
 
