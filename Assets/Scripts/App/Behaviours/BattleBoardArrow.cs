@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Character, SelectedCard.Model.Card.Id);
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Character, SelectedCard.Model.Card.InstanceId);
                 }
             }
             else

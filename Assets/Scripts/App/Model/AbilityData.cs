@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
@@ -6,59 +7,40 @@ namespace Loom.ZombieBattleground.Data
 {
     public class AbilityData
     {
-        public string BuffType;
+        [JsonProperty("BuffType")]
+        public Enumerators.BuffType BuffType;
 
-        public string Type;
-
-        public string ActivityType;
-
-        public string CallType;
-
-        public string TargetType;
-
-        public string StatType;
-
-        public string SetType;
-
-        public string EffectType;
-
-        public string CardType;
-
-        public string UnitStatus;
-
-        public string UnitType;
-
-        [JsonIgnore]
+        [JsonProperty("Type")]
         public Enumerators.AbilityType AbilityType;
 
-        [JsonIgnore]
-        public Enumerators.AbilityActivityType AbilityActivityType;
+        [JsonProperty("ActivityType")]
+        public Enumerators.AbilityActivityType ActivityType;
 
-        [JsonIgnore]
-        public Enumerators.AbilityCallType AbilityCallType;
+        [JsonProperty("CallType")]
+        public Enumerators.AbilityCallType CallType;
 
-        [JsonIgnore]
+        [JsonProperty("TargetType")]
         public List<Enumerators.AbilityTargetType> AbilityTargetTypes;
 
-        [JsonIgnore]
+        [JsonProperty("StatType")]
         public Enumerators.StatType AbilityStatType;
 
-        [JsonIgnore]
+        [JsonProperty("SetType")]
         public Enumerators.SetType AbilitySetType;
 
-        [JsonIgnore]
+        [JsonProperty("EffectType")]
         public Enumerators.AbilityEffectType AbilityEffectType;
 
-        [JsonIgnore]
-        public Enumerators.AttackInfoType AttackInfoType;
+        [JsonProperty("AttackInfo")]
+        public Enumerators.AttackRestriction AttackRestriction;
 
-        [JsonIgnore]
+        [JsonProperty("CardType")]
         public Enumerators.CardType TargetCardType;
 
-        [JsonIgnore]
+        [JsonProperty("UnitStatus")]
         public Enumerators.UnitStatusType TargetUnitStatusType;
 
-        [JsonIgnore]
+        [JsonProperty("UnitType")]
         public Enumerators.CardType TargetUnitType;
 
         public int Value;
@@ -66,8 +48,6 @@ namespace Loom.ZombieBattleground.Data
         public int Damage;
 
         public int Health;
-
-        public string AttackInfo;
 
         public string Name;
 
@@ -79,79 +59,75 @@ namespace Loom.ZombieBattleground.Data
 
         public List<VisualEffectInfo> VisualEffectsToPlay;
 
-        public void ParseData()
+        public AbilityData(
+            Enumerators.BuffType buffType,
+            Enumerators.AbilityType abilityType,
+            Enumerators.AbilityActivityType activityType,
+            Enumerators.AbilityCallType callType,
+            List<Enumerators.AbilityTargetType> abilityTargetTypes,
+            Enumerators.StatType abilityStatType,
+            Enumerators.SetType abilitySetType,
+            Enumerators.AbilityEffectType abilityEffectType,
+            Enumerators.AttackRestriction attackRestriction,
+            Enumerators.CardType targetCardType,
+            Enumerators.UnitStatusType targetUnitStatusType,
+            Enumerators.CardType targetUnitType,
+            int value,
+            int damage,
+            int health,
+            string name,
+            int turns,
+            int count,
+            int delay,
+            List<VisualEffectInfo> visualEffectsToPlay
+            )
         {
-            AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(Type);
-            AbilityActivityType = Utilites.CastStringTuEnum<Enumerators.AbilityActivityType>(ActivityType);
-            AbilityCallType = Utilites.CastStringTuEnum<Enumerators.AbilityCallType>(CallType);
+            BuffType = buffType;
+            AbilityType = abilityType;
+            ActivityType = activityType;
+            CallType = callType;
+            AbilityTargetTypes = abilityTargetTypes ?? new List<Enumerators.AbilityTargetType>();
+            AbilityStatType = abilityStatType;
+            AbilitySetType = abilitySetType;
+            AbilityEffectType = abilityEffectType;
+            AttackRestriction = attackRestriction;
+            TargetCardType = targetCardType;
+            TargetUnitStatusType = targetUnitStatusType;
+            TargetUnitType = targetUnitType;
+            Value = value;
+            Damage = damage;
+            Health = health;
+            Name = name;
+            Turns = turns;
+            Count = count;
+            Delay = delay;
+            VisualEffectsToPlay = visualEffectsToPlay ?? new List<VisualEffectInfo>();
+        }
 
-            if (!string.IsNullOrEmpty(TargetType))
-            {
-                AbilityTargetTypes = Utilites.CastList<Enumerators.AbilityTargetType>(TargetType);
-            }
-            else
-            {
-                AbilityTargetTypes = new List<Enumerators.AbilityTargetType>();
-            }
-
-            if (!string.IsNullOrEmpty(StatType))
-            {
-                AbilityStatType = Utilites.CastStringTuEnum<Enumerators.StatType>(StatType);
-            }
-            else
-            {
-                AbilityStatType = Enumerators.StatType.NONE;
-            }
-
-            if (!string.IsNullOrEmpty(SetType))
-            {
-                AbilitySetType = Utilites.CastStringTuEnum<Enumerators.SetType>(SetType);
-            }
-            else
-            {
-                AbilitySetType = Enumerators.SetType.NONE;
-            }
-
-            if (!string.IsNullOrEmpty(EffectType))
-            {
-                AbilityEffectType = Utilites.CastStringTuEnum<Enumerators.AbilityEffectType>(EffectType);
-            }
-            else
-            {
-                AbilityEffectType = Enumerators.AbilityEffectType.NONE;
-            }
-
-            if (!string.IsNullOrEmpty(AttackInfo))
-            {
-                AttackInfoType = Utilites.CastStringTuEnum<Enumerators.AttackInfoType>(AttackInfo);
-            }
-            else
-            {
-                AttackInfoType = Enumerators.AttackInfoType.ANY;
-            }
-
-            if (!string.IsNullOrEmpty(CardType))
-            {
-                TargetCardType = Utilites.CastStringTuEnum<Enumerators.CardType>(CardType);
-            }
-            else
-            {
-                TargetCardType = Enumerators.CardType.NONE;
-            }
-
-            if (!string.IsNullOrEmpty(UnitStatus))
-            {
-                TargetUnitStatusType = Utilites.CastStringTuEnum<Enumerators.UnitStatusType>(UnitStatus);
-            }
-            else
-            {
-                TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
-            }
-
-            if (!string.IsNullOrEmpty(UnitType))
-            {
-                TargetUnitType = Utilites.CastStringTuEnum<Enumerators.CardType>(UnitType);
-            }
+        public AbilityData(AbilityData source)
+        {
+            AbilityType = source.AbilityType;
+            ActivityType = source.ActivityType;
+            CallType = source.CallType;
+            AbilityTargetTypes = new List<Enumerators.AbilityTargetType>(source.AbilityTargetTypes);
+            AbilityStatType = source.AbilityStatType;
+            AbilitySetType = source.AbilitySetType;
+            AbilityEffectType = source.AbilityEffectType;
+            AttackRestriction = source.AttackRestriction;
+            TargetCardType = source.TargetCardType;
+            TargetUnitStatusType = source.TargetUnitStatusType;
+            TargetUnitType = source.TargetUnitType;
+            Value = source.Value;
+            Damage = source.Damage;
+            Health = source.Health;
+            Name = source.Name;
+            Turns = source.Turns;
+            Count = source.Count;
+            Delay = source.Delay;
+            VisualEffectsToPlay =
+                source.VisualEffectsToPlay
+                    .Select(v => new VisualEffectInfo(v))
+                    .ToList();
         }
 
         public bool HasVisualEffectType(Enumerators.VisualEffectType type)
@@ -164,14 +140,9 @@ namespace Loom.ZombieBattleground.Data
 
         public VisualEffectInfo GetVisualEffectByType(Enumerators.VisualEffectType type)
         {
-            if (VisualEffectsToPlay == null) 
-            {
-                return new VisualEffectInfo()
-                {
-                    Path = string.Empty, 
-                    Type = type
-                };
-            }
+            // FIXME: why do we return fake info?
+            if (VisualEffectsToPlay == null)
+                return new VisualEffectInfo(type, "");
 
             return VisualEffectsToPlay.Find(vfx => vfx.Type == type);
         }
@@ -180,6 +151,18 @@ namespace Loom.ZombieBattleground.Data
         {
             public Enumerators.VisualEffectType Type;
             public string Path;
+
+            public VisualEffectInfo(Enumerators.VisualEffectType type, string path)
+            {
+                Type = type;
+                Path = path;
+            }
+
+            public VisualEffectInfo(VisualEffectInfo source)
+            {
+                Type = source.Type;
+                Path = source.Path;
+            }
         }
     }
 }

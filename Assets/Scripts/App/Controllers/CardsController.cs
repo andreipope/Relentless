@@ -475,7 +475,7 @@ namespace Loom.ZombieBattleground
 
         public void HoverPlayerCardOnBattleground(Player player, BoardCard card, HandBoardCard handCard)
         {
-            Card libraryCard = card.WorkingCard.LibraryCard;
+            IReadOnlyCard libraryCard = card.WorkingCard.LibraryCard;
             if (libraryCard.CardKind == Enumerators.CardKind.CREATURE &&
                 _gameplayManager.CurrentPlayer.BoardCards.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
@@ -539,7 +539,7 @@ namespace Loom.ZombieBattleground
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
-                Card libraryCard = card.WorkingCard.LibraryCard;
+                IReadOnlyCard libraryCard = card.WorkingCard.LibraryCard;
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
@@ -794,7 +794,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.RealCost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
+                card.InstanceCard.Cost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
             }
 
             return card;
@@ -813,29 +813,24 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.RealCost = Mathf.Clamp(value, 0, 99);
+                card.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
             }
         }
 
-        public string GetSetOfCard(Card card)
+        public Enumerators.SetType GetSetOfCard(IReadOnlyCard card)
         {
             CardSet set =
                 _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(y => y.Name.Equals(card.Name)) != null);
 
-            if (set != null)
-            {
-                return set.Name;
-            }
-
-            return string.Empty;
+            return set?.Name ?? Enumerators.SetType.NONE;
         }
 
         public WorkingCard CreateNewCardByNameAndAddToHand(Player player, string name)
         {
             float animationDuration = 1.5f;
 
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
-            WorkingCard workingCard = new WorkingCard(card, player);
+            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
+            WorkingCard workingCard = new WorkingCard(card, card, player);
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
                 return workingCard;
@@ -897,8 +892,7 @@ namespace Loom.ZombieBattleground
             Player unitOwner = unit.Model.OwnerPlayer;
             WorkingCard returningCard = unit.Model.Card;
 
-            returningCard.InitialCost = returningCard.LibraryCard.Cost;
-            returningCard.RealCost = returningCard.InitialCost;
+            returningCard.InstanceCard.Cost = returningCard.LibraryCard.Cost;
 
             Vector3 unitPosition = unit.Transform.position;
 
@@ -927,9 +921,10 @@ namespace Loom.ZombieBattleground
                 2f);
         }
 
-        public WorkingCard GetWorkingCardFromName(Player owner, string cardName)
+        public WorkingCard GetWorkingCardFromCardName(string cardName, Player owner)
         {
-            return new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), owner);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+            return new WorkingCard(card, card, owner);
         }
 
         private void GameEndedHandler(Enumerators.EndGameType obj)
@@ -1007,9 +1002,9 @@ namespace Loom.ZombieBattleground
             if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
                 return null;
 
-            Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
+            Card libraryCard = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
 
-            WorkingCard card = new WorkingCard(libraryCard, owner);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
             BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
 
             owner.AddCardToBoard(card);

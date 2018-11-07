@@ -27,8 +27,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            Card libraryCard = AbilityUnitOwner.Card.LibraryCard.Clone();
-            WorkingCard card = new WorkingCard(libraryCard, owner);
+            Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
             BoardUnitView unit = CreateBoardUnit(card, owner);
             unit.Model.IsReanimated = true;
             AbilityUnitOwner.IsReanimated = true;

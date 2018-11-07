@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             StatType = ability.AbilityStatType;
-            SetType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.SetType);
+            SetType = ability.AbilitySetType;
             Value = ability.Value;
         }
 

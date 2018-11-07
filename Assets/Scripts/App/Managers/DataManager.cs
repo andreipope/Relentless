@@ -141,20 +141,19 @@ namespace Loom.ZombieBattleground
             return Task.CompletedTask;
         }
 
-        public TooltipContentData.BuffInfo GetBuffInfoByType(string type)
+        public TooltipContentData.CardTypeInfo GetCardTypeInfo(Enumerators.CardType cardType)
         {
-            if (string.IsNullOrEmpty(type))
-                return null;
-
-            return CachedBuffsTooltipData.Buffs.Find(x => x.Type.ToLowerInvariant().Equals(type.ToLowerInvariant()));
+            return CachedBuffsTooltipData.CardTypes.Find(x => x.Type == cardType);
         }
 
-        public TooltipContentData.RankInfo GetRankInfoByType(string type)
+        public TooltipContentData.BuffInfo GetCardBuffInfo(Enumerators.BuffType buffType)
         {
-            if (string.IsNullOrEmpty(type))
-                return null;
+            return CachedBuffsTooltipData.Buffs.Find(x => x.Type == buffType);
+        }
 
-            return CachedBuffsTooltipData.Ranks.Find(x => x.Type.ToLowerInvariant().Equals(type.ToLowerInvariant()));
+        public TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank)
+        {
+            return CachedBuffsTooltipData.Ranks.Find(x => x.Type == rank);
         }
 
         public void Dispose()
@@ -180,12 +179,12 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private uint GetMaxCopiesValue(Data.Card card, string setName)
+        private uint GetMaxCopiesValue(Data.Card card, Enumerators.SetType setName)
         {
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            if (setName.ToLowerInvariant().Equals("item"))
+            if (setName == Enumerators.SetType.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;

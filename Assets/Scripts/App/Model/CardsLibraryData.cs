@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
@@ -26,11 +27,6 @@ namespace Loom.ZombieBattleground.Data
             }
         }
 
-        public Card GetCard(int id)
-        {
-            return Cards.Find(x => x.Id == id);
-        }
-
         public Card GetCardFromName(string name)
         {
             return Cards.Find(x => x.Name.ToLowerInvariant() == name.ToLower());
@@ -46,35 +42,15 @@ namespace Loom.ZombieBattleground.Data
                 {
                     foreach (Card card in set.Cards)
                     {
-                        card.CardSetType =
-                            (Enumerators.SetType) Enum.Parse(typeof(Enumerators.SetType),
-                                set.Name.ToUpperInvariant()); // todo improve this shit!
-
-                        if (card.Kind != null)
-                        {
-                            card.CardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(card.Kind);
-                        }
-
-                        if (card.Rank != null)
-                        {
-                            card.CardRank = Utilites.CastStringTuEnum<Enumerators.CardRank>(card.Rank);
-                        }
-
-                        if (card.Type != null)
-                        {
-                            card.CardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.Type);
-                        }
-
-                        foreach (AbilityData ability in card.Abilities)
-                        {
-                            ability.ParseData();
-                        }
+                        // TODO: improve this shit!
+                        card.CardSetType = set.Name;
 
                         _allCards.Add(card);
 
+                        // FIXME: why are we setting mould IDs manually?
                         if (card.CardSetType != Enumerators.SetType.OTHERS)
                         {
-                            card.Id = id;
+                            card.MouldId = id;
                         }
 
                         id++;
@@ -98,7 +74,7 @@ namespace Loom.ZombieBattleground.Data
 
     public class CardSet
     {
-        public string Name;
+        public Enumerators.SetType Name;
 
         public List<Card> Cards;
 

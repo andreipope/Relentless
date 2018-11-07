@@ -53,9 +53,9 @@ namespace Loom.ZombieBattleground
             if (playerOwner.BoardCards.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
-            Card libraryCard = workingCard.LibraryCard.Clone();
+            Card libraryCard = new Card(workingCard.LibraryCard);
 
-            WorkingCard card = new WorkingCard(libraryCard, playerOwner);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, playerOwner);
             BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);

@@ -560,8 +560,7 @@ namespace Loom.ZombieBattleground
             Player unitOwner = targetUnit.OwnerPlayer;
             WorkingCard returningCard = targetUnit.Card;
 
-            returningCard.InitialCost = returningCard.LibraryCard.Cost;
-            returningCard.RealCost = returningCard.InitialCost;
+            returningCard.InstanceCard.Cost = returningCard.LibraryCard.Cost;
 
             Vector3 unitPosition = targetUnitView.Transform.position;
 
@@ -1026,7 +1025,7 @@ namespace Loom.ZombieBattleground
 
             List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
                 && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
-                && x.RealCost == skill.Value);
+                && x.InstanceCard.Cost == skill.Value);
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
@@ -1051,7 +1050,7 @@ namespace Loom.ZombieBattleground
 
         private void EnhanceAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<object> targets = new List<object>();
 
@@ -1092,7 +1091,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.LifeGain,
                     Target = targetObject,
@@ -1105,7 +1104,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCardsWithOverlord,
                 Caller = boardSkill,
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 

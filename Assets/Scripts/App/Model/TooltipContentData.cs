@@ -1,12 +1,24 @@
 ﻿using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Data
 {
     public class TooltipContentData
     {
+        public List<CardTypeInfo> CardTypes;
+
         public List<BuffInfo> Buffs;
 
         public List<RankInfo> Ranks;
+
+        public class CardTypeInfo
+        {
+            public string Name;
+
+            public string Tooltip;
+
+            public Enumerators.CardType Type;
+        }
 
         public class BuffInfo
         {
@@ -14,20 +26,20 @@ namespace Loom.ZombieBattleground.Data
 
             public string Tooltip;
 
-            public string Type;
+            public Enumerators.BuffType Type;
         }
 
         public class RankInfo
         {
             public string Name;
 
-            public string Type;
+            public Enumerators.CardRank Type;
 
             public List<RankDescription> Info;
 
             public class RankDescription
             {
-                public string Element;
+                public Enumerators.SetType Element;
 
                 public string Tooltip;
             }

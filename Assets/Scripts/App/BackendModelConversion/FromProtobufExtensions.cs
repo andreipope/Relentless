@@ -26,43 +26,58 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static FloatVector3 FromProtobuf(this Coordinates coordinates)
+        public static Unit FromProtobuf(this Protobuf.Unit unit)
         {
-            return new FloatVector3(coordinates.X, coordinates.Y, coordinates.Z);
+            return new Unit(
+                unit.InstanceId,
+                (Enumerators.AffectObjectType) unit.AffectObjectType,
+                new Unit.ParameterType(unit.Parameter.Attack, unit.Parameter.Defense, unit.Parameter.CardName)
+            );
         }
 
-        public static AbilityData FromProtobuf(this Ability ability)
+        public static FloatVector3 FromProtobuf(this Vector3Float vector)
         {
-            return new AbilityData
-            {
-                BuffType = ability.BuffType,
-                Type = ability.Type,
-                ActivityType = ability.ActivityType,
-                CallType = ability.CallType,
-                TargetType = ability.TargetType,
-                StatType = ability.StatType,
-                SetType = ability.SetType,
-                EffectType = ability.EffectType,
-                CardType = ability.CardType,
-                UnitStatus = ability.UnitStatus,
-                UnitType = ability.UnitType,
-                Value = ability.Value,
-                Damage = ability.Damage,
-                Health = ability.Health,
-                AttackInfo = ability.AttackInfo,
-                Name = ability.Name,
-                Turns = ability.Turns,
-                Count = ability.Count,
-                Delay = ability.Delay
-            };
+            return new FloatVector3(vector.X, vector.Y, vector.Z);
+        }
+
+        public static AbilityData FromProtobuf(this CardAbility ability)
+        {
+            return new AbilityData(
+                (Enumerators.BuffType) ability.BuffType,
+                (Enumerators.AbilityType) ability.Type,
+                (Enumerators.AbilityActivityType) ability.ActivityType,
+                (Enumerators.AbilityCallType) ability.Trigger,
+                ability.AllowedTargetTypes.Select(t => (Enumerators.AbilityTargetType) t).ToList(),
+                (Enumerators.StatType) ability.Stat,
+                (Enumerators.SetType) ability.Set,
+                (Enumerators.AbilityEffectType) ability.Effect,
+                (Enumerators.AttackRestriction) ability.AttackRestriction,
+                (Enumerators.CardType) ability.TargetCardType,
+                (Enumerators.UnitStatusType) ability.TargetUnitStatusType,
+                (Enumerators.CardType) ability.TargetUnitType,
+                ability.Value,
+                ability.Attack,
+                ability.Defense,
+                ability.Name,
+                ability.Turns,
+                ability.Count,
+                ability.Delay,
+                ability.VisualEffectsToPlay.Select(v => v.FromProtobuf()).ToList()
+            );
+        }
+
+        public static AbilityData.VisualEffectInfo FromProtobuf(this CardAbility.Types.VisualEffectInfo visualEffectInfo)
+        {
+            return new AbilityData.VisualEffectInfo(
+                (Enumerators.VisualEffectType) visualEffectInfo.Type,
+                visualEffectInfo.Path
+            );
         }
 
         public static CardViewInfo FromProtobuf(this Protobuf.CardViewInfo cardViewInfo)
         {
             if (cardViewInfo == null)
-            {
                 return null;
-            }
 
             return new CardViewInfo
             {
@@ -73,23 +88,23 @@ namespace Loom.ZombieBattleground.Data
 
         public static Card FromProtobuf(this Protobuf.Card card)
         {
-            return new Card
-            {
-                Id = (int) card.Id,
-                Kind = card.Kind,
-                Name = card.Name,
-                Cost = card.Cost,
-                Description = card.Description,
-                FlavorText = card.FlavorText,
-                Picture = card.Picture,
-                Damage = card.Damage,
-                Health = card.Health,
-                Rank = card.Rank,
-                Type = card.Type,
-                Frame = card.Frame,
-                Abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
-                CardViewInfo = card.CardViewInfo.FromProtobuf()
-            };
+            return new Card(
+                card.MouldId,
+                card.Name,
+                card.GooCost,
+                card.Description,
+                card.FlavorText,
+                card.Picture,
+                card.Attack,
+                card.Defense,
+                (Enumerators.SetType) card.Set,
+                card.Frame,
+                (Enumerators.CardKind) card.Kind,
+                (Enumerators.CardRank) card.Rank,
+                (Enumerators.CardType) card.Type,
+                card.Abilities.Select(a => a.FromProtobuf()).ToList(),
+                card.CardViewInfo.FromProtobuf()
+            );
         }
 
         public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse)
@@ -104,7 +119,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new CardSet
             {
-                Name = !string.IsNullOrEmpty(cardSet.Name) ? cardSet.Name : "none",
+                Name = (Enumerators.SetType) cardSet.Name,
                 Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
             };
         }
@@ -113,19 +128,20 @@ namespace Loom.ZombieBattleground.Data
         {
             return new OpponentDeck
             {
-                Id = (int)deck.Id,
-                HeroId = (int)deck.HeroId,
-                Type = string.Empty,
+                Id = (int) deck.Id,
+                HeroId = (int) deck.HeroId,
+                Type = Enumerators.AiType.BLITZ_AI,
                 Cards = deck.Cards.Select(card => card.GetDeckCardData()).ToList()
             };
         }
+
         //TOTO: review does need this function at all
         private static DeckCardData GetDeckCardData(this CardCollection cardCollection)
         {
             return new DeckCardData
             {
                 CardName = cardCollection.CardName,
-                Amount = (int)cardCollection.Amount
+                Amount = (int) cardCollection.Amount
             };
         }
 
@@ -136,57 +152,15 @@ namespace Loom.ZombieBattleground.Data
             return cardInstances;
         }
 
-        public static WorkingCard FromProtobuf(CardInstance cardInstance, Player player)
+        public static WorkingCard FromProtobuf(this CardInstance cardInstance, Player player)
         {
-            CardPrototype cardPrototype = cardInstance.Prototype;
-
-            List<AbilityData> abilities = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.
-                Find(x => x.Id == cardPrototype.DataId).Clone().Abilities;
-
-            Card card = new Card
-            {
-                Id = cardPrototype.DataId,
-                Kind = cardPrototype.Kind,
-                Name = cardPrototype.Name,
-                Cost = cardPrototype.GooCost,
-                Description = cardPrototype.Description,
-                FlavorText = cardPrototype.FlavorText,
-                Picture = cardPrototype.Picture,
-                Damage = cardPrototype.InitialDamage,
-                Health = cardPrototype.InitialDefence,
-                Rank = cardPrototype.Rank,
-                Type = cardPrototype.Type,
-                CardViewInfo = new CardViewInfo
-                {
-                    Position = new FloatVector3 {
-                        X = cardPrototype.CardViewInfo.Position.X,
-                        Y = cardPrototype.CardViewInfo.Position.Y,
-                        Z = cardPrototype.CardViewInfo.Position.Z
-                    },
-                    Scale = new FloatVector3 {
-                        X = cardPrototype.CardViewInfo.Scale.X,
-                        Y = cardPrototype.CardViewInfo.Scale.Y,
-                        Z = cardPrototype.CardViewInfo.Scale.Z
-                    }
-                },
-                Frame = cardPrototype.Frame,
-                CardSetType = (Enumerators.SetType)cardPrototype.CardSetType,
-                CardRank = (Enumerators.CardRank)cardPrototype.CreatureRank,
-                CardType = (Enumerators.CardType)cardPrototype.CreatureType,
-                CardKind = (Enumerators.CardKind)cardPrototype.CardKind,
-                Abilities = abilities
-            };
-
-            return new WorkingCard(card, player, cardInstance.InstanceId);
-        }
-
-        public static List<Unit> FromProtobuf(this RepeatedField<Unit> repeatedListUnits)
-        {
-            List<Unit> units = new List<Unit>();
-
-            units.AddRange(repeatedListUnits);
-
-            return units;
+            return
+                new WorkingCard(
+                    cardInstance.Prototype.FromProtobuf(),
+                    cardInstance.Instance.FromProtobuf(),
+                    player,
+                    cardInstance.InstanceId
+                );
         }
     }
 }

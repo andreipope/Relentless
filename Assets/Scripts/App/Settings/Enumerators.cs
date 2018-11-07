@@ -4,12 +4,14 @@ namespace Loom.ZombieBattleground.Common
     {
         public enum AbilityActivityType
         {
+            UNDEFINED,
             PASSIVE,
             ACTIVE
         }
 
         public enum AbilityCallType
         {
+            UNDEFINED,
             TURN,
             ENTRY,
             END,
@@ -56,6 +58,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AbilityType
         {
+            UNDEFINED,
             HEAL,
             MODIFICATOR_STATS,
             CHANGE_STAT,
@@ -122,7 +125,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ActionType
         {
-            None,
+            Undefined,
 
             PlayCardFromHand,
             PlayCardFromHandOnCard,
@@ -180,7 +183,7 @@ namespace Loom.ZombieBattleground.Common
             CustomGameModeCustomUi
         }
 
-        public enum AttackInfoType
+        public enum AttackRestriction
         {
             ANY,
             ONLY_DIFFERENT
@@ -188,6 +191,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum BuffType
         {
+            NONE,
             GUARD,
             DEFENCE,
             HEAVY,
@@ -242,10 +246,10 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardType
         {
+            NONE,
             WALKER,
             FERAL,
             HEAVY,
-            NONE
         }
 
         public enum EndGameType
@@ -332,6 +336,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum SetType
         {
+            NONE,
             FIRE,
             WATER,
             EARTH,
@@ -340,7 +345,6 @@ namespace Loom.ZombieBattleground.Common
             TOXIC,
             ITEM,
             OTHERS,
-            NONE
         }
 
         public enum SkillTargetType
@@ -403,9 +407,9 @@ namespace Loom.ZombieBattleground.Common
 
         public enum StatType
         {
+            UNDEFINED,
             HEALTH,
-            DAMAGE,
-            NONE
+            DAMAGE
         }
 
         public enum StunType
@@ -498,6 +502,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum VisualEffectType
         {
+            Undefined,
             Impact,
             Moving
         }

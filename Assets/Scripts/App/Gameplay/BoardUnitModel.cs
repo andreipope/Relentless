@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
-        public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
+        public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.ANY;
 
         private readonly IGameplayManager _gameplayManager;
 
@@ -232,12 +232,20 @@ namespace Loom.ZombieBattleground
                     HasBuffShield = true;
                     break;
                 case Enumerators.BuffType.REANIMATE:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this,
-                        Card.LibraryCard, OwnerPlayer);
+                    _abilitiesController.BuffUnitByAbility(
+                        Enumerators.AbilityType.REANIMATE_UNIT,
+                        this,
+                        Card.LibraryCard,
+                        OwnerPlayer
+                        );
                     break;
                 case Enumerators.BuffType.DESTROY:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
-                        this, Card.LibraryCard, OwnerPlayer);
+                    _abilitiesController.BuffUnitByAbility(
+                        Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
+                        this,
+                        Card.LibraryCard,
+                        OwnerPlayer
+                        );
                     break;
             }
 
@@ -345,8 +353,8 @@ namespace Loom.ZombieBattleground
         {
             Card = card;
 
-            CurrentDamage = card.Damage;
-            CurrentHp = card.Health;
+            CurrentDamage = card.InstanceCard.Damage;
+            CurrentHp = card.InstanceCard.Health;
 
             BuffedDamage = 0;
             BuffedHp = 0;

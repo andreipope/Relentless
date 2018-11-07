@@ -31,9 +31,11 @@ namespace Loom.ZombieBattleground
 
         Task SaveCache(Enumerators.CacheDataType type);
 
-        TooltipContentData.BuffInfo GetBuffInfoByType(string type);
+        TooltipContentData.CardTypeInfo GetCardTypeInfo(Enumerators.CardType cardType);
 
-        TooltipContentData.RankInfo GetRankInfoByType(string type);
+        TooltipContentData.BuffInfo GetCardBuffInfo(Enumerators.BuffType buffType);
+
+        TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank);
 
         void DeleteData();
 

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground.Data
 
         public int HeroId;
 
-        public string Type;
+        public Enumerators.AiType Type;
 
         public string Name;
 

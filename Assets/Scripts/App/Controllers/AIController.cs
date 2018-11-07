@@ -108,12 +108,7 @@ namespace Loom.ZombieBattleground
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        workingDeck.Add(
-                            new WorkingCard(
-                                _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName),
-                                _gameplayManager.OpponentPlayer
-                                )
-                            );
+                        workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, _gameplayManager.OpponentPlayer));
                     }
                 }
 
@@ -170,7 +165,7 @@ namespace Loom.ZombieBattleground
 
             if (deck != null)
             {
-                SetAiType((Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type));
+                SetAiType(deck.Type);
             }
             else
             {
@@ -747,7 +742,7 @@ namespace Loom.ZombieBattleground
 
         private BoardObject GetAbilityTarget(WorkingCard card)
         {
-            Card libraryCard = card.LibraryCard;
+            IReadOnlyCard libraryCard = card.LibraryCard;
 
             BoardObject target = null;
 
@@ -1006,7 +1001,7 @@ namespace Loom.ZombieBattleground
 
             foreach (WorkingCard item in list)
             {
-                cards.Add(_dataManager.CachedCardsLibraryData.GetCard(item.CardId));
+                cards.Add(_dataManager.CachedCardsLibraryData.GetCardFromName(item.LibraryCard.Name));
             }
 
             cards = cards.OrderBy(x => x.Cost).ThenBy(y => y.Cost.ToString().Length).ToList();
@@ -1017,7 +1012,7 @@ namespace Loom.ZombieBattleground
 
             foreach (Card item in cards)
             {
-                sortedList.Add(list.Find(x => x.CardId == item.Id && !sortedList.Contains(x)));
+                sortedList.Add(list.Find(x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains(x)));
             }
 
             list.Clear();

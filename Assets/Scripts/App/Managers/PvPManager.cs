@@ -204,29 +204,6 @@ namespace Loom.ZombieBattleground
             await StopMatchmaking(MatchMetadata?.Id);
         }
 
-        public WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer)
-        {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInstance.Prototype.Name).Clone();
-            // FIXME: fill with Prototype data when backend supports that
-            /*card.Damage = cardInstance.Prototype.InitialDamage;
-            card.Health = cardInstance.Prototype.InitialDefence;*/
-            card.Damage = cardInstance.Attack;
-            card.Health = cardInstance.Defense;
-            card.Cost = cardInstance.GooCost;
-
-            WorkingCard workingCard =
-                new WorkingCard(
-                    card,
-                    ownerPlayer,
-                    cardInstance.InstanceId
-                );
-
-            workingCard.Health = workingCard.InitialHealth = cardInstance.Defense;
-            workingCard.Damage = workingCard.InitialDamage = cardInstance.Attack;
-
-            return workingCard;
-        }
-
         private async Task StopMatchmaking(long? matchIdToCancel)
         {
             _queueManager.Active = false;
@@ -333,7 +310,7 @@ namespace Loom.ZombieBattleground
         {
             switch (playerActionEvent.PlayerAction.ActionType)
             {
-                case PlayerActionType.NoneAction:
+                case PlayerActionType.None:
                     break;
                 case PlayerActionType.EndTurn:
                     ResetWaitForTurnTimer();

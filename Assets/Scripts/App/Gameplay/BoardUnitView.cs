@@ -134,11 +134,11 @@ namespace Loom.ZombieBattleground
         {
             Model.SetObjectInfo(card);
 
-            string setName = _cardsController.GetSetOfCard(card.LibraryCard);
+            Enumerators.SetType setType = _cardsController.GetSetOfCard(card.LibraryCard);
             string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
             string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
 
@@ -449,7 +449,7 @@ namespace Loom.ZombieBattleground
                 if (Model.Card.LibraryCard.Name.Equals("Freezzee"))
                 {
                     List<BoardUnitView> freezzees = Model.GetEnemyUnitsList(Model)
-                    .FindAll(x => x.Model.Card.LibraryCard.Id == Model.Card.LibraryCard.Id);
+                    .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
 
                     if (freezzees.Count > 0)
                     {
@@ -656,7 +656,7 @@ namespace Loom.ZombieBattleground
                 _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
                 _fightTargetingArrow.Owner = this;
 
-                if (Model.AttackInfoType == Enumerators.AttackInfoType.ONLY_DIFFERENT)
+                if (Model.AttackRestriction == Enumerators.AttackRestriction.ONLY_DIFFERENT)
                 {
                     _fightTargetingArrow.IgnoreBoardObjectsList = Model.AttackedBoardObjectsThisTurn;
                 }

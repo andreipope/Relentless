@@ -171,13 +171,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardPlay = new PlayerActionCardPlay
                     {
-                        Card = new CardInstance
-                        {
-                            InstanceId = card.Id,
-                            Prototype = card.LibraryCard.GetCardPrototype(),
-                            Defense = card.Health,
-                            Attack = card.Damage,
-                        },
+                        Card = card.ToProtobuf(),
                         Position = position
                     }
                 };
@@ -220,15 +214,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     PlayerId = playerId,
                     CardAttack = new PlayerActionCardAttack
                     {
-                        Attacker = new CardInstance
-                        {
-                            InstanceId = attacker.Id,
-                            Prototype = attacker.LibraryCard.GetCardPrototype(),
-                            Defense = attacker.Health,
-                            Attack = attacker.Damage
-                        },
+                        Attacker = attacker.ToProtobuf(),
                         AffectObjectType = type,
-                        Target = new Unit
+                        Target = new Protobuf.Unit
                         {
                             InstanceId = instanceId
                         }
@@ -247,33 +235,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     CardKind = cardKind,
                     AbilityType = abilityType.ToString(),
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = card.LibraryCard.GetCardPrototype(),
-                        Defense = card.Health,
-                        Attack = card.Damage
-                    }
+                    Card = card.ToProtobuf()
                 };
 
-                Unit targetUnit;
+                Protobuf.Unit targetUnit;
                 if (targets != null)
                 {
                     foreach(BoardObject boardObject in targets)
                     {
-                        targetUnit = new Unit();
+                        targetUnit = new Protobuf.Unit();
 
                         if (boardObject is BoardUnitModel model)
                         {
-                            targetUnit = new Unit()
+                            targetUnit = new Protobuf.Unit
                             {
-                                InstanceId = model.Card.Id,
+                                InstanceId = model.Card.InstanceId,
                                 AffectObjectType =  AffectObjectType.Character
                             };
                         }
                         else if (boardObject is Player player)
                         {
-                            targetUnit = new Unit()
+                            targetUnit = new Protobuf.Unit
                             {
                                 InstanceId = player.Id == 0 ? 1 : 0,
                                 AffectObjectType = AffectObjectType.Player
@@ -281,7 +263,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         }
                         else if(boardObject is HandBoardCard handCard)
                         {
-                            targetUnit = new Unit()
+                            targetUnit = new Protobuf.Unit
                             {
                                 InstanceId = handCard.Id,
                                 AffectObjectType = AffectObjectType.Card
@@ -326,15 +308,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 AffectObjectType affectObjectType = target is Player ? AffectObjectType.Player : AffectObjectType.Character;
-                Unit targetUnit = null;
+                Protobuf.Unit targetUnit = null;
 
-                if(target is BoardUnitModel unit)
+                switch (target)
                 {
-                    targetUnit = new Unit() { InstanceId = unit.Card.Id };
-                }
-                else if(target is Player player)
-                {
-                    targetUnit = new Unit() { InstanceId = player.Id == 0 ? 1 : 0 };
+                    case BoardUnitModel unit:
+                        targetUnit = new Protobuf.Unit
+                        {
+                            InstanceId = unit.Card.InstanceId
+                        };
+                        break;
+                    case Player player:
+                        targetUnit = new Protobuf.Unit
+                        {
+                            InstanceId = player.Id == 0 ? 1 : 0
+                        };
+                        break;
                 }
 
                 PlayerAction playerAction = new PlayerAction
@@ -358,21 +347,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
                 {
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = card.LibraryCard.GetCardPrototype(),
-                        Defense = card.Health,
-                        Attack = card.Damage
-                    }
+                    Card = card.ToProtobuf()
                 };
 
-                Unit unit;
+                Protobuf.Unit unit;
                 foreach (BoardUnitView view in units)
                 {
-                    unit = new Unit()
+                    unit = new Protobuf.Unit
                     {
-                        InstanceId = view.Model.Card.Id,
+                        InstanceId = view.Model.Card.InstanceId,
                         AffectObjectType = AffectObjectType.Character
                     };
 

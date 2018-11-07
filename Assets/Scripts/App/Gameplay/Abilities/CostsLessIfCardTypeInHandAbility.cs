@@ -46,8 +46,12 @@ namespace Loom.ZombieBattleground
 
             int gooCost = PlayerCallerOfAbility.CardsInHand
                 .FindAll(x => x.LibraryCard.CardSetType == SetType && x != MainWorkingCard).Count * Value;
-            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
-                MainWorkingCard.RealCost + gooCost, BoardCard);
+            CardsController.SetGooCostOfCardInHand(
+                PlayerCallerOfAbility,
+                MainWorkingCard,
+                MainWorkingCard.InstanceCard.Cost + gooCost,
+                BoardCard
+                );
         }
 
         private void CardPlayedHandler(WorkingCard card, int position)

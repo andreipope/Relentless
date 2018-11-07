@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rarity = (Enumerators.CardRank) IsChanceFit(0);
             List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(item =>
                 item.CardRank == rarity && item.CardSetType != Enumerators.SetType.OTHERS);
-            Card card = cards[Random.Range(0, cards.Count)].Clone();
+            Card card = new Card(cards[Random.Range(0, cards.Count)]);
             return card;
         }
 

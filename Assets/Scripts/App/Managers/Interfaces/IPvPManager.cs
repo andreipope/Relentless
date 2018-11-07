@@ -43,7 +43,5 @@ namespace Loom.ZombieBattleground
         Task<bool> FindMatch();
 
         Task CancelFindMatch();
-
-        WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer);
     }
 }
