@@ -110,7 +110,6 @@ namespace Loom.ZombieBattleground
         {
             try
             {
-                GameClient.Get<IQueueManager>().StartNetworkThread();
                 _uiManager.DrawPopup<ConnectionPopup>();
 
                 ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
