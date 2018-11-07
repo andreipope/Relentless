@@ -343,7 +343,7 @@ SpriteAtlas:
   - fire_minion_pyromaz
   - item_minion_shovel_heal
   - earth_minion_bolderr
-  - item_minion_junkspear
+  - item_minion_junk_spear
   - air_minion_banshee
   - fire_minion_rabiez
   - life_officer_shroom
