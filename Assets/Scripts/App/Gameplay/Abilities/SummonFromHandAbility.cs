@@ -34,6 +34,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
+                return;
+
             List<BoardCard> cards = BattlegroundController.PlayerHandCards.FindAll(
                 x => x.WorkingCard.RealCost <= Value &&
                 x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
@@ -54,6 +57,9 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < cards.Count; i++)
             {
+                if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
+                    break;
+
                 CardsController.SummonUnitFromHand(PlayerCallerOfAbility, cards[i]);
 
                 targets.Add(cards[i].HandBoardCard);

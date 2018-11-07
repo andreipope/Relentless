@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count > 0)
                         {
-                            ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
+                            ModificateStats(AbilityUnitOwner, !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
                         }
                     }
                 }

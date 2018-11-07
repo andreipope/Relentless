@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
+
+            DealDamageToUnitOwner();
         }
 
         protected override void InputEndedHandler()

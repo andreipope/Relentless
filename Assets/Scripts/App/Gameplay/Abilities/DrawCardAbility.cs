@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
+
+            Action();
         }
 
         public override void Action(object info = null)

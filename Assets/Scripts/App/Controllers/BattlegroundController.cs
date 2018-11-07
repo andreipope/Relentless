@@ -636,6 +636,10 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < opponentBoardCards.Count; i++)
             {
                 BoardUnitView card = opponentBoardCards[i];
+
+                if (card.Model.IsDead)
+                    continue;
+
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
