@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -36,6 +37,9 @@ namespace Loom.ZombieBattleground
         private void ActionCompleted()
         {
             ClearParticles();
+
+            AbilityImpactEffectInfo impactEffectInfo = new AbilityImpactEffectInfo();
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
@@ -44,12 +48,15 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(targetPosition);
-                ParticlesController.RegisterParticleSystem(VfxObject, true);
+                if(VfxObject.GetComponent<AbilityImpactEffectInfo>() != null)
+                {
+                    impactEffectInfo = VfxObject.GetComponent<AbilityImpactEffectInfo>();
+                }
+
+                CreateVfx(targetPosition, true, impactEffectInfo.delayBeforeDestroyImpactVFX, true);
             }
 
-            Ability.InvokeVFXAnimationEnded();
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, impactEffectInfo.delayAfterImpactVFX);
         }
 
 
