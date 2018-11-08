@@ -36,12 +36,10 @@ namespace Loom.ZombieBattleground
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            WorkingCard card;
             BoardCard boardCard;
             Player playerOwner;
             foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
             {
-                card = null;
                 playerOwner = null;
                 switch (targetType)
                 {
@@ -55,14 +53,14 @@ namespace Loom.ZombieBattleground
                         throw new NotImplementedException(nameof(targetType) + " not implemented!");
                 }
 
-                card = InternalTools.GetRandomElementsFromList(
-                   playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE),
-                   Count).First(x => x != null && x != default(WorkingCard));
 
-                if (card == null)
+                List<WorkingCard> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count);
+
+                if (filteredCards.Count == 0)
                     continue;
 
-                boardCard = PutCardOnBoard(card);
+                boardCard = PutCardOnBoard(filteredCards[0]);
 
                 boardCards.Add(boardCard.HandBoardCard);
 
@@ -88,14 +86,16 @@ namespace Loom.ZombieBattleground
         {
             BoardCard boardCard = new UnitBoardCard(Object.Instantiate(CardsController.CreatureCardViewPrefab));
             boardCard.Init(card);
-            boardCard.GameObject.transform.position = Constants.DefaultPositionOfBoardCard;
+            boardCard.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
+                                                                                 Constants.DefaultPositionOfOpponentBoardCard;
             boardCard.GameObject.transform.localScale = Vector3.one * .3f;
             boardCard.SetHighlightingEnabled(false);
 
+            boardCard.HandBoardCard = new HandBoardCard(boardCard.GameObject, boardCard);
 
             InternalTools.DoActionDelayed(() =>
             {
-                CardsController.SummonUnitFromHand(PlayerCallerOfAbility, boardCard);
+                CardsController.SummonUnitFromHand(card.Owner, boardCard);
             }, 0.25f);
 
             return boardCard;

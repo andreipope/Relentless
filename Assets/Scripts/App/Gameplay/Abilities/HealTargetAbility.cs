@@ -134,10 +134,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
                     allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
-                    allies.Remove(AbilityUnitOwner);
+
+                    if (AbilityUnitOwner != null && allies.Contains(AbilityUnitOwner))
+                        allies.Remove(AbilityUnitOwner);
                 }
 
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
@@ -174,8 +177,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies,
-                AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString()));
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
