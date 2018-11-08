@@ -65,13 +65,24 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
+
+
+            if (AbilityUnitOwner != null)
+            {
+                BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
+
+                if (_boardUnits.Contains(view))
+                {
+                    _boardUnits.Remove(view);
+                }
+            }
         }
 
         private void GenerateNewUnitsOnBoard()
         {
             foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
-                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle);
+                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, position: unitInfo.Position);
             }
         }
 
@@ -96,7 +107,8 @@ namespace Loom.ZombieBattleground
                     OldUnitCost = unit.Model.Card.RealCost,
                     NewUnitPossibleCost = unit.Model.Card.RealCost + 1,
                     OldUnitView = unit,
-                    OwnerPlayer = unit.Model.OwnerPlayer
+                    OwnerPlayer = unit.Model.OwnerPlayer,
+                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit)
                 };
 
                 _replaceUnitInfos.Add(replaceUnitInfo);
@@ -107,11 +119,12 @@ namespace Loom.ZombieBattleground
 
         private void GetPossibleNewUnitByMinCost(ReplaceUnitInfo replaceUnitInfo)
         {
-            List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost);
+            List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost &&                                                                                            x.CardSetType == SetType);
 
             if (possibleUnits.Count == 0)
             {
-                possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.OldUnitCost);
+                possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.OldUnitCost &&
+                                                                                      x.CardSetType == SetType);
             }
 
             replaceUnitInfo.NewUnitCardTitle = possibleUnits[UnityEngine.Random.Range(0, possibleUnits.Count)].Name;
@@ -125,6 +138,7 @@ namespace Loom.ZombieBattleground
             public BoardUnitView OldUnitView;
             public BoardUnitView NewUnitView;
             public Player OwnerPlayer;
+            public int Position;
         }
 
     }
