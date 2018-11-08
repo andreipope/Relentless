@@ -263,6 +263,10 @@ namespace Loom.ZombieBattleground
                             playOverlordSkill));
                     }
                 }
+                else
+                {
+                    completeCallback?.Invoke();
+                }
 
                 skill.CancelTargetingArrows();
                 skill.FightTargetingArrow = null;
