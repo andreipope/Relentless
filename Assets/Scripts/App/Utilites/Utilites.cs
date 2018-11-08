@@ -71,20 +71,6 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
-        public static long GetCurrentUnixTimestampMillis()
-        {
-            DateTime localDateTime = DateTime.Now;
-            DateTime universalDateTime = localDateTime.ToUniversalTime();
-            return (long) (universalDateTime - UnixEpoch).TotalMilliseconds;
-        }
-
-        public static string FirstCharToUpper(string input)
-        {
-            if (String.IsNullOrEmpty(input))
-                throw new ArgumentException("input cannot be empty!");
-            return input.First().ToString().ToUpperInvariant() + input.Substring(1).ToLowerInvariant();
-        }
-
         #region asset bundles and cache
 
         public static string GetAssetBundleLocalRoot()

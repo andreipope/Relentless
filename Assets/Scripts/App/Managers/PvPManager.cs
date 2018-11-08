@@ -340,7 +340,7 @@ namespace Loom.ZombieBattleground
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.EndTurn)
+                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                             {
                                 _isWaitForTurnTimerStart = true;
                             }
@@ -385,34 +385,34 @@ namespace Loom.ZombieBattleground
         {
             switch (playerActionEvent.PlayerAction.ActionType)
             {
-                case PlayerActionType.None:
+                case PlayerActionType.Types.Enum.None:
                     break;
-                case PlayerActionType.EndTurn:
+                case PlayerActionType.Types.Enum.EndTurn:
                     ResetWaitForTurnTimer();
                     EndTurnActionReceived?.Invoke();
                     break;
-                case PlayerActionType.Mulligan:
+                case PlayerActionType.Types.Enum.Mulligan:
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
                     break;
-                case PlayerActionType.CardPlay:
+                case PlayerActionType.Types.Enum.CardPlay:
                     CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
                     break;
-                case PlayerActionType.CardAttack:
+                case PlayerActionType.Types.Enum.CardAttack:
                     CardAttackedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAttack);
                     break;
-                case PlayerActionType.CardAbilityUsed:
+                case PlayerActionType.Types.Enum.CardAbilityUsed:
                     CardAbilityUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAbilityUsed);
                     break;
-                case PlayerActionType.OverlordSkillUsed:
+                case PlayerActionType.Types.Enum.OverlordSkillUsed:
                     OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
                     break;
-                case PlayerActionType.DrawCard:
+                case PlayerActionType.Types.Enum.DrawCard:
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
-                case PlayerActionType.LeaveMatch:
+                case PlayerActionType.Types.Enum.LeaveMatch:
                     LeaveMatchReceived?.Invoke();
                     break;
-                case PlayerActionType.RankBuff:
+                case PlayerActionType.Types.Enum.RankBuff:
                     RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
                     break;
                 default:

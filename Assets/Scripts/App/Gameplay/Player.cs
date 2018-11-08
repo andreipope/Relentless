@@ -249,7 +249,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<WorkingCard, int> CardPlayed;
 
-        public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
+        public event Action<WorkingCard, AffectObjectType.Types.Enum, int> CardAttacked;
 
         public event Action LeaveMatch;
 
@@ -654,7 +654,7 @@ namespace Loom.ZombieBattleground
             CardPlayed?.Invoke(card, position);
         }
 
-        public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)
+        public void ThrowCardAttacked(WorkingCard card, AffectObjectType.Types.Enum type, int instanceId)
         {
             CardAttacked?.Invoke(card, type, instanceId);
         }

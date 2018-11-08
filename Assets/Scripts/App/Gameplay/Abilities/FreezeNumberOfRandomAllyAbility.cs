@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
     }
 }

@@ -510,7 +510,10 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
-                    TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(abil.BuffType);
+                    // FIXME: hack
+                    Enumerators.BuffType buffType =
+                        (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.MechanicPicture.ToString(), true);
+                    TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(buffType);
                     if (buffInfo != null)
                     {
                         buffs.Add(
@@ -562,7 +565,10 @@ namespace Loom.ZombieBattleground
             // IMPROVE!!!
             foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(abil.AbilityData.BuffType);
+                // FIXME: hack
+                Enumerators.BuffType buffType =
+                    (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.AbilityData.MechanicPicture.ToString(), true);
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(buffType);
                 if (buffInfo != null)
                 {
                     buffs.Add(
@@ -672,7 +678,10 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in boardCard.WorkingCard.LibraryCard.Abilities)
                 {
-                    TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(abil.BuffType);
+                    // FIXME: hack
+                    Enumerators.BuffType buffType =
+                        (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.MechanicPicture.ToString(), true);
+                    TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(buffType);
                     if (buffInfo != null)
                     {
                         buffs.Add(
@@ -788,7 +797,7 @@ namespace Loom.ZombieBattleground
         private int GetValueOfAbilityByType(AbilityData ability)
         {
             // FIXME: there is no BuffType "DELAYED". Is this still needed?
-            switch (ability.BuffType)
+            switch (ability.MechanicPicture)
             {
                 default:
                     return ability.Value;

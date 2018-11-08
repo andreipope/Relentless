@@ -43,7 +43,6 @@ namespace Loom.ZombieBattleground.Data
         public static AbilityData FromProtobuf(this CardAbility ability)
         {
             return new AbilityData(
-                (Enumerators.BuffType) ability.BuffType,
                 (Enumerators.AbilityType) ability.Type,
                 (Enumerators.AbilityActivityType) ability.ActivityType,
                 (Enumerators.AbilityCallType) ability.Trigger,
@@ -62,7 +61,8 @@ namespace Loom.ZombieBattleground.Data
                 ability.Turns,
                 ability.Count,
                 ability.Delay,
-                ability.VisualEffectsToPlay.Select(v => v.FromProtobuf()).ToList()
+                ability.VisualEffectsToPlay.Select(v => v.FromProtobuf()).ToList(),
+                (Enumerators.MechanicPictureType) ability.MechanicPicture
             );
         }
 

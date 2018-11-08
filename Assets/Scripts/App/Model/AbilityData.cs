@@ -7,9 +7,6 @@ namespace Loom.ZombieBattleground.Data
 {
     public class AbilityData
     {
-        [JsonProperty("BuffType")]
-        public Enumerators.BuffType BuffType;
-
         [JsonProperty("Type")]
         public Enumerators.AbilityType AbilityType;
 
@@ -59,8 +56,10 @@ namespace Loom.ZombieBattleground.Data
 
         public List<VisualEffectInfo> VisualEffectsToPlay;
 
+        [JsonProperty("MechanicPicture")]
+        public Enumerators.MechanicPictureType MechanicPicture;
+
         public AbilityData(
-            Enumerators.BuffType buffType,
             Enumerators.AbilityType abilityType,
             Enumerators.AbilityActivityType activityType,
             Enumerators.AbilityCallType callType,
@@ -79,9 +78,9 @@ namespace Loom.ZombieBattleground.Data
             int turns,
             int count,
             int delay,
-            List<VisualEffectInfo> visualEffectsToPlay)
+            List<VisualEffectInfo> visualEffectsToPlay,
+            Enumerators.MechanicPictureType mechanicPicture)
         {
-            BuffType = buffType;
             AbilityType = abilityType;
             ActivityType = activityType;
             CallType = callType;
@@ -101,6 +100,7 @@ namespace Loom.ZombieBattleground.Data
             Count = count;
             Delay = delay;
             VisualEffectsToPlay = visualEffectsToPlay ?? new List<VisualEffectInfo>();
+            MechanicPicture = mechanicPicture;
         }
 
         public AbilityData(AbilityData source)

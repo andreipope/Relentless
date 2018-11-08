@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetPlayer
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
                     target = TargetPlayer;
                     break;
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetUnit
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
                     target = TargetUnit;
                     break;

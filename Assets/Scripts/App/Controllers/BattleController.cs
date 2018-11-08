@@ -153,8 +153,11 @@ namespace Loom.ZombieBattleground
 
                 if (attackingUnitModel.OwnerPlayer == _gameplayManager.CurrentPlayer)
                 {
-                    _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.AttackOnUnit,
-                        new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking)));
+                    _gameplayManager.PlayerMoves.AddPlayerMove(
+                        new PlayerMove(
+                            Enumerators.PlayerActionType.AttackOnUnit,
+                            new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking))
+                        );
                 }
             }
         }

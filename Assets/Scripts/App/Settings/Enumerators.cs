@@ -185,8 +185,31 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AttackRestriction
         {
-            ANY,
+            NONE,
             ONLY_DIFFERENT
+        }
+
+        public enum MechanicPictureType
+        {
+            BLANK,
+            ATTACK,
+            OVERFLOW,
+            ENTRY,
+            SWING,
+            END,
+            DEATH,
+            RAGE,
+            DEVOUR,
+            TURN,
+            GUARD,
+            DELAYED,
+            PERMANENT,
+            FLASH,
+            FREEZE,
+            REANIMATE,
+            DESTROY,
+            DISTRACT,
+            SHATTER
         }
 
         public enum BuffType
@@ -230,6 +253,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardRank
         {
+            UNDEFINED,
             MINION,
             OFFICER,
             COMMANDER,

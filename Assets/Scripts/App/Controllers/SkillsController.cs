@@ -228,8 +228,8 @@ namespace Loom.ZombieBattleground
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                     {
                         PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetPlayer);
-                        _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
-                            playOverlordSkill));
+                        _gameplayManager.PlayerMoves.AddPlayerMove(
+                            new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
                     }
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
@@ -259,8 +259,8 @@ namespace Loom.ZombieBattleground
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                     {
                         PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetUnitView.Model);
-                        _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
-                            playOverlordSkill));
+                        _gameplayManager.PlayerMoves.AddPlayerMove(
+                            new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
                     }
                 }
 
@@ -288,8 +288,8 @@ namespace Loom.ZombieBattleground
                 if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
                 {
                     PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, target);
-                    _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill,
-                        playOverlordSkill));
+                    _gameplayManager.PlayerMoves.AddPlayerMove(
+                        new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
                 }
             }
             else

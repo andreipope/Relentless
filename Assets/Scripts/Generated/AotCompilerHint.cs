@@ -158,7 +158,7 @@ namespace Loom.ZombieBattleground
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.GetCollectionRequest, global::System.String>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.GetCollectionResponse, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardCollection>>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerState, global::System.String>().ToString();
-            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerState, global::Loom.ZombieBattleground.Protobuf.PlayerActionType>().ToString();
+            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerState, global::Loom.ZombieBattleground.Protobuf.PlayerActionType.Types.Enum>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerState, global::Loom.ZombieBattleground.Protobuf.OverlordInstance>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerState, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance>>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerState, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance>>().ToString();
@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfoList, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo>>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo, global::System.String>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.MatchMakingInfo, global::Loom.ZombieBattleground.Protobuf.Deck>().ToString();
-            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::Loom.ZombieBattleground.Protobuf.PlayerActionType>().ToString();
+            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::Loom.ZombieBattleground.Protobuf.PlayerActionType.Types.Enum>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::System.String>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard>().ToString();
@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::Loom.ZombieBattleground.Protobuf.PlayerActionLeaveMatch>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::Loom.ZombieBattleground.Protobuf.PlayerActionRankBuff>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerAction, global::Loom.ZombieBattleground.Protobuf.PlayerAction.ActionOneofCase>().ToString();
-            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionEvent, global::Loom.ZombieBattleground.Protobuf.PlayerActionType>().ToString();
+            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionEvent, global::Loom.ZombieBattleground.Protobuf.PlayerActionType.Types.Enum>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionEvent, global::System.String>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionEvent, global::System.String>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionEvent, global::Loom.ZombieBattleground.Protobuf.Match>().ToString();
@@ -357,14 +357,14 @@ namespace Loom.ZombieBattleground
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionRankBuff, global::Loom.ZombieBattleground.Protobuf.CardInstance>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionRankBuff, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.Unit>>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack, global::Loom.ZombieBattleground.Protobuf.CardInstance>().ToString();
-            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack, global::Loom.ZombieBattleground.Protobuf.AffectObjectType>().ToString();
+            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack, global::Loom.ZombieBattleground.Protobuf.AffectObjectType.Types.Enum>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAttack, global::Loom.ZombieBattleground.Protobuf.Unit>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAbilityUsed, global::Loom.ZombieBattleground.Protobuf.CardInstance>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAbilityUsed, global::Loom.ZombieBattleground.Protobuf.CardKind>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAbilityUsed, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.Unit>>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionCardAbilityUsed, global::System.String>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionOverlordSkillUsed, global::System.Int64>().ToString();
-            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionOverlordSkillUsed, global::Loom.ZombieBattleground.Protobuf.AffectObjectType>().ToString();
+            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionOverlordSkillUsed, global::Loom.ZombieBattleground.Protobuf.AffectObjectType.Types.Enum>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionOverlordSkillUsed, global::Loom.ZombieBattleground.Protobuf.Unit>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionDrawCard, global::Loom.ZombieBattleground.Protobuf.CardInstance>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardInstance>>().ToString();
@@ -372,7 +372,7 @@ namespace Loom.ZombieBattleground
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome, global::Loom.ZombieBattleground.Protobuf.GameState>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.StartGameAction, global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerState>>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Unit, global::System.Int32>().ToString();
-            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Unit, global::Loom.ZombieBattleground.Protobuf.AffectObjectType>().ToString();
+            new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Unit, global::Loom.ZombieBattleground.Protobuf.AffectObjectType.Types.Enum>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Unit, global::Loom.ZombieBattleground.Protobuf.Parameter>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Parameter, global::System.Int32>().ToString();
             new Loom.Google.Protobuf.Reflection.ReflectionUtil.ReflectionHelper<global::Loom.ZombieBattleground.Protobuf.Parameter, global::System.Int32>().ToString();

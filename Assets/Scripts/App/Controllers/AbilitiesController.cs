@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind, Protobuf.AffectObjectType, List<BoardObject>> AbilityUsed;
+        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind, Protobuf.AffectObjectType.Types.Enum, List<BoardObject>> AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -567,7 +567,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
-                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType affectObjectType)
+                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
         {
             if (!_gameplayManager.IsLocalPlayerTurn() || card == null)
                 return;
@@ -919,7 +919,6 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AbilityType.REANIMATE_UNIT:
                     abilityData = new AbilityData(
-                        Enumerators.BuffType.REANIMATE,
                         Enumerators.AbilityType.REANIMATE_UNIT,
                         Enumerators.AbilityActivityType.PASSIVE,
                         Enumerators.AbilityCallType.DEATH,
@@ -938,12 +937,12 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         0,
-                        null
+                        null,
+                        Enumerators.MechanicPictureType.REANIMATE
                         );
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
                     abilityData = new AbilityData(
-                        Enumerators.BuffType.DESTROY,
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         Enumerators.AbilityActivityType.PASSIVE,
                         Enumerators.AbilityCallType.ATTACK,
@@ -962,7 +961,8 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         0,
-                        null
+                        null,
+                        Enumerators.MechanicPictureType.DESTROY
                     );
                     break;
             }

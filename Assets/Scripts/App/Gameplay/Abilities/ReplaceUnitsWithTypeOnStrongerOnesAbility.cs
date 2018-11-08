@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             ClearOldUnitsOnBoard();
             GenerateNewUnitsOnBoard();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         private void GetInfosAboutUnitsOnBoard()
