@@ -685,7 +685,11 @@ namespace Loom.ZombieBattleground
             Card libraryCard = card.WorkingCard.LibraryCard;
 
             card.Transform.DORotate(Vector3.zero, .1f);
-            card.HandBoardCard.Enabled = false;
+
+            if (card.HandBoardCard != null)
+            {
+                card.HandBoardCard.Enabled = false;
+            }
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);

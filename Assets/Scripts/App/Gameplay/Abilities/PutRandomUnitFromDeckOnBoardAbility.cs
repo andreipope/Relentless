@@ -92,6 +92,7 @@ namespace Loom.ZombieBattleground
             boardCard.GameObject.transform.localScale = Vector3.one * .3f;
             boardCard.SetHighlightingEnabled(false);
 
+
             InternalTools.DoActionDelayed(() =>
             {
                 CardsController.SummonUnitFromHand(PlayerCallerOfAbility, boardCard);
