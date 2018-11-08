@@ -149,8 +149,8 @@ namespace Loom.ZombieBattleground.Common
         {
             None,
             Player,
-            Card,
-            Character
+            Character,
+            Card
         }
 
         public enum AiType

@@ -79,8 +79,7 @@ namespace Loom.ZombieBattleground.Data
             int turns,
             int count,
             int delay,
-            List<VisualEffectInfo> visualEffectsToPlay
-            )
+            List<VisualEffectInfo> visualEffectsToPlay)
         {
             BuffType = buffType;
             AbilityType = abilityType;
@@ -132,18 +131,11 @@ namespace Loom.ZombieBattleground.Data
 
         public bool HasVisualEffectType(Enumerators.VisualEffectType type)
         {
-            if (VisualEffectsToPlay == null)
-                return false;
-
-            return VisualEffectsToPlay.Find(vfx => vfx.Type == type) != null;
+            return GetVisualEffectByType(type) != null;
         }
 
         public VisualEffectInfo GetVisualEffectByType(Enumerators.VisualEffectType type)
         {
-            // FIXME: why do we return fake info?
-            if (VisualEffectsToPlay == null)
-                return new VisualEffectInfo(type, "");
-
             return VisualEffectsToPlay.Find(vfx => vfx.Type == type);
         }
 
