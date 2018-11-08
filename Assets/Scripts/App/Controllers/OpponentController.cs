@@ -270,8 +270,10 @@ namespace Loom.ZombieBattleground
 
             if(boardObjectCaller == null)
             {
-                GameClient.Get<IQueueManager>().AddAction(() =>
+                // FIXME: why do we have recursion here??
+                GameClient.Get<IQueueManager>().AddTask(async () =>
                 {
+                    await new WaitForUpdate();
                     GotActionUseCardAbility(model);
                 });
 
