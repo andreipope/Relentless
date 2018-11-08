@@ -25,6 +25,16 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action();
+            }
+        }
+
         public override void Action(object param = null)
         {
             base.Action(param);
@@ -39,10 +49,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-
         private void TakeDamageToUnit(BoardUnitModel unit, int value)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, value);
+            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, value);
         }
     }
 }
