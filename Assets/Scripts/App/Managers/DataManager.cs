@@ -348,18 +348,26 @@ namespace Loom.ZombieBattleground
 
         public string DecryptData(string data)
         {
+#if !DISABLE_DATA_ENCRYPTION
             if (!ConfigData.EncryptData)
                 return data;
 
             return Utilites.Decrypt(data, Constants.PrivateEncryptionKeyForApp);
+#else
+            return data;
+#endif
         }
 
         public string EncryptData(string data)
         {
+#if !DISABLE_DATA_ENCRYPTION
             if (!ConfigData.EncryptData)
                 return data;
 
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
+#else
+            return data;
+#endif
         }
 
         public string SerializeToJson(object obj, bool indented = false)

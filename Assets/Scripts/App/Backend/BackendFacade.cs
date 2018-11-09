@@ -398,7 +398,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             PlayerActionDataReceived?.Invoke(e.Data);
         }
 
-
         public void AddAction(long matchId, PlayerAction playerAction)
         {
             PlayerActionRequest request = new PlayerActionRequest
