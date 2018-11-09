@@ -31,6 +31,22 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
+        public static Protobuf.Deck ToProtobuf(this Deck deck)
+        {
+            return new Protobuf.Deck
+            {
+                Id = deck.Id,
+                HeroId = deck.HeroId,
+                Name = deck.Name,
+                Cards =
+                {
+                    deck.Cards.Select(card => card.ToProtobuf())
+                },
+                PrimarySkill = deck.PrimarySkill,
+                SecondarySkill = deck.SecondarySkill
+            };
+        }
+
         public static CardAbility ToProtobuf(this AbilityData ability) {
             CardAbility cardAbility = new CardAbility {
                 Type = (CardAbilityType.Types.Enum) ability.AbilityType,
@@ -61,6 +77,10 @@ namespace Loom.ZombieBattleground.Data
                 GameMechanicDescriptionType = (GameMechanicDescriptionType.Types.Enum) ability.GameMechanicDescriptionType,
                 TargetSet = (CardSetType.Types.Enum) ability.TargetSetType,
                 SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.SubTrigger,
+                ChoosableAbilities =
+                {
+                    ability.ChoosableAbilities.Select(a => a.ToProtobuf())
+                },
                 Defense2 = ability.Defense,
                 Cost = ability.Cost
             };

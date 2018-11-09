@@ -147,11 +147,7 @@ namespace Loom.ZombieBattleground.Data
             if (cardViewInfo == null)
                 return null;
 
-            return new CardViewInfo
-            {
-                Position = cardViewInfo.Position.FromProtobuf(),
-                Scale = cardViewInfo.Scale.FromProtobuf()
-            };
+            return new CardViewInfo(cardViewInfo.Position.FromProtobuf(), cardViewInfo.Scale.FromProtobuf());
         }
 
         public static Card FromProtobuf(this Protobuf.Card card)

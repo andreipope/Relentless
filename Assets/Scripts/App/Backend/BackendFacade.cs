@@ -165,7 +165,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task EditDeck(string userId, Data.Deck deck)
         {
-            EditDeckRequest request = EditDeckRequest(userId, deck);
+            EditDeckRequest request = new EditDeckRequest
+            {
+                UserId = userId,
+                Deck = deck.ToProtobuf(),
+                Version = BackendEndpoint.DataVersion
+            };
 
             await Contract.CallAsync(EditDeckMethod, request);
         }
@@ -175,41 +180,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             CreateDeckRequest request = new CreateDeckRequest
             {
                 UserId = userId,
-                Deck = new Deck
-                {
-                    Name = deck.Name,
-                    HeroId = deck.HeroId,
-                    Cards =
-                    {
-                        deck.Cards.Select(card => card.ToProtobuf())
-                    }
-                },
+                Deck = deck.ToProtobuf(),
                 Version = BackendEndpoint.DataVersion
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
-        }
-
-        private EditDeckRequest EditDeckRequest(string userId, Data.Deck deck)
-        {
-            EditDeckRequest request = new EditDeckRequest
-            {
-                UserId = userId,
-                Deck = new Deck
-                {
-                    Id = deck.Id,
-                    Name = deck.Name,
-                    HeroId = deck.HeroId,
-                    Cards =
-                    {
-                        deck.Cards.Select(card => card.ToProtobuf())
-                    }
-                },
-
-                Version = BackendEndpoint.DataVersion
-            };
-            return request;
         }
 
         #endregion

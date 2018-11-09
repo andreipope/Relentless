@@ -106,11 +106,17 @@ namespace Loom.ZombieBattleground.Data
 
     public class CardViewInfo
     {
-        public FloatVector3 Position = FloatVector3.Zero;
-        public FloatVector3 Scale = new FloatVector3(0.38f);
+        public FloatVector3 Position { get; protected set; } = FloatVector3.Zero;
+        public FloatVector3 Scale { get; protected set; } = new FloatVector3(0.38f);
 
         public CardViewInfo()
         {
+        }
+
+        public CardViewInfo(FloatVector3 position, FloatVector3 scale)
+        {
+            Position = position;
+            Scale = scale;
         }
 
         public CardViewInfo(CardViewInfo source)
