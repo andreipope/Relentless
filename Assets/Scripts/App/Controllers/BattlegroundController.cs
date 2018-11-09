@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
                     if (!_tutorialManager.IsTutorial && _turnTimerCounting)
                     {
                         TurnTimer -= Time.unscaledDeltaTime;
-                        
+
                         if (TurnTimer <= 0)
                         {
                             StopTurn();
@@ -636,6 +636,10 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < opponentBoardCards.Count; i++)
             {
                 BoardUnitView card = opponentBoardCards[i];
+
+                if (card.Model.IsDead)
+                    continue;
+
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
@@ -1117,13 +1121,15 @@ namespace Loom.ZombieBattleground
 
         public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
         {
-            BoardUnitView targetView = GetBoardUnitViewByModel(targetUnit);
+            List<BoardUnitView> boardCards = targetUnit.OwnerPlayer.BoardCards;
 
-            return targetUnit.OwnerPlayer.BoardCards.Where(unit =>
-            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
-            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)-1)||
-            (targetUnit.OwnerPlayer.BoardCards.IndexOf(unit) ==
-            targetUnit.OwnerPlayer.BoardCards.IndexOf(targetView)+1)).ToList();
+            int targetView = boardCards.IndexOf(GetBoardUnitViewByModel(targetUnit));
+
+            return boardCards.Where(unit =>
+            ((boardCards.IndexOf(unit) == Mathf.Clamp(targetView - 1, 0, boardCards.Count - 1)) ||
+            (boardCards.IndexOf(unit) == Mathf.Clamp(targetView + 1, 0, boardCards.Count - 1)) &&
+            boardCards.IndexOf(unit) != targetView)
+            ).ToList();
         }
 
         #region specific setup of battleground

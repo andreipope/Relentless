@@ -35,24 +35,30 @@ namespace Loom.ZombieBattleground.Data
         {
             List<AbilityData.VisualEffectInfo> VisualEffectsToPlay = new List<AbilityData.VisualEffectInfo>();
 
-            foreach (VisualEffectInfo info in ability.VisualEffectsToPlay)
+            if (ability.VisualEffectsToPlay != null)
             {
-                VisualEffectsToPlay.Add(new AbilityData.VisualEffectInfo()
+                foreach (VisualEffectInfo info in ability.VisualEffectsToPlay)
                 {
-                    Path = info.Path,
-                    Type = Utilites.CastStringTuEnum<Enumerators.VisualEffectType>(info.Type, true)
-                });
+                    VisualEffectsToPlay.Add(new AbilityData.VisualEffectInfo()
+                    {
+                        Path = info.Path,
+                        Type = Utilites.CastStringTuEnum<Enumerators.VisualEffectType>(info.Type, true)
+                    });
+                }
             }
 
             List<AbilityData.ChoosableAbility> ChoosableAbilities = new List<AbilityData.ChoosableAbility>();
 
-            foreach (ChoosableAbility choosableAbility in ability.ChoosableAbilities)
+            if (ability.ChoosableAbilities != null)
             {
-                ChoosableAbilities.Add(new AbilityData.ChoosableAbility()
+                foreach (ChoosableAbility choosableAbility in ability.ChoosableAbilities)
                 {
-                    Description = choosableAbility.Description,
-                    AbilityData = FromProtobuf(choosableAbility.Ability)
-                });
+                    ChoosableAbilities.Add(new AbilityData.ChoosableAbility()
+                    {
+                        Description = choosableAbility.Description,
+                        AbilityData = FromProtobuf(choosableAbility.Ability)
+                    });
+                }
             }
 
             return new AbilityData

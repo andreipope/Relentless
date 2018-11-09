@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
 
             BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
 
-            TargetUnit.Distract();
+            BattlegroundController.DistractUnit(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {

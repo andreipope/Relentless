@@ -16,10 +16,6 @@
           "Post": "Executive Producer"
         },
         {
-          "FullName": "",
-          "Post": ""
-        },
-        {
           "FullName": "Roy Shapira",
           "Post": "Game Director"
         }
@@ -52,8 +48,16 @@
       ]
     },
     {
-      "subsectionType": "Programmers",
+      "subsectionType": "Tech Team",
       "credits": [
+        {
+          "FullName": "Hakan Kaya",
+          "Post": "Head of Tech"
+        },
+        {
+          "FullName": "Nayeem Siddique",
+          "Post": "Tech Producer"
+        },
         {
           "FullName": "Stanislav Sorokin",
           "Post": "Lead Programmer"
@@ -79,12 +83,20 @@
           "Post": "Senior Serverside Programmer"
         },
         {
+          "FullName": "Parth Desai",
+          "Post": "Senior Serverside Programmer"
+        },
+        {
           "FullName": "Sebastian Klier",
           "Post": "Serverside Programmer"
         },
         {
           "FullName": "Siddhant Mutha",
           "Post": "Junior Serverside Programmer"
+        },
+        {
+          "FullName": "Sahin Aliyev",
+          "Post": "Test Automation Engineer"
         }
       ]
     },
@@ -113,6 +125,10 @@
         },
         {
           "FullName": "Milica Celikovic",
+          "Post": "Senior 2D Artist"
+        },
+        {
+          "FullName": "Roger Luzardo",
           "Post": "Senior 2D Artist"
         },
         {
@@ -147,16 +163,16 @@
         {
           "FullName": "Alexis Desuyo",
           "Post": "Animator and VFX Artist"
+        },
+        {
+          "FullName": "Martina Mazzitelli",
+          "Post": "Animator and VFX Artist"
         }
       ]
     },
     {
       "subsectionType": "Music and Sound \n W.O.W Sound",
       "credits": [
-        {
-          "FullName": "",
-          "Post": ""
-        },
         {
           "FullName": "Sing Huey Lee",
           "Post": "Sound Designer and Composer"
@@ -190,6 +206,10 @@
         {
           "FullName": "Vaibhav Dixit",
           "Post": "Quality Assurance"
+        },
+        {
+          "FullName": "Amit Kumar",
+          "Post": "Quality Assurance"
         }
       ]
     },
@@ -209,7 +229,7 @@
           "Post": "Marketing Manager"
         },
         {
-          "FullName": "Hyunjung Ko (Hannah)",
+          "FullName": "Veronica Shim",
           "Post": "Korean Marketing Manager"
         },
         {
@@ -223,10 +243,6 @@
         {
           "FullName": "Stephanie Xiao",
           "Post": "Chinese Marketing Manager"
-        },
-        {
-          "FullName": "Wang Shuwen (Katniss)",
-          "Post": "Marketing Assistant"
         }
       ]
     },
