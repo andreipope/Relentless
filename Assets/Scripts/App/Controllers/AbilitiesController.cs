@@ -920,6 +920,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.CHOOSABLE_ABILITIES:
                     ability = new ChoosableAbilitiesAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.COSTS_LESS_IF_TYPE_CARD_IN_PLAY:
+                    ability = new CostsLessIfCardTypeInPlayAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
