@@ -557,8 +557,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             _playerManaBar.SetVialGoo(currentTurnGoo);
-
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnOpponentDefenseChanged(int health)
@@ -584,6 +582,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             _opponentManaBar.SetGoo(goo);
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnOpponentGooVialsChanged(int currentTurnGoo)

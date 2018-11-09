@@ -159,6 +159,7 @@ namespace Loom.ZombieBattleground
             Model.UnitDamageChanged += ModelOnUnitDamageChanged;
             Model.UnitHpChanged += ModelOnUnitHpChanged;
             Model.UnitDying += BoardUnitOnUnitDying;
+            Model.UnitDied += BoardUnitOnUnitDied;
             Model.TurnStarted += BoardUnitOnTurnStarted;
             Model.TurnEnded += BoardUnitOnTurnEnded;
             Model.Stunned += BoardUnitOnStunned;
@@ -263,8 +264,11 @@ namespace Loom.ZombieBattleground
         private void BoardUnitDistractEffectStateChanged(bool status)
         {
             _distractObject.SetActive(status);
+            if (status)
+                _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume, isLoop: true);
+            else
+                _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
         }
-
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
         {
@@ -398,6 +402,12 @@ namespace Loom.ZombieBattleground
             Model.BuffShieldStateChanged -= BoardUnitOnBuffShieldStateChanged;
             Model.CreaturePlayableForceSet -= BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
+        }
+
+        private void BoardUnitOnUnitDied()
+        {
+            Model.UnitDied -= BoardUnitOnUnitDied;
+            _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
         }
 
         public void PlayArrivalAnimation(bool firstAppear = true)

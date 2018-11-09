@@ -374,7 +374,8 @@ namespace Loom.ZombieBattleground
             GameObject effect = Object.Instantiate(_battlegroundTouchPrefab);
             effect.transform.position = Utilites.CastVfxPosition(position);
             _particlesController.RegisterParticleSystem(effect, true, 5f);
-		}
+            _soundManager.PlaySound(Enumerators.SoundType.BATTLEGROUND_TOUCH_EFFECT, Constants.SfxSoundVolume);
+        }
 
         public float AngleBetweenVector3(Vector3 from, Vector3 target)
         {

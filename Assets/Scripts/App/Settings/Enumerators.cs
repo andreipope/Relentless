@@ -391,6 +391,7 @@ namespace Loom.ZombieBattleground.Common
            // OTHER,
             BACKGROUND,
             BATTLEGROUND,
+            BATTLEGROUND_TOUCH_EFFECT,
             TUTORIAL,
             CARDS,
             END_TURN,
@@ -431,7 +432,9 @@ namespace Loom.ZombieBattleground.Common
             GOO_TUBE_LOOP,
             GOO_BOTTLE_FILLING,
             PREPARING_FOR_BATTLE,
-            PREPARING_FOR_BATTLE_LOOP
+            PREPARING_FOR_BATTLE_LOOP,
+            DISTRACT_LOOP,
+            RAGE_LOOP
         }
 
         public enum StatType
