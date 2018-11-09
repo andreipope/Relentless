@@ -29,6 +29,10 @@ namespace Loom.ZombieBattleground
 
         public bool HasUsedBuffShield;
 
+        public bool HasSwing;
+
+        public bool CanAttackByDefault;
+
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
@@ -68,6 +72,8 @@ namespace Loom.ZombieBattleground
 
             IsCreatedThisTurn = true;
 
+            CanAttackByDefault = true;
+
             UnitStatus = Enumerators.UnitStatusType.NONE;
 
             IsAllAbilitiesResolvedAtStart = true;
@@ -87,6 +93,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject, int, bool> UnitAttacked;
 
+        public event Action UnitAttackedEnded;
+
         public event Action<BoardObject> UnitDamaged;
 
         public event Action<BoardObject> PrepairingToDie;
@@ -104,6 +112,14 @@ namespace Loom.ZombieBattleground
         public event Action CreaturePlayableForceSet;
 
         public event Action UnitFromDeckRemoved;
+
+        public event Action UnitDistracted;
+
+        public event Action<bool> UnitDistractEffectStateChanged;
+
+        public event Action<BoardUnitModel> KilledUnit;
+
+        public event Action<bool> BuffSwingStateChanged;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -248,6 +264,9 @@ namespace Loom.ZombieBattleground
 
         public void UseShieldFromBuff()
         {
+            if (!HasBuffShield)
+                return;
+
             HasBuffShield = false;
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             BuffShieldStateChanged?.Invoke(false);
@@ -258,6 +277,12 @@ namespace Loom.ZombieBattleground
             AddBuff(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
             BuffShieldStateChanged?.Invoke(true);
+        }
+
+        public void AddBuffSwing()
+        {
+            HasSwing = true;
+            BuffSwingStateChanged?.Invoke(true);
         }
 
         public void UpdateCardType()
@@ -429,6 +454,17 @@ namespace Loom.ZombieBattleground
             Stunned?.Invoke(false);
         }
 
+        public void Distract()
+        {
+            UpdateVisualStateOfDistract(true);
+            UnitDistracted?.Invoke();
+        }
+
+        public void UpdateVisualStateOfDistract(bool status)
+        {
+            UnitDistractEffectStateChanged?.Invoke(status);
+        }
+
         public void ForceSetCreaturePlayable()
         {
             if (IsStun)
@@ -475,6 +511,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                             );
                         });
@@ -503,6 +540,16 @@ namespace Loom.ZombieBattleground
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
 
+                                    if (HasSwing)
+                                    {
+                                        List<BoardUnitView> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+
+                                        foreach (BoardUnitView unit in adjacent)
+                                        {
+                                            _battleController.AttackUnitByUnit(this, unit.Model, AdditionalDamage, false);
+                                        }
+                                    }
+
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {
                                         if (!targetCardModel.HasBuffShield)
@@ -519,6 +566,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                                 );
                         });
@@ -532,7 +580,7 @@ namespace Loom.ZombieBattleground
         {
             if (IsDead || CurrentHp <= 0 ||
                 CurrentDamage <= 0 || IsStun ||
-                CantAttackInThisTurnBlocker)
+                CantAttackInThisTurnBlocker  || !CanAttackByDefault)
             {
                 return false;
             }
@@ -584,6 +632,11 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
+        }
+
+        public void InvokeKilledUnit(BoardUnitModel boardUnit)
+        {
+            KilledUnit?.Invoke(boardUnit);
         }
 
         public List<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)

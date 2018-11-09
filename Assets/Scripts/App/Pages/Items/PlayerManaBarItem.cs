@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class PlayerManaBarItem
     {
-        private const int MeterArrowStep = 18;
+        private const int MeterArrowStep = 18;       
 
         private readonly GameObject _selfObject;
 
@@ -25,13 +25,18 @@ namespace Loom.ZombieBattleground
 
         private readonly string _overflowPrefabPath;
 
+        private IGameplayManager _gameplayManager;
+
         private GameObject _overflowObject;
+
+        private GameObject _vialGooPrefab;
 
         private TextMeshPro _overflowGooAmountText;
         
 		private TextMeshPro _nameText;
 
         private Transform _overflowBottleContainer;
+        private Transform _overflowYellowBottleContainer;
 
         private int _maxValue, _currentValue;
 
@@ -64,7 +69,9 @@ namespace Loom.ZombieBattleground
                                                                   _arrowObject.transform.localEulerAngles.y,
                                                                   -90);
 
-            GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+
+            _gameplayManager.GameEnded += GameEndedHandler;
         }
 
         public void SetGoo(int gooValue)
@@ -93,16 +100,41 @@ namespace Loom.ZombieBattleground
             }, 0.1f);
         }
 
+        public void SetViaGooPrefab(GameObject gooPrefab)
+        {
+            _vialGooPrefab = gooPrefab;
+        }
+
         public void SetVialGoo(int maxValue)
         {
+            int oldMaxValue = _maxValue;
             _maxValue = maxValue;
             _gooAmountText.text = _currentValue + "/" + _maxValue;
             for (int i = 0; i < _gooBottles.Count; i++)
             {
                 _gooBottles[i].Self.SetActive(i < _maxValue ? true : false);
+                if(i >= oldMaxValue && i < _maxValue)
+                {
+                    CreateVialGooVfx(_gooBottles[i]);
+                }
             }
 
             UpdateGooOVerflow();
+        }
+
+        private void CreateVialGooVfx(GooBottleItem bootle)
+        {
+            if (_vialGooPrefab == null)
+                return;
+
+            bootle.Self.SetActive(false);
+            GameObject VfxObject = Object.Instantiate(_vialGooPrefab);
+            VfxObject.transform.position = bootle.Self.transform.position;
+            _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(VfxObject, true, 4.5f);
+            InternalTools.DoActionDelayed(() =>
+            {
+                bootle.Self.SetActive(true);
+            }, 2f);
         }
 
         public void Active(GooBottleItem item)
@@ -146,7 +178,11 @@ namespace Loom.ZombieBattleground
                 _overflowGooAmountText.text = _currentValue + "/" + _maxValue;
                 for (int i = 0; i < _overflowBottleContainer.childCount; i++)
                 {
-                    _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false);
+                    _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _maxValue ? true : false);
+                }
+                for (int i = 0; i < _overflowYellowBottleContainer.childCount; i++)
+                {
+                    _overflowYellowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue && i >= _maxValue ? true : false);
                 }
             }
         }
@@ -170,11 +206,16 @@ namespace Loom.ZombieBattleground
             _overflowObject.transform.localPosition = _overflowPos;
             _overflowGooAmountText = _overflowObject.transform.Find("clock/Text").GetComponent<TextMeshPro>();
             _overflowBottleContainer = _overflowObject.transform.Find("Bottles").transform;
-			_nameText = _overflowObject.transform.Find("NameText").GetComponent<TextMeshPro>();
+            _overflowYellowBottleContainer = _overflowObject.transform.Find("Bottle_Overflow").transform;
+            _nameText = _overflowObject.transform.Find("NameText").GetComponent<TextMeshPro>();
             _nameText.text = _name;
             for (int i = 0; i < _overflowBottleContainer.childCount; i++)
             {
-                _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false);
+                _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _maxValue ? true : false);
+            }
+            for (int i = 0; i < _overflowYellowBottleContainer.childCount; i++)
+            {
+                _overflowYellowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue && i >= _maxValue ? true : false);
             }
 
             _selfObject.SetActive(false);
@@ -197,6 +238,7 @@ namespace Loom.ZombieBattleground
             Object.Destroy(_overflowObject);
             _overflowObject = null;
             _overflowBottleContainer = null;
+            _overflowYellowBottleContainer = null;
             _overflowGooAmountText = null;
             _selfObject.SetActive(true);
 
@@ -222,7 +264,7 @@ namespace Loom.ZombieBattleground
 
             _isInOverflow = false;
 
-            GameClient.Get<IGameplayManager>().GameEnded -= GameEndedHandler;
+            _gameplayManager.GameEnded -= GameEndedHandler;
         }
 
         public struct GooBottleItem

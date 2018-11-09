@@ -81,6 +81,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             LoadUserDataModel();
             Debug.Log("User Id: " + UserDataModel.UserId);
 
+            /** Remove because of autogeneration betakey
+             * 
             await _dataManager.LoadRemoteConfig();
             Debug.Log(
                 $"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
@@ -96,7 +98,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Debug.LogWarning("Remote and local versions mismatch!");
             }
 #endif
-
+*/
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
             try

@@ -45,6 +45,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private IAnalyticsManager _analyticsManager;
+
         private IDataManager _dataManager;
 
         private BackendFacade _backendFacade;
@@ -118,6 +120,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -738,6 +741,7 @@ namespace Loom.ZombieBattleground
                     long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
                     _currentDeck.Id = newDeckId;
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
+                    _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 }
                 catch (Exception e)
@@ -763,6 +767,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
+                    _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
                     Debug.Log(" ====== Edit Deck Successfully ==== ");
                 }
                 catch (Exception e)
@@ -794,7 +799,7 @@ namespace Loom.ZombieBattleground
                 {
                     MoveHordeToLeft();
                 }
-            }   
+            }
             else
             {
                 MoveCardsPage(Mathf.RoundToInt(scrollDelta.y));

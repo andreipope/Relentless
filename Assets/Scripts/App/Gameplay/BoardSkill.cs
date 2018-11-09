@@ -113,6 +113,8 @@ namespace Loom.ZombieBattleground
             {
                 FightTargetingArrow.Dispose();
             }
+
+            FightTargetingArrow = null;
         }
 
         public void BlockSkill()
@@ -176,12 +178,11 @@ namespace Loom.ZombieBattleground
                  {
                      DoOnUpSkillAction();
 
+                     IsUsing = false;
 
                      // improve it - good way to make this call after done all actions - this is the quick hack
                      completeCallback?.Invoke();
                  });
-
-            IsUsing = false;
         }
 
         public void UseSkill(BoardObject target)

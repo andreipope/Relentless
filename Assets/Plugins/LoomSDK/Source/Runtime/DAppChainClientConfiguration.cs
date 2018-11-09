@@ -20,5 +20,11 @@ namespace Loom.Client
         /// before communicating.
         /// </summary>
         public bool AutoReconnect { get; set; } = true;
+
+        /// <summary>
+        /// Maximum number of times a tx should be resent after being rejected because of a bad nonce.
+        /// Defaults to 5.
+        /// </summary>
+        public int InvalidNonceTxRetries { get; set; } = 5;
     }
 }
