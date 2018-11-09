@@ -177,7 +177,6 @@ public class LoomDeckTest
     [UnityTest]
     public IEnumerator DeleteDeck()
     {
-        ListDecksResponse listDecksResponse;
         return LoomTestContext.ContractAsyncTest(async () =>
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck");

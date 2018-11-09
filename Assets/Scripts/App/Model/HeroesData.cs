@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Data
     {
         public List<Hero> Heroes { get; private set; }
 
-        public HeroesData([NotNull] List<Hero> heroes)
+        public HeroesData(List<Hero> heroes)
         {
             Heroes = heroes ?? throw new ArgumentNullException(nameof(heroes));
         }
