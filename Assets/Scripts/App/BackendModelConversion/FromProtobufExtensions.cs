@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground.Data
                     ChoosableAbilities.Add(new AbilityData.ChoosableAbility()
                     {
                         Description = choosableAbility.Description,
-                        AbilityData = FromProtobuf(choosableAbility.Ability)
+                        AbilityData = FromProtobuf(choosableAbility.AbilityData)
                     });
                 }
             }
