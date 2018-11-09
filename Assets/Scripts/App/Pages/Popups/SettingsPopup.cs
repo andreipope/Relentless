@@ -30,9 +30,6 @@ namespace Loom.ZombieBattleground
         private Slider _sfxVolumeDropdown,
                        _musicVolumeDropdown;
 
-        private GameObject _panelVideoSettingsObject,
-                           _panelAudioSettingsObject;
-
         private bool _initialInit = true;
 
         private bool _fromMainMenu = false;
@@ -77,6 +74,7 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+#if !UNITY_ANDROID && !UNITY_IOS
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/SettingsPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
@@ -85,14 +83,11 @@ namespace Loom.ZombieBattleground
             _settingsButton = Self.transform.Find("Button_Settings").GetComponent<ButtonShiftingContent>();
             _closeButton = Self.transform.Find("Button_Close").GetComponent<ButtonShiftingContent>();
 
-            _panelVideoSettingsObject = Self.transform.Find("Panel_Settings/Panel_VideoSettings").gameObject;
-            _panelAudioSettingsObject = Self.transform.Find("Panel_Settings/Panel_AudioSettings").gameObject;
+            _resolutionDropdown = Self.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
+            _screenModeDropdown = Self.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
 
-            _resolutionDropdown = _panelVideoSettingsObject.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
-            _screenModeDropdown = _panelVideoSettingsObject.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
-
-            _sfxVolumeDropdown = _panelAudioSettingsObject.transform.Find("Slider_SFXVolume").GetComponent<Slider>();
-            _musicVolumeDropdown = _panelAudioSettingsObject.transform.Find("Slider_MusicVolume").GetComponent<Slider>();
+            _sfxVolumeDropdown = Self.transform.Find("Slider_SFXVolume").GetComponent<Slider>();
+            _musicVolumeDropdown = Self.transform.Find("Slider_MusicVolume").GetComponent<Slider>();
 
             _quitToMenuButton.onClick.AddListener(QuitToMenuButtonHandler);
             _quitToDesktopButton.onClick.AddListener(QuitToDesktopButtonHandler);
@@ -109,9 +104,6 @@ namespace Loom.ZombieBattleground
 
             FillInfo();
             _appStateManager.SetPausingApp(true);
-
-#if UNITY_ANDROID || UNITY_IOS
-            _panelVideoSettingsObject.SetActive(false);
 #endif
         }
 
