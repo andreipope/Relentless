@@ -15,17 +15,31 @@ namespace Loom.ZombieBattleground
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_Shammann"));
 
-            animationVFX.transform.position =
-                        BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel).Transform.position;
+            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
 
-            // -90, 0, -180 ???
+            const float yOffsetOfCard = -0.75f;
+
+            animationVFX.transform.position = unitView.Transform.position;
+            unitView.Transform.SetParent(animationVFX.transform.Find("Shaman/Main_Model/Root"));
+            unitView.Transform.localPosition = new Vector3(0, yOffsetOfCard, 0);
 
             InternalTools.DoActionDelayed(() =>
             {
+                unitView.Transform.parent = null;
+
                 Object.Destroy(animationVFX);
 
+                if(unitView.Model.OwnerPlayer.IsLocalPlayer)
+                {
+                    BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(unitView.Model.OwnerPlayer.BoardCards);
+                }
+                else
+                {
+                    BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                }
+
                 IsPlaying = false;
-            }, 1f);
+            }, 3f);
         }
     }
 }

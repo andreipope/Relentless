@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground.Data
                 Frame = card.Frame,
                 Abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
                 CardViewInfo = card.CardViewInfo.FromProtobuf(),
-                UniqueAnimation = card.UniqueAnimation
+                UniqueAnimation = !string.IsNullOrEmpty(card.UniqueAnimation) ? card.UniqueAnimation : "None"
             };
         }
 
