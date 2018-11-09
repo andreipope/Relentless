@@ -268,7 +268,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 skill.CancelTargetingArrows();
-                skill.FightTargetingArrow = null;
             }
             else if (target != null)
             {
