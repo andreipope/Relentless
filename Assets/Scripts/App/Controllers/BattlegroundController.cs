@@ -231,11 +231,12 @@ namespace Loom.ZombieBattleground
 
                     InternalTools.DoActionDelayed(() =>
                         {
+                            cardToDestroy.Model.InvokeUnitDied();
+
                             cardToDestroy.Model.OwnerPlayer.BoardCards.Remove(cardToDestroy);
                             cardToDestroy.Model.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Model.Card);
                             cardToDestroy.Model.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Model.Card);
 
-                            cardToDestroy.Model.InvokeUnitDied();
 
                             cardToDestroy.Transform.DOKill();
                             Object.Destroy(cardToDestroy.GameObject);
