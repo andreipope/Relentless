@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         TooltipContentData.CardTypeInfo GetCardTypeInfo(Enumerators.CardType cardType);
 
-        TooltipContentData.BuffInfo GetCardBuffInfo(Enumerators.BuffType buffType);
+        TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescriptionType gameMechanic);
 
         TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank);
 

@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind, Protobuf.AffectObjectType.Types.Enum, List<BoardObject>> AbilityUsed;
+        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind.Types.Enum, Protobuf.AffectObjectType.Types.Enum, List<BoardObject>> AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -573,7 +573,9 @@ namespace Loom.ZombieBattleground
                 return;
 
             AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ? Protobuf.CardKind.Spell : Protobuf.CardKind.Creature,
+                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
+                                    Protobuf.CardKind.Types.Enum.Spell :
+                                    Protobuf.CardKind.Types.Enum.Creature,
                                 affectObjectType, targets);
         }
 
@@ -914,7 +916,7 @@ namespace Loom.ZombieBattleground
         {
             AbilityData abilityData = null;
 
-            // FIXME: why is this hardcoded?? should probably be in a separate JSON file
+            // FIXME: why is this hardcoded? should probably be in a separate JSON file
             switch (ability)
             {
                 case Enumerators.AbilityType.REANIMATE_UNIT:
@@ -938,7 +940,12 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         null,
-                        Enumerators.MechanicPictureType.REANIMATE
+                        Enumerators.GameMechanicDescriptionType.REANIMATE,
+                        default(Enumerators.SetType),
+                        default(Enumerators.AbilitySubTrigger),
+                        null,
+                        0,
+                        0
                         );
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
@@ -962,7 +969,12 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         null,
-                        Enumerators.MechanicPictureType.DESTROY
+                        Enumerators.GameMechanicDescriptionType.DESTROY,
+                        default(Enumerators.SetType),
+                        default(Enumerators.AbilitySubTrigger),
+                        null,
+                        0,
+                        0
                     );
                     break;
             }

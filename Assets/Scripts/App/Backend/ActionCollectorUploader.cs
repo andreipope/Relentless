@@ -229,7 +229,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private void AbilityUsedHandler(
                 WorkingCard card,
                 Enumerators.AbilityType abilityType,
-                CardKind cardKind,
+                CardKind.Types.Enum cardKind,
                 AffectObjectType.Types.Enum affectObjectType,
                 List<BoardObject> targets = null)
             {

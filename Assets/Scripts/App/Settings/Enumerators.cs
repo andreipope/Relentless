@@ -20,7 +20,8 @@ namespace Loom.ZombieBattleground.Common
             PERMANENT,
             GOT_DAMAGE,
             AT_DEFENCE,
-            IN_HAND
+            IN_HAND,
+            KILL_UNIT
         }
 
         public enum AbilityEffectType
@@ -53,7 +54,8 @@ namespace Loom.ZombieBattleground.Common
             OPPONENT_CARD,
             OPPONENT_ALL_CARDS,
             ALL_CARDS,
-            ALL
+            ALL,
+            ITSELF
         }
 
         public enum AbilityType
@@ -120,7 +122,28 @@ namespace Loom.ZombieBattleground.Common
             RETURN_UNITS_ON_BOARD_TO_OWNERS_HANDS,
             REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES,
             RESTORE_DEF_RANDOMLY_SPLIT,
-            ADJACENT_UNITS_GET_GUARD
+            ADJACENT_UNITS_GET_GUARD,
+
+            SUMMON_UNIT_FROM_HAND,
+            DAMAGE_AND_DISTRACT_TARGET,
+            DRAW_CARD_IF_DAMAGED_ZOMBIE_IN_PLAY,
+            TAKE_STAT_IF_OVERLORD_HAS_LESS_DEFENSE_THAN,
+            DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED,
+            SHUFFLE_THIS_CARD_TO_DECK,
+            TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE,
+            PUT_RANDOM_UNIT_FROM_DECK_ON_BOARD,
+            DISTRACT,
+            DAMAGE_TARGET_FREEZE_IT_IF_SURVIVES,
+            DESTROY_UNIT_BY_COST,
+            DAMAGE_ENEMY_OR_RESTORE_DEFENSE_ALLY,
+            TAKE_SWING_TO_UNITS,
+            DELAYED_PLACE_COPIES_IN_PLAY_DESTROY_UNIT,
+            ADJACENT_UNITS_GET_STAT,
+            EXTRA_GOO_IF_UNIT_IN_PLAY,
+            DESTROY_UNITS,
+            DEAL_DAMAGE_TO_UNIT_AND_SWING,
+            SET_ATTACK_AVAILABILITY,
+            CHOOSABLE_ABILITIES
         }
 
         public enum ActionType
@@ -189,7 +212,7 @@ namespace Loom.ZombieBattleground.Common
             ONLY_DIFFERENT
         }
 
-        public enum MechanicPictureType
+        public enum GameMechanicDescriptionType
         {
             BLANK,
             ATTACK,
@@ -209,7 +232,8 @@ namespace Loom.ZombieBattleground.Common
             REANIMATE,
             DESTROY,
             DISTRACT,
-            SHATTER
+            SHATTER,
+            KILL_UNIT
         }
 
         public enum BuffType
@@ -242,6 +266,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardKind
         {
+            UNDEFINED,
             CREATURE,
             SPELL
         }
@@ -557,6 +582,21 @@ namespace Loom.ZombieBattleground.Common
             AttackOnUnit,
             AttackOnOverlord,
             PlayOverlordSkill
+        }
+
+        public enum AbilitySubTrigger
+        {
+            None,
+            OnlyThisUnitInPlay,
+            AllOtherAllyUnitsInPlay,
+            AllAllyUnitsInPlay,
+            RandomUnit,
+            AllEnemyUnitsInPlay,
+            AllAllyUnitsByFactionInPlay,
+            ForEachFactionOfUnitInHand,
+            IfHasUnitsWithFactionInPlay,
+            AllyUnitsByFactionThatCost,
+            YourOverlord
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private int _numSets, _currentElementPage, _numElementPages;
 
-        private Enumerators.SetType _currentSet;
+        private Enumerators.SetType _currentSet = Enumerators.SetType.FIRE;
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet < 0)
+                if (_currentSet < Enumerators.SetType.FIRE)
                 {
                     _currentSet = (Enumerators.SetType) (_numSets - 1);
                     CalculateNumberOfPages();
@@ -259,7 +259,7 @@ namespace Loom.ZombieBattleground
 
                 if ((int) _currentSet >= _numSets)
                 {
-                    _currentSet = 0;
+                    _currentSet = Enumerators.SetType.FIRE;
                     _currentElementPage = 0;
                 }
                 else
@@ -273,7 +273,7 @@ namespace Loom.ZombieBattleground
 
         public void LoadCards(int page, Enumerators.SetType setType)
         {
-            _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
@@ -352,9 +352,9 @@ namespace Loom.ZombieBattleground
                 CardPositions.Add(placeholder);
             }
 
-            _numSets = _dataManager.CachedCardsLibraryData.Sets.Count - 1;
+            _numSets = Enumerators.SetType.ITEM - Enumerators.SetType.FIRE;
             CalculateNumberOfPages();
-            LoadCards(0, 0);
+            LoadCards(0, _currentSet);
 
             _cardCounter.text = _dataManager.CachedCollectionData.Cards.Count + "/" +
                 _dataManager.CachedCardsLibraryData.Cards.Count;

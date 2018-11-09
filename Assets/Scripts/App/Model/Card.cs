@@ -11,36 +11,36 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("Id")]
         public long MouldId { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; protected set; }
 
         public int Cost { get; set; }
 
-        public string Description { get; set; }
+        public string Description { get; protected set; }
 
-        public string FlavorText { get; set; }
+        public string FlavorText { get; protected set; }
 
-        public string Picture { get; set; }
+        public string Picture { get; protected set; }
 
-        public int Damage { get; set; }
+        public int Damage { get; protected set; }
 
-        public int Health { get; set; }
+        public int Health { get; protected set; }
 
         public Enumerators.SetType CardSetType { get; set; }
 
-        public string Frame { get; set; }
+        public string Frame { get; protected set; }
 
         [JsonProperty("Kind")]
-        public Enumerators.CardKind CardKind { get; set; }
+        public Enumerators.CardKind CardKind { get; protected set; }
 
         [JsonProperty("Rank")]
-        public Enumerators.CardRank CardRank { get; set; }
+        public Enumerators.CardRank CardRank { get; protected set; }
 
         [JsonProperty("Type")]
-        public Enumerators.CardType CardType { get; set; }
+        public Enumerators.CardType CardType { get; protected set; }
 
-        public List<AbilityData> Abilities { get; set; }
+        public List<AbilityData> Abilities { get; protected set; }
 
-        public CardViewInfo CardViewInfo { get; set; }
+        public CardViewInfo CardViewInfo { get; protected set; }
 
         public Card(
             long mouldId,

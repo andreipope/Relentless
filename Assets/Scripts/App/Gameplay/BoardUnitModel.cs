@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
-        public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.ANY;
+        public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.NONE;
 
         private readonly IGameplayManager _gameplayManager;
 

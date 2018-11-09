@@ -93,11 +93,7 @@ public class LoomDeckTest
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck
-                {
-                    HeroId = 0,
-                    Name = "Gaurav"
-                };
+                Deck deck = new Deck(0, 0,"Gaurav", null, 0, 0);
 
                 await LoomTestContext.BackendFacade.AddDeck(user, deck);
             });
@@ -110,11 +106,7 @@ public class LoomDeckTest
             async () =>
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck_wrong_user");
-                Deck deck = new Deck
-                {
-                    HeroId = 0,
-                    Name = "Gaurav"
-                };
+                Deck deck = new Deck(0, 0,"Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
@@ -133,19 +125,12 @@ public class LoomDeckTest
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck
-                {
-                    HeroId = 0,
-                    Name = "Gaurav",
-                    Cards = new List<DeckCardData>
+                List<DeckCardData> cards =
+                    new List<DeckCardData>
                     {
-                        new DeckCardData
-                        {
-                            Amount = 100500,
-                            CardName = "Izze"
-                        }
-                    }
-                };
+                        new DeckCardData("Izze", 100500)
+                    };
+                Deck deck = new Deck(0, 0, "Gaurav", cards, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
@@ -164,10 +149,7 @@ public class LoomDeckTest
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck
-                {
-                    Name = "Default"
-                };
+                Deck deck = new Deck(0, 0,"Default", null, 0, 0);
                 await LoomTestContext.BackendFacade.EditDeck(user, deck);
             });
     }
@@ -179,11 +161,7 @@ public class LoomDeckTest
             async () =>
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck_wrong_user");
-                Deck deck = new Deck
-                {
-                    HeroId = 0,
-                    Name = "Gaurav"
-                };
+                Deck deck = new Deck(0, 0,"Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
@@ -202,12 +180,7 @@ public class LoomDeckTest
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck
-                {
-                    Id = 123,
-                    HeroId = 0,
-                    Name = "GauravRandomDeck"
-                };
+                Deck deck = new Deck(123, 0,"GauravRandomDeck", null, 0, 0);
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {

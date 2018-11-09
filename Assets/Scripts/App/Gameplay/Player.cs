@@ -193,7 +193,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
+            SelfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
             InitialHp = _defense;
             BuffedHp = 0;

@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground.Data
     {
         public List<CardTypeInfo> CardTypes;
 
-        public List<BuffInfo> Buffs;
+        public List<GameMechanicInfo> Mechanics;
 
         public List<RankInfo> Ranks;
 
@@ -20,13 +20,13 @@ namespace Loom.ZombieBattleground.Data
             public Enumerators.CardType Type;
         }
 
-        public class BuffInfo
+        public class GameMechanicInfo
         {
             public string Name;
 
             public string Tooltip;
 
-            public Enumerators.BuffType Type;
+            public Enumerators.GameMechanicDescriptionType Type;
         }
 
         public class RankInfo

@@ -10,37 +10,43 @@ namespace Loom.ZombieBattleground.Data
     {
         public static Protobuf.Deck GetDeck(this Deck deck)
         {
-            Protobuf.Deck newdeck = new Protobuf.Deck
+            Protobuf.Deck protoDeck = new Protobuf.Deck
             {
                 Id = deck.Id,
                 Name = deck.Name,
-                HeroId = deck.HeroId,
+                HeroId = deck.HeroId
             };
-            for (int i = 0; i < deck.Cards.Count; i++)
-            {
-                CardCollection card = new CardCollection
-                {
-                    CardName = deck.Cards[i].CardName,
-                    Amount = deck.Cards[i].Amount
-                };
-                newdeck.Cards.Add(card);
-            }
 
-            return newdeck;
+            protoDeck.Cards.AddRange(deck.Cards.Select(card => card.ToProtobuf()));
+
+            return protoDeck;
         }
 
-        public static CardAbility ToProtobuf(this AbilityData ability)        {
-            CardAbility cardAbility = new CardAbility{
+        public static DeckCard ToProtobuf(this DeckCardData deckCardData)
+        {
+            return new DeckCard
+            {
+                Amount = deckCardData.Amount,
+                CardName = deckCardData.CardName
+            };
+        }
+
+        public static CardAbility ToProtobuf(this AbilityData ability) {
+            CardAbility cardAbility = new CardAbility {
                 Type = (CardAbilityType.Types.Enum) ability.AbilityType,
                 ActivityType = (CardAbilityActivityType.Types.Enum) ability.ActivityType,
                 Trigger = (CardAbilityTrigger.Types.Enum) ability.CallType,
+                TargetTypes =
+                {
+                    ability.AbilityTargetTypes.Select(t => (CardAbilityTarget.Types.Enum) t)
+                },
                 Stat = (StatType.Types.Enum) ability.AbilityStatType,
                 Set = (CardSetType.Types.Enum) ability.AbilitySetType,
                 Effect = (CardAbilityEffect.Types.Enum) ability.AbilityEffectType,
                 AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
-                TargetCardType = (CardKind) ability.TargetCardType,
-                TargetUnitStatusType = (UnitSpecialStatus) ability.TargetUnitStatusType,
-                TargetUnitType = (CardKind) ability.TargetUnitType,
+                TargetCardType = (CreatureType.Types.Enum) ability.TargetCardType,
+                TargetUnitSpecialStatus = (UnitSpecialStatus.Types.Enum) ability.TargetUnitStatusType,
+                TargetUnitType = (CreatureType.Types.Enum) ability.TargetUnitType,
                 Value = ability.Value,
                 Attack = ability.Damage,
                 Defense = ability.Health,
@@ -48,11 +54,16 @@ namespace Loom.ZombieBattleground.Data
                 Turns = ability.Turns,
                 Count = ability.Count,
                 Delay = ability.Delay,
-                MechanicPicture = (MechanicPictureType.Types.Enum) ability.MechanicPicture
+                VisualEffectsToPlay =
+                {
+                    ability.VisualEffectsToPlay.Select(v => v.ToProtobuf())
+                },
+                GameMechanicDescriptionType = (GameMechanicDescriptionType.Types.Enum) ability.GameMechanicDescriptionType,
+                TargetSet = (CardSetType.Types.Enum) ability.TargetSetType,
+                SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.SubTrigger,
+                Defense2 = ability.Defense,
+                Cost = ability.Cost
             };
-
-            cardAbility.AllowedTargetTypes.Add(ability.AbilityTargetTypes.Select(t => (AllowedTarget.Types.Enum) t));
-            cardAbility.VisualEffectsToPlay.Add(ability.VisualEffectsToPlay.Select(v => v.ToProtobuf()));
 
             return cardAbility;
         }
@@ -69,6 +80,14 @@ namespace Loom.ZombieBattleground.Data
                     Defense = unit.Parameter.Defense,
                     CardName = unit.Parameter.CardName
                 }
+            };
+        }
+
+        public static CardChoosableAbility ToProtobuf(this AbilityData.ChoosableAbility choosableAbility)
+        {
+            return new CardChoosableAbility {
+                Description = choosableAbility.Description,
+                AbilityData = choosableAbility.AbilityData.ToProtobuf()
             };
         }
 
@@ -106,13 +125,16 @@ namespace Loom.ZombieBattleground.Data
                 Defense = card.Health,
                 Set = (CardSetType.Types.Enum) card.CardSetType,
                 Frame = card.Frame,
-                Kind = (CardKind) card.CardKind,
+                Kind = (CardKind.Types.Enum) card.CardKind,
                 Rank = (CreatureRank.Types.Enum) card.CardRank,
                 Type = (CreatureType.Types.Enum) card.CardType,
-                CardViewInfo = card.CardViewInfo.ToProtobuf()
+                CardViewInfo = card.CardViewInfo.ToProtobuf(),
+                Abilities =
+                {
+                    card.Abilities.Select(a => a.ToProtobuf())
+                }
             };
 
-            protoCard.Abilities.Add(card.Abilities.Select(a => a.ToProtobuf()));
             return protoCard;
         }
 

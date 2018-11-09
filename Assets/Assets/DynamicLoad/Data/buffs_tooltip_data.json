@@ -11,8 +11,7 @@
       "type": "HEAVY"
     }
   ],
-  "buffs": [
-
+  "mechanics": [
     {
       "name": "Entry",
       "tooltip": "Ability activates when this zombie enters the battleground",

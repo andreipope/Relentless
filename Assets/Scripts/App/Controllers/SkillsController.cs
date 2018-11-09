@@ -572,7 +572,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(
                 Enumerators.SoundType.OVERLORD_ABILITIES,
-                skill.Skill.Trim().ToLowerInvariant(),
+                skill.OverlordSkill.ToString().ToLowerInvariant(),
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
 

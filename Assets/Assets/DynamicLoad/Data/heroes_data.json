@@ -29,7 +29,9 @@
           "skillTargets": [
             "PLAYER_CARD"
           ],
-          "elementTargets": "EARTH",
+          "elementTargets": [
+            "EARTH"
+          ],
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1
@@ -71,7 +73,9 @@
           "skillTargets": [
             "PLAYER_CARD"
           ],
-          "elementTargets": "FIRE",
+          "elementTargets": [
+            "FIRE"
+          ],
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1
@@ -138,7 +142,9 @@
           "skillTargets": [
             "PLAYER_CARD"
           ],
-          "elementTargets": "AIR",
+          "elementTargets": [
+            "AIR"
+          ],
           "cooldown": 6,
           "initialCooldown": 5,
           "value": 0
@@ -189,7 +195,9 @@
           "skillTargets": [
             "PLAYER_CARD"
           ],
-          "elementTargets": "TOXIC",
+          "elementTargets": [
+            "TOXIC"
+          ],
           "cooldown": 4,
           "initialCooldown": 4,
           "value": 1,

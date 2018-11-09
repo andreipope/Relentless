@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf;
@@ -156,8 +157,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId,
-                LastModificationTimestamp = 0
+                DeckId = deckId
             };
 
             await Contract.CallAsync(DeleteDeckMethod, request);
@@ -165,26 +165,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task EditDeck(string userId, Data.Deck deck)
         {
-            EditDeckRequest request = EditDeckRequest(userId, deck, 0);
+            EditDeckRequest request = EditDeckRequest(userId, deck);
 
             await Contract.CallAsync(EditDeckMethod, request);
         }
 
         public async Task<long> AddDeck(string userId, Data.Deck deck)
         {
-            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
-
-            for (int i = 0; i < deck.Cards.Count; i++)
-            {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.Cards[i].CardName,
-                    Amount = deck.Cards[i].Amount
-                };
-                Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
-                cards.Add(cardInCollection);
-            }
-
             CreateDeckRequest request = new CreateDeckRequest
             {
                 UserId = userId,
@@ -194,10 +181,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     HeroId = deck.HeroId,
                     Cards =
                     {
-                        cards
+                        deck.Cards.Select(card => card.ToProtobuf())
                     }
                 },
-                LastModificationTimestamp = 0,
                 Version = BackendEndpoint.DataVersion
             };
 
@@ -205,21 +191,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return createDeckResponse.DeckId;
         }
 
-        private EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
+        private EditDeckRequest EditDeckRequest(string userId, Data.Deck deck)
         {
-            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
-
-            for (int i = 0; i < deck.Cards.Count; i++)
-            {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.Cards[i].CardName,
-                    Amount = deck.Cards[i].Amount
-                };
-                Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
-                cards.Add(cardInCollection);
-            }
-
             EditDeckRequest request = new EditDeckRequest
             {
                 UserId = userId,
@@ -230,10 +203,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     HeroId = deck.HeroId,
                     Cards =
                     {
-                        cards
+                        deck.Cards.Select(card => card.ToProtobuf())
                     }
                 },
-                LastModificationTimestamp = lastModificationTimestamp,
+
                 Version = BackendEndpoint.DataVersion
             };
             return request;

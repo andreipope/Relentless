@@ -510,17 +510,14 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
-                    // FIXME: hack
-                    Enumerators.BuffType buffType =
-                        (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.MechanicPicture.ToString(), true);
-                    TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(buffType);
-                    if (buffInfo != null)
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
+                    if (gameMechanicInfo != null)
                     {
                         buffs.Add(
                             new BuffTooltipInfo
                             {
-                                Title = buffInfo.Name,
-                                Description = buffInfo.Tooltip,
+                                Title = gameMechanicInfo.Name,
+                                Description = gameMechanicInfo.Tooltip,
                                 TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
                                 Value = GetValueOfAbilityByType(abil)
                             });
@@ -567,15 +564,15 @@ namespace Loom.ZombieBattleground
             {
                 // FIXME: hack
                 Enumerators.BuffType buffType =
-                    (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.AbilityData.MechanicPicture.ToString(), true);
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(buffType);
-                if (buffInfo != null)
+                    (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.AbilityData.GameMechanicDescriptionType.ToString(), true);
+                TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.AbilityData.GameMechanicDescriptionType);
+                if (gameMechanicInfo != null)
                 {
                     buffs.Add(
                         new BuffTooltipInfo
                         {
-                            Title = buffInfo.Name,
-                            Description = buffInfo.Tooltip,
+                            Title = gameMechanicInfo.Name,
+                            Description = gameMechanicInfo.Tooltip,
                             TooltipObjectType = Enumerators.TooltipObjectType.BUFF,
                             Value = -1
                         });
@@ -585,14 +582,17 @@ namespace Loom.ZombieBattleground
             // IMPROVE!!!
             foreach (Enumerators.BuffType buffOnUnit in unit.Model.BuffsOnUnit)
             {
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(buffOnUnit);
-                if (buffInfo != null)
+                // FIXME: hack
+                Enumerators.GameMechanicDescriptionType mechanicType =
+                    (Enumerators.GameMechanicDescriptionType) Enum.Parse(typeof(Enumerators.GameMechanicDescriptionType), buffOnUnit.ToString(), true);
+                TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
+                if (gameMechanicInfo != null)
                 {
                     buffs.Add(
                         new BuffTooltipInfo
                         {
-                            Title = buffInfo.Name,
-                            Description = buffInfo.Tooltip,
+                            Title = gameMechanicInfo.Name,
+                            Description = gameMechanicInfo.Tooltip,
                             TooltipObjectType = Enumerators.TooltipObjectType.BUFF,
                             Value = -1
                         });
@@ -678,17 +678,14 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in boardCard.WorkingCard.LibraryCard.Abilities)
                 {
-                    // FIXME: hack
-                    Enumerators.BuffType buffType =
-                        (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.MechanicPicture.ToString(), true);
-                    TooltipContentData.BuffInfo buffInfo = DataManager.GetCardBuffInfo(buffType);
-                    if (buffInfo != null)
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
+                    if (gameMechanicInfo != null)
                     {
                         buffs.Add(
                             new BuffTooltipInfo
                             {
-                                Title = buffInfo.Name,
-                                Description = buffInfo.Tooltip,
+                                Title = gameMechanicInfo.Name,
+                                Description = gameMechanicInfo.Tooltip,
                                 TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
                                 Value = GetValueOfAbilityByType(abil)
                             });
@@ -797,7 +794,7 @@ namespace Loom.ZombieBattleground
         private int GetValueOfAbilityByType(AbilityData ability)
         {
             // FIXME: there is no BuffType "DELAYED". Is this still needed?
-            switch (ability.MechanicPicture)
+            switch (ability.GameMechanicDescriptionType)
             {
                 default:
                     return ability.Value;

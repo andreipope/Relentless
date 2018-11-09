@@ -23,7 +23,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "TOXIC"
@@ -89,7 +89,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "effectType": "TARGET_FIRE"
             }
@@ -128,7 +128,7 @@
                 "OPPONENT_ALL_CARDS",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "effectType": "MASSIVE_FIRE"
             }
@@ -166,7 +166,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "FLASH",
+              "mechanicDescriptionType": "FLASH",
               "value": 2
             }
           ],
@@ -200,7 +200,7 @@
               "type": "PRIORITY_ATTACK",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ATTACK"
+              "mechanicDescriptionType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -236,7 +236,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "unitType": "FERAL"
             }
           ],
@@ -273,7 +273,7 @@
               "targetType": [
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Pyromaz",
               "Count": 2
             }
@@ -308,14 +308,14 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 2
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "PASSIVE",
               "callType": "END",
-              "mechanicPictureType": "END",
+              "mechanicDescriptionType": "END",
               "value": 2
             }
           ],
@@ -349,14 +349,14 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 5
             },
             {
               "type": "DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS",
               "activityType": "PASSIVE",
               "callType": "END",
-              "mechanicPictureType": "END",
+              "mechanicDescriptionType": "END",
               "value": 4
             }
           ],
@@ -444,7 +444,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "FLASH",
+              "mechanicDescriptionType": "FLASH",
               "value": 2
             }
           ],
@@ -481,7 +481,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -518,7 +518,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 3
             }
           ],
@@ -552,7 +552,7 @@
               "type": "DRAW_CARD_IF_DAMAGED_ZOMBIE_IN_PLAY",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -588,7 +588,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "DEATH",
+              "mechanicDescriptionType": "DEATH",
               "unitType": "FERAL",
               "subTrigger": "RandomUnit"
             }
@@ -623,7 +623,7 @@
               "type": "TAKE_STAT_IF_OVERLORD_HAS_LESS_DEFENSE_THAN",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 10,
               "statType": "DAMAGE",
               "Damage": 2
@@ -662,7 +662,7 @@
               "targetType": [
                 "ITSELF"
               ],
-              "mechanicPictureType": "END",
+              "mechanicDescriptionType": "END",
               "value": 1
             }
           ],
@@ -699,7 +699,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "unitType": "FERAL",
               "subTrigger": "OnlyThisUnitInPlay"
             }
@@ -737,7 +737,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "FIRE",
               "unitType": "FERAL",
               "subTrigger": "AllOtherAllyUnitsInPlay"
@@ -777,7 +777,7 @@
                 "OPPONENT_ALL_CARDS",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "END",
+              "mechanicDescriptionType": "END",
               "Damage": 5,
               "Count": 1
             },
@@ -785,7 +785,7 @@
               "type": "SET_ATTACK_AVAILABILITY",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -826,7 +826,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "FIRE"
@@ -866,7 +866,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1,
               "effectType": "TARGET_WATER"
             }
@@ -904,7 +904,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "effectType": "STUN_OR_DAMAGE_FREEZES"
             }
@@ -943,7 +943,7 @@
                 "OPPONENT_ALL_CARDS",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "effectType": "MASSIVE_WATER_WAVE"
             }
@@ -1014,7 +1014,7 @@
               "type": "ENEMY_THAT_ATTACKS_BECOME_FROZEN",
               "activityType": "PASSIVE",
               "callType": "AT_DEFENCE",
-              "mechanicPictureType": "FREEZE"
+              "mechanicDescriptionType": "FREEZE"
             }
           ],
           "cardViewInfo": {
@@ -1050,7 +1050,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -1088,7 +1088,7 @@
                 "OPPONENT_ALL_CARDS",
                 "PLAYER_ALL_CARDS"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1121,7 +1121,7 @@
               "type": "FREEZE_NUMBER_OF_RANDOM_ALLY",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1,
               "Turns": 1
             },
@@ -1129,7 +1129,7 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Tainted Goo"
             }
           ],
@@ -1163,7 +1163,7 @@
               "type": "FREEZE_NUMBER_OF_RANDOM_ALLY",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "Turns": 1
             },
@@ -1171,7 +1171,7 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Corrupted Goo"
             }
           ],
@@ -1233,7 +1233,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -1293,7 +1293,7 @@
               "type": "DELAYED_GAIN_ATTACK",
               "activityType": "PASSIVE",
               "callType": "TURN",
-              "mechanicPictureType": "DELAYED",
+              "mechanicDescriptionType": "DELAYED",
               "value": 6,
               "Delay": 2
             }
@@ -1328,7 +1328,7 @@
               "type": "MODIFICATOR_STATS",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "WATER"
@@ -1364,8 +1364,8 @@
               "type": "DRAW_CARD",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
-              "unitStatus": "frozen"
+              "mechanicDescriptionType": "ENTRY",
+              "unitStatus": "FROZEN"
             }
           ],
           "cardViewInfo": {
@@ -1401,7 +1401,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "DISTRACT"
+              "mechanicDescriptionType": "DISTRACT"
             }
           ],
           "cardViewInfo": {
@@ -1438,7 +1438,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 3
             }
           ],
@@ -1475,7 +1475,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "WATER",
               "effectType": "MASSIVE_WATER_WAVE"
             }
@@ -1514,7 +1514,7 @@
                 "OPPONENT_ALL_CARDS",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "WATER",
               "Damage": 1,
               "subTrigger": "ForEachFactionOfUnitInHand"
@@ -1554,7 +1554,7 @@
                 "OPPONENT_CARD",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "setType": "WATER",
               "subTrigger": "IfHasUnitsWithFactionInPlay"
@@ -1590,7 +1590,7 @@
               "type": "EXTRA_GOO_IF_UNIT_IN_PLAY",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -1632,7 +1632,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "AIR"
@@ -1694,7 +1694,7 @@
               "type": "SWING",
               "activityType": "PASSIVE",
               "callType": "ATTACK",
-              "mechanicPictureType": "SWING",
+              "mechanicDescriptionType": "SWING",
               "value": 4
             }
           ],
@@ -1728,7 +1728,7 @@
               "type": "ADJACENT_UNITS_GET_HEAVY",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -1791,7 +1791,7 @@
                 "OPPONENT_CARD",
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "cardType": "HEAVY"
             }
           ],
@@ -1825,7 +1825,7 @@
               "type": "ADDITIONAL_DAMAGE_TO_HEAVY_IN_ATTACK",
               "activityType": "PASSIVE",
               "callType": "PERMANENT",
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1
             }
           ],
@@ -1859,7 +1859,7 @@
               "type": "TAKE_DEFENSE_IF_OVERLORD_HAS_LESS_DEFENSE_THAN",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "Health": 10
             }
@@ -1946,7 +1946,7 @@
               "type": "DELAYED_LOSE_HEAVY_GAIN_ATTACK",
               "activityType": "PASSIVE",
               "callType": "TURN",
-              "mechanicPictureType": "DELAYED",
+              "mechanicDescriptionType": "DELAYED",
               "value": 4,
               "Delay": 2
             }
@@ -1981,7 +1981,7 @@
               "type": "ALLY_UNITS_OF_TYPE_IN_PLAY_GET_STATS",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "EARTH",
               "Health": 0,
               "Damage": 1
@@ -2017,7 +2017,7 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Tainted Goo"
             }
           ],
@@ -2051,7 +2051,7 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Corrupted Goo"
             }
           ],
@@ -2141,7 +2141,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1,
               "effectType": "TARGET_ROCK"
             }
@@ -2179,7 +2179,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1,
               "defense": 2
             }
@@ -2214,7 +2214,7 @@
               "type": "DRAW_CARD",
               "activityType": "PASSIVE",
               "callType": "DEATH",
-              "mechanicPictureType": "DEATH"
+              "mechanicDescriptionType": "DEATH"
             }
           ],
           "cardViewInfo": {
@@ -2247,7 +2247,7 @@
               "type": "TAKE_UNIT_TYPE_TO_ALLY_UNIT",
               "activityType": "PASSIVE",
               "callType": "DEATH",
-              "mechanicPictureType": "DEATH",
+              "mechanicDescriptionType": "DEATH",
               "unitType": "HEAVY",
               "subTrigger": "RandomUnit"
             }
@@ -2285,7 +2285,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "EARTH",
               "unitType": "HEAVY",
               "Cost": 2,
@@ -2325,7 +2325,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "unitType": "HEAVY",
               "subTrigger": "OnlyThisUnitInPlay"
             }
@@ -2368,7 +2368,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "WATER"
@@ -2408,7 +2408,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2441,7 +2441,7 @@
               "type": "SWING",
               "activityType": "PASSIVE",
               "callType": "ATTACK",
-              "mechanicPictureType": "SWING",
+              "mechanicDescriptionType": "SWING",
               "value": 1
             },
             {
@@ -2454,7 +2454,7 @@
                 "PLAYER",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -2492,7 +2492,7 @@
                 "OPPONENT_ALL_CARDS",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 3,
               "effectType": "MASSIVE_LIGHTNING"
             }
@@ -2556,7 +2556,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": -1
             }
           ],
@@ -2590,7 +2590,7 @@
               "type": "DRAW_CARD",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "NONE"
             }
           ],
@@ -2624,13 +2624,13 @@
               "type": "GUARD",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             },
             {
               "type": "ADJACENT_UNITS_GET_HEAVY",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2666,7 +2666,7 @@
               "targetType": [
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2702,7 +2702,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "PERMANENT",
+              "mechanicDescriptionType": "PERMANENT",
               "value": -1,
               "setType": "AIR"
             }
@@ -2737,7 +2737,7 @@
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Tainted Goo"
             }
           ],
@@ -2774,13 +2774,13 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "GUARD"
+              "mechanicDescriptionType": "GUARD"
             },
             {
               "type": "ADD_CARD_BY_NAME_TO_HAND",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Corrupted Goo"
             }
           ],
@@ -2866,7 +2866,7 @@
               "type": "DELAYED_GAIN_ATTACK",
               "activityType": "PASSIVE",
               "callType": "TURN",
-              "mechanicPictureType": "DELAYED",
+              "mechanicDescriptionType": "DELAYED",
               "value": 2,
               "Delay": 1
             }
@@ -2904,7 +2904,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "PERMANENT",
+              "mechanicDescriptionType": "PERMANENT",
               "value": -1,
               "setType": "AIR"
             }
@@ -2942,7 +2942,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -2978,7 +2978,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "DEATH",
+              "mechanicDescriptionType": "DEATH",
               "value": 1,
               "statType": "DAMAGE"
             }
@@ -3016,7 +3016,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -3052,7 +3052,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "Count": 1
             }
@@ -3091,7 +3091,7 @@
                 "OPPONENT_ALL_CARDS",
                 "PLAYER_ALL_CARDS"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 3
             }
           ],
@@ -3128,7 +3128,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "setType": "AIR",
               "Count": 2
@@ -3172,7 +3172,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "EARTH"
@@ -3212,7 +3212,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "effectType": "TARGET_LIFE"
             }
@@ -3251,7 +3251,7 @@
                 "OPPONENT_CARD",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1
             }
           ],
@@ -3288,7 +3288,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "TURN",
+              "mechanicDescriptionType": "TURN",
               "name": "Zombie 1/1",
               "Count": 1
             }
@@ -3326,7 +3326,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "LIFE",
@@ -3363,7 +3363,7 @@
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "ACTIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "DEVOUR",
+              "mechanicDescriptionType": "DEVOUR",
               "value": -1
             }
           ],
@@ -3401,7 +3401,7 @@
                 "OPPONENT_CARD",
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "LIFE"
             }
           ],
@@ -3435,7 +3435,7 @@
               "type": "GAIN_NUMBER_OF_LIFE_FOR_EACH_DAMAGE_THIS_DEALS",
               "activityType": "PASSIVE",
               "callType": "ATTACK",
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1
             }
           ],
@@ -3472,7 +3472,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Zombie Feral",
               "Count": 1
             }
@@ -3507,7 +3507,7 @@
               "type": "DRAW_CARD",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "setType": "LIFE"
             }
           ],
@@ -3541,7 +3541,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 3
             },
             {
@@ -3551,7 +3551,7 @@
               "targetType": [
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Zombie 1/1",
               "Count": 1
             }
@@ -3586,7 +3586,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 6
             },
             {
@@ -3596,7 +3596,7 @@
               "targetType": [
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Zombie 2/2",
               "Count": 1
             }
@@ -3631,7 +3631,7 @@
               "type": "DELAYED_GAIN_ATTACK",
               "activityType": "PASSIVE",
               "callType": "TURN",
-              "mechanicPictureType": "DELAYED",
+              "mechanicDescriptionType": "DELAYED",
               "value": 3,
               "Delay": 1
             }
@@ -3695,7 +3695,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2
             }
           ],
@@ -3732,7 +3732,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "subTrigger": "YourOverlord"
             }
@@ -3770,7 +3770,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "DEATH"
+              "mechanicDescriptionType": "DEATH"
             }
           ],
           "cardViewInfo": {
@@ -3806,7 +3806,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 3,
               "Health": 5,
               "defense": 10
@@ -3846,7 +3846,7 @@
                 "PLAYER",
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "Count": 10
             }
           ],
@@ -3880,7 +3880,7 @@
               "type": "REANIMATE_UNIT",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -3916,7 +3916,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "name": "Zplitter",
               "Count": 1
             }
@@ -3954,7 +3954,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "END",
+              "mechanicDescriptionType": "END",
               "name": "Zombie Heavy",
               "Count": 1
             }
@@ -3992,7 +3992,7 @@
               "targetType": [
                 "ITSELF"
               ],
-              "mechanicPictureType": "DELAYED",
+              "mechanicDescriptionType": "DELAYED",
               "name": "Blight Minion",
               "Count": 2,
               "Delay": 3
@@ -4036,7 +4036,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "LIFE"
@@ -4075,7 +4075,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ATTACK",
+              "mechanicDescriptionType": "ATTACK",
               "value": -1,
               "statType": "DAMAGE"
             }
@@ -4140,7 +4140,7 @@
                 "PLAYER_ALL_CARDS",
                 "OPPONENT_ALL_CARDS"
               ],
-              "mechanicPictureType": "DEATH",
+              "mechanicDescriptionType": "DEATH",
               "value": 3,
               "effectType": "MASSIVE_TOXIC_ALL"
             }
@@ -4179,7 +4179,7 @@
                 "OPPONENT_CARD",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -4216,7 +4216,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -4250,7 +4250,7 @@
               "type": "RAGE",
               "activityType": "PASSIVE",
               "callType": "GOT_DAMAGE",
-              "mechanicPictureType": "RAGE",
+              "mechanicDescriptionType": "RAGE",
               "value": 2
             }
           ],
@@ -4284,7 +4284,7 @@
               "type": "LOSE_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -4318,14 +4318,14 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 4
             },
             {
               "type": "USE_ALL_GOO_TO_INCREASE_STATS",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2
             }
           ],
@@ -4359,7 +4359,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 2
             },
             {
@@ -4369,7 +4369,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2
             }
           ],
@@ -4403,7 +4403,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 7
             },
             {
@@ -4413,7 +4413,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 4
             }
           ],
@@ -4447,7 +4447,7 @@
               "type": "LOSE_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -4509,7 +4509,7 @@
               "targetType": [
                 "PLAYER"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 3
             }
           ],
@@ -4546,14 +4546,14 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "FLASH",
+              "mechanicDescriptionType": "FLASH",
               "value": 2
             },
             {
               "type": "DESTROY_TARGET_UNIT_AFTER_ATTACK",
               "activityType": "PASSIVE",
               "callType": "ATTACK",
-              "mechanicPictureType": "ATTACK"
+              "mechanicDescriptionType": "ATTACK"
             }
           ],
           "cardViewInfo": {
@@ -4586,7 +4586,7 @@
               "type": "DRAW_CARD",
               "activityType": "PASSIVE",
               "callType": "KILL_UNIT",
-              "mechanicPictureType": "KILL_UNIT"
+              "mechanicDescriptionType": "KILL_UNIT"
             }
           ],
           "cardViewInfo": {
@@ -4622,7 +4622,7 @@
               "targetType": [
                 "OPPONENT"
               ],
-              "mechanicPictureType": "TURN",
+              "mechanicDescriptionType": "TURN",
               "value": 2,
               "statType": "DAMAGE",
               "setType": "NONE"
@@ -4661,7 +4661,7 @@
               "targetType": [
                 "ITSELF"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2
             }
           ],
@@ -4695,7 +4695,7 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "DEATH",
-              "mechanicPictureType": "DEATH",
+              "mechanicDescriptionType": "DEATH",
               "value": 1
             }
           ],
@@ -4732,7 +4732,7 @@
               "targetType": [
                 "PLAYER_ALL_CARDS"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1,
               "statType": "DAMAGE",
               "setType": "TOXIC",
@@ -4769,7 +4769,7 @@
               "type": "ADJACENT_UNITS_GET_STAT",
               "activityType": "PASSIVE",
               "callType": "DEATH",
-              "mechanicPictureType": "DEATH",
+              "mechanicDescriptionType": "DEATH",
               "statType": "DAMAGE",
               "Damage": 2
             }
@@ -4807,7 +4807,7 @@
               "targetType": [
                 "PLAYER_ALL_CARDS"
               ],
-              "mechanicPictureType": "DEATH",
+              "mechanicDescriptionType": "DEATH",
               "statType": "DAMAGE",
               "Damage": 2
             }
@@ -4851,7 +4851,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 4
             }
           ],
@@ -4889,7 +4889,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "SWING",
+              "mechanicDescriptionType": "SWING",
               "value": 4,
               "effectType": "TARGET_ADJUSTMENTS_BOMB"
             }
@@ -4927,7 +4927,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "Count": 2
             }
@@ -4966,7 +4966,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "END",
+              "mechanicDescriptionType": "END",
               "value": 4,
               "Damage": 4
             }
@@ -5004,7 +5004,7 @@
               "targetType": [
                 "NONE"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1,
               "Count": 1
             }
@@ -5042,7 +5042,7 @@
               "targetType": [
                 "OPPONENT_ALL_CARDS"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": -3,
               "statType": "DAMAGE"
             }
@@ -5077,7 +5077,7 @@
               "type": "DRAW_CARD",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -5113,7 +5113,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 1
             }
           ],
@@ -5150,7 +5150,7 @@
               "targetType": [
                 "OPPONENT_ALL_CARDS"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2
             }
           ],
@@ -5187,7 +5187,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 3,
               "Damage": 3
             }
@@ -5226,7 +5226,7 @@
                 "PLAYER_CARD",
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 2,
               "Damage": 2
             }
@@ -5264,7 +5264,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "END",
+              "mechanicDescriptionType": "END",
               "value": 3,
               "Health": 3,
               "Damage": 3
@@ -5304,7 +5304,7 @@
                 "PLAYER",
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "Count": 1
             }
           ],
@@ -5341,7 +5341,7 @@
               "targetType": [
                 "OPPONENT"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -5377,7 +5377,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": 99,
               "Count": 2
             }
@@ -5452,7 +5452,7 @@
                 "OPPONENT_CARD",
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "ChoosableAbilities": [
                 {
                   "Description": "3 damage to an enemy",
@@ -5464,7 +5464,7 @@
                       "OPPONENT",
                       "OPPONENT_CARD"
                     ],
-                    "mechanicPictureType": "ENTRY",
+                    "mechanicDescriptionType": "ENTRY",
                     "value": 3
                   }
                 },
@@ -5478,7 +5478,7 @@
                       "PLAYER",
                       "PLAYER_CARD"
                     ],
-                    "mechanicPictureType": "ENTRY",
+                    "mechanicDescriptionType": "ENTRY",
                     "value": 3
                   }
                 }
@@ -5518,7 +5518,7 @@
               "targetType": [
                 "PLAYER_CARD"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "subTrigger": "AllAllyUnitsInPlay"
             }
           ],
@@ -5555,7 +5555,7 @@
               "targetType": [
                 "OPPONENT_CARD"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -5592,7 +5592,7 @@
                 "OPPONENT_ALL_CARDS",
                 "PLAYER_ALL_CARDS"
               ],
-              "mechanicPictureType": "ENTRY"
+              "mechanicDescriptionType": "ENTRY"
             }
           ],
           "cardViewInfo": {
@@ -5629,7 +5629,7 @@
                 "OPPONENT_ALL_CARDS",
                 "PLAYER_ALL_CARDS"
               ],
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "Damage": 2,
               "Count": 3
             }
@@ -5670,14 +5670,14 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 3
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": -1
             }
           ],
@@ -5712,14 +5712,14 @@
               "type": "OVERFLOW_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "OVERFLOW",
+              "mechanicDescriptionType": "OVERFLOW",
               "value": 6
             },
             {
               "type": "DISABLE_NEXT_TURN_GOO",
               "activityType": "PASSIVE",
               "callType": "ENTRY",
-              "mechanicPictureType": "ENTRY",
+              "mechanicDescriptionType": "ENTRY",
               "value": -2
             }
           ],

@@ -13,6 +13,8 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
+using Deck = Loom.ZombieBattleground.Data.Deck;
+using Hero = Loom.ZombieBattleground.Data.Hero;
 
 namespace Loom.ZombieBattleground
 {
@@ -41,9 +43,9 @@ namespace Loom.ZombieBattleground
         {
             CachedUserLocalData = new UserLocalData();
             CachedCardsLibraryData = new CardsLibraryData();
-            CachedHeroesData = new HeroesData();
+            CachedHeroesData = new HeroesData(new List<Hero>());
             CachedCollectionData = new CollectionData();
-            CachedDecksData = new DecksData();
+            CachedDecksData = new DecksData(new List<Deck>());
             CachedOpponentDecksData = new OpponentDecksData();
             CachedCreditsData = new CreditsData();
             CachedBuffsTooltipData = new TooltipContentData();
@@ -146,9 +148,9 @@ namespace Loom.ZombieBattleground
             return CachedBuffsTooltipData.CardTypes.Find(x => x.Type == cardType);
         }
 
-        public TooltipContentData.BuffInfo GetCardBuffInfo(Enumerators.BuffType buffType)
+        public TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescriptionType gameMechanic)
         {
-            return CachedBuffsTooltipData.Buffs.Find(x => x.Type == buffType);
+            return CachedBuffsTooltipData.Mechanics.Find(x => x.Type == gameMechanic);
         }
 
         public TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank)
@@ -268,7 +270,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
                     ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+                    CachedHeroesData = new HeroesData(heroesList.Heroes.Select(hero => hero.FromProtobuf()).ToList());
 
                     break;
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
@@ -284,11 +286,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
                     ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedDecksData = new DecksData();
-                    CachedDecksData.Decks =
-                        listDecksResponse.Decks
-                            .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
-                            .ToList();
+                    CachedDecksData = new DecksData(listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList());
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
                     CachedOpponentDecksData = DeserializeObjectFromAssets<OpponentDecksData>(_cacheDataFileNames[type]);
