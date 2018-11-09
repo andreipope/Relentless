@@ -11,6 +11,11 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();

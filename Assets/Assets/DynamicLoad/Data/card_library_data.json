@@ -2769,7 +2769,13 @@
               "targetType": "none",
               "value": 1,
               "buffType": "ENTRY",
-              "count": 1
+              "count": 1,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/GooBeaker"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2809,7 +2815,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/HealingTouchVFX"
+                  "Path": "Prefabs/VFX/Skills/StaplerVFX"
                 }
               ]
             }
@@ -2889,7 +2895,13 @@
               "targetType": "none",
               "value": 2,
               "buffType": "ENTRY",
-              "count": 2
+              "count": 2,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/GooBeaker"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
