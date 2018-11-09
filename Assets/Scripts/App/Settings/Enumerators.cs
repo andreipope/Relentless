@@ -40,6 +40,7 @@ namespace Loom.ZombieBattleground.Common
             TARGET_ADJUSTMENTS_AIR,
             HEAL_DIRECTLY,
             HEAL,
+            SWING_LIGHTNING,
             CHANGE_STAT_FRESH_MEAT
         }
 
@@ -574,6 +575,12 @@ namespace Loom.ZombieBattleground.Common
             IfHasUnitsWithFactionInPlay,
             AllyUnitsByFactionThatCost,
             YourOverlord
+        }
+
+        public enum UniqueAnimationType
+        {
+            None,
+            ShammannArrival,
         }
     }
 }

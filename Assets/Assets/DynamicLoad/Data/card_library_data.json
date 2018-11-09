@@ -1526,7 +1526,14 @@
               "activityType": "passive",
               "callType": "ATTACK",
               "value": 1,
-              "buffType": "SWING"
+              "effectType": "SWING_LIGHTNING",
+              "buffType": "SWING",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ZtormmcallerVFX"
+                }
+              ]
             },
             {
               "type": "DAMAGE_TARGET",
@@ -1534,7 +1541,7 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY" 
             }
           ],
           "cardViewInfo": {
@@ -2959,7 +2966,7 @@
             }
           }
         },
-        {  
+        {
           "id":"40",
           "kind":"SPELL",
           "set":"Item",
@@ -2997,6 +3004,41 @@
               ]
             }
          ]
+        }
+        {
+          "id": "116",
+          "kind": "SPELL",
+          "set": "Item",
+          "name": "Shopping Cart",
+          "description": "\u003cb\u003eEntry:\u003c/b\u003e All ally zombies get Swing 1",
+          "flavorText": "Silly fun times... until someone loses an eye or a head!",
+          "picture": "ShoppingCart",
+          "rank": "Minion",
+          "type": "Walker",
+          "cost": 4,
+          "cardViewInfo": {
+            "position": { },
+            "scale": {
+             "x": 0.6,
+             "y": 0.6,
+             "z": 0.6
+            }
+          },
+          "abilities": [
+            {
+              "type": "TAKE_SWING_TO_UNITS",
+              "activityType": "passive",
+              "callType": "entry",
+              "targetType": "player_card",
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ShoppingCart"
+                }
+              ]
+            }
+          ]
         }
       ]
     },

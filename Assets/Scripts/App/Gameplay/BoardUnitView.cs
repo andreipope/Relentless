@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
@@ -36,6 +37,8 @@ namespace Loom.ZombieBattleground
         private readonly BattlegroundController _battlegroundController;
 
         private readonly RanksController _ranksController;
+
+        private readonly UniqueAnimationsController _uniqueAnimationsController;
 
         private readonly GameObject _fightTargetingArrowPrefab;
 
@@ -99,6 +102,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
+            _uniqueAnimationsController = _gameplayManager.GetController<UniqueAnimationsController>();
 
             GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             GameObject.transform.SetParent(parent, false);
@@ -174,58 +178,34 @@ namespace Loom.ZombieBattleground
             switch (Model.InitialUnitType)
             {
                 case Enumerators.CardType.FERAL:
-                    _timerManager.AddTimer(
-                        x =>
-                        {
-                            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
                                 false, false, true);
-                        },
-                        null,
-                        .55f);
+                    }, 0.55f);
 
-                    _timerManager.AddTimer(
-                        x =>
-                        {
-                            ArrivalAnimationEventHandler();
-                        },
-                        null,
-                        Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
+                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
 
                     break;
                 case Enumerators.CardType.HEAVY:
-                    _timerManager.AddTimer(
-                        x =>
-                        {
-                            _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
                                 false, false, true);
-                        });
+                    }, 1f);
 
-                    _timerManager.AddTimer(
-                        x =>
-                        {
-                            ArrivalAnimationEventHandler();
-                        },
-                        null,
-                        Model.OwnerPlayer.IsLocalPlayer ? 2.7f : 1.7f);
+                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
+
                     break;
                 case Enumerators.CardType.WALKER:
                 default:
-                    _timerManager.AddTimer(
-                        x =>
-                        {
-                            _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
                                 false, false, true);
-                        },
-                        null,
-                        .6f);
-                    _timerManager.AddTimer(
-                        x =>
-                        {
-                            ArrivalAnimationEventHandler();
-                        },
-                        null,
-                        Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
+                    }, .6f);
 
+                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
                     break;
             }
 
@@ -425,6 +405,11 @@ namespace Loom.ZombieBattleground
         {
             if (_unitContentObject == null || !_unitContentObject)
                 return;
+
+            if (_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
+            {
+                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card);
+            }
 
             _unitContentObject.SetActive(true);
             if (Model.HasFeral || Model.NumTurnsOnBoard > 0 && !Model.CantAttackInThisTurnBlocker)

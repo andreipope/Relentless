@@ -600,6 +600,11 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
+                if (_gameplayManager.GetController<CardsController>().CardDistribution)
+                {
+                    _uiManager.HidePopup<MulliganPopup>();
+                }
+
                 GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
 
