@@ -110,10 +110,6 @@ namespace Loom.ZombieBattleground
 
         public void Show(object data)
         {
-            if (data != null && data is PastActionParam param)
-            {
-            }
-
             Show();
         }
 
