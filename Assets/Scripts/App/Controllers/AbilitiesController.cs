@@ -908,6 +908,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.TAKE_SWING_TO_UNITS:
                     ability = new TakeSwingToUnitsAbility(cardKind, abilityData);
+                    abilityView = new TakeSwingToUnitsAbilityView((TakeSwingToUnitsAbility)ability);
                     break;
                 case Enumerators.AbilityType.DESTROY_UNITS:
                     ability = new DestroyUnitsAbility(cardKind, abilityData);

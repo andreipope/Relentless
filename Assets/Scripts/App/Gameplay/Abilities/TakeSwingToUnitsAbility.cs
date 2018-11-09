@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action();
+            InvokeActionTriggered();
         }
 
         public override void Action(object info = null)
@@ -49,6 +49,13 @@ namespace Loom.ZombieBattleground
                     TargetEffects = TargetEffects
                 });
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

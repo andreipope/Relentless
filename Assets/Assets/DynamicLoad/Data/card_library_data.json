@@ -2965,6 +2965,41 @@
               "z": 0.55
             }
           }
+        },
+        {
+          "id": "116",
+          "kind": "SPELL",
+          "set": "Item",
+          "name": "Shopping Cart",
+          "description": "\u003cb\u003eEntry:\u003c/b\u003e All ally zombies get Swing 1",
+          "flavorText": "Silly fun times... until someone loses an eye or a head!",
+          "picture": "ShoppingCart",
+          "rank": "Minion",
+          "type": "Walker",
+          "cost": 4,
+          "cardViewInfo": {
+            "position": { },
+            "scale": {
+             "x": 0.6,
+             "y": 0.6,
+             "z": 0.6
+            }
+          },
+          "abilities": [
+            {
+              "type": "TAKE_SWING_TO_UNITS",
+              "activityType": "passive",
+              "callType": "entry",
+              "targetType": "player_card",
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ShoppingCart"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
