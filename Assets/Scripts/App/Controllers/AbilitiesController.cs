@@ -865,6 +865,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DAMAGE_AND_DISTRACT_TARGET:
                     ability = new DamageAndDistractTargetAbility(cardKind, abilityData);
+                    abilityView = new DamageAndDistractTargetAbilityView((DamageAndDistractTargetAbility)ability);
                     break;
                 case Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED:
                     ability = new DamageOverlordOnCountItemsPlayedAbility(cardKind, abilityData);

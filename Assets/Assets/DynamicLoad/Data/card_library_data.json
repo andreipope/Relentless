@@ -2958,6 +2958,45 @@
               "z": 0.55
             }
           }
+        },
+        {  
+          "id":"40",
+          "kind":"SPELL",
+          "set":"Item",
+          "name":"Bat",
+          "description":"2 damage to a zombie and Distract it",
+          "flavorText":"Simple but soooo effective ",
+          "picture":"Bat",
+          "rank":"Minion",
+          "type":"Walker",
+          "cost":3,
+          "cardViewInfo":{  
+            "position":{  
+
+           },
+          "scale":{  
+             "x":0.6,
+             "y":0.6,
+             "z":0.6
+           }
+         },
+         "abilities":[  
+         {  
+           "type":"DAMAGE_AND_DISTRACT_TARGET",
+           "activityType":"active",
+           "callType":"entry",
+           "targetType":"player_card | opponent_card",
+           "value":2,
+           "buffType":"ENTRY",
+           "damage":2,
+           "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/BatEntry"
+                }
+              ]
+            }
+         ]
         }
       ]
     },

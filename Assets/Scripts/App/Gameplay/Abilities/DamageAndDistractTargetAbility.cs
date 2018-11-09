@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered();
             }
         }
 
@@ -62,6 +62,13 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }
