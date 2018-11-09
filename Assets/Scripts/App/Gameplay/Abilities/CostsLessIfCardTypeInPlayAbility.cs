@@ -1,17 +1,16 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    public class CostsLessIfCardTypeInHandAbility : AbilityBase
+    public class CostsLessIfCardTypeInPlayAbility : AbilityBase
     {
         public Enumerators.SetType SetType;
 
         public int Value;
 
-        public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
+        public CostsLessIfCardTypeInPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             SetType = ability.AbilitySetType;
@@ -27,13 +26,10 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
 
-            PlayerCallerOfAbility.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.BoardChanged += BoardChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
-            InternalTools.DoActionDelayed(() =>
-            {
-                Action();
-            }, 0.5f);
+            Action();
         }
 
         public override void Action(object info = null)
@@ -42,8 +38,9 @@ namespace Loom.ZombieBattleground
             if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
                 return;
 
-            int gooCost = PlayerCallerOfAbility.CardsInHand
-                .FindAll(x => x.LibraryCard.CardSetType == SetType && x != MainWorkingCard).Count * Value;
+            int gooCost = PlayerCallerOfAbility.BoardCards
+                .FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count * Value;
+
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
                 MainWorkingCard.RealCost + gooCost, BoardCard);
         }
@@ -53,11 +50,11 @@ namespace Loom.ZombieBattleground
             if (!card.Equals(MainWorkingCard))
                 return;
 
-            PlayerCallerOfAbility.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.BoardChanged -= BoardChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 
-        private void HandChangedHandler(int obj)
+        private void BoardChangedHandler(int obj)
         {
             Action();
         }
