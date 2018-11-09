@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
             BoardCards = new List<BoardUnitView>();
             BoardSpellsInUse = new List<BoardSpell>();
 
-            CardsPreparingToHand = new List<BoardCard>();
+            CardsPreparingToHand = new List<WorkingCard>();
 
             switch (_matchManager.MatchType)
             {
@@ -311,7 +311,7 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> CardsOnBoard { get; }
 
-        public List<BoardCard> CardsPreparingToHand { get; set; }
+        public List<WorkingCard> CardsPreparingToHand { get; set; }
 
         public bool IsStunned { get; private set; }
 
@@ -682,8 +682,7 @@ namespace Loom.ZombieBattleground
 
         private WorkingCard GetCardThatNotInDistribution()
         {
-            List<WorkingCard> usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
-            List<WorkingCard> cards = CardsInDeck.FindAll(x => !usedCards.Contains(x)).ToList();
+            List<WorkingCard> cards = CardsInDeck.FindAll(x => !CardsPreparingToHand.Contains(x)).ToList();
 
             return cards[0];
         }

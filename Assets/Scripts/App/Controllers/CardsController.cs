@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPage<GameplayPage>().KeepButtonVisibility(true);
+                _uiManager.DrawPopup<MulliganPopup>();
             }
         }
 
@@ -155,38 +155,11 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(DirectlyEndCardDistribution);
 
             // for local player
-            List<BoardCard> cards = new List<BoardCard>();
-            cards.AddRange(_gameplayManager.CurrentPlayer.CardsPreparingToHand.FindAll(x => x.CardShouldBeChanged));
-            foreach (BoardCard card in cards)
+            foreach (WorkingCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                _gameplayManager.CurrentPlayer.CardsInDeck.Remove(card.WorkingCard);
-                _gameplayManager.CurrentPlayer.CardsInDeck.Add(card.WorkingCard);
-                card.ReturnCardToDeck();
+                AddCardToHand(_gameplayManager.CurrentPlayer, card);
             }
-
-            foreach (BoardCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
-            {
-                SortingGroup sortingGroup = card.GameObject.GetComponent<SortingGroup>();
-                sortingGroup.sortingLayerName = "Foreground";
-                sortingGroup.sortingOrder = 1;
-                _gameplayManager.CurrentPlayer.RemoveCardFromDeck(card.WorkingCard);
-                _gameplayManager.CurrentPlayer.CardsInHand.Add(card.WorkingCard);
-                _battlegroundController.PlayerHandCards.Add(card);
-
-                _timerManager.AddTimer(
-                    x =>
-                    {
-                        card.HandBoardCard.Enabled = true;
-                    },
-                    null,
-                    2f);
-            }
-
-            if (_gameplayManager.CurrentPlayer.CardsPreparingToHand.Count > 0)
-            {
-                _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-                _gameplayManager.CurrentPlayer.CardsPreparingToHand.Clear();
-            }
+            _gameplayManager.CurrentPlayer.CardsPreparingToHand.Clear();
 
             CardDistribution = false;
 
@@ -209,49 +182,21 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void CardsDistribution(List<WorkingCard> mulliganCards)
+        {
+            Player player = _gameplayManager.CurrentPlayer;
+            List<WorkingCard> randomCards = InternalTools.GetRandomElementsFromList(
+                player.CardsInDeck.Except(player.CardsPreparingToHand).ToList(),
+                mulliganCards.Count);
+            player.CardsPreparingToHand = player.CardsPreparingToHand.Except(mulliganCards).ToList();
+            player.CardsPreparingToHand.AddRange(randomCards);
+
+            EndCardDistribution();
+        }
+
         public void AddCardToDistributionState(Player player, WorkingCard card)
         {
-            BoardCard boardCard = CreateBoardCard(card);
-            SortingGroup sortingGroup = boardCard.GameObject.GetComponent<SortingGroup>();
-            sortingGroup.sortingLayerID = SRSortingLayers.GameUI1;
-            player.CardsPreparingToHand.Add(boardCard);
-            boardCard.HandBoardCard.Enabled = false;
-            boardCard.MoveCardFromDeckToCenter();
-        }
-
-        public void UpdatePositionOfCardsForDistribution(Player player)
-        {
-            if (player == null)
-                return;
-            else if (player.CardsPreparingToHand == null)
-                return;
-
-
-            int count = player.CardsPreparingToHand.Count;
-
-            float handWidth = 0.0f;
-            const float spacing = -5f;
-
-            handWidth += spacing * count - 1;
-
-            Vector3 pivot = new Vector3(-3f, 0, -0.25f);
-
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 moveToPosition = new Vector3(pivot.x - handWidth / 2f, 0, -0.25f);
-                player.CardsPreparingToHand[i].Transform.DOMove(moveToPosition, 1f);
-                player.CardsPreparingToHand[i].Transform.DOScale(Vector3.one * 0.4f, 1);
-
-                pivot.x += handWidth / count;
-            }
-        }
-
-        public void ReturnCardToDeck(BoardCard card, Action callback)
-        {
-            card.WorkingCard.Owner.CardsPreparingToHand.Remove(card);
-            Object.Destroy(card.GameObject);
-
-            callback?.Invoke();
+            player.CardsPreparingToHand.Add(card);
         }
 
         public void AddCardToHand(Player player, WorkingCard card = null)
