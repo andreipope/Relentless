@@ -59,7 +59,9 @@ namespace Loom.ZombieBattleground
                     {
                         try
                         {
-                           if (_onPvPManagerGameStartedActionHandlerCounter < 0) {
+                            GameClient.Get<IQueueManager>().Clear();
+
+                            if (_onPvPManagerGameStartedActionHandlerCounter < 0) {
                                 _onPvPManagerGameStartedActionHandlerCounter = 0;
                                 Debug.Log("OnPvPManagerGameStartedActionReceived was unsubscribed more than required.");
                             }
@@ -69,8 +71,7 @@ namespace Loom.ZombieBattleground
                                 _onPvPManagerGameStartedActionHandlerCounter--;
                                 Debug.Log("Unsubscribing on PVP, OnPvPManagerGameStartedActionReceived.");
                             }
-
-                            GameClient.Get<IQueueManager>().Clear();                            _uiManager.DrawPopup<ConnectionPopup>();
+                            _uiManager.DrawPopup<ConnectionPopup>();
 
                             ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
                             connectionPopup.ShowLookingForMatch();

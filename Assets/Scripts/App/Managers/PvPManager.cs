@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
+
+            GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }
 
         public async void Update()
@@ -123,6 +125,12 @@ namespace Loom.ZombieBattleground
             }
 
             return "";
+        }
+
+        private async void GameEndedHandler(Enumerators.EndGameType obj)
+        {
+            _isWaitForTurnTimerStart = false;
+            await _backendFacade.UnsubscribeEvent();
         }
 
         public async Task<bool> FindMatch()
