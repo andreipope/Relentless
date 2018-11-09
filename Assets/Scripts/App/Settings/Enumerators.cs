@@ -575,5 +575,11 @@ namespace Loom.ZombieBattleground.Common
             AllyUnitsByFactionThatCost,
             YourOverlord
         }
+
+        public enum UniqueAnimationType
+        {
+            None,
+            ShammannArrival,
+        }
     }
 }
