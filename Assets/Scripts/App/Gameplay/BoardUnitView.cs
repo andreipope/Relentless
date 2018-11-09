@@ -67,6 +67,10 @@ namespace Loom.ZombieBattleground
 
         private GameObject _distractObject;
 
+        private SpriteRenderer _cardMechanicsPicture;
+
+        private OnBehaviourHandler _cardsMechanicsPictureOnBehaviourHandler;
+
         private Vector3 _initialScale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private bool _ignoreArrivalEndEvents;
@@ -109,6 +113,9 @@ namespace Loom.ZombieBattleground
             _pictureSprite = GameObject.transform.Find("CreaturePicture").GetComponent<SpriteRenderer>();
             _frozenSprite = GameObject.transform.Find("Other/Frozen").GetComponent<SpriteRenderer>();
             _shieldSprite = GameObject.transform.Find("Other/Shield").gameObject;
+            _cardMechanicsPicture = GameObject.transform.Find("Other/Picture_CardMechanics").GetComponent<SpriteRenderer>();
+
+            _cardsMechanicsPictureOnBehaviourHandler = _cardMechanicsPicture.GetComponent<OnBehaviourHandler>();
 
             _distractObject = GameObject.transform.Find("Other/ZB_ANM_Distract").gameObject;
 
@@ -117,6 +124,7 @@ namespace Loom.ZombieBattleground
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
             _toxicPowerGlowParticles = GameObject.transform.Find("Other/ToxicPowerGlowVFX").GetComponent<ParticleSystem>();
+
 
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
@@ -527,8 +535,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public bool GetHighlightingEnabled () {
-            if (_glowObj) 
+        public bool GetHighlightingEnabled()
+        {
+            if (_glowObj)
                 return _glowObj.activeSelf;
 
             return false;
@@ -797,7 +806,7 @@ namespace Loom.ZombieBattleground
                             completeCallback?.Invoke();
                         };
                     }
-                    else if(Model.CurrentHp <= 0)
+                    else if (Model.CurrentHp <= 0)
                     {
                         Model.UnitDied += () =>
                         {
@@ -836,6 +845,16 @@ namespace Loom.ZombieBattleground
             string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + Model.InitialUnitType + "_ActiveFrame_Red";
             _glowSelectedObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(direction), _unitContentObject.transform, false);
             _glowSelectedObject.SetActive(false);
+        }
+
+        private void StartDrawingCardMechanicIcons()
+        {
+
+        }
+
+        private void ChangeCardMechanicIcon()
+        {
+         
         }
     }
 }
