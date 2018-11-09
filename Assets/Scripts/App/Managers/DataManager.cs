@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,18 @@ namespace Loom.ZombieBattleground
 {
     public class DataManager : IService, IDataManager
     {
+        private static readonly JsonSerializerSettings JsonSerializerSettings =
+            new JsonSerializerSettings
+            {
+                Culture = CultureInfo.InvariantCulture,
+                CheckAdditionalContent = true,
+                MissingMemberHandling = MissingMemberHandling.Error,
+                Error = (sender, args) =>
+                {
+                    Debug.LogException(args.ErrorContext.Error);
+                }
+            };
+
         private ILocalizationManager _localizationManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -134,7 +147,7 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    File.WriteAllText(GetPersistentDataItemPath(_cacheDataFileNames[type]), SerializeObject(CachedUserLocalData));
+                    File.WriteAllText(GetPersistentDataItemPath(_cacheDataFileNames[type]), SerializePersistentObject(CachedUserLocalData));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -349,19 +362,33 @@ namespace Loom.ZombieBattleground
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
         }
 
+        public string SerializeToJson(object obj, bool indented = false)
+        {
+            return JsonConvert.SerializeObject(
+                obj,
+                indented ? Formatting.Indented : Formatting.None,
+                JsonSerializerSettings
+            );
+        }
+
+        public T DeserializeFromJson<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json, JsonSerializerSettings);
+        }
+
         private T DeserializeObjectFromAssets<T>(string fileName)
         {
-            return JsonConvert.DeserializeObject<T>(_loadObjectsManager.GetObjectByPath<TextAsset>(fileName).text);
+            return DeserializeFromJson<T>(_loadObjectsManager.GetObjectByPath<TextAsset>(fileName).text);
         }
 
         private T DeserializeObjectFromPersistentData<T>(string path)
         {
-            return JsonConvert.DeserializeObject<T>(DecryptData(File.ReadAllText(path)));
+            return DeserializeFromJson<T>(DecryptData(File.ReadAllText(path)));
         }
 
-        private string SerializeObject(object obj)
+        private string SerializePersistentObject(object obj)
         {
-            string data = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            string data = SerializeToJson(obj, true);
             return EncryptData(data);
         }
 

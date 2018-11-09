@@ -42,5 +42,9 @@ namespace Loom.ZombieBattleground
         string DecryptData(string data);
 
         string EncryptData(string data);
+
+        string SerializeToJson(object obj, bool indented = false);
+
+        T DeserializeFromJson<T>(string json);
     }
 }
