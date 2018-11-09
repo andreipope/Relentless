@@ -140,7 +140,8 @@ namespace Loom.ZombieBattleground.Common
             DESTROY_UNITS,
             DEAL_DAMAGE_TO_UNIT_AND_SWING,
             SET_ATTACK_AVAILABILITY,
-            CHOOSABLE_ABILITIES
+            CHOOSABLE_ABILITIES,
+            COSTS_LESS_IF_TYPE_CARD_IN_PLAY,
         }
 
         public enum ActionType

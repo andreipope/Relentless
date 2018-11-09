@@ -459,6 +459,7 @@ namespace Loom.ZombieBattleground
 
                                         workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                         workingCard.Owner.AddCardToBoard(workingCard);
+                                        workingCard.Owner.AddCardToGraveyard(workingCard);
 
                                         card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
 
@@ -686,6 +687,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
+                    abilityView = new AddGooVialsAbilityView((AddGooVialsAbility)ability);
                     break;
                 case Enumerators.AbilityType.MODIFICATOR_STATS:
                     ability = new ModificateStatAbility(cardKind, abilityData);
@@ -918,6 +920,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.CHOOSABLE_ABILITIES:
                     ability = new ChoosableAbilitiesAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.COSTS_LESS_IF_TYPE_CARD_IN_PLAY:
+                    ability = new CostsLessIfCardTypeInPlayAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
@@ -954,6 +959,7 @@ namespace Loom.ZombieBattleground
 
                     card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                     card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
+                    card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
 
                     card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
 

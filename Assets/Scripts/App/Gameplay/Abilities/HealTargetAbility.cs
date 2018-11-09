@@ -134,10 +134,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
                     allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
-                    allies.Remove(AbilityUnitOwner);
+
+                    if (AbilityUnitOwner != null && allies.Contains(AbilityUnitOwner))
+                        allies.Remove(AbilityUnitOwner);
                 }
 
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
@@ -174,8 +177,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies,
-                AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString()));
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -187,13 +189,13 @@ namespace Loom.ZombieBattleground
 
         private void HealTarget(BoardObject boardObject, int value)
         {
-            switch (AffectObjectType)
+            switch (boardObject)
             {
-                case Enumerators.AffectObjectType.Player:
-                    BattleController.HealPlayerByAbility(GetCaller(), AbilityData, (Player)boardObject, value);
+                case Player player:
+                    BattleController.HealPlayerByAbility(GetCaller(), AbilityData, player, value);
                     break;
-                case Enumerators.AffectObjectType.Character:
-                    BattleController.HealUnitByAbility(GetCaller(), AbilityData, (BoardUnitModel)boardObject, value);
+                case BoardUnitModel unit:
+                    BattleController.HealUnitByAbility(GetCaller(), AbilityData, unit, value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);

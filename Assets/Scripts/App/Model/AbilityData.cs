@@ -186,6 +186,14 @@ namespace Loom.ZombieBattleground.Data
             {
                 TargetSetType = Enumerators.SetType.NONE;
             }
+
+            if (ChoosableAbilities != null)
+            {
+                foreach (ChoosableAbility choosableAbility in ChoosableAbilities)
+                {
+                    choosableAbility.AbilityData.ParseData();
+                }
+            }
         }
 
         public bool HasVisualEffectType(Enumerators.VisualEffectType type)
