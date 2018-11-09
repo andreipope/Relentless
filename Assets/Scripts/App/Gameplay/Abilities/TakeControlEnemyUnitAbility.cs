@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered();
             }
         }
 
@@ -36,6 +36,13 @@ namespace Loom.ZombieBattleground
             {
               TargetUnit
             }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }
