@@ -179,23 +179,6 @@ namespace Loom.ZombieBattleground.Data
                 Scale = cardViewInfo.Scale.ToProtobuf()
             };
         }
-
-        /*private static RepeatedField<CardInstance> GetMulliganCards(this List<WorkingCard> cards)
-        {
-            RepeatedField<CardInstance> cardInstances = new RepeatedField<CardInstance>();
-            for (int i = 0; i < cards.Count; i++)
-            {
-                cardInstances[i] = new CardInstance
-                {
-                    InstanceId = cards[i].InstanceId,
-                    Prototype = cards[i].LibraryCard.GetCardPrototype(),
-                    Defense = cards[i].Health,
-                    Attack = cards[i].Damage
-                };
-            }
-
-            return cardInstances;
-        }*/
     }
 }
 
