@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
         private Deck _currentDeck;
 
-        private int _numSets, _currentElementPage, _numElementPages, _numHordePages, _currentHordePage;
+        private int _currentElementPage, _numElementPages, _numHordePages, _currentHordePage;
 
         private Enumerators.SetType _currentSet;
 
@@ -320,9 +320,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet < 0)
+                if (_currentSet < Enumerators.SetType.FIRE)
                 {
-                    _currentSet = (Enumerators.SetType) (_numSets - 1);
+                    _currentSet = Enumerators.SetType.ITEM;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -339,9 +339,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if ((int) _currentSet >= _numSets)
+                if (_currentSet >= Enumerators.SetType.ITEM)
                 {
-                    _currentSet = 0;
+                    _currentSet = Enumerators.SetType.FIRE;
                     _currentElementPage = 0;
                 }
                 else
@@ -355,7 +355,7 @@ namespace Loom.ZombieBattleground
 
         public void LoadCards(int page, Enumerators.SetType setType)
         {
-            _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
@@ -871,8 +871,6 @@ namespace Loom.ZombieBattleground
 
         private void InitObjects()
         {
-            _numSets = _dataManager.CachedCardsLibraryData.Sets.Count - 1;
-
             Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.Heroes
                 .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
 

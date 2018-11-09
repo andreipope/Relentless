@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardSetsIcons;
 
-        private int _numSets, _currentElementPage, _numElementPages;
+        private int _currentElementPage, _numElementPages;
 
         private Enumerators.SetType _currentSet = Enumerators.SetType.FIRE;
 
@@ -240,7 +240,7 @@ namespace Loom.ZombieBattleground
 
                 if (_currentSet < Enumerators.SetType.FIRE)
                 {
-                    _currentSet = (Enumerators.SetType) (_numSets - 1);
+                    _currentSet = Enumerators.SetType.ITEM;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -257,7 +257,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if ((int) _currentSet >= _numSets)
+                if (_currentSet >= Enumerators.SetType.ITEM)
                 {
                     _currentSet = Enumerators.SetType.FIRE;
                     _currentElementPage = 0;
@@ -352,7 +352,6 @@ namespace Loom.ZombieBattleground
                 CardPositions.Add(placeholder);
             }
 
-            _numSets = Enumerators.SetType.ITEM - Enumerators.SetType.FIRE;
             CalculateNumberOfPages();
             LoadCards(0, _currentSet);
 
@@ -365,7 +364,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < _cardSetsIcons.transform.childCount; i++)
             {
                 GameObject c = _cardSetsIcons.transform.GetChild(i).GetChild(0).gameObject;
-                c.SetActive(i == (int) _currentSet);
+                c.SetActive(i == _currentSet - Enumerators.SetType.FIRE);
             }
         }
 
