@@ -42,23 +42,9 @@ public class MultiplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test1_MatchmakingTrial()
+    public IEnumerator Test1_SingleplayerTrial()
     {
-        _testHelper.SetTestName ("Tutorial - Matchmaking");
-
-        /* yield return _testHelper.MainMenuTransition ("Button_Play");
-
-        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
-
-        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
-
-        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
-
-        yield return _testHelper.MainMenuTransition ("Button_CasualType");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        yield return new WaitForSeconds (5); */
+        _testHelper.SetTestName ("Tutorial - Singleplayer Trial");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -82,8 +68,105 @@ public class MultiplayerTests
 
         yield return _testHelper.MakeMoves ();
 
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test2_MatchmakingCancel ()
+    {
+        _testHelper.SetTestName ("Tutorial - Matchmaking Cancel");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
+
+        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_CasualType");
+
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        yield return new WaitForSeconds (5);
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.ClickGenericButton ("Button_Cancel");
+
+        yield return _testHelper.LetsThink ();
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test3_MatchmakeAndQuit ()
+    {
+        _testHelper.SetTestName ("Tutorial - Matchmaking And Cancel");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
+
+        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_CasualType");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Settings");
+
+        yield return _testHelper.ClickGenericButton ("Button_QuitToMainMenu");
+
+        yield return _testHelper.RespondToYesNoOverlay (true);
+
+        yield return _testHelper.GoBackToMainPage ();
+
+        yield return _testHelper.LetsThink ();
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test4_MatchmakeAndPlay ()
+    {
+        _testHelper.SetTestName ("Tutorial - Matchmaking And Play");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
+
+        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_CasualType");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        _testHelper.InitalizePlayer ();
+
+        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+
+        yield return _testHelper.DecideWhichCardsToPick ();
+
+        yield return _testHelper.WaitUntilOurFirstTurn ();
+
+        yield return _testHelper.MakeMoves ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
     }
 }

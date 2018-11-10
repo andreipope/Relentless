@@ -165,6 +165,36 @@ public class TestHelper
         _opponentPlayer = _gameplayManager.OpponentPlayer;
     }
 
+    public IEnumerator GoBackToMainPage ()
+    {
+        GameObject canvas1GameObject = null;
+
+        yield return new WaitUntil (() => {
+            canvas1GameObject = GameObject.Find ("Canvas1");
+
+            if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
+            {
+                if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        });
+
+        if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] != "MainMenuPage")
+        {
+            yield return ClickGenericButton ("Button_Back");
+
+            yield return GoBackToMainPage ();
+        }
+
+        yield return null;
+    }
+
     public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
     {
         GameObject canvas1GameObject = null;
@@ -375,7 +405,7 @@ public class TestHelper
 
         yield return UseUnitsOnBoard ();
 
-        // yield return UsePlayerSkills ();
+        yield return UsePlayerSkills ();
 
         if (_testBroker.GetPlayer (_player).SelfHero.HeroElement == Enumerators.SetType.FIRE)
         {
@@ -463,7 +493,8 @@ public class TestHelper
                     BoardUnitModel attackedUnit = GetTargetOpponentUnit ();
                     if (attackedUnit != null)
                     {
-                        PlayCardFromBoard (unit, null, attackedUnit);
+                        unit.DoCombat (attackedUnit);
+                        // PlayCardFromBoard (unit, null, attackedUnit);
 
                         alreadyUsedUnits.Add (unit);
 
@@ -492,7 +523,8 @@ public class TestHelper
             {
                 while (UnitCanBeUsable (unit))
                 {
-                    PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
+                    unit.DoCombat (_testBroker.GetPlayer (_opponent));
+                    // PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
 
                     yield return LetsThink ();
                 }
@@ -506,7 +538,8 @@ public class TestHelper
                 {
                     if (GetPlayerAttackingValue () > GetOpponentAttackingValue ())
                     {
-                        PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
+                        unit.DoCombat (_testBroker.GetPlayer (_opponent));
+                        // PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
 
                         yield return LetsThink ();
                     }
@@ -516,13 +549,15 @@ public class TestHelper
 
                         if (attackedCreature != null)
                         {
-                            PlayCardFromBoard (unit, null, attackedCreature);
+                            unit.DoCombat (attackedCreature);
+                            // PlayCardFromBoard (unit, null, attackedCreature);
 
                             yield return LetsThink ();
                         }
                         else
                         {
-                            PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
+                            unit.DoCombat (_testBroker.GetPlayer (_opponent));
+                            // PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
 
                             yield return LetsThink ();
                         }
@@ -536,8 +571,41 @@ public class TestHelper
         Debug.Log ("Played cards from board");
     }
 
+    // todo: review
     // AI step 3
-    // private IEnumerator UsePlayerSkills ()
+    private IEnumerator UsePlayerSkills ()
+    {
+        bool wasAction = false;
+
+        if (_testBroker.GetPlayer (_player).IsStunned)
+            yield break;
+
+        if (_testBroker.GetPlayerPrimarySkill (_player).IsSkillReady)
+        {
+            DoBoardSkill (_testBroker.GetPlayerPrimarySkill (_player));
+            wasAction = true;
+        }
+
+        if (wasAction)
+        {
+            yield return LetsThink ();
+        }
+
+        wasAction = false;
+        if (_testBroker.GetPlayerSecondarySkill (_player).IsSkillReady)
+        {
+            DoBoardSkill (_testBroker.GetPlayerSecondarySkill (_player));
+            wasAction = true;
+        }
+
+        if (wasAction)
+        {
+            yield return LetsThink ();
+            yield return LetsThink ();
+        }
+
+        yield return null;
+    }
 
     private IEnumerator CheckGooCard ()
     {
@@ -691,15 +759,12 @@ public class TestHelper
                 {
                     BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
 
-                    HandBoardCard handBoardCard = boardCard.HandBoardCard;
-                    handBoardCard.Enabled = true;
-                    handBoardCard.OnSelected ();
+                    _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
+                        PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                        _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
+                    });
 
-                    boardCard.Transform.position = Vector3.zero;
-
-                    handBoardCard.MouseUp (boardCard.GameObject);
-
-                    /* if (target != null)
+                    if (target != null)
                     {
                         WorkingCard workingCard = boardCard.WorkingCard;
 
@@ -719,12 +784,14 @@ public class TestHelper
                                     card.LibraryCard.Abilities[0]);
                         }
 
-                        Action callback = () => {
+                        _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, null, target);
+
+                        /* Action callback = () => {
                             _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, _callAbilityAction, target);
                         };
 
-                        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, action: callback);
-                    } */
+                        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, action: callback); */
+                    }
                 }
                 else
                 {
@@ -732,12 +799,33 @@ public class TestHelper
                     _testBroker.GetPlayer (_player).AddCardToBoard (card);
 
                     _cardsController.PlayOpponentCard (_testBroker.GetPlayer (_player), card, target, PlayCardCompleteHandler);
-
-                    _cardsController.DrawCardInfo (card);
                 }
+
+                _cardsController.DrawCardInfo (card);
 
                 break;
             case Enumerators.CardKind.SPELL:
+                if ((target != null && needTargetForAbility) || !needTargetForAbility)
+                {
+                    _testBroker.GetPlayer (_player).RemoveCardFromHand (card);
+                    _testBroker.GetPlayer (_player).AddCardToBoard (card);
+
+                    if (_player == Enumerators.MatchPlayer.CurrentPlayer)
+                    {
+                        BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
+
+                        _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
+                            PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                            _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
+                        });
+                    }
+                    else
+                    {
+                        _cardsController.PlayOpponentCard (_testBroker.GetPlayer (_player), card, target, PlayCardCompleteHandler);
+                    }
+
+                    _cardsController.DrawCardInfo (card);
+                }
 
                 break;
         }
@@ -1316,7 +1404,206 @@ public class TestHelper
         return false;
     }
 
-    // private void DoBoardSkill (BoardSkill skill)
+    // todo: review
+    private void DoBoardSkill (BoardSkill skill)
+    {
+        BoardObject target = null;
+
+        Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.None;
+
+        switch (skill.Skill.OverlordSkill)
+        {
+            case Enumerators.OverlordSkill.HARDEN:
+            case Enumerators.OverlordSkill.STONE_SKIN:
+            case Enumerators.OverlordSkill.DRAW:
+                {
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
+                    target = _testBroker.GetPlayer (_player);
+                }
+
+                break;
+            case Enumerators.OverlordSkill.HEALING_TOUCH:
+                {
+                    List<BoardUnitModel> units = GetUnitsWithLowHp ();
+
+                    if (units.Count > 0)
+                    {
+                        target = units[0];
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                    }
+                    else
+                        return;
+                }
+                break;
+            case Enumerators.OverlordSkill.MEND:
+                {
+                    target = _testBroker.GetPlayer (_player);
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
+
+                    if (_testBroker.GetPlayer (_player).Defense > 13)
+                    {
+                        if (skill.Skill.ElementTargetTypes.Count > 0)
+                        {
+                            _unitsToIgnoreThisTurn =
+                                _testBroker.GetPlayer (_player).BoardCards
+                                .FindAll (x => !skill.Skill.ElementTargetTypes.Contains (x.Model.Card.LibraryCard.CardSetType))
+                                .Select (x => x.Model)
+                                .ToList ();
+                        }
+
+                        List<BoardUnitModel> units = GetUnitsWithLowHp (_unitsToIgnoreThisTurn);
+
+                        if (units.Count > 0)
+                        {
+                            target = units[0];
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else
+                            return;
+                    }
+                    else
+                        return;
+                }
+
+                break;
+            case Enumerators.OverlordSkill.RABIES:
+                {
+                    _unitsToIgnoreThisTurn =
+                        _testBroker.GetPlayer (_player).BoardCards.FindAll (x =>
+                         skill.Skill.ElementTargetTypes.Count > 0 &&
+                         !skill.Skill.ElementTargetTypes.Contains (x.Model.Card.LibraryCard.CardSetType) ||
+                         x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral)
+                            .Select (x => x.Model)
+                            .ToList ();
+                    BoardUnitModel unit = GetRandomUnit (false, _unitsToIgnoreThisTurn);
+
+                    if (unit != null)
+                    {
+                        target = unit;
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                    }
+                    else
+                        return;
+                }
+
+                break;
+            case Enumerators.OverlordSkill.POISON_DART:
+            case Enumerators.OverlordSkill.TOXIC_POWER:
+            case Enumerators.OverlordSkill.ICE_BOLT:
+            case Enumerators.OverlordSkill.FREEZE:
+            case Enumerators.OverlordSkill.FIRE_BOLT:
+                {
+                    target = _testBroker.GetPlayer (_opponent);
+                    selectedObjectType = Enumerators.AffectObjectType.Player;
+
+                    BoardUnitModel unit = GetRandomOpponentUnit ();
+
+                    if (unit != null)
+                    {
+                        target = unit;
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                    }
+                    else
+                        return;
+                }
+
+                break;
+            case Enumerators.OverlordSkill.PUSH:
+                {
+                    if (skill.Skill.ElementTargetTypes.Count > 0)
+                    {
+                        _unitsToIgnoreThisTurn =
+                            _testBroker.GetPlayer (_player).BoardCards
+                                .FindAll (x => !skill.Skill.ElementTargetTypes.Contains (x.Model.Card.LibraryCard.CardSetType))
+                                .Select (x => x.Model)
+                                .ToList ();
+                    }
+
+                    List<BoardUnitModel> units = GetUnitsWithLowHp (_unitsToIgnoreThisTurn);
+
+                    if (units.Count > 0)
+                    {
+                        target = units[0];
+
+                        _unitsToIgnoreThisTurn.Add ((BoardUnitModel)target);
+
+                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                    }
+                    else
+                    {
+                        BoardUnitModel unit = GetRandomOpponentUnit (_unitsToIgnoreThisTurn);
+
+                        if (unit != null)
+                        {
+                            target = unit;
+
+                            _unitsToIgnoreThisTurn.Add ((BoardUnitModel)target);
+
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else
+                            return;
+                    }
+                }
+
+                break;
+            default:
+                throw new ArgumentOutOfRangeException (nameof (skill.Skill.OverlordSkill), skill.Skill.OverlordSkill, null);
+        }
+
+        skill.StartDoSkill ();
+
+        switch (selectedObjectType)
+        {
+            case Enumerators.AffectObjectType.Player:
+                skill.FightTargetingArrow.SelectedPlayer = (Player)target;
+
+                Debug.Log ("Board skill: Player");
+
+                break;
+            case Enumerators.AffectObjectType.Character:
+                BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) target);
+                skill.FightTargetingArrow.SelectedCard = selectedCardView;
+
+                Debug.Log ("Board skill: Character");
+
+                break;
+            case Enumerators.AffectObjectType.None:
+                Debug.Log ("Board skill: None");
+
+                break;
+            default:
+                throw new ArgumentOutOfRangeException (nameof (selectedObjectType), selectedObjectType, null);
+        }
+
+        // _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target);
+
+        // todo fix this
+        _skillsController.DoSkillAction (skill, null, target);
+
+        skill.EndDoSkill ();
+
+        /* Action callback = () => {
+            switch (selectedObjectType)
+            {
+                case Enumerators.AffectObjectType.Player:
+                    skill.FightTargetingArrow.SelectedPlayer = (Player) target;
+                    break;
+                case Enumerators.AffectObjectType.Character:
+                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) target);
+                    skill.FightTargetingArrow.SelectedCard = selectedCardView;
+                    break;
+                case Enumerators.AffectObjectType.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException (nameof (selectedObjectType), selectedObjectType, null);
+            }
+
+            skill.EndDoSkill ();
+        };
+
+        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target, 1f, action: callback); */
+    }
 
     #endregion
 
@@ -1331,6 +1618,8 @@ public class TestHelper
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
 
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
+
+        yield return null;
     }
 
     public IEnumerator DecideWhichCardsToPick ()
@@ -1370,6 +1659,8 @@ public class TestHelper
     {
         _battlegroundController.StopTurn ();
         GameObject.Find ("_1_btn_endturn").GetComponent<EndTurnButton> ().SetEnabled (false);
+
+        Debug.Log ("Ended turn");
 
         yield return null;
     }
