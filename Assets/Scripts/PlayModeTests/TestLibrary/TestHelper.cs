@@ -16,6 +16,10 @@ public class TestHelper
     private const string _testerKey = "f32ef9a2cfcb";
 
     private bool _initialized = false;
+    public bool Initialized
+    {
+        get { return _initialized; }
+    }
 
     private Scene _testScene;
     private GameObject _testerGameObject;
@@ -45,6 +49,8 @@ public class TestHelper
     private BoardArrowController _boardArrowController;
     private PlayerController _playerController;
 
+    GameAction<object> _callAbilityAction;
+
     private Player _currentPlayer, _opponentPlayer;
 
     public void SetTestName (string testName = "")
@@ -54,6 +60,8 @@ public class TestHelper
 
     public IEnumerator SetUp ()
     {
+        _testStartTime = Time.unscaledTime;
+
         if (!_initialized)
         {
             _testScene = SceneManager.GetActiveScene ();
@@ -72,7 +80,7 @@ public class TestHelper
 
             yield return HandleLogin ();
 
-            yield return AssertCurrentPageName ("MainMenuPage");
+            yield return AssertCurrentPageName ("MainMenuPage", "Beta_Group/Text_Error");
 
             #endregion
 
@@ -80,8 +88,6 @@ public class TestHelper
 
             _initialized = true;
         }
-
-        _testStartTime = Time.unscaledTime;
 
         yield return null;
     }
@@ -104,7 +110,7 @@ public class TestHelper
             GameObject.Destroy (rootGameObject);
         }
 
-        yield return new WaitForSeconds (1);
+        yield return LetsThink ();
 
         SceneManager.SetActiveScene (_testScene);
         yield return SceneManager.UnloadSceneAsync (currentScene);
@@ -112,13 +118,18 @@ public class TestHelper
 
     public IEnumerator TearDown_GoBackToMainScreen ()
     {
-        yield return MainMenuTransition ("Button_Back");
+        if (IsButtonExist ("Button_Back"))
+        {
+            yield return MainMenuTransition ("Button_Back");
 
-        yield return AssertCurrentPageName ("PlaySelectionPage");
+            yield return AssertCurrentPageName ("PlaySelectionPage");
 
-        yield return MainMenuTransition ("Button_Back");
+            yield return MainMenuTransition ("Button_Back");
 
-        yield return AssertCurrentPageName ("MainMenuPage");
+            yield return AssertCurrentPageName ("MainMenuPage");
+        }
+
+        yield return null;
     }
 
     public IEnumerator ReportTestTime ()
@@ -154,11 +165,25 @@ public class TestHelper
         _opponentPlayer = _gameplayManager.OpponentPlayer;
     }
 
-    public IEnumerator AssertCurrentPageName (string expectedPageName)
+    public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
     {
         GameObject canvas1GameObject = null;
+
+        GameObject errorTextObject = null;
         yield return new WaitUntil (() => {
             canvas1GameObject = GameObject.Find ("Canvas1");
+
+            if (errorTextName.Length >= 1)
+            {
+                errorTextObject = GameObject.Find (errorTextName);
+
+                if (errorTextObject != null && errorTextObject.activeInHierarchy)
+                {
+                    Assert.Fail ("Wasn't able to login. Try using USE_STAGING_BACKEND");
+
+                    return true;
+                }
+            }
 
             if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
             {
@@ -273,6 +298,11 @@ public class TestHelper
         yield return null;
     }
 
+    public bool IsButtonExist (string buttonName)
+    {
+        return GameObject.Find (buttonName) != null;
+    }
+
     public IEnumerator MainMenuTransition (string transitionPath, float delay = 2f)
     {
         foreach (string buttonName in transitionPath.Split ('/'))
@@ -329,6 +359,8 @@ public class TestHelper
 
         _normalUnitCardInHand = new List<WorkingCard> ();
         _normalSpellCardInHand = new List<WorkingCard> ();
+
+        _callAbilityAction = null; // _actionsQueueController.AddNewActionInToQueue (null);
     }
 
     public IEnumerator TurnStartedHandler ()
@@ -410,6 +442,8 @@ public class TestHelper
         }
 
         yield return CheckGooCard ();
+
+        Debug.Log ("Played cards from hand");
     }
 
     // AI step 2
@@ -498,6 +532,8 @@ public class TestHelper
         }
 
         yield return null;
+
+        Debug.Log ("Played cards from board");
     }
 
     // AI step 3
@@ -633,12 +669,6 @@ public class TestHelper
 
     private void PlayCardFromHandToBoard (WorkingCard card)
     {
-        BoardCard boardCard = null;
-        if (_player == Enumerators.MatchPlayer.CurrentPlayer)
-        {
-            boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
-        }
-
         bool needTargetForAbility = false;
 
         if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
@@ -659,6 +689,8 @@ public class TestHelper
             case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards (_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                 if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                 {
+                    BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
+
                     HandBoardCard handBoardCard = boardCard.HandBoardCard;
                     handBoardCard.Enabled = true;
                     handBoardCard.OnSelected ();
@@ -667,7 +699,7 @@ public class TestHelper
 
                     handBoardCard.MouseUp (boardCard.GameObject);
 
-                    if (target != null)
+                    /* if (target != null)
                     {
                         WorkingCard workingCard = boardCard.WorkingCard;
 
@@ -688,11 +720,11 @@ public class TestHelper
                         }
 
                         Action callback = () => {
-                            _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, target);
+                            _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, _callAbilityAction, target);
                         };
 
                         _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, action: callback);
-                    }
+                    } */
                 }
                 else
                 {
@@ -842,7 +874,7 @@ public class TestHelper
                             if (target != null)
                             {
                                 Action callback = () => {
-                                    _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, target);
+                                    _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, _callAbilityAction, target);
                                 };
 
                                 _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, action: callback);
@@ -850,7 +882,7 @@ public class TestHelper
                             else
                             {
                                 _abilitiesController.CallAbility (card.LibraryCard, null, workingCard,
-                                    Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null);
+                                    Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, _callAbilityAction);
                             }
                         });
                     break;
@@ -880,14 +912,14 @@ public class TestHelper
                     if (target != null)
                     {
                         Action callback = () => {
-                            _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, target);
+                            _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, _callAbilityAction, target);
                         };
 
                         _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
                     }
                     else
                     {
-                        _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null);
+                        _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, _callAbilityAction);
                     }
 
                     break;
@@ -1329,6 +1361,7 @@ public class TestHelper
         }
 
         yield return LetsThink ();
+        yield return LetsThink ();
 
         yield return ClickGenericButton ("Button_Keep");
     }
@@ -1350,8 +1383,11 @@ public class TestHelper
         else
         {
             yield return WaitUntilOurTurnStarts ();
+
             yield return WaitUntilInputIsUnblocked ();
         }
+
+        yield return LetsThink ();
     }
 
     public IEnumerator WaitUntilOurTurnStarts ()
