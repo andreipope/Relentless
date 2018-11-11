@@ -345,12 +345,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
-        public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<FindMatchResponse> FindMatch (string userId, long deckId, Address? customGameModeAddress, RepeatedField<string> tags = null)
         {
             Client.Protobuf.Address requestCustomGameAddress = null;
             if (customGameModeAddress != null)
             {
-                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
+                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress ();
             }
 
             FindMatchRequest request = new FindMatchRequest
@@ -358,10 +358,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId,
                 DeckId = deckId,
                 CustomGame = requestCustomGameAddress,
-                Version = BackendEndpoint.DataVersion
+                Version = BackendEndpoint.DataVersion,
+                Tags = tags
             };
 
-            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+            return await Contract.CallAsync<FindMatchResponse> (FindMatchMethod, request);
         }
 
         public async Task<FindMatchResponse> DebugFindMatch(string userId, Loom.ZombieBattleground.Data.Deck deck, Address? customGameModeAddress)

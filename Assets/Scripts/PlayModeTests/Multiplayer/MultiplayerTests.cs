@@ -91,6 +91,10 @@ public class MultiplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
+        _testHelper.SetPvPTags (new[] {
+            "pvpTestNoOpponent"
+        });
+
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
         yield return _testHelper.ClickGenericButton ("Button_Cancel");
@@ -115,6 +119,10 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_CasualType");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -150,6 +158,82 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_CasualType");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        _testHelper.InitalizePlayer ();
+
+        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+
+        yield return _testHelper.DecideWhichCardsToPick ();
+
+        yield return _testHelper.WaitUntilOurFirstTurn ();
+
+        yield return _testHelper.MakeMoves ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+    }
+}
+
+
+public class MultiplayerPassiveTests
+{
+    private TestHelper _testHelper = new TestHelper (1);
+
+    #region Setup & TearDown
+
+    [UnitySetUp]
+    public IEnumerator PerTestSetup ()
+    {
+        yield return _testHelper.SetUp ();
+    }
+
+    [UnityTearDown]
+    public IEnumerator PerTestTearDown ()
+    {
+        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
+        {
+            yield return _testHelper.TearDown_Cleanup ();
+        }
+        else
+        {
+            yield return _testHelper.TearDown_GoBackToMainScreen ();
+        }
+
+        yield return _testHelper.ReportTestTime ();
+    }
+
+    #endregion
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test1_MatchmakeAndPlay ()
+    {
+        _testHelper.SetTestName ("Tutorial - Matchmaking And Play");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
+
+        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_CasualType");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 

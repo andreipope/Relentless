@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
 
         GameState InitialGameState { get; }
 
+        Google.Protobuf.Collections.RepeatedField<string> PvPTags { get; set; }
+
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();

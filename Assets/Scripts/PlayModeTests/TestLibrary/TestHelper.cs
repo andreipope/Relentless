@@ -13,7 +13,19 @@ using UnityEngine.UI;
 
 public class TestHelper
 {
-    private const string _testerKey = "f32ef9a2cfcb";
+    private enum TesterType
+    {
+        Active,
+        Passive
+    }
+
+    private List<string> _testerKeys = new List<string> {
+        "f32ef9a2cfcb",
+        "f12249ff43e4"
+    };
+
+    private TesterType _testerType = TesterType.Active;
+    private string _testerKey;
 
     private bool _initialized = false;
     public bool Initialized
@@ -40,6 +52,7 @@ public class TestHelper
     private IGameplayManager _gameplayManager;
     private IUIManager _uiManager;
     private IDataManager _dataManager;
+    private IPvPManager _pvpManager;
 
     private BattlegroundController _battlegroundController;
     private SkillsController _skillsController;
@@ -53,6 +66,11 @@ public class TestHelper
 
     private Player _currentPlayer, _opponentPlayer;
 
+    public TestHelper (int testerType = 0)
+    {
+        _testerType = (TesterType) testerType;
+    }
+
     public void SetTestName (string testName = "")
     {
         _testName = testName;
@@ -64,6 +82,8 @@ public class TestHelper
 
         if (!_initialized)
         {
+            _testerKey = _testerKeys[(int) _testerType];
+
             _testScene = SceneManager.GetActiveScene ();
             _testerGameObject = _testScene.GetRootGameObjects ()[0];
             _testerGameObject.AddComponent<TestScriptProtector> ();
@@ -152,6 +172,7 @@ public class TestHelper
         _gameplayManager = GameClient.Get<IGameplayManager> ();
         _uiManager = GameClient.Get<IUIManager> ();
         _dataManager = GameClient.Get<IDataManager> ();
+        _pvpManager = GameClient.Get<IPvPManager> ();
 
         _battlegroundController = _gameplayManager.GetController<BattlegroundController> ();
         _skillsController = _gameplayManager.GetController<SkillsController> ();
@@ -193,6 +214,90 @@ public class TestHelper
         }
 
         yield return null;
+    }
+
+    public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
+    {
+        yield return CombinedCheck (
+            CheckCurrentPageName, "MainMenuPage", callback1,
+            CheckIfMatchmakingErrorOccured, "", callback2);
+
+        yield return null;
+    }
+
+    public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2)
+    {
+        yield return CombinedCheck (
+            CheckCurrentPageName, "GameplayPage", callback1,
+            CheckIfLoginErrorOccured, "", callback2);
+
+        yield return null;
+    }
+
+    private IEnumerator CombinedCheck (
+        Func<string, bool> check1, string parameter1, IEnumerator callback1,
+        Func<string, bool> check2, string parameter2, IEnumerator callback2)
+    {
+        bool outcomeDecided = false;
+
+        while (outcomeDecided == false)
+        {
+            if (check1 (parameter1))
+            {
+                outcomeDecided = true;
+
+                if (callback1 != null)
+                    yield return callback1;
+            }
+            else if (check2 (parameter2))
+            {
+                outcomeDecided = true;
+
+                if (callback2 != null)
+                    yield return callback2;
+            }
+        }
+
+        yield return null;
+    }
+
+    private bool CheckIfLoginErrorOccured (string dummyParameter)
+    {
+        GameObject errorTextObject = GameObject.Find ("Beta_Group/Text_Error");
+
+        if (errorTextObject != null && errorTextObject.activeInHierarchy)
+        {
+            Assert.Fail ("Wasn't able to login. Try using USE_STAGING_BACKEND");
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CheckIfMatchmakingErrorOccured (string dummyParameter)
+    {
+        // implement this
+
+        return false;
+    }
+
+    private bool CheckCurrentPageName (string expectedPageName)
+    {
+        GameObject canvas1GameObject = GameObject.Find ("Canvas1");
+
+        if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
+        {
+            if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName ||
+               canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] != expectedPageName)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
@@ -369,6 +474,20 @@ public class TestHelper
             return false;
         });
     }
+
+    #region Interactions with PvP module
+
+    public void SetPvPTags (string[] tags)
+    {
+        _pvpManager.PvPTags.Clear ();
+
+        foreach (string tag in tags)
+        {
+            _pvpManager.PvPTags.Append<string> (tag);
+        }
+    }
+
+    #endregion
 
     #region Adapted from AIController
 
