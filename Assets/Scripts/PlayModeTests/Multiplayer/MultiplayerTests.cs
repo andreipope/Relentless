@@ -235,8 +235,20 @@ public class MultiplayerPassiveTests
             "pvpTest"
         });
 
-        yield return _testHelper.MainMenuTransition ("Button_Battle");
+        while (true)
+        {
+            yield return _testHelper.MainMenuTransition ("Button_Battle");
 
+            yield return _testHelper.AssertLoggedInOrLoginFailed (
+                PlayAMatch (),
+                PressOK ());
+
+            yield return _testHelper.LetsThink ();
+        }
+    }
+
+    private IEnumerator PlayAMatch ()
+    {
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
         _testHelper.InitalizePlayer ();
@@ -252,5 +264,10 @@ public class MultiplayerPassiveTests
         yield return _testHelper.ClickGenericButton ("Button_Continue");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+    }
+
+    private IEnumerator PressOK ()
+    {
+        yield return _testHelper.ClickGenericButton ("Button_OK");
     }
 }

@@ -100,7 +100,11 @@ public class TestHelper
 
             yield return HandleLogin ();
 
-            yield return AssertCurrentPageName ("MainMenuPage", "Beta_Group/Text_Error");
+            yield return AssertLoggedInOrLoginFailed (
+                null,
+                FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
+
+            // yield return AssertCurrentPageName ("MainMenuPage", "Beta_Group/Text_Error");
 
             #endregion
 
@@ -216,6 +220,13 @@ public class TestHelper
         yield return null;
     }
 
+    private IEnumerator FailWithMessage (string message)
+    {
+        Assert.Fail (message);
+
+        yield return null;
+    }
+
     public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
     {
         yield return CombinedCheck (
@@ -288,13 +299,18 @@ public class TestHelper
 
         if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
         {
-            if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName ||
-               canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] != expectedPageName)
+            if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
             {
                 return false;
             }
+            else
+            {
+                Assert.AreEqual (
+                    canvas1GameObject.transform.GetChild (1).name.Split ('(')[0],
+                    expectedPageName);
 
-            return true;
+                return true;
+            }
         }
 
         return false;
