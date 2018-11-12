@@ -455,16 +455,19 @@ namespace Loom.ZombieBattleground
             if (Card.LibraryCard.Abilities != null)
             {
                 string formatAbilityCallType = string.Empty;
-                string[] split;
+                TooltipContentData.BuffInfo buffInfo;
                 foreach (AbilityData ability in Card.LibraryCard.Abilities)
                 {
-                    AddEffectOnUnit(Utilites.CastStringTuEnum<Enumerators.EffectOnUnitType>(
-                                    GameClient.Get<IDataManager>().GetBuffInfoByType(ability.BuffType).Name, true));
+                    buffInfo = GameClient.Get<IDataManager>().GetBuffInfoByType(ability.BuffType);
+
+                    if (buffInfo != null && !string.IsNullOrEmpty(buffInfo.Name))
+                    {
+                        AddEffectOnUnit(Utilites.CastStringTuEnum<Enumerators.EffectOnUnitType>(
+                                                            buffInfo.Name.Replace(" ", string.Empty), true));
+                    }
                 }
             }
         }
-
-
 
         public void OnStartTurn()
         {

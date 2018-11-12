@@ -597,7 +597,7 @@ namespace Loom.ZombieBattleground.Common
             Freeze,
             Guard,
             Heavy,
-            Overflow,
+            OverflowX,
             RageX,
             Reanimate,
             Shatter,
