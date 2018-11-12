@@ -279,6 +279,26 @@ public class SingleplayerTests
     }
 
     [UnityTest]
+    public IEnumerator Test4_CreateAHorde ()
+    {
+        // >> HordeSelectionPage
+        // Tap on Image_BaackgroundGeneral
+
+        // Tap on Button_LeftArrow or Button_RightArrow
+        // Check children of Panel_OverlordContent/Group/
+        // Active one has (Selected) at the end
+        // Tap on Button_Continue
+
+        // Check out abilities under Abilities/
+        // Children are Toggles
+        // Tap on Button_Cancel (takes back to overlord selection) or Button_Continue
+
+        // >> HordeEditingPage
+
+        yield return null;
+    }
+
+    [UnityTest]
     public IEnumerator TestN_Cleanup ()
     {
         // Nothing, just to ascertain cleanup
