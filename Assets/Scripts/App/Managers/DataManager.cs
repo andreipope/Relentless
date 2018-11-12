@@ -22,6 +22,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private IUIManager _uiManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -29,6 +31,8 @@ namespace Loom.ZombieBattleground
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataFileNames;
 
         private DirectoryInfo _dir;
+
+        private bool _isBuildVersionMatch = false;
 
         public DataManager(ConfigData configData)
         {
@@ -170,6 +174,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -226,6 +231,22 @@ namespace Loom.ZombieBattleground
             }
 
             if (!versionMatch)
+            {
+                if (versionFile.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
+                {
+                    _isBuildVersionMatch = true;
+                }
+            }
+            else
+            {
+                using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+                {
+                    _isBuildVersionMatch = true;
+                }
+            }
+
+
+            if (!_isBuildVersionMatch)
             {
                 DeleteVersionFile();
             }
@@ -350,6 +371,11 @@ namespace Loom.ZombieBattleground
                 return data;
 
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
+        }
+
+        public bool IsBuildVersionMatch()
+        {
+            return _isBuildVersionMatch;
         }
 
         private T DeserializeObjectFromAssets<T>(string fileName)

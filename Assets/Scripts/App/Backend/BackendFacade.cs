@@ -52,6 +52,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
+        public string DAppChainWalletAddress = string.Empty;
+
         public void Update()
         {
         }

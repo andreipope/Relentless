@@ -113,6 +113,8 @@ namespace Loom.ZombieBattleground
             {
                 FightTargetingArrow.Dispose();
             }
+
+            FightTargetingArrow = null;
         }
 
         public void BlockSkill()
@@ -175,9 +177,8 @@ namespace Loom.ZombieBattleground
                  (parameter, completeCallback) =>
                  {
                      DoOnUpSkillAction(completeCallback);
+                     IsUsing = false;
                  });
-
-            IsUsing = false;
         }
 
         public void UseSkill(BoardObject target)

@@ -45,6 +45,22 @@ namespace Loom.ZombieBattleground
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
 
+        public PlayerManaBarItem PlayerManaBar
+        {
+            get
+            {
+                return _playerManaBar;
+            }
+        }
+
+        public PlayerManaBarItem OpponentManaBar
+        {
+            get
+            {
+                return _playerManaBar;
+            }
+        }
+
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
@@ -584,6 +600,11 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
+                if (_gameplayManager.GetController<CardsController>().CardDistribution)
+                {
+                    _uiManager.HidePopup<MulliganPopup>();
+                }
+
                 GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
 

@@ -7,6 +7,7 @@ using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.View;
+using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
@@ -162,7 +163,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CreateVfx(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f)
+        public void CreateVfx(GameObject prefab, object target, bool autoDestroy = true, float delay = 3f, bool isIgnoreCastVfx = false)
         {
             if (prefab == null)
                 return;
@@ -188,8 +189,70 @@ namespace Loom.ZombieBattleground
             }
 
             GameObject particle = Object.Instantiate(prefab);
-            particle.transform.position = Utilites.CastVfxPosition(position + Vector3.forward);
+            if(isIgnoreCastVfx)
+            {
+                particle.transform.position = position;
+            }
+            else
+            {
+                particle.transform.position = Utilites.CastVfxPosition(position + Vector3.forward);
+            }
             _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
+        }
+
+        public void CreateVfx(GameObject prefab, Vector3 position, bool autoDestroy = true, float delay = 3f)
+        {
+            if (prefab == null)
+                return;
+
+            GameObject particle = Object.Instantiate(prefab);
+            particle.transform.position = position;
+            _particlesController.RegisterParticleSystem(particle, autoDestroy, delay);
+        }
+
+        public void CreateSkillBuildVfx(GameObject prefabBuild, GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
+        {
+            if (target == null)
+                return;
+
+            GameObject particleSystem = Object.Instantiate(prefabBuild);
+            particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
+
+            Vector3 castVfxPosition;
+            switch (target)
+            {
+                case Player player:
+                    castVfxPosition = player.AvatarObject.transform.position;
+                    break;
+                case BoardUnitView unit:
+                    castVfxPosition = unit.Transform.position;
+                    break;
+                case BoardUnitModel unit:
+                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
+            }
+
+            Vector3 targetPosition = Utilites.CastVfxPosition(castVfxPosition);
+
+            if (isDirection)
+            {
+                float angle = AngleBetweenVector3(particleSystem.transform.position, targetPosition);
+                var main = particleSystem.GetComponent<ParticleSystem>().main;
+                main.startRotationZ = angle * Mathf.Deg2Rad;
+                ParticleSystem.MainModule subMain = new ParticleSystem.MainModule();
+                foreach (var item in particleSystem.GetComponentsInChildren<ParticleSystem>())
+                {
+                    subMain = item.main;
+                    subMain.startRotationZ = angle * Mathf.Deg2Rad;
+                }
+            }
+            _particlesController.RegisterParticleSystem(particleSystem, true, 5f);
+            InternalTools.DoActionDelayed(() =>
+            {
+                CreateSkillVfx(prefab, from, target, callbackComplete, isDirection);
+            }, 3f);
         }
 
         public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
