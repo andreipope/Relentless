@@ -342,8 +342,6 @@ namespace Loom.ZombieBattleground
 
         public void InvokeTurnStarted()
         {
-            TurnStarted?.Invoke();
-
             if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooVials++;
@@ -364,6 +362,8 @@ namespace Loom.ZombieBattleground
 
                 _cardsController.AddCardToHand(this);
             }
+
+            TurnStarted?.Invoke();
         }
 
         public void AddCardToDeck(WorkingCard card, bool shuffle = false)
