@@ -1,19 +1,10 @@
-﻿using Loom.ZombieBattleground;
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
-using NUnit.Framework;
-using System;
+﻿using NUnit.Framework;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using UnityEngine.UI;
 
 public class MultiplayerTests
 {
-    private TestHelper _testHelper = new TestHelper ();
+    private TestHelper _testHelper = new TestHelper (0);
 
     #region Setup & TearDown
 

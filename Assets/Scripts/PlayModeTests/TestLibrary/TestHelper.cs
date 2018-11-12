@@ -78,6 +78,17 @@ public class TestHelper
         _testName = testName;
     }
 
+    // Google Analytics isn't required for testing and in case of multiple tests it starts being overloaded and providing error on number of requests.
+    private void RemoveGoogleAnalyticsModule ()
+    {
+        GameObject googleAnalyticsGameObject = GameObject.Find ("GAv4");
+
+        if (googleAnalyticsGameObject != null)
+        {
+            GameObject.Destroy (googleAnalyticsGameObject);
+        }
+    }
+
     public IEnumerator SetUp ()
     {
         _testStartTime = Time.unscaledTime;
@@ -107,8 +118,6 @@ public class TestHelper
             yield return AssertLoggedInOrLoginFailed (
                 null,
                 FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
-
-            // yield return AssertCurrentPageName ("MainMenuPage", "Beta_Group/Text_Error");
 
             #endregion
 
@@ -894,6 +903,18 @@ public class TestHelper
         }
 
         return true;
+    }
+
+    public IEnumerator PlayCardFromHandToBoard (int[] cardIndices)
+    {
+        foreach (int cardIndex in cardIndices)
+        {
+            BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
+
+            PlayCardFromHandToBoard (boardCard.WorkingCard);
+        }
+
+        yield return null;
     }
 
     private void PlayCardFromHandToBoard (WorkingCard card)
@@ -1840,6 +1861,11 @@ public class TestHelper
         }
 
         yield return LetsThink ();
+    }
+
+    public IEnumerator WaitUntilAIBrainStops ()
+    {
+        yield return new WaitUntil (() => _gameplayManager.GetController<AIController> ().IsBrainWorking == false);
     }
 
     public IEnumerator WaitUntilOurTurnStarts ()
