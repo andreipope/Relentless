@@ -22,8 +22,6 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private IUIManager _uiManager;
-
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -31,8 +29,6 @@ namespace Loom.ZombieBattleground
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataFileNames;
 
         private DirectoryInfo _dir;
-
-        private bool _isBuildVersionMatch = false;
 
         public DataManager(ConfigData configData)
         {
@@ -174,7 +170,6 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -220,71 +215,37 @@ namespace Loom.ZombieBattleground
         private void CheckVersion()
         {
             FileInfo[] files = _dir.GetFiles();
-
-            FileInfo versionFile = null;
+            bool versionMatch = false;
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains(Constants.VersionFileResolution))
+                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
                 {
-                    versionFile = file;
+                    versionMatch = true;
                     break;
                 }
             }
 
-            if (versionFile != null)
+            if (!versionMatch)
             {
-                if (versionFile.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
-                {
-                    _isBuildVersionMatch = true;
-                }
-            }
-            else
-            {
-                using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
-                {
-                    _isBuildVersionMatch = true;
-                }
-            }
-
-
-            if (!_isBuildVersionMatch)
-            {
-                DeleteData();
-
-                Action[] actions = new Action[2];
-                actions[0] = () =>
-                {
-                    string url = GetPlatformSpecificGameLink();
-
-                    if (!string.IsNullOrEmpty(url))
-                    {
-                        Application.OpenURL(url);
-                    }
-                };
-                actions[1] = () =>
-                {
-                    Application.Quit();
-                };
-
-                _uiManager.DrawPopup<UpdatePopup>(actions);
+                DeleteVersionFile();
             }
         }
 
-        private string GetPlatformSpecificGameLink()
+        private void DeleteVersionFile()
         {
-            string gameLink = string.Empty;
+            FileInfo[] files = _dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                if (file.Name.Contains(Constants.VersionFileResolution))
+                {
+                    file.Delete();
+                    break;
+                }
+            }
 
-            #if UNITY_ANDROID
-            gameLink = Constants.GameLinkForAndroid;
-            #elif UNITY_IOS
-            gameLink = Constants.GameLinkForIOS;
-            #elif UNITY_STANDALONE_WIN
-            gameLink = Constants.GameLinkForWindows;
-            #elif UNITY_STANDALONE_OSX
-            gameLink = Constants.GameLinkForOSX;
-            #endif
-
-            return gameLink;
+            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+            {
+            }
         }
 
         private async Task LoadCachedData(Enumerators.CacheDataType type)
@@ -396,11 +357,6 @@ namespace Loom.ZombieBattleground
                 return data;
 
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
-        }
-
-        public bool IsBuildVersionMatch()
-        {
-            return _isBuildVersionMatch;
         }
 
         private T DeserializeObjectFromAssets<T>(string fileName)
