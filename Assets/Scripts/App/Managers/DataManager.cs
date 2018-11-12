@@ -32,7 +32,9 @@ namespace Loom.ZombieBattleground
 
         private DirectoryInfo _dir;
 
-        private bool _isBuildVersionMatch = false;
+        private bool _isBuildVersionMatch = true;
+
+
 
         public DataManager(ConfigData configData)
         {
