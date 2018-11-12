@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         private Button _newHordeDeckButton;
 
+        private IAnalyticsManager _analyticsManager;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -73,6 +75,7 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
         }
 
         public void Update()
@@ -113,7 +116,7 @@ namespace Loom.ZombieBattleground
 
             _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/SelectionMask/Selection");
 
-            _battleButtonGlow = _selfPage.transform.Find("Button_Battle/BattleButtonGlowing").gameObject;
+            _battleButtonGlow = _selfPage.transform.Find("Button_Battle/Pulse").gameObject;
 
             // new horde deck object
             _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;
@@ -590,6 +593,8 @@ namespace Loom.ZombieBattleground
             }
 
             BattleButtonUpdate();
+
+            _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
         }
 
         #endregion

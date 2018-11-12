@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
@@ -29,13 +30,10 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.HandChanged += HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
-            TimerManager.AddTimer(
-                x =>
-                {
-                    Action();
-                },
-                null,
-                0.5f);
+            InternalTools.DoActionDelayed(() =>
+            {
+                Action();
+            }, 0.5f);
         }
 
         public override void Action(object info = null)

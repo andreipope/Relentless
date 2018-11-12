@@ -28,6 +28,20 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             AbilityUnitOwner.AddBuffShield();
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                            Target = AbilityUnitOwner,
+                        }
+                    }
+            });
         }
     }
 }

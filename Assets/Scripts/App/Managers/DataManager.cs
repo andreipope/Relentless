@@ -302,6 +302,13 @@ namespace Loom.ZombieBattleground
                     CachedDecksData = new DecksData(listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList());
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
+                    GetAIDecksResponse decksAIResponse = await _backendFacade.GetAIDecks();
+                    CachedOpponentDecksData = new OpponentDecksData();
+                    CachedOpponentDecksData.Decks =
+                        decksAIResponse.Decks
+                            .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                            .ToList();
+
                     CachedOpponentDecksData = DeserializeObjectFromAssets<OpponentDecksData>(_cacheDataFileNames[type]);
 
                     break;

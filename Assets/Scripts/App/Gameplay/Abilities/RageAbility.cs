@@ -34,6 +34,7 @@ namespace Loom.ZombieBattleground
                     _wasChanged = true;
                     AbilityUnitOwner.BuffedDamage += Value;
                     AbilityUnitOwner.CurrentDamage += Value;
+                    InvokeActionTriggered(true);
                 }
             }
             else
@@ -43,6 +44,7 @@ namespace Loom.ZombieBattleground
                     AbilityUnitOwner.BuffedDamage -= Value;
                     AbilityUnitOwner.CurrentDamage -= Value;
                     _wasChanged = false;
+                    InvokeActionTriggered(false);
                 }
             }
         }

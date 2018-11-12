@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonPlay, _buttonSettings, _buttonCredits;
 
-        private ButtonShiftingContent _buttonBuy, _buttonOpen, _buttonTutorial, _buttonQuit;
+        private ButtonShiftingContent _buttonBuy, _buttonOpen;
 
         private TextMeshProUGUI _packsCount;
 
@@ -57,8 +57,6 @@ namespace Loom.ZombieBattleground
 
             _buttonArmy = _selfPage.transform.Find("Button_Army").GetComponent<MenuButtonNoGlow>();
             _buttonCredits = _selfPage.transform.Find("Button_Credits").GetComponent<Button>();
-            _buttonQuit = _selfPage.transform.Find("BackMetalLeft/Button_Quit").GetComponent<ButtonShiftingContent>();
-            _buttonTutorial = _selfPage.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonBuy = _selfPage.transform.Find("Button_Shop").GetComponent<ButtonShiftingContent>();
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
             _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
@@ -70,8 +68,6 @@ namespace Loom.ZombieBattleground
             _buttonArmy.Clicked.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
-            _buttonQuit.onClick.AddListener(QuitButtonOnClickHandler);
-            _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
 
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
             _buttonSettings.onClick.AddListener(SettingsButtonOnClickHandler);
@@ -129,17 +125,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TutorialButtonOnClickHandler()
-        {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
-            _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
-            _dataManager.CachedUserLocalData.Tutorial = true;
-            GameClient.Get<IGameplayManager>().IsTutorial = true;
-            _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
-            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
-        }
-
         private void OnClickCollection()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -158,18 +143,6 @@ namespace Loom.ZombieBattleground
             _stateManager.ChangeAppState(Enumerators.AppState.CREDITS);
         }
 
-        private void QuitButtonOnClickHandler()
-        {
-            Action[] actions = new Action[2];
-            actions[0] = () =>
-            {
-                Application.Quit();
-            };
-            actions[1] = () => { };
-
-            _uiManager.DrawPopup<ConfirmationPopup>(actions);
-        }
-
         private void OpenButtonHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -180,9 +153,7 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-#if !UNITY_ANDROID && !UNITY_IOS
             _uiManager.DrawPopup<SettingsPopup>(true);
-#endif
         }
 
         #endregion

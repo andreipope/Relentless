@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,13 +10,18 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
+        public int Health;
+
         public int Damage;
+
+        public event Action TurnEndedEvent;
 
         public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Damage = ability.Damage;
+            Health = ability.Health;
         }
 
         public override void Activate()
@@ -32,7 +38,10 @@ namespace Loom.ZombieBattleground
             TargetUnit.CurrentDamage += Value;
             TargetUnit.BuffedDamage += Value;
 
-            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
+            TargetUnit.CurrentHp += Health;
+            TargetUnit.BuffedHp += Health;
+
+            InvokeActionTriggered();
         }
 
         protected override void InputEndedHandler()
@@ -61,6 +70,8 @@ namespace Loom.ZombieBattleground
 
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
+
+            TurnEndedEvent?.Invoke();
 
             ActionEnd();
         }

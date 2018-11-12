@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        private List<BoardUnitView> _targetUnits;
+
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -50,6 +52,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            _targetUnits = new List<BoardUnitView>();
+
             BoardUnitModel unit = (BoardUnitModel) info;
 
             Player playerOwner = unit.OwnerPlayer;
@@ -68,7 +72,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
             if (targetIndex > -1)
             {
                 if (targetIndex - 1 > -1)
@@ -82,34 +85,24 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            _targetUnits.Add(BattlegroundController.GetBoardUnitViewByModel(unit));
+
             if (leftAdjustment != null)
             {
-                CreateAndMoveParticle(
-                    () =>
-                    {
-                        BattleController.AttackUnitByAbility(caller, AbilityData, leftAdjustment.Model);
-                    },
-                    leftAdjustment.Transform.position);
+                _targetUnits.Add(leftAdjustment);
             }
 
             if (rightAdjastment != null)
             {
-                CreateAndMoveParticle(
-                    () =>
-                    {
-                        BattleController.AttackUnitByAbility(caller, AbilityData, rightAdjastment.Model);
-                    },
-                    rightAdjastment.Transform.position);
+                _targetUnits.Add(rightAdjastment);
             }
 
-            
+            InvokeActionTriggered(_targetUnits);
         }
 
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
-
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
 
             if (IsAbilityResolved)
             {
@@ -117,16 +110,6 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AffectObjectType.Character:
                         Action(TargetUnit);
-                        CreateAndMoveParticle(
-                            () =>
-                            {
-                                BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
-                            },
-                            BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position);
-
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                        {
-                            TargetUnit
                         }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                         break;
                 }
@@ -143,47 +126,27 @@ namespace Loom.ZombieBattleground
             Action(info);
         }
 
-        private void CreateAndMoveParticle(Action callback, Vector3 targetPosition)
+
+        protected override void VFXAnimationEndedHandler()
         {
-            Vector3 startPosition = CardKind == Enumerators.CardKind.CREATURE ?
-                GetAbilityUnitOwnerView().Transform.position :
-                SelectedPlayer.Transform.position;
+            base.VFXAnimationEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
-            {
-                if (AbilityEffectType == Enumerators.AbilityEffectType.NONE ||
-#warning DELETE this line in future when on backend will be updated card library
-                    AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_BOMB)
-                {
-                  
-                    callback();
-                }
-                else
-                {
-                    GameObject particleMain = Object.Instantiate(VfxObject);
-                    particleMain.transform.position = Utilites.CastVfxPosition(startPosition + Vector3.forward);
-                    particleMain.transform.DOMove(Utilites.CastVfxPosition(targetPosition), 0.5f).OnComplete(
-                        () =>
-                        {
-                            callback();
-                            if (AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR)
-                            {
-                                // one particle
-                                ParticleSystem.MainModule main = particleMain.GetComponent<ParticleSystem>().main;
-                                main.loop = false;
-                            }
+            ActionCompleted();
+        }
 
-                            Object.Destroy(particleMain);
-                        });
-                }
-            }
-            else
+        private void ActionCompleted()
+        {
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+
+            foreach (var unit in _targetUnits)
             {
-                 CreateVfx(Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position));
-                callback();
+                BattleController.AttackUnitByAbility(caller, AbilityData, unit.Model);
             }
 
-            GameClient.Get<IGameplayManager>().RearrangeHands();
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                TargetUnit
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
     }
 }

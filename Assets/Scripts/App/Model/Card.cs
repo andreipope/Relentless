@@ -38,9 +38,11 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("Type")]
         public Enumerators.CardType CardType { get; protected set; }
 
-        public List<AbilityData> Abilities { get; protected set; }
+        public List<AbilityData> Abilities = new List<AbilityData>();
 
         public CardViewInfo CardViewInfo { get; protected set; }
+
+        public Enumerators.UniqueAnimationType UniqueAnimationType { get; protected set; }
 
         public Card(
             long mouldId,
@@ -57,7 +59,9 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardRank cardRank,
             Enumerators.CardType cardType,
             List<AbilityData> abilities,
-            CardViewInfo cardViewInfo)
+            CardViewInfo cardViewInfo,
+            Enumerators.UniqueAnimationType uniqueAnimationType
+            )
         {
             MouldId = mouldId;
             Name = name;
@@ -74,6 +78,7 @@ namespace Loom.ZombieBattleground.Data
             CardType = cardType;
             Abilities = abilities;
             CardViewInfo = cardViewInfo;
+            UniqueAnimationType = uniqueAnimationType;
         }
 
         public Card(IReadOnlyCard sourceCard)
@@ -96,6 +101,7 @@ namespace Loom.ZombieBattleground.Data
                     .Select(a => new AbilityData(a))
                     .ToList();
             CardViewInfo = new CardViewInfo(sourceCard.CardViewInfo);
+            UniqueAnimationType = sourceCard.UniqueAnimationType;
         }
 
         public override string ToString()

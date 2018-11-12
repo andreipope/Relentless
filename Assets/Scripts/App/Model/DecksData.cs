@@ -21,11 +21,12 @@ namespace Loom.ZombieBattleground.Data
 
         public string Name { get; set; }
 
-        public List<DeckCardData> Cards { get; private set; }
-
+        public List<DeckCardData> Cards;
         public int PrimarySkill { get; set; }
 
         public int SecondarySkill { get; set; }
+
+        public string Type { get; set; }
 
         public Deck(
             long id,

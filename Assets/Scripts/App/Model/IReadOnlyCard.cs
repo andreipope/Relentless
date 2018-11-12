@@ -34,5 +34,7 @@ namespace Loom.ZombieBattleground.Data
         List<AbilityData> Abilities { get; }
 
         CardViewInfo CardViewInfo { get; }
+
+        Enumerators.UniqueAnimationType UniqueAnimationType { get; }
     }
 }

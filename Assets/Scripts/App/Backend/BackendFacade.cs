@@ -53,6 +53,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
+        public string DAppChainWalletAddress = string.Empty;
+
         public void Update()
         {
         }
@@ -134,6 +136,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Deck Management
 
+        private const string GetAIDecsDataMethod = "GetAIDecks";
+
         private const string GetDeckDataMethod = "ListDecks";
 
         private const string DeleteDeckMethod = "DeleteDeck";
@@ -150,6 +154,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
+        }
+
+        public async Task<GetAIDecksResponse> GetAIDecks()
+        {
+            GetAIDecksRequest request = new GetAIDecksRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAIDecsDataMethod, request);
         }
 
         public async Task DeleteDeck(string userId, long deckId)

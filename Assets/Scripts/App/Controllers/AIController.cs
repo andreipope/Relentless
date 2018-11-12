@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
                 int deckId = _gameplayManager.OpponentDeckId;
-                OpponentDeck deck = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId);
+                Deck deck = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId);
                 foreach (DeckCardData card in deck.Cards)
                 {
                     for (int i = 0; i < card.Amount; i++)
@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
 
         private void SetAiTypeByDeck()
         {
-            OpponentDeck deck =
+            Deck deck =
                 _dataManager.CachedOpponentDecksData.Decks.Find(d => d.Id == _gameplayManager.OpponentDeckId);
 
             if (deck != null)

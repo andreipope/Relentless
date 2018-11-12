@@ -71,6 +71,27 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
+        // FIXME: this has only drawbacks compared to using PlayerPrefs directly, what's the purpose of it?
+        public static int GetIntValueFromPlayerPrefs(string key)
+        {
+            return PlayerPrefs.GetInt(key, 0);
+        }
+
+        public static void SetIntValueInPlayerPrefs(string key, int value)
+        {
+            PlayerPrefs.SetInt(key, value);
+        }
+
+        public static string GetStringFromPlayerPrefs(string key)
+        {
+            return PlayerPrefs.GetString(key, string.Empty);
+        }
+
+        public static void SetStringInPlayerPrefs(string key, string value)
+        {
+            PlayerPrefs.SetString(key, value);
+        }
+
         #region asset bundles and cache
 
         public static string GetAssetBundleLocalRoot()

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
@@ -28,6 +29,10 @@ namespace Loom.ZombieBattleground
         public int InitialHp;
 
         public bool HasUsedBuffShield;
+
+        public bool HasSwing;
+
+        public bool CanAttackByDefault;
 
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
@@ -68,6 +73,8 @@ namespace Loom.ZombieBattleground
 
             IsCreatedThisTurn = true;
 
+            CanAttackByDefault = true;
+
             UnitStatus = Enumerators.UnitStatusType.NONE;
 
             IsAllAbilitiesResolvedAtStart = true;
@@ -87,6 +94,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject, int, bool> UnitAttacked;
 
+        public event Action UnitAttackedEnded;
+
         public event Action<BoardObject> UnitDamaged;
 
         public event Action<BoardObject> PrepairingToDie;
@@ -104,6 +113,16 @@ namespace Loom.ZombieBattleground
         public event Action CreaturePlayableForceSet;
 
         public event Action UnitFromDeckRemoved;
+
+        public event Action UnitDistracted;
+
+        public event Action<bool> UnitDistractEffectStateChanged;
+
+        public event Action<BoardUnitModel> KilledUnit;
+
+        public event Action<bool> BuffSwingStateChanged;
+
+        public event Action EffectsOnUnitChanged;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -177,6 +196,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsHeavyUnit => HasBuffHeavy || HasHeavy;
 
+        public List<Enumerators.EffectOnUnitType> EffectsOnUnit { get; private set; } = new List<Enumerators.EffectOnUnitType>();
+
         public void Die(bool returnToHand = false)
         {
             UnitDying?.Invoke();
@@ -218,6 +239,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.BuffType.FREEZE:
                     TakeFreezeToAttacked = true;
+                    AddEffectOnUnit(Enumerators.EffectOnUnitType.Freeze);
                     break;
                 case Enumerators.BuffType.HEAVY:
                     HasBuffHeavy = true;
@@ -256,9 +278,14 @@ namespace Loom.ZombieBattleground
 
         public void UseShieldFromBuff()
         {
+            if (!HasBuffShield)
+                return;
+
             HasBuffShield = false;
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             BuffShieldStateChanged?.Invoke(false);
+
+            RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Guard);
         }
 
         public void AddBuffShield()
@@ -266,6 +293,16 @@ namespace Loom.ZombieBattleground
             AddBuff(Enumerators.BuffType.GUARD);
             HasBuffShield = true;
             BuffShieldStateChanged?.Invoke(true);
+
+            AddEffectOnUnit(Enumerators.EffectOnUnitType.Guard);
+        }
+
+        public void AddBuffSwing()
+        {
+            HasSwing = true;
+            BuffSwingStateChanged?.Invoke(true);
+
+            AddEffectOnUnit(Enumerators.EffectOnUnitType.SwingX);
         }
 
         public void UpdateCardType()
@@ -291,10 +328,19 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void ClearUnitTypeEffects()
+        {
+            RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Heavy);
+            RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Feral);
+        }
+
         public void SetAsHeavyUnit()
         {
             if (HasHeavy)
                 return;
+
+            ClearUnitTypeEffects();
+            AddEffectOnUnit(Enumerators.EffectOnUnitType.Heavy);
 
             HasHeavy = true;
             HasFeral = false;
@@ -312,6 +358,8 @@ namespace Loom.ZombieBattleground
             if (!HasHeavy && !HasFeral && !HasBuffHeavy)
                 return;
 
+            ClearUnitTypeEffects();
+
             HasHeavy = false;
             HasFeral = false;
             HasBuffHeavy = false;
@@ -324,6 +372,9 @@ namespace Loom.ZombieBattleground
         {
             if (HasFeral)
                 return;
+
+            ClearUnitTypeEffects();
+            AddEffectOnUnit(Enumerators.EffectOnUnitType.Feral);
 
             HasHeavy = false;
             HasBuffHeavy = false;
@@ -344,9 +395,36 @@ namespace Loom.ZombieBattleground
             HasBuffHeavy = false;
             HasFeral = false;
 
+            ClearUnitTypeEffects();
+
             InitialUnitType = Card.LibraryCard.CardType;
 
             CardTypeChanged?.Invoke(InitialUnitType);
+        }
+
+        public void AddEffectOnUnit(Enumerators.EffectOnUnitType effectOnUnit)
+        {
+            if (!EffectsOnUnit.Contains(effectOnUnit))
+            {
+                EffectsOnUnit.Add(effectOnUnit);
+                EffectsOnUnitChanged?.Invoke();
+            }
+        }
+
+        public void RemoveEffectFromUnit(Enumerators.EffectOnUnitType effectOnUnit)
+        {
+            if (EffectsOnUnit.Contains(effectOnUnit))
+            {
+                EffectsOnUnit.Remove(effectOnUnit);
+                EffectsOnUnitChanged?.Invoke();
+            }
+        }
+
+        public void ClearEffectsOnUnit()
+        {
+            EffectsOnUnit.Clear();
+
+            EffectsOnUnitChanged?.Invoke();
         }
 
         public void SetObjectInfo(WorkingCard card)
@@ -364,18 +442,38 @@ namespace Loom.ZombieBattleground
 
             InitialUnitType = Card.LibraryCard.CardType;
 
+            ClearUnitTypeEffects();
+
             switch (InitialUnitType)
             {
                 case Enumerators.CardType.FERAL:
                     HasFeral = true;
                     IsPlayable = true;
+                    AddEffectOnUnit(Enumerators.EffectOnUnitType.Feral);
                     break;
                 case Enumerators.CardType.HEAVY:
                     HasHeavy = true;
+                    AddEffectOnUnit(Enumerators.EffectOnUnitType.Heavy);
                     break;
                 case Enumerators.CardType.WALKER:
                 default:
                     break;
+            }
+
+            if (Card.LibraryCard.Abilities != null)
+            {
+                string formatAbilityCallType = string.Empty;
+                TooltipContentData.BuffInfo buffInfo;
+                foreach (AbilityData ability in Card.LibraryCard.Abilities)
+                {
+                    buffInfo = GameClient.Get<IDataManager>().GetBuffInfoByType(ability.BuffType);
+
+                    if (buffInfo != null && !string.IsNullOrEmpty(buffInfo.Name))
+                    {
+                        AddEffectOnUnit(Utilites.CastStringTuEnum<Enumerators.EffectOnUnitType>(
+                                                            buffInfo.Name.Replace(" ", string.Empty), true));
+                    }
+                }
             }
         }
 
@@ -437,6 +535,19 @@ namespace Loom.ZombieBattleground
             Stunned?.Invoke(false);
         }
 
+        public void Distract()
+        {
+            AddEffectOnUnit(Enumerators.EffectOnUnitType.Distract);
+
+            UpdateVisualStateOfDistract(true);
+            UnitDistracted?.Invoke();
+        }
+
+        public void UpdateVisualStateOfDistract(bool status)
+        {
+            UnitDistractEffectStateChanged?.Invoke(status);
+        }
+
         public void ForceSetCreaturePlayable()
         {
             if (IsStun)
@@ -483,6 +594,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                             );
                         });
@@ -511,6 +623,16 @@ namespace Loom.ZombieBattleground
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
 
+                                    if (HasSwing)
+                                    {
+                                        List<BoardUnitView> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+
+                                        foreach (BoardUnitView unit in adjacent)
+                                        {
+                                            _battleController.AttackUnitByUnit(this, unit.Model, AdditionalDamage, false);
+                                        }
+                                    }
+
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
                                     {
                                         if (!targetCardModel.HasBuffShield)
@@ -527,6 +649,7 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     IsAttacking = false;
+                                    UnitAttackedEnded?.Invoke();
                                 }
                                 );
                         });
@@ -540,7 +663,7 @@ namespace Loom.ZombieBattleground
         {
             if (IsDead || CurrentHp <= 0 ||
                 CurrentDamage <= 0 || IsStun ||
-                CantAttackInThisTurnBlocker)
+                CantAttackInThisTurnBlocker  || !CanAttackByDefault)
             {
                 return false;
             }
@@ -592,6 +715,11 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
+        }
+
+        public void InvokeKilledUnit(BoardUnitModel boardUnit)
+        {
+            KilledUnit?.Invoke(boardUnit);
         }
 
         public List<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
