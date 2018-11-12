@@ -369,19 +369,6 @@ namespace Loom.ZombieBattleground
             Object.Destroy(GameObject);
         }
 
-        public void ReturnCardToDeck()
-        {
-            if (!CardsController.CardDistribution)
-                return;
-
-            CardsController.ReturnCardToDeck(
-                this,
-                () =>
-                {
-                    WorkingCard.Owner.DistributeCard();
-                });
-        }
-
         public void DrawCardFromOpponentDeckToPlayer()
         {
             GameObject.transform.localScale = Vector3.zero;

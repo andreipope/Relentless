@@ -231,11 +231,12 @@ namespace Loom.ZombieBattleground
 
                     InternalTools.DoActionDelayed(() =>
                         {
+                            cardToDestroy.Model.InvokeUnitDied();
+
                             cardToDestroy.Model.OwnerPlayer.BoardCards.Remove(cardToDestroy);
                             cardToDestroy.Model.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Model.Card);
                             cardToDestroy.Model.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Model.Card);
 
-                            cardToDestroy.Model.InvokeUnitDied();
 
                             cardToDestroy.Transform.DOKill();
                             Object.Destroy(cardToDestroy.GameObject);
@@ -986,7 +987,7 @@ namespace Loom.ZombieBattleground
             boardUnit.Model.SetAsWalkerUnit();
             boardUnit.Model.UseShieldFromBuff();
             boardUnit.Model.BuffsOnUnit.Clear();
-
+    
             List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit.Model);
 
             foreach(AbilityBase ability in abilities)
@@ -994,6 +995,8 @@ namespace Loom.ZombieBattleground
                 ability.Deactivate();
                 ability.Dispose();
             }
+
+            boardUnit.Model.ClearEffectsOnUnit();
 
             boardUnit.Model.Distract();
         }

@@ -121,7 +121,8 @@ namespace Loom.ZombieBattleground.Data
                 Type = card.Type,
                 Frame = card.Frame,
                 Abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
-                CardViewInfo = card.CardViewInfo.FromProtobuf()
+                CardViewInfo = card.CardViewInfo.FromProtobuf(),
+                UniqueAnimation = !string.IsNullOrEmpty(card.UniqueAnimation) ? card.UniqueAnimation : "None"
             };
         }
 
@@ -208,6 +209,7 @@ namespace Loom.ZombieBattleground.Data
                 CardRank = (Enumerators.CardRank)cardPrototype.CreatureRank,
                 CardType = (Enumerators.CardType)cardPrototype.CreatureType,
                 CardKind = (Enumerators.CardKind)cardPrototype.CardKind,
+                UniqueAnimationType = Utilites.CastStringTuEnum<Enumerators.UniqueAnimationType>(cardPrototype.UniqueAnimation, true),
                 Abilities = abilities
             };
 
