@@ -6,6 +6,27 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
+        public static Protobuf.Deck GetDeck(this Deck deck)
+        {
+            Protobuf.Deck newdeck = new Protobuf.Deck
+            {
+                Id = deck.Id,
+                Name = deck.Name,
+                HeroId = deck.HeroId,
+            };
+            for (int i = 0; i < deck.Cards.Count; i++)
+            {
+                CardCollection card = new CardCollection
+                {
+                    CardName = deck.Cards[i].CardName,
+                    Amount = deck.Cards[i].Amount
+                };
+                newdeck.Cards.Add(card);
+            }
+
+            return newdeck;
+        }
+
         public static CardPrototype GetCardPrototype(this Card card)
         {
             CardPrototype cardPrototype = new CardPrototype

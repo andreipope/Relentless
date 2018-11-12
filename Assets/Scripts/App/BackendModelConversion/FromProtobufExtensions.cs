@@ -209,7 +209,8 @@ namespace Loom.ZombieBattleground.Data
                 CardRank = (Enumerators.CardRank)cardPrototype.CreatureRank,
                 CardType = (Enumerators.CardType)cardPrototype.CreatureType,
                 CardKind = (Enumerators.CardKind)cardPrototype.CardKind,
-                UniqueAnimationType = Utilites.CastStringTuEnum<Enumerators.UniqueAnimationType>(cardPrototype.UniqueAnimation, true),
+                UniqueAnimationType = string.IsNullOrEmpty(cardPrototype.UniqueAnimation) ? Enumerators.UniqueAnimationType.None :
+                                      Utilites.CastStringTuEnum<Enumerators.UniqueAnimationType>(cardPrototype.UniqueAnimation, true),
                 Abilities = abilities
             };
 
