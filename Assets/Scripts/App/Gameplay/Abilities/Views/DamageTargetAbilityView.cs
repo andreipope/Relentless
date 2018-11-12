@@ -7,22 +7,18 @@ namespace Loom.ZombieBattleground
 {
     public class DamageTargetAbilityView : AbilityViewBase<DamageTargetAbility>
     {
-
         private const float DELAY_BEFORE_MOVE_SHROOM = 0.5f;
-
         private const float DELAY_BEFORE_DESTROY_MOVED_SHROOM = 2f;
-
         private const float DELAY_AFTER_IMPACT_SHROOM = 4.5f;
-
         private const float DELAY_BEFORE_DESTROY_IMPACT_SHROOM = 10f;
 
         private float _delayBeforeMove;
-
         private float _delayBeforeDestroyMoved;
-
         private float _delayAfterImpact;
-
         private float _delayBeforeDestroyImpact;
+
+        private string _abilityActionSound,
+                       _abilityActionCompletedSound;
 
         private BattlegroundController _battlegroundController;
 
@@ -50,6 +46,11 @@ namespace Loom.ZombieBattleground
                     VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
                 }, _delayBeforeMove);
+
+                if (!string.IsNullOrEmpty(_abilityActionSound))
+                {
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+                }
             }
             else
             {
@@ -69,6 +70,11 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
+
+                if (!string.IsNullOrEmpty(_abilityActionCompletedSound))
+                {
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionCompletedSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+                }
             }
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, _delayAfterImpact);
@@ -94,6 +100,12 @@ namespace Loom.ZombieBattleground
                     _delayAfterImpact = DELAY_AFTER_IMPACT_SHROOM;
                     _delayBeforeDestroyImpact = DELAY_BEFORE_DESTROY_IMPACT_SHROOM;
                     _delayBeforeDestroyMoved = DELAY_BEFORE_DESTROY_MOVED_SHROOM;
+                    _abilityActionSound = "ZB_AUD_Shroom_Trail_F1_EXP";
+                    _abilityActionCompletedSound = "ZB_AUD_Shroom_explosion_F1_EXP";
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_ROCK:
+                    _abilityActionSound = "ZB_AUD_Shroom_Trail_F1_EXP";
+                    _delayBeforeMove = 3.5f;
                     break;
                 default:
                     break;

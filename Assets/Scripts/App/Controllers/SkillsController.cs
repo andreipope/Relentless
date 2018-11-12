@@ -1363,6 +1363,8 @@ namespace Loom.ZombieBattleground
 
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
                 _battlegroundController.DestroyBoardUnit(boardUnitModel);
+
+                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, "ZB_AUD_shatterCard_F1_EXP", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
