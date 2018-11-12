@@ -912,6 +912,9 @@ public class TestHelper
             BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
             PlayCardFromHandToBoard (boardCard.WorkingCard);
+
+            yield return LetsThink ();
+            yield return LetsThink ();
         }
 
         yield return null;
@@ -1013,6 +1016,37 @@ public class TestHelper
         }
 
         _testBroker.GetPlayer (_player).CurrentGoo -= card.LibraryCard.Cost;
+    }
+
+    // todo: reconsider having this
+    public IEnumerator PlayCardFromBoardToOpponent (
+        int[] attackerCardIndices,
+        int[] attackedCardIndices,
+        bool opponentPlayer = false)
+    {
+        for (int i = 0; i < attackerCardIndices.Length; i++)
+        {
+            int attackerCardIndex = attackerCardIndices[i];
+
+            BoardUnitView attackerBoardUnitView = _battlegroundController.PlayerBoardCards[attackerCardIndex];
+
+            if (opponentPlayer)
+            {
+                attackerBoardUnitView.Model.DoCombat (_gameplayManager.OpponentPlayer);
+            }
+            else
+            {
+                int attackedCardIndex = attackedCardIndices[i];
+
+                BoardUnitView attackedBoardUnitView = _battlegroundController.OpponentBoardCards[attackedCardIndex];
+
+                attackerBoardUnitView.Model.DoCombat (attackedBoardUnitView.Model);
+            }
+        }
+
+        yield return LetsThink ();
+
+        yield return null;
     }
 
     private IEnumerator PlayCardFromBoard (BoardUnitModel boardUnitModel, Player targetPlayer, BoardUnitModel targetCreatureModel)
@@ -1587,8 +1621,37 @@ public class TestHelper
     }
 
     // todo: review
-    private void DoBoardSkill (BoardSkill skill)
+    public void DoBoardSkill (BoardSkill skill, BoardObject overrideTarget = null, Enumerators.AffectObjectType selectedTargetType = Enumerators.AffectObjectType.None)
     {
+        if (overrideTarget != null)
+        {
+            skill.StartDoSkill ();
+
+            switch (selectedTargetType)
+            {
+                case Enumerators.AffectObjectType.Player:
+                    skill.FightTargetingArrow.SelectedPlayer = (Player) overrideTarget;
+
+                    Debug.Log ("Board skill: Player");
+
+                    break;
+                case Enumerators.AffectObjectType.Character:
+                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) overrideTarget);
+                    skill.FightTargetingArrow.SelectedCard = selectedCardView;
+
+                    Debug.Log ("Board skill: Character");
+
+                    break;
+            }
+
+            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, overrideTarget);
+
+            _skillsController.DoSkillAction (skill, null, overrideTarget);
+            skill.EndDoSkill ();
+
+            return;
+        }
+
         BoardObject target = null;
 
         Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.None;
@@ -1761,7 +1824,14 @@ public class TestHelper
         // _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target);
 
         // todo fix this
-        _skillsController.DoSkillAction (skill, null, target);
+        if (overrideTarget != null)
+        {
+            _skillsController.DoSkillAction (skill, null, overrideTarget);
+        }
+        else
+        {
+            _skillsController.DoSkillAction (skill, null, target);
+        }
 
         skill.EndDoSkill ();
 
@@ -1878,6 +1948,45 @@ public class TestHelper
     public IEnumerator WaitUntilInputIsUnblocked ()
     {
         yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn ());
+    }
+
+    // todo: reconsider having this
+    public IEnumerator UseSkillToOpponentPlayer ()
+    {
+        DoBoardSkill (_testBroker.GetPlayerPrimarySkill (_player), _testBroker.GetPlayer (_opponent), Enumerators.AffectObjectType.Player);
+
+        yield return LetsThink ();
+        yield return LetsThink ();
+
+        yield return null;
+    }
+
+    // todo: reconsider having this
+    public IEnumerator PlayNonSleepingCardsFromBoardToOpponentPlayer ()
+    {
+        foreach (BoardUnitView boardUnitView in _battlegroundController.PlayerBoardCards)
+        {
+            if (boardUnitView.Model.IsPlayable)
+            {
+                boardUnitView.Model.DoCombat (_gameplayManager.OpponentPlayer);
+
+                yield return LetsThink ();
+                yield return LetsThink ();
+            }
+
+            yield return null;
+        }
+
+        yield return null;
+    }
+
+    // todo: reconsider having this
+    public IEnumerator WaitUntilCardIsAddedToBoard (string boardName)
+    {
+        Transform boardTransform = GameObject.Find (boardName).transform;
+        int boardChildrenCount = boardTransform.childCount;
+
+        yield return new WaitUntil (() => (boardChildrenCount < boardTransform.childCount) && (boardChildrenCount < _battlegroundController.OpponentBoardCards.Count));
     }
 
     public IEnumerator MakeMoves ()
