@@ -151,8 +151,6 @@ namespace Loom.ZombieBattleground
 
         private void SettingsButtonOnClickHandler()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
             _uiManager.DrawPopup<SettingsPopup>(true);
         }
 
