@@ -228,17 +228,17 @@ namespace Loom.ZombieBattleground
                         opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
 
                         // HACK: Set to any valid opponent deck ID, it will get overwritten later anyway
-                        _gameplayManager.OpponentDeckId = _dataManager.CachedOpponentDecksData.Decks[0].Id;
+                        _gameplayManager.OpponentDeckId = (int)_dataManager.CachedOpponentDecksData.Decks[0].Id;
                     }
                     else
                     {
                         heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
-                        OpponentDeck opponentDeck =
+                        Data.Deck opponentDeck =
                             _dataManager
                                 .CachedOpponentDecksData
                                 .Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
                         opponentHeroId = opponentDeck.HeroId;
-                        _gameplayManager.OpponentDeckId = opponentDeck.Id;
+                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Id;
                     }
 
                     break;
