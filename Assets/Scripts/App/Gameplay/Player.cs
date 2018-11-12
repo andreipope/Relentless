@@ -78,6 +78,8 @@ namespace Loom.ZombieBattleground
 
         private readonly Animator _regularAnimator;
 
+        private readonly ParticleSystem _drawCradParticle;
+
         private int _currentGoo;
 
         private int _gooVials;
@@ -116,7 +118,7 @@ namespace Loom.ZombieBattleground
             BoardCards = new List<BoardUnitView>();
             BoardSpellsInUse = new List<BoardSpell>();
 
-            CardsPreparingToHand = new List<BoardCard>();
+            CardsPreparingToHand = new List<WorkingCard>();
 
             switch (_matchManager.MatchType)
             {
@@ -203,6 +205,7 @@ namespace Loom.ZombieBattleground
             _avatarObject = _overlordRegularObject.transform.Find("RegularPosition/Avatar/OverlordImage").gameObject;
             _avatarSelectedHighlight = _overlordRegularObject.transform.Find("RegularPosition/Avatar/SelectedHighlight").gameObject;
             _freezedHighlightObject = _overlordRegularObject.transform.Find("RegularPosition/Avatar/FreezedHighlight").gameObject;
+            _drawCradParticle = playerObject.transform.Find("Deck_Illustration/DrawCardVFX").GetComponent<ParticleSystem>();
 
             string name = SelfHero.HeroElement.ToString() + "HeroFrame";
             GameObject prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
@@ -320,7 +323,7 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> CardsOnBoard { get; }
 
-        public List<BoardCard> CardsPreparingToHand { get; set; }
+        public List<WorkingCard> CardsPreparingToHand { get; set; }
 
         public bool IsStunned { get; private set; }
 
@@ -344,7 +347,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooVials++;
-                CurrentGoo = GooVials + CurrentGooModificator;
+                CurrentGoo = GooVials + CurrentGooModificator + ExtraGoo;
                 CurrentGooModificator = 0;
 
                 if (_turnsLeftToFreeFromStun > 0 && IsStunned)
@@ -363,9 +366,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AddCardToDeck(WorkingCard card)
+        public void AddCardToDeck(WorkingCard card, bool shuffle = false)
         {
-            CardsInDeck.Add(card);
+            if (shuffle)
+            {
+                CardsInDeck.Insert(Random.Range(0, CardsInDeck.Count), card);
+            }
+            else
+            {
+                CardsInDeck.Add(card);
+            }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
         }
@@ -593,6 +603,9 @@ namespace Loom.ZombieBattleground
                 () => {
                     foreach (MeshRenderer renderer in overlordImagePieces)
                     {
+                        if (renderer == null || !renderer)
+                            continue;
+
                         renderer.material.color = color;
                     }
                 }
@@ -621,6 +634,11 @@ namespace Loom.ZombieBattleground
         public void SetGlowStatus(bool status)
         {
             _avatarSelectedHighlight.SetActive(status);
+        }
+
+        public void PlayDrawCardVFX()
+        {
+            _drawCradParticle.Play();
         }
 
         public void Stun(Enumerators.StunType stunType, int turnsCount)
@@ -676,8 +694,7 @@ namespace Loom.ZombieBattleground
 
         private WorkingCard GetCardThatNotInDistribution()
         {
-            List<WorkingCard> usedCards = CardsPreparingToHand.Select(x => x.WorkingCard).ToList();
-            List<WorkingCard> cards = CardsInDeck.FindAll(x => !usedCards.Contains(x)).ToList();
+            List<WorkingCard> cards = CardsInDeck.FindAll(x => !CardsPreparingToHand.Contains(x)).ToList();
 
             return cards[0];
         }

@@ -9,6 +9,10 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        private int _damage;
+
+        private bool _isAttacker;
+
         public GainNumberOfLifeForEachDamageThisDealsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -18,8 +22,6 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
@@ -32,18 +34,31 @@ namespace Loom.ZombieBattleground
 
             AbilityUnitOwner.BuffedHp += Value * damageDeal;
             AbilityUnitOwner.CurrentHp += Value * damageDeal;
-
-            CreateVfx(GetAbilityUnitOwnerView().Transform.position, true);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            _isAttacker = isAttacker;
+
+            _damage = damage;
+        }
+
+        protected override void UnitAttackedEndedHandler()
+        {
+            base.UnitAttackedEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !_isAttacker)
                 return;
 
-            Action(damage);
+
+            InvokeActionTriggered();
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            Action(_damage);
         }
     }
 }

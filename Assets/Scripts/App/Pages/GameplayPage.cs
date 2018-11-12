@@ -45,6 +45,22 @@ namespace Loom.ZombieBattleground
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
 
+        public PlayerManaBarItem PlayerManaBar
+        {
+            get
+            {
+                return _playerManaBar;
+            }
+        }
+
+        public PlayerManaBarItem OpponentManaBar
+        {
+            get
+            {
+                return _playerManaBar;
+            }
+        }
+
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
@@ -212,17 +228,17 @@ namespace Loom.ZombieBattleground
                         opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
 
                         // HACK: Set to any valid opponent deck ID, it will get overwritten later anyway
-                        _gameplayManager.OpponentDeckId = _dataManager.CachedOpponentDecksData.Decks[0].Id;
+                        _gameplayManager.OpponentDeckId = (int)_dataManager.CachedOpponentDecksData.Decks[0].Id;
                     }
                     else
                     {
                         heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
-                        OpponentDeck opponentDeck =
+                        Data.Deck opponentDeck =
                             _dataManager
                                 .CachedOpponentDecksData
                                 .Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
                         opponentHeroId = opponentDeck.HeroId;
-                        _gameplayManager.OpponentDeckId = opponentDeck.Id;
+                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Id;
                     }
 
                     break;
@@ -584,6 +600,11 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
+                if (_gameplayManager.GetController<CardsController>().CardDistribution)
+                {
+                    _uiManager.HidePopup<MulliganPopup>();
+                }
+
                 GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
 

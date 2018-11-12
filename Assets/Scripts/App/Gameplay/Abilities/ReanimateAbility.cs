@@ -17,6 +17,11 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
+            if (!AbilityUnitOwner.IsReanimated)
+            {
+                AbilityUnitOwner.AddEffectOnUnit(Enumerators.EffectOnUnitType.Reanimate);
+            }
         }
 
         public override void Action(object info = null)
