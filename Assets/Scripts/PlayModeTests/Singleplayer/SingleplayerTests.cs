@@ -69,6 +69,7 @@ public class SingleplayerTests
 
         yield return _testHelper.ClickGenericButton ("Button_Next");
 
+        yield return _testHelper.WaitUntilOurTurnStarts ();
         yield return _testHelper.WaitUntilInputIsUnblocked ();
 
         yield return _testHelper.LetsThink ();
@@ -89,6 +90,10 @@ public class SingleplayerTests
 
         yield return _testHelper.ClickGenericButton ("Button_Next");
 
+        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
+
         yield return _testHelper.PlayCardFromBoardToOpponent (new[] { 0 }, null, true);
 
         yield return _testHelper.ClickGenericButton ("Button_Next");
@@ -102,6 +107,10 @@ public class SingleplayerTests
         yield return _testHelper.WaitUntilInputIsUnblocked ();
 
         yield return _testHelper.ClickGenericButton ("Button_Next");
+
+        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.PlayCardFromBoardToOpponent (new[] { 0 }, new[] { 0 });
 
