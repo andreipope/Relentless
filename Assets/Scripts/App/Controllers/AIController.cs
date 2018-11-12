@@ -170,8 +170,7 @@ namespace Loom.ZombieBattleground
 
             if (deck != null)
             {
-                //TODO deck type!
-                //SetAiType((Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type));
+                SetAiType((Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type));
             }
             else
             {

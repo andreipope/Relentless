@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground.Data
                 Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
             };
         }
-
+/*
         public static OpponentDeck FromProtobuf(this Protobuf.Deck deck)
         {
             return new OpponentDeck
@@ -152,6 +152,7 @@ namespace Loom.ZombieBattleground.Data
                 Cards = deck.Cards.Select(card => card.GetDeckCardData()).ToList()
             };
         }
+        */
         //TOTO: review does need this function at all
         private static DeckCardData GetDeckCardData(this CardCollection cardCollection)
         {

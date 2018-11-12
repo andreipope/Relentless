@@ -7,17 +7,4 @@ namespace Loom.ZombieBattleground.Data
     {
         public List<Deck> Decks;
     }
-
-    public class OpponentDeck
-    {
-        public int Id;
-
-        public int HeroId;
-
-        public string Type;
-
-        public string Name;
-
-        public List<DeckCardData> Cards;
-    }
 }
