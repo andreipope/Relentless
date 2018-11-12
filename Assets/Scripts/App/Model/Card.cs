@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("Type")]
         public Enumerators.CardType CardType { get; protected set; }
 
-        public List<AbilityData> Abilities = new List<AbilityData>();
+        public List<AbilityData> Abilities { get; }
 
         public CardViewInfo CardViewInfo { get; protected set; }
 
@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground.Data
             CardKind = cardKind;
             CardRank = cardRank;
             CardType = cardType;
-            Abilities = abilities;
+            Abilities = abilities ?? new List<AbilityData>();
             CardViewInfo = cardViewInfo;
             UniqueAnimationType = uniqueAnimationType;
         }

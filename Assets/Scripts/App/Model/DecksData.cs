@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -22,11 +23,12 @@ namespace Loom.ZombieBattleground.Data
         public string Name { get; set; }
 
         public List<DeckCardData> Cards;
+
         public int PrimarySkill { get; set; }
 
         public int SecondarySkill { get; set; }
 
-        public string Type { get; set; }
+        public Enumerators.AiType Type { get; set; }
 
         public Deck(
             long id,

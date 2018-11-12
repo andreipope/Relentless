@@ -64,7 +64,8 @@ namespace Loom.ZombieBattleground.Tests
                 new CardViewInfo(
                     new FloatVector3(0.3f, 0.4f, 0.5f),
                     FloatVector3.One
-                )
+                ),
+                Enumerators.UniqueAnimationType.ShammannArrival
             );
 
             Card deserialized = original.ToProtobuf().FromProtobuf();
@@ -193,7 +194,7 @@ namespace Loom.ZombieBattleground.Tests
                         new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, "path1"),
                         new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Moving, "path2")
                     },
-                    Enumerators.GameMechanicDescriptionType.DEATH,
+                    Enumerators.GameMechanicDescriptionType.Death,
                     Enumerators.SetType.LIFE,
                     Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay,
                     choosableAbilities,

@@ -180,6 +180,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AiType
         {
+            UNDEFINED,
             BLITZ_AI,
             DEFENSE_AI,
             MIXED_AI,
@@ -216,26 +217,32 @@ namespace Loom.ZombieBattleground.Common
 
         public enum GameMechanicDescriptionType
         {
-            BLANK,
-            ATTACK,
-            OVERFLOW,
-            ENTRY,
-            SWING,
-            END,
-            DEATH,
-            RAGE,
-            DEVOUR,
-            TURN,
-            GUARD,
-            DELAYED,
-            PERMANENT,
-            FLASH,
-            FREEZE,
-            REANIMATE,
-            DESTROY,
-            DISTRACT,
-            SHATTER,
-            KILL_UNIT
+            Undefined,
+            Attack,
+            Death,
+            DelayedX,
+            Destroy,
+            Devour,
+            Distract,
+            End,
+            Entry,
+            Feral,
+            Flash,
+            Freeze,
+            Guard,
+            Heavy,
+            OverflowX,
+            RageX,
+            Reanimate,
+            Shatter,
+            SwingX,
+            Turn,
+
+            GotDamage,
+            AtDefense,
+            InHand,
+            KillUnit,
+            Permanent,
         }
 
         public enum BuffType
@@ -610,36 +617,7 @@ namespace Loom.ZombieBattleground.Common
         public enum UniqueAnimationType
         {
             None,
-            ShammannArrival,
-        }
-
-        public enum EffectOnUnitType
-        {
-            Attack,
-            Death,
-            DelayedX,
-            Destroy,
-            Devour,
-            Distract,
-            End,
-            Entry,
-            Feral,
-            Flash,
-            Freeze,
-            Guard,
-            Heavy,
-            OverflowX,
-            RageX,
-            Reanimate,
-            Shatter,
-            SwingX,
-            Turn,
-
-            GotDamage,
-            AtDefense,
-            InHand,
-            KillUnit,
-            Permanent,
+            ShammannArrival
         }
     }
 }

@@ -16,11 +16,11 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (!AbilityUnitOwner.IsReanimated)
             {
-                AbilityUnitOwner.AddEffectOnUnit(Enumerators.EffectOnUnitType.Reanimate);
+                AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
             }
         }
 
@@ -32,8 +32,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            Card libraryCard = AbilityUnitOwner.Card.LibraryCard.Clone();
-            WorkingCard card = new WorkingCard(libraryCard, owner);
+            Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
             BoardUnitView unit = CreateBoardUnit(card, owner);
             unit.Model.IsReanimated = true;
             AbilityUnitOwner.IsReanimated = true;

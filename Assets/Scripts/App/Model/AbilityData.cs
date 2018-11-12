@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.SetType TargetSetType { get; private set; }
 
         [JsonProperty("SubTrigger")]
-        public Enumerators.AbilitySubTrigger SubTrigger { get; private set; }
+        public Enumerators.AbilitySubTrigger AbilitySubTrigger { get; private set; }
 
         public List<ChoosableAbility> ChoosableAbilities { get; private set; }
 
@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground.Data
             List<VisualEffectInfo> visualEffectsToPlay,
             Enumerators.GameMechanicDescriptionType gameMechanicDescriptionType,
             Enumerators.SetType targetSetType,
-            Enumerators.AbilitySubTrigger subTrigger,
+            Enumerators.AbilitySubTrigger abilitySubTrigger,
             List<ChoosableAbility> choosableAbilities,
             int defense,
             int cost)
@@ -119,7 +119,7 @@ namespace Loom.ZombieBattleground.Data
             VisualEffectsToPlay = visualEffectsToPlay ?? new List<VisualEffectInfo>();
             GameMechanicDescriptionType = gameMechanicDescriptionType;
             TargetSetType = targetSetType;
-            SubTrigger = subTrigger;
+            AbilitySubTrigger = abilitySubTrigger;
             ChoosableAbilities = choosableAbilities ?? new List<ChoosableAbility>();
             Defense = defense;
             Cost = cost;
@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground.Data
             VisualEffectsToPlay = source.VisualEffectsToPlay.Select(v => new VisualEffectInfo(v)).ToList();
             GameMechanicDescriptionType = source.GameMechanicDescriptionType;
             TargetSetType = source.TargetSetType;
-            SubTrigger = source.SubTrigger;
+            AbilitySubTrigger = source.AbilitySubTrigger;
             ChoosableAbilities = source.ChoosableAbilities.Select(a => new ChoosableAbility(a)).ToList();
             Defense = source.Defense;
             Cost = source.Cost;

@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         AbilityUnitOwner
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
 
             object target = null;
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.None;
+            Enumerators.ActionType actionType;
 
             switch (AffectObjectType)
             {

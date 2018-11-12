@@ -166,7 +166,8 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardRank) card.Rank,
                 (Enumerators.CardType) card.Type,
                 card.Abilities.Select(a => a.FromProtobuf()).ToList(),
-                card.CardViewInfo.FromProtobuf()
+                card.CardViewInfo.FromProtobuf(),
+                (Enumerators.UniqueAnimationType) card.UniqueAnimation
             );
         }
 
@@ -187,16 +188,6 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static OpponentDeck FromProtobufToOpponentDeck(this Protobuf.Deck deck)
-        {
-            return new OpponentDeck
-            {
-                Id = (int) deck.Id,
-                HeroId = (int) deck.HeroId,
-                Type = Enumerators.AiType.BLITZ_AI,
-                Cards = deck.Cards.Select(card => card.FromProtobuf()).ToList()
-            };
-        }
 
         public static List<CardInstance> FromProtobuf(this RepeatedField<CardInstance> repeatedFieldCardInstance)
         {

@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
                     {
                         if ((UnitDefense > 0 && unit.Model.CurrentHp <= UnitDefense) || UnitDefense == 0)
                         {
-                            if (unit.Model.Card.RealCost <= UnitCost || UnitCost == 0)
+                            if (unit.Model.Card.InstanceCard.Cost <= UnitCost || UnitCost == 0)
                             {
                                 if (SelfBoardCreature != unit)
                                 {

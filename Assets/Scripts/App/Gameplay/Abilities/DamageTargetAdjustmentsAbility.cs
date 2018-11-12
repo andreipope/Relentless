@@ -110,7 +110,6 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AffectObjectType.Character:
                         Action(TargetUnit);
-                        }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                         break;
                 }
             }
@@ -146,7 +145,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
     }
 }

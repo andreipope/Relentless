@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground.Data
                 },
                 GameMechanicDescriptionType = (GameMechanicDescriptionType.Types.Enum) ability.GameMechanicDescriptionType,
                 TargetSet = (CardSetType.Types.Enum) ability.TargetSetType,
-                SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.SubTrigger,
+                SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.AbilitySubTrigger,
                 ChoosableAbilities =
                 {
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())

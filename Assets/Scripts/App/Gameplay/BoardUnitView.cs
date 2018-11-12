@@ -158,7 +158,7 @@ namespace Loom.ZombieBattleground
 
         public void SetObjectInfo(WorkingCard card)
         {
-            Model.EffectsOnUnitChanged += BoardUnitEffectsOnUnitChanged;
+            Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
             Model.SetObjectInfo(card);
 
@@ -380,9 +380,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void BoardUnitEffectsOnUnitChanged()
+        private void BoardUnitGameMechanicDescriptionsOnUnitChanged()
         {
-            if (Model.EffectsOnUnit.Count == 0)
+            if (Model.GameMechanicDescriptionsOnUnit.Count == 0)
             {
                 if (_cardMechanicsPicture.sprite != null)
                 {
@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground
             Model.CreaturePlayableForceSet -= BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
             Model.UnitDistractEffectStateChanged -= BoardUnitDistractEffectStateChanged;
-            Model.EffectsOnUnitChanged -= BoardUnitEffectsOnUnitChanged;
+            Model.GameMechanicDescriptionsOnUnitChanged -= BoardUnitGameMechanicDescriptionsOnUnitChanged;
         }
 
         public void PlayArrivalAnimation(bool firstAppear = true)
@@ -864,7 +864,7 @@ namespace Loom.ZombieBattleground
 
         private void DrawCardMechanicIcons()
         {
-            if (Model.EffectsOnUnit.Count == 1)
+            if (Model.GameMechanicDescriptionsOnUnit.Count == 1)
             {
                 _currentEffectIndexCrossfading = 0;
                 _crossfadingEffectsOnUnit = false;
@@ -877,13 +877,13 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ChangeCardMechanicIcon(Model.EffectsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
+            ChangeCardMechanicIcon(Model.GameMechanicDescriptionsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
 
-            if (Model.EffectsOnUnit.Count > 1)
+            if (Model.GameMechanicDescriptionsOnUnit.Count > 1)
             {
                 _currentEffectIndexCrossfading++;
 
-                if (_currentEffectIndexCrossfading >= Model.EffectsOnUnit.Count)
+                if (_currentEffectIndexCrossfading >= Model.GameMechanicDescriptionsOnUnit.Count)
                 {
                     _currentEffectIndexCrossfading = 0;
                 }

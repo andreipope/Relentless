@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
             if (Value > 0)
             {
-                _units = _units.Where(x => x.Model.Card.RealCost <= Value).ToList();
+                _units = _units.Where(x => x.Model.Card.InstanceCard.Cost <= Value).ToList();
             }
 
             InvokeActionTriggered(_units);
