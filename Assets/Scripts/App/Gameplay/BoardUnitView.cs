@@ -88,6 +88,12 @@ namespace Loom.ZombieBattleground
 
         private bool _crossfadingEffectsOnUnit = false;
 
+        private const float _effectsOnUnitFadeDuration = 0.5f;
+
+        private const float _effectsOnUnitFadeCrossfadingDelay = 3f;
+
+        private bool _crossfadingSequenceEnded = true;
+
         public Action ArrivalEndCallback;
 
         public BoardUnitView(BoardUnitModel model, Transform parent)
@@ -152,6 +158,8 @@ namespace Loom.ZombieBattleground
 
         public void SetObjectInfo(WorkingCard card)
         {
+            Model.EffectsOnUnitChanged += BoardUnitEffectsOnUnitChanged;
+
             Model.SetObjectInfo(card);
 
             string setName = _cardsController.GetSetOfCard(card.LibraryCard);
@@ -180,7 +188,6 @@ namespace Loom.ZombieBattleground
             Model.CreaturePlayableForceSet += BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved += BoardUnitOnUnitFromDeckRemoved;
             Model.UnitDistractEffectStateChanged += BoardUnitDistractEffectStateChanged;
-            Model.EffectsOnUnitChanged += BoardUnitEffectsOnUnitChanged;
 
             Model.FightSequenceHandler = this;
 
@@ -375,21 +382,22 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitEffectsOnUnitChanged()
         {
-            if(Model.EffectsOnUnit.Count == 0)
+            if (Model.EffectsOnUnit.Count == 0)
             {
-                DrawCardMechanicIcons();
-            }
-            else if(Model.EffectsOnUnit.Count == 1)
-            {
-
+                if (_cardMechanicsPicture.sprite != null)
+                {
+                    Sequence sequence = DOTween.Sequence();
+                    sequence.Append(_cardMechanicsPicture.DOFade(0f, _effectsOnUnitFadeDuration));
+                    sequence.AppendCallback(() =>
+                    {
+                        _cardMechanicsPicture.sprite = null;
+                    });
+                    sequence.Play();
+                }
             }
             else
             {
-                if (!_crossfadingEffectsOnUnit)
-                {
-                    DrawCardMechanicIcons();
-                    _crossfadingEffectsOnUnit = true;
-                }
+                DrawCardMechanicIcons();
             }
         }
 
@@ -856,22 +864,64 @@ namespace Loom.ZombieBattleground
 
         private void DrawCardMechanicIcons()
         {
+            if (Model.EffectsOnUnit.Count == 1)
+            {
+                _currentEffectIndexCrossfading = 0;
+                _crossfadingEffectsOnUnit = false;
+            }
+            else
+            {
+                if (!_crossfadingEffectsOnUnit)
+                {
+                    _crossfadingEffectsOnUnit = true;
+                }
+            }
+
             ChangeCardMechanicIcon(Model.EffectsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
-            _currentEffectIndexCrossfading++;
+
+            if (Model.EffectsOnUnit.Count > 1)
+            {
+                _currentEffectIndexCrossfading++;
+
+                if (_currentEffectIndexCrossfading >= Model.EffectsOnUnit.Count)
+                {
+                    _currentEffectIndexCrossfading = 0;
+                }
+            }
         }
 
         private void ChangeCardMechanicIcon(string icon)
         {
-            float duration = 0.5f;
+            if (!_crossfadingSequenceEnded)
+                return;
+
+            _crossfadingSequenceEnded = false;
+            string iconPath = "Images/BattlegroundIconsCardMechanics/battleground_mechanic_icon_";
 
             Sequence sequence = DOTween.Sequence();
-            sequence.Append(_cardMechanicsPicture.DOFade(0f, duration));
+            sequence.Append(_cardMechanicsPicture.DOFade(0f, _effectsOnUnitFadeDuration));
             sequence.AppendCallback(() =>
             {
-                string iconPath = "Images/BattlegroundIconsCardMechanics/battleground_mechanic_icon_" + icon;
-                _cardMechanicsPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(iconPath);
+                Sprite sprite = _loadObjectsManager.GetObjectByPath<Sprite>(iconPath + icon);
+
+                if (sprite == null)
+                {
+                    sprite = _loadObjectsManager.GetObjectByPath<Sprite>(iconPath + "blank");
+                }
+
+                _cardMechanicsPicture.sprite = sprite;
             });
-            sequence.Append(_cardMechanicsPicture.DOFade(1f, duration));
+            sequence.Append(_cardMechanicsPicture.DOFade(1f, _effectsOnUnitFadeDuration));
+            sequence.AppendCallback(() =>
+            {
+                if (_crossfadingEffectsOnUnit)
+                {
+                    InternalTools.DoActionDelayed(DrawCardMechanicIcons, _effectsOnUnitFadeCrossfadingDelay);
+                }
+
+                _crossfadingSequenceEnded = true;
+            });
+
             sequence.Play();
         }
     }

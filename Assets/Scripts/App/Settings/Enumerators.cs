@@ -602,7 +602,13 @@ namespace Loom.ZombieBattleground.Common
             Reanimate,
             Shatter,
             SwingX,
-            Turn
+            Turn,
+
+            GotDamage,
+            AtDefense,
+            InHand,
+            KillUnit,
+            Permanent,
         }
     }
 }
