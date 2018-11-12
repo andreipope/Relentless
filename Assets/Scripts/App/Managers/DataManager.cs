@@ -97,7 +97,6 @@ namespace Loom.ZombieBattleground
             CachedUserLocalData.Tutorial = false;
 #endif
 
-            GameClient.Get<ISoundManager>().ApplySoundData();
             GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
@@ -172,6 +171,10 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
+
+            LoadLocalCachedData();
+
+            GameClient.Get<ISoundManager>().ApplySoundData();
 
             CheckVersion();
         }
@@ -272,13 +275,6 @@ namespace Loom.ZombieBattleground
                     CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
 
                     break;
-                case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    string userLocalDataFilePath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
-                    if (File.Exists(userLocalDataFilePath))
-                    {
-                        CachedUserLocalData = DeserializeObjectFromPersistentData<UserLocalData>(userLocalDataFilePath);
-                    }
-                    break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
                     CachedCollectionData = getCollectionResponse.FromProtobuf();
@@ -307,8 +303,18 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     CachedBuffsTooltipData = DeserializeObjectFromAssets<TooltipContentData>(_cacheDataFileNames[type]);
-
                     break;
+                default:
+                    break;
+            }
+        }
+
+        private void LoadLocalCachedData()
+        {
+            string userLocalDataFilePath = GetPersistentDataItemPath(_cacheDataFileNames[Enumerators.CacheDataType.USER_LOCAL_DATA]);
+            if (File.Exists(userLocalDataFilePath))
+            {
+                CachedUserLocalData = DeserializeObjectFromPersistentData<UserLocalData>(userLocalDataFilePath);
             }
         }
 
