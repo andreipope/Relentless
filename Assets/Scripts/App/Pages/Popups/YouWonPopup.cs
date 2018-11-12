@@ -170,7 +170,14 @@ namespace Loom.ZombieBattleground
 
             _uiManager.HidePopup<YouWonPopup>();
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+            if (GameClient.Get<IGameplayManager>().IsTutorial)
+            {
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
+            }
+            else
+            {
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+            }
         }
     }
 }

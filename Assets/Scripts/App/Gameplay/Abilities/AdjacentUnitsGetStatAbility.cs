@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             StatType = ability.AbilityStatType;
+            Damage = ability.Damage;
+            Health = ability.Health;
         }
 
         public override void Activate()
