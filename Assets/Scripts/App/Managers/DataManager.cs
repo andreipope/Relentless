@@ -230,22 +230,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (!versionMatch)
-            {
-                if (versionFile.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
-                {
-                    _isBuildVersionMatch = true;
-                }
-            }
-            else
-            {
-                using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
-                {
-                    _isBuildVersionMatch = true;
-                }
-            }
-
-
             if (!_isBuildVersionMatch)
             {
                 DeleteVersionFile();
