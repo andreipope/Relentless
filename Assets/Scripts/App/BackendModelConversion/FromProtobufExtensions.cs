@@ -30,8 +30,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Unit(
                 unit.InstanceId,
-                (Enumerators.AffectObjectType) unit.AffectObjectType,
-                new Unit.ParameterType(unit.Parameter.Attack, unit.Parameter.Defense, unit.Parameter.CardName)
+                (Enumerators.AffectObjectType) unit.AffectObjectType
             );
         }
 

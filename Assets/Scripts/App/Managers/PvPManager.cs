@@ -299,9 +299,8 @@ namespace Loom.ZombieBattleground
             {
                 string jsonStr = SystemText.Encoding.UTF8.GetString(data);
 
-                Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
-
-                PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+                Debug.LogWarning("! " + playerActionEvent ); // todo delete
 
                 if (playerActionEvent.Block != null)
                 {

@@ -94,12 +94,6 @@ namespace Loom.ZombieBattleground.Data
             {
                 InstanceId = unit.InstanceId,
                 AffectObjectType = (AffectObjectType.Types.Enum) unit.AffectObjectType,
-                Parameter = new Parameter
-                {
-                    Attack = unit.Parameter.Attack,
-                    Defense = unit.Parameter.Defense,
-                    CardName = unit.Parameter.CardName
-                }
             };
         }
 
