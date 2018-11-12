@@ -22,8 +22,6 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
-        private IUIManager _uiManager;
-
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -31,10 +29,6 @@ namespace Loom.ZombieBattleground
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataFileNames;
 
         private DirectoryInfo _dir;
-
-        private bool _isBuildVersionMatch = true;
-
-
 
         public DataManager(ConfigData configData)
         {
@@ -176,7 +170,6 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -232,7 +225,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (!_isBuildVersionMatch)
+            if (!versionMatch)
             {
                 DeleteVersionFile();
             }
@@ -357,11 +350,6 @@ namespace Loom.ZombieBattleground
                 return data;
 
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
-        }
-
-        public bool IsBuildVersionMatch()
-        {
-            return _isBuildVersionMatch;
         }
 
         private T DeserializeObjectFromAssets<T>(string fileName)
