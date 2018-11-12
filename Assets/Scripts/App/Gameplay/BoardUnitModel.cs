@@ -121,6 +121,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<bool> BuffSwingStateChanged;
 
+        public event Action EffectsOnUnitChanged;
+
         public Enumerators.CardType InitialUnitType { get; private set; }
 
         public int MaxCurrentDamage => InitialDamage + BuffedDamage;
@@ -192,6 +194,8 @@ namespace Loom.ZombieBattleground
         public IFightSequenceHandler FightSequenceHandler;
 
         public bool IsHeavyUnit => HasBuffHeavy || HasHeavy;
+
+        public List<Enumerators.EffectOnUnitType> EffectsOnUnit { get; private set; }
 
         public void Die(bool returnToHand = false)
         {
@@ -364,6 +368,27 @@ namespace Loom.ZombieBattleground
             InitialUnitType = Card.LibraryCard.CardType;
 
             CardTypeChanged?.Invoke(InitialUnitType);
+        }
+
+        public void AddEffectOnUnit(Enumerators.EffectOnUnitType effectOnUnit)
+        {
+            EffectsOnUnit.Add(effectOnUnit);
+
+            EffectsOnUnitChanged?.Invoke();
+        }
+
+        public void RemoveEffectFromUnit(Enumerators.EffectOnUnitType effectOnUnit)
+        {
+            EffectsOnUnit.Remove(effectOnUnit);
+
+            EffectsOnUnitChanged?.Invoke();
+        }
+
+        public void ClearEffectsOnUnit()
+        {
+            EffectsOnUnit.Clear();
+
+            EffectsOnUnitChanged?.Invoke();
         }
 
         public void SetObjectInfo(WorkingCard card)

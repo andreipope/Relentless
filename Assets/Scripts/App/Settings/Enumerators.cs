@@ -223,8 +223,7 @@ namespace Loom.ZombieBattleground.Common
             DAMAGE,
             HEAL_ALLY,
             DESTROY,
-            REANIMATE,
-            KILL_UNIT
+            REANIMATE
         }
 
         public enum CacheDataType
@@ -581,6 +580,29 @@ namespace Loom.ZombieBattleground.Common
         {
             None,
             ShammannArrival,
+        }
+
+        public enum EffectOnUnitType
+        {
+            Attack,
+            Death,
+            DelayedX,
+            Destroy,
+            Devour,
+            Distract,
+            End,
+            Entry,
+            Feral,
+            Flash,
+            Freeze,
+            Guard,
+            Heavy,
+            Overflow,
+            RageX,
+            Reanimate,
+            Shatter,
+            SwingX,
+            Turn
         }
     }
 }
