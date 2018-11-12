@@ -462,11 +462,9 @@ namespace Loom.ZombieBattleground
 
             if (Card.LibraryCard.Abilities != null)
             {
-                string formatAbilityCallType = string.Empty;
-                TooltipContentData.GameMechanicInfo gameMechanicInfo;
                 foreach (AbilityData ability in Card.LibraryCard.Abilities)
                 {
-                    gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescriptionType);
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescriptionType);
 
                     if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
                     {

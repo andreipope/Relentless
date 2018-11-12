@@ -13,6 +13,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using UnityEngine;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using Hero = Loom.ZombieBattleground.Data.Hero;
@@ -25,6 +26,9 @@ namespace Loom.ZombieBattleground
             new JsonSerializerSettings
             {
                 Culture = CultureInfo.InvariantCulture,
+                Converters = {
+                    new StringEnumConverter()
+                },
                 CheckAdditionalContent = true,
                 MissingMemberHandling = MissingMemberHandling.Error,
                 Error = (sender, args) =>
@@ -302,10 +306,10 @@ namespace Loom.ZombieBattleground
                     CachedDecksData = new DecksData(listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList());
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    GetAIDecksResponse decksAIResponse = await _backendFacade.GetAIDecks();
+                    GetAIDecksResponse decksAiResponse = await _backendFacade.GetAIDecks();
                     CachedOpponentDecksData = new OpponentDecksData();
                     CachedOpponentDecksData.Decks =
-                        decksAIResponse.Decks
+                        decksAiResponse.Decks
                             .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
                             .ToList();
 

@@ -1,3 +1,5 @@
+using System.Runtime.Serialization;
+
 namespace Loom.ZombieBattleground.Common
 {
     public class Enumerators
@@ -217,32 +219,80 @@ namespace Loom.ZombieBattleground.Common
 
         public enum GameMechanicDescriptionType
         {
+            [EnumMember(Value = "UNDEFINED")]
             Undefined,
+
+            [EnumMember(Value = "ATTACK")]
             Attack,
+
+            [EnumMember(Value = "DEATH")]
             Death,
+
+            [EnumMember(Value = "DELAYED")]
             DelayedX,
+
+            [EnumMember(Value = "DESTROY")]
             Destroy,
+
+            [EnumMember(Value = "DEVOUR")]
             Devour,
+
+            [EnumMember(Value = "DISTRACT")]
             Distract,
+
+            [EnumMember(Value = "END")]
             End,
+
+            [EnumMember(Value = "ENTRY")]
             Entry,
+
+            [EnumMember(Value = "FERAL")]
             Feral,
+
+            [EnumMember(Value = "FLASH")]
             Flash,
+
+            [EnumMember(Value = "FREEZE")]
             Freeze,
+
+            [EnumMember(Value = "GUARD")]
             Guard,
+
+            [EnumMember(Value = "HEAVY")]
             Heavy,
+
+            [EnumMember(Value = "OVERFLOW")]
             OverflowX,
+
+            [EnumMember(Value = "RAGE")]
             RageX,
+
+            [EnumMember(Value = "REANIMATE")]
             Reanimate,
+
+            [EnumMember(Value = "SHATTER")]
             Shatter,
+
+            [EnumMember(Value = "SWING")]
             SwingX,
+
+            [EnumMember(Value = "TURN")]
             Turn,
 
+            [EnumMember(Value = "GOT_DAMAGE")]
             GotDamage,
+
+            [EnumMember(Value = "AT_DEFENSE")]
             AtDefense,
+
+            [EnumMember(Value = "IN_HAND")]
             InHand,
+
+            [EnumMember(Value = "KILL_UNIT")]
             KillUnit,
-            Permanent,
+
+            [EnumMember(Value = "PERMANENT")]
+            Permanent
         }
 
         public enum BuffType

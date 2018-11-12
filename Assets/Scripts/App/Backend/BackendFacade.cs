@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Deck Management
 
-        private const string GetAIDecsDataMethod = "GetAIDecks";
+        private const string GetAiDecksDataMethod = "GetAIDecks";
 
         private const string GetDeckDataMethod = "ListDecks";
 
@@ -163,7 +163,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAIDecsDataMethod, request);
+            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAiDecksDataMethod, request);
         }
 
         public async Task DeleteDeck(string userId, long deckId)
