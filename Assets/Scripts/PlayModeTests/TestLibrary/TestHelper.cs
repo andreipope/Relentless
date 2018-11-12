@@ -62,6 +62,8 @@ public class TestHelper
     private BoardArrowController _boardArrowController;
     private PlayerController _playerController;
 
+    private GameObject canvas1GameObject, canvas2GameObject, canvas3GameObject;
+
     GameAction<object> _callAbilityAction;
 
     private Player _currentPlayer, _opponentPlayer;
@@ -93,6 +95,8 @@ public class TestHelper
             // RemoveGoogleAnalyticsModule ();
 
             yield return AddVirtualInputModule ();
+
+            yield return SetCanvases ();
 
             #region Login
 
@@ -190,13 +194,22 @@ public class TestHelper
         _opponentPlayer = _gameplayManager.OpponentPlayer;
     }
 
+    private IEnumerator SetCanvases ()
+    {
+        canvas1GameObject = null;
+
+        yield return new WaitUntil (() => GameObject.Find ("Canvas1") != null);
+
+        canvas1GameObject = GameObject.Find ("Canvas1");
+        canvas2GameObject = GameObject.Find ("Canvas2");
+        canvas3GameObject = GameObject.Find ("Canvas3");
+
+        yield return null;
+    }
+
     public IEnumerator GoBackToMainPage ()
     {
-        GameObject canvas1GameObject = null;
-
         yield return new WaitUntil (() => {
-            canvas1GameObject = GameObject.Find ("Canvas1");
-
             if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
             {
                 if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
@@ -227,11 +240,9 @@ public class TestHelper
         yield return null;
     }
 
-    public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
+    private IEnumerator PassWithMessage (string message)
     {
-        yield return CombinedCheck (
-            CheckCurrentPageName, "MainMenuPage", callback1,
-            CheckIfMatchmakingErrorOccured, "", callback2);
+        Assert.Pass (message);
 
         yield return null;
     }
@@ -239,8 +250,17 @@ public class TestHelper
     public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2)
     {
         yield return CombinedCheck (
-            CheckCurrentPageName, "GameplayPage", callback1,
+            CheckCurrentPageName, "MainMenuPage", callback1,
             CheckIfLoginErrorOccured, "", callback2);
+
+        yield return null;
+    }
+
+    public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
+    {
+        yield return CombinedCheck (
+            CheckCurrentPageName, "GameplayPage", callback1,
+            CheckIfMatchmakingErrorOccured, "", callback2);
 
         yield return null;
     }
@@ -267,6 +287,8 @@ public class TestHelper
                 if (callback2 != null)
                     yield return callback2;
             }
+
+            yield return null;
         }
 
         yield return null;
@@ -278,8 +300,6 @@ public class TestHelper
 
         if (errorTextObject != null && errorTextObject.activeInHierarchy)
         {
-            Assert.Fail ("Wasn't able to login. Try using USE_STAGING_BACKEND");
-
             return true;
         }
 
@@ -288,15 +308,28 @@ public class TestHelper
 
     private bool CheckIfMatchmakingErrorOccured (string dummyParameter)
     {
-        // implement this
+        // Initially
+        // Canvas2 / ConnectionPopup(Clone)
+
+        // Then
+        // ConnectionPopup is removed, WarningPopup is added
+        // Canvas3 / WarningPopup(Clone)
+
+        if (canvas3GameObject != null && canvas3GameObject.transform.childCount >= 2)
+        {
+            if (canvas3GameObject.transform.GetChild (1).name.Split ('(')[0] == "WarningPopup")
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         return false;
     }
 
     private bool CheckCurrentPageName (string expectedPageName)
     {
-        GameObject canvas1GameObject = GameObject.Find ("Canvas1");
-
         if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
         {
             if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
@@ -318,12 +351,8 @@ public class TestHelper
 
     public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
     {
-        GameObject canvas1GameObject = null;
-
         GameObject errorTextObject = null;
         yield return new WaitUntil (() => {
-            canvas1GameObject = GameObject.Find ("Canvas1");
-
             if (errorTextName.Length >= 1)
             {
                 errorTextObject = GameObject.Find (errorTextName);
@@ -478,10 +507,7 @@ public class TestHelper
 
     public IEnumerator WaitUntilPageUnloads ()
     {
-        GameObject canvas1GameObject;
         yield return new WaitUntil (() => {
-            canvas1GameObject = GameObject.Find ("Canvas1");
-
             if (canvas1GameObject != null && canvas1GameObject.transform.childCount <= 1)
             {
                 return true;
@@ -1818,14 +1844,14 @@ public class TestHelper
 
     public IEnumerator WaitUntilOurTurnStarts ()
     {
-        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") != null || IsGameEnded ());
+        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null);
 
-        yield return new WaitUntil (() => GameObject.Find ("YourTurnPopup(Clone)") == null || IsGameEnded ());
+        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") == null);
     }
 
     public IEnumerator WaitUntilInputIsUnblocked ()
     {
-        yield return new WaitUntil (() => _gameplayManager.IsLocalPlayerTurn () || IsGameEnded ());
+        yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn ());
     }
 
     public IEnumerator MakeMoves ()

@@ -237,9 +237,9 @@ public class MultiplayerPassiveTests
 
         while (true)
         {
-            yield return _testHelper.MainMenuTransition ("Button_Battle");
+            yield return _testHelper.ClickGenericButton ("Button_Battle");
 
-            yield return _testHelper.AssertLoggedInOrLoginFailed (
+            yield return _testHelper.AssertPvPStartedOrMatchmakingFailed (
                 PlayAMatch (),
                 PressOK ());
 

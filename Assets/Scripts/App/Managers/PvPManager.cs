@@ -79,6 +79,8 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
+
+            PvPTags = new Google.Protobuf.Collections.RepeatedField<string> ();
         }
 
         public async void Update()
