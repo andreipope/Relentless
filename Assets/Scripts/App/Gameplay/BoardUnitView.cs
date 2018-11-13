@@ -239,6 +239,10 @@ namespace Loom.ZombieBattleground
         private void ModelOnUnitDamageChanged()
         {
             UpdateUnitInfoText(_attackText, Model.CurrentDamage, Model.InitialDamage, Model.MaxCurrentDamage);
+            if(Model.MaxCurrentDamage == 0 && Model.UnitCanBeUsable())
+            {
+                SetNormalGlowFromUnitType();
+            }
         }
 
         private void BoardUnitOnUnitFromDeckRemoved()
