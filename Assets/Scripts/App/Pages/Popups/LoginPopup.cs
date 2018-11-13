@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -129,6 +130,7 @@ namespace Loom.ZombieBattleground
         private async void LoginProcess()
         {
             string betaKey = SystemInfo.deviceUniqueIdentifier;
+            betaKey = Regex.Replace(betaKey, @"[^a-zA-Z0-9]", "");
 
             // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
             SetUIState(LoginState.BetaKeyValidateAndLogin);
