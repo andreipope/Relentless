@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public class OpponentDecksData
+    public class AIDecksData
     {
-        public List<Deck> Decks;
+        public List<AIDeck> Decks;
     }
 }

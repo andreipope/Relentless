@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
         }
 
-        public async Task<GetAIDecksResponse> GetAIDecks()
+        public async Task<GetAIDecksResponse> GetAiDecks()
         {
             GetAIDecksRequest request = new GetAIDecksRequest
             {

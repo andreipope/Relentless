@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
         private BoardArrowController _boardArrowController;
 
-        private Enumerators.AiType _aiType;
+        private Enumerators.AIType _aiType;
 
         private List<BoardUnitModel> _attackedUnitTargets;
 
@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
                 int deckId = _gameplayManager.OpponentDeckId;
-                Deck deck = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId);
+                Deck deck = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == deckId).Deck;
                 foreach (DeckCardData card in deck.Cards)
                 {
                     for (int i = 0; i < card.Amount; i++)
@@ -160,12 +160,12 @@ namespace Loom.ZombieBattleground
 
         private void SetAiTypeByDeck()
         {
-            Deck deck =
-                _dataManager.CachedOpponentDecksData.Decks.Find(d => d.Id == _gameplayManager.OpponentDeckId);
+            AIDeck aiDeck =
+                _dataManager.CachedAiDecksData.Decks.Find(d => d.Deck.Id == _gameplayManager.OpponentDeckId);
 
-            if (deck != null)
+            if (aiDeck != null)
             {
-                SetAiType(deck.Type);
+                SetAiType(aiDeck.Type);
             }
             else
             {
@@ -173,7 +173,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetAiType(Enumerators.AiType aiType)
+        public void SetAiType(Enumerators.AIType aiType)
         {
             _aiType = aiType;
         }
@@ -374,8 +374,8 @@ namespace Loom.ZombieBattleground
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if ((totalValue >= _gameplayManager.OpponentPlayer.Defense || _aiType == Enumerators.AiType.BLITZ_AI ||
-                _aiType == Enumerators.AiType.TIME_BLITZ_AI))
+            if ((totalValue >= _gameplayManager.OpponentPlayer.Defense || _aiType == Enumerators.AIType.BLITZ_AI ||
+                _aiType == Enumerators.AIType.TIME_BLITZ_AI))
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {

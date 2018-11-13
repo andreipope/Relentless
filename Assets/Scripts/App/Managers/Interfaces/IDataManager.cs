@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         DecksData CachedDecksData { get; set; }
 
-        OpponentDecksData CachedOpponentDecksData { get; set; }
+        AIDecksData CachedAiDecksData { get; set; }
 
         CreditsData CachedCreditsData { get; set; }
 

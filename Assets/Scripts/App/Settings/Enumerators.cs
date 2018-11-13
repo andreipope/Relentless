@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground.Common
             Card
         }
 
-        public enum AiType
+        public enum AIType
         {
             UNDEFINED,
             BLITZ_AI,

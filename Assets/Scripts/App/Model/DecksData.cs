@@ -14,6 +14,19 @@ namespace Loom.ZombieBattleground.Data
         }
     }
 
+    public class AIDeck
+    {
+        public Deck Deck { get; }
+
+        public Enumerators.AIType Type { get; }
+
+        public AIDeck(Deck deck, Enumerators.AIType type)
+        {
+            Deck = deck;
+            Type = type;
+        }
+    }
+
     public class Deck
     {
         public long Id { get; set; }
@@ -28,15 +41,14 @@ namespace Loom.ZombieBattleground.Data
 
         public int SecondarySkill { get; set; }
 
-        public Enumerators.AiType Type { get; set; }
-
         public Deck(
             long id,
             int heroId,
             string name,
             List<DeckCardData> cards,
             int primarySkill,
-            int secondarySkill)
+            int secondarySkill
+            )
         {
             Id = id;
             HeroId = heroId;

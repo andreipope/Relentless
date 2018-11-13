@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
             CachedHeroesData = new HeroesData(new List<Hero>());
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData(new List<Deck>());
-            CachedOpponentDecksData = new OpponentDecksData();
+            CachedAiDecksData = new AIDecksData();
             CachedCreditsData = new CreditsData();
             CachedBuffsTooltipData = new TooltipContentData();
         }
@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
 
         public DecksData CachedDecksData { get; set; }
 
-        public OpponentDecksData CachedOpponentDecksData { get; set; }
+        public AIDecksData CachedAiDecksData { get; set; }
 
         public CreditsData CachedCreditsData { get; set; }
 
@@ -306,14 +306,14 @@ namespace Loom.ZombieBattleground
                     CachedDecksData = new DecksData(listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList());
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    GetAIDecksResponse decksAiResponse = await _backendFacade.GetAIDecks();
-                    CachedOpponentDecksData = new OpponentDecksData();
-                    CachedOpponentDecksData.Decks =
+                    GetAIDecksResponse decksAiResponse = await _backendFacade.GetAiDecks();
+                    CachedAiDecksData = new AIDecksData();
+                    CachedAiDecksData.Decks =
                         decksAiResponse.Decks
-                            .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                            .Select(d => d.FromProtobuf())
                             .ToList();
 
-                    CachedOpponentDecksData = DeserializeObjectFromAssets<OpponentDecksData>(_cacheDataFileNames[type]);
+                    CachedAiDecksData = DeserializeObjectFromAssets<AIDecksData>(_cacheDataFileNames[type]);
 
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:

@@ -105,6 +105,14 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
+        public static AIDeck FromProtobuf(this Protobuf.AIDeck aiDeck)
+        {
+            return new AIDeck(
+                aiDeck.Deck.FromProtobuf(),
+                (Enumerators.AIType) aiDeck.Type
+            );
+        }
+
         public static Deck FromProtobuf(this Protobuf.Deck deck)
         {
             return new Deck(
