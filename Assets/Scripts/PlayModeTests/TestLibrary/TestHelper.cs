@@ -1,6 +1,7 @@
 ﻿using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -70,7 +71,7 @@ public class TestHelper
 
     GameAction<object> _callAbilityAction;
 
-    private Player _currentPlayer, _opponentPlayer;
+    private Loom.ZombieBattleground.Player _currentPlayer, _opponentPlayer;
 
     public TestHelper (int testerType = 0)
     {
@@ -677,6 +678,23 @@ public class TestHelper
                         unit.DoCombat (attackedUnit);
                         // PlayCardFromBoard (unit, null, attackedUnit);
 
+                        if (_player == Enumerators.MatchPlayer.CurrentPlayer)
+                        {
+                            unit.OwnerPlayer.ThrowCardAttacked (
+                                unit.Card,
+                                AffectObjectType.Character,
+                                attackedUnit.Card.Id);
+
+                            /* if (target == SelectedPlayer)
+                            {
+                                creature.Model.OwnerPlayer.ThrowCardAttacked (creature.Model.Card, AffectObjectType.Player, -1);
+                            }
+                            else
+                            {
+                                creature.Model.OwnerPlayer.ThrowCardAttacked (creature.Model.Card, AffectObjectType.Character, SelectedCard.Model.Card.Id);
+                            } */
+                        }
+
                         alreadyUsedUnits.Add (unit);
 
                         yield return LetsThink ();
@@ -707,6 +725,11 @@ public class TestHelper
                     unit.DoCombat (_testBroker.GetPlayer (_opponent));
                     // PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
 
+                    unit.OwnerPlayer.ThrowCardAttacked (
+                        unit.Card,
+                        AffectObjectType.Player,
+                        -1);
+
                     yield return LetsThink ();
                 }
             }
@@ -722,6 +745,11 @@ public class TestHelper
                         unit.DoCombat (_testBroker.GetPlayer (_opponent));
                         // PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
 
+                        unit.OwnerPlayer.ThrowCardAttacked (
+                            unit.Card,
+                            AffectObjectType.Player,
+                            -1);
+
                         yield return LetsThink ();
                     }
                     else
@@ -733,12 +761,22 @@ public class TestHelper
                             unit.DoCombat (attackedCreature);
                             // PlayCardFromBoard (unit, null, attackedCreature);
 
+                            unit.OwnerPlayer.ThrowCardAttacked (
+                                unit.Card,
+                                AffectObjectType.Character,
+                                attackedCreature.Card.Id);
+
                             yield return LetsThink ();
                         }
                         else
                         {
                             unit.DoCombat (_testBroker.GetPlayer (_opponent));
                             // PlayCardFromBoard (unit, _testBroker.GetPlayer (_opponent), null);
+
+                            unit.OwnerPlayer.ThrowCardAttacked (
+                                unit.Card,
+                                AffectObjectType.Player,
+                                -1);
 
                             yield return LetsThink ();
                         }
@@ -1060,7 +1098,10 @@ public class TestHelper
         yield return null;
     }
 
-    private IEnumerator PlayCardFromBoard (BoardUnitModel boardUnitModel, Player targetPlayer, BoardUnitModel targetCreatureModel)
+    private IEnumerator PlayCardFromBoard (
+        BoardUnitModel boardUnitModel,
+        Loom.ZombieBattleground.Player targetPlayer,
+        BoardUnitModel targetCreatureModel)
     {
         WorkingCard workingCard = boardUnitModel.Card;
 
@@ -1244,7 +1285,7 @@ public class TestHelper
 
     private BoardObject GetAbilityTarget (WorkingCard card)
     {
-        Card libraryCard = card.LibraryCard;
+        Loom.ZombieBattleground.Data.Card libraryCard = card.LibraryCard;
 
         BoardObject target = null;
 
@@ -1422,7 +1463,7 @@ public class TestHelper
         }
     }
 
-    private List<BoardUnitView> GetHeavyUnitsOnBoard (Player player)
+    private List<BoardUnitView> GetHeavyUnitsOnBoard (Loom.ZombieBattleground.Player player)
     {
         return player.BoardCards.FindAll (x => x.Model.HasHeavy || x.Model.HasBuffHeavy);
     }
@@ -1499,7 +1540,7 @@ public class TestHelper
             _testBroker.GetPlayer (_player).CardsInHand.FindAll (x =>
                  x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
-        List<Card> cards = new List<Card> ();
+        List<Loom.ZombieBattleground.Data.Card> cards = new List<Loom.ZombieBattleground.Data.Card> ();
 
         foreach (WorkingCard item in list)
         {
@@ -1512,7 +1553,7 @@ public class TestHelper
 
         cards.Reverse ();
 
-        foreach (Card item in cards)
+        foreach (Loom.ZombieBattleground.Data.Card item in cards)
         {
             sortedList.Add (list.Find (x => x.CardId == item.Id && !sortedList.Contains (x)));
         }
@@ -1641,7 +1682,7 @@ public class TestHelper
             switch (selectedTargetType)
             {
                 case Enumerators.AffectObjectType.Player:
-                    skill.FightTargetingArrow.SelectedPlayer = (Player)overrideTarget;
+                    skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player) overrideTarget;
 
                     Debug.Log ("Board skill: Player");
 
@@ -1812,7 +1853,7 @@ public class TestHelper
         switch (selectedObjectType)
         {
             case Enumerators.AffectObjectType.Player:
-                skill.FightTargetingArrow.SelectedPlayer = (Player)target;
+                skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player)target;
 
                 Debug.Log ("Board skill: Player");
 
@@ -1891,7 +1932,7 @@ public class TestHelper
 
         int highCardCounter = 0;
 
-        Player currentPlayer = _gameplayManager.CurrentPlayer;
+        Loom.ZombieBattleground.Player currentPlayer = _gameplayManager.CurrentPlayer;
         for (int i = currentPlayer.CardsPreparingToHand.Count - 1; i >= 0; i--)
         {
             BoardCard boardCard = currentPlayer.CardsPreparingToHand[i];
@@ -2056,7 +2097,7 @@ public class TestHelper
     #region Horde Creation / Editing
 
     private CollectionData _collectionData;
-    private List<Card> _createdArmyCards, _createdHordeCards;
+    private List<Loom.ZombieBattleground.Data.Card> _createdArmyCards, _createdHordeCards;
 
     private List<string> _overlordNames = new List<string> () {
         "Brakuus",
@@ -2076,7 +2117,7 @@ public class TestHelper
         if (deckBuilderCards == null || deckBuilderCards.Length == 0)
             return;
 
-        _createdArmyCards = new List<Card> ();
+        _createdArmyCards = new List<Loom.ZombieBattleground.Data.Card> ();
         foreach (DeckBuilderCard deckBuilderCard in deckBuilderCards)
         {
             _createdArmyCards.Add (deckBuilderCard.Card);
@@ -2148,7 +2189,7 @@ public class TestHelper
 
     public IEnumerator AddCardToHorde (string cardName, bool overQuota = false)
     {
-        Card armyCard = _createdArmyCards.Find (x =>
+        Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
                              x.Name == cardName);
 
         Debug.Log ("Adding " + cardName + " (" + armyCard.Cost + ")");
