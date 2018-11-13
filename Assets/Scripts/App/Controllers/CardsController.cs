@@ -861,6 +861,8 @@ namespace Loom.ZombieBattleground
                 card.RealCost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
             }
 
+            player.ThrowOnHandChanged();
+
             return card;
         }
 
