@@ -775,7 +775,16 @@ namespace Loom.ZombieBattleground
                     Debug.Log("Result === " + e);
 
                     success = false;
-                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+
+                    string message = e.Message;
+
+                    string[] description = e.Message.Split('=');
+                    if (description.Length > 0)
+                    {
+                        message = description[description.Length - 1].TrimStart(' ');
+                        message = char.ToUpper(message[0]) + message.Substring(1);
+                    }
+                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
                 }
             }
 
