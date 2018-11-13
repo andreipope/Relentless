@@ -134,6 +134,7 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo()
         {
+            _initialInit = true;
 #if !UNITY_ANDROID && !UNITY_IOS
             _resolutionDropdown.ClearOptions();
             _screenModeDropdown.ClearOptions();
@@ -157,15 +158,14 @@ namespace Loom.ZombieBattleground
             }
             _resolutionDropdown.AddOptions(data);
 
-            _initialInit = true;
 
             _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
             _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
-
-            _initialInit = false;
 #endif
             _sfxVolumeDropdown.value = _soundManager.SoundVolume;
             _musicVolumeDropdown.value = _soundManager.MusicVolume;
+
+            _initialInit = false;
         }
 
 
@@ -240,12 +240,18 @@ namespace Loom.ZombieBattleground
 #endif
         private void SFXVolumeChangedHandler(float value)
         {
-            _soundManager.SetSoundVolume(value);
+            if (!_initialInit)
+            {
+                _soundManager.SetSoundVolume(value);
+            }
         }
 
         private void MusicVolumeChangedHandler(float value)
         {
-            _soundManager.SetMusicVolume(value);
+            if (!_initialInit)
+            {
+                _soundManager.SetMusicVolume(value);
+            }
         }
 
     }

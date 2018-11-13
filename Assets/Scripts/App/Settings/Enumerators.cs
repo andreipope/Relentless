@@ -392,6 +392,7 @@ namespace Loom.ZombieBattleground.Common
            // OTHER,
             BACKGROUND,
             BATTLEGROUND,
+            BATTLEGROUND_TOUCH_EFFECT,
             TUTORIAL,
             CARDS,
             END_TURN,
@@ -403,9 +404,14 @@ namespace Loom.ZombieBattleground.Common
             FERAL_ATTACK,
             HEAVY_ATTACK_1,
             HEAVY_ATTACK_2,
-            WALKER_ATTACK_1,
-            WALKER_ATTACK_2,
+            WALKER_ATTACK,
             HERO_DEATH,
+            HERO_DEATH_AIR,
+            HERO_DEATH_EARTH,
+            HERO_DEATH_FIRE,
+            HERO_DEATH_TOXIC,
+            HERO_DEATH_WATER,
+            HERO_DEATH_LIFE,
             LOGO_APPEAR,
             CARD_BATTLEGROUND_TO_TRASH,
             CARD_DECK_TO_HAND_MULTIPLE,
@@ -423,7 +429,13 @@ namespace Loom.ZombieBattleground.Common
             SHUTTERS_OPEN,
             GOO_OVERFLOW_FADE_IN,
             GOO_OVERFLOW_FADE_LOOP,
-            GOO_OVERFLOW_FADE_OUT
+            GOO_OVERFLOW_FADE_OUT,
+            GOO_TUBE_LOOP,
+            GOO_BOTTLE_FILLING,
+            PREPARING_FOR_BATTLE,
+            PREPARING_FOR_BATTLE_LOOP,
+            DISTRACT_LOOP,
+            RAGE_LOOP
         }
 
         public enum StatType
@@ -597,7 +609,7 @@ namespace Loom.ZombieBattleground.Common
             Freeze,
             Guard,
             Heavy,
-            Overflow,
+            OverflowX,
             RageX,
             Reanimate,
             Shatter,

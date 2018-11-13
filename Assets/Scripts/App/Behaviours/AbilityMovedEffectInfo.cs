@@ -11,5 +11,6 @@ namespace Loom.ZombieBattleground
         public float delayBeforeMovedVFX;
         [Range(0, 20)]
         public float delayBeforeDestroyMovedVFX;
+        public string soundName;
     }
 }
