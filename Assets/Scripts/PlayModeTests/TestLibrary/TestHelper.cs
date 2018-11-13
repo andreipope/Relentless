@@ -685,6 +685,9 @@ public class TestHelper
         {
             foreach (BoardUnitModel unit in unitsOnBoard)
             {
+                if (IsGameEnded ())
+                    break;
+
                 while (UnitCanBeUsable (unit))
                 {
                     BoardUnitModel attackedUnit = GetTargetOpponentUnit ();
@@ -735,6 +738,9 @@ public class TestHelper
         {
             foreach (BoardUnitModel unit in unitsOnBoard)
             {
+                if (IsGameEnded ())
+                    break;
+
                 while (UnitCanBeUsable (unit))
                 {
                     unit.DoCombat (_testBroker.GetPlayer (_opponent));
@@ -753,6 +759,9 @@ public class TestHelper
         {
             foreach (BoardUnitModel unit in unitsOnBoard)
             {
+                if (IsGameEnded ())
+                    break;
+
                 while (UnitCanBeUsable (unit))
                 {
                     if (GetPlayerAttackingValue () > GetOpponentAttackingValue ())
