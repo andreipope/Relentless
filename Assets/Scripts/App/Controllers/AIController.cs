@@ -639,7 +639,7 @@ namespace Loom.ZombieBattleground
                         }
                 }
 
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.LibraryCard.Cost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= card.RealCost;
             });
         }
 

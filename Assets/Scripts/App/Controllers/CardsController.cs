@@ -858,7 +858,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.RealCost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
+                card.RealCost += value;
             }
 
             return card;
@@ -881,6 +881,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 card.RealCost = Mathf.Clamp(value, 0, 99);
+                card.LibraryCard.Cost = card.RealCost;
             }
         }
 

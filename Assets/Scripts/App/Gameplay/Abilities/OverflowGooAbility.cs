@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
                         {
                             ActionEffectType = Enumerators.ActionEffectType.Overflow,
                             Target = PlayerCallerOfAbility,
+                            HasValue = true,
+                            Value = Value
                         }
                     }
                 });
