@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
+using TMPro; // Used this trick to add it: https://forum.unity.com/threads/namespace-tmpro-not-found-in-test-runner-test.541387/#post-3570214
 
 public class TestHelper
 {
@@ -63,6 +64,9 @@ public class TestHelper
     private PlayerController _playerController;
 
     private GameObject canvas1GameObject, canvas2GameObject, canvas3GameObject;
+    public GameObject Canvas1 { get { return canvas1GameObject; } }
+    public GameObject Canvas2 { get { return canvas2GameObject; } }
+    public GameObject Canvas3 { get { return canvas3GameObject; } }
 
     GameAction<object> _callAbilityAction;
 
@@ -70,7 +74,7 @@ public class TestHelper
 
     public TestHelper (int testerType = 0)
     {
-        _testerType = (TesterType) testerType;
+        _testerType = (TesterType)testerType;
     }
 
     public void SetTestName (string testName = "")
@@ -95,7 +99,7 @@ public class TestHelper
 
         if (!_initialized)
         {
-            _testerKey = _testerKeys[(int) _testerType];
+            _testerKey = _testerKeys[(int)_testerType];
 
             _testScene = SceneManager.GetActiveScene ();
             _testerGameObject = _testScene.GetRootGameObjects ()[0];
@@ -457,12 +461,19 @@ public class TestHelper
         yield return null;
     }
 
-    public IEnumerator ClickGenericButton (string buttonName)
+    public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null)
     {
         GameObject menuButtonGameObject = null;
 
         yield return new WaitUntil (() => {
-            menuButtonGameObject = GameObject.Find (buttonName);
+            if (parentGameObject != null)
+            {
+                menuButtonGameObject = parentGameObject.transform.Find (buttonName)?.gameObject;
+            }
+            else
+            {
+                menuButtonGameObject = GameObject.Find (buttonName);
+            }
 
             if (menuButtonGameObject == null || !menuButtonGameObject.activeInHierarchy)
             {
@@ -1630,13 +1641,13 @@ public class TestHelper
             switch (selectedTargetType)
             {
                 case Enumerators.AffectObjectType.Player:
-                    skill.FightTargetingArrow.SelectedPlayer = (Player) overrideTarget;
+                    skill.FightTargetingArrow.SelectedPlayer = (Player)overrideTarget;
 
                     Debug.Log ("Board skill: Player");
 
                     break;
                 case Enumerators.AffectObjectType.Character:
-                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) overrideTarget);
+                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel)overrideTarget);
                     skill.FightTargetingArrow.SelectedCard = selectedCardView;
 
                     Debug.Log ("Board skill: Character");
@@ -1807,7 +1818,7 @@ public class TestHelper
 
                 break;
             case Enumerators.AffectObjectType.Character:
-                BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) target);
+                BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel)target);
                 skill.FightTargetingArrow.SelectedCard = selectedCardView;
 
                 Debug.Log ("Board skill: Character");
@@ -2041,4 +2052,161 @@ public class TestHelper
             return false;
         }
     }
+
+    #region Horde Creation / Editing
+
+    private CollectionData _collectionData;
+    private List<Card> _createdArmyCards, _createdHordeCards;
+
+    private List<string> _overlordNames = new List<string> () {
+        "Brakuus",
+        "Razu",
+        "Vash'Kala",
+        "Kalile",
+        "Mhalik",
+        "Valash"
+    };
+
+    public void SetupArmyCards ()
+    {
+        FillCollectionData ();
+
+        DeckBuilderCard[] deckBuilderCards = GameObject.FindObjectsOfType<DeckBuilderCard> ();
+
+        if (deckBuilderCards == null || deckBuilderCards.Length == 0)
+            return;
+
+        _createdArmyCards = new List<Card> ();
+        foreach (DeckBuilderCard deckBuilderCard in deckBuilderCards)
+        {
+            _createdArmyCards.Add (deckBuilderCard.Card);
+        }
+    }
+
+    public IEnumerator PickOverlord (string overlordName, bool goRight = true)
+    {
+        int selectedIndex = 0;
+
+        while (_overlordNames[selectedIndex] != overlordName)
+        {
+            if (goRight)
+            {
+                yield return ClickGenericButton ("Button_RightArrow");
+
+                selectedIndex = (selectedIndex + 1) % _overlordNames.Count;
+            }
+            else
+            {
+                yield return ClickGenericButton ("Button_LeftArrow");
+
+                selectedIndex = (selectedIndex + 6 - 1) % _overlordNames.Count;
+            }
+
+            yield return LetsThink ();
+            yield return LetsThink ();
+        }
+
+        yield return ClickGenericButton ("Button_Continue");
+
+        yield return null;
+    }
+
+    public IEnumerator PickOverlordAbility (int index)
+    {
+        GameObject abilitiesParent = GameObject.Find ("Abilities");
+
+        if (index >= abilitiesParent.transform.childCount)
+        {
+            Assert.Fail ("Index higher than number of abilities");
+        }
+
+        abilitiesParent.transform.GetChild (index).gameObject.GetComponent<Toggle> ().isOn = true;
+
+        yield return LetsThink ();
+    }
+
+    public IEnumerator SetDeckTitle (string deckTitle)
+    {
+        GameObject deckTitleInput = GameObject.Find ("DeckTitleInputText");
+
+        if (deckTitleInput == null)
+        {
+            Assert.Fail ("DeckTitleInputText doesn't exist");
+        }
+
+        TMP_InputField deckTitleInputField = deckTitleInput.GetComponent<TMP_InputField> ();
+
+        if (deckTitleInputField == null)
+        {
+            Assert.Fail ("TextMeshPro InputField doesn't exist");
+        }
+
+        deckTitleInputField.onEndEdit.Invoke (deckTitle);
+
+        yield return LetsThink ();
+    }
+
+    public IEnumerator AddCardToHorde (string cardName, bool overQuota = false)
+    {
+        Card armyCard = _createdArmyCards.Find (x =>
+                             x.Name == cardName);
+
+        Debug.Log ("Adding " + cardName + " (" + armyCard.Cost + ")");
+
+        _uiManager.GetPage<HordeEditingPage> ().AddCardToDeck (null, armyCard);
+
+        yield return LetsThink ();
+
+        if (overQuota)
+        {
+            ClickGenericButton ("Button_GotIt");
+
+            yield return LetsThink ();
+        }
+
+        yield return null;
+    }
+
+    public IEnumerator SelectAHorde (int index)
+    {
+        GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
+
+        if (index + 1 >= hordesParent.transform.childCount)
+        {
+            Assert.Fail ("Horde removal index is too high");
+        }
+
+        Transform removalHordeTransform = hordesParent.transform.GetChild (index);
+        removalHordeTransform.Find ("Button_Select").GetComponent<Button> ().onClick.Invoke ();
+
+        yield return LetsThink ();
+    }
+
+    public IEnumerator RemoveAHorde (int index)
+    {
+        yield return SelectAHorde (index);
+
+        GameObject.Find ("Button_Delete").GetComponent<Button> ().onClick.Invoke ();
+
+        yield return LetsThink ();
+    }
+
+    private void FillCollectionData ()
+    {
+        _collectionData = new CollectionData ();
+        _collectionData.Cards = new List<CollectionCardData> ();
+
+        _collectionData.Cards.Clear ();
+        CollectionCardData cardData;
+        foreach (CollectionCardData card in _dataManager.CachedCollectionData.Cards)
+        {
+            cardData = new CollectionCardData ();
+            cardData.Amount = card.Amount;
+            cardData.CardName = card.CardName;
+
+            _collectionData.Cards.Add (cardData);
+        }
+    }
+
+    #endregion
 }

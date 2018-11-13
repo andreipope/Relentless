@@ -253,7 +253,7 @@ public class SingleplayerTests
     [Timeout (500000)]
     public IEnumerator Test3_SoloGameplay ()
     {
-        _testHelper.SetTestName ("Tutorial - Solo Gameplay");
+        _testHelper.SetTestName ("Solo Gameplay");
 
         #region Solo Gameplay
 
@@ -279,10 +279,38 @@ public class SingleplayerTests
     }
 
     [UnityTest]
-    public IEnumerator Test4_CreateAHorde ()
+    [Timeout (500000)]
+    public IEnumerator Test4_CreateAHordeAndCancel ()
     {
+        _testHelper.SetTestName ("Create a Horde and cancel");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.ClickGenericButton ("Image_BaackgroundGeneral");
+
+        yield return _testHelper.AssertCurrentPageName ("OverlordSelectionPage");
+
+        yield return _testHelper.PickOverlord ("Razu", true);
+
+        yield return _testHelper.LetsThink ();
+
+        yield return _testHelper.ClickGenericButton ("Canvas_BackLayer/Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeEditingPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_Back");
+        yield return _testHelper.RespondToYesNoOverlay (false);
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
         // >> HordeSelectionPage
-        // Tap on Image_BaackgroundGeneral
+        // Tap on Image_BackgroundGeneral
 
         // Tap on Button_LeftArrow or Button_RightArrow
         // Check children of Panel_OverlordContent/Group/
@@ -294,6 +322,117 @@ public class SingleplayerTests
         // Tap on Button_Cancel (takes back to overlord selection) or Button_Continue
 
         // >> HordeEditingPage
+
+        yield return null;
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test5_CreateAHordeAndSave ()
+    {
+        _testHelper.SetTestName ("Create a Horde and save");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.ClickGenericButton ("Image_BaackgroundGeneral");
+
+        yield return _testHelper.AssertCurrentPageName ("OverlordSelectionPage");
+
+        yield return _testHelper.PickOverlord ("Razu", true);
+
+        yield return _testHelper.PickOverlordAbility (1);
+
+        yield return _testHelper.ClickGenericButton ("Canvas_BackLayer/Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeEditingPage");
+
+        _testHelper.SetupArmyCards ();
+
+        yield return _testHelper.SetDeckTitle ("Razu Deck");
+
+        yield return _testHelper.AddCardToHorde ("Pyromaz");
+        yield return _testHelper.AddCardToHorde ("Pyromaz");
+        yield return _testHelper.AddCardToHorde ("Pyromaz");
+        yield return _testHelper.AddCardToHorde ("Pyromaz");
+        // yield return _testHelper.AddCardToHorde ("Pyromaz", true);
+
+        yield return _testHelper.AddCardToHorde ("Quazi");
+        yield return _testHelper.AddCardToHorde ("Quazi");
+        yield return _testHelper.AddCardToHorde ("Quazi");
+        yield return _testHelper.AddCardToHorde ("Quazi");
+
+        yield return _testHelper.AddCardToHorde ("Ember");
+        yield return _testHelper.AddCardToHorde ("Ember");
+        yield return _testHelper.AddCardToHorde ("Ember");
+        yield return _testHelper.AddCardToHorde ("Ember");
+
+        yield return _testHelper.AddCardToHorde ("Firewall");
+        yield return _testHelper.AddCardToHorde ("Firewall");
+        yield return _testHelper.AddCardToHorde ("Firewall");
+        yield return _testHelper.AddCardToHorde ("Firewall");
+
+        yield return _testHelper.AddCardToHorde ("BurZt");
+        yield return _testHelper.AddCardToHorde ("BurZt");
+        yield return _testHelper.AddCardToHorde ("BurZt");
+        yield return _testHelper.AddCardToHorde ("BurZt");
+
+        yield return _testHelper.ClickGenericButton ("Army/ArrowRightButton");
+
+        yield return _testHelper.LetsThink ();
+
+        _testHelper.SetupArmyCards ();
+
+        yield return _testHelper.LetsThink ();
+
+        yield return _testHelper.AddCardToHorde ("BlaZter");
+
+        yield return _testHelper.ClickGenericButton ("Horde/ArrowRightButton");
+
+        yield return _testHelper.AddCardToHorde ("BlaZter");
+        yield return _testHelper.AddCardToHorde ("BlaZter");
+        yield return _testHelper.AddCardToHorde ("BlaZter");
+
+        yield return _testHelper.AddCardToHorde ("Burrrnn");
+        yield return _testHelper.AddCardToHorde ("Burrrnn");
+
+        yield return _testHelper.AddCardToHorde ("Cynderman");
+        yield return _testHelper.AddCardToHorde ("Cynderman");
+
+        yield return _testHelper.AddCardToHorde ("Werezomb");
+        yield return _testHelper.AddCardToHorde ("Werezomb");
+
+        yield return _testHelper.ClickGenericButton ("Button_Save");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return null;
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test6_RemoveSecondHorde ()
+    {
+        _testHelper.SetTestName ("Create a Horde and save");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.RemoveAHorde (1);
+
+        yield return _testHelper.RespondToYesNoOverlay (true);
+
+        yield return _testHelper.LetsThink ();
 
         yield return null;
     }
