@@ -1013,7 +1013,7 @@ public class TestHelper
                         _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
                     });
 
-                    if (target != null)
+                    /* if (target != null)
                     {
                         WorkingCard workingCard = boardCard.WorkingCard;
 
@@ -1033,14 +1033,24 @@ public class TestHelper
                                     card.LibraryCard.Abilities[0]);
                         }
 
-                        _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, null, target);
+                        _abilitiesController.CallAbility (
+                            card.LibraryCard,
+                            null,
+                            workingCard,
+                            Enumerators.CardKind.CREATURE,
+                            boardUnitViewElement.Model,
+                            null,
+                            false,
+                            null,
+                            null,
+                            target);
 
                         /* Action callback = () => {
                             _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, _callAbilityAction, target);
                         };
 
                         _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, action: callback); */
-                    }
+                    // }
                 }
                 else
                 {
