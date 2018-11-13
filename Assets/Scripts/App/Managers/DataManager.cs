@@ -313,8 +313,6 @@ namespace Loom.ZombieBattleground
                             .Select(d => d.FromProtobuf())
                             .ToList();
 
-                    CachedAiDecksData = DeserializeObjectFromAssets<AIDecksData>(_cacheDataFileNames[type]);
-
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
                     CachedCreditsData = DeserializeObjectFromAssets<CreditsData>(_cacheDataFileNames[type]);
