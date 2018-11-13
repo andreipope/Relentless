@@ -579,7 +579,13 @@ public class TestHelper
     {
         yield return LetsThink ();
 
+        if (IsGameEnded ())
+            yield break;
+
         yield return PlayCardsFromHand ();
+
+        if (IsGameEnded ())
+            yield break;
 
         yield return LetsThink ();
         yield return LetsThink ();
@@ -587,11 +593,20 @@ public class TestHelper
 
         yield return UseUnitsOnBoard ();
 
+        if (IsGameEnded ())
+            yield break;
+
         yield return UsePlayerSkills ();
+
+        if (IsGameEnded ())
+            yield break;
 
         if (_testBroker.GetPlayer (_player).SelfHero.HeroElement == Enumerators.SetType.FIRE)
         {
             yield return UseUnitsOnBoard ();
+
+            if (IsGameEnded ())
+                yield break;
 
             yield return LetsThink ();
             yield return LetsThink ();
@@ -2049,6 +2064,9 @@ public class TestHelper
             yield return TurnStartedHandler ();
 
             TurnEndedHandler ();
+
+            if (IsGameEnded ())
+                yield break;
 
             if (IsGameEnded ())
                 break;
