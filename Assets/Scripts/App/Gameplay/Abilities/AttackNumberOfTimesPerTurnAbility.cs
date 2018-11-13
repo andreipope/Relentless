@@ -26,6 +26,21 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.AttackInfoType = AttackInfo;
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Blitz,
+                            Target = AbilityUnitOwner,
+                        }
+                    }
+            });
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
