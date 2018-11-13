@@ -1168,13 +1168,22 @@ namespace Loom.ZombieBattleground
             switch (skill.Skill.OverlordSkill)
             {
                 case Enumerators.OverlordSkill.HARDEN:
-                case Enumerators.OverlordSkill.STONE_SKIN:
                 case Enumerators.OverlordSkill.DRAW:
-                {
                     selectedObjectType = Enumerators.AffectObjectType.Player;
                     target = _gameplayManager.OpponentPlayer;
-                }
-
+                    break;
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                    {
+                        List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.CardSetType ==
+                                                                        _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
+                        if (units.Count > 0)
+                        {
+                            target = units[UnityEngine.Random.Range(0, units.Count)];
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else
+                            return;
+                    }
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
                     {
