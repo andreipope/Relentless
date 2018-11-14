@@ -39,8 +39,8 @@ namespace Loom.ZombieBattleground
 
             PreviewImage.sprite = GetPreviewImage();
 
-            OnBehaviourHandler behaviour = SelfObject.transform.Find("Collider").GetComponent<OnBehaviourHandler>();
-            behaviour.MouseDownTriggered += MouseDownHandler;
+            OnPastReportActionHandler behaviour = SelfObject.transform.Find("Border").GetComponent<OnPastReportActionHandler>();
+            behaviour.PointerDowned += MouseDownHandler;
         }
 
         public void Update()
@@ -55,12 +55,15 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void MouseDownHandler(GameObject obj)
+        public void MouseDownHandler(BaseEventData data)
         {
-            if (!_mainRoot.IsDrawing)
+            if (Input.GetMouseButtonDown(0))
             {
-                UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
-                _mainRoot.IsDrawing = true;
+                if (!_mainRoot.IsDrawing)
+                {
+                    UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
+                    _mainRoot.IsDrawing = true;
+                }
             }
         }
 
