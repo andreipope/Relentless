@@ -4,9 +4,11 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Hero = Loom.ZombieBattleground.Data.Hero;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -42,6 +44,22 @@ namespace Loom.ZombieBattleground
         private ButtonShiftingContent _buttonKeep;
 
         private PlayerManaBarItem _playerManaBar, _opponentManaBar;
+
+        public PlayerManaBarItem PlayerManaBar
+        {
+            get
+            {
+                return _playerManaBar;
+            }
+        }
+
+        public PlayerManaBarItem OpponentManaBar
+        {
+            get
+            {
+                return _playerManaBar;
+            }
+        }
 
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
@@ -126,6 +144,8 @@ namespace Loom.ZombieBattleground
             _reportGameActionsPanel = null;
             Object.Destroy(_selfPage);
             _selfPage = null;
+
+            _soundManager.StopPlaying(Enumerators.SoundType.GOO_TUBE_LOOP);
         }
 
         public void Dispose()
@@ -180,6 +200,8 @@ namespace Loom.ZombieBattleground
 
             StartGame();
             KeepButtonVisibility(false);
+
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume, isLoop:true);
         }
 
         public void SetEndTurnButtonStatus(bool status)
@@ -199,54 +221,56 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            OpponentDeck randomOpponentDeck = null;
+            int heroId = -1;
+            int opponentHeroId = -1;
 
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    randomOpponentDeck =
-                        _dataManager.CachedOpponentDecksData.Decks[
-                            Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
-                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
-                    break;
+                    if (_gameplayManager.IsTutorial) {
+                        heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
+                        opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
 
-                case Enumerators.MatchType.PVP:
-                    for (int i = 0; i < _pvpManager.InitialGameState.PlayerStates.Count; i++)
+                        // HACK: Set to any valid opponent deck ID, it will get overwritten later anyway
+                        _gameplayManager.OpponentDeckId = (int)_dataManager.CachedOpponentDecksData.Decks[0].Id;
+                    }
+                    else
                     {
-                        if (_pvpManager.InitialGameState.PlayerStates[i].Id !=
-                            _backendDataControlMediator.UserDataModel.UserId)
+                        heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
+                        Data.Deck opponentDeck =
+                            _dataManager
+                                .CachedOpponentDecksData
+                                .Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
+                        opponentHeroId = opponentDeck.HeroId;
+                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Id;
+                    }
+
+                    break;
+                case Enumerators.MatchType.PVP:
+                    foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
+                    {
+                        if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            _pvpManager.OpponentDeckIndex = i;
-                            break;
+                            heroId = (int) playerState.Deck.HeroId;
+                        }
+                        else
+                        {
+                            opponentHeroId = (int) playerState.Deck.HeroId;
                         }
                     }
-                    _pvpManager.OpponentDeck =
-                        _pvpManager.InitialGameState.PlayerStates[_pvpManager.OpponentDeckIndex].Deck.FromProtobuf();
 
-                    randomOpponentDeck = _pvpManager.OpponentDeck;
-                    _gameplayManager.OpponentDeckId = randomOpponentDeck.Id;
-                    break;
-
-                case Enumerators.MatchType.PVE:
+                    // Deck ID doesn't make any sense for PvP
+                    _gameplayManager.OpponentDeckId = -1;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            int heroId = 0; //Constants.TutorialPlayerHeroId; // TUTORIAL
-            int opponentHeroId = 0;
+            if (heroId == -1)
+                throw new Exception($"{nameof(heroId)} == -1");
 
-            if (!_gameplayManager.IsTutorial)
-            {
-                heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
-                opponentHeroId = randomOpponentDeck.HeroId;
-            }
-            else
-            {
-                heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
-                opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
-            }
-
+            if (opponentHeroId == -1)
+                throw new Exception($"{nameof(opponentHeroId)} == -1");
 
             Hero currentPlayerHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
             Hero currentOpponentHero = _dataManager.CachedHeroesData.HeroesParsed[opponentHeroId];
@@ -270,7 +294,7 @@ namespace Loom.ZombieBattleground
             _opponentCardDeckCountText = GameObject.Find("Opponent/CardDeckText").GetComponent<TextMeshPro>();
 
             _endTurnButton = GameObject.Find("EndTurnButton/_1_btn_endturn");
-            
+
             PlayerPrimarySkillHandler =
                 GameObject.Find(Constants.Player).transform.Find("Object_SpellPrimary").GetComponent<OnBehaviourHandler>();
             PlayerSecondarySkillHandler =
@@ -298,14 +322,16 @@ namespace Loom.ZombieBattleground
             {
                 SetHeroInfo(currentOpponentHero, Constants.Opponent, OpponentPrimarySkillHandler.gameObject,
                     OpponentSecondarySkillHandler.gameObject);
-                _opponentNameText.text = currentOpponentHero.FullName;
+
+                _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ? 
+                                                        _pvpManager.GetOpponentUserId() : currentOpponentHero.FullName;
             }
 
-			_playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
+           _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
                 _playerManaBarsPosition, _playerNameText.text, Constants.Player);
             _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
                 _opponentManaBarsPosition, _opponentNameText.text, Constants.Opponent);
-			
+
             _isPlayerInited = true;
         }
 
@@ -521,6 +547,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             _playerManaBar.SetGoo(goo);
+
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnPlayerGooVialsChanged(int currentTurnGoo)
@@ -554,6 +582,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             _opponentManaBar.SetGoo(goo);
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnOpponentGooVialsChanged(int currentTurnGoo)
@@ -578,6 +607,11 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
+                if (_gameplayManager.GetController<CardsController>().CardDistribution)
+                {
+                    _uiManager.HidePopup<MulliganPopup>();
+                }
+
                 GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
 

@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.Google.Protobuf;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,87 +8,52 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class QueueManager : IService, IQueueManager
     {
+        private Queue<Func<Task>> _tasks;
+        private BackendFacade _backendFacade;
 
-        private volatile Queue<Action> _mainThreadActions;
-
-        private BlockingCollection<PlayerActionRequest> _networkThreadActions;
-
-        private Thread _networkThread;
-
-        private bool _networkThreadAlive;
+        public bool Active { get; set; }
 
         public void Init()
         {
-            _mainThreadActions = new Queue<Action>();
-            _networkThreadActions = new BlockingCollection<PlayerActionRequest>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _tasks = new Queue<Func<Task>>();
         }
 
-        public void StartNetworkThread()
+        public void Clear()
         {
-            _networkThreadAlive = true;
-            _networkThread = new Thread(NetworkThread);
-            _networkThread.Start();
+            _tasks.Clear();
         }
 
-        public void StopNetworkThread()
+        public async void Update()
         {
-            if (_networkThread != null)
+            if (!Active)
+                return;
+
+            while (_tasks.Count > 0)
             {
-                _networkThreadAlive = false;
-                _networkThread.Abort();
-                _networkThread = null;
+                await _tasks.Dequeue()();
             }
         }
 
-        //Main Gameplay Thread
-        public void Update()
+        public void AddTask(Func<Task> taskFunc)
         {
-            MainThread();
+            _tasks.Enqueue(taskFunc);
         }
 
-        public void AddAction(Action action)
+        public void AddAction(IMessage action)
         {
-            _mainThreadActions.Enqueue(action);
-        }
-
-        public void AddAction(PlayerActionRequest action)
-        {
-            _networkThreadActions.Add(action);
-        }
-
-        private void MainThread()
-        {
-            if (_mainThreadActions.Count > 0)
-            {
-                _mainThreadActions.Dequeue().Invoke();
-            }
-        }
-
-        private async void NetworkThread()
-        {
-            while (_networkThreadAlive)
-            {
-                while (_networkThreadActions.Count > 0)
-                {
-                    await GameClient.Get<BackendFacade>().SendAction(_networkThreadActions.Take());
-                }
-            }
+            AddTask(async () => await _backendFacade.SendAction(action));
         }
 
         public void Dispose()
         {
-            if(_networkThread != null)
-            {
-                _networkThreadAlive = false;
-                _networkThread.Interrupt();
-                _networkThreadActions.Dispose();
-            }
-            _mainThreadActions.Clear();
+            Clear();
         }
     }
 }

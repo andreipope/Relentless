@@ -13,4 +13,12 @@ public interface IAnalyticsManager
     void NotifyFinishedMatch(Enumerators.EndGameType endGameType);
 
     void Dispose();
+
+    void SetEvent(string propertyName);
+
+    void SetPoepleProperty(string identityId, string property, string value);
+
+    void SetSuperProperty(string property, string value);
+
+    void SetPoepleIncrement(string property, int value);
 }

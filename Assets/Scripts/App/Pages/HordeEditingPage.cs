@@ -45,6 +45,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private IAnalyticsManager _analyticsManager;
+
         private IDataManager _dataManager;
 
         private BackendFacade _backendFacade;
@@ -118,6 +120,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -583,14 +586,14 @@ namespace Loom.ZombieBattleground
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
                 OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.CardRank.ToString().ToLower() + " card in your deck.");
+                    card.CardRank.ToString().ToLowerInvariant() + " card in your deck.");
                 return;
             }
 
             if (_currentDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                OpenAlertDialog("Your '" + _currentDeck.Name + "' deck has more than " + Constants.DeckMaxSize +
-                    " cards.");
+                OpenAlertDialog("You can not add more than " + Constants.DeckMaxSize +
+                    " Cards in a single Horde.");
                 return;
             }
 
@@ -663,7 +666,7 @@ namespace Loom.ZombieBattleground
 
             string setName = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
-            if (setName.ToLower().Equals("item"))
+            if (setName.ToLowerInvariant().Equals("item"))
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
@@ -718,12 +721,10 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _dataManager.CachedDecksLastModificationTimestamp = Utilites.GetCurrentUnixTimestampMillis();
-
             foreach (Deck deck in _dataManager.CachedDecksData.Decks)
             {
-                if (_currentDeckId != deck.Id && deck.Name.Trim()
-                    .Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                if (_currentDeckId != deck.Id &&
+                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
                 {
                     OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
                     return;
@@ -737,10 +738,10 @@ namespace Loom.ZombieBattleground
 
                 try
                 {
-                    long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId,
-                        _currentDeck, _dataManager.CachedDecksLastModificationTimestamp);
+                    long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
                     _currentDeck.Id = newDeckId;
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
+                    _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
                 }
                 catch (Exception e)
@@ -755,8 +756,7 @@ namespace Loom.ZombieBattleground
             {
                 try
                 {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck,
-                        _dataManager.CachedDecksLastModificationTimestamp);
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _currentDeck);
 
                     for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
                     {
@@ -767,6 +767,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
+                    _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
                     Debug.Log(" ====== Edit Deck Successfully ==== ");
                 }
                 catch (Exception e)
@@ -774,14 +775,22 @@ namespace Loom.ZombieBattleground
                     Debug.Log("Result === " + e);
 
                     success = false;
-                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+
+                    string message = e.Message;
+
+                    string[] description = e.Message.Split('=');
+                    if (description.Length > 0)
+                    {
+                        message = description[description.Length - 1].TrimStart(' ');
+                        message = char.ToUpper(message[0]) + message.Substring(1);
+                    }
+                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
                 }
             }
 
             if (success)
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.DECKS_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }
@@ -799,7 +808,7 @@ namespace Loom.ZombieBattleground
                 {
                     MoveHordeToLeft();
                 }
-            }   
+            }
             else
             {
                 MoveCardsPage(Mathf.RoundToInt(scrollDelta.y));

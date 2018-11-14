@@ -75,6 +75,10 @@ namespace Loom.ZombieBattleground.Editor
 #if UNITY_CLOUD_BUILD
             Debug.Log("Cloud Build manifest:\r\n" + manifest.ToJson());
 #endif
+#if SECOND_PVP_BUILD
+            PlayerSettings.applicationIdentifier = "games.loom.battleground2";
+            PlayerSettings.productName = "Zombie Battleground Second PVP Build";
+#endif
 
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
             buildMetaInfo.GitBranchName = manifest.GetValue<string>("scmBranch");

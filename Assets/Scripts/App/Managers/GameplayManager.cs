@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace Loom.ZombieBattleground
         private ITimerManager _timerManager;
 
         private ITutorialManager _tutorialManager;
+
+        private IPvPManager _pvpManager;
 
         private List<IController> _controllers;
 
@@ -63,9 +66,6 @@ namespace Loom.ZombieBattleground
 
         public bool IsGameplayInputBlocked { get; set; }
 
-        public List<string> PlayerStarterCards { get; set; }
-        public List<string> OpponentStarterCards { get; set; }
-
         public PlayerMoveAction PlayerMoves { get; set; }
 
         public T GetController<T>()
@@ -78,8 +78,6 @@ namespace Loom.ZombieBattleground
         {
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer(CurrentPlayer.BoardCards);
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
@@ -124,7 +122,7 @@ namespace Loom.ZombieBattleground
             StartingTurn = Enumerators.StartingTurn.UnDecided;
             PlayerMoves = null;
 
-            GameClient.Get<IQueueManager>().StopNetworkThread();
+            //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
         }
@@ -205,6 +203,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             InitControllers();
 
@@ -241,7 +240,8 @@ namespace Loom.ZombieBattleground
                 new SkillsController(),
                 new RanksController(),
                 new InputController(),
-                new OpponentController()
+                new OpponentController(),
+                new UniqueAnimationsController()
             };
 
             foreach (IController controller in _controllers)
@@ -308,15 +308,21 @@ namespace Loom.ZombieBattleground
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+
+                        OpponentPlayer.SetFirstHandForLocalMatch(false);
                         break;
                     case Enumerators.MatchType.PVP:
                         CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
+                        List<WorkingCard> opponentCardsInHand =
+                            OpponentPlayer.PvPPlayerState.CardsInHand
+                                .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, OpponentPlayer))
+                                .ToList();
+
+                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
                 }
-
-                OpponentStarterCards = OpponentPlayer.SetFirstHand(OpponentStarterCards, false);
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {

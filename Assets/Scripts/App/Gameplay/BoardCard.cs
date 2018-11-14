@@ -113,6 +113,8 @@ namespace Loom.ZombieBattleground
 
             ParentOfEditingGroupUI = Transform.Find("DeckEditingGroupUI");
 
+            costHighlightObject = Transform.Find("CostHighlight").gameObject;
+
             AnimationEventTriggering = GameObject.GetComponent<AnimationEventTriggering>();
             BehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
@@ -136,6 +138,8 @@ namespace Loom.ZombieBattleground
 
         public GameObject GameObject { get; }
 
+        public GameObject costHighlightObject { get; protected set; }
+
         public int CurrentTurn { get; set; }
 
         public WorkingCard WorkingCard { get; private set; }
@@ -145,17 +149,16 @@ namespace Loom.ZombieBattleground
         public virtual void Init(WorkingCard card)
         {
             WorkingCard = card;
-
             LibraryCard = WorkingCard.LibraryCard;
-
-            NameText.text = LibraryCard.Name;
-            BodyText.text = LibraryCard.Description;
-            CostText.text = LibraryCard.Cost.ToString();
-
-            IsNewCard = true;
 
             InitialCost = WorkingCard.InitialCost;
             ManaCost = InitialCost;
+
+            NameText.text = LibraryCard.Name;
+            BodyText.text = LibraryCard.Description;
+            CostText.text = InitialCost.ToString();
+
+            IsNewCard = true;
 
             WorkingCard.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
@@ -172,8 +175,8 @@ namespace Loom.ZombieBattleground
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
             PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(),
-                WorkingCard.LibraryCard.Picture.ToLower()));
+                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
+                WorkingCard.LibraryCard.Picture.ToLowerInvariant()));
 
             AmountText.transform.parent.gameObject.SetActive(false);
             AmountTextForArmy.transform.parent.gameObject.SetActive(false);
@@ -221,7 +224,7 @@ namespace Loom.ZombieBattleground
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
             PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), card.Picture.ToLower()));
+                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(), card.Picture.ToLowerInvariant()));
 
             DistibuteCardObject.SetActive(false);
         }
@@ -366,19 +369,6 @@ namespace Loom.ZombieBattleground
             Object.Destroy(GameObject);
         }
 
-        public void ReturnCardToDeck()
-        {
-            if (!CardsController.CardDistribution)
-                return;
-
-            CardsController.ReturnCardToDeck(
-                this,
-                () =>
-                {
-                    WorkingCard.Owner.DistributeCard();
-                });
-        }
-
         public void DrawCardFromOpponentDeckToPlayer()
         {
             GameObject.transform.localScale = Vector3.zero;
@@ -487,7 +477,7 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
-                        y.Element.ToLower().Equals(CardsController.GetSetOfCard(unit.Model.Card.LibraryCard).ToLower()));
+                        y.Element.ToLowerInvariant().Equals(CardsController.GetSetOfCard(unit.Model.Card.LibraryCard).ToLowerInvariant()));
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -517,7 +507,8 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.LibraryCard.Abilities != null)
+            if (unit.Model.Card.LibraryCard.Abilities != null &&
+                !unit.Model.EffectsOnUnit.Contains(Enumerators.EffectOnUnitType.Distract))
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
@@ -570,7 +561,6 @@ namespace Loom.ZombieBattleground
 
             // right block info ------------------------------------
 
-            // IMPROVE!!!
             foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.AbilityData.BuffType);
@@ -587,10 +577,17 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            // IMPROVE!!!
-            foreach (Enumerators.BuffType buffOnUnit in unit.Model.BuffsOnUnit)
+            string buffType;
+            foreach (Enumerators.EffectOnUnitType effectOnUnitType in unit.Model.EffectsOnUnit)
             {
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(buffOnUnit.ToString());
+                buffType = effectOnUnitType.ToString().ToUpper();
+
+                if (buffType[buffType.Length - 1] == 'X')
+                {
+                    buffType = buffType.Substring(0, buffType.Length - 2);
+                }
+
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(buffType);
                 if (buffInfo != null)
                 {
                     buffs.Add(
@@ -650,8 +647,8 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(y =>
-                        y.Element.ToLower()
-                            .Equals(CardsController.GetSetOfCard(boardCard.WorkingCard.LibraryCard).ToLower()));
+                        y.Element.ToLowerInvariant()
+                            .Equals(CardsController.GetSetOfCard(boardCard.WorkingCard.LibraryCard).ToLowerInvariant()));
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -852,7 +849,7 @@ namespace Loom.ZombieBattleground
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon")
                     .GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpper();
+                _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpperInvariant();
                 _descriptionText.text = ReplaceXByValue(buffTooltipInfo.Description, buffTooltipInfo.Value);
 
                 switch (buffTooltipInfo.TooltipObjectType)
@@ -860,18 +857,18 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TooltipObjectType.RANK:
                         _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsRanks/battleground_rank_icon_" +
-                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLowerInvariant() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.ABILITY:
                     case Enumerators.TooltipObjectType.BUFF:
                         _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_mechanic_icon_" +
-                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLowerInvariant() + "_large");
                         break;
                     case Enumerators.TooltipObjectType.UNIT_TYPE:
                         _buffIconPicture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsUnitTypes/battleground_mechanic_icon_" +
-                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLower() + "_large");
+                            buffTooltipInfo.Title.Replace(" ", string.Empty).ToLowerInvariant() + "_large");
                         break;
                     default:
                         _buffIconPicture.sprite = null;

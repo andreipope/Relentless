@@ -55,11 +55,11 @@ namespace Loom.ZombieBattleground
         {
             base.Init(card);
 
-            Damage = card.LibraryCard.Damage;
-            InitialDamage = card.LibraryCard.Damage;
+            Damage = card.Damage;
+            InitialDamage = card.Damage;
 
-            Health = card.LibraryCard.Health;
-            InitialHealth = card.LibraryCard.Health;
+            Health = card.Health;
+            InitialHealth = card.Health;
 
             AttackText.text = Damage.ToString();
             DefenseText.text = Health.ToString();

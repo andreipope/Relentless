@@ -22,24 +22,36 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-            Action();
-
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Card);
+
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+                return;
+
+            InvokeActionTriggered();
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+                return;
+
+            InvokeActionTriggered();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.GooVials == Constants.MaximumPlayerGoo)
+            if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials)
             {
                 for (int i = 0; i < Count; i++)
                 {
                     CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }
             }
-            else if (PlayerCallerOfAbility.GooVials == Constants.MaximumPlayerGoo - 1)
+            else if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials - 1)
             {
                 for (int i = 0; i < Count - 1; i++)
                 {
@@ -48,6 +60,13 @@ namespace Loom.ZombieBattleground
             }
 
             PlayerCallerOfAbility.GooVials += Value;
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

@@ -16,8 +16,8 @@
           "Post": "Executive Producer"
         },
         {
-          "FullName": "",
-          "Post": ""
+          "FullName": " ",
+          "Post": " "
         },
         {
           "FullName": "Roy Shapira",
@@ -52,8 +52,16 @@
       ]
     },
     {
-      "subsectionType": "Programmers",
+      "subsectionType": "Tech Team",
       "credits": [
+        {
+          "FullName": "Hakan Kaya",
+          "Post": "Head of Tech"
+        },
+        {
+          "FullName": "Nayeem Siddique",
+          "Post": "Tech Producer"
+        },
         {
           "FullName": "Stanislav Sorokin",
           "Post": "Lead Programmer"
@@ -79,12 +87,57 @@
           "Post": "Senior Serverside Programmer"
         },
         {
+          "FullName": "Parth Desai",
+          "Post": "Senior Serverside Programmer"
+        },
+        {
           "FullName": "Sebastian Klier",
           "Post": "Serverside Programmer"
         },
         {
           "FullName": "Siddhant Mutha",
           "Post": "Junior Serverside Programmer"
+        },
+        {
+          "FullName": "Sahin Aliyev",
+          "Post": "Test Automation Engineer"
+        },
+        {
+          "FullName": "Vadim Macagon",
+          "Post": "Senior Software Developer"
+        },
+        {
+          "FullName": "Mimi Mongkhonpreedarchai",
+          "Post": "Blockchain Developer"
+        },
+        {
+          "FullName": "Deeprom Somkiadcharoen",
+          "Post": "Blockchain Developer"
+        },
+        {
+          "FullName": "Mark Traisenee",
+          "Post": "Blockchain Developer"
+        },
+        {
+          "FullName": "Jim Skogman",
+          "Post": "Software Developer"
+        }
+      ]
+    },
+    {
+      "subsectionType": "QA",
+      "credits": [
+        {
+          "FullName": "Yuneek Sehgal",
+          "Post": "Head of QA"
+        },
+        {
+          "FullName": "Vaibhav Dixit",
+          "Post": "Quality Assurance"
+        },
+        {
+          "FullName": "Amit Kumar",
+          "Post": "Quality Assurance"
         }
       ]
     },
@@ -93,7 +146,7 @@
       "credits": [
         {
           "FullName": "Janette Ramos",
-          "Post": "Lead 2D Artist"
+          "Post": "Lead Artist"
         },
         {
           "FullName": "Wilfred Dajotoy",
@@ -116,16 +169,20 @@
           "Post": "Senior 2D Artist"
         },
         {
+          "FullName": "Roger Luzardo",
+          "Post": "Senior 2D Artist"
+        },
+        {
           "FullName": "Niles Arguelles",
-          "Post": "2D Artist"
+          "Post": "Senior 2D Artist"
         },
         {
           "FullName": "Olga Pakskina",
-          "Post": "2D Artist"
+          "Post": "Senior 2D Artist"
         },
         {
           "FullName": "Rastislav Le",
-          "Post": "2D Artist"
+          "Post": "Senior 2D Artist"
         },
         {
           "FullName": "Pat Sevilla",
@@ -147,16 +204,16 @@
         {
           "FullName": "Alexis Desuyo",
           "Post": "Animator and VFX Artist"
+        },
+        {
+          "FullName": "Martina Mazzitelli",
+          "Post": "Animator and VFX Artist"
         }
       ]
     },
     {
       "subsectionType": "Music and Sound \n W.O.W Sound",
       "credits": [
-        {
-          "FullName": "",
-          "Post": ""
-        },
         {
           "FullName": "Sing Huey Lee",
           "Post": "Sound Designer and Composer"
@@ -181,19 +238,6 @@
       ]
     },
     {
-      "subsectionType": "QA",
-      "credits": [
-        {
-          "FullName": "Yuneek Sehgal",
-          "Post": "Head of QA"
-        },
-        {
-          "FullName": "Vaibhav Dixit",
-          "Post": "Quality Assurance"
-        }
-      ]
-    },
-    {
       "subsectionType": "Marketing",
       "credits": [
         {
@@ -202,14 +246,22 @@
         },
         {
           "FullName": "Dilanka McLovin",
-          "Post": "Marketing Manager"
+          "Post": "Growth Hacker"
         },
         {
           "FullName": "Michaela Thompson",
+          "Post": "Game Marketing Manager"
+        },
+        {
+          "FullName": "Stephanie Xiao",
           "Post": "Marketing Manager"
         },
         {
-          "FullName": "Hyunjung Ko (Hannah)",
+          "FullName": "Sijun Kim",
+          "Post": "Korean Marketing Manager"
+        },
+        {
+          "FullName": "Veronica Shim",
           "Post": "Korean Marketing Manager"
         },
         {
@@ -217,29 +269,37 @@
           "Post": "Japanese Marketing Manager"
         },
         {
-          "FullName": "Molly Thamrongvorapon",
-          "Post": "APAC Marketing Manager"
-        },
-        {
-          "FullName": "Stephanie Xiao",
+          "FullName": "Tina Tang",
           "Post": "Chinese Marketing Manager"
         },
-        {
-          "FullName": "Wang Shuwen (Katniss)",
-          "Post": "Marketing Assistant"
-        }
-      ]
-    },
-    {
-      "subsectionType": "Community Management",
-      "credits": [
         {
           "FullName": "Robert Hacala",
           "Post": "Content & Community Manager"
         },
         {
-          "FullName": "Tina Tang",
-          "Post": "Chinese Community Manager"
+          "FullName": "Juan Hernandez",
+          "Post": "Community Manager"
+        },
+        {
+          "FullName": "Peter Savkovich",
+          "Post": "Content Creator"
+        }
+      ]
+    },
+    {
+      "subsectionType": "Web Design",
+      "credits": [
+        {
+          "FullName": "Misha Yurchenkov",
+          "Post": "UI/UX"
+        },
+        {
+          "FullName": "Hank Xiao",
+          "Post": "Front-end Development"
+        },
+        {
+          "FullName": "Mingjin Jang ",
+          "Post": "Front-end Development"
         }
       ]
     },
