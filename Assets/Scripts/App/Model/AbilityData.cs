@@ -10,34 +10,34 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("Type")]
         public Enumerators.AbilityType AbilityType { get; private set; }
 
-        [JsonProperty("ActivityType")]
+        [JsonProperty("activity_type")]
         public Enumerators.AbilityActivityType ActivityType { get; private set; }
 
-        [JsonProperty("CallType")]
+        [JsonProperty("call_type")]
         public Enumerators.AbilityCallType CallType { get; private set; }
 
-        [JsonProperty("TargetType")]
+        [JsonProperty("target_type")]
         public List<Enumerators.AbilityTargetType> AbilityTargetTypes { get; private set; }
 
-        [JsonProperty("StatType")]
+        [JsonProperty("stat_type")]
         public Enumerators.StatType AbilityStatType { get; private set; }
 
-        [JsonProperty("SetType")]
+        [JsonProperty("set_type")]
         public Enumerators.SetType AbilitySetType { get; private set; }
 
-        [JsonProperty("EffectType")]
+        [JsonProperty("effect_type")]
         public Enumerators.AbilityEffectType AbilityEffectType { get; private set; }
 
-        [JsonProperty("AttackRestriction")]
+        [JsonProperty("attack_restriction")]
         public Enumerators.AttackRestriction AttackRestriction { get; private set; }
 
-        [JsonProperty("CardType")]
+        [JsonProperty("card_type")]
         public Enumerators.CardType TargetCardType { get; private set; }
 
-        [JsonProperty("UnitStatus")]
+        [JsonProperty("unit_status")]
         public Enumerators.UnitStatusType TargetUnitStatusType { get; private set; }
 
-        [JsonProperty("UnitType")]
+        [JsonProperty("unit_type")]
         public Enumerators.CardType TargetUnitType { get; private set; }
 
         public int Value { get; private set; }
@@ -56,21 +56,23 @@ namespace Loom.ZombieBattleground.Data
 
         public List<VisualEffectInfo> VisualEffectsToPlay { get; private set; }
 
-        [JsonProperty("MechanicPicture")]
+        [JsonProperty("mechanic_description_type")]
         public Enumerators.GameMechanicDescriptionType GameMechanicDescriptionType { get; private set; }
 
-        [JsonProperty("TargetSet")]
+        [JsonProperty("target_set")]
         public Enumerators.SetType TargetSetType { get; private set; }
 
-        [JsonProperty("SubTrigger")]
+        [JsonProperty("sub_trigger")]
         public Enumerators.AbilitySubTrigger AbilitySubTrigger { get; private set; }
 
+        [JsonProperty("choosable_abilities")]
         public List<ChoosableAbility> ChoosableAbilities { get; private set; }
 
         public int Defense { get; private set; }
 
         public int Cost { get; private set; }
 
+        [JsonConstructor]
         public AbilityData(
             Enumerators.AbilityType abilityType,
             Enumerators.AbilityActivityType activityType,
@@ -190,8 +192,11 @@ namespace Loom.ZombieBattleground.Data
         public class ChoosableAbility
         {
             public string Description { get; private set; }
+
+            [JsonProperty("ability_data")]
             public AbilityData AbilityData { get; private set; }
 
+            [JsonConstructor]
             public ChoosableAbility(string description, AbilityData abilityData)
             {
                 Description = description;

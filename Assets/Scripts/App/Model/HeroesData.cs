@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground.Data
         }
 
         [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
+        private void OnDeserialized(StreamingContext context)
         {
             foreach (Hero item in Heroes)
             {

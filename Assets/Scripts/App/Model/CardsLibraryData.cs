@@ -1,89 +1,83 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Protobuf;
-using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
     public class CardsLibraryData
     {
-        public List<CardSet> Sets;
+        public List<CardSet> Sets { get; private set; }
 
-        private List<Card> _allCards;
+        public IList<Card> Cards { get; private set; }
 
-        public int CardsInActiveSetsCount;
+        public int CardsInActiveSetsCount { get; private set; }
 
-        [JsonIgnore]
-        public List<Card> Cards
+        public CardsLibraryData(IList<Card> cards)
         {
-            get
-            {
-                if (_allCards == null)
-                {
-                    FillAllCards();
-                }
-
-                return _allCards;
-            }
+            Cards = cards ?? throw new ArgumentNullException(nameof(cards));
+            InitData();
         }
 
         public Card GetCardFromName(string name)
         {
-            return Cards.Find(x => x.Name.ToLowerInvariant() == name.ToLower());
+            return Cards.First(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public void FillAllCards()
+        private void InitData()
         {
-            _allCards = new List<Card>();
+            Cards = Cards.OrderBy(card => card.CardRank).ToList();
+            Sets =
+                Cards
+                    .GroupBy(card => card.CardSetType)
+                    .Select(group => new CardSet(group.Key, group.ToList()))
+                    .OrderBy(set => set.Name)
+                    .ToList();
+
             int id = 0;
-            if (Sets != null)
-            {
-                foreach (CardSet set in Sets)
-                {
-                    foreach (Card card in set.Cards)
-                    {
-                        // TODO: improve this shit!
-                        card.CardSetType = set.Name;
-
-                        _allCards.Add(card);
-
-                        // FIXME: why are we setting mould IDs manually?
-                        if (card.CardSetType != Enumerators.SetType.OTHERS)
-                        {
-                            card.MouldId = id;
-                            CardsInActiveSetsCount++;
-                        }
-
-                        id++;
-                    }
-                }
-            }
-
-            SortCardsByRank();
-        }
-
-        public void SortCardsByRank()
-        {
-            _allCards = _allCards?.OrderBy(x => (int) x.CardRank).ToList();
-
             foreach (CardSet set in Sets)
             {
-                set.Cards = set.Cards.OrderBy(x => (int) x.CardRank).ToList();
+                foreach (Card card in set.Cards)
+                {
+                    // FIXME: why are we setting mould IDs manually?
+                    if (card.CardSetType != Enumerators.SetType.OTHERS)
+                    {
+                        card.MouldId = id;
+                        CardsInActiveSetsCount++;
+                    }
+
+                    id++;
+                }
             }
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            InitData();
         }
     }
 
     public class CardSet
     {
-        public Enumerators.SetType Name;
+        public Enumerators.SetType Name { get; }
+        public List<Card> Cards { get; }
 
-        public List<Card> Cards;
+        public CardSet(Enumerators.SetType name, List<Card> cards)
+        {
+            Name = name;
+            Cards = cards;
+        }
 
         public override string ToString()
         {
             return $"({nameof(Name)}: {Name}, {Cards.Count} cards)";
         }
+    }
+
+    public class CardList
+    {
+        public List<Card> Cards;
     }
 }

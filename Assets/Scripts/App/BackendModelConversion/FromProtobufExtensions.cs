@@ -179,24 +179,6 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
-        public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse)
-        {
-            return new CardsLibraryData
-            {
-                Sets = listCardLibraryResponse.Sets.Select(set => set.FromProtobuf()).ToList()
-            };
-        }
-
-        public static CardSet FromProtobuf(this Protobuf.CardSet cardSet)
-        {
-            return new CardSet
-            {
-                Name = (Enumerators.SetType) cardSet.Name,
-                Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
-            };
-        }
-
-
         public static List<CardInstance> FromProtobuf(this RepeatedField<CardInstance> repeatedFieldCardInstance)
         {
             List<CardInstance> cardInstances = new List<CardInstance>();

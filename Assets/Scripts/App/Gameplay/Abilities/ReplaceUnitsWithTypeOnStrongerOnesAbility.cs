@@ -2,6 +2,7 @@ using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -119,12 +120,15 @@ namespace Loom.ZombieBattleground
 
         private void GetPossibleNewUnitByMinCost(ReplaceUnitInfo replaceUnitInfo)
         {
-            List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost &&                                                                                            x.CardSetType == SetType);
+            List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards
+                .Where(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost && x.CardSetType == SetType)
+                .ToList();
 
             if (possibleUnits.Count == 0)
             {
-                possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.OldUnitCost &&
-                                                                                      x.CardSetType == SetType);
+                possibleUnits = DataManager.CachedCardsLibraryData.Cards
+                    .Where(x => x.Cost >= replaceUnitInfo.OldUnitCost && x.CardSetType == SetType)
+                    .ToList();
             }
 
             replaceUnitInfo.NewUnitCardTitle = possibleUnits[UnityEngine.Random.Range(0, possibleUnits.Count)].Name;

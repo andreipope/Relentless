@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public class Card : ICard, IReadOnlyCard
     {
-        [JsonProperty("Id")]
+        [JsonProperty("id")]
         public long MouldId { get; set; }
 
         public string Name { get; protected set; }
@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground.Data
 
         public string Description { get; protected set; }
 
+        [JsonProperty("flavor_text")]
         public string FlavorText { get; protected set; }
 
         public string Picture { get; protected set; }
@@ -25,6 +26,7 @@ namespace Loom.ZombieBattleground.Data
 
         public int Health { get; protected set; }
 
+        [JsonProperty("Set")]
         public Enumerators.SetType CardSetType { get; set; }
 
         public string Frame { get; protected set; }
@@ -40,10 +42,13 @@ namespace Loom.ZombieBattleground.Data
 
         public List<AbilityData> Abilities { get; }
 
+        [JsonProperty("card_view_info")]
         public CardViewInfo CardViewInfo { get; protected set; }
 
+        [JsonProperty("unique_animation_type")]
         public Enumerators.UniqueAnimationType UniqueAnimationType { get; protected set; }
 
+        [JsonConstructor]
         public Card(
             long mouldId,
             string name,
@@ -106,7 +111,7 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardType})";
+            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardSetType})";
         }
     }
 

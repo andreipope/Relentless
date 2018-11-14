@@ -15,6 +15,8 @@ using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UnityEngine;
+using Card = Loom.ZombieBattleground.Data.Card;
+using CardList = Loom.ZombieBattleground.Data.CardList;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using Hero = Loom.ZombieBattleground.Data.Hero;
 
@@ -59,7 +61,7 @@ namespace Loom.ZombieBattleground
         private void InitCachedData()
         {
             CachedUserLocalData = new UserLocalData();
-            CachedCardsLibraryData = new CardsLibraryData();
+            CachedCardsLibraryData = new CardsLibraryData(new List<Card>());
             CachedHeroesData = new HeroesData(new List<Hero>());
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData(new List<Deck>());
@@ -104,8 +106,6 @@ namespace Loom.ZombieBattleground
             {
                 await LoadCachedData((Enumerators.CacheDataType) i);
             }
-
-            CachedCardsLibraryData.FillAllCards();
 
             // FIXME: remove next line after fetching collection from backend is implemented
             FillFullCollection();
@@ -272,17 +272,21 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
                     string cardsLibraryFilePath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
-                    if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
+
+                    List<Card> cardList;
+                    if ((true || ConfigData.SkipBackendCardData) && File.Exists(cardsLibraryFilePath))
                     {
-                        Debug.LogWarning("===== Loading Card Library from cache ===== ");
-                        CachedCardsLibraryData = DeserializeObjectFromPersistentData<CardsLibraryData>(cardsLibraryFilePath);
+                        Debug.LogWarning("===== Loading Card Library from persistent data ===== ");
+                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
                     }
                     else
                     {
                         ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
                         Debug.Log(listCardLibraryResponse.ToString());
-                        CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
+                        cardList = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
                     }
+
+                    CachedCardsLibraryData = new CardsLibraryData(cardList);
 
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
@@ -333,18 +337,6 @@ namespace Loom.ZombieBattleground
                 },
                 {
                     Enumerators.CacheDataType.CARDS_LIBRARY_DATA, Constants.LocalCardsLibraryDataFileName
-                },
-                {
-                    Enumerators.CacheDataType.HEROES_DATA, Constants.LocalHeroesDataFileName
-                },
-                {
-                    Enumerators.CacheDataType.COLLECTION_DATA, Constants.LocalCollectionDataFileName
-                },
-                {
-                    Enumerators.CacheDataType.DECKS_DATA, Constants.LocalDecksDataFileName
-                },
-                {
-                    Enumerators.CacheDataType.DECKS_OPPONENT_DATA,  Constants.LocalOpponentDecksDataFileName
                 },
                 {
                     Enumerators.CacheDataType.CREDITS_DATA, Constants.LocalCreditsDataFileName
