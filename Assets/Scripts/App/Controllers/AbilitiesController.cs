@@ -30,6 +30,7 @@ namespace Loom.ZombieBattleground
         private ulong _castedAbilitiesIds;
 
         private List<ActiveAbility> _activeAbilities;
+        public List<ActiveAbility> ActiveAbilities { get { return _activeAbilities; } }
 
         public bool BlockEndTurnButton { get; private set; }
 

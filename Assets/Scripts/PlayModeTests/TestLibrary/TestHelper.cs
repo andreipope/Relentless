@@ -1020,6 +1020,34 @@ public class TestHelper
                     _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
                         PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                         _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
+
+                        if (target != null)
+                        {
+                            foreach (AbilitiesController.ActiveAbility activeAbility in _abilitiesController.ActiveAbilities)
+                            {
+                                if (target == _testBroker.GetPlayer (_opponent))
+                                {
+                                    activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_opponent);
+                                }
+                                else if (target == _testBroker.GetPlayer (_player))
+                                {
+                                    activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_player);
+                                }
+                                else
+                                {
+                                    BoardUnitView targetBoardUnitView = _battlegroundController.PlayerBoardCards.Find (x => x.Model.Id.Equals (target.Id));
+
+                                    if (targetBoardUnitView == null)
+                                    {
+                                        targetBoardUnitView = _battlegroundController.OpponentBoardCards.Find (x => x.Model.Id.Equals (target.Id));
+                                    }
+
+                                    activeAbility.Ability.TargettingArrow.SelectedCard = targetBoardUnitView;
+                                }
+
+                                activeAbility.Ability.SelectedTargetAction (true);
+                            }
+                        } 
                     });
 
                     /* if (target != null)
