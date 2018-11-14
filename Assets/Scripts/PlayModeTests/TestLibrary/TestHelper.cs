@@ -551,7 +551,7 @@ public class TestHelper
 
         foreach (string tag in tags)
         {
-            _pvpManager.PvPTags.Append<string> (tag);
+            _pvpManager.PvPTags.Add (tag);
         }
     }
 

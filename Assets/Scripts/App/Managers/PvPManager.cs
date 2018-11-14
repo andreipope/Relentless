@@ -80,7 +80,10 @@ namespace Loom.ZombieBattleground
 
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
 
-            PvPTags = new Google.Protobuf.Collections.RepeatedField<string> ();
+            if (PvPTags == null)
+            {
+                PvPTags = new Google.Protobuf.Collections.RepeatedField<string> ();
+            }
         }
 
         public async void Update()
