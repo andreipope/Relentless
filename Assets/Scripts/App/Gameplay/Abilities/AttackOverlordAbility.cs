@@ -40,10 +40,10 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        GetOpponentOverlord().Defense -= Value;
+                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, GetOpponentOverlord());
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        PlayerCallerOfAbility.Defense -= Value;
+                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, PlayerCallerOfAbility);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
