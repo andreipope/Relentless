@@ -101,6 +101,10 @@ namespace Loom.ZombieBattleground
             _betaKeyInputField.text = "";
             Self.SetActive(true);
 
+            GameObject betaText = Self.transform.Find("Beta_Group/Text_Beta").gameObject;
+            betaText.SetActive(false);
+            _betaKeyInputField.gameObject.SetActive(false);
+
             PressedBetaHandler();
         }
 
