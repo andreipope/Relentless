@@ -209,7 +209,7 @@ public class SingleplayerTests
     [Timeout (500000)]
     public IEnumerator Test1_TutorialNonSkip ()
     {
-        _testHelper.SetTestName ("Tutorial - Non-Skip");
+        _testHelper.SetTestName ("Solo - Tutorial Non-Skip");
 
         #region Tutorial Non-Skip
 
@@ -234,7 +234,7 @@ public class SingleplayerTests
     [Timeout (500000)]
     public IEnumerator Test2_TutorialSkip ()
     {
-        _testHelper.SetTestName ("Tutorial - Skip");
+        _testHelper.SetTestName ("Solo - Tutorial Skip");
 
         #region Tutorial Skip
 
@@ -253,7 +253,7 @@ public class SingleplayerTests
     [Timeout (500000)]
     public IEnumerator Test3_SoloGameplay ()
     {
-        _testHelper.SetTestName ("Solo Gameplay");
+        _testHelper.SetTestName ("Solo - Gameplay");
 
         #region Solo Gameplay
 
@@ -282,7 +282,7 @@ public class SingleplayerTests
     [Timeout (500000)]
     public IEnumerator Test4_CreateAHordeAndCancel ()
     {
-        _testHelper.SetTestName ("Create a Horde and cancel");
+        _testHelper.SetTestName ("Solo - Create a Horde and cancel");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -309,20 +309,6 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        // >> HordeSelectionPage
-        // Tap on Image_BackgroundGeneral
-
-        // Tap on Button_LeftArrow or Button_RightArrow
-        // Check children of Panel_OverlordContent/Group/
-        // Active one has (Selected) at the end
-        // Tap on Button_Continue
-
-        // Check out abilities under Abilities/
-        // Children are Toggles
-        // Tap on Button_Cancel (takes back to overlord selection) or Button_Continue
-
-        // >> HordeEditingPage
-
         yield return null;
     }
 
@@ -330,7 +316,7 @@ public class SingleplayerTests
     [Timeout (500000)]
     public IEnumerator Test5_CreateAHordeAndSave ()
     {
-        _testHelper.SetTestName ("Create a Horde and save");
+        _testHelper.SetTestName ("Solo - Create a Horde and save");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -340,74 +326,7 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        yield return _testHelper.ClickGenericButton ("Image_BaackgroundGeneral");
-
-        yield return _testHelper.AssertCurrentPageName ("OverlordSelectionPage");
-
-        yield return _testHelper.PickOverlord ("Razu", true);
-
-        yield return _testHelper.PickOverlordAbility (1);
-
-        yield return _testHelper.ClickGenericButton ("Canvas_BackLayer/Button_Continue");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeEditingPage");
-
-        _testHelper.SetupArmyCards ();
-
-        yield return _testHelper.SetDeckTitle ("Razu Deck");
-
-        yield return _testHelper.AddCardToHorde ("Pyromaz");
-        yield return _testHelper.AddCardToHorde ("Pyromaz");
-        yield return _testHelper.AddCardToHorde ("Pyromaz");
-        yield return _testHelper.AddCardToHorde ("Pyromaz");
-        // yield return _testHelper.AddCardToHorde ("Pyromaz", true);
-
-        yield return _testHelper.AddCardToHorde ("Quazi");
-        yield return _testHelper.AddCardToHorde ("Quazi");
-        yield return _testHelper.AddCardToHorde ("Quazi");
-        yield return _testHelper.AddCardToHorde ("Quazi");
-
-        yield return _testHelper.AddCardToHorde ("Ember");
-        yield return _testHelper.AddCardToHorde ("Ember");
-        yield return _testHelper.AddCardToHorde ("Ember");
-        yield return _testHelper.AddCardToHorde ("Ember");
-
-        yield return _testHelper.AddCardToHorde ("Firewall");
-        yield return _testHelper.AddCardToHorde ("Firewall");
-        yield return _testHelper.AddCardToHorde ("Firewall");
-        yield return _testHelper.AddCardToHorde ("Firewall");
-
-        yield return _testHelper.AddCardToHorde ("BurZt");
-        yield return _testHelper.AddCardToHorde ("BurZt");
-        yield return _testHelper.AddCardToHorde ("BurZt");
-        yield return _testHelper.AddCardToHorde ("BurZt");
-
-        yield return _testHelper.ClickGenericButton ("Army/ArrowRightButton");
-
-        yield return _testHelper.LetsThink ();
-
-        _testHelper.SetupArmyCards ();
-
-        yield return _testHelper.LetsThink ();
-
-        yield return _testHelper.AddCardToHorde ("BlaZter");
-
-        yield return _testHelper.ClickGenericButton ("Horde/ArrowRightButton");
-
-        yield return _testHelper.AddCardToHorde ("BlaZter");
-        yield return _testHelper.AddCardToHorde ("BlaZter");
-        yield return _testHelper.AddCardToHorde ("BlaZter");
-
-        yield return _testHelper.AddCardToHorde ("Burrrnn");
-        yield return _testHelper.AddCardToHorde ("Burrrnn");
-
-        yield return _testHelper.AddCardToHorde ("Cynderman");
-        yield return _testHelper.AddCardToHorde ("Cynderman");
-
-        yield return _testHelper.AddCardToHorde ("Werezomb");
-        yield return _testHelper.AddCardToHorde ("Werezomb");
-
-        yield return _testHelper.ClickGenericButton ("Button_Save");
+        yield return _testHelper.AddRazuHorde ();
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
@@ -418,7 +337,7 @@ public class SingleplayerTests
     [Timeout (500000)]
     public IEnumerator Test6_RemoveSecondHorde ()
     {
-        _testHelper.SetTestName ("Create a Horde and save");
+        _testHelper.SetTestName ("Solo - Remove second Horde");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 

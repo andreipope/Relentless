@@ -115,11 +115,15 @@ public class MultiplayerTests
             "pvpTest"
         });
 
+        _testHelper.RecordOverlordName ();
+
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
         yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+
+        _testHelper.AssertOverlordName ();
 
         yield return _testHelper.ClickGenericButton ("Button_Settings");
 
@@ -172,6 +176,31 @@ public class MultiplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
     }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test5_CreateAHordeAndSave ()
+    {
+        _testHelper.SetTestName ("PvP - Create a Horde and save");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
+
+        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_CasualType");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.AddRazuHorde ();
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return null;
+    }
 }
 
 
@@ -208,7 +237,7 @@ public class MultiplayerPassiveTests
     [Timeout (500000)]
     public IEnumerator Test1_MatchmakeAndPlay ()
     {
-        _testHelper.SetTestName ("Tutorial - Matchmaking And Play");
+        _testHelper.SetTestName ("PvP - Matchmake And Play");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 

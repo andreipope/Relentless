@@ -2173,6 +2173,78 @@ public class TestHelper
         "Valash"
     };
 
+    public IEnumerator AddRazuHorde ()
+    {
+        yield return ClickGenericButton ("Image_BaackgroundGeneral");
+
+        yield return AssertCurrentPageName ("OverlordSelectionPage");
+
+        yield return PickOverlord ("Razu", true);
+
+        yield return PickOverlordAbility (1);
+
+        yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
+
+        yield return AssertCurrentPageName ("HordeEditingPage");
+
+        SetupArmyCards ();
+
+        yield return SetDeckTitle ("Razu Deck");
+
+        yield return AddCardToHorde ("Pyromaz");
+        yield return AddCardToHorde ("Pyromaz");
+        yield return AddCardToHorde ("Pyromaz");
+        yield return AddCardToHorde ("Pyromaz");
+        // yield return AddCardToHorde ("Pyromaz", true);
+
+        yield return AddCardToHorde ("Quazi");
+        yield return AddCardToHorde ("Quazi");
+        yield return AddCardToHorde ("Quazi");
+        yield return AddCardToHorde ("Quazi");
+
+        yield return AddCardToHorde ("Ember");
+        yield return AddCardToHorde ("Ember");
+        yield return AddCardToHorde ("Ember");
+        yield return AddCardToHorde ("Ember");
+
+        yield return AddCardToHorde ("Firewall");
+        yield return AddCardToHorde ("Firewall");
+        yield return AddCardToHorde ("Firewall");
+        yield return AddCardToHorde ("Firewall");
+
+        yield return AddCardToHorde ("BurZt");
+        yield return AddCardToHorde ("BurZt");
+        yield return AddCardToHorde ("BurZt");
+        yield return AddCardToHorde ("BurZt");
+
+        yield return ClickGenericButton ("Army/ArrowRightButton");
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return LetsThink ();
+
+        yield return AddCardToHorde ("BlaZter");
+
+        yield return ClickGenericButton ("Horde/ArrowRightButton");
+
+        yield return AddCardToHorde ("BlaZter");
+        yield return AddCardToHorde ("BlaZter");
+        yield return AddCardToHorde ("BlaZter");
+
+        yield return AddCardToHorde ("Burrrnn");
+        yield return AddCardToHorde ("Burrrnn");
+
+        yield return AddCardToHorde ("Cynderman");
+        yield return AddCardToHorde ("Cynderman");
+
+        yield return AddCardToHorde ("Werezomb");
+        yield return AddCardToHorde ("Werezomb");
+
+        yield return ClickGenericButton ("Button_Save");
+    }
+
     public void SetupArmyCards ()
     {
         FillCollectionData ();
@@ -2315,4 +2387,21 @@ public class TestHelper
     }
 
     #endregion
+
+    private string _overlordName;
+
+    public void RecordOverlordName ()
+    {
+        // implement this
+    }
+
+    public void AssertOverlordName ()
+    {
+        string overlordName = ""; // implement this
+
+        if (_overlordName != overlordName)
+        {
+            Assert.Fail ("Overlord in the game is different than the one selected.");
+        }
+    }
 }
