@@ -164,7 +164,11 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e);
+                Debug.LogError(e);
+                if (e.ToString().Contains("not found"))
+                {
+                    Debug.LogError("Card Data Issue - Invalid Card Set");
+                }
                 SetUIState(LoginState.BetaKeyValidationFailed);
             }
         }
