@@ -1027,14 +1027,22 @@ public class TestHelper
                             {
                                 if (target == _testBroker.GetPlayer (_opponent))
                                 {
-                                    activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_opponent);
+                                    Debug.LogWarning ("- Target: Opponent Player");
+
+                                    activeAbility.Ability.TargetPlayer = _testBroker.GetPlayer (_opponent);
+                                    // activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_opponent);
                                 }
                                 else if (target == _testBroker.GetPlayer (_player))
                                 {
-                                    activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_player);
+                                    Debug.LogWarning ("- Target: Current Player");
+
+                                    activeAbility.Ability.TargetPlayer = _testBroker.GetPlayer (_player);
+                                    // activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_player);
                                 }
                                 else
                                 {
+                                    Debug.LogWarning ("- Target: Card");
+
                                     BoardUnitView targetBoardUnitView = _battlegroundController.PlayerBoardCards.Find (x => x.Model.Id.Equals (target.Id));
 
                                     if (targetBoardUnitView == null)
@@ -1042,10 +1050,20 @@ public class TestHelper
                                         targetBoardUnitView = _battlegroundController.OpponentBoardCards.Find (x => x.Model.Id.Equals (target.Id));
                                     }
 
-                                    activeAbility.Ability.TargettingArrow.SelectedCard = targetBoardUnitView;
+                                    activeAbility.Ability.TargetUnit = targetBoardUnitView.Model;
+                                    // activeAbility.Ability.TargettingArrow.SelectedCard = targetBoardUnitView;
                                 }
 
-                                activeAbility.Ability.SelectedTargetAction (true);
+                                if (activeAbility.Ability.TargetUnit != null ||
+                                    activeAbility.Ability.TargetPlayer != null)
+                                {
+                                    activeAbility.Ability.SelectedTargetAction (true);
+                                }
+                                else
+                                {
+                                    Debug.LogWarning ("-- No target");
+                                }
+
                             }
                         } 
                     });
