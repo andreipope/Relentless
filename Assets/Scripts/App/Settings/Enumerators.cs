@@ -143,6 +143,7 @@ namespace Loom.ZombieBattleground.Common
             SET_ATTACK_AVAILABILITY,
             CHOOSABLE_ABILITIES,
             COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
+            GAIN_GOO
         }
 
         public enum ActionType
