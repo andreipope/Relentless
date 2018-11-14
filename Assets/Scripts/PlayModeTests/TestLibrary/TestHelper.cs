@@ -462,7 +462,7 @@ public class TestHelper
         yield return null;
     }
 
-    public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null)
+    public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null, int count = 1)
     {
         GameObject menuButtonGameObject = null;
 
@@ -495,6 +495,11 @@ public class TestHelper
 
             return false;
         });
+
+        if (count >= 2)
+        {
+            yield return ClickGenericButton (buttonName, parentGameObject, count - 1);
+        }
 
         yield return null;
     }
@@ -1025,47 +1030,28 @@ public class TestHelper
                         {
                             foreach (AbilitiesController.ActiveAbility activeAbility in _abilitiesController.ActiveAbilities)
                             {
-                                if (target == _testBroker.GetPlayer (_opponent))
-                                {
-                                    Debug.LogWarning ("- Target: Opponent Player");
-
-                                    activeAbility.Ability.TargetPlayer = _testBroker.GetPlayer (_opponent);
-                                    // activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_opponent);
-                                }
-                                else if (target == _testBroker.GetPlayer (_player))
-                                {
-                                    Debug.LogWarning ("- Target: Current Player");
-
-                                    activeAbility.Ability.TargetPlayer = _testBroker.GetPlayer (_player);
-                                    // activeAbility.Ability.TargettingArrow.SelectedPlayer = _testBroker.GetPlayer (_player);
-                                }
-                                else
-                                {
-                                    Debug.LogWarning ("- Target: Card");
-
-                                    BoardUnitView targetBoardUnitView = _battlegroundController.PlayerBoardCards.Find (x => x.Model.Id.Equals (target.Id));
-
-                                    if (targetBoardUnitView == null)
-                                    {
-                                        targetBoardUnitView = _battlegroundController.OpponentBoardCards.Find (x => x.Model.Id.Equals (target.Id));
-                                    }
-
-                                    activeAbility.Ability.TargetUnit = targetBoardUnitView.Model;
-                                    // activeAbility.Ability.TargettingArrow.SelectedCard = targetBoardUnitView;
-                                }
-
-                                if (activeAbility.Ability.TargetUnit != null ||
-                                    activeAbility.Ability.TargetPlayer != null)
-                                {
-                                    activeAbility.Ability.SelectedTargetAction (true);
-                                }
-                                else
-                                {
-                                    Debug.LogWarning ("-- No target");
-                                }
-
+                                activeAbility.Ability.Dispose ();
                             }
-                        } 
+
+                            /* switch (target)
+                            {
+                                case BoardUnitModel unit:
+                                    _abilitiesController.CurrentPlayerActiveAbility.Ability.TargetUnit = unit;
+
+                                    break;
+                                case Loom.ZombieBattleground.Player player:
+                                    _abilitiesController.CurrentPlayerActiveAbility.Ability.TargetPlayer = player;
+
+                                    break;
+                                case null:
+
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException (nameof (target), target, null);
+                            }
+
+                            _abilitiesController.CurrentPlayerActiveAbility.Ability.SelectedTargetAction (true); */
+                        }
                     });
 
                     /* if (target != null)
@@ -2191,6 +2177,110 @@ public class TestHelper
         "Valash"
     };
 
+    public IEnumerator AddKalileHorde ()
+    {
+        yield return ClickGenericButton ("Image_BaackgroundGeneral");
+
+        yield return AssertCurrentPageName ("OverlordSelectionPage");
+
+        yield return PickOverlord ("Kalile", false);
+
+        yield return PickOverlordAbility (1);
+
+        yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
+
+        yield return AssertCurrentPageName ("HordeEditingPage");
+
+        SetupArmyCards ();
+
+        yield return SetDeckTitle ("Kalile Deck");
+
+        yield return AddCardToHorde ("Wheezy");
+        yield return AddCardToHorde ("Wheezy");
+        yield return AddCardToHorde ("Wheezy");
+        yield return AddCardToHorde ("Wheezy");
+
+        yield return ClickGenericButton ("Army/ArrowRightButton");
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return AddCardToHorde ("Pushhh");
+        yield return AddCardToHorde ("Pushhh");
+
+        yield return AddCardToHorde ("Ztormmcaller");
+        yield return AddCardToHorde ("Ztormmcaller");
+
+        yield return ClickGenericButton ("Army/ArrowLeftButton", count: 6);
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return AddCardToHorde ("Blizzard");
+        yield return AddCardToHorde ("Blizzard");
+
+        yield return ClickGenericButton ("Army/ArrowLeftButton");
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return AddCardToHorde ("Jetter");
+        yield return AddCardToHorde ("Jetter");
+
+        yield return ClickGenericButton ("Army/ArrowLeftButton");
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return AddCardToHorde ("Zhatterer");
+        yield return AddCardToHorde ("Zhatterer");
+        yield return AddCardToHorde ("Zhatterer");
+        yield return AddCardToHorde ("Zhatterer");
+
+        yield return ClickGenericButton ("Army/ArrowLeftButton", count: 2);
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return AddCardToHorde ("BlaZter");
+        yield return AddCardToHorde ("BlaZter");
+        yield return AddCardToHorde ("BlaZter");
+        yield return AddCardToHorde ("BlaZter");
+
+        yield return AddCardToHorde ("Cynderman");
+        yield return AddCardToHorde ("Cynderman");
+
+        yield return ClickGenericButton ("Army/ArrowRightButton", count: 14);
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return AddCardToHorde ("PreZerver");
+        yield return AddCardToHorde ("PreZerver");
+        yield return AddCardToHorde ("PreZerver");
+        yield return AddCardToHorde ("PreZerver");
+
+        yield return AddCardToHorde ("Shroom");
+        yield return AddCardToHorde ("Shroom");
+
+        yield return ClickGenericButton ("Army/ArrowRightButton", count: 2);
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return AddCardToHorde ("Zpitter");
+        yield return AddCardToHorde ("Zpitter");
+
+        yield return ClickGenericButton ("Button_Save");
+    }
+
     public IEnumerator AddRazuHorde ()
     {
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
@@ -2337,7 +2427,8 @@ public class TestHelper
             Assert.Fail ("TextMeshPro InputField doesn't exist");
         }
 
-        deckTitleInputField.onEndEdit.Invoke (deckTitle);
+        deckTitleInputField.text = deckTitle; // for visibility during testing
+        deckTitleInputField.onEndEdit.Invoke (deckTitle); // for post deck creation result
 
         yield return LetsThink ();
     }

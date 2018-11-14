@@ -357,6 +357,27 @@ public class SingleplayerTests
     }
 
     [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test7_CreateAnAbilityHorde ()
+    {
+        _testHelper.SetTestName ("Solo - Create a Horde and save");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.AddKalileHorde ();
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return null;
+    }
+
+    [UnityTest]
     public IEnumerator TestN_Cleanup ()
     {
         // Nothing, just to ascertain cleanup
