@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
 
         public List<AbilityBase> GetAbilitiesConnectedToUnit(BoardUnitModel unit)
         {
-            return _activeAbilities.FindAll(x => x.Ability.TargetUnit == unit).Select(y => y.Ability).ToList();
+            return _activeAbilities.FindAll(x => x.Ability.TargetUnit == unit || x.Ability.AbilityUnitOwner == unit).Select(y => y.Ability).ToList();
         }
 
         public ActiveAbility CreateActiveAbility(
@@ -942,6 +942,10 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.COSTS_LESS_IF_CARD_TYPE_IN_PLAY:
                     ability = new CostsLessIfCardTypeInPlayAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.GAIN_GOO:
+                    ability = new GainGooAbility(cardKind, abilityData);
+                    break;
+                  
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }

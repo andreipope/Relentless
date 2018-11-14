@@ -294,9 +294,6 @@ namespace Loom.ZombieBattleground
                         decksAIResponse.Decks
                             .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
                             .ToList();
-
-                    CachedOpponentDecksData = DeserializeObjectFromAssets<OpponentDecksData>(_cacheDataFileNames[type]);
-
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
                     CachedCreditsData = DeserializeObjectFromAssets<CreditsData>(_cacheDataFileNames[type]);
