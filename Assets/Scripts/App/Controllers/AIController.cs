@@ -597,8 +597,19 @@ namespace Loom.ZombieBattleground
 
                 if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
                 {
-                    needTargetForAbility =
-                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                    List<AbilityData> abilitiesWithTargets = card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0);
+
+                    if (abilitiesWithTargets.Count > 0)
+                    {
+                        foreach(AbilityData data in abilitiesWithTargets)
+                        {
+                            if (data.AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
+                                data.AbilityActivityType == Enumerators.AbilityActivityType.ACTIVE)
+                            {
+                                needTargetForAbility = true;
+                            }
+                        }
+                    }                    
                 }
 
                 BoardObject target = null;

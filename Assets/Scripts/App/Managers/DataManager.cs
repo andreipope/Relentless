@@ -337,22 +337,20 @@ namespace Loom.ZombieBattleground
 
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    try
-                    {
-                        GetAIDecksResponse decksAIResponse = await _backendFacade.GetAIDecks();
-                        CachedOpponentDecksData = new OpponentDecksData();
-                        CachedOpponentDecksData.Decks =
-                            decksAIResponse.Decks
-                                .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
-                                .ToList();
-
-                        CachedOpponentDecksData = DeserializeObjectFromAssets<OpponentDecksData>(_cacheDataFileNames[type]);
-                    }
-                    catch (Exception e)
-                    {
-                        ShowLoadDataFailMessage("Issue with Loading Opponent AI Decks");
-                        throw;
-                    }
+                try
+                {
+                    GetAIDecksResponse decksAIResponse = await _backendFacade.GetAIDecks();
+                    CachedOpponentDecksData = new OpponentDecksData();
+                    CachedOpponentDecksData.Decks =
+                    decksAIResponse.Decks
+                    .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                    .ToList();
+                }
+                catch (Exception e)
+                {
+                    ShowLoadDataFailMessage("Issue with Loading Opponent AI Decks");
+                    throw;
+                }
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
                     CachedCreditsData = DeserializeObjectFromAssets<CreditsData>(_cacheDataFileNames[type]);

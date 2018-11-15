@@ -592,8 +592,8 @@ namespace Loom.ZombieBattleground
 
             if (_currentDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                OpenAlertDialog("Your '" + _currentDeck.Name + "' deck has more than " + Constants.DeckMaxSize +
-                    " cards.");
+                OpenAlertDialog("You can not add more than " + Constants.DeckMaxSize +
+                    " Cards in a single Horde.");
                 return;
             }
 
