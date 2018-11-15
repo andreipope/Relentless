@@ -1023,7 +1023,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel item in list)
             {
-                if (item.CurrentHp < item.MaxCurrentHp)
+                if (item.CurrentHp < item.MaxCurrentHp && item.CurrentHp > 0)
                 {
                     finalList.Add(item);
                 }
@@ -1100,7 +1100,7 @@ namespace Loom.ZombieBattleground
             {
                 eligibleUnits =
                     _gameplayManager.OpponentPlayer.BoardCards
-                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && !_attackedUnitTargets.Contains(x.Model))
+                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model))
                         .Select(x => x.Model)
                         .ToList();
             }
