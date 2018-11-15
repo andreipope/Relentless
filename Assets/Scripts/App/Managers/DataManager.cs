@@ -22,6 +22,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private IUIManager _uiManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -29,6 +31,8 @@ namespace Loom.ZombieBattleground
         private Dictionary<Enumerators.CacheDataType, string> _cacheDataFileNames;
 
         private DirectoryInfo _dir;
+
+        private List<string> _names;
 
         public DataManager(ConfigData configData)
         {
@@ -169,6 +173,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
@@ -251,6 +256,17 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void ConfirmDeleteDeckReceivedHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
+        }
+
+        private void ShowLoadDataFailMessage(string msg)
+        {
+            _uiManager.HidePopup<LoginPopup>();
+            _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
+        }
+
         private async Task LoadCachedData(Enumerators.CacheDataType type)
         {
             switch (type)
@@ -264,36 +280,77 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-                        Debug.Log(listCardLibraryResponse.ToString());
-                        CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
+                        try
+                        {
+                            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
+                            Debug.Log(listCardLibraryResponse.ToString());
+                            CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
+                        }
+                        catch(Exception e)
+                        {
+                            ShowLoadDataFailMessage("Issue with Loading Card Library Data");
+                            throw;
+                        }
+                    }
+                    break;
+                case Enumerators.CacheDataType.HEROES_DATA:
+                    try
+                    {
+                        ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Heroes Data");
+                        throw;
+                    }
+                    break;
+                case Enumerators.CacheDataType.COLLECTION_DATA:
+                    try
+                    {
+                        GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedCollectionData = getCollectionResponse.FromProtobuf();
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Card Collection Data");
+                        throw;
                     }
 
                     break;
-                case Enumerators.CacheDataType.HEROES_DATA:
-                    ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+                case Enumerators.CacheDataType.DECKS_DATA:
+                    try
+                    {
+                        ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedDecksData = new DecksData();
+                        CachedDecksData.Decks =
+                            listDecksResponse.Decks
+                                .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                                .ToList();
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Decks Data");
+                        throw;
+                    }
 
                     break;
-                case Enumerators.CacheDataType.COLLECTION_DATA:
-                    GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedCollectionData = getCollectionResponse.FromProtobuf();
-                    break;
-                case Enumerators.CacheDataType.DECKS_DATA:
-                    ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedDecksData = new DecksData();
-                    CachedDecksData.Decks =
-                        listDecksResponse.Decks
-                            .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
-                            .ToList();
-                    break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
+                try
+                {
                     GetAIDecksResponse decksAIResponse = await _backendFacade.GetAIDecks();
                     CachedOpponentDecksData = new OpponentDecksData();
                     CachedOpponentDecksData.Decks =
-                        decksAIResponse.Decks
-                            .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
-                            .ToList();
+                    decksAIResponse.Decks
+                    .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                    .ToList();
+                }
+                catch (Exception e)
+                {
+                    ShowLoadDataFailMessage("Issue with Loading Opponent AI Decks");
+                    throw;
+                }
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
                     CachedCreditsData = DeserializeObjectFromAssets<CreditsData>(_cacheDataFileNames[type]);
