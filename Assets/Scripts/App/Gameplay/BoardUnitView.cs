@@ -803,6 +803,18 @@ namespace Loom.ZombieBattleground
                     attackCompleteCallback();
 
                     completeCallback?.Invoke();
+
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        if (Model.OwnerPlayer.IsLocalPlayer)
+                        {
+                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(Model.OwnerPlayer.BoardCards);
+                        }
+                        else
+                        {
+                            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                        }
+                    }, 0.5f);
                 }
                 );
         }
