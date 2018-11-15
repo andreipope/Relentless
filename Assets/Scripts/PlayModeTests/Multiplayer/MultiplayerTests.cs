@@ -269,7 +269,7 @@ public class MultiplayerPassiveTests
     #endregion
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (5000000)]
     public IEnumerator Test1_MatchmakeAndPlay ()
     {
         _testHelper.SetTestName ("PvP - Matchmake And Play");
@@ -323,6 +323,9 @@ public class MultiplayerPassiveTests
 
     private IEnumerator PressOK ()
     {
-        yield return _testHelper.ClickGenericButton ("Button_OK");
+        if (GameObject.Find ("Button_OK") != null)
+            yield return _testHelper.ClickGenericButton ("Button_OK");
+        else
+            yield return _testHelper.ClickGenericButton ("Button_GotIt");
     }
 }
