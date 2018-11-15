@@ -20,9 +20,9 @@ namespace Loom.ZombieBattleground.Editor
         private static void OnScriptsReloaded() {
             if (EditorPrefs.GetBool(MustRegenerateAotHintKey))
             {
+                EditorPrefs.SetBool(MustRegenerateAotHintKey, false);
                 Debug.Log("Zb.cs changed, updating AOT hint");
                 AotHintFileUpdater.UpdateAotHint();
-                EditorPrefs.SetBool(MustRegenerateAotHintKey, false);
             }
         }
     }
