@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         protected PastActionReportPanel _mainRoot;
 
+        private Vector3 _startPosition;
+
         public PastReportActionSmall(PastActionReportPanel root, GameObject prefab, Transform parent, PastActionsPopup.PastActionParam pastActionParam)
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -61,8 +63,24 @@ namespace Loom.ZombieBattleground
             {
                 if (!_mainRoot.IsDrawing)
                 {
-                    UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
-                    _mainRoot.IsDrawing = true;
+                    _startPosition = Input.mousePosition;
+                    Helpers.InternalTools.DoActionDelayed(PastActionReportClickCompleted, 0.15f);
+                }
+            }
+        }
+
+        private void PastActionReportClickCompleted()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (!_mainRoot.IsDrawing)
+                {
+                    float delta = Vector3.Distance(_startPosition, Input.mousePosition);
+                    if (delta <= 30f)
+                    {
+                        UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
+                        _mainRoot.IsDrawing = true;
+                    }
                 }
             }
         }
