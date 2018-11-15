@@ -609,7 +609,7 @@ namespace Loom.ZombieBattleground
                 _rearrangingTopRealTimeSequence = null;
             }
 
-            List<BoardUnitView> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
+            List<BoardUnitView> opponentBoardCards = OpponentBoardCards;
 
             float boardWidth = 0.0f;
             float spacing = 0.2f;

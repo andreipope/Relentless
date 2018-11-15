@@ -804,17 +804,14 @@ namespace Loom.ZombieBattleground
 
                     completeCallback?.Invoke();
 
-                    InternalTools.DoActionDelayed(() =>
+                    if (Model.OwnerPlayer.IsLocalPlayer)
                     {
-                        if (Model.OwnerPlayer.IsLocalPlayer)
-                        {
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(Model.OwnerPlayer.BoardCards);
-                        }
-                        else
-                        {
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                        }
-                    }, 0.5f);
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(Model.OwnerPlayer.BoardCards);
+                    }
+                    else
+                    {
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                    }
                 }
                 );
         }
