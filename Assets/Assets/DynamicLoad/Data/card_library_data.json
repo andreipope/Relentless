@@ -743,7 +743,7 @@
                 },
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/IceBolt_Impact"
+                  "Path": "Prefabs/VFX/Skills/ShatterCardDestroyVFX"
                 }
               ]
             }

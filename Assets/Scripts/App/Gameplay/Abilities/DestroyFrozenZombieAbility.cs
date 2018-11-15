@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            TargetUnit.LastAttackingSetType = Enumerators.SetType.NONE;
             BattlegroundController.DestroyBoardUnit(TargetUnit);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
