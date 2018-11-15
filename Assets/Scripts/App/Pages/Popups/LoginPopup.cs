@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
         private Transform _waitingGroup;
 
-        private TextMeshProUGUI _betaErrorText;
+        private Transform _betaErrorText;
 
         private Transform _versionMismatchGroup;
 
@@ -41,8 +41,6 @@ namespace Loom.ZombieBattleground
         private Button _versionMismatchExitButton;
 
         private InputField _betaKeyInputField;
-
-        private string _defaultErrorText = "An error occured when validating your key, please try again";
 
         private LoginState _state;
 
@@ -88,8 +86,7 @@ namespace Loom.ZombieBattleground
             _betaGroup = Self.transform.Find("Beta_Group");
             _betaButton = _betaGroup.Find("Button_Beta").GetComponent<ButtonShiftingContent>();
             _betaKeyInputField = Self.transform.Find("Beta_Group/InputField_Beta").GetComponent<InputField>();
-            _betaErrorText = _betaGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
-            _betaErrorText.text = _defaultErrorText;
+            _betaErrorText = _betaGroup.Find("Text_Error");
 
             _betaButton.onClick.AddListener(PressedBetaHandler);
 
@@ -167,11 +164,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
-                if (e.ToString().Contains("not found"))
-                {
-                    _betaErrorText.text = "Invalid Card Set, Please try Again.";
-                }
+                Debug.LogWarning(e);
                 SetUIState(LoginState.BetaKeyValidationFailed);
             }
         }

@@ -32,6 +32,8 @@ namespace Loom.ZombieBattleground
 
         private DirectoryInfo _dir;
 
+        private List<string> _names;
+
         public DataManager(ConfigData configData)
         {
             FillCacheDataPaths();
@@ -254,6 +256,17 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void ConfirmDeleteDeckReceivedHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
+        }
+
+        private void ShowLoadDataFailMessage(string msg)
+        {
+            _uiManager.HidePopup<LoginPopup>();
+            _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
+        }
+
         private async Task LoadCachedData(Enumerators.CacheDataType type)
         {
             switch (type)
@@ -272,11 +285,10 @@ namespace Loom.ZombieBattleground
                             ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
                             Debug.Log(listCardLibraryResponse.ToString());
                             CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
-
                         }
                         catch(Exception e)
                         {
-                            _uiManager.DrawPopup<WarningPopup>("Issue with Loading Card Library");
+                            ShowLoadDataFailMessage("Issue with Loading Card Library Data");
                             throw;
                         }
                     }
@@ -286,10 +298,11 @@ namespace Loom.ZombieBattleground
                     {
                         ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
                         CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+
                     }
                     catch (Exception e)
                     {
-                        _uiManager.DrawPopup<WarningPopup>("Issue with Loading Heroes Data");
+                        ShowLoadDataFailMessage("Issue with Loading Heroes Data");
                         throw;
                     }
                     break;
@@ -301,7 +314,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception e)
                     {
-                        _uiManager.DrawPopup<WarningPopup>("Issue with Loading Card Collection Data");
+                        ShowLoadDataFailMessage("Issue with Loading Card Collection Data");
                         throw;
                     }
 
@@ -318,7 +331,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception e)
                     {
-                        _uiManager.DrawPopup<WarningPopup>("Issue with Loading Decks Data");
+                        ShowLoadDataFailMessage("Issue with Loading Decks Data");
                         throw;
                     }
 
@@ -337,7 +350,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception e)
                     {
-                        _uiManager.DrawPopup<WarningPopup>("Issue with Loading Opponent AI Decks");
+                        ShowLoadDataFailMessage("Issue with Loading Opponent AI Decks");
                         throw;
                     }
                     break;
