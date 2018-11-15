@@ -295,6 +295,13 @@ namespace Loom.ZombieBattleground
         {
             Dispose();
 
+            if (_draggingObject != null)
+            {
+                Object.Destroy(_draggingObject);
+                _draggingObject = null;
+                _isDragging = false;
+            }
+
             if (_selfPage == null)
                 return;
 
