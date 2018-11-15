@@ -1015,6 +1015,8 @@ public class TestHelper
             target = GetAbilityTarget (card);
         }
 
+        Debug.LogWarning ("Target: " + ((target != null) ? target.Id.ToString () : "Null"));
+
         switch (card.LibraryCard.CardKind)
         {
             case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards (_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
@@ -1925,6 +1927,8 @@ public class TestHelper
     {
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
 
+        RecordActualOverlordName ();
+
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
 
         yield return null;
@@ -2131,7 +2135,7 @@ public class TestHelper
 
         SetupArmyCards ();
 
-        yield return SetDeckTitle ("Kalile Deck");
+        yield return SetDeckTitle ("Kalile");
 
         yield return AddCardToHorde ("Wheezy");
         yield return AddCardToHorde ("Wheezy");
@@ -2435,19 +2439,44 @@ public class TestHelper
 
     #endregion
 
-    private string _expectedOverlordName;
+    private string _expectedOverlordName, _actualOverlordName;
 
-    public void RecordOverlordName ()
+    public void RecordOverlordName (int index)
     {
-        _expectedOverlordName = _dataManager.CachedHeroesData.Heroes[_dataManager.CachedUserLocalData.LastSelectedDeckId].Name;
+        GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
+
+        if (index >= hordesParent.transform.childCount)
+        {
+            Assert.Fail ("Horde index is too high");
+        }
+
+        Transform selectedHordeTransform = hordesParent.transform.GetChild (index);
+        TextMeshProUGUI deckTitle = selectedHordeTransform.Find ("Panel_Description/Text_Description")?.GetComponent<TextMeshProUGUI> ();
+
+        if (deckTitle != null)
+        {
+            _expectedOverlordName = deckTitle.text;
+        }
     }
+
+    public void RecordActualOverlordName ()
+    {
+        _actualOverlordName = GameObject.Find ("Text_PlayerOverlordName")?.GetComponent<TextMeshProUGUI> ()?.text;
+
+        if (_actualOverlordName.Length >= 1)
+            _actualOverlordName = UppercaseFirst (_actualOverlordName);
+    }
+
 
     public void AssertOverlordName ()
     {
-        string actualOverlordName = GameObject.Find ("Text_PlayerOverlordName").GetComponent<TextMeshProUGUI> ().text;
+        Debug.LogFormat ("{0} vs {1}", _expectedOverlordName, _actualOverlordName);
 
-        Debug.LogFormat ("{0} vs {1}", _expectedOverlordName, actualOverlordName);
+        Assert.AreEqual (_expectedOverlordName, _actualOverlordName);
+    }
 
-        Assert.AreEqual (_expectedOverlordName, actualOverlordName);
+    private string UppercaseFirst (string s)
+    {
+        return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s.ToLower());
     }
 }

@@ -114,7 +114,11 @@ public class MultiplayerTests
             "pvpTest"
         });
 
-        _testHelper.RecordOverlordName ();
+        int selectedHordeIndex = 1;
+
+        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -157,6 +161,12 @@ public class MultiplayerTests
             "pvpTest"
         });
 
+        int selectedHordeIndex = 1;
+
+        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
+
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
@@ -164,6 +174,8 @@ public class MultiplayerTests
         _testHelper.InitalizePlayer ();
 
         yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+
+        _testHelper.AssertOverlordName ();
 
         yield return _testHelper.DecideWhichCardsToPick ();
 

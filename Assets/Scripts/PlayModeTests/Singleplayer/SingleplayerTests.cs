@@ -196,6 +196,8 @@ public class SingleplayerTests
 
         yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
 
+        _testHelper.AssertOverlordName ();
+
         yield return _testHelper.DecideWhichCardsToPick ();
 
         yield return _testHelper.WaitUntilOurFirstTurn ();
@@ -393,7 +395,11 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        yield return _testHelper.SelectAHorde (1);
+        int selectedHordeIndex = 1;
+
+        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
