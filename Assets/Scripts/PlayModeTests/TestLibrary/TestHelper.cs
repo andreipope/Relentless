@@ -160,7 +160,14 @@ public class TestHelper
 
     public IEnumerator TearDown_GoBackToMainScreen ()
     {
-        if (IsButtonExist ("Button_Back"))
+        while (lastCheckedPageName != "MainMenuPage")
+        {
+            yield return GoOnePageHigher ();
+
+            yield return LetsThink ();
+        }
+
+        /* if (IsButtonExist ("Button_Back"))
         {
             yield return MainMenuTransition ("Button_Back");
 
@@ -169,6 +176,56 @@ public class TestHelper
             yield return MainMenuTransition ("Button_Back");
 
             yield return AssertCurrentPageName ("MainMenuPage");
+        } */
+
+        yield return null;
+    }
+
+    private IEnumerator GoOnePageHigher ()
+    {
+        yield return new WaitUntil (() =>
+        {
+            if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
+            {
+                return true;
+            }
+
+            return false;
+        });
+        string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
+
+        yield return AssertCurrentPageName (actualPageName);
+
+        switch (actualPageName)
+        {
+            case "GameplayPage":
+                yield return ClickGenericButton ("Button_Settings");
+
+                yield return ClickGenericButton ("Button_QuitToMainMenu");
+
+                yield return RespondToYesNoOverlay (true);
+
+                yield return AssertCurrentPageName ("HordeSelectionPage");
+
+                break;
+            case "HordeSelectionPage":
+                yield return MainMenuTransition ("Button_Back");
+
+                yield return AssertCurrentPageName ("PlaySelectionPage");
+
+                break;
+            case "PlaySelectionPage":
+                yield return MainMenuTransition ("Button_Back");
+
+                yield return AssertCurrentPageName ("MainMenuPage");
+
+                break;
+            case "MainMenuPage":
+                yield break;
+
+                break;
+            default:
+                throw new ArgumentException ("Unhandled page: " + actualPageName);
         }
 
         yield return null;
@@ -365,6 +422,9 @@ public class TestHelper
 
     public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
     {
+        if (expectedPageName == lastCheckedPageName)
+            yield break;
+
         GameObject errorTextObject = null;
         yield return new WaitUntil (() => {
             if (errorTextName.Length >= 1)
@@ -683,6 +743,9 @@ public class TestHelper
     {
         List<BoardUnitModel> unitsOnBoard = new List<BoardUnitModel> ();
         List<BoardUnitModel> alreadyUsedUnits = new List<BoardUnitModel> ();
+
+        if (IsGameEnded ())
+            yield break;
 
         unitsOnBoard.AddRange (GetUnitsOnBoard ());
 

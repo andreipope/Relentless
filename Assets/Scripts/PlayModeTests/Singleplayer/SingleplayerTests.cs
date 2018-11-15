@@ -246,8 +246,6 @@ public class SingleplayerTests
 
         yield return SkipTutorial ();
 
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
         #endregion
     }
 
