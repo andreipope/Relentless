@@ -356,23 +356,39 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string GetGameStateMethod = "GetGameState";
         private const string GetMatchMethod = "GetMatch";
         private const string CheckGameStatusMethod = "CheckGameStatus";
+        private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
+        private const string AcceptMatchMethod = "AcceptMatch";
 
         public PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
-        public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<AcceptMatchResponse> AcceptMatch(string userId)
         {
-            Client.Protobuf.Address requestCustomGameAddress = null;
-            if (customGameModeAddress != null)
+            AcceptMatchRequest request = new AcceptMatchRequest
             {
-                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
-            }
+                UserId = userId
+            };
 
-            FindMatchRequest request = new FindMatchRequest
+            return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
+        }
+
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId) 
+        {
+            RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
                 DeckId = deckId,
-                CustomGame = requestCustomGameAddress,
-                Version = BackendEndpoint.DataVersion
+                Version = BackendEndpoint.DataVersion,
+                RandomSeed = (long)Time.time
+            };
+
+            return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
+        }
+
+        public async Task<FindMatchResponse> FindMatch(string userId)
+        {
+            FindMatchRequest request = new FindMatchRequest
+            {
+                UserId = userId,
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);

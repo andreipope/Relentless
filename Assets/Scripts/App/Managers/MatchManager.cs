@@ -71,31 +71,21 @@ namespace Loom.ZombieBattleground
                                 _onPvPManagerGameStartedActionHandlerCounter--;
                                 Debug.Log("Unsubscribing on PVP, OnPvPManagerGameStartedActionReceived.");
                             }
-                            _uiManager.DrawPopup<ConnectionPopup>();
 
-                            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-                            connectionPopup.ShowLookingForMatch();
-                            connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
+                            _uiManager.DrawPopup<MatchMakingPopup>();
 
-                            bool success = await _pvpManager.FindMatch();
-                            if (!success)
-                                return;
+                            MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+                            await matchMakingPopup.InitiateRegisterPlayerToPool(_uiManager.GetPage<GameplayPage>().CurrentDeckId);
+                            matchMakingPopup.CancelMatchmakingClicked += MatchMakingPopupOnCancelMatchmakingClicked;
 
-                            if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
-                            {
-                                StartPvPMatch();
-                            }
-                            else
-                            {
-                                _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
-                                _onPvPManagerGameStartedActionHandlerCounter++;
-                            }
+                             //   _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
+                             //   _onPvPManagerGameStartedActionHandlerCounter++;
                         }
                         catch (Exception e) {
                             Debug.LogWarning(e);
-                            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-                            connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
-                            connectionPopup.Hide();
+                            MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+                            matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
+                            matchMakingPopup.Hide();
                             _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
                         }
                     }
@@ -108,6 +98,7 @@ namespace Loom.ZombieBattleground
 
         public async void DebugFindPvPMatch(Deck deck)
         {
+            /*
             try
             {
                 _uiManager.DrawPopup<ConnectionPopup>();
@@ -134,23 +125,24 @@ namespace Loom.ZombieBattleground
                 _uiManager.GetPopup<ConnectionPopup>().Hide();
                 _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
             }
+            */
         }
 
-        private async void ConnectionPopupOnCancelMatchmakingClicked()
+        private async void MatchMakingPopupOnCancelMatchmakingClicked()
         {
             try
             {
                 _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
                 _onPvPManagerGameStartedActionHandlerCounter--;
-                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-                connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
-                connectionPopup.Hide();
+                MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+                matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
+                matchMakingPopup.Hide();
                 await _pvpManager.CancelFindMatch();
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
-                _uiManager.GetPopup<ConnectionPopup>().Hide();
+                _uiManager.GetPopup<MatchMakingPopup>().Hide();
                 _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
             }
         }

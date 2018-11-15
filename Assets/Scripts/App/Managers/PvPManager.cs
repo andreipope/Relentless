@@ -151,9 +151,7 @@ namespace Loom.ZombieBattleground
 
                 FindMatchResponse findMatchResponse =
                     await _backendFacade.FindMatch(
-                        _backendDataControlMediator.UserDataModel.UserId,
-                        _uiManager.GetPage<GameplayPage>().CurrentDeckId,
-                        CustomGameModeAddress
+                        _backendDataControlMediator.UserDataModel.UserId
                     );
                 Debug.LogWarning("FindMatchResponse:\n" + findMatchResponse);
                 matchId = findMatchResponse.Match.Id;
