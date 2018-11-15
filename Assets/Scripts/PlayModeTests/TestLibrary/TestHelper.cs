@@ -1025,73 +1025,7 @@ public class TestHelper
                     _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
                         PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                         _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-
-                        if (target != null)
-                        {
-                            foreach (AbilitiesController.ActiveAbility activeAbility in _abilitiesController.ActiveAbilities)
-                            {
-                                activeAbility.Ability.Dispose ();
-                            }
-
-                            /* switch (target)
-                            {
-                                case BoardUnitModel unit:
-                                    _abilitiesController.CurrentPlayerActiveAbility.Ability.TargetUnit = unit;
-
-                                    break;
-                                case Loom.ZombieBattleground.Player player:
-                                    _abilitiesController.CurrentPlayerActiveAbility.Ability.TargetPlayer = player;
-
-                                    break;
-                                case null:
-
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException (nameof (target), target, null);
-                            }
-
-                            _abilitiesController.CurrentPlayerActiveAbility.Ability.SelectedTargetAction (true); */
-                        }
-                    });
-
-                    /* if (target != null)
-                    {
-                        WorkingCard workingCard = boardCard.WorkingCard;
-
-                        BoardUnitView boardUnitViewElement = new BoardUnitView (new BoardUnitModel (), _testBroker.GetPlayerBoardGameObject (_player).transform);
-                        boardUnitViewElement.Model.OwnerPlayer = card.Owner;
-                        boardUnitViewElement.SetObjectInfo (workingCard);
-
-                        GameObject boardUnit = boardUnitViewElement.GameObject;
-                        boardUnit.tag = _testBroker.GetSRTags (_player);
-                        boardUnit.transform.position = Vector3.zero;
-
-                        bool createTargetArrow = false;
-                        if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
-                        {
-                            createTargetArrow =
-                                _abilitiesController.IsAbilityCanActivateTargetAtStart (
-                                    card.LibraryCard.Abilities[0]);
-                        }
-
-                        _abilitiesController.CallAbility (
-                            card.LibraryCard,
-                            null,
-                            workingCard,
-                            Enumerators.CardKind.CREATURE,
-                            boardUnitViewElement.Model,
-                            null,
-                            false,
-                            null,
-                            null,
-                            target);
-
-                        /* Action callback = () => {
-                            _abilitiesController.CallAbility (card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, _callAbilityAction, target);
-                        };
-
-                        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (boardUnit.transform, target, action: callback); */
-                    // }
+                    }, target);
                 }
                 else
                 {
@@ -1745,27 +1679,29 @@ public class TestHelper
         {
             skill.StartDoSkill ();
 
-            switch (selectedTargetType)
-            {
-                case Enumerators.AffectObjectType.Player:
-                    skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player) overrideTarget;
+            Action overrideCallback = () => {
+                switch (selectedTargetType)
+                {
+                    case Enumerators.AffectObjectType.Player:
+                        skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player) overrideTarget;
 
-                    Debug.Log ("Board skill: Player");
+                        Debug.Log ("Board skill: Player");
 
-                    break;
-                case Enumerators.AffectObjectType.Character:
-                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel)overrideTarget);
-                    skill.FightTargetingArrow.SelectedCard = selectedCardView;
+                        break;
+                    case Enumerators.AffectObjectType.Character:
+                        BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) overrideTarget);
+                        skill.FightTargetingArrow.SelectedCard = selectedCardView;
 
-                    Debug.Log ("Board skill: Character");
+                        Debug.Log ("Board skill: Character");
 
-                    break;
-            }
+                        break;
+                }
 
-            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, overrideTarget);
+                // _skillsController.DoSkillAction (skill, null, overrideTarget);
+                skill.EndDoSkill ();
+            };
 
-            _skillsController.DoSkillAction (skill, null, overrideTarget);
-            skill.EndDoSkill ();
+            skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, overrideTarget, action: overrideCallback);
 
             return;
         }
@@ -1916,42 +1852,44 @@ public class TestHelper
 
         skill.StartDoSkill ();
 
-        switch (selectedObjectType)
-        {
-            case Enumerators.AffectObjectType.Player:
-                skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player)target;
+        Action callback = () => {
+            switch (selectedObjectType)
+            {
+                case Enumerators.AffectObjectType.Player:
+                    Debug.Log ("Board skill: Player");
 
-                Debug.Log ("Board skill: Player");
+                    skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player)target;
 
-                break;
-            case Enumerators.AffectObjectType.Character:
-                BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel)target);
-                skill.FightTargetingArrow.SelectedCard = selectedCardView;
+                    break;
+                case Enumerators.AffectObjectType.Character:
+                    Debug.Log ("Board skill: Character");
 
-                Debug.Log ("Board skill: Character");
+                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel)target);
+                    skill.FightTargetingArrow.SelectedCard = selectedCardView;
 
-                break;
-            case Enumerators.AffectObjectType.None:
-                Debug.Log ("Board skill: None");
+                    break;
+                case Enumerators.AffectObjectType.None:
+                    Debug.Log ("Board skill: None");
 
-                break;
-            default:
-                throw new ArgumentOutOfRangeException (nameof (selectedObjectType), selectedObjectType, null);
-        }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException (nameof (selectedObjectType), selectedObjectType, null);
+            }
 
-        // _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target);
+            // todo fix this
+            /* if (overrideTarget != null)
+            {
+                _skillsController.DoSkillAction (skill, null, overrideTarget);
+            }
+            else
+            {
+                _skillsController.DoSkillAction (skill, null, target);
+            } */
 
-        // todo fix this
-        if (overrideTarget != null)
-        {
-            _skillsController.DoSkillAction (skill, null, overrideTarget);
-        }
-        else
-        {
-            _skillsController.DoSkillAction (skill, null, target);
-        }
+            skill.EndDoSkill ();
+        };
 
-        skill.EndDoSkill ();
+        skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target, action: callback);
 
         /* Action callback = () => {
             switch (selectedObjectType)
@@ -2497,20 +2435,19 @@ public class TestHelper
 
     #endregion
 
-    private string _overlordName;
+    private string _expectedOverlordName;
 
     public void RecordOverlordName ()
     {
-        // implement this
+        _expectedOverlordName = _dataManager.CachedHeroesData.Heroes[_dataManager.CachedUserLocalData.LastSelectedDeckId].Name;
     }
 
     public void AssertOverlordName ()
     {
-        string overlordName = ""; // implement this
+        string actualOverlordName = GameObject.Find ("Text_PlayerOverlordName").GetComponent<TextMeshProUGUI> ().text;
 
-        if (_overlordName != overlordName)
-        {
-            Assert.Fail ("Overlord in the game is different than the one selected.");
-        }
+        Debug.LogFormat ("{0} vs {1}", _expectedOverlordName, actualOverlordName);
+
+        Assert.AreEqual (_expectedOverlordName, actualOverlordName);
     }
 }

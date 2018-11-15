@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 public class MultiplayerTests
@@ -95,7 +96,7 @@ public class MultiplayerTests
     [Timeout (500000)]
     public IEnumerator Test3_MatchmakeAndQuit ()
     {
-        _testHelper.SetTestName ("Tutorial - Matchmaking And Cancel");
+        _testHelper.SetTestName ("Tutorial - Matchmaking And Quit");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 

@@ -378,6 +378,37 @@ public class SingleplayerTests
     }
 
     [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test8_PlayWithAnAbilityHorde ()
+    {
+        _testHelper.SetTestName ("Solo - Gameplay");
+
+        #region Solo Gameplay
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.SelectAHorde (1);
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        yield return SoloGameplay ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        #endregion
+    }
+
+    [UnityTest]
     public IEnumerator TestN_Cleanup ()
     {
         // Nothing, just to ascertain cleanup
