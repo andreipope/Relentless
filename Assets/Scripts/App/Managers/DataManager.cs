@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
         private DirectoryInfo _dir;
 
-        private bool _isBuildVersionMatch = false;
+        private List<string> _names;
 
         public DataManager(ConfigData configData)
         {
@@ -101,7 +101,6 @@ namespace Loom.ZombieBattleground
             CachedUserLocalData.Tutorial = false;
 #endif
 
-            GameClient.Get<ISoundManager>().ApplySoundData();
             GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
@@ -178,6 +177,10 @@ namespace Loom.ZombieBattleground
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
+            LoadLocalCachedData();
+
+            GameClient.Get<ISoundManager>().ApplySoundData();
+
             CheckVersion();
         }
 
@@ -220,71 +223,48 @@ namespace Loom.ZombieBattleground
         private void CheckVersion()
         {
             FileInfo[] files = _dir.GetFiles();
-
-            FileInfo versionFile = null;
+            bool versionMatch = false;
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains(Constants.VersionFileResolution))
+                if (file.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
                 {
-                    versionFile = file;
+                    versionMatch = true;
                     break;
                 }
             }
 
-            if (versionFile != null)
+            if (!versionMatch)
             {
-                if (versionFile.Name == BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution)
-                {
-                    _isBuildVersionMatch = true;
-                }
-            }
-            else
-            {
-                using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
-                {
-                    _isBuildVersionMatch = true;
-                }
-            }
-
-
-            if (!_isBuildVersionMatch)
-            {
-                DeleteData();
-
-                Action[] actions = new Action[2];
-                actions[0] = () =>
-                {
-                    string url = GetPlatformSpecificGameLink();
-
-                    if (!string.IsNullOrEmpty(url))
-                    {
-                        Application.OpenURL(url);
-                    }
-                };
-                actions[1] = () =>
-                {
-                    Application.Quit();
-                };
-
-                _uiManager.DrawPopup<UpdatePopup>(actions);
+                DeleteVersionFile();
             }
         }
 
-        private string GetPlatformSpecificGameLink()
+        private void DeleteVersionFile()
         {
-            string gameLink = string.Empty;
+            FileInfo[] files = _dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                if (file.Name.Contains(Constants.VersionFileResolution))
+                {
+                    file.Delete();
+                    break;
+                }
+            }
 
-            #if UNITY_ANDROID
-            gameLink = Constants.GameLinkForAndroid;
-            #elif UNITY_IOS
-            gameLink = Constants.GameLinkForIOS;
-            #elif UNITY_STANDALONE_WIN
-            gameLink = Constants.GameLinkForWindows;
-            #elif UNITY_STANDALONE_OSX
-            gameLink = Constants.GameLinkForOSX;
-            #endif
+            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
+            {
+            }
+        }
 
-            return gameLink;
+        private void ConfirmDeleteDeckReceivedHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
+        }
+
+        private void ShowLoadDataFailMessage(string msg)
+        {
+            _uiManager.HidePopup<LoginPopup>();
+            _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
         }
 
         private async Task LoadCachedData(Enumerators.CacheDataType type)
@@ -300,47 +280,95 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-                        Debug.Log(listCardLibraryResponse.ToString());
-                        CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
+                        try
+                        {
+                            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
+                            Debug.Log(listCardLibraryResponse.ToString());
+                            CachedCardsLibraryData = listCardLibraryResponse.FromProtobuf();
+                        }
+                        catch(Exception e)
+                        {
+                            ShowLoadDataFailMessage("Issue with Loading Card Library Data");
+                            throw;
+                        }
                     }
-
                     break;
                 case Enumerators.CacheDataType.HEROES_DATA:
-                    ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
-
-                    break;
-                case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    string userLocalDataFilePath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
-                    if (File.Exists(userLocalDataFilePath))
+                    try
                     {
-                        CachedUserLocalData = DeserializeObjectFromPersistentData<UserLocalData>(userLocalDataFilePath);
+                        ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Heroes Data");
+                        throw;
                     }
                     break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
-                    GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedCollectionData = getCollectionResponse.FromProtobuf();
+                    try
+                    {
+                        GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedCollectionData = getCollectionResponse.FromProtobuf();
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Card Collection Data");
+                        throw;
+                    }
+
                     break;
                 case Enumerators.CacheDataType.DECKS_DATA:
-                    ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                    CachedDecksData = new DecksData();
-                    CachedDecksData.Decks =
-                        listDecksResponse.Decks
-                            .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
-                            .ToList();
+                    try
+                    {
+                        ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedDecksData = new DecksData();
+                        CachedDecksData.Decks =
+                            listDecksResponse.Decks
+                                .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                                .ToList();
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Decks Data");
+                        throw;
+                    }
+
                     break;
                 case Enumerators.CacheDataType.DECKS_OPPONENT_DATA:
-                    CachedOpponentDecksData = DeserializeObjectFromAssets<OpponentDecksData>(_cacheDataFileNames[type]);
-
+                try
+                {
+                    GetAIDecksResponse decksAIResponse = await _backendFacade.GetAIDecks();
+                    CachedOpponentDecksData = new OpponentDecksData();
+                    CachedOpponentDecksData.Decks =
+                    decksAIResponse.Decks
+                    .Select(d => JsonConvert.DeserializeObject<Data.Deck>(d.ToString()))
+                    .ToList();
+                }
+                catch (Exception e)
+                {
+                    ShowLoadDataFailMessage("Issue with Loading Opponent AI Decks");
+                    throw;
+                }
                     break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
                     CachedCreditsData = DeserializeObjectFromAssets<CreditsData>(_cacheDataFileNames[type]);
                     break;
                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
                     CachedBuffsTooltipData = DeserializeObjectFromAssets<TooltipContentData>(_cacheDataFileNames[type]);
-
                     break;
+                default:
+                    break;
+            }
+        }
+
+        private void LoadLocalCachedData()
+        {
+            string userLocalDataFilePath = GetPersistentDataItemPath(_cacheDataFileNames[Enumerators.CacheDataType.USER_LOCAL_DATA]);
+            if (File.Exists(userLocalDataFilePath))
+            {
+                CachedUserLocalData = DeserializeObjectFromPersistentData<UserLocalData>(userLocalDataFilePath);
             }
         }
 
@@ -389,11 +417,6 @@ namespace Loom.ZombieBattleground
                 return data;
 
             return Utilites.Encrypt(data, Constants.PrivateEncryptionKeyForApp);
-        }
-
-        public bool IsBuildVersionMatch()
-        {
-            return _isBuildVersionMatch;
         }
 
         private T DeserializeObjectFromAssets<T>(string fileName)

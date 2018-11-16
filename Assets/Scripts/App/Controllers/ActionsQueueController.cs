@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
         /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
-        public void AddNewActionInToQueue(
+        public GameAction<object> AddNewActionInToQueue(
             Action<object, Action> actionToDo, object parameter = null)
         {
             GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter);
@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
             {
                 TryCallNewActionFromQueue();
             }
+
+            return gameAction;
         }
 
         public void StopAllActions()
@@ -124,6 +126,11 @@ namespace Loom.ZombieBattleground
                     ActionDoneCallback();
                 }
             }
+        }
+
+        public void ForceActionDone()
+        {
+            ActionDoneCallback();
         }
 
         private void ActionDoneCallback()

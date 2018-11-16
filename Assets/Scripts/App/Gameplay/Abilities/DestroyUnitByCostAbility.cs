@@ -6,12 +6,12 @@ namespace Loom.ZombieBattleground
 {
     public class DestroyUnitByCostAbility : AbilityBase
     {
-        public int Value { get; }
+        public int Cost { get; }
 
         public DestroyUnitByCostAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Cost = ability.Cost;
         }
 
         public override void Activate()
@@ -38,9 +38,23 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetUnit != null && TargetUnit.Card.RealCost <= Value)
+            if (TargetUnit != null && TargetUnit.Card.RealCost <= Cost)
             {
                 BattlegroundController.DestroyBoardUnit(TargetUnit);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                            Target = TargetUnit
+                        }
+                    }
+                });
             }
         }
     }

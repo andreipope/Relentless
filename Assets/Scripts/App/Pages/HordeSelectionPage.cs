@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
 
             _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/SelectionMask/Selection");
 
-            _battleButtonGlow = _selfPage.transform.Find("Button_Battle/BattleButtonGlowing").gameObject;
+            _battleButtonGlow = _selfPage.transform.Find("Button_Battle/Pulse").gameObject;
 
             // new horde deck object
             _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;

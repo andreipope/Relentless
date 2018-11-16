@@ -39,7 +39,9 @@ namespace Loom.ZombieBattleground.Common
             STUN_OR_DAMAGE_FREEZES,
             TARGET_ADJUSTMENTS_AIR,
             HEAL_DIRECTLY,
-            HEAL
+            HEAL,
+            SWING_LIGHTNING,
+            CHANGE_STAT_FRESH_MEAT
         }
 
         public enum AbilityTargetType
@@ -136,6 +138,12 @@ namespace Loom.ZombieBattleground.Common
             DELAYED_PLACE_COPIES_IN_PLAY_DESTROY_UNIT,
             ADJACENT_UNITS_GET_STAT,
             EXTRA_GOO_IF_UNIT_IN_PLAY,
+            DESTROY_UNITS,
+            DEAL_DAMAGE_TO_UNIT_AND_SWING,
+            SET_ATTACK_AVAILABILITY,
+            CHOOSABLE_ABILITIES,
+            COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
+            GAIN_GOO
         }
 
         public enum ActionType
@@ -216,8 +224,7 @@ namespace Loom.ZombieBattleground.Common
             DAMAGE,
             HEAL_ALLY,
             DESTROY,
-            REANIMATE,
-            KILL_UNIT
+            REANIMATE
         }
 
         public enum CacheDataType
@@ -386,6 +393,7 @@ namespace Loom.ZombieBattleground.Common
            // OTHER,
             BACKGROUND,
             BATTLEGROUND,
+            BATTLEGROUND_TOUCH_EFFECT,
             TUTORIAL,
             CARDS,
             END_TURN,
@@ -397,9 +405,14 @@ namespace Loom.ZombieBattleground.Common
             FERAL_ATTACK,
             HEAVY_ATTACK_1,
             HEAVY_ATTACK_2,
-            WALKER_ATTACK_1,
-            WALKER_ATTACK_2,
+            WALKER_ATTACK,
             HERO_DEATH,
+            HERO_DEATH_AIR,
+            HERO_DEATH_EARTH,
+            HERO_DEATH_FIRE,
+            HERO_DEATH_TOXIC,
+            HERO_DEATH_WATER,
+            HERO_DEATH_LIFE,
             LOGO_APPEAR,
             CARD_BATTLEGROUND_TO_TRASH,
             CARD_DECK_TO_HAND_MULTIPLE,
@@ -417,7 +430,13 @@ namespace Loom.ZombieBattleground.Common
             SHUTTERS_OPEN,
             GOO_OVERFLOW_FADE_IN,
             GOO_OVERFLOW_FADE_LOOP,
-            GOO_OVERFLOW_FADE_OUT
+            GOO_OVERFLOW_FADE_OUT,
+            GOO_TUBE_LOOP,
+            GOO_BOTTLE_FILLING,
+            PREPARING_FOR_BATTLE,
+            PREPARING_FOR_BATTLE_LOOP,
+            DISTRACT_LOOP,
+            RAGE_LOOP
         }
 
         public enum StatType
@@ -522,7 +541,9 @@ namespace Loom.ZombieBattleground.Common
         public enum VisualEffectType
         {
             Impact,
-            Moving
+            Moving,
+            Impact_Heavy,
+            Impact_Feral
         }
 
         public enum ShutterState
@@ -561,9 +582,46 @@ namespace Loom.ZombieBattleground.Common
             AllAllyUnitsInPlay,
             RandomUnit,
             AllEnemyUnitsInPlay,
-            AllAllyUhitsByFactionInPlay,
+            AllAllyUnitsByFactionInPlay,
             ForEachFactionOfUnitInHand,
             IfHasUnitsWithFactionInPlay,
+            AllyUnitsByFactionThatCost,
+            YourOverlord
+        }
+
+        public enum UniqueAnimationType
+        {
+            None,
+            ShammannArrival,
+        }
+
+        public enum EffectOnUnitType
+        {
+            Attack,
+            Death,
+            DelayedX,
+            Destroy,
+            Devour,
+            Distract,
+            End,
+            Entry,
+            Feral,
+            Flash,
+            Freeze,
+            Guard,
+            Heavy,
+            OverflowX,
+            RageX,
+            Reanimate,
+            Shatter,
+            SwingX,
+            Turn,
+
+            GotDamage,
+            AtDefense,
+            InHand,
+            KillUnit,
+            Permanent,
         }
     }
 }
