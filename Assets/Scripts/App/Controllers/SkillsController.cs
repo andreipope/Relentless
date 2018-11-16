@@ -696,7 +696,8 @@ namespace Loom.ZombieBattleground
                 GameObject particle = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/LevitateVFX"));
                 particle.transform.position = boardCard.Transform.position;
                 particle.transform.SetParent(boardCard.Transform, true);
-                _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(particle, true, 5f);
+                particle.transform.localEulerAngles = Vector3.zero;
+                _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(particle, true, 6f);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
