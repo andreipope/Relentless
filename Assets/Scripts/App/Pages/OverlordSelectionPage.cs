@@ -306,11 +306,11 @@ namespace Loom.ZombieBattleground
 
                 _overlordPictureSprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseOverlord/portrait_" +
-                        SelfHero.Element.ToLower() + "_hero");
+                        SelfHero.Element.ToLowerInvariant() + "_hero");
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
                 _elementIconSprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" +
-                        SelfHero.Element.ToLower());
+                        SelfHero.Element.ToLowerInvariant());
 
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
 

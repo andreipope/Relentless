@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                return (T)Enum.Parse(typeof(T), data.ToUpper());
+                return (T)Enum.Parse(typeof(T), data.ToUpperInvariant());
             }
         }
 
@@ -82,7 +82,27 @@ namespace Loom.ZombieBattleground
         {
             if (String.IsNullOrEmpty(input))
                 throw new ArgumentException("input cannot be empty!");
-            return input.First().ToString().ToUpper() + input.Substring(1).ToLower();
+            return input.First().ToString().ToUpperInvariant() + input.Substring(1).ToLowerInvariant();
+        }
+
+        public static int GetIntValueFromPlayerPrefs(string key)
+        {
+            return PlayerPrefs.GetInt(key, 0);
+        }
+
+        public static void SetIntValueInPlayerPrefs(string key, int value)
+        {
+            PlayerPrefs.SetInt(key, value);
+        }
+
+        public static string GetStringFromPlayerPrefs(string key)
+        {
+            return PlayerPrefs.GetString(key, string.Empty);
+        }
+
+        public static void SetStringInPlayerPrefs(string key, string value)
+        {
+            PlayerPrefs.SetString(key, value);
         }
 
         #region asset bundles and cache

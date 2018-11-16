@@ -81,14 +81,24 @@ namespace Loom.ZombieBattleground.BackendCommunication
             LoadUserDataModel();
             Debug.Log("User Id: " + UserDataModel.UserId);
 
+            /** Remove because of autogeneration betakey
+             * 
             await _dataManager.LoadRemoteConfig();
             Debug.Log(
                 $"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
 #if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !USE_LOCAL_BACKEND && !FORCE_DISABLE_VERSION_CHECK
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion)) 
-                throw new GameVersionMismatchException(BuildMetaInfo.Instance.Version.ToString(), _dataManager.BetaConfig.LatestVersion.ToString());
+                throw new GameVersionMismatchException(
+                    BuildMetaInfo.Instance.Version.ToString(),
+                    _dataManager.BetaConfig.LatestVersion.ToString()
+                 );
+#elif UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion))
+            {
+                Debug.LogWarning("Remote and local versions mismatch!");
+            }
 #endif
-
+*/
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
             try
