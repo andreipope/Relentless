@@ -138,6 +138,20 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
+        internal const float PvPWaitForTurnMaxTime = 150;
+
         internal const float TimeForStartEndTurnAnimation = 15;
+
+        internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;
+
+        internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
+        internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
+
+        internal const string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
+        internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
+        internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
+        internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
+        
+
     }
 }

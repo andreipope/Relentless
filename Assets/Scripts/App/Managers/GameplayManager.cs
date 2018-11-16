@@ -78,8 +78,6 @@ namespace Loom.ZombieBattleground
         {
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer(CurrentPlayer.BoardCards);
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
@@ -242,7 +240,8 @@ namespace Loom.ZombieBattleground
                 new SkillsController(),
                 new RanksController(),
                 new InputController(),
-                new OpponentController()
+                new OpponentController(),
+                new UniqueAnimationsController()
             };
 
             foreach (IController controller in _controllers)
@@ -319,7 +318,7 @@ namespace Loom.ZombieBattleground
                                 .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, OpponentPlayer))
                                 .ToList();
 
-                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand);
+                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
