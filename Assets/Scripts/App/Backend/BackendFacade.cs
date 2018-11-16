@@ -305,20 +305,40 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string GetGameStateMethod = "GetGameState";
         private const string GetMatchMethod = "GetMatch";
         private const string CheckGameStatusMethod = "CheckGameStatus";
+        private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
+        private const string AcceptMatchMethod = "AcceptMatch";
 
         public PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
-        public async Task<FindMatchResponse> FindMatch(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<AcceptMatchResponse> AcceptMatch(string userId, long matchId)
         {
-            Client.Protobuf.Address requestCustomGameAddress = null;
-            if (customGameModeAddress != null)
-            {
-                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
-            }
-
-            FindMatchRequest request = new FindMatchRequest
+            AcceptMatchRequest request = new AcceptMatchRequest
             {
                 UserId = userId,
+                MatchId = matchId
+            };
+
+            return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
+        }
+
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId) 
+        {
+            RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
+            {
+                UserId = userId,
+                DeckId = deckId,
+                Version = BackendEndpoint.DataVersion,
+                RandomSeed = (long)Time.time
+            };
+
+            return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
+        }
+
+        public async Task<FindMatchResponse> FindMatch(string userId)
+        {
+            FindMatchRequest request = new FindMatchRequest
+            {
+                UserId = userId
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
@@ -349,6 +369,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 UserId = userId,
                 MatchId = matchId
+            };
+
+            return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
+        }
+
+        public async Task<CancelFindMatchResponse> CancelFindMatchRelatedToUserId(string userId)
+        {
+            CancelFindMatchRequest request = new CancelFindMatchRequest
+            {
+                UserId = userId
             };
 
             return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
