@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
     {
         const int WaitingTime = 5;
 
+        const string PlayerIsAlreadyInAMatch = "Player is already in a match";
+
         public event Action CancelMatchmakingClicked;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -100,6 +102,28 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private async void ErrorHandler (Exception exception) {
+            Debug.LogWarning(exception.Message);
+
+            if (exception.Message.Contains(PlayerIsAlreadyInAMatch)) 
+            {
+                try
+                {
+                    CancelFindMatchResponse result = await _backendFacade.CancelFindMatchRelatedToUserId(
+                        _backendDataControlMediator.UserDataModel.UserId
+                    );
+
+                    Debug.LogWarning(JsonUtility.ToJson(result));
+
+                    await InitiateRegisterPlayerToPool(GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId);
+                }
+                catch (Exception e)
+                {
+                    ErrorHandler(e);
+                }
+            }
+        }
+
         private void PressedCancelMatchmakingHandler()
         {
             CancelMatchmakingClicked?.Invoke();
@@ -120,7 +144,7 @@ namespace Loom.ZombieBattleground
             } 
             catch (Exception e) 
             {
-                Debug.LogWarning(e.Message);
+                ErrorHandler(e);
             }
         }
 
@@ -164,7 +188,7 @@ namespace Loom.ZombieBattleground
                 }
             }
             catch (Exception e) {
-                Debug.LogWarning(e.Message);
+                ErrorHandler(e);
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
             }
         }
@@ -227,38 +251,28 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e.Message);
+                ErrorHandler(e);
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
             }
         }
 
         private async Task InitiateAcceptingMatch (long matchId) {
-            AcceptMatchResponse result = await _backendFacade.AcceptMatch(
-                _backendDataControlMediator.UserDataModel.UserId,
-                matchId
-            );
-
-            Debug.LogWarning(JsonUtility.ToJson(result));
-
-            bool hasAccepted = false;
-            for (int i = 0; i < result.Match.PlayerStates.Count; i++)
+            try
             {
-                if (result.Match.PlayerStates[i].Id == _backendDataControlMediator.UserDataModel.UserId)
-                {
-                    if (!result.Match.PlayerStates[i].MatchAccepted)
-                    {
-                        hasAccepted = true;
-                    }
-                }
-            }
 
-            if (hasAccepted) 
-            {
+                AcceptMatchResponse result = await _backendFacade.AcceptMatch(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    matchId
+                );
+
+                Debug.LogWarning(JsonUtility.ToJson(result));
+
                 SetUIStateAsync(MatchMakingState.WaitingForOpponent);
                 await _backendFacade.SubscribeEvent(result.Match.Topics.ToList());
             }
-            else
+            catch (Exception e)
             {
+                ErrorHandler(e);
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
             }
         }

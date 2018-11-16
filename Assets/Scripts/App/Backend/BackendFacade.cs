@@ -374,6 +374,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
         }
 
+        public async Task<CancelFindMatchResponse> CancelFindMatchRelatedToUserId(string userId)
+        {
+            CancelFindMatchRequest request = new CancelFindMatchRequest
+            {
+                UserId = userId
+            };
+
+            return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
+        }
+
         public async Task<GetGameStateResponse> GetGameState(long matchId)
         {
             GetGameStateRequest request = new GetGameStateRequest
