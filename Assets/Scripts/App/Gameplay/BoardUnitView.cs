@@ -158,15 +158,15 @@ namespace Loom.ZombieBattleground
 
         public void SetObjectInfo(WorkingCard card)
         {
-            Model.EffectsOnUnitChanged += BoardUnitEffectsOnUnitChanged;
+            Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
             Model.SetObjectInfo(card);
 
-            string setName = _cardsController.GetSetOfCard(card.LibraryCard);
+            Enumerators.SetType setType = _cardsController.GetSetOfCard(card.LibraryCard);
             string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
             string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
 
@@ -380,9 +380,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void BoardUnitEffectsOnUnitChanged()
+        private void BoardUnitGameMechanicDescriptionsOnUnitChanged()
         {
-            if (Model.EffectsOnUnit.Count == 0)
+            if (Model.GameMechanicDescriptionsOnUnit.Count == 0)
             {
                 if (_cardMechanicsPicture.sprite != null)
                 {
@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground
             Model.CreaturePlayableForceSet -= BoardUnitOnCreaturePlayableForceSet;
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
             Model.UnitDistractEffectStateChanged -= BoardUnitDistractEffectStateChanged;
-            Model.EffectsOnUnitChanged -= BoardUnitEffectsOnUnitChanged;
+            Model.GameMechanicDescriptionsOnUnitChanged -= BoardUnitGameMechanicDescriptionsOnUnitChanged;
         }
 
         public void PlayArrivalAnimation(bool firstAppear = true)
@@ -489,7 +489,7 @@ namespace Loom.ZombieBattleground
                 if (Model.Card.LibraryCard.Name.Equals("Freezzee"))
                 {
                     List<BoardUnitView> freezzees = Model.GetEnemyUnitsList(Model)
-                    .FindAll(x => x.Model.Card.LibraryCard.Id == Model.Card.LibraryCard.Id);
+                    .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
 
                     if (freezzees.Count > 0)
                     {
@@ -704,7 +704,7 @@ namespace Loom.ZombieBattleground
                 _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
                 _fightTargetingArrow.Owner = this;
 
-                if (Model.AttackInfoType == Enumerators.AttackInfoType.ONLY_DIFFERENT)
+                if (Model.AttackRestriction == Enumerators.AttackRestriction.ONLY_DIFFERENT)
                 {
                     _fightTargetingArrow.IgnoreBoardObjectsList = Model.AttackedBoardObjectsThisTurn;
                 }
@@ -864,7 +864,7 @@ namespace Loom.ZombieBattleground
 
         private void DrawCardMechanicIcons()
         {
-            if (Model.EffectsOnUnit.Count == 1)
+            if (Model.GameMechanicDescriptionsOnUnit.Count == 1)
             {
                 _currentEffectIndexCrossfading = 0;
                 _crossfadingEffectsOnUnit = false;
@@ -877,13 +877,13 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ChangeCardMechanicIcon(Model.EffectsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
+            ChangeCardMechanicIcon(Model.GameMechanicDescriptionsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
 
-            if (Model.EffectsOnUnit.Count > 1)
+            if (Model.GameMechanicDescriptionsOnUnit.Count > 1)
             {
                 _currentEffectIndexCrossfading++;
 
-                if (_currentEffectIndexCrossfading >= Model.EffectsOnUnit.Count)
+                if (_currentEffectIndexCrossfading >= Model.GameMechanicDescriptionsOnUnit.Count)
                 {
                     _currentEffectIndexCrossfading = 0;
                 }

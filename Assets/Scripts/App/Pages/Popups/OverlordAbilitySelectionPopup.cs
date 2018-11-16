@@ -140,7 +140,7 @@ namespace Loom.ZombieBattleground
         private void FillInfo(Hero heroData)
         {
             _heroImage.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLowerInvariant());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.HeroElement.ToString().ToLowerInvariant());
             _heroImage.SetNativeSize();
 
             for (int i = 0; i < AbilityListSize; i++)
@@ -160,8 +160,8 @@ namespace Loom.ZombieBattleground
         {
             _skillName.text = ability.Skill.Title;
             _skillDescription.text = ability.Skill.Description;
-            int index = _selectedHero.Skills.IndexOf(ability.Skill);
-            _selectedHero.PrimarySkill = index;
+            //int index = _selectedHero.Skills.IndexOf(ability.Skill);
+            //_selectedHero.PrimarySkill = index;
         }
 
         private class AbilityInstance : IDisposable

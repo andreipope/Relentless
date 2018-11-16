@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
 
         private async void LoginProcess()
         {
-            string betaKey = SystemInfo.deviceUniqueIdentifier;
+            string betaKey = "000000000002";//SystemInfo.deviceUniqueIdentifier;
 
             // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
             SetUIState(LoginState.BetaKeyValidateAndLogin);

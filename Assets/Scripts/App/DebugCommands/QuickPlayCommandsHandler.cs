@@ -32,7 +32,7 @@ static class QuickPlayCommandsHandler
 
         int opponentDeckId = _gameplayManager.OpponentDeckId;
 
-        string opponentDeckName = _dataManager.CachedOpponentDecksData.Decks.First(deck => deck.Id == opponentDeckId).Name;
+        string opponentDeckName = _dataManager.CachedAiDecksData.Decks.First(deck => deck.Deck.Id == opponentDeckId).Deck.Name;
 
         Debug.Log($"(1). Player Horde : {playerDeckName}\n"+
                   $"(2). Enemy AI Horde : {opponentDeckName}\n" +
@@ -76,13 +76,13 @@ static class QuickPlayCommandsHandler
     [CommandHandler(Description = "Set which enemy horde to fight with. Accepts deck name.")]
     private static void SetEnemyHorde(string deckName)
     {
-        int index = _dataManager.CachedOpponentDecksData.Decks.FindIndex(deck => deck.Name == deckName);
+        int index = _dataManager.CachedAiDecksData.Decks.FindIndex(aiDeck => aiDeck.Deck.Name == deckName);
         if (index == -1)
         {
             Debug.LogError(deckName + " Not found");
             return;
         }
 
-        GameClient.Get<IGameplayManager>().OpponentDeckId = (int)_dataManager.CachedOpponentDecksData.Decks[index].Id;
+        GameClient.Get<IGameplayManager>().OpponentDeckId = (int)_dataManager.CachedAiDecksData.Decks[index].Deck.Id;
     }
 }

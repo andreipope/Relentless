@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using TMPro;
@@ -660,11 +661,11 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case BoardCard card:
-                    CurrentPreviewedCardId = card.WorkingCard.Id;
+                    CurrentPreviewedCardId = card.WorkingCard.InstanceId;
                     break;
                 case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
-                    CurrentPreviewedCardId = unit.Model.Card.Id;
+                    CurrentPreviewedCardId = unit.Model.Card.InstanceId;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -1030,7 +1031,7 @@ namespace Loom.ZombieBattleground
                         units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
                         units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-                        BoardUnitView unit = units.Find(u => u.Model.Card.Id == id);
+                        BoardUnitView unit = units.Find(u => u.Model.Card.InstanceId == id);
 
                         units.Clear();
 
@@ -1047,16 +1048,15 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public List<BoardObject> GetTargetsById(List<Protobuf.Unit> targetUnits)
+        public List<BoardObject> GetTargetsById(IList<Unit> targetUnits)
         {
             List<BoardObject> boardObjects = new List<BoardObject>();
 
             if (targetUnits != null)
             {
-                foreach (Protobuf.Unit targetUnit in targetUnits)
+                foreach (Unit targetUnit in targetUnits)
                 {
-                    boardObjects.Add(GetTargetById(targetUnit.InstanceId,
-                         Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(targetUnit.AffectObjectType.ToString(), true)));
+                    boardObjects.Add(GetTargetById(targetUnit.InstanceId, targetUnit.AffectObjectType));
                 }
             }
 
@@ -1085,7 +1085,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel GetBoardUnitById(Player owner, int id)
         {
-            BoardUnitView view = owner.BoardCards.Find(u => u != null && u.Model.Card.Id == id);
+            BoardUnitView view = owner.BoardCards.Find(u => u != null && u.Model.Card.InstanceId == id);
 
             if (view != null)
                 return view.Model;
@@ -1099,7 +1099,7 @@ namespace Loom.ZombieBattleground
             units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
             units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-            BoardUnitView unit = units.Find(u => u.Model.Card.Id == id);
+            BoardUnitView unit = units.Find(u => u.Model.Card.InstanceId == id);
 
             if(unit != null)
             {
@@ -1114,7 +1114,7 @@ namespace Loom.ZombieBattleground
                 boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardSpellsInUse);
                 boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardSpellsInUse);
 
-                BoardObject foundObject = boardObjects.Find(x => x is BoardSpell spell ? spell.Card.Id == id : x.Id == id);
+                BoardObject foundObject = boardObjects.Find(x => x is BoardSpell spell ? spell.Card.InstanceId == id : x.Id == id);
 
                 boardObjects.Clear();
 
@@ -1151,7 +1151,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.OpponentPlayer.Defense = specificBattlegroundInfo.OpponentInfo.Health;
             _gameplayManager.OpponentPlayer.GooVials = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
             _gameplayManager.OpponentPlayer.CurrentGoo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
-            _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AiType);
+            _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AIType);
 
             _gameplayManager.CurrentPlayer.Defense = specificBattlegroundInfo.PlayerInfo.Health;
             _gameplayManager.CurrentPlayer.GooVials = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
@@ -1161,10 +1161,10 @@ namespace Loom.ZombieBattleground
         private void SetupOverlordsHandsAsSpecific(List<string> playerCards, List<string> opponentCards)
         {
             foreach (string cardName in playerCards)
-                _gameplayManager.CurrentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.CurrentPlayer, cardName), true);
+                _gameplayManager.CurrentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromCardName(cardName, _gameplayManager.CurrentPlayer), true);
 
             foreach (string cardName in opponentCards)
-                _gameplayManager.OpponentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromName(_gameplayManager.OpponentPlayer, cardName), true);
+                _gameplayManager.OpponentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromCardName(cardName, _gameplayManager.OpponentPlayer), true);
         }
 
         private void SetupOverlordsDecksAsSpecific(List<string> playerCards, List<string> opponentCards)
@@ -1172,13 +1172,19 @@ namespace Loom.ZombieBattleground
             List<WorkingCard> workingPlayerCards =
                 playerCards
                     .Select(cardName =>
-                        new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), _gameplayManager.CurrentPlayer))
+                    {
+                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+                        return new WorkingCard(card, card, _gameplayManager.CurrentPlayer);
+                    })
                     .ToList();
 
             List<WorkingCard> workingOpponentCards =
                 opponentCards
                     .Select(cardName =>
-                        new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), _gameplayManager.OpponentPlayer))
+                    {
+                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+                        return new WorkingCard(card, card, _gameplayManager.OpponentPlayer);
+                    })
                     .ToList();
 
             _gameplayManager.CurrentPlayer.SetDeck(workingPlayerCards, false);

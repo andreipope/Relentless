@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf;
@@ -135,7 +136,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Deck Management
 
-        private const string GetAIDecsDataMethod = "GetAIDecks";
+        private const string GetAiDecksDataMethod = "GetAIDecks";
 
         private const string GetDeckDataMethod = "ListDecks";
 
@@ -155,14 +156,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
         }
 
-        public async Task<GetAIDecksResponse> GetAIDecks()
+        public async Task<GetAIDecksResponse> GetAiDecks()
         {
             GetAIDecksRequest request = new GetAIDecksRequest
             {
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAIDecsDataMethod, request);
+            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAiDecksDataMethod, request);
         }
 
         public async Task DeleteDeck(string userId, long deckId)
@@ -170,8 +171,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId,
-                LastModificationTimestamp = 0
+                DeckId = deckId
             };
 
             await Contract.CallAsync(DeleteDeckMethod, request);
@@ -179,78 +179,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task EditDeck(string userId, Data.Deck deck)
         {
-            EditDeckRequest request = EditDeckRequest(userId, deck, 0);
+            EditDeckRequest request = new EditDeckRequest
+            {
+                UserId = userId,
+                Deck = deck.ToProtobuf(),
+                Version = BackendEndpoint.DataVersion
+            };
 
             await Contract.CallAsync(EditDeckMethod, request);
         }
 
         public async Task<long> AddDeck(string userId, Data.Deck deck)
         {
-            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
-
-            for (int i = 0; i < deck.Cards.Count; i++)
-            {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.Cards[i].CardName,
-                    Amount = deck.Cards[i].Amount
-                };
-                Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
-                cards.Add(cardInCollection);
-            }
-
             CreateDeckRequest request = new CreateDeckRequest
             {
                 UserId = userId,
-                Deck = new Deck
-                {
-                    Name = deck.Name,
-                    HeroId = deck.HeroId,
-                    Cards =
-                    {
-                        cards
-                    }
-                },
-                LastModificationTimestamp = 0,
+                Deck = deck.ToProtobuf(),
                 Version = BackendEndpoint.DataVersion
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
-        }
-
-        private EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
-        {
-            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
-
-            for (int i = 0; i < deck.Cards.Count; i++)
-            {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.Cards[i].CardName,
-                    Amount = deck.Cards[i].Amount
-                };
-                Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
-                cards.Add(cardInCollection);
-            }
-
-            EditDeckRequest request = new EditDeckRequest
-            {
-                UserId = userId,
-                Deck = new Deck
-                {
-                    Id = deck.Id,
-                    Name = deck.Name,
-                    HeroId = deck.HeroId,
-                    Cards =
-                    {
-                        cards
-                    }
-                },
-                LastModificationTimestamp = lastModificationTimestamp,
-                Version = BackendEndpoint.DataVersion
-            };
-            return request;
         }
 
         #endregion
@@ -388,7 +337,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             FindMatchRequest request = new FindMatchRequest
             {
-                UserId = userId,
+                UserId = userId
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
@@ -478,7 +427,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             PlayerActionDataReceived?.Invoke(e.Data);
         }
-
 
         public void AddAction(long matchId, PlayerAction playerAction)
         {

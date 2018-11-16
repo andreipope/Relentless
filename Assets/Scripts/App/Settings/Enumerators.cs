@@ -1,15 +1,19 @@
+using System.Runtime.Serialization;
+
 namespace Loom.ZombieBattleground.Common
 {
     public class Enumerators
     {
         public enum AbilityActivityType
         {
+            UNDEFINED,
             PASSIVE,
             ACTIVE
         }
 
         public enum AbilityCallType
         {
+            UNDEFINED,
             TURN,
             ENTRY,
             END,
@@ -60,6 +64,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum AbilityType
         {
+            UNDEFINED,
             HEAL,
             MODIFICATOR_STATS,
             CHANGE_STAT,
@@ -147,7 +152,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum ActionType
         {
-            None,
+            Undefined,
 
             PlayCardFromHand,
             PlayCardFromHandOnCard,
@@ -171,12 +176,13 @@ namespace Loom.ZombieBattleground.Common
         {
             None,
             Player,
-            Card,
-            Character
+            Character,
+            Card
         }
 
-        public enum AiType
+        public enum AIType
         {
+            UNDEFINED,
             BLITZ_AI,
             DEFENSE_AI,
             MIXED_AI,
@@ -205,14 +211,93 @@ namespace Loom.ZombieBattleground.Common
             CustomGameModeCustomUi
         }
 
-        public enum AttackInfoType
+        public enum AttackRestriction
         {
-            ANY,
+            NONE,
             ONLY_DIFFERENT
+        }
+
+        public enum GameMechanicDescriptionType
+        {
+            [EnumMember(Value = "UNDEFINED")]
+            Undefined,
+
+            [EnumMember(Value = "ATTACK")]
+            Attack,
+
+            [EnumMember(Value = "DEATH")]
+            Death,
+
+            [EnumMember(Value = "DELAYED")]
+            DelayedX,
+
+            [EnumMember(Value = "DESTROY")]
+            Destroy,
+
+            [EnumMember(Value = "DEVOUR")]
+            Devour,
+
+            [EnumMember(Value = "DISTRACT")]
+            Distract,
+
+            [EnumMember(Value = "END")]
+            End,
+
+            [EnumMember(Value = "ENTRY")]
+            Entry,
+
+            [EnumMember(Value = "FERAL")]
+            Feral,
+
+            [EnumMember(Value = "FLASH")]
+            Flash,
+
+            [EnumMember(Value = "FREEZE")]
+            Freeze,
+
+            [EnumMember(Value = "GUARD")]
+            Guard,
+
+            [EnumMember(Value = "HEAVY")]
+            Heavy,
+
+            [EnumMember(Value = "OVERFLOW")]
+            OverflowX,
+
+            [EnumMember(Value = "RAGE")]
+            RageX,
+
+            [EnumMember(Value = "REANIMATE")]
+            Reanimate,
+
+            [EnumMember(Value = "SHATTER")]
+            Shatter,
+
+            [EnumMember(Value = "SWING")]
+            SwingX,
+
+            [EnumMember(Value = "TURN")]
+            Turn,
+
+            [EnumMember(Value = "GOT_DAMAGE")]
+            GotDamage,
+
+            [EnumMember(Value = "AT_DEFENSE")]
+            AtDefense,
+
+            [EnumMember(Value = "IN_HAND")]
+            InHand,
+
+            [EnumMember(Value = "KILL_UNIT")]
+            KillUnit,
+
+            [EnumMember(Value = "PERMANENT")]
+            Permanent
         }
 
         public enum BuffType
         {
+            NONE,
             GUARD,
             DEFENCE,
             HEAVY,
@@ -240,6 +325,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardKind
         {
+            UNDEFINED,
             CREATURE,
             SPELL
         }
@@ -251,6 +337,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardRank
         {
+            UNDEFINED,
             MINION,
             OFFICER,
             COMMANDER,
@@ -267,10 +354,10 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardType
         {
+            NONE,
             WALKER,
             FERAL,
             HEAVY,
-            NONE
         }
 
         public enum EndGameType
@@ -357,6 +444,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum SetType
         {
+            NONE,
             FIRE,
             WATER,
             EARTH,
@@ -365,7 +453,6 @@ namespace Loom.ZombieBattleground.Common
             TOXIC,
             ITEM,
             OTHERS,
-            NONE
         }
 
         public enum SkillTargetType
@@ -428,9 +515,9 @@ namespace Loom.ZombieBattleground.Common
 
         public enum StatType
         {
+            UNDEFINED,
             HEALTH,
-            DAMAGE,
-            NONE
+            DAMAGE
         }
 
         public enum StunType
@@ -527,6 +614,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum VisualEffectType
         {
+            Undefined,
             Impact,
             Moving,
             Impact_Heavy,
@@ -579,36 +667,7 @@ namespace Loom.ZombieBattleground.Common
         public enum UniqueAnimationType
         {
             None,
-            ShammannArrival,
-        }
-
-        public enum EffectOnUnitType
-        {
-            Attack,
-            Death,
-            DelayedX,
-            Destroy,
-            Devour,
-            Distract,
-            End,
-            Entry,
-            Feral,
-            Flash,
-            Freeze,
-            Guard,
-            Heavy,
-            OverflowX,
-            RageX,
-            Reanimate,
-            Shatter,
-            SwingX,
-            Turn,
-
-            GotDamage,
-            AtDefense,
-            InHand,
-            KillUnit,
-            Permanent,
+            ShammannArrival
         }
     }
 }

@@ -272,7 +272,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.PLAYER, card.LibraryCard.Name);
+                //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.Types.Enum.Player, card.LibraryCard.Name);
                 MulliganCards?.Add(card);
             }
         }
@@ -437,7 +437,7 @@ namespace Loom.ZombieBattleground
 
         public void HoverPlayerCardOnBattleground(Player player, BoardCard card, HandBoardCard handCard)
         {
-            Card libraryCard = card.WorkingCard.LibraryCard;
+            IReadOnlyCard libraryCard = card.WorkingCard.LibraryCard;
             if (libraryCard.CardKind == Enumerators.CardKind.CREATURE &&
                 _gameplayManager.CurrentPlayer.BoardCards.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
@@ -501,7 +501,7 @@ namespace Loom.ZombieBattleground
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
-                Card libraryCard = card.WorkingCard.LibraryCard;
+                IReadOnlyCard libraryCard = card.WorkingCard.LibraryCard;
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
@@ -635,7 +635,7 @@ namespace Loom.ZombieBattleground
 
         public void SummonUnitFromHand(Player player, BoardCard card)
         {
-            Card libraryCard = card.WorkingCard.LibraryCard;
+            IReadOnlyCard libraryCard = card.WorkingCard.LibraryCard;
 
             card.Transform.DORotate(Vector3.zero, .1f);
 
@@ -858,7 +858,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.RealCost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
+                card.InstanceCard.Cost = Mathf.Clamp(card.LibraryCard.Cost - value, 0, card.LibraryCard.Cost);
             }
 
             return card;
@@ -875,34 +875,29 @@ namespace Loom.ZombieBattleground
 
                 boardCard.SetCardCost(value);
 
-                bool isActive = boardCard.WorkingCard.RealCost < boardCard.WorkingCard.InitialCost;
+                bool isActive = boardCard.WorkingCard.InstanceCard.Cost < boardCard.WorkingCard.LibraryCard.Cost;
                 boardCard.costHighlightObject.SetActive(isActive);
             }
             else
             {
-                card.RealCost = Mathf.Clamp(value, 0, 99);
+                card.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
             }
         }
 
-        public string GetSetOfCard(Card card)
+        public Enumerators.SetType GetSetOfCard(IReadOnlyCard card)
         {
             CardSet set =
                 _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(y => y.Name.Equals(card.Name)) != null);
 
-            if (set != null)
-            {
-                return set.Name;
-            }
-
-            return string.Empty;
+            return set?.Name ?? Enumerators.SetType.NONE;
         }
 
         public WorkingCard CreateNewCardByNameAndAddToHand(Player player, string name)
         {
             float animationDuration = 1.5f;
 
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
-            WorkingCard workingCard = new WorkingCard(card, player);
+            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
+            WorkingCard workingCard = new WorkingCard(card, card, player);
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
                 return workingCard;
@@ -964,8 +959,7 @@ namespace Loom.ZombieBattleground
             Player unitOwner = unit.Model.OwnerPlayer;
             WorkingCard returningCard = unit.Model.Card;
 
-            returningCard.InitialCost = returningCard.LibraryCard.Cost;
-            returningCard.RealCost = returningCard.InitialCost;
+            returningCard.InstanceCard.Cost = returningCard.LibraryCard.Cost;
 
             Vector3 unitPosition = unit.Transform.position;
 
@@ -994,9 +988,10 @@ namespace Loom.ZombieBattleground
                 2f);
         }
 
-        public WorkingCard GetWorkingCardFromName(Player owner, string cardName)
+        public WorkingCard GetWorkingCardFromCardName(string cardName, Player owner)
         {
-            return new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName), owner);
+            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+            return new WorkingCard(card, card, owner);
         }
 
         private void GameEndedHandler(Enumerators.EndGameType obj)
@@ -1079,9 +1074,9 @@ namespace Loom.ZombieBattleground
             if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
                 return null;
 
-            Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(name).Clone();
+            Card libraryCard = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
 
-            WorkingCard card = new WorkingCard(libraryCard, owner);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
             BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
 
             owner.AddCardToBoard(card);
@@ -1266,7 +1261,7 @@ namespace Loom.ZombieBattleground
 
             _titleText.text = card.LibraryCard.Name;
             _descriptionText.text = choosableAbility.Description;
-            _gooCostText.text = card.Damage.ToString();
+            _gooCostText.text = card.InstanceCard.Damage.ToString();
 
             if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
@@ -1275,10 +1270,10 @@ namespace Loom.ZombieBattleground
                 _attackText = SelfObject.transform.Find("Text_Attack").GetComponent<TextMeshPro>();
                 _defenseText = SelfObject.transform.Find("Text_Defense").GetComponent<TextMeshPro>();
 
-                _attackText.text = card.Damage.ToString();
-                _defenseText.text = card.Health.ToString();
+                _attackText.text = card.InstanceCard.Damage.ToString();
+                _defenseText.text = card.InstanceCard.Health.ToString();
 
-                _unitType.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+                _unitType.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.InstanceCard.CardType + "_icon"));
             }
         }
 

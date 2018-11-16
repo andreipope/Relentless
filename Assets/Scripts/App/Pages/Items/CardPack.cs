@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -43,9 +44,11 @@ namespace Loom.ZombieBattleground
         private Card GenerateNewCard()
         {
             Enumerators.CardRank rarity = (Enumerators.CardRank) IsChanceFit(0);
-            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(item =>
-                item.CardRank == rarity && item.CardSetType != Enumerators.SetType.OTHERS);
-            Card card = cards[Random.Range(0, cards.Count)].Clone();
+            List<Card> cards =
+                _dataManager.CachedCardsLibraryData.Cards
+                    .Where(item => item.CardRank == rarity && item.CardSetType != Enumerators.SetType.OTHERS)
+                    .ToList();
+            Card card = new Card(cards[Random.Range(0, cards.Count)]);
             return card;
         }
 
@@ -64,17 +67,18 @@ namespace Loom.ZombieBattleground
         // TEMPORARY OR SPECIAL
         private void GetSpecialCardPack()
         {
-            List<Card> fullColection =
-                _dataManager.CachedCardsLibraryData.Cards.FindAll(item =>
-                    item.CardSetType != Enumerators.SetType.OTHERS);
+            List<Card> fullCollection =
+                _dataManager.CachedCardsLibraryData.Cards
+                    .Where(item => item.CardSetType != Enumerators.SetType.OTHERS)
+                    .ToList();
 
-            List<Card> legendary = fullColection.FindAll(item => item.CardRank == Enumerators.CardRank.GENERAL);
-            List<Card> epic = fullColection.FindAll(item => item.CardRank == Enumerators.CardRank.COMMANDER);
+            List<Card> legendary = fullCollection.FindAll(item => item.CardRank == Enumerators.CardRank.GENERAL);
+            List<Card> epic = fullCollection.FindAll(item => item.CardRank == Enumerators.CardRank.COMMANDER);
 
-            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
-            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
+            _cardsInPack.Add(fullCollection[Random.Range(0, fullCollection.Count)]);
+            _cardsInPack.Add(fullCollection[Random.Range(0, fullCollection.Count)]);
             _cardsInPack.Add(epic[Random.Range(0, epic.Count)]);
-            _cardsInPack.Add(fullColection[Random.Range(0, fullColection.Count)]);
+            _cardsInPack.Add(fullCollection[Random.Range(0, fullCollection.Count)]);
             _cardsInPack.Add(legendary[Random.Range(0, legendary.Count)]);
         }
     }
