@@ -907,7 +907,7 @@ namespace Loom.ZombieBattleground
                     {
                         _vfxController.CreateVfx(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                        targetUnit);
+                        targetUnit, isIgnoreCastVfx: true);
                         _battleController.AttackUnitBySkill(owner, boardSkill, targetUnit.Model, 0);
 
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
