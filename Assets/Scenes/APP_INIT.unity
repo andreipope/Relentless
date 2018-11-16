@@ -122,8 +122,8 @@ GameObject:
   m_Component:
   - component: {fileID: 346073624}
   - component: {fileID: 346073627}
-  - component: {fileID: 346073626}
   - component: {fileID: 346073625}
+  - component: {fileID: 346073626}
   m_Layer: 0
   m_Name: Canvas1
   m_TagString: Untagged
@@ -174,7 +174,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 346073623}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63dbb4b9af48d1742a2a2c2c73dc90ac, type: 3}
+  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -182,12 +182,11 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 3326, y: 1536}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 1
+  m_MatchWidthOrHeight: 0.6
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  ReferenceScreenResolution: {x: 1920, y: 1080}
 --- !u!223 &346073627
 Canvas:
   m_ObjectHideFlags: 0
@@ -287,8 +286,8 @@ GameObject:
   m_Component:
   - component: {fileID: 687476404}
   - component: {fileID: 687476407}
-  - component: {fileID: 687476406}
   - component: {fileID: 687476405}
+  - component: {fileID: 687476406}
   m_Layer: 0
   m_Name: Canvas2
   m_TagString: Untagged
@@ -339,7 +338,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 687476403}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63dbb4b9af48d1742a2a2c2c73dc90ac, type: 3}
+  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -352,7 +351,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  ReferenceScreenResolution: {x: 1920, y: 1080}
 --- !u!223 &687476407
 Canvas:
   m_ObjectHideFlags: 0
@@ -491,7 +489,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1027686446}
   - component: {fileID: 1027686445}
-  - component: {fileID: 1027686447}
   - component: {fileID: 1027686448}
   m_Layer: 0
   m_Name: MainCamera
@@ -551,20 +548,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1265724705}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1027686447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1027686444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfaaf326287110545b046c8bbc2db284, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _targetAspectRatio: 1.7777778
 --- !u!114 &1027686448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -670,6 +655,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1216548032}
   - component: {fileID: 1216548031}
+  - component: {fileID: 1216548033}
   m_Layer: 0
   m_Name: MainApp
   m_TagString: Untagged
@@ -708,6 +694,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1216548033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1216548030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 159afae58f8b5ef4484873b6d0b4cfb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvases:
+  - {fileID: 346073627}
+  - {fileID: 687476407}
+  - {fileID: 1437790373}
+  _cameras:
+  - {fileID: 1027686445}
+  _squareFactorCanvasMatch: 0.6
+  _squareFactorCameraSize: 9.6
 --- !u!1 &1265724704
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,8 +739,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1543458684}
   - {fileID: 1027686446}
+  - {fileID: 1433032999}
   m_Father: {fileID: 1216548032}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -831,6 +836,75 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1423204460}
   m_CullTransparentMesh: 0
+--- !u!1 &1433032998
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1433032999}
+  - component: {fileID: 1433033001}
+  m_Layer: 0
+  m_Name: ClearCamera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1433032999
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1433032998}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1265724705}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &1433033001
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1433032998}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_projectionMatrixMode: 1
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 1
+  orthographic size: 7.6
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 0
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_AllowMSAA: 0
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &1437790369
 GameObject:
   m_ObjectHideFlags: 0
@@ -840,8 +914,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1437790370}
   - component: {fileID: 1437790373}
-  - component: {fileID: 1437790372}
   - component: {fileID: 1437790371}
+  - component: {fileID: 1437790372}
   m_Layer: 0
   m_Name: Canvas3
   m_TagString: Untagged
@@ -892,7 +966,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1437790369}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63dbb4b9af48d1742a2a2c2c73dc90ac, type: 3}
+  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
@@ -905,7 +979,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  ReferenceScreenResolution: {x: 1920, y: 1080}
 --- !u!223 &1437790373
 Canvas:
   m_ObjectHideFlags: 0
@@ -926,75 +999,6 @@ Canvas:
   m_SortingLayerID: -1311579977
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &1543458683
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1543458684}
-  - component: {fileID: 1543458685}
-  m_Layer: 0
-  m_Name: Camera_Clear
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1543458684
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1543458683}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1265724705}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &1543458685
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1543458683}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 1
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 1
-  orthographic size: 5
-  m_Depth: -100
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 0
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 0
-  m_AllowMSAA: 0
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 0
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
 --- !u!1001 &1578061653
 Prefab:
   m_ObjectHideFlags: 0
