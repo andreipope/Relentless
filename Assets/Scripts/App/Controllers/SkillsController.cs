@@ -1670,7 +1670,7 @@ namespace Loom.ZombieBattleground
             position -= Vector3.up * 3.7f;
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),
-                position, ignoreCastPosition: true);
+                position, isIgnoreCastVfx: true);
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
