@@ -883,7 +883,26 @@ namespace Loom.ZombieBattleground
             else
             {
                 card.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
-                card.LibraryCard.Cost = card.RealCost;
+                card.LibraryCard = new Card(
+                    card.LibraryCard.MouldId,
+                    card.LibraryCard.Name,
+                    card.InstanceCard.Cost,
+                    card.LibraryCard.Description,
+                    card.LibraryCard.FlavorText,
+                    card.LibraryCard.Picture,
+                    card.LibraryCard.Damage,
+                    card.LibraryCard.Health,
+                    card.LibraryCard.CardSetType,
+                    card.LibraryCard.Frame,
+                    card.LibraryCard.CardKind,
+                    card.LibraryCard.CardRank,
+                    card.LibraryCard.CardType,
+                    card.LibraryCard.Abilities
+                        .Select(a => new AbilityData(a))
+                        .ToList(),
+                    new CardViewInfo(card.LibraryCard.CardViewInfo),
+                    card.LibraryCard.UniqueAnimationType
+                );
             }
         }
 

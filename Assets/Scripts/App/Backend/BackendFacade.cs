@@ -319,9 +319,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,
-                DeckId = deckId,
-                CustomGame = requestCustomGameAddress,
-                Version = BackendEndpoint.DataVersion
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);

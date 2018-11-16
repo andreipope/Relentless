@@ -988,7 +988,7 @@ namespace Loom.ZombieBattleground
             boardUnit.Model.SetAsWalkerUnit();
             boardUnit.Model.UseShieldFromBuff();
             boardUnit.Model.BuffsOnUnit.Clear();
-            boardUnit.Model.AttackInfoType = Enumerators.AttackInfoType.ANY;
+            boardUnit.Model.AttackRestriction = Enumerators.AttackRestriction.NONE;
 
             List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit.Model);
 

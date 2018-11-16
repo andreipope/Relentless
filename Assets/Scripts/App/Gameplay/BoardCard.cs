@@ -498,7 +498,7 @@ namespace Loom.ZombieBattleground
             }
 
             if (unit.Model.Card.LibraryCard.Abilities != null &&
-                !unit.Model.EffectsOnUnit.Contains(Enumerators.EffectOnUnitType.Distract))
+                !unit.Model.GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
@@ -570,12 +570,8 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            string buffType;
-            foreach (Enumerators.EffectOnUnitType effectOnUnitType in unit.Model.EffectsOnUnit)
+            foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
-                // FIXME: hack
-                Enumerators.GameMechanicDescriptionType mechanicType =
-                    (Enumerators.GameMechanicDescriptionType) Enum.Parse(typeof(Enumerators.GameMechanicDescriptionType), buffOnUnit.ToString(), true);
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
                 if (gameMechanicInfo != null)
                 {

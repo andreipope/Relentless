@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground.Data
 
         public int PrimarySkill { get; set; }
 
-        public int SecondarySkill { get; private set; }
+        public int SecondarySkill { get; set; }
 
         public string FullName => $"{Name}, {ShortDescription}";
 

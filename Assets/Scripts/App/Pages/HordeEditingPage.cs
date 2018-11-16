@@ -903,7 +903,7 @@ namespace Loom.ZombieBattleground
             LoadCards(_currentElementPage, _currentSet);
         }
 
-        private void GetSetAndIndexForCard(Card card, out int setIndex, out int cardIndex)
+        private void GetSetAndIndexForCard(IReadOnlyCard card, out int setIndex, out int cardIndex)
         {
             CardSet set = _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(c => c.MouldId == card.MouldId) != null);
             setIndex = _dataManager.CachedCardsLibraryData.Sets.IndexOf(set);

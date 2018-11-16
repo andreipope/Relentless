@@ -598,8 +598,8 @@ namespace Loom.ZombieBattleground
                     {
                         foreach(AbilityData data in abilitiesWithTargets)
                         {
-                            if (data.AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
-                                data.AbilityActivityType == Enumerators.AbilityActivityType.ACTIVE)
+                            if (data.CallType == Enumerators.AbilityCallType.ENTRY &&
+                                data.ActivityType == Enumerators.AbilityActivityType.ACTIVE)
                             {
                                 needTargetForAbility = true;
                             }
@@ -645,7 +645,7 @@ namespace Loom.ZombieBattleground
                         }
                 }
 
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.RealCost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             });
         }
 
