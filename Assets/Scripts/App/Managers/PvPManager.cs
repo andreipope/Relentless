@@ -294,6 +294,7 @@ namespace Loom.ZombieBattleground
             _queueManager.Clear();
         }
 
+        //TODO This method is a start to simplify and clean up
         public async void MatchIsStarting (FindMatchResponse findMatchResponse) {
             _isMatchmakingInProgress = true;
             _matchmakingTimeoutCounter = 0;
@@ -327,6 +328,8 @@ namespace Loom.ZombieBattleground
             {
                 _isWaitForTurnTimerStart = true;
             }
+
+            _queueManager.Active = true;
         }
 
         private void OnPlayerActionReceivedHandler(byte[] data)
