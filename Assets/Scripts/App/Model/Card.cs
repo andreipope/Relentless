@@ -33,6 +33,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string Frame;
 
+        public string UniqueAnimation;
+
         public List<AbilityData> Abilities = new List<AbilityData>();
 
         public CardViewInfo CardViewInfo = new CardViewInfo();
@@ -45,6 +47,10 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonIgnore]
         public Enumerators.CardKind CardKind;
+
+        [JsonIgnore]
+        public Enumerators.UniqueAnimationType UniqueAnimationType = Enumerators.UniqueAnimationType.None;
+
 
         public Card Clone()
         {
@@ -67,7 +73,8 @@ namespace Loom.ZombieBattleground.Data
                 CardType = CardType,
                 Abilities = Abilities,
                 CardViewInfo = CardViewInfo,
-                Frame = Frame
+                Frame = Frame,
+                UniqueAnimationType = UniqueAnimationType
             };
 
             return card;

@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card)
+        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card, GameAction<object> actionInQueue)
         {
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -43,8 +43,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
-               (parameter, completeCallback) =>
+            actionInQueue.Action = (parameter, completeCallback) =>
                    {
                        _ranksUpgradeCompleteAction = completeCallback;
 
@@ -65,7 +64,7 @@ namespace Loom.ZombieBattleground
                            _ranksUpgradeCompleteAction?.Invoke();
                            _ranksUpgradeCompleteAction = null;
                        }
-                   });
+                   };
         }
 
         public void DoRankUpgrades(List<BoardUnitView> units, WorkingCard card, bool randomly = true)

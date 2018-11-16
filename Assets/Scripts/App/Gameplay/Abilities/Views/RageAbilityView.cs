@@ -32,10 +32,13 @@ namespace Loom.ZombieBattleground
                     VfxObject = Object.Instantiate(VfxObject, viewOwner.Transform, false);
                     VfxObject.transform.localPosition = Vector3.up * 0.3f;
                     ParticlesController.RegisterParticleSystem(VfxObject, false);
+
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.RAGE_LOOP, Constants.ZombiesSoundVolume, isLoop:true);
                 }
                 else
                 {
                     Object.Destroy(VfxObject);
+                    GameClient.Get<ISoundManager>().StopPlaying(Enumerators.SoundType.RAGE_LOOP);
                 }
             }
 

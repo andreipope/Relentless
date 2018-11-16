@@ -249,8 +249,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
                                                   AffectObjectType affectObjectType, List<BoardObject> targets = null)
             {
-                await Task.Delay(300);
-
                 PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
                 {
                     CardKind = cardKind,
