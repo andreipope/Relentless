@@ -12,12 +12,18 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value { get; } = 1;
+        public int Damage { get; }
+
+        public int Count { get; }
+
+        public Enumerators.SetType SetType;
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Damage = ability.Damage;
+            Count = ability.Count;
+            SetType = ability.AbilitySetType;
         }
 
         public override void Activate()
@@ -27,7 +33,18 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action(null);
+            Action();
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            Action();
         }
 
         public override void Action(object info = null)
@@ -43,10 +60,29 @@ namespace Loom.ZombieBattleground
             else
             {
                 _targets = new List<BoardObject>();
-                _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
-                _targets.Add(GetOpponentOverlord());
 
-                _targets = InternalTools.GetRandomElementsFromList(_targets, Value);
+                foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
+                {
+                    switch (abilityTarget)
+                    {
+                        case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                        case Enumerators.AbilityTargetType.PLAYER_CARD:
+                            _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER:
+                            _targets.Add(PlayerCallerOfAbility);
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                            _targets.Add(GetOpponentOverlord());
+                            break;
+                    }
+                }
+
+                _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
 
             VfxObject = null;
@@ -67,7 +103,7 @@ namespace Loom.ZombieBattleground
                         targetPosition = player.AvatarObject.transform.position;
                         break;
                     case BoardUnitModel unit:
-                        targetPosition =  BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                        targetPosition = BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -91,7 +127,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-    private void ActionCompleted(object target, Vector3 targetPosition)
+        private void ActionCompleted(object target, Vector3 targetPosition)
         {
             ClearParticles();
 
@@ -106,13 +142,20 @@ namespace Loom.ZombieBattleground
                 ParticlesController.RegisterParticleSystem(vfxObject, true);
             }
 
+            int damageOverride = Damage;
+
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
+            {
+                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType).Count;
+            }
+
             switch (target)
             {
-                case Player allyPlayer:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
+                case Player player:
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, damageOverride);
                     break;
-                case BoardUnitModel allyUnit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit);
+                case BoardUnitModel unit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, damageOverride);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);

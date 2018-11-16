@@ -139,6 +139,8 @@ namespace Loom.ZombieBattleground
             TargettingArrow.PossibleTargets = AbilityTargetTypes;
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
+            TargettingArrow.UnitDefense = AbilityData.Defense;
+            TargettingArrow.UnitCost = AbilityData.Cost;
 
             switch (CardKind)
             {
@@ -197,15 +199,15 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
+                        AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
+                        AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
                     }
-
                     break;
                 case Enumerators.CardKind.SPELL:
                     if (BoardSpell != null)
                     {
                         BoardSpell.Used += UsedHandler;
                     }
-
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CardKind), CardKind, null);
@@ -229,6 +231,22 @@ namespace Loom.ZombieBattleground
             ClearParticles();
 
             Disposed?.Invoke();
+        }
+
+        public virtual void Deactivate()
+        {
+            if (AbilityUnitOwner != null)
+            {
+                AbilityUnitOwner.UnitDied -= UnitDiedHandler;
+                AbilityUnitOwner.UnitAttacked -= UnitAttackedHandler;
+                AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
+                AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
+                AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
+                AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
+                AbilityUnitOwner.UnitAttackedEnded -= UnitAttackedEndedHandler;
+            }
+
+            AbilitiesController.DeactivateAbility(ActivityId);
         }
 
         public virtual void SelectedTargetAction(bool callInputEndBefore = false)
@@ -353,13 +371,7 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
-            AbilityUnitOwner.UnitDied -= UnitDiedHandler;
-            AbilityUnitOwner.UnitAttacked -= UnitAttackedHandler;
-            AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
-            AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
-            AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
-
-            AbilitiesController.DeactivateAbility(ActivityId);
+            Deactivate();
             Dispose();
         }
 
@@ -374,6 +386,16 @@ namespace Loom.ZombieBattleground
         protected virtual void UnitDamagedHandler(BoardObject from)
         {
         }
+
+        protected virtual void UnitAttackedEndedHandler()
+        {
+        }
+
+        protected virtual void UnitKilledUnitHandler(BoardUnitModel unit)
+        {
+
+        }
+
 
         protected virtual void PrepairingToDieHandler(BoardObject from)
         {
@@ -393,7 +415,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected object GetCaller()
+        public object GetCaller()
         {
             return AbilityUnitOwner ?? (object) BoardSpell;
         }
