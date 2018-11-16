@@ -257,7 +257,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet >= Enumerators.SetType.ITEM)
+                if (_currentSet > Enumerators.SetType.ITEM)
                 {
                     _currentSet = Enumerators.SetType.FIRE;
                     _currentElementPage = 0;

@@ -349,7 +349,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet >= Enumerators.SetType.ITEM)
+                if (_currentSet > Enumerators.SetType.ITEM)
                 {
                     _currentSet = Enumerators.SetType.FIRE;
                     _currentElementPage = 0;
@@ -366,9 +366,6 @@ namespace Loom.ZombieBattleground
         public void LoadCards(int page, Enumerators.SetType setType)
         {
             _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
-
-
-            _toggleGroup.transform.GetChild((int)setType).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
