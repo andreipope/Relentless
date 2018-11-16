@@ -4,7 +4,50 @@
       
    ],
    "SpriteMeshSettings" : [
-      
+      {
+         "k" : {
+            "Guid" : "be9de1248d29340ba98c6211a5c9f27b",
+            "LocalIdentifier" : 21300000,
+            "LastPath" : "Assets/Assets/Sprites/battleground_bg.png"
+         },
+         "v" : {
+            "PlatformSharedTightMeshSettings" : {
+               
+            },
+            "PerPlatformTightMeshSettings" : [
+               
+            ],
+            "DefaultTightMeshSettings" : {
+               "IsOverriding" : false,
+               "ProcessingMethod" : "Normal",
+               "SharedTightMeshSettings" : {
+                  "Detail" : 0.3,
+                  "AlphaTolerance" : 10,
+                  "AlphaSourceChannel" : "Alpha"
+               },
+               "UnityMethodTightMeshSettings" : {
+                  "VertexMergeDistance" : 3,
+                  "DetectHoles" : true
+               },
+               "AlphaSeparationTightMeshSettings" : {
+                  "OpaqueVertexMergeDistance" : 2,
+                  "OpaqueNegativeExtrude" : 3,
+                  "ReduceAlphaBleed" : false,
+                  "OpaqueAlphaTolerance" : 254
+               },
+               "PreciseTightMeshSettings" : {
+                  "EdgeInflation" : 2
+               },
+               "RectGridTightMeshSettings" : {
+                  "XSubdivisions" : 5,
+                  "YSubdivisions" : 5,
+                  "CullByBoundingBox" : true,
+                  "RemoveEmptyCells" : true,
+                  "ScaleAroundCenter" : 0
+               }
+            }
+         }
+      }
    ],
    "Preferences" : {
       "IsDisabled" : false,

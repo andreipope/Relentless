@@ -11,6 +11,7 @@ public class DebugCommandsManager : IService
 
         QuickPlayCommandsHandler.Initialize();
         BattleCommandsHandler.Initialize();
+        DecksCommandHandler.Initialize();
         #endif
     }
 

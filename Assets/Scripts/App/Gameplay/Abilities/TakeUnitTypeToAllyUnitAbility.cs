@@ -12,11 +12,14 @@ namespace Loom.ZombieBattleground
         public Enumerators.CardType UnitType;
         public Enumerators.SetType SetType;
 
+        public int Cost { get; }
+
         public TakeUnitTypeToAllyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
-            SetType = ability.AbilitySetType; 
+            SetType = ability.AbilitySetType;
+            Cost = ability.Cost;
         }
 
         public override void Activate()
@@ -43,6 +46,19 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            Enumerators.ActionEffectType effectType = Enumerators.ActionEffectType.None;
+
+            if (UnitType == Enumerators.CardType.FERAL)
+            {
+                effectType = Enumerators.ActionEffectType.Feral;
+            }
+            else if (UnitType == Enumerators.CardType.HEAVY)
+            {
+                effectType = Enumerators.ActionEffectType.Heavy;
+            }
+
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             switch (AbilityData.AbilitySubTrigger)
             {
                 case Enumerators.AbilitySubTrigger.RandomUnit:
@@ -57,6 +73,12 @@ namespace Loom.ZombieBattleground
                             {
                                 TakeTypeToUnit(allies[0]);
 
+                                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                {
+                                    ActionEffectType = effectType,
+                                    Target = allies[0]
+                                });
+
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
                                    allies[0]
@@ -66,13 +88,19 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                           .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
+                           .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType)
                            .ToList();
 
                             if (allies.Count > 0)
                             {
                                 int random = Random.Range(0, allies.Count);
                                 TakeTypeToUnit(allies[random]);
+
+                                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                {
+                                    ActionEffectType = effectType,
+                                    Target = allies[random]
+                                });
 
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
@@ -85,16 +113,46 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
                     if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner).Count() == 0)
                     {
+                        TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = effectType,
+                            Target = AbilityUnitOwner
+                        });
+
                         TakeTypeToUnit(AbilityUnitOwner);
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                           .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.Card.LibraryCard.CardSetType == SetType)
+                           .Where(unit => unit != AbilityUnitOwner &&
+                                   unit.Card.LibraryCard.CardSetType == SetType &&
+                                   unit.InitialUnitType != UnitType)
                            .ToList();
 
                         foreach(BoardUnitModel unit in allies)
+                        {
+                            TakeTypeToUnit(unit);
+
+                            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = effectType,
+                                Target = unit
+                            });
+                        }
+
+                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
+                            AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                    }
+                    break;
+                case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
+                    {
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                               .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType &&
+                                      unit.Card.RealCost <= Cost && unit.InitialUnitType != UnitType)
+                               .ToList();
+
+                        foreach (BoardUnitModel unit in allies)
                         {
                             TakeTypeToUnit(unit);
                         }
@@ -103,6 +161,24 @@ namespace Loom.ZombieBattleground
                             AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
                     }
                     break;
+            }
+
+
+            if (TargetEffects.Count > 0)
+            {
+                Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingMultipleCards;
+
+                if (TargetEffects.Count == 1)
+                {
+                    actionType = Enumerators.ActionType.CardAffectingCard;
+                }
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
             }
         }
 

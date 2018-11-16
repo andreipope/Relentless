@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -14,7 +15,9 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.StatType StatType;
 
-        public int Value = 1;
+        public int Value { get; }
+
+        public int Count { get; }
 
         public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -22,6 +25,7 @@ namespace Loom.ZombieBattleground
             SetType = ability.AbilitySetType;
             StatType = ability.AbilityStatType;
             Value = ability.Value;
+            Count = ability.Count;
         }
 
         public override void Activate()
@@ -37,7 +41,7 @@ namespace Loom.ZombieBattleground
             else if(AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
                     AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
             {
-                if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUhitsByFactionInPlay)
+                if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
                     List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
 
@@ -52,7 +56,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count > 0)
                         {
-                            ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
+                            ModificateStats(AbilityUnitOwner, !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
                         }
                     }
                 }
@@ -63,10 +67,44 @@ namespace Loom.ZombieBattleground
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN)
+            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
+        !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+                return;
+
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            {
+                List<BoardUnitView> targets = new List<BoardUnitView>();
+
+                foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                {
+                    switch (targetType)
+                    {
+                        case Enumerators.AbilityTargetType.PLAYER_CARD:
+                            targets.AddRange(PlayerCallerOfAbility.BoardCards);
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                            targets.AddRange(GetOpponentOverlord().BoardCards);
+                            break;
+                    }
+                }
+
+                targets = InternalTools.GetRandomElementsFromList(targets, Count);
+
+                foreach (BoardUnitView target in targets)
+                {
+                    ModificateStats(target.Model, false);
+                }
+            }
         }
 
         public override void Action(object info = null)

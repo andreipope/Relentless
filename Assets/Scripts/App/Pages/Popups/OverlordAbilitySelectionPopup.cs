@@ -161,6 +161,10 @@ namespace Loom.ZombieBattleground
             _skillName.text = ability.Skill.Title;
             _skillDescription.text = ability.Skill.Description;
             int index = _selectedHero.Skills.IndexOf(ability.Skill);
+            if (_selectedHero.SecondarySkill == index)
+            {
+                _selectedHero.SecondarySkill = _selectedHero.PrimarySkill;
+            }
             _selectedHero.PrimarySkill = index;
         }
 

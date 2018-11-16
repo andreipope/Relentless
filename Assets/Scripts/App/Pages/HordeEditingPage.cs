@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class  HordeEditingPage : IUIElement
+    public class HordeEditingPage : IUIElement
     {
         private const int CardsPerPage = 5;
 
@@ -295,6 +295,13 @@ namespace Loom.ZombieBattleground
         {
             Dispose();
 
+            if (_draggingObject != null)
+            {
+                Object.Destroy(_draggingObject);
+                _draggingObject = null;
+                _isDragging = false;
+            }
+
             if (_selfPage == null)
                 return;
 
@@ -322,7 +329,7 @@ namespace Loom.ZombieBattleground
 
                 if (_currentSet < 0)
                 {
-                    _currentSet = (Enumerators.SetType) (_numSets - 1);
+                    _currentSet = (Enumerators.SetType)(_numSets - 1);
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -339,7 +346,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if ((int) _currentSet >= _numSets)
+                if ((int)_currentSet >= _numSets)
                 {
                     _currentSet = 0;
                     _currentElementPage = 0;
@@ -355,7 +362,15 @@ namespace Loom.ZombieBattleground
 
         public void LoadCards(int page, Enumerators.SetType setType)
         {
-            _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
+            if (setType == Enumerators.SetType.NONE ||
+                setType == Enumerators.SetType.OTHERS ||
+                (int)setType >= Enum.GetNames(typeof(Enumerators.SetType)).Length)
+            {
+                setType = Enumerators.SetType.FIRE;
+            }
+
+
+            _toggleGroup.transform.GetChild((int)setType).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
@@ -503,8 +518,7 @@ namespace Loom.ZombieBattleground
             // Animated moving card
             if (sender != null)
             {
-                int setIndex, cardIndex;
-                GetSetAndIndexForCard(boardCard.LibraryCard, out setIndex, out cardIndex);
+                GetSetAndIndexForCard(boardCard.LibraryCard, out int setIndex, out int cardIndex);
                 _currentSet = SetTypeUtility.GetCardSetType(_dataManager, setIndex);
                 _currentElementPage = cardIndex / CardsPerPage;
                 UpdateCardsPage();
@@ -544,7 +558,7 @@ namespace Loom.ZombieBattleground
                 RepositionHordeCards();
                 UpdateNumCardsText();
 
-                if(_highlightingVFXItem.CardId == boardCard.LibraryCard.Id)
+                if (_highlightingVFXItem.CardId == boardCard.LibraryCard.Id)
                 {
                     _highlightingVFXItem.ChangeState(false);
                     _highlightingVFXItem.CardId = -1;
@@ -592,8 +606,8 @@ namespace Loom.ZombieBattleground
 
             if (_currentDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                OpenAlertDialog("Your '" + _currentDeck.Name + "' deck has more than " + Constants.DeckMaxSize +
-                    " cards.");
+                OpenAlertDialog("You can not add more than " + Constants.DeckMaxSize +
+                    " Cards in a single Horde.");
                 return;
             }
 
@@ -775,13 +789,22 @@ namespace Loom.ZombieBattleground
                     Debug.Log("Result === " + e);
 
                     success = false;
-                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+
+                    string message = e.Message;
+
+                    string[] description = e.Message.Split('=');
+                    if (description.Length > 0)
+                    {
+                        message = description[description.Length - 1].TrimStart(' ');
+                        message = char.ToUpper(message[0]) + message.Substring(1);
+                    }
+                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
                 }
             }
 
             if (success)
             {
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }
@@ -886,23 +909,11 @@ namespace Loom.ZombieBattleground
             LoadCards(_currentElementPage, _currentSet);
         }
 
-        private bool GetSetAndIndexForCard(Card card, out int setIndex, out int cardIndex)
+        private void GetSetAndIndexForCard(Card card, out int setIndex, out int cardIndex)
         {
-            setIndex = -1;
-            cardIndex = -1;
-            for (int i = 0; i < _dataManager.CachedCardsLibraryData.Sets.Count; i++)
-            {
-                CardSet cardSet = _dataManager.CachedCardsLibraryData.Sets[i];
-                cardIndex = cardSet.Cards.FindIndex(c => c.Id == card.Id);
-
-                if (cardIndex != -1)
-                {
-                    setIndex = i;
-                    break;
-                }
-            }
-
-            return false;
+            CardSet set = _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(c => c.Id == card.Id) != null);
+            setIndex = _dataManager.CachedCardsLibraryData.Sets.IndexOf(set);
+            cardIndex = set.Cards.FindIndex(c => c.Id == card.Id);
         }
 
         private void UpdateCardsPage()
