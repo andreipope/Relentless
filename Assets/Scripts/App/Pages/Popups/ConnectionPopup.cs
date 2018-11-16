@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _failedGroup = Self.transform.Find("Failed_Group");
             _connectingGroup = Self.transform.Find("Connecting_Group");

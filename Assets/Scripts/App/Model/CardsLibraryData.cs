@@ -66,6 +66,10 @@ namespace Loom.ZombieBattleground.Data
                         {
                             card.CardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.Type);
                         }
+                        if (card.UniqueAnimation != null)
+                        {
+                            card.UniqueAnimationType = Utilites.CastStringTuEnum<Enumerators.UniqueAnimationType>(card.UniqueAnimation, true);
+                        }
 
                         foreach (AbilityData ability in card.Abilities)
                         {

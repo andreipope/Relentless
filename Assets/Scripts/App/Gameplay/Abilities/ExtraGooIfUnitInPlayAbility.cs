@@ -35,6 +35,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo + Value, MinExtraGooValue, MaxExtraGooValue);
+            PlayerCallerOfAbility.CurrentGoo += Value;
         }
 
         protected override void UnitDiedHandler()
@@ -42,6 +43,7 @@ namespace Loom.ZombieBattleground
             base.UnitDiedHandler();
 
             PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo - Value, MinExtraGooValue, MaxExtraGooValue);
+            PlayerCallerOfAbility.CurrentGoo -= Value;
         }
     }
 }

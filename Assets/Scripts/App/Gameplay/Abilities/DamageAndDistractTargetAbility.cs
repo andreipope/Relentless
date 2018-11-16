@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered();
             }
         }
 
@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
 
             BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
 
-            TargetUnit.Distract();
+            BattlegroundController.DistractUnit(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
@@ -62,6 +62,13 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

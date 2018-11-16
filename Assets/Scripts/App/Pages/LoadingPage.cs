@@ -66,19 +66,8 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                 return;
 
-            if (!_dataManager.IsBuildVersionMatch())
-            {
-                if(_progressBar.gameObject.activeSelf)
-                    _progressBar.gameObject.SetActive(false);
-
-                return;
-            }
-
             if (!_isLoaded)
             {
-                if(!_progressBar.gameObject.activeSelf)
-                    _progressBar.gameObject.SetActive(true);
-
                 _percentage += 1f;
                 _loaderBar.fillAmount = Mathf.Clamp(_percentage / 100f, 0.03f, 1f);
                 if (_percentage >= 100)
@@ -143,8 +132,7 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SfxSoundVolume,
-                false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SfxSoundVolume, false, false, true);
 
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));

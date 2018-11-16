@@ -113,6 +113,8 @@ namespace Loom.ZombieBattleground
 
             ParentOfEditingGroupUI = Transform.Find("DeckEditingGroupUI");
 
+            costHighlightObject = Transform.Find("CostHighlight").gameObject;
+
             AnimationEventTriggering = GameObject.GetComponent<AnimationEventTriggering>();
             BehaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
@@ -135,6 +137,8 @@ namespace Loom.ZombieBattleground
         public Transform Transform => GameObject.transform;
 
         public GameObject GameObject { get; }
+
+        public GameObject costHighlightObject { get; protected set; }
 
         public int CurrentTurn { get; set; }
 
@@ -365,19 +369,6 @@ namespace Loom.ZombieBattleground
             Object.Destroy(GameObject);
         }
 
-        public void ReturnCardToDeck()
-        {
-            if (!CardsController.CardDistribution)
-                return;
-
-            CardsController.ReturnCardToDeck(
-                this,
-                () =>
-                {
-                    WorkingCard.Owner.DistributeCard();
-                });
-        }
-
         public void DrawCardFromOpponentDeckToPlayer()
         {
             GameObject.transform.localScale = Vector3.zero;
@@ -516,7 +507,8 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.LibraryCard.Abilities != null)
+            if (unit.Model.Card.LibraryCard.Abilities != null &&
+                !unit.Model.EffectsOnUnit.Contains(Enumerators.EffectOnUnitType.Distract))
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
@@ -569,7 +561,6 @@ namespace Loom.ZombieBattleground
 
             // right block info ------------------------------------
 
-            // IMPROVE!!!
             foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
                 TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(abil.AbilityData.BuffType);
@@ -586,10 +577,17 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            // IMPROVE!!!
-            foreach (Enumerators.BuffType buffOnUnit in unit.Model.BuffsOnUnit)
+            string buffType;
+            foreach (Enumerators.EffectOnUnitType effectOnUnitType in unit.Model.EffectsOnUnit)
             {
-                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(buffOnUnit.ToString());
+                buffType = effectOnUnitType.ToString().ToUpper();
+
+                if (buffType[buffType.Length - 1] == 'X')
+                {
+                    buffType = buffType.Substring(0, buffType.Length - 2);
+                }
+
+                TooltipContentData.BuffInfo buffInfo = DataManager.GetBuffInfoByType(buffType);
                 if (buffInfo != null)
                 {
                     buffs.Add(

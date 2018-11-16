@@ -93,6 +93,8 @@ namespace Loom.ZombieBattleground.Data
 
         public List<VisualEffectInfo> VisualEffectsToPlay;
 
+        public List<ChoosableAbility> ChoosableAbilities;
+
         public void ParseData()
         {
             AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(Type);
@@ -169,7 +171,7 @@ namespace Loom.ZombieBattleground.Data
 
             if (!string.IsNullOrEmpty(SubTrigger))
             {
-                AbilitySubTrigger = Utilites.CastStringTuEnum<Enumerators.AbilitySubTrigger>(SubTrigger);
+                AbilitySubTrigger = Utilites.CastStringTuEnum<Enumerators.AbilitySubTrigger>(SubTrigger, true);
             }
             else
             {
@@ -183,6 +185,14 @@ namespace Loom.ZombieBattleground.Data
             else
             {
                 TargetSetType = Enumerators.SetType.NONE;
+            }
+
+            if (ChoosableAbilities != null)
+            {
+                foreach (ChoosableAbility choosableAbility in ChoosableAbilities)
+                {
+                    choosableAbility.AbilityData.ParseData();
+                }
             }
         }
 
@@ -208,10 +218,23 @@ namespace Loom.ZombieBattleground.Data
             return VisualEffectsToPlay.Find(vfx => vfx.Type == type);
         }
 
+        public bool HasChoosableAbilities()
+        {
+            if(ChoosableAbilities != null && ChoosableAbilities.Count > 1)
+                return true;
+            return false;
+        }
+
         public class VisualEffectInfo
         {
             public Enumerators.VisualEffectType Type;
             public string Path;
+        }
+
+        public class ChoosableAbility
+        {
+            public string Description;
+            public AbilityData AbilityData;
         }
     }
 }

@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 using Newtonsoft.Json;
 using TMPro;
@@ -12,6 +13,7 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
+        private ISoundManager _soundManager;
         private TextMeshProUGUI _flavorText;
 
 
@@ -22,6 +24,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _battleFlavorLines = JsonConvert.DeserializeObject<BattleFlavorLines>(
                     _loadObjectsManager.GetObjectByPath<TextAsset>("Data/battle_flavor_1").text);
@@ -41,6 +44,9 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
+
+            _soundManager.StopPlaying(Enumerators.SoundType.PREPARING_FOR_BATTLE);
+            _soundManager.StopPlaying(Enumerators.SoundType.PREPARING_FOR_BATTLE_LOOP);
         }
 
         public void SetMainPriority()
@@ -57,6 +63,9 @@ namespace Loom.ZombieBattleground
             _flavorText = Self.transform.Find("Flavor_Text").GetComponent<TextMeshProUGUI>();
 
             ShowRandomFlavorText();
+
+            _soundManager.PlaySound(Enumerators.SoundType.PREPARING_FOR_BATTLE, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.PREPARING_FOR_BATTLE_LOOP, Constants.SfxSoundVolume, false, false, true);
         }
 
         public void Show(object data)

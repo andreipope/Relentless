@@ -5,11 +5,12 @@ using Loom.Client;
 using Loom.Google.Protobuf;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
-using UnityEngine.Events;
+using Deck = Loom.ZombieBattleground.Protobuf.Deck;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -66,13 +67,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            DAppChainWalletAddress = callerAddr.LocalAddress;
+            IRpcClient writer =
+                RpcClientFactory
+                    .Configure()
+                    .WithLogger(Debug.unityLogger)
+                    .WithWebSocket(BackendEndpoint.WriterHost)
+                    .Create();
 
-            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.WriterHost)
-                .Create();
-
-            reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(BackendEndpoint.ReaderHost)
-                .Create();
+            reader =
+                RpcClientFactory
+                    .Configure()
+                    .WithLogger(Debug.unityLogger)
+                    .WithWebSocket(BackendEndpoint.ReaderHost)
+                    .Create();
 
             DAppChainClient client = new DAppChainClient(writer, reader)
             {
@@ -128,6 +135,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Deck Management
 
+        private const string GetAIDecsDataMethod = "GetAIDecks";
+
         private const string GetDeckDataMethod = "ListDecks";
 
         private const string DeleteDeckMethod = "DeleteDeck";
@@ -144,6 +153,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
+        }
+
+        public async Task<GetAIDecksResponse> GetAIDecks()
+        {
+            GetAIDecksRequest request = new GetAIDecksRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAIDecsDataMethod, request);
         }
 
         public async Task DeleteDeck(string userId, long deckId)
@@ -330,6 +349,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region PVP
 
         private const string FindMatchMethod = "FindMatch";
+        private const string DebugFindMatchMethod = "DebugFindMatch";
         private const string CancelFindMatchMethod = "CancelFindMatch";
         private const string EndMatchMethod = "EndMatch";
         private const string SendPlayerActionMethod = "SendPlayerAction";
@@ -356,6 +376,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+        }
+
+        public async Task<FindMatchResponse> DebugFindMatch(string userId, Loom.ZombieBattleground.Data.Deck deck, Address? customGameModeAddress)
+        {
+            Client.Protobuf.Address requestCustomGameAddress = null;
+            if (customGameModeAddress != null)
+            {
+                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
+            }
+
+            DebugFindMatchRequest request = new DebugFindMatchRequest
+            {
+                UserId = userId,
+                Deck = deck.GetDeck(),
+                CustomGame = requestCustomGameAddress,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.CallAsync<FindMatchResponse>(DebugFindMatchMethod, request);
         }
 
         public async Task<CancelFindMatchResponse> CancelFindMatch(string userId, long matchId)
@@ -416,7 +455,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
             }
-            GameClient.Get<IQueueManager>().StopNetworkThread();
+            GameClient.Get<IQueueManager>().Clear();
         }
 
         public void EventHandler(object sender, JsonRpcEventData e)
