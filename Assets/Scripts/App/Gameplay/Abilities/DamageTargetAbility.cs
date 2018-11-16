@@ -16,28 +16,17 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
+            TargetUnitStatusType = ability.TargetUnitStatusType;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-        }
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+                return;
 
-        public override void Update()
-        {
-        }
-
-        public override void Dispose()
-        {
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            CreateVfx(Vector3.zero);
+            DealDamageToUnitOwner();
         }
 
         protected override void InputEndedHandler()
@@ -46,57 +35,62 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered();
             }
         }
 
-        protected override void CreateVfx(
-            Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
+        protected override void TurnEndedHandler()
         {
-            switch (AbilityEffectType)
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+        !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            DealDamageToUnitOwner();
+        }
+
+        private void DealDamageToUnitOwner()
+        {
+            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
             {
-                case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetFireAttack");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetFireAttack");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetLifeAttack");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_TOXIC:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellTargetToxicAttack");
-                    break;
-                default:
-                    break;
-            }
+                if (GetCaller() == AbilityUnitOwner)
+                {
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
 
-            Vector3 targetPosition =
-                AffectObjectType == Enumerators.AffectObjectType.Character ?
-                BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position :
-                TargetPlayer.AvatarObject.transform.position;
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                        AbilityUnitOwner
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
-            VfxObject = Object.Instantiate(VfxObject);
-            VfxObject.transform.position = Utilites.CastVfxPosition(GetAbilityUnitOwnerView().Transform.position);
-            targetPosition = Utilites.CastVfxPosition(targetPosition);
-            VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
-            ulong id = ParticlesController.RegisterParticleSystem(VfxObject, autoDestroy, duration);
-
-            if (!autoDestroy)
-            {
-                ParticleIds.Add(id);
+                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    {
+                        ActionType = Enumerators.ActionType.CardAffectingCard,
+                        Caller = GetCaller(),
+                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        {
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                                Target = AbilityUnitOwner,
+                                HasValue = true,
+                                Value = -AbilityData.Value
+                            }
+                        }
+                    });
+                }
             }
         }
 
-        private void ActionCompleted()
+        protected override void VFXAnimationEndedHandler()
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
+            base.VFXAnimationEndedHandler();
+
+            object caller = GetCaller();
 
             object target = null;
+
+            Enumerators.ActionType actionType = Enumerators.ActionType.None;
 
             switch (AffectObjectType)
             {
@@ -105,9 +99,10 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetPlayer
-                    },  AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
 
                     target = TargetPlayer;
+                    actionType = Enumerators.ActionType.CardAffectingOverlord;
                     break;
                 case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
@@ -117,6 +112,7 @@ namespace Loom.ZombieBattleground
                     }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
                     target = TargetUnit;
+                    actionType = Enumerators.ActionType.CardAffectingCard;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
@@ -124,48 +120,19 @@ namespace Loom.ZombieBattleground
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
+                ActionType = actionType,
                 Caller = GetCaller(),
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = target,
-                        HasValue = true,
-                        Value = -AbilityData.Value
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = target,
+                            HasValue = true,
+                            Value = -AbilityData.Value
+                        }
                     }
-                }
             });
-
-            Vector3 targetPosition = VfxObject.transform.position;
-
-            ClearParticles();
-
-            switch (AbilityEffectType)
-            {
-                case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_FIRE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_TOXIC:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-                    break;
-                default:
-                    break;
-            }
-
-            if (VfxObject != null)
-            {
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = targetPosition;
-                ParticlesController.RegisterParticleSystem(VfxObject, true);
-            }
         }
     }
 }
