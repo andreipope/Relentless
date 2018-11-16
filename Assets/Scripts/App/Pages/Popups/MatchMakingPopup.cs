@@ -158,6 +158,10 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 }
+                else
+                {
+                    SetUIStateAsync(MatchMakingState.WaitingForOpponent);
+                }
             }
             catch (Exception e) {
                 Debug.LogWarning(e.Message);
