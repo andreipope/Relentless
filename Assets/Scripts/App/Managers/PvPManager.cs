@@ -294,6 +294,41 @@ namespace Loom.ZombieBattleground
             _queueManager.Clear();
         }
 
+        public async void MatchIsStarting (FindMatchResponse findMatchResponse) {
+            _isMatchmakingInProgress = true;
+            _matchmakingTimeoutCounter = 0;
+
+            _queueManager.Active = false;
+            _queueManager.Clear();
+
+            InitialGameState = null;
+            MatchMetadata = null;
+
+            MatchMetadata = new MatchMetadata(
+                findMatchResponse.Match.Id,
+                findMatchResponse.Match.Topics,
+                findMatchResponse.Match.Status
+            );
+
+            _isMatchmakingInProgress = false;
+
+            // No need to reload if a match was found immediately
+            if (InitialGameState == null)
+            {
+                await LoadInitialGameState();
+            }
+
+            Debug.LogWarning("Match Starting");
+
+            GameStartedActionReceived?.Invoke();
+
+            // if its not player turn, start timer to check later if other player left the game or not
+            if (!IsCurrentPlayer())
+            {
+                _isWaitForTurnTimerStart = true;
+            }
+        }
+
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Func<Task> taskFunc = async () =>
@@ -338,24 +373,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case Match.Types.Status.Started:
-                        _isMatchmakingInProgress = false;
-
-                        // No need to reload if a match was found immediately
-                        if (InitialGameState == null)
-                        {
-                            await LoadInitialGameState();
-                        }
-
-                        Debug.LogWarning("Match Starting");
-
-                        GameStartedActionReceived?.Invoke();
-
-                        // if its not player turn, start timer to check later if other player left the game or not
-                        if (!IsCurrentPlayer())
-                        {
-                            _isWaitForTurnTimerStart = true;
-                        }
-
+                        //Should not handle this anymore through events for now
                         break;
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)

@@ -78,8 +78,8 @@ namespace Loom.ZombieBattleground
                             await matchMakingPopup.InitiateRegisterPlayerToPool(_uiManager.GetPage<GameplayPage>().CurrentDeckId);
                             matchMakingPopup.CancelMatchmakingClicked += MatchMakingPopupOnCancelMatchmakingClicked;
 
-                             //   _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
-                             //   _onPvPManagerGameStartedActionHandlerCounter++;
+                            _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
+                            _onPvPManagerGameStartedActionHandlerCounter++;
                         }
                         catch (Exception e) {
                             Debug.LogWarning(e);
@@ -188,8 +188,11 @@ namespace Loom.ZombieBattleground
             CreateLocalMatch();
         }
 
-        private void OnPvPManagerGameStartedActionReceived()
+        public void OnPvPManagerGameStartedActionReceived()
         {
+            MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+            matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
+            matchMakingPopup.Hide();
             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
             _onPvPManagerGameStartedActionHandlerCounter--;
             StartPvPMatch();

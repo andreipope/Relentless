@@ -113,7 +113,7 @@ namespace Loom.ZombieBattleground
                         _backendDataControlMediator.UserDataModel.UserId
                     );
 
-                    Debug.LogWarning(JsonUtility.ToJson(result));
+                    Debug.LogWarning(result.ToString());
 
                     await InitiateRegisterPlayerToPool(GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId);
                 }
@@ -138,7 +138,7 @@ namespace Loom.ZombieBattleground
                     deckId
                 );
 
-                Debug.LogWarning(JsonUtility.ToJson(result));
+                Debug.LogWarning(result.ToString());
 
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
             } 
@@ -148,18 +148,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task InitiateFindingMatch () {
+        private async Task InitiateFindingMatch()
+        {
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
                     _backendDataControlMediator.UserDataModel.UserId
                 );
 
-                Debug.LogWarning(JsonUtility.ToJson(result));
+                Debug.LogWarning(result.ToString());
 
                 if (result.Match != null)
                 {
-                    if (result.Match.Status == Match.Types.Status.Matching) {
+                    if (result.Match.Status == Match.Types.Status.Matching)
+                    {
                         bool mustAccept = false;
                         for (int i = 0; i < result.Match.PlayerStates.Count; i++)
                         {
@@ -172,11 +174,12 @@ namespace Loom.ZombieBattleground
                             }
                         }
 
-                        if (mustAccept) 
+                        if (mustAccept)
                         {
+                            SetUIStateAsync(MatchMakingState.AcceptingMatch);
                             await InitiateAcceptingMatch(result.Match.Id);
-                        } 
-                        else 
+                        }
+                        else
                         {
                             SetUIStateAsync(MatchMakingState.WaitingForOpponent);
                         }
@@ -187,7 +190,8 @@ namespace Loom.ZombieBattleground
                     SetUIStateAsync(MatchMakingState.WaitingForOpponent);
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 ErrorHandler(e);
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
             }
@@ -200,7 +204,7 @@ namespace Loom.ZombieBattleground
                     _backendDataControlMediator.UserDataModel.UserId
                 );
 
-                Debug.LogWarning(JsonUtility.ToJson(result));
+                Debug.LogWarning(result.ToString());
 
                 if (result.Match != null)
                 {
@@ -228,21 +232,25 @@ namespace Loom.ZombieBattleground
 
                         if (mustAccept)
                         {
+                            SetUIStateAsync(MatchMakingState.AcceptingMatch);
                             await InitiateAcceptingMatch(result.Match.Id);
                             return;
                         }
 
                         if (opponentHasAccepted && !mustAccept) 
                         {
-                            //Start game here, need to clean up the subscribe mess first
-                            Debug.LogWarning("Game would have started for this client");
+                            Debug.Log("The Match is Starting!");
+                            StartConfirmedMatch(result);
                         }
                         else
                         {
                             SetUIStateAsync(MatchMakingState.WaitingForOpponent);
                         }
                     }
-                    else if (result.Match.Status == Match.Types.Status.Timedout) 
+                    else if (result.Match.Status == Match.Types.Status.Started) {
+                        StartConfirmedMatch(result);
+                    }
+                    else 
                     {
                         await _backendFacade.UnsubscribeEvent();
                         await InitiateRegisterPlayerToPool(GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId);
@@ -251,7 +259,6 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     SetUIStateAsync(MatchMakingState.WaitingForOpponent);
-
                 }
             }
             catch (Exception e)
@@ -270,7 +277,7 @@ namespace Loom.ZombieBattleground
                     matchId
                 );
 
-                Debug.LogWarning(JsonUtility.ToJson(result));
+                Debug.LogWarning(result.ToString());
 
                 SetUIStateAsync(MatchMakingState.WaitingForOpponent);
                 await _backendFacade.SubscribeEvent(result.Match.Topics.ToList());
@@ -280,6 +287,11 @@ namespace Loom.ZombieBattleground
                 ErrorHandler(e);
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
             }
+        }
+
+        private void StartConfirmedMatch(FindMatchResponse findMatchResponse)
+        {
+            GameClient.Get<IPvPManager>().MatchIsStarting(findMatchResponse);
         }
 
         private async void SetUIStateAsync(MatchMakingState state)
