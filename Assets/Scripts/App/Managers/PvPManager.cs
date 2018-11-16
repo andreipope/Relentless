@@ -334,6 +334,7 @@ namespace Loom.ZombieBattleground
                         if (endGameData != null)
                         {
                             Debug.Log(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                            ResetWaitForTurnTimer();
                             await _backendFacade.UnsubscribeEvent();
                             return;
                         }
