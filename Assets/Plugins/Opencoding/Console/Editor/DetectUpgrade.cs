@@ -48,7 +48,7 @@ namespace Opencoding.Console.Editor
                             var path = AssetDatabase.GUIDToAssetPath(guid);
                             return
                                 path.IndexOf("Opencoding", 0, StringComparison.InvariantCultureIgnoreCase) != -1 &&
-                                path.ToLower().EndsWith(".jar");
+                                path.ToLowerInvariant().EndsWith(".jar");
                         }
                     ); 
                      

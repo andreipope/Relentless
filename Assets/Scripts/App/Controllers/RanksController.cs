@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private IGameplayManager _gameplayManager;
 
+        private Action _ranksUpgradeCompleteAction;
+
         public void Dispose()
         {
         }
@@ -33,25 +35,36 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card)
+        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card, GameAction<object> actionInQueue)
         {
-            if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 if (!card.Owner.IsLocalPlayer)
                     return;
             }
 
-            List<BoardUnitView> filter = units.Where(unit =>
-                unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
-                (int) unit.Model.Card.LibraryCard.CardRank < (int) card.LibraryCard.CardRank).ToList();
-            if (filter.Count > 0)
-            {
-                DoRankUpgrades(filter, card);
+            actionInQueue.Action = (parameter, completeCallback) =>
+                   {
+                       _ranksUpgradeCompleteAction = completeCallback;
 
-                GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+                       List<BoardUnitView> filter = units.Where(unit =>
+                                    unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
+                                    (int)unit.Model.Card.LibraryCard.CardRank < (int)card.LibraryCard.CardRank).ToList();
+                       if (filter.Count > 0)
+                       {
+                           DoRankUpgrades(filter, card);
 
-                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_OF_RANK_UPGRADE);
-            }
+                           GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero,
+                            Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+
+                           _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_OF_RANK_UPGRADE);
+                       }
+                       else
+                       {
+                           _ranksUpgradeCompleteAction?.Invoke();
+                           _ranksUpgradeCompleteAction = null;
+                       }
+                   };
         }
 
         public void DoRankUpgrades(List<BoardUnitView> units, WorkingCard card, bool randomly = true)
@@ -239,7 +252,7 @@ namespace Loom.ZombieBattleground
                                     List<Enumerators.BuffType> buffTypes,
                                     WorkingCard card, bool randomly = true)
         {
-            if(_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
                 units = units.FindAll(x => x.Model.UnitCanBeUsable());
             }
@@ -261,15 +274,28 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 if (!card.Owner.IsLocalPlayer)
+                {
+                    _ranksUpgradeCompleteAction?.Invoke();
+                    _ranksUpgradeCompleteAction = null;
                     return;
+                }
             }
 
             RanksUpdated?.Invoke(card, units);
+
+            _ranksUpgradeCompleteAction?.Invoke();
+            _ranksUpgradeCompleteAction = null;
         }
 
         public void BuffAllyManually(List<BoardUnitView> units, WorkingCard card)
         {
-            DoRankUpgrades(units, card, false);
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+                 (parameter, completeCallback) =>
+                 {
+                     _ranksUpgradeCompleteAction = completeCallback;
+
+                     DoRankUpgrades(units, card, false);
+                 });
         }
     }
 }

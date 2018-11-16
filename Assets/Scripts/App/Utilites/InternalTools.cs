@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground.Helpers
             return list.OrderBy(item => rnd.Next()).ToList();
         }
 
-        public static void GroupHorizontalObjects(Transform root, float offset, float spacing, float offsetY, bool isReverse = false)
+        public static void GroupHorizontalObjects(Transform root, float offset, float spacing, float offsetY, bool isReverse = false, float offsetZ = 0f)
         {
             int count = root.childCount;
 
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Helpers
             {
                 for (int i = 0; i < count; i++)
                 {
-                    root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, offsetY, 0);
+                    root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, offsetY, offsetZ);
                     pivot.x += width / count;
                 }
             }
@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground.Helpers
             {
                 for (int i = 0; i < count; i++)
                 {
-                    root.GetChild(i).localPosition = new Vector3(pivot.x, offsetY, 0);
+                    root.GetChild(i).localPosition = new Vector3(pivot.x, offsetY, offsetZ);
                     pivot.x += spacing;
                 }
             }
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground.Helpers
 
             char[] chars = origin.Replace("_", Constants.Space).ToCharArray();
 
-            string newValue = chars[0].ToString().ToUpper();
+            string newValue = chars[0].ToString().ToUpperInvariant();
 
             for(int i = 1; i < chars.Length; i++)
             {
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground.Helpers
                     newValue += Constants.Space;
                 }
 
-                newValue += chars[i].ToString().ToLower();
+                newValue += chars[i].ToString().ToLowerInvariant();
             }
           
             return newValue;
