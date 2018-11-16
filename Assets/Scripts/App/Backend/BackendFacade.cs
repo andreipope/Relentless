@@ -310,11 +310,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
-        public async Task<AcceptMatchResponse> AcceptMatch(string userId)
+        public async Task<AcceptMatchResponse> AcceptMatch(string userId, long matchId)
         {
             AcceptMatchRequest request = new AcceptMatchRequest
             {
-                UserId = userId
+                UserId = userId,
+                MatchId = matchId
             };
 
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);

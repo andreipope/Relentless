@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground
 
                         if (mustAccept) 
                         {
-                            await InitiateAcceptingMatch();
+                            await InitiateAcceptingMatch(result.Match.Id);
                         } 
                         else 
                         {
@@ -200,7 +200,7 @@ namespace Loom.ZombieBattleground
 
                         if (mustAccept)
                         {
-                            await InitiateAcceptingMatch();
+                            await InitiateAcceptingMatch(result.Match.Id);
                             return;
                         }
 
@@ -228,9 +228,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task InitiateAcceptingMatch () {
+        private async Task InitiateAcceptingMatch (long matchId) {
             AcceptMatchResponse result = await _backendFacade.AcceptMatch(
-                _backendDataControlMediator.UserDataModel.UserId
+                _backendDataControlMediator.UserDataModel.UserId,
+                matchId
             );
 
             Debug.LogWarning(JsonUtility.ToJson(result));
