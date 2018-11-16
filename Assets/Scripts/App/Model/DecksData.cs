@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground.Data
 
         public string Name;
 
+        public string Type;
+
         public List<DeckCardData> Cards;
 
         public int PrimarySkill;

@@ -22,16 +22,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "http://stage-auth.loom.games",
                         "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
                         "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
-                        "v2"
+                        "v3"
                     )
                 },
                 {
                     BackendPurpose.Production,
                     new BackendEndpoint(
                         "http://auth.loom.games",
-                        "ws://gamechain-2.dappchains.com:9999/queryws",
-                        "ws://gamechain-2.dappchains.com:46657/websocket",
-                        "v2"
+                        "ws://gamechain.dappchains.com:9999/queryws",
+                        "ws://gamechain.dappchains.com:46657/websocket",
+                        "v3"
                     )
                 }
             };

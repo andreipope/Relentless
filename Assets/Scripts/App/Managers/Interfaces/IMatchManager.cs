@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground
 {
@@ -10,5 +11,6 @@ namespace Loom.ZombieBattleground
 
         void FindMatch();
         void FindMatch(Enumerators.MatchType matchType);
+        void DebugFindPvPMatch(Deck deck);
     }
 }

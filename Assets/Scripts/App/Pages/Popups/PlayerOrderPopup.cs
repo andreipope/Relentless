@@ -124,15 +124,15 @@ namespace Loom.ZombieBattleground
 
         private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
         {
-            _playerOverlordNameText.text = player.Name.ToUpper();
-            _opponentOverlordNameText.text = opponent.Name.ToUpper();
+            _playerOverlordNameText.text = player.Name.ToUpperInvariant();
+            _opponentOverlordNameText.text = opponent.Name.ToUpperInvariant();
 
             _playerOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
-                    player.Element.ToLower());
+                    player.Element.ToLowerInvariant());
             _opponentOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
-                    opponent.Element.ToLower());
+                    opponent.Element.ToLowerInvariant());
 
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
