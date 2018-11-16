@@ -41,6 +41,20 @@ namespace Loom.ZombieBattleground
             if (TargetUnit != null && TargetUnit.Card.RealCost <= Cost)
             {
                 BattlegroundController.DestroyBoardUnit(TargetUnit);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                            Target = TargetUnit
+                        }
+                    }
+                });
             }
         }
     }

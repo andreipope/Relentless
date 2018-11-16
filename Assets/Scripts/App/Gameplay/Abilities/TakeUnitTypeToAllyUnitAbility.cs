@@ -46,6 +46,19 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            Enumerators.ActionEffectType effectType = Enumerators.ActionEffectType.None;
+
+            if (UnitType == Enumerators.CardType.FERAL)
+            {
+                effectType = Enumerators.ActionEffectType.Feral;
+            }
+            else if (UnitType == Enumerators.CardType.HEAVY)
+            {
+                effectType = Enumerators.ActionEffectType.Heavy;
+            }
+
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             switch (AbilityData.AbilitySubTrigger)
             {
                 case Enumerators.AbilitySubTrigger.RandomUnit:
@@ -59,6 +72,12 @@ namespace Loom.ZombieBattleground
                             if (allies.Count > 0)
                             {
                                 TakeTypeToUnit(allies[0]);
+
+                                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                {
+                                    ActionEffectType = effectType,
+                                    Target = allies[0]
+                                });
 
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
@@ -77,6 +96,12 @@ namespace Loom.ZombieBattleground
                                 int random = Random.Range(0, allies.Count);
                                 TakeTypeToUnit(allies[random]);
 
+                                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                {
+                                    ActionEffectType = effectType,
+                                    Target = allies[random]
+                                });
+
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
                                    allies[random]
@@ -88,6 +113,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
                     if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner).Count() == 0)
                     {
+                        TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = effectType,
+                            Target = AbilityUnitOwner
+                        });
+
                         TakeTypeToUnit(AbilityUnitOwner);
                     }
                     break;
@@ -102,6 +133,12 @@ namespace Loom.ZombieBattleground
                         foreach(BoardUnitModel unit in allies)
                         {
                             TakeTypeToUnit(unit);
+
+                            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = effectType,
+                                Target = unit
+                            });
                         }
 
                         AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
@@ -124,6 +161,24 @@ namespace Loom.ZombieBattleground
                             AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
                     }
                     break;
+            }
+
+
+            if (TargetEffects.Count > 0)
+            {
+                Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingMultipleCards;
+
+                if (TargetEffects.Count == 1)
+                {
+                    actionType = Enumerators.ActionType.CardAffectingCard;
+                }
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
             }
         }
 

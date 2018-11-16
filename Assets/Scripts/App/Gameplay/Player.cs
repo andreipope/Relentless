@@ -342,8 +342,6 @@ namespace Loom.ZombieBattleground
 
         public void InvokeTurnStarted()
         {
-            TurnStarted?.Invoke();
-
             if (_gameplayManager.CurrentTurnPlayer.Equals(this))
             {
                 GooVials++;
@@ -364,6 +362,8 @@ namespace Loom.ZombieBattleground
 
                 _cardsController.AddCardToHand(this);
             }
+
+            TurnStarted?.Invoke();
         }
 
         public void AddCardToDeck(WorkingCard card, bool shuffle = false)
@@ -613,7 +613,21 @@ namespace Loom.ZombieBattleground
 
             _skillsController.DisableSkillsContent(this);
 
-            _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HeroDeathSoundVolume);
+            switch (SelfHero.HeroElement)
+            {
+                case Enumerators.SetType.FIRE:
+                case Enumerators.SetType.WATER:
+                case Enumerators.SetType.EARTH:
+                case Enumerators.SetType.AIR:
+                case Enumerators.SetType.LIFE:
+                case Enumerators.SetType.TOXIC:
+                    var soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfHero.HeroElement);
+                    _soundManager.PlaySound(soundType, Constants.HeroDeathSoundVolume);
+                    break;
+                default:
+                    _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HeroDeathSoundVolume);
+                    break;
+            }
 
             if (!_gameplayManager.IsTutorial)
             {

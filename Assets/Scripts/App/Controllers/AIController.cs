@@ -170,7 +170,14 @@ namespace Loom.ZombieBattleground
 
             if (deck != null)
             {
-                SetAiType((Enumerators.AiType)Enum.Parse(typeof(Enumerators.AiType), deck.Type));
+                if (!string.IsNullOrEmpty(deck.Type))
+                {
+                    SetAiType(Utilites.CastStringTuEnum<Enumerators.AiType>(deck.Type, true));
+                }
+                else
+                {
+                    SetAiType(Enumerators.AiType.MIXED_AI); // DEFAULT
+                }
             }
             else
             {
@@ -597,8 +604,19 @@ namespace Loom.ZombieBattleground
 
                 if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
                 {
-                    needTargetForAbility =
-                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                    List<AbilityData> abilitiesWithTargets = card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0);
+
+                    if (abilitiesWithTargets.Count > 0)
+                    {
+                        foreach(AbilityData data in abilitiesWithTargets)
+                        {
+                            if (data.AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
+                                data.AbilityActivityType == Enumerators.AbilityActivityType.ACTIVE)
+                            {
+                                needTargetForAbility = true;
+                            }
+                        }
+                    }                    
                 }
 
                 BoardObject target = null;
@@ -639,7 +657,7 @@ namespace Loom.ZombieBattleground
                         }
                 }
 
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.LibraryCard.Cost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= card.RealCost;
             });
         }
 
@@ -1005,7 +1023,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel item in list)
             {
-                if (item.CurrentHp < item.MaxCurrentHp)
+                if (item.CurrentHp < item.MaxCurrentHp && item.CurrentHp > 0)
                 {
                     finalList.Add(item);
                 }
@@ -1082,7 +1100,7 @@ namespace Loom.ZombieBattleground
             {
                 eligibleUnits =
                     _gameplayManager.OpponentPlayer.BoardCards
-                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && !_attackedUnitTargets.Contains(x.Model))
+                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model))
                         .Select(x => x.Model)
                         .ToList();
             }
@@ -1168,13 +1186,22 @@ namespace Loom.ZombieBattleground
             switch (skill.Skill.OverlordSkill)
             {
                 case Enumerators.OverlordSkill.HARDEN:
-                case Enumerators.OverlordSkill.STONE_SKIN:
                 case Enumerators.OverlordSkill.DRAW:
-                {
                     selectedObjectType = Enumerators.AffectObjectType.Player;
                     target = _gameplayManager.OpponentPlayer;
-                }
-
+                    break;
+                case Enumerators.OverlordSkill.STONE_SKIN:
+                    {
+                        List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.CardSetType ==
+                                                                        _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
+                        if (units.Count > 0)
+                        {
+                            target = units[UnityEngine.Random.Range(0, units.Count)];
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else
+                            return;
+                    }
                     break;
                 case Enumerators.OverlordSkill.HEALING_TOUCH:
                     {

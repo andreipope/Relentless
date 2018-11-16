@@ -165,6 +165,8 @@ namespace Loom.ZombieBattleground
                 CreateOverflow();
 
                 _isInOverflow = true;
+
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, "CZB_AUD_Overflow_Card_Mechanic_F1_EXP", Constants.SfxSoundVolume, false, true);
             }
             else if (_currentValue <= _maxValue && _isInOverflow)
             {
