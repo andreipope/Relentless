@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class  HordeEditingPage : IUIElement
+    public class HordeEditingPage : IUIElement
     {
         private const int CardsPerPage = 5;
 
@@ -298,6 +298,13 @@ namespace Loom.ZombieBattleground
         {
             Dispose();
 
+            if (_draggingObject != null)
+            {
+                Object.Destroy(_draggingObject);
+                _draggingObject = null;
+                _isDragging = false;
+            }
+
             if (_selfPage == null)
                 return;
 
@@ -359,6 +366,9 @@ namespace Loom.ZombieBattleground
         public void LoadCards(int page, Enumerators.SetType setType)
         {
             _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
+
+
+            _toggleGroup.transform.GetChild((int)setType).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
@@ -506,8 +516,7 @@ namespace Loom.ZombieBattleground
             // Animated moving card
             if (sender != null)
             {
-                int setIndex, cardIndex;
-                GetSetAndIndexForCard(boardCard.LibraryCard, out setIndex, out cardIndex);
+                GetSetAndIndexForCard(boardCard.LibraryCard, out int setIndex, out int cardIndex);
                 _currentSet = SetTypeUtility.GetCardSetType(_dataManager, setIndex);
                 _currentElementPage = cardIndex / CardsPerPage;
                 UpdateCardsPage();
@@ -547,7 +556,7 @@ namespace Loom.ZombieBattleground
                 RepositionHordeCards();
                 UpdateNumCardsText();
 
-                if(_highlightingVFXItem.MouldId == boardCard.LibraryCard.MouldId)
+                if (_highlightingVFXItem.MouldId == boardCard.LibraryCard.MouldId)
                 {
                     _highlightingVFXItem.ChangeState(false);
                     _highlightingVFXItem.MouldId = -1;
@@ -594,7 +603,7 @@ namespace Loom.ZombieBattleground
 
             if (_currentDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                OpenAlertDialog("Your '" + _currentDeck.Name + "' deck has more than " + Constants.DeckMaxSize + " cards.");
+                OpenAlertDialog("You can not add more than " + Constants.DeckMaxSize + " Cards in a single Horde.");
                 return;
             }
 
@@ -776,13 +785,22 @@ namespace Loom.ZombieBattleground
                     Debug.Log("Result === " + e);
 
                     success = false;
-                    OpenAlertDialog("Not able to Edit Deck: \n" + e.Message);
+
+                    string message = e.Message;
+
+                    string[] description = e.Message.Split('=');
+                    if (description.Length > 0)
+                    {
+                        message = description[description.Length - 1].TrimStart(' ');
+                        message = char.ToUpper(message[0]) + message.Substring(1);
+                    }
+                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
                 }
             }
 
             if (success)
             {
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) _currentDeck.Id;
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }
@@ -885,23 +903,11 @@ namespace Loom.ZombieBattleground
             LoadCards(_currentElementPage, _currentSet);
         }
 
-        private bool GetSetAndIndexForCard(IReadOnlyCard card, out int setIndex, out int cardIndex)
+        private void GetSetAndIndexForCard(Card card, out int setIndex, out int cardIndex)
         {
-            setIndex = -1;
-            cardIndex = -1;
-            for (int i = 0; i < _dataManager.CachedCardsLibraryData.Sets.Count; i++)
-            {
-                CardSet cardSet = _dataManager.CachedCardsLibraryData.Sets[i];
-                cardIndex = cardSet.Cards.FindIndex(c => c.MouldId == card.MouldId);
-
-                if (cardIndex != -1)
-                {
-                    setIndex = i;
-                    break;
-                }
-            }
-
-            return false;
+            CardSet set = _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(c => c.MouldId == card.MouldId) != null);
+            setIndex = _dataManager.CachedCardsLibraryData.Sets.IndexOf(set);
+            cardIndex = set.Cards.FindIndex(c => c.MouldId == card.MouldId);
         }
 
         private void UpdateCardsPage()

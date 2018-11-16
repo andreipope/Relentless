@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         protected PastActionReportPanel _mainRoot;
 
+        private Vector3 _startPosition;
+
         public PastReportActionSmall(PastActionReportPanel root, GameObject prefab, Transform parent, PastActionsPopup.PastActionParam pastActionParam)
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -40,8 +42,8 @@ namespace Loom.ZombieBattleground
 
             PreviewImage.sprite = GetPreviewImage();
 
-            OnBehaviourHandler behaviour = SelfObject.transform.Find("Collider").GetComponent<OnBehaviourHandler>();
-            behaviour.MouseDownTriggered += MouseDownHandler;
+            OnPastReportActionHandler behaviour = SelfObject.transform.Find("Border").GetComponent<OnPastReportActionHandler>();
+            behaviour.PointerDowned += MouseDownHandler;
         }
 
         public void Update()
@@ -56,12 +58,31 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void MouseDownHandler(GameObject obj)
+        public void MouseDownHandler(BaseEventData data)
         {
-            if (!_mainRoot.IsDrawing)
+            if (Input.GetMouseButtonDown(0))
             {
-                UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
-                _mainRoot.IsDrawing = true;
+                if (!_mainRoot.IsDrawing)
+                {
+                    _startPosition = Input.mousePosition;
+                    Helpers.InternalTools.DoActionDelayed(PastActionReportClickCompleted, 0.15f);
+                }
+            }
+        }
+
+        private void PastActionReportClickCompleted()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (!_mainRoot.IsDrawing)
+                {
+                    float delta = Vector3.Distance(_startPosition, Input.mousePosition);
+                    if (delta <= 30f)
+                    {
+                        UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
+                        _mainRoot.IsDrawing = true;
+                    }
+                }
             }
         }
 

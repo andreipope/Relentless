@@ -28,6 +28,20 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitModel boardUnitModel:
                     BattlegroundController.DestroyBoardUnit(boardUnitModel);
+
+                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    {
+                        ActionType = Enumerators.ActionType.CardAffectingCard,
+                        Caller = GetCaller(),
+                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        {
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                                Target = boardUnitModel
+                            }
+                        }
+                    });
                     break;
                 case Player player:
                     break;
@@ -40,7 +54,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitAttackedHandler(from, damage, isAttacker);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
                 return;
 
             Action(from);

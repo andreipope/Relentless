@@ -294,6 +294,9 @@ namespace Loom.ZombieBattleground
 
         private async void NextStepCommonEndActions()
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _currentTutorialStepIndex++;
 
             CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];

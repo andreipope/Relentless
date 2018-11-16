@@ -35,7 +35,6 @@ namespace Loom.ZombieBattleground
             Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);
             WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
             BoardUnitView unit = CreateBoardUnit(card, owner);
-            unit.Model.IsReanimated = true;
             AbilityUnitOwner.IsReanimated = true;
 
             owner.AddCardToBoard(card);

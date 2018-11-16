@@ -457,6 +457,12 @@ namespace Loom.ZombieBattleground
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
 
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
+
                         if (hasValue)
                         {
                             _valueText.text = value.ToString();
@@ -513,6 +519,12 @@ namespace Loom.ZombieBattleground
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
 
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
+
                         if (hasValue)
                         {
                             _valueText.text = value.ToString();
@@ -568,6 +580,12 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -662,6 +680,12 @@ namespace Loom.ZombieBattleground
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
 
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
+
                         if (hasValue)
                         {
                             _valueText.text = value.ToString();
@@ -751,6 +775,12 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {

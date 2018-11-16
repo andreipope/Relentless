@@ -10,6 +10,7 @@ namespace Loom.ZombieBattleground
         public float delayAfterImpactVFX;
         [Range(0, 20)]
         public float delayBeforeDestroyImpactVFX;
+        public string soundName;
 
         public AbilityImpactEffectInfo()
         {

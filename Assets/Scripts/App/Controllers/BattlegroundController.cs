@@ -610,7 +610,7 @@ namespace Loom.ZombieBattleground
                 _rearrangingTopRealTimeSequence = null;
             }
 
-            List<BoardUnitView> opponentBoardCards = _gameplayManager.OpponentPlayer.BoardCards;
+            List<BoardUnitView> opponentBoardCards = OpponentBoardCards;
 
             float boardWidth = 0.0f;
             float spacing = 0.2f;
@@ -988,7 +988,8 @@ namespace Loom.ZombieBattleground
             boardUnit.Model.SetAsWalkerUnit();
             boardUnit.Model.UseShieldFromBuff();
             boardUnit.Model.BuffsOnUnit.Clear();
-    
+            boardUnit.Model.AttackInfoType = Enumerators.AttackInfoType.ANY;
+
             List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit.Model);
 
             foreach(AbilityBase ability in abilities)

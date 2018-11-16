@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected object GetCaller()
+        public object GetCaller()
         {
             return AbilityUnitOwner ?? (object) BoardSpell;
         }

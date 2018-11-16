@@ -75,6 +75,31 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
             }
 
+            Enumerators.ActionEffectType effectType = Enumerators.ActionEffectType.None;
+
+            if (UnitType == Enumerators.CardType.FERAL)
+            {
+                effectType = Enumerators.ActionEffectType.Feral;
+            }
+            else if (UnitType == Enumerators.CardType.HEAVY)
+            {
+                effectType = Enumerators.ActionEffectType.Heavy;
+            }
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = effectType,
+                        Target = unit
+                    }
+                }
+            });
+
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                unit

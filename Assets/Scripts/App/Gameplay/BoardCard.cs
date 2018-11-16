@@ -497,7 +497,8 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.LibraryCard.Abilities != null)
+            if (unit.Model.Card.LibraryCard.Abilities != null &&
+                !unit.Model.EffectsOnUnit.Contains(Enumerators.EffectOnUnitType.Distract))
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
@@ -550,7 +551,6 @@ namespace Loom.ZombieBattleground
 
             // right block info ------------------------------------
 
-            // IMPROVE!!!
             foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
                 // FIXME: hack
@@ -570,8 +570,8 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            // IMPROVE!!!
-            foreach (Enumerators.BuffType buffOnUnit in unit.Model.BuffsOnUnit)
+            string buffType;
+            foreach (Enumerators.EffectOnUnitType effectOnUnitType in unit.Model.EffectsOnUnit)
             {
                 // FIXME: hack
                 Enumerators.GameMechanicDescriptionType mechanicType =

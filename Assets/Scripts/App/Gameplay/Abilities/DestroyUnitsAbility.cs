@@ -44,6 +44,38 @@ namespace Loom.ZombieBattleground
             }
 
             units.ForEach(BattlegroundController.DestroyBoardUnit);
+
+
+            if (units.Count > 0)
+            {
+                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+                foreach (BoardUnitModel unit in units)
+                {
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                            Target = unit
+                        }
+                    };
+                }
+
+                Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingCard;
+
+                if(units.Count > 1)
+                {
+                    actionType = Enumerators.ActionType.CardAffectingMultipleCards;
+                }
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
+            }
         }
     }
 }

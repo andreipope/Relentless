@@ -117,13 +117,11 @@ namespace Loom.ZombieBattleground
             if (!mustPause) 
             {
                 IsAppPaused = false;
-                Time.timeScale = 1;
                 AudioListener.pause = false;
             } 
             else 
             {
                 IsAppPaused = true;
-                Time.timeScale = 0;
                 AudioListener.pause = true;
             }
         }

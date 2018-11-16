@@ -13,9 +13,11 @@ namespace Loom.ZombieBattleground
         private UnitWeaponAbility _unitWeaponAbility;
 
         private ulong _id;
+        private ISoundManager _soundManager;
 
         public UnitWeaponAbilityView(UnitWeaponAbility ability) : base(ability)
         {
+            _soundManager = GameClient.Get<ISoundManager>();
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
             _abilitiesController = GameplayManager.GetController<AbilitiesController>();
         }
@@ -62,12 +64,25 @@ namespace Loom.ZombieBattleground
                 {
                     effectType = Enumerators.VisualEffectType.Impact;
                 }
-
+                
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
                 VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform, false);
                 VfxObject.transform.localPosition = Vector3.forward * 3f;
                 _id = ParticlesController.RegisterParticleSystem(VfxObject);
                 ParticleIds.Add(_id);
+
+                string soundName = VfxObject.GetComponent<AbilityImpactEffectInfo>().soundName;
+                Enumerators.SoundType soundType = Enumerators.SoundType.CARDS;
+                if (Ability.GetCaller() is BoardSpell)
+                {
+                    soundType = Enumerators.SoundType.SPELLS;
+                }
+                
+                _soundManager.PlaySound(
+                    soundType,
+                    soundName,
+                    Constants.ZombiesSoundVolume / 2f,
+                    Enumerators.CardSoundType.NONE);
             }
 
             Ability.InvokeVFXAnimationEnded();
