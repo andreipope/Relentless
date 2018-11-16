@@ -336,8 +336,6 @@ namespace Loom.ZombieBattleground
         {
             Func<Task> taskFunc = async () =>
             {
-                string jsonStr = SystemText.Encoding.UTF8.GetString(data);
-
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 Debug.LogWarning("! " + playerActionEvent); // todo delete
 
