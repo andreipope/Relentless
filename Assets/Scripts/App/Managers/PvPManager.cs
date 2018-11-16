@@ -441,6 +441,7 @@ namespace Loom.ZombieBattleground
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
                 case PlayerActionType.LeaveMatch:
+                    ResetWaitForTurnTimer();
                     LeaveMatchReceived?.Invoke();
                     break;
                 case PlayerActionType.RankBuff:
