@@ -140,7 +140,7 @@ namespace Loom.ZombieBattleground
         private void FillInfo(Hero heroData)
         {
             _heroImage.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLower());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.Element.ToLowerInvariant());
             _heroImage.SetNativeSize();
 
             for (int i = 0; i < AbilityListSize; i++)
@@ -161,6 +161,10 @@ namespace Loom.ZombieBattleground
             _skillName.text = ability.Skill.Title;
             _skillDescription.text = ability.Skill.Description;
             int index = _selectedHero.Skills.IndexOf(ability.Skill);
+            if (_selectedHero.SecondarySkill == index)
+            {
+                _selectedHero.SecondarySkill = _selectedHero.PrimarySkill;
+            }
             _selectedHero.PrimarySkill = index;
         }
 
