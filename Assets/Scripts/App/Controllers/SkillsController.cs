@@ -835,11 +835,7 @@ namespace Loom.ZombieBattleground
 
             targets.Add(opponent);
 
-            List<BoardUnitModel> boardCradsModels = new List<BoardUnitModel>();
-            foreach (var item in opponent.BoardCards)
-            {
-                boardCradsModels.Add(item.Model);
-            }
+            List<BoardUnitModel> boardCradsModels = opponent.BoardCards.Select((x) => x.Model).ToList();
 
             targets.AddRange(boardCradsModels);
 
