@@ -248,6 +248,11 @@ namespace Loom.ZombieBattleground
                         await InitiateRegisterPlayerToPool(GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId);
                     }
                 }
+                else
+                {
+                    SetUIStateAsync(MatchMakingState.WaitingForOpponent);
+
+                }
             }
             catch (Exception e)
             {
