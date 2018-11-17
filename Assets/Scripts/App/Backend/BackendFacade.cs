@@ -321,14 +321,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId) 
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress)
         {
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
-                RandomSeed = (long)Time.time
+                RandomSeed = (long)Time.time,
+                Tags = { },
+                CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);

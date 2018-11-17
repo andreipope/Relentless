@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IPvPManager _pvpManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -43,6 +45,7 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
@@ -135,7 +138,8 @@ namespace Loom.ZombieBattleground
             {
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
                     _backendDataControlMediator.UserDataModel.UserId,
-                    deckId
+                    deckId,
+                    _pvpManager.CustomGameModeAddress
                 );
 
                 Debug.LogWarning(result.ToString());
