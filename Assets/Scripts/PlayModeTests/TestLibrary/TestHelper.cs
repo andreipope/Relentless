@@ -1116,7 +1116,7 @@ public class TestHelper
                         _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
                             PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                             _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-                        });
+                        }, target);
                     }
                     else
                     {
@@ -2302,7 +2302,7 @@ public class TestHelper
 
         SetupArmyCards ();
 
-        yield return SetDeckTitle ("Razu Deck");
+        yield return SetDeckTitle ("Razu");
 
         yield return AddCardToHorde ("Pyromaz");
         yield return AddCardToHorde ("Pyromaz");
@@ -2339,9 +2339,6 @@ public class TestHelper
         yield return LetsThink ();
 
         yield return AddCardToHorde ("BlaZter");
-
-        yield return ClickGenericButton ("Horde/ArrowRightButton");
-
         yield return AddCardToHorde ("BlaZter");
         yield return AddCardToHorde ("BlaZter");
         yield return AddCardToHorde ("BlaZter");
@@ -2459,15 +2456,24 @@ public class TestHelper
         yield return null;
     }
 
-    public IEnumerator SelectAHorde (int index)
+    private int GetNumberOfHordes ()
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
-        if (index + 1 >= hordesParent.transform.childCount)
+        if (hordesParent != null)
+            return hordesParent.transform.childCount;
+        else
+            return -1;
+    }
+
+    public IEnumerator SelectAHorde (int index)
+    {
+        if (index + 1 >= GetNumberOfHordes ())
         {
             Assert.Fail ("Horde removal index is too high");
         }
 
+        GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
         Transform removalHordeTransform = hordesParent.transform.GetChild (index);
         removalHordeTransform.Find ("Button_Select").GetComponent<Button> ().onClick.Invoke ();
 
@@ -2481,6 +2487,22 @@ public class TestHelper
         GameObject.Find ("Button_Delete").GetComponent<Button> ().onClick.Invoke ();
 
         yield return LetsThink ();
+    }
+
+    public IEnumerator RemoveAllHordesExceptDefault ()
+    {
+        for (int i = GetNumberOfHordes () - 2; i >= 1; i--)
+        {
+            yield return RemoveAHorde (1);
+
+            yield return RespondToYesNoOverlay (true);
+
+            yield return LetsThink ();
+            yield return LetsThink ();
+            yield return LetsThink ();
+        }
+
+        yield return null;
     }
 
     private void FillCollectionData ()
@@ -2514,32 +2536,62 @@ public class TestHelper
         }
 
         Transform selectedHordeTransform = hordesParent.transform.GetChild (index);
-        TextMeshProUGUI deckTitle = selectedHordeTransform.Find ("Panel_Description/Text_Description")?.GetComponent<TextMeshProUGUI> ();
 
-        if (deckTitle != null)
-        {
-            _expectedOverlordName = deckTitle.text;
-        }
+        RecordAValue (selectedHordeTransform, "Panel_Description/Text_Description", RecordedValue.Expected);
     }
 
     public void RecordActualOverlordName ()
     {
-        _actualOverlordName = GameObject.Find ("Text_PlayerOverlordName")?.GetComponent<TextMeshProUGUI> ()?.text;
-
-        if (_actualOverlordName.Length >= 1)
-            _actualOverlordName = UppercaseFirst (_actualOverlordName);
+        RecordAValue (null, "Text_PlayerOverlordName", RecordedValue.Actual);
     }
 
+    private string _recordedExpectedValue, _recordedActualValue;
+
+    public void RecordAValue (string value, RecordedValue recordedValue)
+    {
+        if (value.Length <= 1)
+            return;
+
+        switch (recordedValue)
+        {
+            case RecordedValue.Expected:
+                _recordedExpectedValue = UppercaseFirst (value);
+
+                break;
+            case RecordedValue.Actual:
+                _recordedActualValue = UppercaseFirst (value);
+
+                break;
+        }
+    }
+
+    public void RecordAValue (Transform parentTransform, string objectName, RecordedValue recordedValue)
+    {
+        if (parentTransform != null)
+        {
+            RecordAValue (parentTransform.Find (objectName)?.GetComponent<TextMeshProUGUI> ()?.text, recordedValue);
+        }
+        else
+        {
+            RecordAValue (GameObject.Find (objectName)?.GetComponent<TextMeshProUGUI> ()?.text, recordedValue);
+        }
+    }
 
     public void AssertOverlordName ()
     {
-        Debug.LogFormat ("{0} vs {1}", _expectedOverlordName, _actualOverlordName);
+        Debug.LogFormat ("{0} vs {1}", _recordedExpectedValue, _recordedActualValue);
 
-        Assert.AreEqual (_expectedOverlordName, _actualOverlordName);
+        Assert.AreEqual (_recordedExpectedValue, _recordedActualValue);
     }
 
     private string UppercaseFirst (string s)
     {
         return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s.ToLower());
+    }
+
+    public enum RecordedValue
+    {
+        Expected,
+        Actual
     }
 }

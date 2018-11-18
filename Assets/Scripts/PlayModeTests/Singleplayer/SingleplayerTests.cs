@@ -314,7 +314,28 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test5_CreateAHordeAndSave ()
+    public IEnumerator Test5_RemoveAllHordesExceptFirst ()
+    {
+        _testHelper.SetTestName ("Solo - Remove all Hordes except first");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.RemoveAllHordesExceptDefault ();
+
+        yield return _testHelper.LetsThink ();
+
+        yield return null;
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test6_CreateARazuHordeAndSave ()
     {
         _testHelper.SetTestName ("Solo - Create a Horde and save");
 
@@ -329,29 +350,6 @@ public class SingleplayerTests
         yield return _testHelper.AddRazuHorde ();
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        yield return null;
-    }
-
-    [UnityTest]
-    [Timeout (500000)]
-    public IEnumerator Test6_RemoveSecondHorde ()
-    {
-        _testHelper.SetTestName ("Solo - Remove second Horde");
-
-        yield return _testHelper.MainMenuTransition ("Button_Play");
-
-        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
-
-        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        yield return _testHelper.RemoveAHorde (1);
-
-        yield return _testHelper.RespondToYesNoOverlay (true);
-
-        yield return _testHelper.LetsThink ();
 
         yield return null;
     }
