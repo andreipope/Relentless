@@ -2840,6 +2840,46 @@
             }
           }
         },
+        {  
+          "id":"41",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Super Serum",
+          "description":"Give an ally Zombie +3/+3; <b>End:</b> -3 DEF",
+          "flavorText":"Captain Zamberica - here we goo!!",
+          "picture":"superserum",
+          "rank":"MINION",
+          "type":"WALKER",
+          "cost":5,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"UNIT_WEAPON",
+              "activityType":"ACTIVE",
+              "callType":"ENTRY",
+              "targetType":"PLAYER_CARD",
+              "value":3,
+              "buffType":"END",
+              "health":3,
+              "damage":3,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/SuperSerumVFX"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": 16,
           "kind": "SPELL",
