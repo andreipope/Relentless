@@ -1537,7 +1537,7 @@ namespace Loom.ZombieBattleground
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"),
-                    unit);
+                    unit, delay: 14f, isIgnoreCastVfx: true);
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.OverlordSkill.ToString().ToLowerInvariant(),
