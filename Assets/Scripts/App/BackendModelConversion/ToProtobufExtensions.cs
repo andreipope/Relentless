@@ -117,12 +117,26 @@ namespace Loom.ZombieBattleground.Data
         {
             CardInstance cardInstance = new CardInstance
             {
-                InstanceId   = workingCard.InstanceId,
+                InstanceId = workingCard.InstanceId,
                 Prototype = workingCard.LibraryCard.ToProtobuf(),
                 Instance = workingCard.InstanceCard.ToProtobuf()
             };
 
             return cardInstance;
+        }
+
+        public static Protobuf.CardInstanceSpecificData ToProtobuf(this CardInstanceSpecificData data)
+        {
+            Protobuf.CardInstanceSpecificData protoData = new Protobuf.CardInstanceSpecificData
+            {
+                GooCost = data.Cost,
+                Attack = data.Damage,
+                Defense = data.Health,
+                Set = (CardSetType.Types.Enum) data.CardSetType,
+                Type = (CreatureType.Types.Enum) data.CardType,
+            };
+
+            return protoData;
         }
 
         public static Protobuf.Card ToProtobuf(this IReadOnlyCard card)

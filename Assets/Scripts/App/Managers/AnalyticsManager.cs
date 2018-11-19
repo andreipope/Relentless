@@ -45,7 +45,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
         if (matchesInPreviousSittingKey != -1)
         {
             PlayerPrefs.DeleteKey(MatchesInPreviousSittingKey);
-            Debug.Log("Sending previousMatchesPerSitting = " + matchesInPreviousSittingKey);
             LogEvent("MatchesInPreviousSitting", "", matchesInPreviousSittingKey);
         }
 
@@ -69,7 +68,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void LogEvent(string eventAction, string eventLabel, long value)
     {
-        Debug.Log("=== Log Event = " + eventAction);
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
         AnalyticsEvent.Custom(
             eventAction,

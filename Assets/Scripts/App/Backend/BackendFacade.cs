@@ -68,23 +68,29 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
+#if DEBUG_RPC
+            ILogger logger = Debug.unityLogger;
+#else
+            ILogger logger = NullLogger.Instance;
+#endif
+
             IRpcClient writer =
                 RpcClientFactory
                     .Configure()
-                    .WithLogger(Debug.unityLogger)
+                    .WithLogger(logger)
                     .WithWebSocket(BackendEndpoint.WriterHost)
                     .Create();
 
             reader =
                 RpcClientFactory
                     .Configure()
-                    .WithLogger(Debug.unityLogger)
+                    .WithLogger(logger)
                     .WithWebSocket(BackendEndpoint.ReaderHost)
                     .Create();
 
             DAppChainClient client = new DAppChainClient(writer, reader)
             {
-                Logger = Debug.unityLogger
+                Logger = logger
             };
 
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]

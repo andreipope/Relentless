@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -78,6 +79,11 @@ namespace Loom.ZombieBattleground
                         {
                             deck.Add(cardInstance.FromProtobuf(player));
                         }
+
+                        Debug.Log(
+                            $"Player ID {playerId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
+                            String.Join("\n", deck.Cast<object>().ToArray())
+                        );
 
                         isMainTurnSecond = GameClient.Get<IPvPManager>().IsCurrentPlayer();
                         break;

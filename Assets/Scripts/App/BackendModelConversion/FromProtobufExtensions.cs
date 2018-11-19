@@ -179,6 +179,17 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
+        public static CardInstanceSpecificData FromProtobuf(this Protobuf.CardInstanceSpecificData card)
+        {
+            return new CardInstanceSpecificData(
+                card.Attack,
+                card.Defense,
+                (Enumerators.SetType) card.Set,
+                (Enumerators.CardType) card.Type,
+                card.GooCost
+            );
+        }
+
         public static List<CardInstance> FromProtobuf(this RepeatedField<CardInstance> repeatedFieldCardInstance)
         {
             List<CardInstance> cardInstances = new List<CardInstance>();

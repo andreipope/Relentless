@@ -133,6 +133,11 @@ namespace Loom.ZombieBattleground
                             workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
 
+                        Debug.Log(
+                            $"Player ID {playerId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
+                            String.Join("\n", workingDeck.Cast<object>().ToArray())
+                        );
+
                         isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
                         break;
                     default:
@@ -159,6 +164,11 @@ namespace Loom.ZombieBattleground
                         player.PvPPlayerState.CardsInHand
                         .Select(instance => instance.FromProtobuf(player))
                         .ToList();
+
+                    Debug.Log(
+                        $"Player ID {player.Id}, local: {player.IsLocalPlayer}, added CardsInHand:\n" +
+                        String.Join("\n", workingCards.Cast<object>().ToArray())
+                    );
 
                     player.SetFirstHandForPvPMatch(workingCards);
                     break;

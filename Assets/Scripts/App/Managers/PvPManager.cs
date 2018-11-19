@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -10,6 +12,7 @@ using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using Random = UnityEngine.Random;
 using SystemText = System.Text;
 
 namespace Loom.ZombieBattleground
@@ -336,7 +339,17 @@ namespace Loom.ZombieBattleground
         {
             Func<Task> taskFunc = async () =>
             {
-                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+                PlayerActionEvent playerActionEvent;
+                try
+                {
+                    playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+                }
+                catch (Exception)
+                {
+                    File.WriteAllBytes("badproto" + Random.Range(10, 99999) + ".bin", data);
+                    throw;
+                }
+
                 Debug.LogWarning("! " + playerActionEvent); // todo delete
 
                 if (playerActionEvent.Block != null)
@@ -377,15 +390,6 @@ namespace Loom.ZombieBattleground
                         //Should not handle this anymore through events for now
                         break;
                     case Match.Types.Status.Playing:
-                        if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
-                        {
-                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
-                            {
-                                _isWaitForTurnTimerStart = true;
-                            }
-                            return;
-                        }
-
                         OnReceivePlayerActionType(playerActionEvent);
                         break;
                     case Match.Types.Status.PlayerLeft:
@@ -422,6 +426,21 @@ namespace Loom.ZombieBattleground
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
         {
+            Debug.Log("!!! ability outcomes: " + playerActionEvent.PlayerAction.AbilityOutcomes.Count);
+            foreach (CardAbilityOutcome playerActionAbilityOutcome in playerActionEvent.PlayerAction.AbilityOutcomes)
+            {
+                Debug.Log(playerActionAbilityOutcome.ToString());
+            }
+
+            if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
+            {
+                if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
+                {
+                    _isWaitForTurnTimerStart = true;
+                }
+                return;
+            }
+
             switch (playerActionEvent.PlayerAction.ActionType)
             {
                 case PlayerActionType.Types.Enum.None:
