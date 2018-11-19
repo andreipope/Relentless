@@ -54,5 +54,5 @@ MonoBehaviour:
   token: CucZl0fAn9peLmdoURE6JCQ4BQ5neunc
   debugToken: CucZl0fAn9peLmdoURE6JCQ4BQ5neunc
   trackInEditor: 1
-  minLogLevel: 0
+  minLogLevel: 4
   flushInterval: 10
