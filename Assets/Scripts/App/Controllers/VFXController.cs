@@ -179,6 +179,9 @@ namespace Loom.ZombieBattleground
                 case Transform transform:
                     position = transform.transform.position;
                     break;
+                case Vector3 actualPosition:
+                    position = actualPosition;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
