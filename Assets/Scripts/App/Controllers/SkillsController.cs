@@ -690,6 +690,16 @@ namespace Loom.ZombieBattleground
         {
             WorkingCard card = _cardsController.LowGooCostOfCardInHand(owner, null, skill.Value);
 
+            if (owner.IsLocalPlayer)
+            {
+                BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
+                GameObject particle = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/LevitateVFX"));
+                particle.transform.position = boardCard.Transform.position;
+                particle.transform.SetParent(boardCard.Transform, true);
+                particle.transform.localEulerAngles = Vector3.zero;
+                _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(particle, true, 6f);
+            }
+
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
@@ -835,36 +845,42 @@ namespace Loom.ZombieBattleground
 
             targets.Add(opponent);
 
-            List<BoardUnitModel> boardCradsModels = new List<BoardUnitModel>();
-            foreach (var item in opponent.BoardCards)
-            {
-                boardCradsModels.Add(item.Model);
-            }
+            List<BoardUnitModel> boardCradsModels = opponent.BoardCards.Select((x) => x.Model).ToList();
 
             targets.AddRange(boardCradsModels);
 
             targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
 
+            GameObject prefabMovedVfx = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
+            GameObject prefabImpactVfx = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX");
+
             foreach (object targetObject in targets)
             {
-                AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
-
-                _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                    targetObject);
-                _soundManager.PlaySound(
-                    Enumerators.SoundType.OVERLORD_ABILITIES,
-                    skill.Title.Trim().ToLowerInvariant() + "_Impact",
-                    Constants.OverlordAbilitySoundVolume,
-                    Enumerators.CardSoundType.NONE);
-
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                _vfxController.CreateSkillVfx(
+                prefabMovedVfx,
+                boardSkill.SelfObject.transform.position,
+                targetObject,
+                (x) =>
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                    Target = targetObject,
-                    HasValue = true,
-                    Value = -skill.Value
-                });
+                    AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+
+                    _vfxController.CreateVfx(
+                        prefabImpactVfx,
+                        targetObject, isIgnoreCastVfx: true);
+                    _soundManager.PlaySound(
+                        Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skill.Title.Trim().ToLowerInvariant() + "_Impact",
+                        Constants.OverlordAbilitySoundVolume,
+                        Enumerators.CardSoundType.NONE);
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = targetObject,
+                        HasValue = true,
+                        Value = -skill.Value
+                    });
+                }, true);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1126,7 +1142,7 @@ namespace Loom.ZombieBattleground
                             _battleController.HealPlayerBySkill(owner, boardSkill, player);
                             Transform transform = new GameObject().transform;
                             transform.position = owner.AvatarObject.transform.position;
-                            transform.position += Vector3.up * 2;
+                            transform.position += Vector3.up * 2.25f;
                             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MendVFX"), transform);
                             _soundManager.PlaySound(
                                 Enumerators.SoundType.OVERLORD_ABILITIES,
@@ -1215,7 +1231,7 @@ namespace Loom.ZombieBattleground
 
                     _vfxController.CreateVfx(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"),
-                        unit);
+                        unit, isIgnoreCastVfx: true);
 
                     _soundManager.PlaySound(
                         Enumerators.SoundType.OVERLORD_ABILITIES,
@@ -1231,7 +1247,7 @@ namespace Loom.ZombieBattleground
 
                     _vfxController.CreateVfx(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Freeze_ImpactVFX"),
-                        player);
+                        player, isIgnoreCastVfx: true);
                     _soundManager.PlaySound(
                         Enumerators.SoundType.OVERLORD_ABILITIES,
                         skill.OverlordSkill.ToString().ToLowerInvariant() + "_Impact",
@@ -1504,7 +1520,7 @@ namespace Loom.ZombieBattleground
         {
             AttackWithModifiers(owner, boardSkill, skill, target, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
 
-            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBall_ImpactVFX"), target); // vfx Fireball
+            _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBall_ImpactVFX"), target, isIgnoreCastVfx: true); // vfx Fireball
             _soundManager.PlaySound(
                 Enumerators.SoundType.OVERLORD_ABILITIES,
                 skill.Title.Trim().ToLowerInvariant(),
