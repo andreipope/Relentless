@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+
+            AbilityUnitOwner.AddEffectOnUnit(Enumerators.EffectOnUnitType.Chainsaw);
         }
 
         public override void Action(object info = null)
@@ -83,6 +85,8 @@ namespace Loom.ZombieBattleground
                 BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
+
+                AbilityUnitOwner.RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Chainsaw);
             }
         }
 

@@ -55,7 +55,9 @@ namespace Loom.ZombieBattleground.Common
             OPPONENT_ALL_CARDS,
             ALL_CARDS,
             ALL,
-            ITSELF
+            ITSELF,
+
+            BLITZ
         }
 
         public enum AbilityType
@@ -143,7 +145,8 @@ namespace Loom.ZombieBattleground.Common
             SET_ATTACK_AVAILABILITY,
             CHOOSABLE_ABILITIES,
             COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
-            GAIN_GOO
+            GAIN_GOO,
+            BLITZ
         }
 
         public enum ActionType
@@ -616,6 +619,9 @@ namespace Loom.ZombieBattleground.Common
             Shatter,
             SwingX,
             Turn,
+            Chainsaw,
+            Blitz,
+            Restore,
 
             GotDamage,
             AtDefense,
