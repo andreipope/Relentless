@@ -1787,20 +1787,18 @@ namespace Loom.ZombieBattleground
 
             List<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH);
 
-            Transform transform;
+            Vector3 position;
             foreach (BoardUnitView unit in units)
             {
                 unit.Model.BuffedHp += skill.Value;
                 unit.Model.CurrentHp += skill.Value;
 
-                // TODO: remove this empty gameobject logic
-                transform = new GameObject().transform;
-                transform.position = unit.Transform.position;
-                transform.position -= Vector3.up * 3.3f;
+                position = unit.Transform.position;
+                position -= Vector3.up * 3.3f;
 
                 _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/StoneskinVFX"),
-                    transform); // vfx phalanx
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),
+                    position, delay: 8f, ignoreCastPosition: true); // vfx phalanx
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
                     skill.Title.Trim().ToLowerInvariant(),
