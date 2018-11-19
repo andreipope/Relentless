@@ -42,8 +42,6 @@ namespace Loom.ZombieBattleground
 
             TargetUnit.CurrentHp += Health;
             TargetUnit.BuffedHp += Health;
-
-            InvokeActionTriggered();
         }
 
         protected override void InputEndedHandler()
@@ -54,7 +52,7 @@ namespace Loom.ZombieBattleground
             {
                 if (TargetUnit != null)
                 {
-                    Action();
+                    InvokeActionTriggered();
 
                     TargetUnit.UnitDied += TargetUnitDiedHandler;
 
@@ -64,6 +62,13 @@ namespace Loom.ZombieBattleground
                     }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
                 }
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
 
         protected override void TurnEndedHandler()
