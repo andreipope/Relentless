@@ -682,7 +682,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
                     ability = new DamageTargetAdjustmentsAbility(cardKind, abilityData);
-                    abilityView = new DamageTargetAdjustmentsAbilityView((DamageTargetAdjustmentsAbility) ability);
+                    abilityView = new DamageTargetAdjustmentsAbilityView((DamageTargetAdjustmentsAbility)ability);
                     break;
                 case Enumerators.AbilityType.ADD_GOO_VIAL:
                     ability = new AddGooVialsAbility(cardKind, abilityData);
@@ -693,7 +693,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.MASSIVE_DAMAGE:
                     ability = new MassiveDamageAbility(cardKind, abilityData);
-                    abilityView = new MassiveDamageAbilityView((MassiveDamageAbility) ability);
+                    abilityView = new MassiveDamageAbilityView((MassiveDamageAbility)ability);
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT:
                     ability = new ChangeStatAbility(cardKind, abilityData);
@@ -928,7 +928,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.GAIN_GOO:
                     ability = new GainGooAbility(cardKind, abilityData);
                     break;
-                  
+                case Enumerators.AbilityType.BLITZ:
+                    ability = new BlitzAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
