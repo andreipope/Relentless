@@ -13,6 +13,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private IAnalyticsManager _analyticsManager;
 
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private PlayerEventListener _playerEventListener;
 
         private PlayerEventListener _opponentEventListener;
@@ -21,6 +25,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _gameplayManager.GameInitialized += GameplayManagerGameInitialized;
             _gameplayManager.GameEnded += GameplayManagerGameEnded;
@@ -42,6 +48,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener?.Dispose();
 
             _analyticsManager.NotifyFinishedMatch(obj);
+            _analyticsManager.SetEvent(AnalyticsManager.EventEndedMatch);
         }
 
         private void GameplayManagerGameInitialized()
@@ -53,6 +60,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener = new PlayerEventListener(_gameplayManager.OpponentPlayer, true);
 
             _analyticsManager.NotifyStartedMatch();
+            _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch);
         }
 
         private class PlayerEventListener : IDisposable
@@ -241,8 +249,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
                                                   AffectObjectType affectObjectType, List<ParametrizedAbilityBoardObject> targets = null)
             {
-                await Task.Delay(300);
-
                 PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
                 {
                     CardKind = cardKind,

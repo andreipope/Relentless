@@ -10,13 +10,13 @@ namespace Loom.ZombieBattleground
     {
         private List<BoardObject> _targets;
 
-        public int Value;
+        public int Count;
         public List<Enumerators.AbilityTargetType> TargetTypes;
 
         public RestoreDefRandomlySplitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Count = ability.Count;
             TargetTypes = ability.AbilityTargetTypes;
 
             _targets = new List<BoardObject>();
@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -43,9 +45,9 @@ namespace Loom.ZombieBattleground
 
         private void FillRandomTargets()
         {
-            foreach(Enumerators.AbilityTargetType targetType in TargetTypes)
+            foreach (Enumerators.AbilityTargetType targetType in TargetTypes)
             {
-                switch(targetType)
+                switch (targetType)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
                         _targets.Add(GameplayManager.OpponentPlayer);
@@ -70,19 +72,21 @@ namespace Loom.ZombieBattleground
             if (_targets.Count == 0)
                 return;
 
-            List<ParametrizedAbilityBoardObject> abilityTargets = new List<ParametrizedAbilityBoardObject>();
+            List<ParametrizedAbilityBoardObject> abilityTargets = new List<ParametrizedAbilityBoardObject>();    
 
-            int maxCount = Value;
+            int maxCount = Count;
             int defenseValue = 0;
             int blocksCount = _targets.Count;
             BoardObject currentTarget = null;
 
             while (maxCount > 0)
             {
-                defenseValue = UnityEngine.Random.Range(1, blocksCount > Value ? Value + 1 : _targets.Count);
+                defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, blocksCount > Count ? maxCount : _targets.Count + 1);
+
                 currentTarget = _targets[UnityEngine.Random.Range(0, _targets.Count)];
-                RestoreDefenseOfTarget(currentTarget, defenseValue);
                 maxCount -= defenseValue;
+
+                RestoreDefenseOfTarget(currentTarget, defenseValue);
                 _targets.Remove(currentTarget);
 
                 abilityTargets.Add(new ParametrizedAbilityBoardObject()

@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground.Data
 
         private List<Card> _allCards;
 
+        public int CardsInActiveSetsCount;
+
         [JsonIgnore]
         public List<Card> Cards
         {
@@ -64,6 +66,10 @@ namespace Loom.ZombieBattleground.Data
                         {
                             card.CardType = Utilites.CastStringTuEnum<Enumerators.CardType>(card.Type);
                         }
+                        if (card.UniqueAnimation != null)
+                        {
+                            card.UniqueAnimationType = Utilites.CastStringTuEnum<Enumerators.UniqueAnimationType>(card.UniqueAnimation, true);
+                        }
 
                         foreach (AbilityData ability in card.Abilities)
                         {
@@ -75,6 +81,7 @@ namespace Loom.ZombieBattleground.Data
                         if (card.CardSetType != Enumerators.SetType.OTHERS)
                         {
                             card.Id = id;
+                            CardsInActiveSetsCount++;
                         }
 
                         id++;

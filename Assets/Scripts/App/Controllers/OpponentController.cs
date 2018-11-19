@@ -101,6 +101,12 @@ namespace Loom.ZombieBattleground
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
+            _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
+        }
+
+        private void OnPlayerLeftGameActionHandler()
+        {
+            _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -113,6 +119,8 @@ namespace Loom.ZombieBattleground
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
+            _pvpManager.PlayerLeftGameActionReceived -= OnPlayerLeftGameActionHandler;
+
         }
 
         #region event handlers
@@ -193,7 +201,6 @@ namespace Loom.ZombieBattleground
 
         public void GotActionPlayCard(WorkingCard card, int position)
         {
-            Debug.LogError("Played card = " + card.Id);
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
                 switch (workingCard.LibraryCard.CardKind)
@@ -263,8 +270,10 @@ namespace Loom.ZombieBattleground
 
             if(boardObjectCaller == null)
             {
-                GameClient.Get<IQueueManager>().AddAction(() =>
+                // FIXME: why do we have recursion here??
+                GameClient.Get<IQueueManager>().AddTask(async () =>
                 {
+                    await new WaitForUpdate();
                     GotActionUseCardAbility(model);
                 });
 

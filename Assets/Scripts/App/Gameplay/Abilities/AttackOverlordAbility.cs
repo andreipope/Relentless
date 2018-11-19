@@ -28,26 +28,22 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
-
-            Action();
+            InvokeActionTriggered();
         }
 
-        public override void Action(object param = null)
+        protected override void VFXAnimationEndedHandler()
         {
-            base.Action(param);
+            base.VFXAnimationEndedHandler();
 
             foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        GetOpponentOverlord().Defense -= Value;
-                        CreateVfx(Utilites.CastVfxPosition(GetOpponentOverlord().AvatarObject.transform.position), true, 5f, true);
+                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, GetOpponentOverlord());
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        PlayerCallerOfAbility.Defense -= Value;
-                        CreateVfx(Utilites.CastVfxPosition(PlayerCallerOfAbility.AvatarObject.transform.position), true, 5f, true);
+                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, PlayerCallerOfAbility);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);

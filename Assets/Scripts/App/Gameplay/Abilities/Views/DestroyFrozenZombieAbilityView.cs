@@ -8,6 +8,8 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
+        private Vector3 _targetPosition;
+
         public DestroyFrozenZombieAbilityView(DestroyFrozenZombieAbility ability) : base(ability)
         {
             _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -17,14 +19,13 @@ namespace Loom.ZombieBattleground
         {
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+                _targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");//(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
-                targetPosition = Utilites.CastVfxPosition(targetPosition);
-                VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
+                VfxObject.transform.DOMove(_targetPosition, 0.5f).OnComplete(ActionCompleted);
                 ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
             }
             else
@@ -39,13 +40,10 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                Vector3 targetPosition = VfxObject.transform.position;
-
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = targetPosition;
-                ParticlesController.RegisterParticleSystem(VfxObject, true);
+                _targetPosition.y += 0.34f;
+                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform, false);
+                VfxObject.transform.position = _targetPosition;
             }
 
             Ability.InvokeVFXAnimationEnded();
@@ -54,7 +52,7 @@ namespace Loom.ZombieBattleground
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            base.CreateVfx(pos, true, 5f);
+            base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
     }
 }
