@@ -2756,6 +2756,36 @@
             }
           }
         },
+        {  
+          "id":"68",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Whistle",
+          "description":"Draw a card",
+          "flavorText":"Get over here, STAT!",
+          "picture":"Whistle",
+          "rank":"MINION",
+          "type":"WALKER",
+          "cost":1,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"DRAW_CARD",
+              "activityType":"PASSIVE",
+              "callType":"ENTRY",
+              "buffType":"ENTRY"
+            }
+          ]
+        },
         {
           "id": 70,
           "kind": "SPELL",
