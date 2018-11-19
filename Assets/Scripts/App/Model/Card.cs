@@ -36,6 +36,7 @@ namespace Loom.ZombieBattleground.Data
         public string UniqueAnimation;
 
         public List<AbilityData> Abilities = new List<AbilityData>();
+        public List<AbilityData> InitialAbilities = new List<AbilityData>();
 
         public CardViewInfo CardViewInfo = new CardViewInfo();
 
@@ -72,6 +73,7 @@ namespace Loom.ZombieBattleground.Data
                 CardRank = CardRank,
                 CardType = CardType,
                 Abilities = Abilities,
+                InitialAbilities = InitialAbilities,
                 CardViewInfo = CardViewInfo,
                 Frame = Frame,
                 UniqueAnimationType = UniqueAnimationType
