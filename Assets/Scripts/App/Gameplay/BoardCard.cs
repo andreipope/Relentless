@@ -146,6 +146,8 @@ namespace Loom.ZombieBattleground
 
         public HandBoardCard HandBoardCard { get; set; }
 
+        public int FuturePositionOnBoard = 0;
+
         public virtual void Init(WorkingCard card)
         {
             WorkingCard = card;

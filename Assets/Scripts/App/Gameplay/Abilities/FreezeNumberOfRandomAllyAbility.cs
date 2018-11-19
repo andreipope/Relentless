@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             _allies = new List<BoardObject>();
 
             if (PredefinedTargets != null)
@@ -53,8 +55,6 @@ namespace Loom.ZombieBattleground
             }
 
             InvokeActionTriggered(_allies);
-
-
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -78,6 +78,8 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

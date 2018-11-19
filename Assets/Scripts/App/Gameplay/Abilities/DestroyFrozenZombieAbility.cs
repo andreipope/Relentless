@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 InvokeActionTriggered();
             }
         }
@@ -49,6 +51,9 @@ namespace Loom.ZombieBattleground
             {
                TargetUnit
             }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
+
         }
     }
 }

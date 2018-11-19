@@ -4,7 +4,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using Object = UnityEngine.Object; 
 
 namespace Loom.ZombieBattleground
 {
@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 InvokeActionTriggered();
             }
         }
@@ -44,7 +46,7 @@ namespace Loom.ZombieBattleground
             base.TurnEndedHandler();
 
             if (AbilityCallType != Enumerators.AbilityCallType.END ||
-        !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             DealDamageToUnitOwner();
@@ -52,16 +54,15 @@ namespace Loom.ZombieBattleground
 
         private void DealDamageToUnitOwner()
         {
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
             {
                 if (GetCaller() == AbilityUnitOwner)
                 {
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
 
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                    {
-                        AbilityUnitOwner
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
@@ -80,6 +81,8 @@ namespace Loom.ZombieBattleground
                     });
                 }
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -117,6 +120,8 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
+
+            AbilityProcessingAction?.ForceActionDone();
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

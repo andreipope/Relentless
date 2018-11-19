@@ -269,16 +269,7 @@ namespace Loom.ZombieBattleground
             BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.Id);
 
             if(boardObjectCaller == null)
-            {
-                // FIXME: why do we have recursion here??
-                GameClient.Get<IQueueManager>().AddTask(async () =>
-                {
-                    await new WaitForUpdate();
-                    GotActionUseCardAbility(model);
-                });
-
                 return;
-            }
 
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
                                                       boardObjectCaller,

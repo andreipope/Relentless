@@ -246,7 +246,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 
-            private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
+            private void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
                                                   AffectObjectType affectObjectType, List<BoardObject> targets = null)
             {
                 PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
@@ -265,7 +265,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Unit targetUnit;
                 if (targets != null)
                 {
-                    foreach(BoardObject boardObject in targets)
+                    foreach (BoardObject boardObject in targets)
                     {
                         targetUnit = new Unit();
 
@@ -274,7 +274,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             targetUnit = new Unit()
                             {
                                 InstanceId = model.Card.Id,
-                                AffectObjectType =  AffectObjectType.Character
+                                AffectObjectType = AffectObjectType.Character
                             };
                         }
                         else if (boardObject is Player player)
@@ -285,7 +285,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 AffectObjectType = AffectObjectType.Player
                             };
                         }
-                        else if(boardObject is HandBoardCard handCard)
+                        else if (boardObject is HandBoardCard handCard)
                         {
                             targetUnit = new Unit()
                             {
@@ -306,6 +306,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     CardAbilityUsed = CardAbilityUsed
 
                 };
+
+                UnityEngine.Debug.LogWarning("Action json send = " + Newtonsoft.Json.JsonConvert.SerializeObject(playerAction));
 
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }

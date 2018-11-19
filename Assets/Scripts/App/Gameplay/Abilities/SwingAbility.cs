@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             _unit = (BoardUnitModel) info;
            
             _targetIndex = -1;
@@ -83,6 +85,8 @@ namespace Loom.ZombieBattleground
                 targets.Add(_unit.OwnerPlayer.BoardCards[_targetIndex + 1].Model);
                 TakeDamageToUnit(_unit.OwnerPlayer.BoardCards[_targetIndex + 1]);
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

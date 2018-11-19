@@ -50,6 +50,8 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             base.Action(info);
 
             _targetUnits = new List<BoardUnitView>();
@@ -131,6 +133,8 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             ActionCompleted();
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         private void ActionCompleted()

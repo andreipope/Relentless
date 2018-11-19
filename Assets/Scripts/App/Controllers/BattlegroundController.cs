@@ -444,8 +444,6 @@ namespace Loom.ZombieBattleground
                 {
                     card.Model.OnEndTurn();
                 }
-
-                TurnEnded?.Invoke();
             }
             else
             {
@@ -457,6 +455,12 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer.InvokeTurnEnded();
             _gameplayManager.OpponentPlayer.InvokeTurnEnded();
+
+
+            if (_gameplayManager.IsLocalPlayerTurn())
+            {
+                TurnEnded?.Invoke();
+            }
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :

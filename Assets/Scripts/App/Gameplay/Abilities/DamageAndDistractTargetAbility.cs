@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 InvokeActionTriggered();
             }
         }
@@ -69,6 +71,8 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             Action();
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

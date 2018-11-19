@@ -28,11 +28,15 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         public override void Activate()
         {
             base.Activate();
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
             _opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
             GameplayManager.OpponentPlayer :
