@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -93,6 +94,8 @@ namespace Loom.ZombieBattleground
         private const float _effectsOnUnitFadeCrossfadingDelay = 3f;
 
         private bool _crossfadingSequenceEnded = true;
+
+        private List<Enumerators.EffectOnUnitType> _filteredEffectsToShow;
 
         public Action ArrivalEndCallback;
 
@@ -390,7 +393,13 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitEffectsOnUnitChanged()
         {
-            if (Model.EffectsOnUnit.Count == 0)
+            _filteredEffectsToShow = Model.EffectsOnUnit.FindAll(effect =>
+                                                                 effect == Enumerators.EffectOnUnitType.Death ||
+                                                                 effect == Enumerators.EffectOnUnitType.Freeze ||
+                                                                 effect == Enumerators.EffectOnUnitType.Destroy ||
+                                                                 effect == Enumerators.EffectOnUnitType.Reanimate);
+
+            if (_filteredEffectsToShow.Count == 0)
             {
                 if (_cardMechanicsPicture.sprite != null)
                 {
@@ -887,7 +896,7 @@ namespace Loom.ZombieBattleground
 
         private void DrawCardMechanicIcons()
         {
-            if (Model.EffectsOnUnit.Count == 1)
+            if (_filteredEffectsToShow.Count == 1)
             {
                 _currentEffectIndexCrossfading = 0;
                 _crossfadingEffectsOnUnit = false;
@@ -900,13 +909,13 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ChangeCardMechanicIcon(Model.EffectsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
+            ChangeCardMechanicIcon(_filteredEffectsToShow[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
 
-            if (Model.EffectsOnUnit.Count > 1)
+            if (_filteredEffectsToShow.Count > 1)
             {
                 _currentEffectIndexCrossfading++;
 
-                if (_currentEffectIndexCrossfading >= Model.EffectsOnUnit.Count)
+                if (_currentEffectIndexCrossfading >= _filteredEffectsToShow.Count)
                 {
                     _currentEffectIndexCrossfading = 0;
                 }
