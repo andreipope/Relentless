@@ -116,8 +116,6 @@ namespace Loom.ZombieBattleground
                         _backendDataControlMediator.UserDataModel.UserId
                     );
 
-                    Debug.LogWarning(result.ToString());
-
                     await InitiateRegisterPlayerToPool(GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId);
                 }
                 catch (Exception e)
@@ -142,8 +140,6 @@ namespace Loom.ZombieBattleground
                     _pvpManager.CustomGameModeAddress
                 );
 
-                Debug.LogWarning(result.ToString());
-
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
             } 
             catch (Exception e) 
@@ -159,8 +155,6 @@ namespace Loom.ZombieBattleground
                 FindMatchResponse result = await _backendFacade.FindMatch(
                     _backendDataControlMediator.UserDataModel.UserId
                 );
-
-                Debug.LogWarning(result.ToString());
 
                 if (result.Match != null)
                 {
