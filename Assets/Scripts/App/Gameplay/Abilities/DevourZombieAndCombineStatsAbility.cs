@@ -10,10 +10,16 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
+        private List<BoardUnitModel> _units;
+
+        private bool _isTarget;
+
         public DevourZombiesAndCombineStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
+
+            _units = new List<BoardUnitModel>();
         }
 
         public override void Activate()
@@ -45,7 +51,10 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved && Value > 0)
             {
-                DevourTargetZombie(TargetUnit);
+                _isTarget = true;
+
+                _units.Add(TargetUnit);
+                InvokeActionTriggered(_units);
 
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                 {
@@ -56,23 +65,32 @@ namespace Loom.ZombieBattleground
 
         private void DevourAllAllyZombies()
         {
-            List<BoardUnitModel> units;
+            _isTarget = false;
 
             if (PredefinedTargets != null)
             {
-                units = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+                _units = PredefinedTargets.Cast<BoardUnitModel>().ToList();
             }
             else
             {
-                units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
-            }
+                _units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
+            }            
 
-            foreach (BoardUnitModel unit in units)
+            InvokeActionTriggered(_units);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            foreach (BoardUnitModel unit in _units)
             {
                 DevourTargetZombie(unit);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
         private void DevourTargetZombie(BoardUnitModel unit)
@@ -90,8 +108,6 @@ namespace Loom.ZombieBattleground
 
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.CurrentDamage += damage;
-
-            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position, true, 5f);
         }
     }
 }
