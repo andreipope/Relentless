@@ -29,8 +29,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     BackendPurpose.Production,
                     new BackendEndpoint(
                         "http://auth.loom.games",
-                        "ws://gamechain2.dappchains.com:9999/queryws",
-                        "ws://gamechain2.dappchains.com:46657/websocket",
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket",
                         "v3"
                     )
                 }
