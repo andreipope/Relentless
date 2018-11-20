@@ -840,6 +840,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.REANIMATE_UNIT:
                     ability = new ReanimateAbility(cardKind, abilityData);
+                    abilityView = new ReanimateAbilityView((ReanimateAbility)ability);
                     break;
                 case Enumerators.AbilityType.PRIORITY_ATTACK:
                     ability = new PriorityAttackAbility(cardKind, abilityData);
