@@ -548,6 +548,8 @@ namespace Loom.ZombieBattleground
 
                             player.BoardCards.Insert(indexOfCard, boardUnitView);
 
+                            card.FuturePositionOnBoard = player.BoardCards.Count - 1 - indexOfCard;
+
                             InternalTools.DoActionDelayed(
                                      () =>
                                      {

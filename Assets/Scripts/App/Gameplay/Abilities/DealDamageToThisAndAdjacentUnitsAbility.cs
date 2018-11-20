@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object param = null)
         {
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             base.Action(param);
             _units = new List<BoardUnitModel>();
 
@@ -74,6 +76,8 @@ namespace Loom.ZombieBattleground
                 TakeDamageToUnit(unit);
             }
             _units.Clear();
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         private void TakeDamageToUnit(BoardUnitModel unit)

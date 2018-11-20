@@ -52,6 +52,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !_isAttacker)
                 return;
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
             InvokeActionTriggered();
         }
@@ -59,6 +60,8 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             Action(_damage);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }
