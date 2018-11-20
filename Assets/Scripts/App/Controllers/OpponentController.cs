@@ -262,15 +262,32 @@ namespace Loom.ZombieBattleground
             };
 
             BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel(attackerUnit);
-            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
+
+            if (attackerUnitView != null)
+            {
+                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
+            }
+            else
+            {
+                Debug.LogError("Attacker with card Id " + model.CardId + " not found on this client in match.");
+            }
         }
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
             BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.InstanceId);
 
-            if(boardObjectCaller == null)
+            if (boardObjectCaller == null)
+            {
+                // FIXME: why do we have recursion here??
+                GameClient.Get<IQueueManager>().AddTask(async () =>
+                {
+                    await new WaitForUpdate();
+                    GotActionUseCardAbility(model);
+                });
+
                 return;
+            }
 
             List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
 

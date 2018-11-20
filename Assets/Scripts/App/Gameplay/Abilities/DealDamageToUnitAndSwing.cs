@@ -21,8 +21,6 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         protected override void InputEndedHandler()
@@ -47,6 +45,9 @@ namespace Loom.ZombieBattleground
             {
                 TakeDamageToUnit(unitView.Model, Damage);
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { TargetUnit },
+                                                     AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         private void TakeDamageToUnit(BoardUnitModel unit, int value)

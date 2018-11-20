@@ -284,7 +284,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         {
                             targetUnit = new Protobuf.Unit
                             {
-                                InstanceId = handCard.Id,
+                                InstanceId = handCard.CardView.WorkingCard.InstanceId,
                                 AffectObjectType = AffectObjectType.Types.Enum.Card,
                                 Parameter = new Parameter()
                                 {

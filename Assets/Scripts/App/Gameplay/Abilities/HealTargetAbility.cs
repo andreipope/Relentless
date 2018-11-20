@@ -67,10 +67,7 @@ namespace Loom.ZombieBattleground
         {
             HealTarget(PlayerCallerOfAbility, Value);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                PlayerCallerOfAbility
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
