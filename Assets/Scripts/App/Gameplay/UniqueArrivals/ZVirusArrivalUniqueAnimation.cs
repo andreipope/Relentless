@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
+using DG.Tweening;
 
 namespace Loom.ZombieBattleground
 {
@@ -19,9 +20,18 @@ namespace Loom.ZombieBattleground
 
             const float xOffsetOfCard = 5.2f;
 
-            animationVFX.transform.position = unitView.Transform.position;
-            unitView.Transform.SetParent(animationVFX.transform.Find("Shaman/Main_Model/Root"));
-            unitView.Transform.localPosition = new Vector3(xOffsetOfCard, 0, 0);
+            const float delayBeforeUnitShow = 1.5f;
+            const float durationUnitScaling = 1f;
+            const float delayBeforeDestroyVFX = 8f;
+
+            animationVFX.transform.position = unitView.Transform.position + Vector3.right * xOffsetOfCard;
+
+            unitView.Transform.localScale = Vector3.zero;
+
+            InternalTools.DoActionDelayed(() =>
+            {
+                unitView.Transform.DOScale(Vector3.one, durationUnitScaling);
+            }, delayBeforeUnitShow);
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -39,7 +49,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 IsPlaying = false;
-            }, 3f);
+            }, delayBeforeDestroyVFX);
         }
     }
 }

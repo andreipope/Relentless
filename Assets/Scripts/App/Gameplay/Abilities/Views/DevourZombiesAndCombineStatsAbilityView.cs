@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
@@ -52,14 +53,22 @@ namespace Loom.ZombieBattleground
                 }
 
                 int random;
+                Transform unitTransform = null;
+
                 foreach (var unit in _units)
                 {
+                    unitTransform = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
+
                     random = UnityEngine.Random.Range(0, prefabs.Length);
-                    //CreateVfx(_battlegroundController.GetBoardUnitViewByModel(unit).Transform.position, true, delayBeforeDestroy);
+                    VfxObject = Object.Instantiate(VfxObject, unitTransform, false);
+                    VfxObject.transform.localPosition = Vector3.zero;
                     InternalTools.DoActionDelayed(() =>
                     {
-
-                    });
+                        unitTransform.DOScale(Vector3.zero, 1.5f).OnComplete(() =>
+                        {
+                            unitTransform.gameObject.SetActive(false);
+                        });
+                    }, delayAfter);
                 }
             }
 
