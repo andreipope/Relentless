@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
-        public Enumerators.AttackInfoType AttackInfoType = Enumerators.AttackInfoType.ANY;
+        public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.NONE;
 
         private readonly IGameplayManager _gameplayManager;
 
@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<bool> BuffSwingStateChanged;
 
-        public event Action EffectsOnUnitChanged;
+        public event Action GameMechanicDescriptionsOnUnitChanged;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsHeavyUnit => HasBuffHeavy || HasHeavy;
 
-        public List<Enumerators.EffectOnUnitType> EffectsOnUnit { get; private set; } = new List<Enumerators.EffectOnUnitType>();
+        public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
         public void Die(bool returnToHand = false)
         {
@@ -239,7 +239,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.BuffType.FREEZE:
                     TakeFreezeToAttacked = true;
-                    AddEffectOnUnit(Enumerators.EffectOnUnitType.Freeze);
+                    AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Freeze);
                     break;
                 case Enumerators.BuffType.HEAVY:
                     HasBuffHeavy = true;
@@ -254,12 +254,20 @@ namespace Loom.ZombieBattleground
                     HasBuffShield = true;
                     break;
                 case Enumerators.BuffType.REANIMATE:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.REANIMATE_UNIT, this,
-                        Card.LibraryCard, OwnerPlayer);
+                    _abilitiesController.BuffUnitByAbility(
+                        Enumerators.AbilityType.REANIMATE_UNIT,
+                        this,
+                        Card.LibraryCard,
+                        OwnerPlayer
+                        );
                     break;
                 case Enumerators.BuffType.DESTROY:
-                    _abilitiesController.BuffUnitByAbility(Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
-                        this, Card.LibraryCard, OwnerPlayer);
+                    _abilitiesController.BuffUnitByAbility(
+                        Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
+                        this,
+                        Card.LibraryCard,
+                        OwnerPlayer
+                        );
                     break;
             }
 
@@ -277,7 +285,7 @@ namespace Loom.ZombieBattleground
             BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
             BuffShieldStateChanged?.Invoke(false);
 
-            RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Guard);
+            RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Guard);
         }
 
         public void AddBuffShield()
@@ -286,7 +294,7 @@ namespace Loom.ZombieBattleground
             HasBuffShield = true;
             BuffShieldStateChanged?.Invoke(true);
 
-            AddEffectOnUnit(Enumerators.EffectOnUnitType.Guard);
+            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Guard);
         }
 
         public void AddBuffSwing()
@@ -294,7 +302,7 @@ namespace Loom.ZombieBattleground
             HasSwing = true;
             BuffSwingStateChanged?.Invoke(true);
 
-            AddEffectOnUnit(Enumerators.EffectOnUnitType.SwingX);
+            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.SwingX);
         }
 
         public void UpdateCardType()
@@ -322,8 +330,8 @@ namespace Loom.ZombieBattleground
 
         private void ClearUnitTypeEffects()
         {
-            RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Heavy);
-            RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Feral);
+            RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Heavy);
+            RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Feral);
         }
 
         public void SetAsHeavyUnit()
@@ -332,7 +340,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             ClearUnitTypeEffects();
-            AddEffectOnUnit(Enumerators.EffectOnUnitType.Heavy);
+            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Heavy);
 
             HasHeavy = true;
             HasFeral = false;
@@ -366,7 +374,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             ClearUnitTypeEffects();
-            AddEffectOnUnit(Enumerators.EffectOnUnitType.Feral);
+            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Feral);
 
             HasHeavy = false;
             HasBuffHeavy = false;
@@ -394,37 +402,37 @@ namespace Loom.ZombieBattleground
             CardTypeChanged?.Invoke(InitialUnitType);
         }
 
-        public void AddEffectOnUnit(Enumerators.EffectOnUnitType effectOnUnit)
+        public void AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType gameMechanic)
         {
-            if (!EffectsOnUnit.Contains(effectOnUnit))
+            if (!GameMechanicDescriptionsOnUnit.Contains(gameMechanic))
             {
-                EffectsOnUnit.Add(effectOnUnit);
-                EffectsOnUnitChanged?.Invoke();
+                GameMechanicDescriptionsOnUnit.Add(gameMechanic);
+                GameMechanicDescriptionsOnUnitChanged?.Invoke();
             }
         }
 
-        public void RemoveEffectFromUnit(Enumerators.EffectOnUnitType effectOnUnit)
+        public void RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType gameMechanic)
         {
-            if (EffectsOnUnit.Contains(effectOnUnit))
+            if (GameMechanicDescriptionsOnUnit.Contains(gameMechanic))
             {
-                EffectsOnUnit.Remove(effectOnUnit);
-                EffectsOnUnitChanged?.Invoke();
+                GameMechanicDescriptionsOnUnit.Remove(gameMechanic);
+                GameMechanicDescriptionsOnUnitChanged?.Invoke();
             }
         }
 
         public void ClearEffectsOnUnit()
         {
-            EffectsOnUnit.Clear();
+            GameMechanicDescriptionsOnUnit.Clear();
 
-            EffectsOnUnitChanged?.Invoke();
+            GameMechanicDescriptionsOnUnitChanged?.Invoke();
         }
 
         public void SetObjectInfo(WorkingCard card)
         {
             Card = card;
 
-            CurrentDamage = card.Damage;
-            CurrentHp = card.Health;
+            CurrentDamage = card.InstanceCard.Damage;
+            CurrentHp = card.InstanceCard.Health;
 
             BuffedDamage = 0;
             BuffedHp = 0;
@@ -441,11 +449,11 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardType.FERAL:
                     HasFeral = true;
                     IsPlayable = true;
-                    AddEffectOnUnit(Enumerators.EffectOnUnitType.Feral);
+                    AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Feral);
                     break;
                 case Enumerators.CardType.HEAVY:
                     HasHeavy = true;
-                    AddEffectOnUnit(Enumerators.EffectOnUnitType.Heavy);
+                    AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Heavy);
                     break;
                 case Enumerators.CardType.WALKER:
                 default:
@@ -454,16 +462,13 @@ namespace Loom.ZombieBattleground
 
             if (Card.LibraryCard.Abilities != null)
             {
-                string formatAbilityCallType = string.Empty;
-                TooltipContentData.BuffInfo buffInfo;
                 foreach (AbilityData ability in Card.LibraryCard.Abilities)
                 {
-                    buffInfo = GameClient.Get<IDataManager>().GetBuffInfoByType(ability.BuffType);
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescriptionType);
 
-                    if (buffInfo != null && !string.IsNullOrEmpty(buffInfo.Name))
+                    if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
                     {
-                        AddEffectOnUnit(Utilites.CastStringTuEnum<Enumerators.EffectOnUnitType>(
-                                                            buffInfo.Name.Replace(" ", string.Empty), true));
+                        AddGameMechanicDescriptionOnUnit(ability.GameMechanicDescriptionType);
                     }
                 }
             }
@@ -529,7 +534,7 @@ namespace Loom.ZombieBattleground
 
         public void Distract()
         {
-            AddEffectOnUnit(Enumerators.EffectOnUnitType.Distract);
+            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Distract);
 
             UpdateVisualStateOfDistract(true);
             UnitDistracted?.Invoke();

@@ -1,95 +1,139 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public class Card
+    public class Card : ICard, IReadOnlyCard
     {
-        public int Id;
+        [JsonProperty("id")]
+        public long MouldId { get; set; }
 
-        public Enumerators.SetType CardSetType;
+        public string Name { get; protected set; }
 
-        public string Kind;
+        public int Cost { get; set; }
 
-        public string Name;
+        public string Description { get; protected set; }
 
-        public int Cost;
+        [JsonProperty("flavor_text")]
+        public string FlavorText { get; protected set; }
 
-        public string Description;
+        public string Picture { get; protected set; }
 
-        public string FlavorText;
+        public int Damage { get; protected set; }
 
-        public string Picture;
+        public int Health { get; protected set; }
 
-        public int Damage;
+        [JsonProperty("Set")]
+        public Enumerators.SetType CardSetType { get; set; }
 
-        public int Health;
+        public string Frame { get; protected set; }
 
-        public string Rank;
+        [JsonProperty("Kind")]
+        public Enumerators.CardKind CardKind { get; protected set; }
 
-        public string Type;
+        [JsonProperty("Rank")]
+        public Enumerators.CardRank CardRank { get; protected set; }
 
-        public string Frame;
+        [JsonProperty("Type")]
+        public Enumerators.CardType CardType { get; protected set; }
 
-        public string UniqueAnimation;
+        public List<AbilityData> Abilities { get; }
 
-        public List<AbilityData> Abilities = new List<AbilityData>();
+        [JsonProperty("card_view_info")]
+        public CardViewInfo CardViewInfo { get; protected set; }
 
-        public CardViewInfo CardViewInfo = new CardViewInfo();
+        [JsonProperty("unique_animation_type")]
+        public Enumerators.UniqueAnimationType UniqueAnimationType { get; protected set; }
 
-        [JsonIgnore]
-        public Enumerators.CardRank CardRank;
-
-        [JsonIgnore]
-        public Enumerators.CardType CardType;
-
-        [JsonIgnore]
-        public Enumerators.CardKind CardKind;
-
-        [JsonIgnore]
-        public Enumerators.UniqueAnimationType UniqueAnimationType = Enumerators.UniqueAnimationType.None;
-
-
-        public Card Clone()
+        [JsonConstructor]
+        public Card(
+            long mouldId,
+            string name,
+            int cost,
+            string description,
+            string flavorText,
+            string picture,
+            int damage,
+            int health,
+            Enumerators.SetType cardSetType,
+            string frame,
+            Enumerators.CardKind cardKind,
+            Enumerators.CardRank cardRank,
+            Enumerators.CardType cardType,
+            List<AbilityData> abilities,
+            CardViewInfo cardViewInfo,
+            Enumerators.UniqueAnimationType uniqueAnimationType
+            )
         {
-            Card card = new Card
-            {
-                Id = Id,
-                Kind = Kind,
-                Name = Name,
-                Cost = Cost,
-                Description = Description,
-                FlavorText = FlavorText,
-                Picture = Picture,
-                Damage = Damage,
-                Health = Health,
-                Rank = Rank,
-                Type = Type,
-                CardSetType = CardSetType,
-                CardKind = CardKind,
-                CardRank = CardRank,
-                CardType = CardType,
-                Abilities = Abilities,
-                CardViewInfo = CardViewInfo,
-                Frame = Frame,
-                UniqueAnimationType = UniqueAnimationType
-            };
+            MouldId = mouldId;
+            Name = name;
+            Cost = cost;
+            Description = description;
+            FlavorText = flavorText;
+            Picture = picture;
+            Damage = damage;
+            Health = health;
+            CardSetType = cardSetType;
+            Frame = frame;
+            CardKind = cardKind;
+            CardRank = cardRank;
+            CardType = cardType;
+            Abilities = abilities ?? new List<AbilityData>();
+            CardViewInfo = cardViewInfo;
+            UniqueAnimationType = uniqueAnimationType;
+        }
 
-            return card;
+        public Card(IReadOnlyCard sourceCard)
+        {
+            MouldId = sourceCard.MouldId;
+            Name = sourceCard.Name;
+            Cost = sourceCard.Cost;
+            Description = sourceCard.Description;
+            FlavorText = sourceCard.FlavorText;
+            Picture = sourceCard.Picture;
+            Damage = sourceCard.Damage;
+            Health = sourceCard.Health;
+            CardSetType = sourceCard.CardSetType;
+            Frame = sourceCard.Frame;
+            CardKind = sourceCard.CardKind;
+            CardRank = sourceCard.CardRank;
+            CardType = sourceCard.CardType;
+            Abilities =
+                sourceCard.Abilities
+                    .Select(a => new AbilityData(a))
+                    .ToList();
+            CardViewInfo = new CardViewInfo(sourceCard.CardViewInfo);
+            UniqueAnimationType = sourceCard.UniqueAnimationType;
         }
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardType})";
+            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardSetType})";
         }
     }
 
     public class CardViewInfo
     {
-        public FloatVector3 Position = FloatVector3.Zero;
+        public FloatVector3 Position { get; protected set; } = FloatVector3.Zero;
+        public FloatVector3 Scale { get; protected set; } = new FloatVector3(0.38f);
 
-        public FloatVector3 Scale = new FloatVector3(0.38f);
+        public CardViewInfo()
+        {
+        }
+
+        public CardViewInfo(FloatVector3 position, FloatVector3 scale)
+        {
+            Position = position;
+            Scale = scale;
+        }
+
+        public CardViewInfo(CardViewInfo source)
+        {
+            Position = source.Position;
+            Scale = source.Scale;
+        }
     }
 }

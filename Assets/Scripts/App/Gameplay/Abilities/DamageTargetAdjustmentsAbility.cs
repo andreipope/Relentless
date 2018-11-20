@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             if(AbilityCallType == Enumerators.AbilityCallType.ATTACK)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
             }
         }
 
@@ -149,7 +149,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
     }
 }

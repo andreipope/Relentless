@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private UniqueAnimation GetUniqueAnimationByType(Enumerators.UniqueAnimationType uniqueAnimationType)
         {
-            UniqueAnimation uniqueAnimation = null;
+            UniqueAnimation uniqueAnimation;
 
             switch (uniqueAnimationType)
             {

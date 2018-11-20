@@ -336,29 +336,29 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
-                _attackText.text = LibraryCard.Damage.ToString();
-                _defenseText.text = LibraryCard.Health.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
+                _attackText.text = libraryCard.Damage.ToString();
+                _defenseText.text = libraryCard.Health.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = LibraryCard.CardSetType.ToString();
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", LibraryCard.Type + "_icon"));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
 
                 if (_withEffect)
                 {
@@ -429,26 +429,26 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = LibraryCard.CardSetType.ToString();
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
 
                 if (_withEffect)
                 {
@@ -649,29 +649,29 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
-                _attackText.text = LibraryCard.Damage.ToString();
-                _defenseText.text = LibraryCard.Health.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
+                _attackText.text = libraryCard.Damage.ToString();
+                _defenseText.text = libraryCard.Health.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = LibraryCard.CardSetType.ToString();
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", LibraryCard.Type + "_icon"));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
 
                 if (_withEffect)
                 {
@@ -748,26 +748,26 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = LibraryCard.CardSetType.ToString();
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
 
                 if (_withEffect)
                 {

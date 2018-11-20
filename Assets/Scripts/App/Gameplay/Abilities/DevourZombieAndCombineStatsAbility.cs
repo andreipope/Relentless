@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                 {
                     TargetUnit
-                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
                 DevourTargetZombie(unit);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         private void DevourTargetZombie(BoardUnitModel unit)

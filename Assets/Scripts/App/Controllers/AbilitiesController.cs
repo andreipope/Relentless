@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind, Protobuf.AffectObjectType, List<BoardObject>> AbilityUsed;
+        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind.Types.Enum, Protobuf.AffectObjectType.Types.Enum, List<BoardObject>> AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardKind kind,
             object boardObject,
             Player caller,
-            Card cardOwner,
+            IReadOnlyCard cardOwner,
             WorkingCard workingCard)
         {
             lock (_lock)
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsAbilityActive(AbilityData ability)
         {
-            if (ability.AbilityActivityType == Enumerators.AbilityActivityType.ACTIVE)
+            if (ability.ActivityType == Enumerators.AbilityActivityType.ACTIVE)
             {
                 return true;
             }
@@ -177,7 +177,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsAbilityCallsAtStart(AbilityData ability)
         {
-            if (ability.AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            if (ability.CallType == Enumerators.AbilityCallType.ENTRY)
             {
                 return true;
             }
@@ -239,8 +239,8 @@ namespace Loom.ZombieBattleground
         {
             int value = 0;
 
-            Card attackedCard = attacked.Card.LibraryCard;
-            Card attackerCard = attacker.Card.LibraryCard;
+            IReadOnlyCard attackedCard = attacked.Card.LibraryCard;
+            IReadOnlyCard attackerCard = attacker.Card.LibraryCard;
 
             List<AbilityData> abilities;
 
@@ -372,7 +372,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void CallAbility(
-            Card libraryCard,
+            IReadOnlyCard libraryCard,
             BoardCard card,
             WorkingCard workingCard,
             Enumerators.CardKind kind,
@@ -611,17 +611,19 @@ namespace Loom.ZombieBattleground
         }
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
-                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType affectObjectType)
+                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
         {
             if (card == null || !card.Owner.IsLocalPlayer)
                 return;
 
             AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ? Protobuf.CardKind.Spell : Protobuf.CardKind.Creature,
+                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
+                                    Protobuf.CardKind.Types.Enum.Spell :
+                                    Protobuf.CardKind.Types.Enum.Creature,
                                 affectObjectType, targets);
         }
 
-        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
+        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, IReadOnlyCard card, Player owner)
         {
             ActiveAbility activeAbility =
                 CreateActiveAbility(GetAbilityDataByType(ability), card.CardKind, target, owner, card, null);
@@ -631,11 +633,12 @@ namespace Loom.ZombieBattleground
         public void CallAbilitiesInHand(BoardCard boardCard, WorkingCard card)
         {
             List<AbilityData> handAbilities =
-                card.LibraryCard.Abilities.FindAll(x => x.AbilityCallType.Equals(Enumerators.AbilityCallType.IN_HAND));
+                card.LibraryCard.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityCallType.IN_HAND));
             foreach (AbilityData ability in handAbilities)
             {
                 CreateActiveAbility(ability, card.LibraryCard.CardKind, boardCard, card.Owner, card.LibraryCard, card)
-                    .Ability.Activate();
+                    .Ability
+                    .Activate();
             }
         }
 
@@ -1039,23 +1042,66 @@ namespace Loom.ZombieBattleground
         {
             AbilityData abilityData = null;
 
+            // FIXME: why is this hardcoded? should probably be in a separate JSON file
             switch (ability)
             {
                 case Enumerators.AbilityType.REANIMATE_UNIT:
-                    abilityData = new AbilityData();
-                    abilityData.BuffType = "REANIMATE";
-                    abilityData.Type = "REANIMATE_UNIT";
-                    abilityData.ActivityType = "PASSIVE";
-                    abilityData.CallType = "DEATH";
-                    abilityData.ParseData();
+                    abilityData = new AbilityData(
+                        Enumerators.AbilityType.REANIMATE_UNIT,
+                        Enumerators.AbilityActivityType.PASSIVE,
+                        Enumerators.AbilityCallType.DEATH,
+                        null,
+                        default(Enumerators.StatType),
+                        default(Enumerators.SetType),
+                        default(Enumerators.AbilityEffectType),
+                        default(Enumerators.AttackRestriction),
+                        default(Enumerators.CardType),
+                        default(Enumerators.UnitStatusType),
+                        default(Enumerators.CardType),
+                        0,
+                        0,
+                        0,
+                        "",
+                        0,
+                        0,
+                        0,
+                        null,
+                        Enumerators.GameMechanicDescriptionType.Reanimate,
+                        default(Enumerators.SetType),
+                        default(Enumerators.AbilitySubTrigger),
+                        null,
+                        0,
+                        0
+                        );
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
-                    abilityData = new AbilityData();
-                    abilityData.BuffType = "DESTROY";
-                    abilityData.Type = "DESTROY_TARGET_UNIT_AFTER_ATTACK";
-                    abilityData.ActivityType = "PASSIVE";
-                    abilityData.CallType = "ATTACK";
-                    abilityData.ParseData();
+                    abilityData = new AbilityData(
+                        Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
+                        Enumerators.AbilityActivityType.PASSIVE,
+                        Enumerators.AbilityCallType.ATTACK,
+                        null,
+                        default(Enumerators.StatType),
+                        default(Enumerators.SetType),
+                        default(Enumerators.AbilityEffectType),
+                        default(Enumerators.AttackRestriction),
+                        default(Enumerators.CardType),
+                        default(Enumerators.UnitStatusType),
+                        default(Enumerators.CardType),
+                        0,
+                        0,
+                        0,
+                        "",
+                        0,
+                        0,
+                        0,
+                        null,
+                        Enumerators.GameMechanicDescriptionType.Destroy,
+                        default(Enumerators.SetType),
+                        default(Enumerators.AbilitySubTrigger),
+                        null,
+                        0,
+                        0
+                    );
                     break;
             }
 
