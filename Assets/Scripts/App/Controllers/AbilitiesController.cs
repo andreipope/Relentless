@@ -371,6 +371,12 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
+        private ActiveAbility _activeAbility;
+        public ActiveAbility CurrentActiveAbility
+        {
+            get { return _activeAbility; }
+        }
+
         public void CallAbility(
             IReadOnlyCard libraryCard,
             BoardCard card,
@@ -393,11 +399,11 @@ namespace Loom.ZombieBattleground
                    Action abilityEndAction = () =>
                    {
                        bool canUseAbility = false;
-                       ActiveAbility activeAbility = null;
+                       _activeAbility = null;
                        foreach (AbilityData item in libraryCard.Abilities)
                        {
                            // todo improve it bcoz can have queue of abilities with targets
-                           activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
+                           _activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
 
                            if (IsAbilityCanActivateTargetAtStart(item))
                            {
@@ -405,7 +411,7 @@ namespace Loom.ZombieBattleground
                            }
                            else
                            {
-                               activeAbility.Ability.Activate();
+                               _activeAbility.Ability.Activate();
                            }
                        }
 
@@ -429,7 +435,7 @@ namespace Loom.ZombieBattleground
                                 ability.TargetSetType != Enumerators.SetType.NONE &&
                                !HasSpecialUnitFactionOnMainBoard(workingCard, ability)))
                            {
-                               CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+                               CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
 
                                onCompleteCallback?.Invoke();
 
@@ -442,41 +448,13 @@ namespace Loom.ZombieBattleground
 
                            if (CheckActivateAvailability(kind, ability, workingCard.Owner))
                            {
-                               activeAbility.Ability.Activate();
+                               _activeAbility.Ability.Activate();
 
-                               if (isPlayer && target != null)
-                               {
-                                   switch (target)
-                                   {
-                                       case BoardUnitModel unit:
-                                           activeAbility.Ability.TargetUnit = unit;
-                                           break;
-                                       case Player player:
-                                           activeAbility.Ability.TargetPlayer = player;
-                                           break;
-                                       case null:
-                                           break;
-                                       default:
-                                           throw new ArgumentOutOfRangeException (nameof (target), target, null);
-                                   }
-
-                                   activeAbility.Ability.SelectedTargetAction (true);
-
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer
-                                       .BoardCards);
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
-
-                                   onCompleteCallback?.Invoke ();
-
-                                   ResolveAllAbilitiesOnUnit (boardObject);
-
-                                   completeCallback?.Invoke ();
-                               }
-                               else if (isPlayer)
+                               if (isPlayer)
                                {
                                    BlockEndTurnButton = true;
 
-                                   activeAbility.Ability.ActivateSelectTarget(
+                                   _activeAbility.Ability.ActivateSelectTarget(
                                        callback: () =>
                                        {
                                            if (kind == Enumerators.CardKind.SPELL && isPlayer)
@@ -561,10 +539,10 @@ namespace Loom.ZombieBattleground
                                    switch (target)
                                    {
                                        case BoardUnitModel unit:
-                                           activeAbility.Ability.TargetUnit = unit;
+                                           _activeAbility.Ability.TargetUnit = unit;
                                            break;
                                        case Player player:
-                                           activeAbility.Ability.TargetPlayer = player;
+                                           _activeAbility.Ability.TargetPlayer = player;
                                            break;
                                        case null:
                                            break;
@@ -572,7 +550,7 @@ namespace Loom.ZombieBattleground
                                            throw new ArgumentOutOfRangeException(nameof(target), target, null);
                                    }
 
-                                   activeAbility.Ability.SelectedTargetAction(true);
+                                   _activeAbility.Ability.SelectedTargetAction(true);
 
                                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
                                        .BoardCards);
@@ -587,7 +565,7 @@ namespace Loom.ZombieBattleground
                            }
                            else
                            {
-                               CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+                               CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
                                onCompleteCallback?.Invoke();
 
                                ResolveAllAbilitiesOnUnit(boardObject);
@@ -597,7 +575,7 @@ namespace Loom.ZombieBattleground
                        }
                        else
                        {
-                           CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+                           CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
                            onCompleteCallback?.Invoke();
 
                            ResolveAllAbilitiesOnUnit(boardObject);

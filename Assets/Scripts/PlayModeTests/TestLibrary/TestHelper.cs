@@ -1,4 +1,4 @@
-﻿using Loom.ZombieBattleground;
+using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
@@ -369,6 +369,18 @@ public class TestHelper
         yield return null;
     }
 
+    private bool CheckIfLoginBoxAppeared (string dummyparameter)
+    {
+        GameObject loginBox = GameObject.Find ("InputField_Beta");
+
+        if (loginBox != null && loginBox.activeInHierarchy)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private bool CheckIfLoginErrorOccured (string dummyParameter)
     {
         GameObject errorTextObject = GameObject.Find ("Beta_Group/Text_Error");
@@ -525,10 +537,19 @@ public class TestHelper
     {
         GameObject pressAnyText = null;
         yield return new WaitUntil (() => { pressAnyText = GameObject.Find ("PressAnyText"); return pressAnyText != null; });
-
+        
         pressAnyText.SetActive (false);
         GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
+        yield return CombinedCheck (
+            CheckIfLoginBoxAppeared, "", SubmitTesterKey (),
+            CheckCurrentPageName, "MainMenuPage", null);
+
+        yield return null;
+    }
+
+    private IEnumerator SubmitTesterKey ()
+    {
         InputField testerKeyField = null;
         yield return new WaitUntil (() => { testerKeyField = GameObject.Find ("InputField_Beta")?.GetComponent<InputField> (); return testerKeyField != null; });
 
@@ -725,7 +746,7 @@ public class TestHelper
 
             if (CardCanBePlayable (card) && CheckSpecialCardRules (card))
             {
-                PlayCardFromHandToBoard (card);
+                yield return PlayCardFromHandToBoard (card);
                 wasAction = true;
                 yield return LetsThink ();
                 yield return LetsThink ();
@@ -736,7 +757,7 @@ public class TestHelper
         {
             if (CardCanBePlayable (card) && CheckSpecialCardRules (card))
             {
-                PlayCardFromHandToBoard (card);
+                yield return PlayCardFromHandToBoard (card);
                 wasAction = true;
                 yield return LetsThink ();
                 yield return LetsThink ();
@@ -1077,7 +1098,7 @@ public class TestHelper
         yield return null;
     }
 
-    private void PlayCardFromHandToBoard (WorkingCard card)
+    private IEnumerator PlayCardFromHandToBoard (WorkingCard card)
     {
         bool needTargetForAbility = false;
 
@@ -1094,7 +1115,7 @@ public class TestHelper
             target = GetAbilityTarget (card);
         }
 
-        Debug.LogWarning ("Target: " + ((target != null) ? target.Id.ToString () : "Null"));
+        Debug.LogWarning ("Target: " + ((target != null) ? target.Id.ToString () : "Null") + ", Need target: " + needTargetForAbility);
 
         switch (card.LibraryCard.CardKind)
         {
@@ -1104,26 +1125,49 @@ public class TestHelper
                     BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
 
                     _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
-                        if (_boardArrowController.CurrentBoardArrow != null &&
-                            _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
-                        {
-                            Debug.LogWarning ("0");
-
-                            if (target != null)
-                            {
-                                Debug.LogWarning ("1");
-
-                                _boardArrowController.CurrentBoardArrow.SetTarget (target);
-                            }
-                            else
-                            {
-                                Debug.LogWarning ("2");
-                            }
-                        }
-
                         PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                         _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
                     });
+
+                    yield return null;
+
+                    if (needTargetForAbility)
+                    {
+                        yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null);
+                        if (_boardArrowController.CurrentBoardArrow != null)
+                        {
+                            _boardArrowController.CurrentBoardArrow.Dispose ();
+                        }
+                        
+                        switch (target)
+                        {
+                            case BoardUnitModel unit:
+                                Debug.LogWarning ("BoardUnitModel");
+
+                                _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
+                                break;
+                            case Loom.ZombieBattleground.Player player:
+                                Debug.LogWarning ("Player");
+
+                                _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
+                                break;
+                            case null:
+                                Debug.LogWarning ("Null");
+
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException (nameof (target), target, null);
+                        }
+
+                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction (true);
+
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer.BoardCards);
+                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
+
+                        _abilitiesController.ResolveAllAbilitiesOnUnit (target);
+
+                        yield return null;
+                    }
                 }
                 else
                 {
@@ -1165,6 +1209,8 @@ public class TestHelper
         }
 
         _testBroker.GetPlayer (_player).CurrentGoo -= card.LibraryCard.Cost;
+
+        yield return null;
     }
 
     // todo: reconsider having this
@@ -1801,6 +1847,8 @@ public class TestHelper
                 skill.EndDoSkill ();
             };
 
+            _boardArrowController.ResetCurrentBoardArrow ();
+
             skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, overrideTarget, action: overrideCallback);
 
             return;
@@ -1950,21 +1998,22 @@ public class TestHelper
                 throw new ArgumentOutOfRangeException (nameof (skill.Skill.OverlordSkill), skill.Skill.OverlordSkill, null);
         }
 
-        skill.StartDoSkill ();
+        skill.StartDoSkill (true);
 
-        Action callback = () => {
+        Action callback = () =>
+        {
             switch (selectedObjectType)
             {
                 case Enumerators.AffectObjectType.Player:
                     Debug.Log ("Board skill: Player");
 
-                    skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player)target;
+                    skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player) target;
 
                     break;
                 case Enumerators.AffectObjectType.Character:
                     Debug.Log ("Board skill: Character");
 
-                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel)target);
+                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) target);
                     skill.FightTargetingArrow.SelectedCard = selectedCardView;
 
                     break;
@@ -1988,6 +2037,8 @@ public class TestHelper
 
             skill.EndDoSkill ();
         };
+
+        _boardArrowController.ResetCurrentBoardArrow ();
 
         skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target, action: callback);
 
@@ -2615,6 +2666,13 @@ public class TestHelper
 
     public void AssertOverlordName ()
     {
+        if (_recordedExpectedValue.Length <= 0 || _recordedActualValue.Length <= 0 || _recordedExpectedValue == "Default")
+        {
+            Debug.Log ("One of the overlord names was null, so didn't check.");
+
+            return;
+        }
+
         Debug.LogFormat ("{0} vs {1}", _recordedExpectedValue, _recordedActualValue);
 
         Assert.AreEqual (_recordedExpectedValue, _recordedActualValue);

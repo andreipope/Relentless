@@ -497,7 +497,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard, BoardObject target = null)
+        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard)
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
@@ -590,7 +590,7 @@ namespace Loom.ZombieBattleground
                                                 () =>
                                                 {
                                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                                        Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, null, CallAbilityAction, target);
+                                                        Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, null, CallAbilityAction);
 
                                                     waiterAction.ForceActionDone();
                                                 });

@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System.Collections;
 using UnityEngine.TestTools;
 
@@ -213,6 +213,10 @@ public class SingleplayerTests
     {
         _testHelper.SetTestName ("Solo - Tutorial Non-Skip");
 
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
         #region Tutorial Non-Skip
 
         yield return _testHelper.MainMenuTransition ("Button_Tutorial");
@@ -237,6 +241,10 @@ public class SingleplayerTests
     public IEnumerator Test2_TutorialSkip ()
     {
         _testHelper.SetTestName ("Solo - Tutorial Skip");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         #region Tutorial Skip
 
@@ -264,6 +272,12 @@ public class SingleplayerTests
         yield return _testHelper.MainMenuTransition ("Button_SoloMode");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        int selectedHordeIndex = 0;
+
+        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
