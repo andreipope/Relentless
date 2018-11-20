@@ -266,13 +266,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 AffectObjectType =  AffectObjectType.Types.Enum.Character,
                                 Parameter = new Parameter()
                                 {
-                                    Damage = parametrizedAbility.Parameters.Damage,
+                                    Attack = parametrizedAbility.Parameters.Attack,
                                     Defense = parametrizedAbility.Parameters.Defense,
                                     CardName = parametrizedAbility.Parameters.CardName
                                 }
                             };
                         }
-                        else if (boardObject is Player player)
+                        else if (parametrizedAbility.BoardObject is Player player)
                         {
                             targetUnit = new Protobuf.Unit
                             {
@@ -286,9 +286,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             {
                                 InstanceId = handCard.Id,
                                 AffectObjectType = AffectObjectType.Types.Enum.Card,
-								Parameter = new Parameter()
+                                Parameter = new Parameter()
                                 {
-                                    Damage = parametrizedAbility.Parameters.Damage,
+                                    Attack = parametrizedAbility.Parameters.Attack,
                                     Defense = parametrizedAbility.Parameters.Defense,
                                     CardName = parametrizedAbility.Parameters.CardName
                                 }

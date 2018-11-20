@@ -291,9 +291,9 @@ namespace Loom.ZombieBattleground
                              Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(unit.AffectObjectType.ToString(), true)),
                     Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
                     {
-                      Damage = unit.Parameter.Damage,
-                      Defense = unit.Parameter.Defense,
-                      CardName = unit.Parameter.CardName,
+                        Attack = unit.Parameter.Attack,
+                        Defense = unit.Parameter.Defense,
+                        CardName = unit.Parameter.CardName,
                     }
                 });
             }

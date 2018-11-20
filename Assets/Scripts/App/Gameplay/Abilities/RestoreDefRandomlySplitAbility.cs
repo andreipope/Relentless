@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, abilityTargets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, abilityTargets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)

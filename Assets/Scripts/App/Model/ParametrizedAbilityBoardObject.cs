@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.Data
 
         public class AbilityParameters
         {
-            public int Damage;
+            public int Attack;
             public int Defense;
             public string CardName;
         }
