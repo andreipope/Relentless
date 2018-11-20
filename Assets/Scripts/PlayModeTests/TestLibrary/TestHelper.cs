@@ -171,21 +171,10 @@ public class TestHelper
             yield return LetsThink ();
         }
 
-        /* if (IsButtonExist ("Button_Back"))
-        {
-            yield return MainMenuTransition ("Button_Back");
-
-            yield return AssertCurrentPageName ("PlaySelectionPage");
-
-            yield return MainMenuTransition ("Button_Back");
-
-            yield return AssertCurrentPageName ("MainMenuPage");
-        } */
-
         yield return null;
     }
 
-    private IEnumerator GoOnePageHigher ()
+    public IEnumerator GoOnePageHigher ()
     {
         yield return new WaitUntil (() =>
         {
@@ -200,16 +189,35 @@ public class TestHelper
 
         yield return AssertCurrentPageName (actualPageName);
 
+        yield return LetsThink ();
+
         switch (actualPageName)
         {
             case "GameplayPage":
-                yield return ClickGenericButton ("Button_Settings");
+                if (GameObject.Find ("Button_Back") != null)
+                {
+                    yield return ClickGenericButton ("Button_Back");
 
-                yield return ClickGenericButton ("Button_QuitToMainMenu");
+                    yield return LetsThink ();
 
-                yield return RespondToYesNoOverlay (true);
+                    yield return RespondToYesNoOverlay (true);
 
-                yield return AssertCurrentPageName ("HordeSelectionPage");
+                    yield return AssertCurrentPageName ("MainMenuPage");
+                }
+                else if (GameObject.Find ("Button_Settings") != null)
+                {
+                    yield return ClickGenericButton ("Button_Settings");
+
+                    yield return LetsThink ();
+
+                    yield return ClickGenericButton ("Button_QuitToMainMenu");
+
+                    yield return LetsThink ();
+
+                    yield return RespondToYesNoOverlay (true);
+
+                    yield return AssertCurrentPageName ("MainMenuPage");
+                }
 
                 break;
             case "HordeSelectionPage":
@@ -331,6 +339,13 @@ public class TestHelper
         yield return null;
     }
 
+    public IEnumerator AssertIfWentDirectlyToTutorial (IEnumerator callback1, IEnumerator callback2 = null)
+    {
+        yield return CombinedCheck (
+            CheckCurrentPageName, "GameplayPage", callback1,
+            CheckCurrentPageName, "PlaySelectionPage", callback2);
+    }
+
     public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
     {
         yield return CombinedCheck (
@@ -419,7 +434,11 @@ public class TestHelper
     {
         if (GameObject.Find("TermsPopup(Clone)") != null)
         {
-            GameObject.Find ("Toggle")?.GetComponent<Toggle> ()?.onValueChanged.Invoke (true);
+            if (GameObject.Find ("Toggle")?.GetComponent<Toggle> () != null)
+            {
+                GameObject.Find ("Toggle").GetComponent<Toggle> ().isOn = true;
+                GameObject.Find ("Toggle").GetComponent<Toggle> ().onValueChanged.Invoke (true);
+            }
 
             yield return LetsThink ();
 
@@ -486,6 +505,13 @@ public class TestHelper
         lastCheckedPageName = actualPageName;
 
         yield return null;
+    }
+
+    public IEnumerator GoBackToMainAndPressPlay ()
+    {
+        yield return GoOnePageHigher ();
+
+        yield return MainMenuTransition ("Button_Play");
     }
 
     public IEnumerator AddVirtualInputModule ()

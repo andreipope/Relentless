@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 public class SingleplayerTests
@@ -243,6 +244,9 @@ public class SingleplayerTests
         _testHelper.SetTestName ("Solo - Tutorial Skip");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
