@@ -1138,7 +1138,7 @@ public class TestHelper
                         {
                             _boardArrowController.CurrentBoardArrow.Dispose ();
                         }
-                        
+
                         switch (target)
                         {
                             case BoardUnitModel unit:
@@ -1164,7 +1164,7 @@ public class TestHelper
                         _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer.BoardCards);
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
 
-                        _abilitiesController.ResolveAllAbilitiesOnUnit (target);
+                        _abilitiesController.ResolveAllAbilitiesOnUnit (target, inputDragStatus: false);
 
                         yield return null;
                     }
@@ -2287,88 +2287,27 @@ public class TestHelper
 
         yield return SetDeckTitle ("Kalile");
 
-        yield return AddCardToHorde ("Wheezy");
-        yield return AddCardToHorde ("Wheezy");
-        yield return AddCardToHorde ("Wheezy");
-        yield return AddCardToHorde ("Wheezy");
+        yield return AddCardToHorde ("Air", "Wheezy", 4);
 
-        yield return ClickGenericButton ("Army/ArrowRightButton");
+        yield return AddCardToHorde ("Air", "Pushhh", 2);
 
-        yield return LetsThink ();
+        yield return AddCardToHorde ("Air", "Ztormcaller", 2);
 
-        SetupArmyCards ();
+        yield return AddCardToHorde ("Water", "Blizzard", 2);
 
-        yield return AddCardToHorde ("Pushhh");
-        yield return AddCardToHorde ("Pushhh");
+        yield return AddCardToHorde ("Water", "Jetter", 2);
 
-        yield return AddCardToHorde ("Ztormmcaller");
-        yield return AddCardToHorde ("Ztormmcaller");
+        yield return AddCardToHorde ("Water", "Zhatterer", 4);
 
-        yield return ClickGenericButton ("Army/ArrowLeftButton", count: 6);
+        yield return AddCardToHorde ("Fire", "BlaZter", 4);
 
-        yield return LetsThink ();
+        yield return AddCardToHorde ("Fire", "Cynderman", 2);
 
-        SetupArmyCards ();
+        yield return AddCardToHorde ("Life", "PreZerver", 4);
 
-        yield return AddCardToHorde ("Blizzard");
-        yield return AddCardToHorde ("Blizzard");
+        yield return AddCardToHorde ("Life", "Shroom", 2);
 
-        yield return ClickGenericButton ("Army/ArrowLeftButton");
-
-        yield return LetsThink ();
-
-        SetupArmyCards ();
-
-        yield return AddCardToHorde ("Jetter");
-        yield return AddCardToHorde ("Jetter");
-
-        yield return ClickGenericButton ("Army/ArrowLeftButton");
-
-        yield return LetsThink ();
-
-        SetupArmyCards ();
-
-        yield return AddCardToHorde ("Zhatterer");
-        yield return AddCardToHorde ("Zhatterer");
-        yield return AddCardToHorde ("Zhatterer");
-        yield return AddCardToHorde ("Zhatterer");
-
-        yield return ClickGenericButton ("Army/ArrowLeftButton", count: 2);
-
-        yield return LetsThink ();
-
-        SetupArmyCards ();
-
-        yield return AddCardToHorde ("BlaZter");
-        yield return AddCardToHorde ("BlaZter");
-        yield return AddCardToHorde ("BlaZter");
-        yield return AddCardToHorde ("BlaZter");
-
-        yield return AddCardToHorde ("Cynderman");
-        yield return AddCardToHorde ("Cynderman");
-
-        yield return ClickGenericButton ("Army/ArrowRightButton", count: 14);
-
-        yield return LetsThink ();
-
-        SetupArmyCards ();
-
-        yield return AddCardToHorde ("PreZerver");
-        yield return AddCardToHorde ("PreZerver");
-        yield return AddCardToHorde ("PreZerver");
-        yield return AddCardToHorde ("PreZerver");
-
-        yield return AddCardToHorde ("Shroom");
-        yield return AddCardToHorde ("Shroom");
-
-        yield return ClickGenericButton ("Army/ArrowRightButton", count: 2);
-
-        yield return LetsThink ();
-
-        SetupArmyCards ();
-
-        yield return AddCardToHorde ("Zpitter");
-        yield return AddCardToHorde ("Zpitter");
+        yield return AddCardToHorde ("Life", "Zpitter", 2);
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -2391,53 +2330,23 @@ public class TestHelper
 
         yield return SetDeckTitle ("Razu");
 
-        yield return AddCardToHorde ("Pyromaz");
-        yield return AddCardToHorde ("Pyromaz");
-        yield return AddCardToHorde ("Pyromaz");
-        yield return AddCardToHorde ("Pyromaz");
-        // yield return AddCardToHorde ("Pyromaz", true);
+        yield return AddCardToHorde ("Fire", "Pyromaz", 4);
 
-        yield return AddCardToHorde ("Quazi");
-        yield return AddCardToHorde ("Quazi");
-        yield return AddCardToHorde ("Quazi");
-        yield return AddCardToHorde ("Quazi");
+        yield return AddCardToHorde ("Fire", "Quazi", 4);
 
-        yield return AddCardToHorde ("Ember");
-        yield return AddCardToHorde ("Ember");
-        yield return AddCardToHorde ("Ember");
-        yield return AddCardToHorde ("Ember");
+        yield return AddCardToHorde ("Fire", "Ember", 4);
 
-        yield return AddCardToHorde ("Firewall");
-        yield return AddCardToHorde ("Firewall");
-        yield return AddCardToHorde ("Firewall");
-        yield return AddCardToHorde ("Firewall");
+        yield return AddCardToHorde ("Fire", "Firewall", 4);
 
-        yield return AddCardToHorde ("BurZt");
-        yield return AddCardToHorde ("BurZt");
-        yield return AddCardToHorde ("BurZt");
-        yield return AddCardToHorde ("BurZt");
+        yield return AddCardToHorde ("Fire", "BurZt", 4);
 
-        yield return ClickGenericButton ("Army/ArrowRightButton");
+        yield return AddCardToHorde ("Fire", "BlaZter", 4);
 
-        yield return LetsThink ();
+        yield return AddCardToHorde ("Fire", "Burrrnn", 2);
 
-        SetupArmyCards ();
+        yield return AddCardToHorde ("Fire", "Cynderman", 2);
 
-        yield return LetsThink ();
-
-        yield return AddCardToHorde ("BlaZter");
-        yield return AddCardToHorde ("BlaZter");
-        yield return AddCardToHorde ("BlaZter");
-        yield return AddCardToHorde ("BlaZter");
-
-        yield return AddCardToHorde ("Burrrnn");
-        yield return AddCardToHorde ("Burrrnn");
-
-        yield return AddCardToHorde ("Cynderman");
-        yield return AddCardToHorde ("Cynderman");
-
-        yield return AddCardToHorde ("Werezomb");
-        yield return AddCardToHorde ("Werezomb");
+        yield return AddCardToHorde ("Fire", "Werezomb", 2);
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -2520,6 +2429,90 @@ public class TestHelper
         deckTitleInputField.onEndEdit.Invoke (deckTitle); // for post deck creation result
 
         yield return LetsThink ();
+    }
+
+    private string _currentElementName = "";
+
+    public IEnumerator PickElement (string elementName)
+    {
+        Transform elementsParent = GameObject.Find ("ElementsToggles").transform;
+
+        Toggle elementToggle = elementsParent.Find (elementName)?.GetComponent<Toggle> ();
+
+        if (elementToggle != null)
+        {
+            if (elementName == _currentElementName)
+            {
+                if (elementName != "Fire")
+                {
+                    yield return PickElement ("Fire");
+                }
+                else
+                {
+                    yield return PickElement ("Water");
+                }
+            }
+
+            elementToggle.onValueChanged.Invoke (true);
+
+            _currentElementName = elementName;
+        }
+
+        yield return LetsThink ();
+
+        SetupArmyCards ();
+
+        yield return LetsThink ();
+    }
+
+    private int _pagesChecked;
+
+    public IEnumerator AddCardToHorde (string elementName, string cardName, int count = 1)
+    {
+        _pagesChecked = 0;
+
+        yield return PickElement (elementName);
+
+        yield return AddCardToHorde2 (cardName, count);
+    }
+
+    public IEnumerator AddCardToHorde2 (string cardName, int count = 1)
+    {
+        int checkedPage;
+
+        for (checkedPage = 0; checkedPage <= 4; checkedPage++)
+        {
+            Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
+                x.Name == cardName);
+
+            if (armyCard == null)
+            {
+                yield return ClickGenericButton ("Army/ArrowRightButton");
+
+                yield return LetsThink ();
+
+                SetupArmyCards ();
+
+                yield return LetsThink ();
+
+                continue;
+            }
+
+            Debug.Log ("Adding " + cardName + " (" + armyCard.Cost + ") x" + count);
+
+            for (int counter = 0; counter < count; counter++)
+            {
+                _uiManager.GetPage<HordeEditingPage> ().AddCardToDeck (null, armyCard);
+
+                yield return LetsThink ();
+            }
+
+            yield return LetsThink ();
+
+            break;
+        }
+
+        yield return null;
     }
 
     public IEnumerator AddCardToHorde (string cardName, bool overQuota = false)
