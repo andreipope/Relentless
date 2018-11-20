@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
             BoardCard boardCard;
             Player playerOwner;
+            List<WorkingCard> filteredCards = null;
+
             foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
             {
                 playerOwner = null;
@@ -53,14 +55,34 @@ namespace Loom.ZombieBattleground
                         throw new NotImplementedException(nameof(targetType) + " not implemented!");
                 }
 
+                if (PredefinedTargets != null)
+                {
+                    filteredCards = PredefinedTargets.Where(target => (target.BoardObject as HandBoardCard).OwnerPlayer == playerOwner)
+                                                     .Select(x => (x.BoardObject as HandBoardCard).CardView.WorkingCard).ToList();
+                }
+                else
+                {
+                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                }
 
-                List<WorkingCard> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
                 filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count);
 
                 if (filteredCards.Count == 0)
                     continue;
 
-                boardCard = PutCardOnBoard(filteredCards[0]);
+                if (PredefinedTargets != null)
+                {
+                    boardCard = (PredefinedTargets[0].BoardObject as HandBoardCard).CardView;
+                }
+                else
+                { 
+                    boardCard = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
+                }
+
+                InternalTools.DoActionDelayed(() =>
+                {
+                    CardsController.SummonUnitFromHand(filteredCards[0].Owner, boardCard);
+                }, 0.25f);
 
                 boardCards.Add(boardCard.HandBoardCard);
 
@@ -80,25 +102,6 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = TargetEffects
             });
-        }
-
-        private BoardCard PutCardOnBoard(WorkingCard card)
-        {
-            BoardCard boardCard = new UnitBoardCard(Object.Instantiate(CardsController.CreatureCardViewPrefab));
-            boardCard.Init(card);
-            boardCard.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
-                                                                                 Constants.DefaultPositionOfOpponentBoardCard;
-            boardCard.GameObject.transform.localScale = Vector3.one * .3f;
-            boardCard.SetHighlightingEnabled(false);
-
-            boardCard.HandBoardCard = new HandBoardCard(boardCard.GameObject, boardCard);
-
-            InternalTools.DoActionDelayed(() =>
-            {
-                CardsController.SummonUnitFromHand(card.Owner, boardCard);
-            }, 0.25f);
-
-            return boardCard;
         }
     }
 }

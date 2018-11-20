@@ -951,7 +951,7 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView view = GetBoardUnitViewByModel(unit);
 
-            if (unit.OwnerPlayer.Equals(PlayerBoardCards))
+            if (unit.OwnerPlayer.IsLocalPlayer)
             {
                 PlayerBoardCards.Remove(view);
                 OpponentBoardCards.Add(view);
@@ -1045,6 +1045,17 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AffectObjectType.Card:
+                    List<WorkingCard> cards = new List<WorkingCard>();
+                    cards.AddRange(_gameplayManager.OpponentPlayer.CardsInDeck);
+                    cards.AddRange(_gameplayManager.CurrentPlayer.CardsInDeck);
+
+                    WorkingCard card = cards.Find(u => u.InstanceId == id);
+
+                    cards.Clear();
+                    if (card != null)
+                    {
+                        return CreateCustomHandBoardCard(card).HandBoardCard;
+                    }
                     return null;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(affectObjectType), affectObjectType, null);
@@ -1138,6 +1149,21 @@ namespace Loom.ZombieBattleground
             (boardCards.IndexOf(unit) == Mathf.Clamp(targetView + 1, 0, boardCards.Count - 1)) &&
             boardCards.IndexOf(unit) != targetView)
             ).ToList();
+        }
+
+        public BoardCard CreateCustomHandBoardCard(WorkingCard card)
+        {
+            BoardCard boardCard = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab));
+            boardCard.Init(card);
+            boardCard.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
+                                                                                 Constants.DefaultPositionOfOpponentBoardCard;
+            boardCard.GameObject.transform.localScale = Vector3.one * .3f;
+            boardCard.SetHighlightingEnabled(false);
+
+            boardCard.HandBoardCard = new HandBoardCard(boardCard.GameObject, boardCard);
+            boardCard.HandBoardCard.OwnerPlayer = card.Owner;
+
+            return boardCard;
         }
 
         #region specific setup of battleground
