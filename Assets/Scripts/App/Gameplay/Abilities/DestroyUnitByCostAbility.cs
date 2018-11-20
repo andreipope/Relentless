@@ -18,8 +18,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
-
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
         }
@@ -30,6 +28,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 Action();
             }
         }
@@ -41,6 +41,10 @@ namespace Loom.ZombieBattleground
             if (TargetUnit != null && TargetUnit.Card.InstanceCard.Cost <= Cost)
             {
                 BattlegroundController.DestroyBoardUnit(TargetUnit);
+
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { TargetUnit }, AbilityData.AbilityType,
+                                                         Protobuf.AffectObjectType.Types.Enum.Character);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
@@ -55,6 +59,8 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 });
+
+                AbilityProcessingAction?.ForceActionDone();
             }
         }
     }
