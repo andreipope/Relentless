@@ -50,6 +50,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<PlayerActionRankBuff> RankBuffActionReceived;
 
+        public event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
+
         public event Action LeaveMatchReceived;
 
         public MatchMetadata MatchMetadata { get; set; }
@@ -346,6 +348,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception)
                 {
+                    // FIXME: remove for release
                     File.WriteAllBytes("badproto" + Random.Range(10, 99999) + ".bin", data);
                     throw;
                 }
@@ -426,10 +429,11 @@ namespace Loom.ZombieBattleground
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
         {
-            Debug.Log("!!! ability outcomes: " + playerActionEvent.PlayerAction.AbilityOutcomes.Count);
-            foreach (CardAbilityOutcome playerActionAbilityOutcome in playerActionEvent.PlayerAction.AbilityOutcomes)
+            Debug.Log("!!! ability outcomes: " + playerActionEvent.PlayerAction.ActionOutcomes.Count);
+            foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
             {
-                Debug.Log(playerActionAbilityOutcome.ToString());
+                Debug.Log(playerActionOutcome.ToString());
+                PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
             }
 
             if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)

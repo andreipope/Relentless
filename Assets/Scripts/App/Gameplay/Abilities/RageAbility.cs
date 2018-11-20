@@ -27,6 +27,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitHpChangedHandler();
 
+#if !ENABLE_BACKEND_ACTION_OUTCOMES
             if (!_wasChanged)
             {
                 if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
@@ -47,6 +48,7 @@ namespace Loom.ZombieBattleground
                     InvokeActionTriggered(false);
                 }
             }
+#endif
         }
     }
 }

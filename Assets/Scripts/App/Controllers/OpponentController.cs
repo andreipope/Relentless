@@ -108,11 +108,7 @@ namespace Loom.ZombieBattleground
             _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
             _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
-        }
-
-        private void OnPlayerLeftGameActionHandler()
-        {
-            _gameplayManager.OpponentPlayer.PlayerDie();
+            _pvpManager.PlayerActionOutcomeReceived += OnPlayerActionOutcomeReceived;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -126,7 +122,38 @@ namespace Loom.ZombieBattleground
             _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
             _pvpManager.PlayerLeftGameActionReceived -= OnPlayerLeftGameActionHandler;
+            _pvpManager.PlayerActionOutcomeReceived -= OnPlayerActionOutcomeReceived;
 
+        }
+
+        private void OnPlayerActionOutcomeReceived(PlayerActionOutcome outcome)
+        {
+#if ENABLE_BACKEND_ACTION_OUTCOMES
+            switch (outcome.OutcomeCase)
+            {
+                case PlayerActionOutcome.OutcomeOneofCase.None:
+                    break;
+                case PlayerActionOutcome.OutcomeOneofCase.Rage:
+                    PlayerActionOutcome.Types.CardAbilityRageOutcome rageOutcome = outcome.Rage;
+                    BoardUnitModel boardUnit =
+                        _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, rageOutcome.InstanceId) ??
+                        _battlegroundController.GetBoardUnitById(_gameplayManager.CurrentPlayer, rageOutcome.InstanceId);
+
+                    boardUnit.BuffedDamage = rageOutcome.NewAttack;
+                    boardUnit.CurrentDamage = rageOutcome.NewAttack;
+
+                    boardUnit.BuffedDamage = rageOutcome.NewAttack;
+                    boardUnit.CurrentDamage = rageOutcome.NewAttack;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+#endif
+        }
+
+        private void OnPlayerLeftGameActionHandler()
+        {
+            _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         #region event handlers
