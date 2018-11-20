@@ -55,8 +55,6 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
-        public Google.Protobuf.Collections.RepeatedField<string> PvPTags { get; set; }
-
         private IUIManager _uiManager;
         private IDataManager _dataManager;
         private BackendFacade _backendFacade;
@@ -70,31 +68,28 @@ namespace Loom.ZombieBattleground
         private bool _isWaitForTurnTimerStart;
         private float _waitForTurnTimer;
 
-        public void Init()
+        public void Init ()
         {
-            _uiManager = GameClient.Get<IUIManager>();
-            _dataManager = GameClient.Get<IDataManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
-            _queueManager = GameClient.Get<IQueueManager>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _uiManager = GameClient.Get<IUIManager> ();
+            _dataManager = GameClient.Get<IDataManager> ();
+            _backendFacade = GameClient.Get<BackendFacade> ();
+            _queueManager = GameClient.Get<IQueueManager> ();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator> ();
 
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
 
-            if (PvPTags == null)
-            {
-                PvPTags = new Google.Protobuf.Collections.RepeatedField<string> ();
-            }
+            GameClient.Get<IGameplayManager> ().GameEnded += GameEndedHandler;
         }
 
-        public async void Update()
+        public async void Update ()
         {
             if (_isMatchmakingInProgress)
             {
                 _matchmakingTimeoutCounter += Time.deltaTime;
                 if (_matchmakingTimeoutCounter > Constants.MatchmakingTimeOut)
                 {
-                    await StopMatchmaking(MatchMetadata?.Id);
-                    MatchingFailed?.Invoke();
+                    await StopMatchmaking (MatchMetadata?.Id);
+                    MatchingFailed?.Invoke ();
                 }
             }
 
@@ -103,23 +98,23 @@ namespace Loom.ZombieBattleground
                 _waitForTurnTimer += Time.deltaTime;
                 if (_waitForTurnTimer > Constants.PvPWaitForTurnMaxTime)
                 {
-                    ResetWaitForTurnTimer();
-                    await _backendFacade.CheckPlayerStatus(MatchMetadata.Id);
+                    ResetWaitForTurnTimer ();
+                    await _backendFacade.CheckPlayerStatus (MatchMetadata.Id);
                 }
             }
         }
 
-        public void Dispose()
+        public void Dispose ()
         {
         }
 
-        public bool IsCurrentPlayer()
+        public bool IsCurrentPlayer ()
         {
             return InitialGameState.PlayerStates[InitialGameState.CurrentPlayerIndex].Id ==
                 _backendDataControlMediator.UserDataModel.UserId;
         }
 
-        public string GetOpponentUserId()
+        public string GetOpponentUserId ()
         {
             for (int i = 0; i < InitialGameState.PlayerStates.Count; i++)
             {
@@ -132,45 +127,51 @@ namespace Loom.ZombieBattleground
             return "";
         }
 
-        public async Task<bool> FindMatch()
+        private async void GameEndedHandler (Enumerators.EndGameType obj)
         {
+            _isWaitForTurnTimerStart = false;
+            await _backendFacade.UnsubscribeEvent ();
+        }
+
+        public async Task<bool> FindMatch ()
+        {
+            //TODO cleanup, since there's the new matchmaking
             long? matchId = null;
             try
             {
-                _matchmakingCancellationTokenSource?.Dispose();
-                _matchmakingCancellationTokenSource = new CancellationTokenSource();
+                _matchmakingCancellationTokenSource?.Dispose ();
+                _matchmakingCancellationTokenSource = new CancellationTokenSource ();
                 _isMatchmakingInProgress = true;
                 _matchmakingTimeoutCounter = 0;
 
                 _queueManager.Active = false;
-                _queueManager.Clear();
+                _queueManager.Clear ();
 
                 InitialGameState = null;
                 MatchMetadata = null;
 
                 FindMatchResponse findMatchResponse =
-                    await _backendFacade.FindMatch(
-                        _backendDataControlMediator.UserDataModel.UserId,
-                        _uiManager.GetPage<GameplayPage>().CurrentDeckId,
-                        CustomGameModeAddress,
-                        PvPTags
+                    await _backendFacade.FindMatch (
+                        _backendDataControlMediator.UserDataModel.UserId
+                    //_uiManager.GetPage<GameplayPage>().CurrentDeckId,
+                    //CustomGameModeAddress
                     );
-                Debug.LogWarning("FindMatchResponse:\n" + findMatchResponse);
+                Debug.LogWarning ("FindMatchResponse:\n" + findMatchResponse);
                 matchId = findMatchResponse.Match.Id;
                 if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                     return false;
 
-                await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
-                Debug.LogWarning("SubscribeEvent complete");
+                await _backendFacade.SubscribeEvent (findMatchResponse.Match.Topics.ToList ());
+                Debug.LogWarning ("SubscribeEvent complete");
                 if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                     return false;
 
-                GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
-                Debug.LogWarning("GetMatch complete, status: " + getMatchResponse.Match.Status);
+                GetMatchResponse getMatchResponse = await _backendFacade.GetMatch (findMatchResponse.Match.Id);
+                Debug.LogWarning ("GetMatch complete, status: " + getMatchResponse.Match.Status);
                 if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                     return false;
 
-                MatchMetadata = new MatchMetadata(
+                MatchMetadata = new MatchMetadata (
                     findMatchResponse.Match.Id,
                     findMatchResponse.Match.Topics,
                     getMatchResponse.Match.Status
@@ -178,15 +179,15 @@ namespace Loom.ZombieBattleground
 
                 if (MatchMetadata.Status == Match.Types.Status.Started)
                 {
-                    Debug.LogWarning("Status == Started, loading initial state immediately");
-                    await LoadInitialGameState();
+                    Debug.LogWarning ("Status == Started, loading initial state immediately");
+                    await LoadInitialGameState ();
                     if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                         return false;
 
                     _isMatchmakingInProgress = false;
 
                     // if its not player turn, start timer to check later if other player left the game or not
-                    if (!IsCurrentPlayer())
+                    if (!IsCurrentPlayer ())
                     {
                         _isWaitForTurnTimerStart = true;
                     }
@@ -195,7 +196,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception)
             {
-                await StopMatchmaking(matchId);
+                await StopMatchmaking (matchId);
                 throw;
             }
             finally
@@ -206,24 +207,24 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public async Task<bool> DebugFindMatch(Deck deck)
+        public async Task<bool> DebugFindMatch (Deck deck)
         {
             long? matchId = null;
             try
             {
-                _matchmakingCancellationTokenSource?.Dispose();
-                _matchmakingCancellationTokenSource = new CancellationTokenSource();
+                _matchmakingCancellationTokenSource?.Dispose ();
+                _matchmakingCancellationTokenSource = new CancellationTokenSource ();
                 _isMatchmakingInProgress = true;
                 _matchmakingTimeoutCounter = 0;
 
                 _queueManager.Active = false;
-                _queueManager.Clear();
+                _queueManager.Clear ();
 
                 InitialGameState = null;
                 MatchMetadata = null;
 
                 FindMatchResponse findMatchResponse =
-                    await _backendFacade.DebugFindMatch(
+                    await _backendFacade.DebugFindMatch (
                         _backendDataControlMediator.UserDataModel.UserId,
                         deck,
                         CustomGameModeAddress
@@ -233,15 +234,15 @@ namespace Loom.ZombieBattleground
                 if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                     return false;
 
-                await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
+                await _backendFacade.SubscribeEvent (findMatchResponse.Match.Topics.ToList ());
                 if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                     return false;
 
-                GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
+                GetMatchResponse getMatchResponse = await _backendFacade.GetMatch (findMatchResponse.Match.Id);
                 if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                     return false;
 
-                MatchMetadata = new MatchMetadata(
+                MatchMetadata = new MatchMetadata (
                     findMatchResponse.Match.Id,
                     findMatchResponse.Match.Topics,
                     getMatchResponse.Match.Status
@@ -249,7 +250,7 @@ namespace Loom.ZombieBattleground
 
                 if (MatchMetadata.Status == Match.Types.Status.Started)
                 {
-                    await LoadInitialGameState();
+                    await LoadInitialGameState ();
                     if (_matchmakingCancellationTokenSource.IsCancellationRequested)
                         return false;
 
@@ -258,7 +259,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception)
             {
-                await StopMatchmaking(matchId);
+                await StopMatchmaking (matchId);
                 throw;
             }
             finally
@@ -270,61 +271,74 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public async Task CancelFindMatch()
+        public async Task CancelFindMatch ()
         {
-            await StopMatchmaking(MatchMetadata?.Id);
+            await StopMatchmaking (MatchMetadata?.Id);
         }
 
-        public WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer)
-        {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInstance.Prototype.Name).Clone();
-            // FIXME: fill with Prototype data when backend supports that
-            /*card.Damage = cardInstance.Prototype.InitialDamage;
-            card.Health = cardInstance.Prototype.InitialDefence;*/
-            card.Damage = cardInstance.Attack;
-            card.Health = cardInstance.Defense;
-            card.Cost = cardInstance.GooCost;
-
-            WorkingCard workingCard =
-                new WorkingCard(
-                    card,
-                    ownerPlayer,
-                    cardInstance.InstanceId
-                );
-
-            workingCard.Health = workingCard.InitialHealth = cardInstance.Defense;
-            workingCard.Damage = workingCard.InitialDamage = cardInstance.Attack;
-
-            return workingCard;
-        }
-
-        private async Task StopMatchmaking(long? matchIdToCancel)
+        private async Task StopMatchmaking (long? matchIdToCancel)
         {
             _queueManager.Active = false;
             _isMatchmakingInProgress = false;
-            _matchmakingCancellationTokenSource?.Cancel();
+            _matchmakingCancellationTokenSource?.Cancel ();
 
-            await _backendFacade.UnsubscribeEvent();
+            await _backendFacade.UnsubscribeEvent ();
             if (matchIdToCancel != null)
             {
-                await _backendFacade.CancelFindMatch(
+                await _backendFacade.CancelFindMatch (
                     _backendDataControlMediator.UserDataModel.UserId,
                     matchIdToCancel.Value
                 );
             }
 
-            _queueManager.Clear();
+            _queueManager.Clear ();
         }
 
-        private void OnPlayerActionReceivedHandler(byte[] data)
+        //TODO This method is a start to simplify and clean up
+        public async void MatchIsStarting (FindMatchResponse findMatchResponse)
+        {
+            _isMatchmakingInProgress = true;
+            _matchmakingTimeoutCounter = 0;
+
+            _queueManager.Active = false;
+            _queueManager.Clear ();
+
+            InitialGameState = null;
+            MatchMetadata = null;
+
+            MatchMetadata = new MatchMetadata (
+                findMatchResponse.Match.Id,
+                findMatchResponse.Match.Topics,
+                findMatchResponse.Match.Status
+            );
+
+            _isMatchmakingInProgress = false;
+
+            // No need to reload if a match was found immediately
+            if (InitialGameState == null)
+            {
+                await LoadInitialGameState ();
+            }
+
+            Debug.LogWarning ("Match Starting");
+
+            GameStartedActionReceived?.Invoke ();
+
+            // if its not player turn, start timer to check later if other player left the game or not
+            if (!IsCurrentPlayer ())
+            {
+                _isWaitForTurnTimerStart = true;
+            }
+
+            _queueManager.Active = true;
+        }
+
+        private void OnPlayerActionReceivedHandler (byte[] data)
         {
             Func<Task> taskFunc = async () =>
             {
-                string jsonStr = SystemText.Encoding.UTF8.GetString(data);
-
-                Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
-
-                PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom (data);
+                Debug.LogWarning ("! " + playerActionEvent); // todo delete
 
                 if (playerActionEvent.Block != null)
                 {
@@ -333,9 +347,8 @@ namespace Loom.ZombieBattleground
                         HistoryEndGame endGameData = historyData.EndGame;
                         if (endGameData != null)
                         {
-                            Debug.Log(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
-                            ResetWaitForTurnTimer();
-                            await _backendFacade.UnsubscribeEvent();
+                            Debug.Log (endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                            await _backendFacade.UnsubscribeEvent ();
                             return;
                         }
                     }
@@ -344,119 +357,113 @@ namespace Loom.ZombieBattleground
                 switch (playerActionEvent.Match.Status)
                 {
                     case Match.Types.Status.Created:
-                        MatchCreatedActionReceived?.Invoke();
+                        MatchCreatedActionReceived?.Invoke ();
                         break;
                     case Match.Types.Status.Matching:
-                        MatchingStartedActionReceived?.Invoke();
+                        bool matchCanStart = true;
+                        for (int i = 0; i < 2; i++)
+                        {
+                            if (!playerActionEvent.Match.PlayerStates[i].MatchAccepted)
+                            {
+                                matchCanStart = false;
+                                break;
+                            }
+                        }
+                        if (matchCanStart)
+                        {
+                            MatchingStartedActionReceived?.Invoke ();
+                        }
                         break;
                     case Match.Types.Status.Started:
-                        _isMatchmakingInProgress = false;
-
-                        // No need to reload if a match was found immediately
-                        if (InitialGameState == null)
-                        {
-                            await LoadInitialGameState();
-                        }
-
-                        Debug.LogWarning("Match Starting");
-
-                        GameStartedActionReceived?.Invoke();
-
-                        // if its not player turn, start timer to check later if other player left the game or not
-                        if (!IsCurrentPlayer())
-                        {
-                            _isWaitForTurnTimerStart = true;
-                        }
-
+                        //Should not handle this anymore through events for now
                         break;
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.EndTurn)
+                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                             {
                                 _isWaitForTurnTimerStart = true;
                             }
                             return;
                         }
 
-                        OnReceivePlayerActionType(playerActionEvent);
+                        OnReceivePlayerActionType (playerActionEvent);
                         break;
                     case Match.Types.Status.PlayerLeft:
-                        PlayerLeftGameActionReceived?.Invoke();
+                        PlayerLeftGameActionReceived?.Invoke ();
                         break;
                     case Match.Types.Status.Ended:
-                        GameEndedActionReceived?.Invoke();
+                        GameEndedActionReceived?.Invoke ();
                         break;
                     case Match.Types.Status.Canceled:
-                        await StopMatchmaking(MatchMetadata?.Id);
-                        MatchingFailed?.Invoke();
+                        await StopMatchmaking (MatchMetadata?.Id);
+                        MatchingFailed?.Invoke ();
                         break;
                     case Match.Types.Status.Timedout:
-                        await StopMatchmaking(MatchMetadata?.Id);
-                        MatchingFailed?.Invoke();
+                        await StopMatchmaking (MatchMetadata?.Id);
+                        MatchingFailed?.Invoke ();
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(
-                            nameof(playerActionEvent.Match.Status),
+                        throw new ArgumentOutOfRangeException (
+                            nameof (playerActionEvent.Match.Status),
                             playerActionEvent.Match.Status + " not found"
                         );
                 }
             };
 
-            GameClient.Get<IQueueManager>().AddTask(taskFunc);
+            GameClient.Get<IQueueManager> ().AddTask (taskFunc);
         }
 
-        private async Task LoadInitialGameState()
+        private async Task LoadInitialGameState ()
         {
-            GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
+            GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState (MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
-            Debug.LogWarning("Initial game state:\n" + InitialGameState);
+            Debug.LogWarning ("Initial game state:\n" + InitialGameState);
         }
 
-        private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
+        private void OnReceivePlayerActionType (PlayerActionEvent playerActionEvent)
         {
             switch (playerActionEvent.PlayerAction.ActionType)
             {
-                case PlayerActionType.NoneAction:
+                case PlayerActionType.Types.Enum.None:
                     break;
-                case PlayerActionType.EndTurn:
-                    ResetWaitForTurnTimer();
-                    EndTurnActionReceived?.Invoke();
+                case PlayerActionType.Types.Enum.EndTurn:
+                    ResetWaitForTurnTimer ();
+                    EndTurnActionReceived?.Invoke ();
                     break;
-                case PlayerActionType.Mulligan:
-                    MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
+                case PlayerActionType.Types.Enum.Mulligan:
+                    MulliganProcessUsedActionReceived?.Invoke (playerActionEvent.PlayerAction.Mulligan);
                     break;
-                case PlayerActionType.CardPlay:
-                    CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
+                case PlayerActionType.Types.Enum.CardPlay:
+                    CardPlayedActionReceived?.Invoke (playerActionEvent.PlayerAction.CardPlay);
                     break;
-                case PlayerActionType.CardAttack:
-                    CardAttackedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAttack);
+                case PlayerActionType.Types.Enum.CardAttack:
+                    CardAttackedActionReceived?.Invoke (playerActionEvent.PlayerAction.CardAttack);
                     break;
-                case PlayerActionType.CardAbilityUsed:
-                    CardAbilityUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAbilityUsed);
+                case PlayerActionType.Types.Enum.CardAbilityUsed:
+                    CardAbilityUsedActionReceived?.Invoke (playerActionEvent.PlayerAction.CardAbilityUsed);
                     break;
-                case PlayerActionType.OverlordSkillUsed:
-                    OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
+                case PlayerActionType.Types.Enum.OverlordSkillUsed:
+                    OverlordSkillUsedActionReceived?.Invoke (playerActionEvent.PlayerAction.OverlordSkillUsed);
                     break;
-                case PlayerActionType.DrawCard:
-                    DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
+                case PlayerActionType.Types.Enum.DrawCard:
+                    DrawCardActionReceived?.Invoke (playerActionEvent.PlayerAction.DrawCard);
                     break;
-                case PlayerActionType.LeaveMatch:
-                    ResetWaitForTurnTimer();
-                    LeaveMatchReceived?.Invoke();
+                case PlayerActionType.Types.Enum.LeaveMatch:
+                    LeaveMatchReceived?.Invoke ();
                     break;
-                case PlayerActionType.RankBuff:
-                    RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
+                case PlayerActionType.Types.Enum.RankBuff:
+                    RankBuffActionReceived?.Invoke (playerActionEvent.PlayerAction.RankBuff);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(playerActionEvent.PlayerAction.ActionType),
+                    throw new ArgumentOutOfRangeException (
+                        nameof (playerActionEvent.PlayerAction.ActionType),
                         playerActionEvent.PlayerAction.ActionType + " not found"
                     );
             }
         }
 
-        private void ResetWaitForTurnTimer()
+        private void ResetWaitForTurnTimer ()
         {
             _isWaitForTurnTimerStart = false;
             _waitForTurnTimer = 0f;

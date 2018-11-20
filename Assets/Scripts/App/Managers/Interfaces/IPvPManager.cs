@@ -37,17 +37,14 @@ namespace Loom.ZombieBattleground
 
         GameState InitialGameState { get; }
 
-        Google.Protobuf.Collections.RepeatedField<string> PvPTags { get; set; }
+        string GetOpponentUserId ();
 
-        string GetOpponentUserId();
+        bool IsCurrentPlayer ();
 
-        bool IsCurrentPlayer();
+        Task<bool> FindMatch ();
+        Task<bool> DebugFindMatch (Deck deck);
 
-        Task<bool> FindMatch();
-        Task<bool> DebugFindMatch(Deck deck);
-
-        Task CancelFindMatch();
-
-        WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer);
+        Task CancelFindMatch ();
+        void MatchIsStarting (FindMatchResponse findMatchResponse);
     }
 }
