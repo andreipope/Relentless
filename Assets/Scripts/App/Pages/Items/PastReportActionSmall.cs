@@ -1,4 +1,5 @@
 using System;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -23,6 +24,8 @@ namespace Loom.ZombieBattleground
         protected PastActionsPopup.PastActionParam PastActionReport;
 
         protected PastActionReportPanel _mainRoot;
+
+        private Vector3 _startPosition;
 
         public PastReportActionSmall(PastActionReportPanel root, GameObject prefab, Transform parent, PastActionsPopup.PastActionParam pastActionParam)
         {
@@ -61,8 +64,24 @@ namespace Loom.ZombieBattleground
             {
                 if (!_mainRoot.IsDrawing)
                 {
-                    UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
-                    _mainRoot.IsDrawing = true;
+                    _startPosition = Input.mousePosition;
+                    Helpers.InternalTools.DoActionDelayed(PastActionReportClickCompleted, 0.15f);
+                }
+            }
+        }
+
+        private void PastActionReportClickCompleted()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (!_mainRoot.IsDrawing)
+                {
+                    float delta = Vector3.Distance(_startPosition, Input.mousePosition);
+                    if (delta <= 30f)
+                    {
+                        UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
+                        _mainRoot.IsDrawing = true;
+                    }
                 }
             }
         }
@@ -84,11 +103,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardUnitModel unit:
                     {
-                        string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
+                        Enumerators.SetType setType = CardsController.GetSetOfCard(unit.Card.LibraryCard);
                         string rank = unit.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = unit.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;
@@ -100,11 +119,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardSpell spell:
                     {
-                        string setName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
+                        Enumerators.SetType setType = CardsController.GetSetOfCard(spell.Card.LibraryCard);
                         string rank = spell.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = spell.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;

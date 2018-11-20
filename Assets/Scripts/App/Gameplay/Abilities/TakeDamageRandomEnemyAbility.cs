@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
 
             if (PredefinedTargets != null)
             {
-                _targets = PredefinedTargets;
+                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
             }
             else
             {
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
 

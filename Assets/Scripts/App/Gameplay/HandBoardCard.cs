@@ -10,7 +10,7 @@ public class HandBoardCard : OwnableBoardObject
 
     public bool Enabled = true;
 
-    protected BoardCard CardView;
+    public BoardCard CardView { get; protected set; }
 
     protected bool StartedDrag;
 

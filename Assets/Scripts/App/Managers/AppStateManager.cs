@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using App.Utilites;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;

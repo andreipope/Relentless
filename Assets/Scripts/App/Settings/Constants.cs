@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.6";
+        internal const string CurrentVersionBase = "0.1.7";
 
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
@@ -12,15 +12,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalUserDataFileName = "0412DD0.dat";
 
-        internal const string LocalCardsLibraryDataFileName = "card_library_data.json";
-
-        internal const string LocalCollectionDataFileName = "collection_data.json";
-
-        internal const string LocalHeroesDataFileName = "heroes_data.json";
-
-        internal const string LocalDecksDataFileName = "decks_data.json";
-
-        internal const string LocalOpponentDecksDataFileName = "opponent_decks_data.json";
+        internal const string LocalCardsLibraryDataFileName = "card_library.json";
 
         internal const string LocalCreditsDataFileName = "credits_data.json";
 
