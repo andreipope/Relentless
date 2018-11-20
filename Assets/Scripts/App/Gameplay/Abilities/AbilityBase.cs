@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardKind CardKind;
 
-        public Card CardOwnerOfAbility;
+        public IReadOnlyCard CardOwnerOfAbility;
 
         public WorkingCard MainWorkingCard;
 
@@ -104,8 +104,8 @@ namespace Loom.ZombieBattleground
 
             AbilityData = ability;
             CardKind = cardKind;
-            AbilityActivityType = ability.AbilityActivityType;
-            AbilityCallType = ability.AbilityCallType;
+            AbilityActivityType = ability.ActivityType;
+            AbilityCallType = ability.CallType;
             AbilityTargetTypes = ability.AbilityTargetTypes;
             AbilityEffectType = ability.AbilityEffectType;
             _playerAvatar = GameplayManager.CurrentPlayer;

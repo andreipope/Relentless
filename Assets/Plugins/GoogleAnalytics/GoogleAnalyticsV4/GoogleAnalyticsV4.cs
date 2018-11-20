@@ -166,7 +166,10 @@ public class GoogleAnalyticsV4 : MonoBehaviour {
         bundleVersion = Application.version;
       }
 
-      Debug.Log("Initializing Google Analytics 0.2.");
+      if (GoogleAnalyticsV4.belowThreshold(logLevel, GoogleAnalyticsV4.DebugMode.VERBOSE)) {
+          Debug.Log("Initializing Google Analytics 0.2.");
+      }
+
 #if UNITY_ANDROID && !UNITY_EDITOR
       androidTracker.SetTrackingCode(androidTrackingCode);
       androidTracker.SetAppName(productName);

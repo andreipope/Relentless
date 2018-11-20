@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        heroId = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == _gameplayManager.OpponentDeckId).HeroId;
+                        heroId = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == _gameplayManager.OpponentDeckId).Deck.HeroId;
                         break;
                     case Enumerators.MatchType.PVP:
                         heroId = (int) PvPPlayerState.Deck.HeroId;
@@ -195,7 +195,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            SelfHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
+            SelfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
             InitialHp = _defense;
             BuffedHp = 0;
@@ -252,7 +252,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<WorkingCard, int> CardPlayed;
 
-        public event Action<WorkingCard, AffectObjectType, int> CardAttacked;
+        public event Action<WorkingCard, AffectObjectType.Types.Enum, int> CardAttacked;
 
         public event Action LeaveMatch;
 
@@ -686,7 +686,7 @@ namespace Loom.ZombieBattleground
             CardPlayed?.Invoke(card, position);
         }
 
-        public void ThrowCardAttacked(WorkingCard card, AffectObjectType type, int instanceId)
+        public void ThrowCardAttacked(WorkingCard card, AffectObjectType.Types.Enum type, int instanceId)
         {
             CardAttacked?.Invoke(card, type, instanceId);
         }

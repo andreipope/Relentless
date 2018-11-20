@@ -232,17 +232,17 @@ namespace Loom.ZombieBattleground
                         opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
 
                         // HACK: Set to any valid opponent deck ID, it will get overwritten later anyway
-                        _gameplayManager.OpponentDeckId = (int)_dataManager.CachedOpponentDecksData.Decks[0].Id;
+                        _gameplayManager.OpponentDeckId = (int)_dataManager.CachedAiDecksData.Decks[0].Deck.Id;
                     }
                     else
                     {
                         heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
-                        Data.Deck opponentDeck =
+                        Data.AIDeck opponentDeck =
                             _dataManager
-                                .CachedOpponentDecksData
-                                .Decks[Random.Range(0, _dataManager.CachedOpponentDecksData.Decks.Count)];
-                        opponentHeroId = opponentDeck.HeroId;
-                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Id;
+                                .CachedAiDecksData
+                                .Decks[Random.Range(0, _dataManager.CachedAiDecksData.Decks.Count)];
+                        opponentHeroId = opponentDeck.Deck.HeroId;
+                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
                     }
 
                     break;
@@ -272,8 +272,8 @@ namespace Loom.ZombieBattleground
             if (opponentHeroId == -1)
                 throw new Exception($"{nameof(opponentHeroId)} == -1");
 
-            Hero currentPlayerHero = _dataManager.CachedHeroesData.HeroesParsed[heroId];
-            Hero currentOpponentHero = _dataManager.CachedHeroesData.HeroesParsed[opponentHeroId];
+            Hero currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
+            Hero currentOpponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _opponentDeckStatusTexture =

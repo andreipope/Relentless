@@ -1,4 +1,5 @@
 using System;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -102,11 +103,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardUnitModel unit:
                     {
-                        string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
+                        Enumerators.SetType setType = CardsController.GetSetOfCard(unit.Card.LibraryCard);
                         string rank = unit.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = unit.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;
@@ -118,11 +119,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardSpell spell:
                     {
-                        string setName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
+                        Enumerators.SetType setType = CardsController.GetSetOfCard(spell.Card.LibraryCard);
                         string rank = spell.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = spell.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;

@@ -5,6 +5,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -67,7 +68,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 PlayerCallerOfAbility
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -98,7 +99,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 boardObject
-            }, AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString(), true));
+            }, AbilityData.AbilityType, (AffectObjectType.Types.Enum) AffectObjectType);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -177,7 +178,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

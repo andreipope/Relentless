@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using UnityEngine;
 
-namespace App.Utilites
+namespace Loom.ZombieBattleground
 {
     public static class UnitySynchronizationContext
     {

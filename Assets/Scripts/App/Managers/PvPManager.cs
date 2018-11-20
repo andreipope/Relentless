@@ -135,6 +135,7 @@ namespace Loom.ZombieBattleground
 
         public async Task<bool> FindMatch()
         {
+            //TODO cleanup, since there's the new matchmaking
             long? matchId = null;
             try
             {
@@ -151,9 +152,9 @@ namespace Loom.ZombieBattleground
 
                 FindMatchResponse findMatchResponse =
                     await _backendFacade.FindMatch(
-                        _backendDataControlMediator.UserDataModel.UserId,
-                        _uiManager.GetPage<GameplayPage>().CurrentDeckId,
-                        CustomGameModeAddress
+                        _backendDataControlMediator.UserDataModel.UserId
+                        //_uiManager.GetPage<GameplayPage>().CurrentDeckId,
+                        //CustomGameModeAddress
                     );
                 Debug.LogWarning("FindMatchResponse:\n" + findMatchResponse);
                 matchId = findMatchResponse.Match.Id;
@@ -275,29 +276,6 @@ namespace Loom.ZombieBattleground
             await StopMatchmaking(MatchMetadata?.Id);
         }
 
-        public WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer)
-        {
-            Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInstance.Prototype.Name).Clone();
-            // FIXME: fill with Prototype data when backend supports that
-            /*card.Damage = cardInstance.Prototype.InitialDamage;
-            card.Health = cardInstance.Prototype.InitialDefence;*/
-            card.Damage = cardInstance.Attack;
-            card.Health = cardInstance.Defense;
-            card.Cost = cardInstance.GooCost;
-
-            WorkingCard workingCard =
-                new WorkingCard(
-                    card,
-                    ownerPlayer,
-                    cardInstance.InstanceId
-                );
-
-            workingCard.Health = workingCard.InitialHealth = cardInstance.Defense;
-            workingCard.Damage = workingCard.InitialDamage = cardInstance.Attack;
-
-            return workingCard;
-        }
-
         private async Task StopMatchmaking(long? matchIdToCancel)
         {
             _queueManager.Active = false;
@@ -316,15 +294,50 @@ namespace Loom.ZombieBattleground
             _queueManager.Clear();
         }
 
+        //TODO This method is a start to simplify and clean up
+        public async void MatchIsStarting (FindMatchResponse findMatchResponse) {
+            _isMatchmakingInProgress = true;
+            _matchmakingTimeoutCounter = 0;
+
+            _queueManager.Active = false;
+            _queueManager.Clear();
+
+            InitialGameState = null;
+            MatchMetadata = null;
+
+            MatchMetadata = new MatchMetadata(
+                findMatchResponse.Match.Id,
+                findMatchResponse.Match.Topics,
+                findMatchResponse.Match.Status
+            );
+
+            _isMatchmakingInProgress = false;
+
+            // No need to reload if a match was found immediately
+            if (InitialGameState == null)
+            {
+                await LoadInitialGameState();
+            }
+
+            Debug.LogWarning("Match Starting");
+
+            GameStartedActionReceived?.Invoke();
+
+            // if its not player turn, start timer to check later if other player left the game or not
+            if (!IsCurrentPlayer())
+            {
+                _isWaitForTurnTimerStart = true;
+            }
+
+            _queueManager.Active = true;
+        }
+
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Func<Task> taskFunc = async () =>
             {
-                string jsonStr = SystemText.Encoding.UTF8.GetString(data);
-
-                Debug.LogWarning("Action json recieve = " + jsonStr); // todo delete
-
-                PlayerActionEvent playerActionEvent = JsonConvert.DeserializeObject<PlayerActionEvent>(jsonStr);
+                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+                Debug.LogWarning("! " + playerActionEvent); // todo delete
 
                 if (playerActionEvent.Block != null)
                 {
@@ -346,32 +359,27 @@ namespace Loom.ZombieBattleground
                         MatchCreatedActionReceived?.Invoke();
                         break;
                     case Match.Types.Status.Matching:
-                        MatchingStartedActionReceived?.Invoke();
+                        bool matchCanStart = true;
+                        for (int i = 0; i < 2; i++)
+                        {
+                            if (!playerActionEvent.Match.PlayerStates[i].MatchAccepted)
+                            {
+                                matchCanStart = false;
+                                break;
+                            }
+                        }
+                        if (matchCanStart)
+                        {
+                            MatchingStartedActionReceived?.Invoke();
+                        }
                         break;
                     case Match.Types.Status.Started:
-                        _isMatchmakingInProgress = false;
-
-                        // No need to reload if a match was found immediately
-                        if (InitialGameState == null)
-                        {
-                            await LoadInitialGameState();
-                        }
-
-                        Debug.LogWarning("Match Starting");
-
-                        GameStartedActionReceived?.Invoke();
-
-                        // if its not player turn, start timer to check later if other player left the game or not
-                        if (!IsCurrentPlayer())
-                        {
-                            _isWaitForTurnTimerStart = true;
-                        }
-
+                        //Should not handle this anymore through events for now
                         break;
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.EndTurn)
+                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                             {
                                 _isWaitForTurnTimerStart = true;
                             }
@@ -416,34 +424,34 @@ namespace Loom.ZombieBattleground
         {
             switch (playerActionEvent.PlayerAction.ActionType)
             {
-                case PlayerActionType.NoneAction:
+                case PlayerActionType.Types.Enum.None:
                     break;
-                case PlayerActionType.EndTurn:
+                case PlayerActionType.Types.Enum.EndTurn:
                     ResetWaitForTurnTimer();
                     EndTurnActionReceived?.Invoke();
                     break;
-                case PlayerActionType.Mulligan:
+                case PlayerActionType.Types.Enum.Mulligan:
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
                     break;
-                case PlayerActionType.CardPlay:
+                case PlayerActionType.Types.Enum.CardPlay:
                     CardPlayedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardPlay);
                     break;
-                case PlayerActionType.CardAttack:
+                case PlayerActionType.Types.Enum.CardAttack:
                     CardAttackedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAttack);
                     break;
-                case PlayerActionType.CardAbilityUsed:
+                case PlayerActionType.Types.Enum.CardAbilityUsed:
                     CardAbilityUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.CardAbilityUsed);
                     break;
-                case PlayerActionType.OverlordSkillUsed:
+                case PlayerActionType.Types.Enum.OverlordSkillUsed:
                     OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
                     break;
-                case PlayerActionType.DrawCard:
+                case PlayerActionType.Types.Enum.DrawCard:
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
-                case PlayerActionType.LeaveMatch:
+                case PlayerActionType.Types.Enum.LeaveMatch:
                     LeaveMatchReceived?.Invoke();
                     break;
-                case PlayerActionType.RankBuff:
+                case PlayerActionType.Types.Enum.RankBuff:
                     RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
                     break;
                 default:

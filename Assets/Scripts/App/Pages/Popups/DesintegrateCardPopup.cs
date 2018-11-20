@@ -1,3 +1,4 @@
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -95,7 +96,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
-                .Find(card => card.Name == _cardData.CardName);
+                .First(card => card.Name == _cardData.CardName);
             _uiManager.DrawPopup<CardInfoPopup>(libraryCard);
 
             Hide();
@@ -114,7 +115,7 @@ namespace Loom.ZombieBattleground
             _cardPreview.GetComponent<BoardCard>().UpdateAmount(_cardData.Amount);
 
             Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
-                .Find(card => card.Name == _cardData.CardName);
+                .First(card => card.Name == _cardData.CardName);
             GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int) libraryCard.CardRank + 1));
 
             _uiManager.GetPage<ArmyPage>().UpdateGooValue();

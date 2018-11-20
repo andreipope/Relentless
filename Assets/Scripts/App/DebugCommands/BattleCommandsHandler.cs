@@ -171,8 +171,8 @@ static class BattleCommandsHandler
 
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
-        Card libraryCard = unit.Model.Card.LibraryCard.Clone();
-        WorkingCard workingCard = new WorkingCard(libraryCard, player);
+        Card libraryCard = new Card(unit.Model.Card.LibraryCard);
+        WorkingCard workingCard = new WorkingCard(libraryCard, libraryCard, player);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
 
         player.RemoveCardFromGraveyard(unit.Model.Card);
