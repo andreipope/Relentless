@@ -444,7 +444,35 @@ namespace Loom.ZombieBattleground
                            {
                                activeAbility.Ability.Activate();
 
-                               if (isPlayer)
+                               if (isPlayer && target != null)
+                               {
+                                   switch (target)
+                                   {
+                                       case BoardUnitModel unit:
+                                           activeAbility.Ability.TargetUnit = unit;
+                                           break;
+                                       case Player player:
+                                           activeAbility.Ability.TargetPlayer = player;
+                                           break;
+                                       case null:
+                                           break;
+                                       default:
+                                           throw new ArgumentOutOfRangeException (nameof (target), target, null);
+                                   }
+
+                                   activeAbility.Ability.SelectedTargetAction (true);
+
+                                   _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer
+                                       .BoardCards);
+                                   _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
+
+                                   onCompleteCallback?.Invoke ();
+
+                                   ResolveAllAbilitiesOnUnit (boardObject);
+
+                                   completeCallback?.Invoke ();
+                               }
+                               else if (isPlayer)
                                {
                                    BlockEndTurnButton = true;
 
