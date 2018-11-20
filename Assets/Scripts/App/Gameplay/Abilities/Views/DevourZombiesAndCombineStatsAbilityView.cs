@@ -23,17 +23,15 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            float delayAfter = 0;
-            string soundName = string.Empty;
             _cardName = "";
+            float delayAfter = 0;
             float delayBeforeDestroy = 3f;
+            string soundName = string.Empty;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                float delayBeforeScaling = 0f;
-
                 _units = info as List<BoardUnitModel>;
-               
+
                 Transform container = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path).transform;
 
                 AbilityEffectInfoView effectInfo = container.GetComponent<AbilityEffectInfoView>();
@@ -42,10 +40,8 @@ namespace Loom.ZombieBattleground
                     _cardName = effectInfo.cardName;
                     delayAfter = effectInfo.delayAfterEffect;
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
-                    delayBeforeScaling = effectInfo.delayChangeState;
                     soundName = effectInfo.soundName;
                 }
-
                 GameObject[] prefabs = new GameObject[container.childCount];
                 for (int i = 0; i < prefabs.Length; i++)
                 {
@@ -57,22 +53,32 @@ namespace Loom.ZombieBattleground
 
                 foreach (var unit in _units)
                 {
+                    if (unit == Ability.AbilityUnitOwner)
+                        continue;
+
                     unitTransform = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
 
                     random = UnityEngine.Random.Range(0, prefabs.Length);
-                    VfxObject = Object.Instantiate(VfxObject, unitTransform, false);
-                    VfxObject.transform.localPosition = Vector3.zero;
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        unitTransform.DOScale(Vector3.zero, 1.5f).OnComplete(() =>
-                        {
-                            unitTransform.gameObject.SetActive(false);
-                        });
-                    }, delayAfter);
+                    VfxObject = Object.Instantiate(prefabs[random]);
+                    VfxObject.transform.position = unitTransform.position;
+                    unitTransform.SetParent(VfxObject.transform.Find("Container"), false);
+                    unitTransform.localPosition = Vector3.zero;
+                    ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
                 }
             }
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
+        }
+
+        private void ChangeUnitState(Transform unit, float delay, float duration)
+        {
+            InternalTools.DoActionDelayed(() =>
+            {
+                unit.DOScale(Vector3.zero, duration).SetEase(Ease.InSine).OnComplete(() =>
+                {
+                    unit.gameObject.SetActive(false);
+                });
+            }, delay);
         }
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)

@@ -53,8 +53,10 @@ namespace Loom.ZombieBattleground
             {
                 _isTarget = true;
 
-                _units.Add(TargetUnit);
+                _units.Add(TargetUnit);               
+                DevourTargetZombie(TargetUnit);
                 InvokeActionTriggered(_units);
+
 
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                 {
@@ -74,8 +76,12 @@ namespace Loom.ZombieBattleground
             else
             {
                 _units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
-            }            
+            }
 
+            foreach (BoardUnitModel unit in _units)
+            {
+                DevourTargetZombie(unit);
+            }
             InvokeActionTriggered(_units);
         }
 
@@ -85,7 +91,10 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel unit in _units)
             {
-                DevourTargetZombie(unit);
+                if (unit == AbilityUnitOwner)
+                    continue;
+
+                BattlegroundController.DestroyBoardUnit(unit);
             }
 
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
@@ -100,8 +109,6 @@ namespace Loom.ZombieBattleground
 
             int health = unit.InitialHp;
             int damage = unit.InitialDamage;
-
-            BattlegroundController.DestroyBoardUnit(unit);
 
             AbilityUnitOwner.BuffedHp += health;
             AbilityUnitOwner.CurrentHp += health;

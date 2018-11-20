@@ -587,6 +587,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < cardsList.Count; i++)
             {
                 BoardUnitView card = cardsList[i];
+                card.PositionOfBoard = newPositions[i];
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
@@ -641,6 +642,7 @@ namespace Loom.ZombieBattleground
                 if (card.Model.IsDead)
                     continue;
 
+                card.PositionOfBoard = newPositions[i];
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
@@ -1013,7 +1015,7 @@ namespace Loom.ZombieBattleground
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
 
-            boardUnitView.PlayArrivalAnimation();
+            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: false);
 
             return boardUnitView;
         }

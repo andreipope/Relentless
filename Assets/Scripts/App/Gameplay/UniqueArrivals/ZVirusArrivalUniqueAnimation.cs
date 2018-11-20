@@ -9,47 +9,48 @@ namespace Loom.ZombieBattleground
 {
     public class ZVirusArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
         {
+            startGeneralArrivalCallback?.Invoke();
+
             IsPlaying = true;
 
-            GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
-                                                        "Prefabs/VFX/UniqueArrivalAnimations/ZVirus"));
+            Vector3 offset = new Vector3(-5.2f, 0.26f, 0f);
+
+            const float delayBeforeSpawn = 0.7f;
+            const float delayBeforeDestroyVFX = 5f;
 
             BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
 
-            const float xOffsetOfCard = 5.2f;
-
-            const float delayBeforeUnitShow = 1.5f;
-            const float durationUnitScaling = 1f;
-            const float delayBeforeDestroyVFX = 8f;
-
-            animationVFX.transform.position = unitView.Transform.position + Vector3.right * xOffsetOfCard;
-
-            unitView.Transform.localScale = Vector3.zero;
+            unitView.GameObject.SetActive(false);
 
             InternalTools.DoActionDelayed(() =>
             {
-                unitView.Transform.DOScale(Vector3.one, durationUnitScaling);
-            }, delayBeforeUnitShow);
+                GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
+                                                            "Prefabs/VFX/UniqueArrivalAnimations/ZVirus"));
 
-            InternalTools.DoActionDelayed(() =>
-            {
-                unitView.Transform.parent = null;
+                animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
-                Object.Destroy(animationVFX);
+                unitView.Transform.SetParent(animationVFX.transform.Find("ZVirusCardPH"), true);
+                unitView.GameObject.SetActive(true);
 
-                if (unitView.Model.OwnerPlayer.IsLocalPlayer)
+                InternalTools.DoActionDelayed(() =>
                 {
-                    BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(unitView.Model.OwnerPlayer.BoardCards);
-                }
-                else
-                {
-                    BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                }
+                    unitView.Transform.SetParent(null, true);
+                    Object.Destroy(animationVFX);
 
-                IsPlaying = false;
-            }, delayBeforeDestroyVFX);
+                    if (unitView.Model.OwnerPlayer.IsLocalPlayer)
+                    {
+                        BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(unitView.Model.OwnerPlayer.BoardCards);
+                    }
+                    else
+                    {
+                        BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                    }
+
+                    IsPlaying = false;
+                }, delayBeforeDestroyVFX);
+            }, delayBeforeSpawn);
         }
     }
 }

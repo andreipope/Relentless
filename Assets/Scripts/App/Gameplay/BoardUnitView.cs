@@ -99,6 +99,8 @@ namespace Loom.ZombieBattleground
 
         public Action ArrivalEndCallback;
 
+        public Vector3 PositionOfBoard { get; set; }
+
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
@@ -232,6 +234,16 @@ namespace Loom.ZombieBattleground
             SetNormalGlowFromUnitType();
             SetAttackGlowFromUnitType();
             SetHighlightingEnabled(false);
+
+            if(card.Owner.IsLocalPlayer)
+            {
+                PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
+            }
+            else
+            {
+                PositionOfBoard = _battlegroundController.OpponentBoardObject.transform.position;
+            }
+
         }
         private void ModelOnUnitHpChanged()
         {
@@ -441,36 +453,42 @@ namespace Loom.ZombieBattleground
             _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
         }
 
-        public void PlayArrivalAnimation(bool firstAppear = true)
+        public void PlayArrivalAnimation(bool firstAppear = true, bool playUniqueAnimation = true)
         {
-            GameObject arrivalPrefab =
-          _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
-            _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
-            _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
-            _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
-            Transform spriteContainerTransform =
-                _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
-            Vector3 scale = spriteContainerTransform.transform.localScale;
-            scale.x *= -1;
-            spriteContainerTransform.transform.localScale = scale;
-            _pictureSprite.transform.SetParent(spriteContainerTransform, false);
-
-            if (firstAppear)
+            Action generalArrivalAnimationAction = () =>
             {
-                GameObject.transform.position += Vector3.back * 5f;
-            }
+                GameObject arrivalPrefab =
+              _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
+                _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+                _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
+                _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
+                Transform spriteContainerTransform =
+                    _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+                Vector3 scale = spriteContainerTransform.transform.localScale;
+                scale.x *= -1;
+                spriteContainerTransform.transform.localScale = scale;
+                _pictureSprite.transform.SetParent(spriteContainerTransform, false);
 
+                if (firstAppear)
+                {
+                    GameObject.transform.position += Vector3.back * 5f;
+                }
+            };
+
+            if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
+            {
+                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction);
+            }
+            else
+            {
+                generalArrivalAnimationAction.Invoke();
+            }
         }
 
         public void ArrivalAnimationEventHandler()
         {
             if (_unitContentObject == null || !_unitContentObject)
                 return;
-
-            if (_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
-            {
-                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card);
-            }
 
             _unitContentObject.SetActive(true);
             if (Model.HasFeral || Model.NumTurnsOnBoard > 0 && !Model.CantAttackInThisTurnBlocker)
@@ -609,7 +627,7 @@ namespace Loom.ZombieBattleground
             _pictureSprite.transform.SetParent(GameObject.transform, false);
             _pictureSprite.gameObject.SetActive(false);
             Object.Destroy(_battleframeObject);
-            PlayArrivalAnimation(false);
+            PlayArrivalAnimation(false, false);
             _pictureSprite.gameObject.SetActive(true);
             _timerManager.AddTimer(
                 x =>

@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
                 boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnitView.PlayArrivalAnimation();
+            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: false);
 
             GameplayManager.CanDoDragActions = true;
 
