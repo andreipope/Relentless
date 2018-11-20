@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
         [Range(0, 20)]
         public float delayAfterEffect;
         [Range(0, 20)]
-        public float delayChangeState;
+        public float delayForChangeState;
 
         public string soundName;
 
