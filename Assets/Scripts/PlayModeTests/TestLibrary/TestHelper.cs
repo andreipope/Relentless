@@ -22,8 +22,8 @@ public class TestHelper
     }
 
     private List<string> _testerKeys = new List<string> {
-        "f32ef9a2cfcb",
-        "f12249ff43e4"
+        "8adb560cd844",
+        "898c4798b9f4"
     };
 
     private TesterType _testerType = TesterType.Active;
@@ -1088,9 +1088,26 @@ public class TestHelper
                     BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
 
                     _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
+                        if (_boardArrowController.CurrentBoardArrow != null &&
+                            _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
+                        {
+                            Debug.LogWarning ("0");
+
+                            if (target != null)
+                            {
+                                Debug.LogWarning ("1");
+
+                                _boardArrowController.CurrentBoardArrow.SetTarget (target);
+                            }
+                            else
+                            {
+                                Debug.LogWarning ("2");
+                            }
+                        }
+
                         PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                         _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-                    }, target);
+                    });
                 }
                 else
                 {

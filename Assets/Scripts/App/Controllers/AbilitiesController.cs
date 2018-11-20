@@ -375,8 +375,6 @@ namespace Loom.ZombieBattleground
             BoardObject target = null,
             HandBoardCard handCard = null)
         {
-            Debug.LogWarning ("Target: " + ((target != null) ? target.Id.ToString () : "Null"));
-
             actionInQueue.Action = (parameter, completeCallback) =>
             {
                 ResolveAllAbilitiesOnUnit(boardObject, false);
@@ -431,36 +429,7 @@ namespace Loom.ZombieBattleground
                     {
                         activeAbility.Ability.Activate();
 
-                        if (isPlayer && target != null)
-                        {
-                            switch (target)
-                            {
-                                case BoardUnitModel unit:
-                                    activeAbility.Ability.TargetUnit = unit;
-
-                                    break;
-                                case Player player:
-                                    activeAbility.Ability.TargetPlayer = player;
-
-                                    break;
-                                case null:
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException (nameof (target), target, null);
-                            }
-
-                            activeAbility.Ability.SelectedTargetAction (true);
-
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.OpponentPlayer.BoardCards);
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
-
-                            onCompleteCallback?.Invoke ();
-
-                            ResolveAllAbilitiesOnUnit (boardObject);
-
-                            completeCallback?.Invoke ();
-                        }
-                        else if (isPlayer)
+                        if (isPlayer)
                         {
                         	BlockEndTurnButton = true;
                         
@@ -546,6 +515,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
+
                             switch (target)
                             {
                                 case BoardUnitModel unit:

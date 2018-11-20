@@ -26,24 +26,24 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.MatchType MatchType { get; set; }
 
-        public void FinishMatch (Enumerators.AppState appStateAfterMatch)
+        public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
-            _tutorialManager.StopTutorial ();
+            _tutorialManager.StopTutorial();
 
             if (_gameplayManager.IsTutorial &&
                 !_tutorialManager.IsTutorial &&
                 appStateAfterMatch != Enumerators.AppState.MAIN_MENU)
             {
-                _sceneManager.ChangeScene (Enumerators.AppState.GAMEPLAY, true);
+                _sceneManager.ChangeScene(Enumerators.AppState.GAMEPLAY, true);
                 return;
             }
 
             _finishMatchAppState = appStateAfterMatch;
 
-            _uiManager.HideAllPages ();
-            _uiManager.DrawPopup<LoadingGameplayPopup> ();
+            _uiManager.HideAllPages();
+            _uiManager.DrawPopup<LoadingGameplayPopup>();
 
-            _gameplayManager.ResetWholeGameplayScene ();
+            _gameplayManager.ResetWholeGameplayScene();
 
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
