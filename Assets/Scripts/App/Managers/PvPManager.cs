@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
+        public Google.Protobuf.Collections.RepeatedField<string> PvPTags { get; set; }
+
         private IUIManager _uiManager;
         private IDataManager _dataManager;
         private BackendFacade _backendFacade;
@@ -77,6 +79,11 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
+
+            if (PvPTags == null)
+            {
+                PvPTags = new Google.Protobuf.Collections.RepeatedField<string> ();
+            }
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }
@@ -152,7 +159,8 @@ namespace Loom.ZombieBattleground
 
                 FindMatchResponse findMatchResponse =
                     await _backendFacade.FindMatch(
-                        _backendDataControlMediator.UserDataModel.UserId
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        PvPTags
                         //_uiManager.GetPage<GameplayPage>().CurrentDeckId,
                         //CustomGameModeAddress
                     );

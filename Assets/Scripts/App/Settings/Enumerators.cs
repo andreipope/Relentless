@@ -682,5 +682,11 @@ namespace Loom.ZombieBattleground.Common
             None,
             ShammannArrival
         }
+
+        public enum MatchPlayer
+        {
+            CurrentPlayer,
+            OpponentPlayer
+        }
     }
 }

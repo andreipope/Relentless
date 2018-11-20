@@ -336,11 +336,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId)
+        public async Task<FindMatchResponse> FindMatch(string userId, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
+            if (pvpTags == null)
+            {
+                pvpTags = new Google.Protobuf.Collections.RepeatedField<string>();
+            }
+
             FindMatchRequest request = new FindMatchRequest
             {
-                UserId = userId
+                UserId = userId,
+                Tags = pvpTags
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);

@@ -120,8 +120,10 @@ public class TestHelper
 
             yield return HandleLogin ();
 
+            yield return LetsThink ();
+
             yield return AssertLoggedInOrLoginFailed (
-                null,
+                CloseTermsPopupIfRequired (),
                 FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
 
             #endregion
@@ -129,6 +131,8 @@ public class TestHelper
             SetGameplayManagers ();
 
             _initialized = true;
+
+            yield return LetsThink ();
         }
 
         yield return null;
@@ -397,6 +401,18 @@ public class TestHelper
         }
 
         return false;
+    }
+
+    public IEnumerator CloseTermsPopupIfRequired ()
+    {
+        if (GameObject.Find("TermsPopup(Clone)") != null)
+        {
+            GameObject.Find ("Toggle")?.GetComponent<Toggle> ()?.onValueChanged.Invoke (true);
+
+            yield return LetsThink ();
+
+            yield return ClickGenericButton ("Button_GotIt");
+        }
     }
 
     private bool CheckCurrentPageName (string expectedPageName)
@@ -768,8 +784,8 @@ public class TestHelper
                         {
                             unit.OwnerPlayer.ThrowCardAttacked (
                                 unit.Card,
-                                AffectObjectType.Character,
-                                attackedUnit.Card.Id);
+                                AffectObjectType.Types.Enum.Character,
+                                attackedUnit.Card.InstanceId);
 
                             /* if (target == SelectedPlayer)
                             {
@@ -816,7 +832,7 @@ public class TestHelper
 
                     unit.OwnerPlayer.ThrowCardAttacked (
                         unit.Card,
-                        AffectObjectType.Player,
+                        AffectObjectType.Types.Enum.Player,
                         -1);
 
                     yield return LetsThink ();
@@ -839,7 +855,7 @@ public class TestHelper
 
                         unit.OwnerPlayer.ThrowCardAttacked (
                             unit.Card,
-                            AffectObjectType.Player,
+                            AffectObjectType.Types.Enum.Player,
                             -1);
 
                         yield return LetsThink ();
@@ -855,8 +871,8 @@ public class TestHelper
 
                             unit.OwnerPlayer.ThrowCardAttacked (
                                 unit.Card,
-                                AffectObjectType.Character,
-                                attackedCreature.Card.Id);
+                                AffectObjectType.Types.Enum.Character,
+                                attackedCreature.Card.InstanceId);
 
                             yield return LetsThink ();
                         }
@@ -867,7 +883,7 @@ public class TestHelper
 
                             unit.OwnerPlayer.ThrowCardAttacked (
                                 unit.Card,
-                                AffectObjectType.Player,
+                                AffectObjectType.Types.Enum.Player,
                                 -1);
 
                             yield return LetsThink ();
@@ -1131,9 +1147,11 @@ public class TestHelper
                         BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
 
                         _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
+                            //todo: handle abilities here
+
                             PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                             _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-                        }, target);
+                        });
                     }
                     else
                     {
@@ -1367,7 +1385,7 @@ public class TestHelper
 
     private BoardObject GetAbilityTarget (WorkingCard card)
     {
-        Loom.ZombieBattleground.Data.Card libraryCard = card.LibraryCard;
+        Loom.ZombieBattleground.Data.Card libraryCard = (Loom.ZombieBattleground.Data.Card) card.LibraryCard;
 
         BoardObject target = null;
 
@@ -1626,7 +1644,7 @@ public class TestHelper
 
         foreach (WorkingCard item in list)
         {
-            cards.Add (_dataManager.CachedCardsLibraryData.GetCard (item.CardId));
+            cards.Add (_dataManager.CachedCardsLibraryData.GetCardFromName (item.LibraryCard.Name));
         }
 
         cards = cards.OrderBy (x => x.Cost).ThenBy (y => y.Cost.ToString ().Length).ToList ();
@@ -1637,7 +1655,7 @@ public class TestHelper
 
         foreach (Loom.ZombieBattleground.Data.Card item in cards)
         {
-            sortedList.Add (list.Find (x => x.CardId == item.Id && !sortedList.Contains (x)));
+            sortedList.Add (list.Find (x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains (x)));
         }
 
         list.Clear ();
@@ -2016,7 +2034,7 @@ public class TestHelper
 
     public IEnumerator DecideWhichCardsToPick ()
     {
-        CardsController cardsController = _gameplayManager.GetController<CardsController> ();
+        /* CardsController cardsController = _gameplayManager.GetController<CardsController> ();
 
         int highCardCounter = 0;
 
@@ -2024,16 +2042,17 @@ public class TestHelper
         for (int i = currentPlayer.CardsPreparingToHand.Count - 1; i >= 0; i--)
         {
             BoardCard boardCard = currentPlayer.CardsPreparingToHand[i];
+            WorkingCard workingCard = currentPlayer.CardsPreparingToHand[i];
 
-            if ((boardCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL) ||
-                (highCardCounter >= 1 && boardCard.LibraryCard.Cost >= 4) ||
-                boardCard.LibraryCard.Cost >= 8)
+            if ((workingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL) ||
+                (highCardCounter >= 1 && workingCard.LibraryCard.Cost >= 4) ||
+                workingCard.LibraryCard.Cost >= 8)
             {
                 currentPlayer.CardsPreparingToHand[i].CardShouldBeChanged = !boardCard.CardShouldBeChanged;
 
                 yield return LetsThink ();
             }
-            else if (boardCard.LibraryCard.Cost >= 4)
+            else if (workingCard.LibraryCard.Cost >= 4)
             {
                 highCardCounter++;
 
@@ -2041,7 +2060,7 @@ public class TestHelper
             }
         }
 
-        yield return LetsThink ();
+        yield return LetsThink (); */
         yield return LetsThink ();
 
         yield return ClickGenericButton ("Button_Keep");
@@ -2384,7 +2403,7 @@ public class TestHelper
         _createdArmyCards = new List<Loom.ZombieBattleground.Data.Card> ();
         foreach (DeckBuilderCard deckBuilderCard in deckBuilderCards)
         {
-            _createdArmyCards.Add (deckBuilderCard.Card);
+            _createdArmyCards.Add ((Loom.ZombieBattleground.Data.Card) deckBuilderCard.Card);
         }
     }
 
