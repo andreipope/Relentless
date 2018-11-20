@@ -308,6 +308,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 };
 
+                 UnityEngine.Debug.LogWarning("Action json send = " + Newtonsoft.Json.JsonConvert.SerializeObject(playerAction));
+
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 

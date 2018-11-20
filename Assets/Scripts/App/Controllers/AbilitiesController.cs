@@ -464,7 +464,7 @@ namespace Loom.ZombieBattleground
                                                workingCard.Owner.AddCardToBoard(workingCard);
                                                workingCard.Owner.AddCardToGraveyard(workingCard);
 
-                                               card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
+                                               card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
 
                                                GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                                                {
@@ -614,7 +614,7 @@ namespace Loom.ZombieBattleground
         public void ThrowUseAbilityEvent(WorkingCard card, List<ParametrizedAbilityBoardObject> targets,
                                          Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
         {
-            if (!_gameplayManager.IsLocalPlayerTurn() || card == null)
+            if (card == null || !card.Owner.IsLocalPlayer)
                 return;
 
             AbilityUsed?.Invoke(card, abilityType,
@@ -1020,7 +1020,7 @@ namespace Loom.ZombieBattleground
                     card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
                     card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
 
-                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, 0);
+                    card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
 
                     GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                     {

@@ -57,6 +57,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 InvokeActionTriggered();
             }
         }
@@ -123,6 +125,8 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             HealSelectedTarget();
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         private void HealRandomCountOfAllies()

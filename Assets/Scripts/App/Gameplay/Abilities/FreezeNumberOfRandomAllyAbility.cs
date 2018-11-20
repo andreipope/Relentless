@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             _allies = new List<BoardObject>();
 
             if (PredefinedTargets != null)
@@ -76,6 +78,8 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

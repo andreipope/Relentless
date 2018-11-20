@@ -33,6 +33,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             _units = new List<BoardUnitView>();
             _units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             _units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
@@ -62,6 +64,8 @@ namespace Loom.ZombieBattleground
             {
                 ReturnBoardUnitToHand(unit);
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }
