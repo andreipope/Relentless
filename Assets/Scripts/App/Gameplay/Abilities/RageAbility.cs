@@ -14,6 +14,11 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
+        }
+
+        public override void Activate()
+        {
+            base.Activate();
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
@@ -29,6 +34,7 @@ namespace Loom.ZombieBattleground
                     _wasChanged = true;
                     AbilityUnitOwner.BuffedDamage += Value;
                     AbilityUnitOwner.CurrentDamage += Value;
+                    InvokeActionTriggered(true);
                 }
             }
             else
@@ -38,6 +44,7 @@ namespace Loom.ZombieBattleground
                     AbilityUnitOwner.BuffedDamage -= Value;
                     AbilityUnitOwner.CurrentDamage -= Value;
                     _wasChanged = false;
+                    InvokeActionTriggered(false);
                 }
             }
         }

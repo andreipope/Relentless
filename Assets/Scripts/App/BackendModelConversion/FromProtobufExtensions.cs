@@ -33,6 +33,34 @@ namespace Loom.ZombieBattleground.Data
 
         public static AbilityData FromProtobuf(this Ability ability)
         {
+            List<AbilityData.VisualEffectInfo> VisualEffectsToPlay = new List<AbilityData.VisualEffectInfo>();
+
+            if (ability.VisualEffectsToPlay != null)
+            {
+                foreach (VisualEffectInfo info in ability.VisualEffectsToPlay)
+                {
+                    VisualEffectsToPlay.Add(new AbilityData.VisualEffectInfo()
+                    {
+                        Path = info.Path,
+                        Type = Utilites.CastStringTuEnum<Enumerators.VisualEffectType>(info.Type, true)
+                    });
+                }
+            }
+
+            List<AbilityData.ChoosableAbility> ChoosableAbilities = new List<AbilityData.ChoosableAbility>();
+
+            if (ability.ChoosableAbilities != null)
+            {
+                foreach (ChoosableAbility choosableAbility in ability.ChoosableAbilities)
+                {
+                    ChoosableAbilities.Add(new AbilityData.ChoosableAbility()
+                    {
+                        Description = choosableAbility.Description,
+                        AbilityData = FromProtobuf(choosableAbility.AbilityData)
+                    });
+                }
+            }
+
             return new AbilityData
             {
                 BuffType = ability.BuffType,
@@ -53,7 +81,12 @@ namespace Loom.ZombieBattleground.Data
                 Name = ability.Name,
                 Turns = ability.Turns,
                 Count = ability.Count,
-                Delay = ability.Delay
+                Delay = ability.Delay,
+                VisualEffectsToPlay = VisualEffectsToPlay,
+                SubTrigger = ability.SubTrigger,
+                ChoosableAbilities = ChoosableAbilities,
+                Defense = ability.Defense,
+                Cost = ability.Cost, 
             };
         }
 
@@ -73,6 +106,10 @@ namespace Loom.ZombieBattleground.Data
 
         public static Card FromProtobuf(this Protobuf.Card card)
         {
+            List<AbilityData> abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList();
+            List<AbilityData> initialAbilities = new List<AbilityData>();
+            initialAbilities.AddRange(abilities);
+
             return new Card
             {
                 Id = (int) card.Id,
@@ -87,8 +124,10 @@ namespace Loom.ZombieBattleground.Data
                 Rank = card.Rank,
                 Type = card.Type,
                 Frame = card.Frame,
-                Abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList(),
-                CardViewInfo = card.CardViewInfo.FromProtobuf()
+                Abilities = abilities,
+                InitialAbilities = initialAbilities,
+                CardViewInfo = card.CardViewInfo.FromProtobuf(),
+                UniqueAnimation = !string.IsNullOrEmpty(card.UniqueAnimation) ? card.UniqueAnimation : "None"
             };
         }
 
@@ -108,7 +147,7 @@ namespace Loom.ZombieBattleground.Data
                 Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
             };
         }
-
+/*
         public static OpponentDeck FromProtobuf(this Protobuf.Deck deck)
         {
             return new OpponentDeck
@@ -119,6 +158,7 @@ namespace Loom.ZombieBattleground.Data
                 Cards = deck.Cards.Select(card => card.GetDeckCardData()).ToList()
             };
         }
+        */
         //TOTO: review does need this function at all
         private static DeckCardData GetDeckCardData(this CardCollection cardCollection)
         {
@@ -143,6 +183,9 @@ namespace Loom.ZombieBattleground.Data
             List<AbilityData> abilities = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.
                 Find(x => x.Id == cardPrototype.DataId).Clone().Abilities;
 
+            List<AbilityData> initialAbilities = new List<AbilityData>();
+            initialAbilities.AddRange(abilities);
+
             Card card = new Card
             {
                 Id = cardPrototype.DataId,
@@ -158,12 +201,14 @@ namespace Loom.ZombieBattleground.Data
                 Type = cardPrototype.Type,
                 CardViewInfo = new CardViewInfo
                 {
-                    Position = new FloatVector3 {
+                    Position = new FloatVector3
+                    {
                         X = cardPrototype.CardViewInfo.Position.X,
                         Y = cardPrototype.CardViewInfo.Position.Y,
                         Z = cardPrototype.CardViewInfo.Position.Z
                     },
-                    Scale = new FloatVector3 {
+                    Scale = new FloatVector3
+                    {
                         X = cardPrototype.CardViewInfo.Scale.X,
                         Y = cardPrototype.CardViewInfo.Scale.Y,
                         Z = cardPrototype.CardViewInfo.Scale.Z
@@ -174,7 +219,10 @@ namespace Loom.ZombieBattleground.Data
                 CardRank = (Enumerators.CardRank)cardPrototype.CreatureRank,
                 CardType = (Enumerators.CardType)cardPrototype.CreatureType,
                 CardKind = (Enumerators.CardKind)cardPrototype.CardKind,
-                Abilities = abilities
+                UniqueAnimationType = string.IsNullOrEmpty(cardPrototype.UniqueAnimation) ? Enumerators.UniqueAnimationType.None :
+                                          Utilites.CastStringTuEnum<Enumerators.UniqueAnimationType>(cardPrototype.UniqueAnimation, true),
+                Abilities = abilities,
+                InitialAbilities = initialAbilities
             };
 
             return new WorkingCard(card, player, cardInstance.InstanceId);

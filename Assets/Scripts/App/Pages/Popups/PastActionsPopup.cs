@@ -121,7 +121,7 @@ namespace Loom.ZombieBattleground
 
             if (pastActionParam.TargetEffects.Count > 0)
             {
-                if (pastActionParam.ActionType.ToString().ToLower().Contains("attack"))
+                if (pastActionParam.ActionType.ToString().ToLowerInvariant().Contains("attack"))
                 {
                     _effectTypeImage.sprite = _attackActionSprite;
                 }
@@ -357,7 +357,7 @@ namespace Loom.ZombieBattleground
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), LibraryCard.Picture.ToLower()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
                 _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", LibraryCard.Type + "_icon"));
 
                 if (_withEffect)
@@ -365,7 +365,7 @@ namespace Loom.ZombieBattleground
                     if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
 
                         if (_effectImage.sprite == null)
                         {
@@ -448,14 +448,20 @@ namespace Loom.ZombieBattleground
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), LibraryCard.Picture.ToLower()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
 
                 if (_withEffect)
                 {
                     if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -511,7 +517,13 @@ namespace Loom.ZombieBattleground
                     if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -567,7 +579,13 @@ namespace Loom.ZombieBattleground
                     if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -652,7 +670,7 @@ namespace Loom.ZombieBattleground
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), LibraryCard.Picture.ToLower()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
                 _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", LibraryCard.Type + "_icon"));
 
                 if (_withEffect)
@@ -660,7 +678,13 @@ namespace Loom.ZombieBattleground
                     if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -743,14 +767,20 @@ namespace Loom.ZombieBattleground
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLower(), rarity.ToLower(), LibraryCard.Picture.ToLower()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
 
                 if (_withEffect)
                 {
                     if (actionEffectType != Enumerators.ActionEffectType.None)
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLower());
+                            "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {

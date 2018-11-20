@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
             BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
 
-            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFilePath);
+            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
             ConfigData configData = new ConfigData();
             if (File.Exists(configDataFilePath))
             {
@@ -49,7 +49,6 @@ namespace Loom.ZombieBattleground
             AddService<ITimerManager>(new TimerManager());
             AddService<IInputManager>(new InputManager());
             AddService<ILocalizationManager>(new LocalizationManager());
-            AddService<IDataManager>(new DataManager(configData));
             AddService<IScenesManager>(new ScenesManager());
             AddService<IAppStateManager>(new AppStateManager());
             AddService<ICameraManager>(new CameraManager());
@@ -61,6 +60,7 @@ namespace Loom.ZombieBattleground
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
+            AddService<IDataManager>(new DataManager(configData));
             AddService<BackendFacade>(new BackendFacade(backendEndpoint));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());

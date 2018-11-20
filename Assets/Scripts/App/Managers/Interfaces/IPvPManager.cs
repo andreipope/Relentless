@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground
 {
@@ -14,6 +15,7 @@ namespace Loom.ZombieBattleground
         event Action MatchCreatedActionReceived;
         event Action MatchingStartedActionReceived;
         event Action PlayerLeftGameActionReceived;
+        event Action MatchingFailed;
 
         event Action GameStartedActionReceived;
         event Action GameEndedActionReceived;
@@ -39,7 +41,10 @@ namespace Loom.ZombieBattleground
 
         bool IsCurrentPlayer();
 
-        Task FindMatch();
+        Task<bool> FindMatch();
+        Task<bool> DebugFindMatch(Deck deck);
+
+        Task CancelFindMatch();
 
         WorkingCard GetWorkingCardFromCardInstance(CardInstance cardInstance, Player ownerPlayer);
     }

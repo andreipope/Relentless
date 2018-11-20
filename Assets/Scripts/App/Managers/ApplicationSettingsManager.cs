@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.ScreenMode.Window:
                     {
                         Screen.fullScreen = false;
-                        Screen.fullScreenMode = FullScreenMode.MaximizedWindow;
+                        Screen.fullScreenMode = FullScreenMode.Windowed;
                     }
                     break;
                 case Enumerators.ScreenMode.BorderlessWindow:

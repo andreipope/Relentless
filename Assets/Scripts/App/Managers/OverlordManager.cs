@@ -64,9 +64,6 @@ namespace Loom.ZombieBattleground
             hero.Level++;
 
             ApplyReward(hero);
-
-            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
-            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void ApplyReward(Hero hero)
