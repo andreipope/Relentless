@@ -220,79 +220,79 @@ namespace Loom.ZombieBattleground.Common
 
         public enum GameMechanicDescriptionType
         {
-            [EnumMember (Value = "UNDEFINED")]
+            [EnumMember(Value = "UNDEFINED")]
             Undefined,
 
-            [EnumMember (Value = "ATTACK")]
+            [EnumMember(Value = "ATTACK")]
             Attack,
 
-            [EnumMember (Value = "DEATH")]
+            [EnumMember(Value = "DEATH")]
             Death,
 
-            [EnumMember (Value = "DELAYED")]
+            [EnumMember(Value = "DELAYED")]
             DelayedX,
 
-            [EnumMember (Value = "DESTROY")]
+            [EnumMember(Value = "DESTROY")]
             Destroy,
 
-            [EnumMember (Value = "DEVOUR")]
+            [EnumMember(Value = "DEVOUR")]
             Devour,
 
-            [EnumMember (Value = "DISTRACT")]
+            [EnumMember(Value = "DISTRACT")]
             Distract,
 
-            [EnumMember (Value = "END")]
+            [EnumMember(Value = "END")]
             End,
 
-            [EnumMember (Value = "ENTRY")]
+            [EnumMember(Value = "ENTRY")]
             Entry,
 
-            [EnumMember (Value = "FERAL")]
+            [EnumMember(Value = "FERAL")]
             Feral,
 
-            [EnumMember (Value = "FLASH")]
+            [EnumMember(Value = "FLASH")]
             Flash,
 
-            [EnumMember (Value = "FREEZE")]
+            [EnumMember(Value = "FREEZE")]
             Freeze,
 
-            [EnumMember (Value = "GUARD")]
+            [EnumMember(Value = "GUARD")]
             Guard,
 
-            [EnumMember (Value = "HEAVY")]
+            [EnumMember(Value = "HEAVY")]
             Heavy,
 
-            [EnumMember (Value = "OVERFLOW")]
+            [EnumMember(Value = "OVERFLOW")]
             OverflowX,
 
-            [EnumMember (Value = "RAGE")]
+            [EnumMember(Value = "RAGE")]
             RageX,
 
-            [EnumMember (Value = "REANIMATE")]
+            [EnumMember(Value = "REANIMATE")]
             Reanimate,
 
-            [EnumMember (Value = "SHATTER")]
+            [EnumMember(Value = "SHATTER")]
             Shatter,
 
-            [EnumMember (Value = "SWING")]
+            [EnumMember(Value = "SWING")]
             SwingX,
 
-            [EnumMember (Value = "TURN")]
+            [EnumMember(Value = "TURN")]
             Turn,
 
-            [EnumMember (Value = "GOT_DAMAGE")]
+            [EnumMember(Value = "GOT_DAMAGE")]
             GotDamage,
 
-            [EnumMember (Value = "AT_DEFENSE")]
+            [EnumMember(Value = "AT_DEFENSE")]
             AtDefense,
 
-            [EnumMember (Value = "IN_HAND")]
+            [EnumMember(Value = "IN_HAND")]
             InHand,
 
-            [EnumMember (Value = "KILL_UNIT")]
+            [EnumMember(Value = "KILL_UNIT")]
             KillUnit,
 
-            [EnumMember (Value = "PERMANENT")]
+            [EnumMember(Value = "PERMANENT")]
             Permanent
         }
 
@@ -477,7 +477,7 @@ namespace Loom.ZombieBattleground.Common
         public enum SoundType
         {
             CLICK,
-            // OTHER,
+           // OTHER,
             BACKGROUND,
             BATTLEGROUND,
             BATTLEGROUND_TOUCH_EFFECT,
