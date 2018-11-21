@@ -226,7 +226,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         AffectObjectType = type,
                         Target = new Protobuf.Unit
                         {
-                            InstanceId = instanceId
+                            InstanceId = instanceId,
+                            Parameter = new Parameter() { }
                         }
                     }
                 };
@@ -239,7 +240,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Enumerators.AbilityType abilityType,
                 CardKind.Types.Enum cardKind,
                 AffectObjectType.Types.Enum affectObjectType,
-                List<BoardObject> targets = null)
+                List<ParametrizedAbilityBoardObject> targets = null)
             {
                 PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed()
                 {
@@ -251,32 +252,48 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Protobuf.Unit targetUnit;
                 if (targets != null)
                 {
-                    foreach(BoardObject boardObject in targets)
+                    foreach(ParametrizedAbilityBoardObject parametrizedAbility in targets)
                     {
+                        if (parametrizedAbility.BoardObject == null)
+                            continue;
+                            
                         targetUnit = new Protobuf.Unit();
 
-                        if (boardObject is BoardUnitModel model)
+                        if (parametrizedAbility.BoardObject is BoardUnitModel model)
                         {
                             targetUnit = new Protobuf.Unit
                             {
                                 InstanceId = model.Card.InstanceId,
-                                AffectObjectType =  AffectObjectType.Types.Enum.Character
+                                AffectObjectType =  AffectObjectType.Types.Enum.Character,
+                                Parameter = new Parameter()
+                                {
+                                    Attack = parametrizedAbility.Parameters.Attack,
+                                    Defense = parametrizedAbility.Parameters.Defense,
+                                    CardName = parametrizedAbility.Parameters.CardName
+                                }
                             };
                         }
-                        else if (boardObject is Player player)
+                        else if (parametrizedAbility.BoardObject is Player player)
                         {
                             targetUnit = new Protobuf.Unit
                             {
                                 InstanceId = player.Id == 0 ? 1 : 0,
-                                AffectObjectType = AffectObjectType.Types.Enum.Player
+                                AffectObjectType = AffectObjectType.Types.Enum.Player,
+                                Parameter = new Parameter() { }
                             };
                         }
-                        else if(boardObject is HandBoardCard handCard)
+                        else if(parametrizedAbility.BoardObject is HandBoardCard handCard)
                         {
                             targetUnit = new Protobuf.Unit
                             {
-                                InstanceId = handCard.Id,
-                                AffectObjectType = AffectObjectType.Types.Enum.Card
+                                InstanceId = handCard.CardView.WorkingCard.InstanceId,
+                                AffectObjectType = AffectObjectType.Types.Enum.Card,
+                                Parameter = new Parameter()
+                                {
+                                    Attack = parametrizedAbility.Parameters.Attack,
+                                    Defense = parametrizedAbility.Parameters.Defense,
+                                    CardName = parametrizedAbility.Parameters.CardName
+                                }
                             };
                         }
 
@@ -330,13 +347,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     case BoardUnitModel unit:
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = unit.Card.InstanceId
+                            InstanceId = unit.Card.InstanceId,
+                            Parameter = new Parameter() { }
                         };
                         break;
                     case Player player:
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = player.Id == 0 ? 1 : 0
+                            InstanceId = player.Id == 0 ? 1 : 0,
+                            Parameter = new Parameter() { }
                         };
                         break;
                 }
@@ -371,7 +390,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     unit = new Protobuf.Unit
                     {
                         InstanceId = view.Model.Card.InstanceId,
-                        AffectObjectType = AffectObjectType.Types.Enum.Character
+                        AffectObjectType = AffectObjectType.Types.Enum.Character,
+                        Parameter = new Parameter() { }
                     };
 
                     rankBuff.Targets.Add(unit);

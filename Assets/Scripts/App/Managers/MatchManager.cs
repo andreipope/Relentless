@@ -41,6 +41,7 @@ namespace Loom.ZombieBattleground
             _finishMatchAppState = appStateAfterMatch;
 
             _uiManager.HideAllPages();
+            _uiManager.HideAllPopups();
             _uiManager.DrawPopup<LoadingGameplayPopup>();
 
             _gameplayManager.ResetWholeGameplayScene();

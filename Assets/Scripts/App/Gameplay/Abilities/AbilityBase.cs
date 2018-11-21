@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
 
         public Player SelectedPlayer;
 
-        public List<BoardObject> PredefinedTargets;
+        public List<ParametrizedAbilityBoardObject> PredefinedTargets;
 
         protected AbilitiesController AbilitiesController;
 
