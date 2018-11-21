@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
                         if (PredefinedTargets != null)
                         {
-                            allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+                            allies = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
 
                             if (allies.Count > 0)
                             {

@@ -54,6 +54,9 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
+            if (Self == null)
+                return;
+
             _selfAnimator.StopPlayback();
 
             _playerCardBackObject.SetActive(true);
@@ -65,9 +68,6 @@ namespace Loom.ZombieBattleground
             _opponentCardFrontObject.SetActive(false);
             _opponentFirstTurnObject.SetActive(false);
             _opponentSecondTurnObject.SetActive(false);
-
-            if (Self == null)
-                return;
 
             Self.SetActive(false);
             Object.Destroy(Self);
@@ -139,18 +139,28 @@ namespace Loom.ZombieBattleground
 
             DoAnimationOfWhoseTurn();
 
+            if (_gameplayManager.CurrentPlayer == null)
+            {
+                _uiManager.HidePopup<PlayerOrderPopup>();
+                return;
+            }
+
             _timerManager.AddTimer(
                 x =>
                 {
-                    _selfAnimator.SetTrigger("Exit");
+                    if(_selfAnimator != null)
+                        _selfAnimator.SetTrigger("Exit");
 
                     _timerManager.AddTimer(
                         y =>
                         {
                             _uiManager.HidePopup<PlayerOrderPopup>();
 
-                            _gameplayManager.GetController<PlayerController>().SetHand();
-                            _gameplayManager.GetController<CardsController>().StartCardDistribution();
+                            if(_gameplayManager.CurrentPlayer != null)
+                            {
+                                _gameplayManager.GetController<PlayerController>().SetHand();
+                                _gameplayManager.GetController<CardsController>().StartCardDistribution();
+                            }
                         },
                         null,
                         1.2f);

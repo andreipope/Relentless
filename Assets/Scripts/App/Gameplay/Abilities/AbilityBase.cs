@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
 
         public Player SelectedPlayer;
 
-        public List<BoardObject> PredefinedTargets;
+        public List<ParametrizedAbilityBoardObject> PredefinedTargets;
 
         protected AbilitiesController AbilitiesController;
 
@@ -86,6 +86,8 @@ namespace Loom.ZombieBattleground
         private readonly Player _playerAvatar;
 
         private readonly Player _opponenentAvatar;
+
+        protected GameAction<object> AbilityProcessingAction;
 
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {

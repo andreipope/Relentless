@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -17,12 +18,12 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         public override void Action(object param = null)
         {
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             base.Action(param);
             _units = new List<BoardUnitModel>();
 
@@ -74,6 +75,10 @@ namespace Loom.ZombieBattleground
                 TakeDamageToUnit(unit);
             }
             _units.Clear();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         private void TakeDamageToUnit(BoardUnitModel unit)

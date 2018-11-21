@@ -146,6 +146,8 @@ namespace Loom.ZombieBattleground
 
         public HandBoardCard HandBoardCard { get; set; }
 
+        public int FuturePositionOnBoard = 0;
+
         public virtual void Init(WorkingCard card)
         {
             WorkingCard = card;
@@ -554,6 +556,8 @@ namespace Loom.ZombieBattleground
             foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
             {
                 // FIXME: hack
+                continue;
+         
                 Enumerators.BuffType buffType =
                     (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.AbilityData.GameMechanicDescriptionType.ToString(), true);
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.AbilityData.GameMechanicDescriptionType);

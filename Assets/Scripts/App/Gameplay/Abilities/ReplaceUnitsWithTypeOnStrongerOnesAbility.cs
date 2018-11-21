@@ -47,7 +47,21 @@ namespace Loom.ZombieBattleground
             ClearOldUnitsOnBoard();
             GenerateNewUnitsOnBoard();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            List<ParametrizedAbilityBoardObject> targets = new List<ParametrizedAbilityBoardObject>();
+
+            foreach(ReplaceUnitInfo unitinfo in _replaceUnitInfos)
+            {
+                targets.Add(new ParametrizedAbilityBoardObject()
+                {
+                    BoardObject = unitinfo.OldUnitView.Model,
+                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                    {
+                        CardName = unitinfo.NewUnitCardTitle
+                    }
+                });
+            }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         private void GetInfosAboutUnitsOnBoard()
@@ -89,33 +103,65 @@ namespace Loom.ZombieBattleground
 
         private void ClearOldUnitsOnBoard()
         {
-            foreach(ReplaceUnitInfo unitInfo in _replaceUnitInfos)
+            if (PredefinedTargets != null)
             {
-                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
-                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
-               
-                Object.Destroy(unitInfo.OldUnitView.GameObject);
+                foreach (BoardUnitView unit in _boardUnits)
+                {
+                    unit.Model.OwnerPlayer.BoardCards.Remove(unit);
+                    unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model.Card);
+
+                    Object.Destroy(unit.GameObject);
+                }
             }
+            else
+            {
+	            foreach(ReplaceUnitInfo unitInfo in _replaceUnitInfos)
+	            {
+	                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
+	                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
+	               
+	                Object.Destroy(unitInfo.OldUnitView.GameObject);
+	            }
+	        }
         }
 
         private void GetPossibleNewUnits()
         {
-            ReplaceUnitInfo replaceUnitInfo = null;
-            foreach (BoardUnitView unit in _boardUnits)
+            if (PredefinedTargets != null)
             {
-                replaceUnitInfo = new ReplaceUnitInfo()
+                BoardUnitView unit;
+                foreach (ParametrizedAbilityBoardObject boardObject in PredefinedTargets)
                 {
-                    OldUnitCost = unit.Model.Card.InstanceCard.Cost,
-                    NewUnitPossibleCost = unit.Model.Card.InstanceCard.Cost + 1,
-                    OldUnitView = unit,
-                    OwnerPlayer = unit.Model.OwnerPlayer,
-                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit)
-                };
+                    unit = BattlegroundController.GetBoardUnitViewByModel(boardObject.BoardObject as BoardUnitModel);
 
-                _replaceUnitInfos.Add(replaceUnitInfo);
+                    _replaceUnitInfos.Add(new ReplaceUnitInfo()
+                    {
+                        OldUnitView = unit,
+                        NewUnitCardTitle = boardObject.Parameters.CardName,
+                        OwnerPlayer = unit.Model.OwnerPlayer,
+                        Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit)
+                    });
+                }
             }
+            else
+            {
+	            ReplaceUnitInfo replaceUnitInfo = null;
+	            foreach (BoardUnitView unit in _boardUnits)
+	            {
+	                replaceUnitInfo = new ReplaceUnitInfo()
+	                {
+	                    OldUnitCost = unit.Model.Card.InstanceCard.Cost,
+	                    NewUnitPossibleCost = unit.Model.Card.InstanceCard.Cost + 1,
+	                    OldUnitView = unit,
+	                    OwnerPlayer = unit.Model.OwnerPlayer,
+	                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit)
+	                };
 
-            _replaceUnitInfos.ForEach(GetPossibleNewUnitByMinCost);
+	                _replaceUnitInfos.Add(replaceUnitInfo);
+	            }
+
+	            _replaceUnitInfos.ForEach(GetPossibleNewUnitByMinCost);
+			}
         }
 
         private void GetPossibleNewUnitByMinCost(ReplaceUnitInfo replaceUnitInfo)
