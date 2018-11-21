@@ -137,7 +137,8 @@ namespace Loom.ZombieBattleground
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
                     _backendDataControlMediator.UserDataModel.UserId,
                     deckId,
-                    _pvpManager.CustomGameModeAddress
+                    _pvpManager.CustomGameModeAddress,
+                    _pvpManager.PvPTags
                 );
 
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);

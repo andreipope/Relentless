@@ -321,7 +321,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
@@ -329,7 +329,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
                 RandomSeed = (long)Time.time,
-                Tags = { },
+                Tags = pvpTags,
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
