@@ -38,10 +38,6 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
 
-        _testHelper.SetPvPTags (new[] {
-            "pvpTestNoOpponentCancel"
-        });
-
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -62,6 +58,12 @@ public class MultiplayerTests
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTestNoOpponentCancel"
+        });
+
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -78,10 +80,6 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
 
-        _testHelper.SetPvPTags (new[] {
-            "pvpTestNoOpponentTimeout"
-        });
-
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -102,6 +100,12 @@ public class MultiplayerTests
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTestNoOpponentTimeout"
+        });
+
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -118,10 +122,6 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Quit");
 
-        _testHelper.SetPvPTags (new[] {
-            "pvpTest"
-        });
-
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -142,6 +142,12 @@ public class MultiplayerTests
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
+
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -168,10 +174,6 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Play");
 
-        _testHelper.SetPvPTags (new[] {
-            "pvpTest"
-        });
-
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -192,6 +194,12 @@ public class MultiplayerTests
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
+
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -247,6 +255,8 @@ public class MultiplayerTests
             "pvpTestNoOpponentCancel"
         });
 
+        yield return _testHelper.LetsThink ();
+
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
         yield return _testHelper.LetsThink ();
@@ -265,6 +275,8 @@ public class MultiplayerTests
         _testHelper.SetPvPTags (new[] {
             "pvpTest"
         });
+
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -337,6 +349,8 @@ public class MultiplayerPassiveTests
         _testHelper.SetPvPTags (new[] {
             "pvpTest"
         });
+
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 

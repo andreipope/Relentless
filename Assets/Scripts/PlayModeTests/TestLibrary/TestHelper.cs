@@ -669,14 +669,14 @@ public class TestHelper
 
     public void SetPvPTags (string[] tags)
     {
-        if (tags == null)
+        if (tags == null || tags.Length <= 0)
         {
             _pvpManager.PvPTags = null;
 
             return;
         }
 
-        _pvpManager.PvPTags.Clear ();
+        _pvpManager.PvPTags = new Loom.Google.Protobuf.Collections.RepeatedField<string> ();
 
         foreach (string tag in tags)
         {
