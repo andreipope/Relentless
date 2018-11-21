@@ -243,6 +243,11 @@ public class TestHelper
         yield return null;
     }
 
+    public float GetTestTime ()
+    {
+        return Time.unscaledTime - _testStartTime;
+    }
+
     public IEnumerator ReportTestTime ()
     {
         Debug.LogFormat (
@@ -2622,7 +2627,7 @@ public class TestHelper
         yield return null;
     }
 
-    private int GetNumberOfHordes ()
+    public int GetNumberOfHordes ()
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 

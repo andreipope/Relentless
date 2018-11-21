@@ -401,7 +401,7 @@ public class SingleplayerTests
     [Timeout (900000)]
     public IEnumerator Test_C1_PlayWithDefaultHorde ()
     {
-        _testHelper.SetTestName ("Solo - Gameplay");
+        _testHelper.SetTestName ("Solo - Gameplay with Default");
 
         #region Solo Gameplay
 
@@ -439,7 +439,7 @@ public class SingleplayerTests
     [Timeout (900000)]
     public IEnumerator Test_C2_PlayWithRazuHorde ()
     {
-        _testHelper.SetTestName ("Solo - Gameplay");
+        _testHelper.SetTestName ("Solo - Gameplay with Razu");
 
         #region Solo Gameplay
 
@@ -475,7 +475,7 @@ public class SingleplayerTests
     [Timeout (900000)]
     public IEnumerator Test_C3_PlayWithKalileHorde ()
     {
-        _testHelper.SetTestName ("Solo - Gameplay");
+        _testHelper.SetTestName ("Solo - Gameplay with Kalile");
 
         #region Solo Gameplay
 
@@ -511,7 +511,7 @@ public class SingleplayerTests
     [Timeout (900000)]
     public IEnumerator Test_C4_PlayWithValashHorde ()
     {
-        _testHelper.SetTestName ("Solo - Gameplay");
+        _testHelper.SetTestName ("Solo - Gameplay with Valash");
 
         #region Solo Gameplay
 
@@ -541,6 +541,52 @@ public class SingleplayerTests
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
+    }
+
+    [UnityTest]
+    [Timeout (3600000)]
+    public IEnumerator Test_C5_PlayWithAllFourHordes ()
+    {
+        _testHelper.SetTestName ("Solo - Gameplay with 4 Hordes");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        if (_testHelper.GetNumberOfHordes () <= 3)
+        {
+            Assert.Fail ("Please, check out doc for guidance on how to run this test");
+        }
+
+        float allowedTestTime = 3000f;
+        int hordeIndex = -1;
+        while (_testHelper.GetTestTime () <= allowedTestTime)
+        {
+            hordeIndex = (hordeIndex + 1) % 4;
+
+            int selectedHordeIndex = hordeIndex;
+
+            yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
+
+            _testHelper.RecordOverlordName (selectedHordeIndex);
+
+            yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+            yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+            yield return SoloGameplay ();
+
+            yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+            yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        }
     }
 
     [UnityTest]
