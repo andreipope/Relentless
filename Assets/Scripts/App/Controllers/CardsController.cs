@@ -62,6 +62,10 @@ namespace Loom.ZombieBattleground
 
         public bool CardDistribution { get; set; }
 
+        private Vector3 _newCardPositionOfBoard;
+
+        private bool _isHoveringCardOfBoard;
+
         public List<WorkingCard> MulliganCards;
 
         public GameAction<object> PlayCardAction;
@@ -479,9 +483,11 @@ namespace Loom.ZombieBattleground
                     toArrangeList.Insert(_indexOfCard, _fakeBoardCard);
 
                     _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(toArrangeList);
+                    _newCardPositionOfBoard = _fakeBoardCard.PositionOfBoard;
+                    _isHoveringCardOfBoard = true;
                 }
             }
-        }
+        }        
 
         public void ResetPlayerCardsOnBattlegroundPosition()
         {
@@ -553,7 +559,13 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
-                            boardUnitView.PlayArrivalAnimation();
+                            if(_isHoveringCardOfBoard)
+                            {
+                                boardUnitView.PositionOfBoard = _newCardPositionOfBoard;
+                                _isHoveringCardOfBoard = false;
+                            }
+
+                            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
