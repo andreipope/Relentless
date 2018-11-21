@@ -57,6 +57,9 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
+            if (Self == null)
+                return;
+
             foreach (var card in _mulliganCardItems)
             {
                 card.eventHandler.DragBegan -= DragBeganEventHandler;
