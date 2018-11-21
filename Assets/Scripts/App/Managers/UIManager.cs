@@ -114,6 +114,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void HideAllPopups()
+        {
+            foreach (IUIPopup popup in _uiPopups)
+            {
+                popup.Hide();
+            }
+        }
+
         public void SetPage<T>(bool hideAll = false)
             where T : IUIElement
         {

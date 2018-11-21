@@ -840,8 +840,8 @@
         "PlayerInfo": {
           "Health": 9,
           "MaximumHealth": 20,
-          "CurrentGoo": 7,
-          "MaximumGoo": 7,
+          "CurrentGoo": 9,
+          "MaximumGoo": 9,
           "HeroId": 4,
           "CardsInHand": [
           ],
@@ -858,7 +858,7 @@
           ]
         },
         "OpponentInfo": {
-          "Health": 12,
+          "Health": 14,
           "MaximumHealth": 20,
           "CurrentGoo": 10,
           "MaximumGoo": 10,
@@ -881,6 +881,7 @@
       },
       "PlayerTurnFirst": true
     },
+	
     {
       "TutorialId": 1,
       "TutorialDataSteps": [

@@ -27,5 +27,6 @@ namespace Loom.ZombieBattleground
             where T : IUIElement;
 
         void HideAllPages();
+        void HideAllPopups();
     }
 }

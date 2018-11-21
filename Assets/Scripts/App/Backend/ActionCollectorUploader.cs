@@ -226,7 +226,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         AffectObjectType = type,
                         Target = new Protobuf.Unit
                         {
-                            InstanceId = instanceId
+                            InstanceId = instanceId,
+                            Parameter = new Parameter() { }
                         }
                     }
                 };
@@ -277,7 +278,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             targetUnit = new Protobuf.Unit
                             {
                                 InstanceId = player.Id == 0 ? 1 : 0,
-                                AffectObjectType = AffectObjectType.Types.Enum.Player
+                                AffectObjectType = AffectObjectType.Types.Enum.Player,
+                                Parameter = new Parameter() { }
                             };
                         }
                         else if(parametrizedAbility.BoardObject is HandBoardCard handCard)
@@ -345,13 +347,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     case BoardUnitModel unit:
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = unit.Card.InstanceId
+                            InstanceId = unit.Card.InstanceId,
+                            Parameter = new Parameter() { }
                         };
                         break;
                     case Player player:
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = player.Id == 0 ? 1 : 0
+                            InstanceId = player.Id == 0 ? 1 : 0,
+                            Parameter = new Parameter() { }
                         };
                         break;
                 }
@@ -386,7 +390,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     unit = new Protobuf.Unit
                     {
                         InstanceId = view.Model.Card.InstanceId,
-                        AffectObjectType = AffectObjectType.Types.Enum.Character
+                        AffectObjectType = AffectObjectType.Types.Enum.Character,
+                        Parameter = new Parameter() { }
                     };
 
                     rankBuff.Targets.Add(unit);

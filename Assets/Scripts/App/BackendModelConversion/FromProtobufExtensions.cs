@@ -28,14 +28,22 @@ namespace Loom.ZombieBattleground.Data
 
         public static Unit FromProtobuf(this Protobuf.Unit unit)
         {
-            return new Unit(
-                unit.InstanceId,
-                (Enumerators.AffectObjectType) unit.AffectObjectType,
-                new Unit.ParameterType(
+            Unit.ParameterType Parameter = new Unit.ParameterType();
+
+            if (unit.Parameter != null)
+            {
+                Parameter = new Unit.ParameterType
+                (
                     unit.Parameter.Attack,
                     unit.Parameter.Defense,
                     unit.Parameter.CardName
-                )
+                );
+            }
+
+            return new Unit(
+                unit.InstanceId,
+                (Enumerators.AffectObjectType) unit.AffectObjectType,
+                Parameter
             );
         }
 
