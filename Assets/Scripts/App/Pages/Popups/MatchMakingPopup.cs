@@ -154,7 +154,8 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    _pvpManager.PvPTags
                 );
 
                 if (result.Match != null)
@@ -200,7 +201,8 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    _pvpManager.PvPTags
                 );
 
                 Debug.LogWarning(result.ToString());

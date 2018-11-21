@@ -323,13 +323,28 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
+            if (pvpTags == null)
+            {
+                pvpTags = new Google.Protobuf.Collections.RepeatedField<string> ();
+            }
+
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
                 RandomSeed = (long)Time.time,
-                Tags = pvpTags != null ? pvpTags : new Google.Protobuf.Collections.RepeatedField<string> (),
+                Tags = pvpTags,
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
@@ -338,6 +353,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<FindMatchResponse> FindMatch(string userId, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
             if (pvpTags == null)
             {
                 pvpTags = new Google.Protobuf.Collections.RepeatedField<string>();

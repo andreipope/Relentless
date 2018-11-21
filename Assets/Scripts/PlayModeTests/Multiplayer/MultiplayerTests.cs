@@ -118,11 +118,9 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Quit");
 
-        _testHelper.SetPvPTags (null);
-
-        /* _testHelper.SetPvPTags (new[] {
+        _testHelper.SetPvPTags (new[] {
             "pvpTest"
-        }); */
+        });
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -170,7 +168,9 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Play");
 
-        _testHelper.SetPvPTags (null);
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -287,34 +287,6 @@ public class MultiplayerTests
         yield return _testHelper.LetsThink ();
 
         #endregion
-    }
-
-    [UnityTest]
-    [Timeout (500000)]
-    public IEnumerator Test_B1_CreateAHordeAndSave ()
-    {
-        _testHelper.SetTestName ("PvP - Create a Horde and save");
-
-        yield return _testHelper.MainMenuTransition ("Button_Play");
-
-        yield return _testHelper.AssertIfWentDirectlyToTutorial (
-            _testHelper.GoBackToMainAndPressPlay ());
-
-        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
-
-        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
-
-        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
-
-        yield return _testHelper.MainMenuTransition ("Button_CasualType");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        yield return _testHelper.AddRazuHorde ();
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        yield return null;
     }
 
     [UnityTest]
