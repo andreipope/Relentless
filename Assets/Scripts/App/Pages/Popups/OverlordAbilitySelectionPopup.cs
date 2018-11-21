@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +26,10 @@ namespace Loom.ZombieBattleground
 
         private ISoundManager _soundManager;
 
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private Button _continueButton;
 
         private Button _cancelButton;
@@ -41,6 +48,8 @@ namespace Loom.ZombieBattleground
 
         private Hero _selectedHero;
 
+        private Deck _selectedDeck;
+
         private Canvas _backLayerCanvas;
 
         public GameObject Self { get; private set; }
@@ -56,6 +65,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _overlordAbilities = new List<OverlordAbilityItem>();
         }
@@ -117,6 +128,11 @@ namespace Loom.ZombieBattleground
                 {
                     _selectedSkills = (List<HeroSkill>)param[2];
                 }
+
+                if(param[3] != null)
+                {
+                    _selectedDeck = (Deck)param[3];
+                }
             }
 
 
@@ -127,7 +143,7 @@ namespace Loom.ZombieBattleground
 
             if (_singleSelectionMode)
             {
-                OverlordAbilityItem ability = _overlordAbilities.Find(x => x.Skill.Skill == (_isPrimarySkillSelected ?
+                OverlordAbilityItem ability = _overlordAbilities.Find(x => x.Skill.OverlordSkill == (_isPrimarySkillSelected ?
                  _selectedHero.PrimarySkill : _selectedHero.SecondarySkill));
 
                 ability = ability == null ? _overlordAbilities[0] : ability;
@@ -136,14 +152,16 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (_selectedSkills != null)
+                if (_selectedSkills == null)
                 {
-                    OverlordAbilityItem ability;
-                    foreach (HeroSkill skill in _selectedSkills)
-                    {
-                        ability = _overlordAbilities.Find(x => x.Skill.Skill == skill.Skill);
-                        OverlordAbilitySelkectedHandler(ability);
-                    }
+                    _selectedSkills = InternalTools.GetRandomElementsFromList(_selectedHero.Skills.FindAll(x => x.Unlocked), 2);
+                }
+
+                OverlordAbilityItem ability;
+                foreach (HeroSkill skill in _selectedSkills)
+                {
+                    ability = _overlordAbilities.Find(x => x.Skill.Skill == skill.Skill);
+                    OverlordAbilitySelkectedHandler(ability);
                 }
             }
         }
@@ -154,13 +172,53 @@ namespace Loom.ZombieBattleground
 
 
         #region button handlers
-        public void ContinueButtonOnClickHandler()
+        public async void ContinueButtonOnClickHandler()
         {
+            if (_singleSelectionMode)
+            {
+                OverlordAbilityItem ability = _overlordAbilities.Find(x => x.IsSelected);
+
+                if (_isPrimarySkillSelected)
+                {
+                    _selectedHero.PrimarySkill = ability.Skill.OverlordSkill;
+                }
+                else
+                {
+                    _selectedHero.SecondarySkill = ability.Skill.OverlordSkill;
+                }
+            }
+            else
+            {
+                List<OverlordAbilityItem> abilities = _overlordAbilities.FindAll(x => x.IsSelected);
+
+                if (abilities.Count > 1)
+                {
+                    _selectedHero.PrimarySkill = abilities[0].Skill.OverlordSkill;
+                    _selectedHero.SecondarySkill = abilities[1].Skill.OverlordSkill;
+                }
+                else if(abilities.Count == 1)
+                {
+                    _selectedHero.PrimarySkill = abilities[0].Skill.OverlordSkill;
+                }
+                else
+                {
+                    _selectedHero.PrimarySkill = Enumerators.OverlordSkill.NONE;
+                    _selectedHero.SecondarySkill = Enumerators.OverlordSkill.NONE;
+                }
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
+
+            if (_selectedDeck != null)
+            {
+                _selectedDeck.PrimarySkill = _selectedHero.PrimarySkill;
+                _selectedDeck.SecondarySkill = _selectedHero.SecondarySkill;
+
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _selectedDeck);
+            }
 
             PopupHiding?.Invoke();
-
-            _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }
 
         public void CancelButtonOnClickHandler()
@@ -227,19 +285,20 @@ namespace Loom.ZombieBattleground
                 }
 
                 ability.Select();
-
-
-                if (_isPrimarySkillSelected)
-                {
-                    _selectedHero.PrimarySkill = ability.Skill.Skill;
-                }
-                else
-                {
-                    _selectedHero.SecondarySkill = ability.Skill.Skill;
-                }
             }
             else
             {
+                if (ability.IsSelected)
+                {
+                    ability.Deselect();
+                }
+                else
+                {
+                    if (_overlordAbilities.FindAll(x => x.IsSelected).Count < 2)
+                    {
+                        ability.Select();
+                    }
+                }
             }
         }
 
@@ -287,6 +346,8 @@ namespace Loom.ZombieBattleground
                              _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_locked");
 
                 _selectButton.interactable = IsUnlocked;
+
+                _glowObj.SetActive(false);
             }
 
             public void Dispose()

@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,13 +26,16 @@ namespace Loom.ZombieBattleground.Data
 
         public List<DeckCardData> Cards;
 
-        public int PrimarySkill;
+        public Enumerators.OverlordSkill PrimarySkill;
 
-        public int SecondarySkill;
+        public Enumerators.OverlordSkill SecondarySkill;
 
         public Deck()
         {
             Cards = new List<DeckCardData>();
+
+            PrimarySkill = Enumerators.OverlordSkill.FIREBALL;
+            SecondarySkill = Enumerators.OverlordSkill.FIRE_BOLT;
         }
 
         public void AddCard(string cardId)

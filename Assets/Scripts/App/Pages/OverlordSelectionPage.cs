@@ -417,13 +417,15 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
+            _uiManager.GetPage<HordeEditingPage>().CurrentHero = _currentOverlordObject.SelfHero;
+
             _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
 
-            _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_currentOverlordObject.SelfHero);
             _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(new object[]
             {
                 false,
                 _currentOverlordObject.SelfHero,
+                null,
                 null
             });
         }
@@ -431,8 +433,6 @@ namespace Loom.ZombieBattleground
         private void AbilityPopupClosedEvent()
         {
             _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
-
-            _uiManager.GetPage<HordeEditingPage>().CurrentHeroId = _currentOverlordObject.SelfHero.HeroId;
 
             _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
         }

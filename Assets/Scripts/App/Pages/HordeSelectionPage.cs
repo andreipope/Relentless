@@ -239,14 +239,10 @@ namespace Loom.ZombieBattleground
 
             horde.Select();
 
-			//TODO remove once we complete the ability selection process. For now, just hard coding values like everywhere else for overlord abilities.
-            horde.SelfDeck.PrimarySkill = 0;
-            horde.SelfDeck.SecondarySkill = 1;
-            
             _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
-                 horde.SelfHero.Skills[horde.SelfDeck.PrimarySkill].IconPath);
+                 horde.SelfHero.GetSkill(horde.SelfDeck.PrimarySkill).IconPath);
             _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
-               horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].IconPath);
+               horde.SelfHero.GetSkill(horde.SelfDeck.SecondarySkill).IconPath);
 
             _selectedDeckId = (int) horde.SelfDeck.Id;
 
@@ -526,8 +522,8 @@ namespace Loom.ZombieBattleground
             if (deck != null)
             {
                 HeroSkill skill = skillIndex == 0 ?
-                    deck.SelfHero.GetSkill(deck.SelfHero.PrimarySkill) :
-                    deck.SelfHero.GetSkill(deck.SelfHero.SecondarySkill);
+                    deck.SelfHero.GetSkill(deck.SelfDeck.PrimarySkill) :
+                    deck.SelfHero.GetSkill(deck.SelfDeck.SecondarySkill);
 
                 _uiManager.DrawPopup<OverlordAbilityTooltipPopup>(skill);
             }
@@ -544,7 +540,8 @@ namespace Loom.ZombieBattleground
                 {
                     true,
                     _editingDeck.SelfHero,
-                    skillIndex  == 0 ? true : false
+                    skillIndex  == 0 ? true : false,
+                    _editingDeck.SelfDeck
                 });
             }
         }
@@ -579,7 +576,7 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = _selectedDeckId;
                 HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
-                _uiManager.GetPage<HordeEditingPage>().CurrentHeroId = deck.SelfHero.HeroId;
+                _uiManager.GetPage<HordeEditingPage>().CurrentHero = deck.SelfHero;
                 _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
             }
         }
@@ -607,7 +604,12 @@ namespace Loom.ZombieBattleground
 
         private void AbilityPopupClosedEvent()
         {
+            _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
 
+            if (_selfPage != null)
+            {
+                LoadDeckObjects();
+            }
         }
 
     }

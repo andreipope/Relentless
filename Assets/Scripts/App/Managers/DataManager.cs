@@ -296,8 +296,10 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try
                     {
-                        ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+                        // ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
+                        //  CachedHeroesData = JsonConvert.DeserializeObject<HeroesData>(heroesList.ToString());
+
+                        CachedHeroesData = DeserializeObjectFromAssets<HeroesData>(_cacheDataFileNames[type]);
 
                     }
                     catch (Exception e)

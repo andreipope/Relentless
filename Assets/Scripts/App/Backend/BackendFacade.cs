@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Cards =
                     {
                         cards
-                    }
+                    },
                 },
                 LastModificationTimestamp = lastModificationTimestamp,
                 Version = BackendEndpoint.DataVersion
