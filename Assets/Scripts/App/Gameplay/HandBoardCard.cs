@@ -129,6 +129,9 @@ public class HandBoardCard : OwnableBoardObject
         if (!StartedDrag)
             return;
 
+        if (_gameplayManager.IsGameEnded)
+            return;
+
         _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 
         _alreadySelected = false;
