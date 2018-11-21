@@ -2067,7 +2067,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/HealingTouchVFX"
+                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
                 }
               ]
             }
@@ -2084,6 +2084,85 @@
               "z": 0.6
             }
           }
+        },
+        {  
+          "id":"74",
+          "kind":"CREATURE",
+          "set":"LIFE",
+          "name":"PreZerver",
+          "description":"<b>Entry:</b> Restore 2 Def to a zombie",
+          "flavorText":"Need a hand?",
+          "picture":"PreZerver",
+          "rank":"MINION",
+          "type":"WALKER",
+          "damage":1,
+          "health":1,
+          "cost":2,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"HEAL",
+              "activityType":"ACTIVE",
+              "callType":"ENTRY",
+              "targetType":"PLAYER_CARD | OPPONENT_CARD",
+              "value":2,
+              "buffType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
+                }
+              ]
+            }
+          ]
+        },
+        {  
+          "id":"72",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Zed Kit",
+          "description":"Restore all Def to 2 random ally zombies",
+          "flavorText":"Mending broken limbs since 1888",
+          "picture":"zedkit",
+          "rank":"MINION",
+          "type":"WALKER",
+          "cost":4,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"HEAL",
+              "activityType":"PASSIVE",
+              "callType":"ENTRY",
+              "targetType":"PLAYER_CARD",
+              "value":99,
+              "buffType":"ENTRY",
+              "count":2,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": 45,
