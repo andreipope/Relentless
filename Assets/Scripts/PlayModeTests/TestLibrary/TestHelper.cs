@@ -1177,6 +1177,7 @@ public class TestHelper
                             yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null || WaitTimeIsUp ());
 
                             _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                            _boardArrowController.ResetCurrentBoardArrow ();
                         }
                         else
                         {
