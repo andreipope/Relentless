@@ -102,26 +102,18 @@ namespace Loom.ZombieBattleground
                         CreateVfx(targetPosition + offset, true, delayBeforeDestroy);
 
                         unitModel = boardObject as BoardUnitView;
-                        GameObject frameMaskObject = null;
+                       
+                        string objectName = "WalkerMask";
                         switch (unitModel.Model.InitialUnitType)
                         {
-                            case Enumerators.CardType.WALKER:
-                                frameMaskObject = VfxObject.transform.Find("WalkerMask").gameObject;
-                                break;
                             case Enumerators.CardType.FERAL:
-                                frameMaskObject = VfxObject.transform.Find("FeralMask").gameObject;
+                                objectName = "FeralMask";
                                 break;
                             case Enumerators.CardType.HEAVY:
-                                frameMaskObject = VfxObject.transform.Find("HeavyMask").gameObject;
-                                break;
-                            default:
+                                objectName = "HeavyMask";
                                 break;
                         }
-
-                        if (frameMaskObject != null)
-                        {
-                            frameMaskObject.SetActive(true);
-                        }
+                        VfxObject.transform.Find(objectName).gameObject.SetActive(true);
                     }
                 }
             }
