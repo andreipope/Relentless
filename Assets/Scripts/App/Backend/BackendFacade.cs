@@ -329,7 +329,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
                 RandomSeed = (long)Time.time,
-                Tags = pvpTags,
+                Tags = pvpTags != null ? pvpTags : new Google.Protobuf.Collections.RepeatedField<string> (),
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
