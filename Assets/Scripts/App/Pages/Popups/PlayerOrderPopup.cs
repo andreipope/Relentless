@@ -39,6 +39,9 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
+        private bool _startWithSecondPlayer;
+        private bool _startWithSecondOpponent;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -120,6 +123,38 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if(Self == null)
+                return;
+
+            if (_opponentCardBackObject.activeSelf)
+            {
+                _opponentCardFrontObject.SetActive(false);
+                _opponentFirstTurnObject.SetActive(false);
+                _opponentSecondTurnObject.SetActive(false);
+            }
+            else if(_opponentCardFrontObject.activeSelf && !_opponentFirstTurnObject.activeSelf && !_opponentSecondTurnObject.activeSelf)
+            {
+                _opponentCardBackObject.SetActive(false);
+                _opponentFirstTurnObject.transform.localScale = Vector3.one;
+                _opponentSecondTurnObject.transform.localScale = Vector3.one;
+                _opponentFirstTurnObject.SetActive(_startWithSecondPlayer);
+                _opponentSecondTurnObject.SetActive(!_startWithSecondPlayer);
+            }
+
+            if (_playerCardBackObject.activeSelf)
+            {
+                _playerCardFrontObject.SetActive(false);
+                _playerFirstTurnObject.SetActive(false);
+                _playerSecondTurnObject.SetActive(false);
+            }
+            else if(_playerCardFrontObject.activeSelf && !_playerFirstTurnObject.activeSelf && !_playerSecondTurnObject.activeSelf)
+            {
+                _playerCardBackObject.SetActive(false);
+                _playerFirstTurnObject.transform.localScale = Vector3.one;
+                _playerSecondTurnObject.transform.localScale = Vector3.one;
+                _playerFirstTurnObject.SetActive(_startWithSecondOpponent);
+                _playerSecondTurnObject.SetActive(!_startWithSecondOpponent);
+            }
         }
 
         private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
@@ -205,6 +240,23 @@ namespace Loom.ZombieBattleground
                 sequenceOpponent.AppendCallback(
                     () =>
                     {
+                        // make sure in the end, the card show in right order
+                        if (index == turnsCount - 1)
+                        {
+                            _opponentTurnRootObject.transform.localEulerAngles = Vector3.zero;
+                            _opponentCardBackObject.transform.localScale = Vector3.one;
+                            _opponentCardFrontObject.transform.localScale = Vector3.one;
+                            _opponentFirstTurnObject.transform.localScale = Vector3.one;
+                            _opponentSecondTurnObject.transform.localScale = Vector3.one;
+
+                            _opponentCardBackObject.SetActive(false);
+                            _opponentCardFrontObject.SetActive(true);
+
+                            _opponentFirstTurnObject.SetActive(startWithSecondOpponent);
+                            _opponentSecondTurnObject.SetActive(!startWithSecondOpponent);
+
+                        }
+
                         if (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f < 45 &&
                             Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45 ||
                             Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 &&
@@ -212,6 +264,8 @@ namespace Loom.ZombieBattleground
                         {
                             CheckOpponentObjects(ref isFrontViewOpponent, isLatestSecondOpponent, index,
                                 ref startWithSecondOpponent);
+
+                            _startWithSecondPlayer = startWithSecondOpponent;
                         }
                     });
             }
@@ -228,12 +282,28 @@ namespace Loom.ZombieBattleground
                 sequence.AppendCallback(
                     () =>
                     {
+                        if (index == turnsCount - 1)
+                        {
+                            _playerTurnRootObject.transform.localEulerAngles = Vector3.zero;
+                            _playerCardBackObject.transform.localScale = Vector3.one;
+                            _playerCardFrontObject.transform.localScale = Vector3.one;
+                            _playerFirstTurnObject.transform.localScale = Vector3.one;
+                            _playerSecondTurnObject.transform.localScale = Vector3.one;
+
+                            _playerCardBackObject.SetActive(false);
+                            _playerCardFrontObject.SetActive(true);
+
+                            _playerFirstTurnObject.SetActive(startWithSecondPlayer);
+                            _playerSecondTurnObject.SetActive(!startWithSecondPlayer);
+                        }
+
                         if (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45 &&
                             Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45 ||
                             Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 &&
                             Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
                         {
                             CheckPlayerObjects(ref isFrontViewPlayer, ref startWithSecondPlayer);
+                            _startWithSecondPlayer = startWithSecondPlayer;
                         }
 
                         if (index == turnsCount - 1)
