@@ -137,8 +137,8 @@ namespace Loom.ZombieBattleground
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
                     _backendDataControlMediator.UserDataModel.UserId,
                     deckId,
-                    _pvpManager.CustomGameModeAddress,
-                    _pvpManager.PvPTags
+                    _pvpManager.CustomGameModeAddress /* ,
+                    _pvpManager.PvPTags */
                 );
 
                 SetUIStateAsync(MatchMakingState.WaitingPeriod);
@@ -154,8 +154,8 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    _pvpManager.PvPTags
+                    _backendDataControlMediator.UserDataModel.UserId /* ,
+                    _pvpManager.PvPTags */
                 );
 
                 if (result.Match != null)
@@ -201,8 +201,8 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    _pvpManager.PvPTags
+                    _backendDataControlMediator.UserDataModel.UserId /* ,
+                    _pvpManager.PvPTags */
                 );
 
                 Debug.LogWarning(result.ToString());
