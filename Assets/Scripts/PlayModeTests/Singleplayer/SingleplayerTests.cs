@@ -374,7 +374,7 @@ public class SingleplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (900000)]
     public IEnumerator Test_C1_PlayWithDefaultHorde ()
     {
         _testHelper.SetTestName ("Solo - Gameplay");
@@ -412,7 +412,7 @@ public class SingleplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (900000)]
     public IEnumerator Test_C2_PlayWithRazuHorde ()
     {
         _testHelper.SetTestName ("Solo - Gameplay");
@@ -448,7 +448,7 @@ public class SingleplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (900000)]
     public IEnumerator Test_C3_PlayWithAnAbilityHorde ()
     {
         _testHelper.SetTestName ("Solo - Gameplay");

@@ -151,7 +151,7 @@ public class MultiplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (900000)]
     public IEnumerator Test_A4_MatchmakeAndPlay ()
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Play");
