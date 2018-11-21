@@ -725,6 +725,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DEVOUR_ZOMBIES_AND_COMBINE_STATS:
                     ability = new DevourZombiesAndCombineStatsAbility(cardKind, abilityData);
+                    abilityView = new DevourZombiesAndCombineStatsAbilityView((DevourZombiesAndCombineStatsAbility)ability);
                     break;
                 case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
                     ability = new DestroyUnitByTypeAbility(cardKind, abilityData);
@@ -840,6 +841,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.REANIMATE_UNIT:
                     ability = new ReanimateAbility(cardKind, abilityData);
+                    abilityView = new ReanimateAbilityView((ReanimateAbility)ability);
                     break;
                 case Enumerators.AbilityType.PRIORITY_ATTACK:
                     ability = new PriorityAttackAbility(cardKind, abilityData);
