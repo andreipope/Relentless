@@ -50,6 +50,9 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
+            if (Self == null)
+                return;
+
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
