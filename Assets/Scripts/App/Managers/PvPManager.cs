@@ -83,16 +83,6 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isMatchmakingInProgress)
-            {
-                _matchmakingTimeoutCounter += Time.deltaTime;
-                if (_matchmakingTimeoutCounter > Constants.MatchmakingTimeOut)
-                {
-                    await StopMatchmaking(MatchMetadata?.Id);
-                    MatchingFailed?.Invoke();
-                }
-            }
-
             if (_isWaitForTurnTimerStart)
             {
                 _waitForTurnTimer += Time.deltaTime;
