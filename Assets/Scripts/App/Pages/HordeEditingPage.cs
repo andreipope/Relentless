@@ -722,8 +722,10 @@ namespace Loom.ZombieBattleground
 
         public async void OnDoneButtonPressed()
         {
+            _buttonSave.interactable = false;
             if (string.IsNullOrWhiteSpace(_currentDeck.Name))
             {
+                _buttonSave.interactable = true;
                 OpenAlertDialog("Saving Horde with an empty name is not allowed.");
                 return;
             }
@@ -733,6 +735,7 @@ namespace Loom.ZombieBattleground
                 if (_currentDeckId != deck.Id &&
                     deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
                 {
+                    _buttonSave.interactable = true;
                     OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
                     return;
                 }
@@ -800,6 +803,8 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            } else {
+                _buttonSave.interactable = true;
             }
         }
 
