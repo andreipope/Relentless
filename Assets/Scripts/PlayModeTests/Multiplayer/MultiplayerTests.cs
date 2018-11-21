@@ -118,9 +118,11 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Quit");
 
-        _testHelper.SetPvPTags (new[] {
+        _testHelper.SetPvPTags (null);
+
+        /* _testHelper.SetPvPTags (new[] {
             "pvpTest"
-        });
+        }); */
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -168,9 +170,7 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Play");
 
-        _testHelper.SetPvPTags (new[] {
-            "pvpTest"
-        });
+        _testHelper.SetPvPTags (null);
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -362,9 +362,7 @@ public class MultiplayerPassiveTests
     {
         _testHelper.SetTestName ("PvP - Matchmake And Play");
 
-        _testHelper.SetPvPTags (new[] {
-            "pvpTest"
-        });
+        _testHelper.SetPvPTags (null);
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 

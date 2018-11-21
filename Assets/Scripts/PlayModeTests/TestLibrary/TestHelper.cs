@@ -669,6 +669,13 @@ public class TestHelper
 
     public void SetPvPTags (string[] tags)
     {
+        if (tags == null)
+        {
+            _pvpManager.PvPTags = null;
+
+            return;
+        }
+
         _pvpManager.PvPTags.Clear ();
 
         foreach (string tag in tags)
