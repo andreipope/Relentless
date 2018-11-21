@@ -329,9 +329,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
                 RandomSeed = (long)Time.time,
-                //TODO this was added by Serhii, matchmaking didn't work properly with it
-                //should look into reintegrating it, for now commented it out
-                //Tags = { },
+                Tags = { },
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
