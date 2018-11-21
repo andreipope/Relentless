@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
 
         private Vector3 _newCardPositionOfBoard;
 
+        private bool _isHoveringCardOfBoard;
+
         public List<WorkingCard> MulliganCards;
 
         public GameAction<object> PlayCardAction;
@@ -482,6 +484,7 @@ namespace Loom.ZombieBattleground
 
                     _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(toArrangeList);
                     _newCardPositionOfBoard = _fakeBoardCard.PositionOfBoard;
+                    _isHoveringCardOfBoard = true;
                 }
             }
         }        
@@ -556,12 +559,13 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
-                            if(_gameplayManager.CurrentPlayer.BoardCards.Count > 1)
+                            if(_isHoveringCardOfBoard)
                             {
                                 boardUnitView.PositionOfBoard = _newCardPositionOfBoard;
+                                _isHoveringCardOfBoard = false;
                             }
 
-                            boardUnitView.PlayArrivalAnimation();
+                            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
@@ -711,7 +715,7 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
-                    boardUnitView.PlayArrivalAnimation(playUniqueAnimation: false);
+                    boardUnitView.PlayArrivalAnimation();
 
                     if (player.IsLocalPlayer)
                     {
@@ -1136,7 +1140,7 @@ namespace Loom.ZombieBattleground
                 boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: false);
+            boardUnitView.PlayArrivalAnimation();
 
             return boardUnitView;
         }

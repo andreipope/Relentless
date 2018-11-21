@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
                 int random;
                 Transform unitTransform = null;
 
-                foreach (var unit in _units)
+                foreach (BoardUnitModel unit in _units)
                 {
                     if (unit == Ability.AbilityUnitOwner)
                         continue;

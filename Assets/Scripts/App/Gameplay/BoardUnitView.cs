@@ -453,7 +453,7 @@ namespace Loom.ZombieBattleground
             _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
         }
 
-        public void PlayArrivalAnimation(bool firstAppear = true, bool playUniqueAnimation = true)
+        public void PlayArrivalAnimation(bool firstAppear = true, bool playUniqueAnimation = false)
         {
             Action generalArrivalAnimationAction = () =>
             {
@@ -627,7 +627,7 @@ namespace Loom.ZombieBattleground
             _pictureSprite.transform.SetParent(GameObject.transform, false);
             _pictureSprite.gameObject.SetActive(false);
             Object.Destroy(_battleframeObject);
-            PlayArrivalAnimation(false, false);
+            PlayArrivalAnimation(false);
             _pictureSprite.gameObject.SetActive(true);
             _timerManager.AddTimer(
                 x =>

@@ -739,7 +739,7 @@ namespace Loom.ZombieBattleground
                                     waiterAction.ForceActionDone();
                                 }
                             });
-                        boardUnitViewElement.PlayArrivalAnimation();
+                        boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                         break;
                     }
                 case Enumerators.CardKind.SPELL:

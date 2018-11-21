@@ -220,7 +220,7 @@ namespace Loom.ZombieBattleground
                             Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count),
                             boardUnitViewElement);
 
-                        boardUnitViewElement.PlayArrivalAnimation();
+                        boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
 
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
 

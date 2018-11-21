@@ -1015,7 +1015,7 @@ namespace Loom.ZombieBattleground
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
 
-            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: false);
+            boardUnitView.PlayArrivalAnimation();
 
             return boardUnitView;
         }
