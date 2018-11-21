@@ -421,45 +421,47 @@ namespace Loom.ZombieBattleground.Protobuf {
             "Mg0uQ2FyZEluc3RhbmNlIkYKE1BsYXllckFjdGlvbk91dGNvbWUSEAoIcGxh",
             "eWVySWQYASABKAkSHQoJZ2FtZVN0YXRlGAIgASgLMgouR2FtZVN0YXRlIjUK",
             "D1N0YXJ0R2FtZUFjdGlvbhIiCgxwbGF5ZXJTdGF0ZXMYASADKAsyDC5QbGF5",
-            "ZXJTdGF0ZSJMCgRVbml0EhIKCmluc3RhbmNlSWQYASABKAUSMAoQYWZmZWN0",
-            "T2JqZWN0VHlwZRgCIAEoDjIWLkFmZmVjdE9iamVjdFR5cGUuRW51bSLMAwoR",
-            "T3ZlcmxvcmRTa2lsbEtpbmQitgMKBEVudW0SCAoETk9ORRAAEggKBFBVU0gQ",
-            "ARIICgREUkFXEAISDwoLV0lORF9TSElFTEQQAxIMCghMRVZJVEFURRAEEgsK",
-            "B1JFVFJFQVQQBRIKCgZIQVJERU4QBhIOCgpTVE9ORV9TS0lOEAcSCwoHRk9S",
-            "VElGWRAIEgsKB1BIQUxBTlgQCRIMCghGT1JUUkVTUxAKEg0KCUZJUkVfQk9M",
-            "VBALEgoKBlJBQklFUxAMEgwKCEZJUkVCQUxMEA0SDwoLTUFTU19SQUJJRVMQ",
-            "DhIRCg1NRVRFT1JfU0hPV0VSEA8SEQoNSEVBTElOR19UT1VDSBAQEggKBE1F",
-            "TkQQERINCglSRVNTVVJFQ1QQEhILCgdFTkhBTkNFEBMSDQoJUkVBTklNQVRF",
-            "EBQSDwoLUE9JU09OX0RBUlQQFRIPCgtUT1hJQ19QT1dFUhAWEgwKCEJSRUFL",
-            "T1VUEBcSCgoGSU5GRUNUEBgSDAoIRVBJREVNSUMQGRIKCgZGUkVFWkUQGhIM",
-            "CghJQ0VfQk9MVBAbEgwKCElDRV9XQUxMEBwSCwoHU0hBVFRFUhAdEgwKCEJM",
-            "SVpaQVJEEB4iOQoIU3RhdFR5cGUiLQoERW51bRINCglVTkRFRklORUQQABIK",
-            "CgZIRUFMVEgQARIKCgZEQU1BR0UQAiIxChFVbml0U3BlY2lhbFN0YXR1cyIc",
-            "CgRFbnVtEggKBE5PTkUQABIKCgZGUk9aRU4QASJKCgpHYW1lUmVwbGF5Eh4K",
-            "B2FjdGlvbnMYBSADKAsyDS5QbGF5ZXJBY3Rpb24SHAoGYmxvY2tzGAYgAygL",
-            "MgwuSGlzdG9yeURhdGEiKQoGUGxheWVyEgoKAmlkGAEgASgJEhMKBGRlY2sY",
-            "AiABKAsyBS5EZWNrImkKBFpvbmUiYQoEdHlwZRIICgRQTEFZEAASCAoEREVD",
-            "SxABEggKBEhBTkQQAhINCglHUkFWRVlBUkQQAxISCg5SRU1PVkVGUk9NR0FN",
-            "RRAEEgwKCFNFVEFTSURFEAUSCgoGU0VDUkVUEAYiJQoHSGlzdG9yeRIaCgRs",
-            "aXN0GAEgAygLMgwuSGlzdG9yeURhdGEijQIKC0hpc3RvcnlEYXRhEigKCmNy",
-            "ZWF0ZUdhbWUYASABKAsyEi5IaXN0b3J5Q3JlYXRlR2FtZUgAEiwKDGZ1bGxJ",
-            "bnN0YW5jZRgCIAEoCzIULkhpc3RvcnlGdWxsSW5zdGFuY2VIABIoCgxzaG93",
-            "SW5zdGFuY2UYAyABKAsyEC5IaXN0b3J5SW5zdGFuY2VIABIkCgxoaWRlSW5z",
-            "dGFuY2UYBCABKAsyDC5IaXN0b3J5SGlkZUgAEioKDmNoYW5nZUluc3RhbmNl",
-            "GAUgASgLMhAuSGlzdG9yeUluc3RhbmNlSAASIgoHZW5kR2FtZRgGIAEoCzIP",
-            "Lkhpc3RvcnlFbmRHYW1lSABCBgoEZGF0YSJiChFIaXN0b3J5Q3JlYXRlR2Ft",
-            "ZRIOCgZnYW1lSWQYASABKAMSGAoHcGxheWVycxgCIAMoCzIHLlBsYXllchIS",
-            "CgpyYW5kb21TZWVkGAMgASgDEg8KB3ZlcnNpb24YBCABKAkiSgoTSGlzdG9y",
-            "eUZ1bGxJbnN0YW5jZRISCgppbnN0YW5jZUlkGAEgASgFEg4KBmF0dGFjaxgC",
-            "IAEoBRIPCgdkZWZlbnNlGAMgASgFIlcKD0hpc3RvcnlJbnN0YW5jZRISCgpp",
-            "bnN0YW5jZUlkGAEgASgFEg0KBXZhbHVlGAIgASgFIiEKBmNoYW5nZRIKCgZB",
-            "dHRhY2sQABILCgdEZWZlbnNlEAEiNgoLSGlzdG9yeUhpZGUSEgoKaW5zdGFu",
-            "Y2VJZBgBIAEoBRITCgR6b25lGAIgASgLMgUuWm9uZSJDCg5IaXN0b3J5RW5k",
-            "R2FtZRIPCgdtYXRjaElkGAEgASgDEg4KBnVzZXJJZBgCIAEoCRIQCgh3aW5u",
-            "ZXJJZBgDIAEoCSonCgxHYW1lTW9kZVR5cGUSDQoJQ29tbXVuaXR5EAASCAoE",
-            "TG9vbRABKjgKGk92ZXJsb3JkU2tpbGxTZWxlY3Rpb25UeXBlEgsKB1ByaW1h",
-            "cnkQABINCglTZWNvbmRhcnkQAUIjqgIgTG9vbS5ab21iaWVCYXR0bGVncm91",
-            "bmQuUHJvdG9idWZiBnByb3RvMw=="));
+            "ZXJTdGF0ZSJrCgRVbml0EhIKCmluc3RhbmNlSWQYASABKAUSMAoQYWZmZWN0",
+            "T2JqZWN0VHlwZRgCIAEoDjIWLkFmZmVjdE9iamVjdFR5cGUuRW51bRIdCglQ",
+            "YXJhbWV0ZXIYAyABKAsyCi5QYXJhbWV0ZXIiPgoJUGFyYW1ldGVyEg4KBkF0",
+            "dGFjaxgBIAEoBRIPCgdEZWZlbnNlGAIgASgFEhAKCENhcmROYW1lGAMgASgJ",
+            "IswDChFPdmVybG9yZFNraWxsS2luZCK2AwoERW51bRIICgROT05FEAASCAoE",
+            "UFVTSBABEggKBERSQVcQAhIPCgtXSU5EX1NISUVMRBADEgwKCExFVklUQVRF",
+            "EAQSCwoHUkVUUkVBVBAFEgoKBkhBUkRFThAGEg4KClNUT05FX1NLSU4QBxIL",
+            "CgdGT1JUSUZZEAgSCwoHUEhBTEFOWBAJEgwKCEZPUlRSRVNTEAoSDQoJRklS",
+            "RV9CT0xUEAsSCgoGUkFCSUVTEAwSDAoIRklSRUJBTEwQDRIPCgtNQVNTX1JB",
+            "QklFUxAOEhEKDU1FVEVPUl9TSE9XRVIQDxIRCg1IRUFMSU5HX1RPVUNIEBAS",
+            "CAoETUVORBAREg0KCVJFU1NVUkVDVBASEgsKB0VOSEFOQ0UQExINCglSRUFO",
+            "SU1BVEUQFBIPCgtQT0lTT05fREFSVBAVEg8KC1RPWElDX1BPV0VSEBYSDAoI",
+            "QlJFQUtPVVQQFxIKCgZJTkZFQ1QQGBIMCghFUElERU1JQxAZEgoKBkZSRUVa",
+            "RRAaEgwKCElDRV9CT0xUEBsSDAoISUNFX1dBTEwQHBILCgdTSEFUVEVSEB0S",
+            "DAoIQkxJWlpBUkQQHiI5CghTdGF0VHlwZSItCgRFbnVtEg0KCVVOREVGSU5F",
+            "RBAAEgoKBkhFQUxUSBABEgoKBkRBTUFHRRACIjEKEVVuaXRTcGVjaWFsU3Rh",
+            "dHVzIhwKBEVudW0SCAoETk9ORRAAEgoKBkZST1pFThABIkoKCkdhbWVSZXBs",
+            "YXkSHgoHYWN0aW9ucxgFIAMoCzINLlBsYXllckFjdGlvbhIcCgZibG9ja3MY",
+            "BiADKAsyDC5IaXN0b3J5RGF0YSIpCgZQbGF5ZXISCgoCaWQYASABKAkSEwoE",
+            "ZGVjaxgCIAEoCzIFLkRlY2siaQoEWm9uZSJhCgR0eXBlEggKBFBMQVkQABII",
+            "CgRERUNLEAESCAoESEFORBACEg0KCUdSQVZFWUFSRBADEhIKDlJFTU9WRUZS",
+            "T01HQU1FEAQSDAoIU0VUQVNJREUQBRIKCgZTRUNSRVQQBiIlCgdIaXN0b3J5",
+            "EhoKBGxpc3QYASADKAsyDC5IaXN0b3J5RGF0YSKNAgoLSGlzdG9yeURhdGES",
+            "KAoKY3JlYXRlR2FtZRgBIAEoCzISLkhpc3RvcnlDcmVhdGVHYW1lSAASLAoM",
+            "ZnVsbEluc3RhbmNlGAIgASgLMhQuSGlzdG9yeUZ1bGxJbnN0YW5jZUgAEigK",
+            "DHNob3dJbnN0YW5jZRgDIAEoCzIQLkhpc3RvcnlJbnN0YW5jZUgAEiQKDGhp",
+            "ZGVJbnN0YW5jZRgEIAEoCzIMLkhpc3RvcnlIaWRlSAASKgoOY2hhbmdlSW5z",
+            "dGFuY2UYBSABKAsyEC5IaXN0b3J5SW5zdGFuY2VIABIiCgdlbmRHYW1lGAYg",
+            "ASgLMg8uSGlzdG9yeUVuZEdhbWVIAEIGCgRkYXRhImIKEUhpc3RvcnlDcmVh",
+            "dGVHYW1lEg4KBmdhbWVJZBgBIAEoAxIYCgdwbGF5ZXJzGAIgAygLMgcuUGxh",
+            "eWVyEhIKCnJhbmRvbVNlZWQYAyABKAMSDwoHdmVyc2lvbhgEIAEoCSJKChNI",
+            "aXN0b3J5RnVsbEluc3RhbmNlEhIKCmluc3RhbmNlSWQYASABKAUSDgoGYXR0",
+            "YWNrGAIgASgFEg8KB2RlZmVuc2UYAyABKAUiVwoPSGlzdG9yeUluc3RhbmNl",
+            "EhIKCmluc3RhbmNlSWQYASABKAUSDQoFdmFsdWUYAiABKAUiIQoGY2hhbmdl",
+            "EgoKBkF0dGFjaxAAEgsKB0RlZmVuc2UQASI2CgtIaXN0b3J5SGlkZRISCgpp",
+            "bnN0YW5jZUlkGAEgASgFEhMKBHpvbmUYAiABKAsyBS5ab25lIkMKDkhpc3Rv",
+            "cnlFbmRHYW1lEg8KB21hdGNoSWQYASABKAMSDgoGdXNlcklkGAIgASgJEhAK",
+            "CHdpbm5lcklkGAMgASgJKicKDEdhbWVNb2RlVHlwZRINCglDb21tdW5pdHkQ",
+            "ABIICgRMb29tEAEqOAoaT3ZlcmxvcmRTa2lsbFNlbGVjdGlvblR5cGUSCwoH",
+            "UHJpbWFyeRAAEg0KCVNlY29uZGFyeRABQiOqAiBMb29tLlpvbWJpZUJhdHRs",
+            "ZWdyb3VuZC5Qcm90b2J1ZmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Loom.Client.Protobuf.TypesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Loom.ZombieBattleground.Protobuf.GameModeType), typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillSelectionType), }, new pbr::GeneratedClrTypeInfo[] {
@@ -608,7 +610,8 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan), global::Loom.ZombieBattleground.Protobuf.PlayerActionMulligan.Parser, new[]{ "MulliganedCards" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Parser, new[]{ "PlayerId", "GameState" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.StartGameAction), global::Loom.ZombieBattleground.Protobuf.StartGameAction.Parser, new[]{ "PlayerStates" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Unit), global::Loom.ZombieBattleground.Protobuf.Unit.Parser, new[]{ "InstanceId", "AffectObjectType" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Unit), global::Loom.ZombieBattleground.Protobuf.Unit.Parser, new[]{ "InstanceId", "AffectObjectType", "Parameter" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.Parameter), global::Loom.ZombieBattleground.Protobuf.Parameter.Parser, new[]{ "Attack", "Defense", "CardName" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillKind), global::Loom.ZombieBattleground.Protobuf.OverlordSkillKind.Parser, null, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillKind.Types.Enum) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.StatType), global::Loom.ZombieBattleground.Protobuf.StatType.Parser, null, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.StatType.Types.Enum) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus), global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus.Parser, null, null, new[]{ typeof(global::Loom.ZombieBattleground.Protobuf.UnitSpecialStatus.Types.Enum) }, null),
@@ -26708,6 +26711,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public Unit(Unit other) : this() {
       instanceId_ = other.instanceId_;
       affectObjectType_ = other.affectObjectType_;
+      parameter_ = other.parameter_ != null ? other.parameter_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -26738,6 +26742,17 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "Parameter" field.</summary>
+    public const int ParameterFieldNumber = 3;
+    private global::Loom.ZombieBattleground.Protobuf.Parameter parameter_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Loom.ZombieBattleground.Protobuf.Parameter Parameter {
+      get { return parameter_; }
+      set {
+        parameter_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Unit);
@@ -26753,6 +26768,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (InstanceId != other.InstanceId) return false;
       if (AffectObjectType != other.AffectObjectType) return false;
+      if (!object.Equals(Parameter, other.Parameter)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -26761,6 +26777,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       int hash = 1;
       if (InstanceId != 0) hash ^= InstanceId.GetHashCode();
       if (AffectObjectType != 0) hash ^= AffectObjectType.GetHashCode();
+      if (parameter_ != null) hash ^= Parameter.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -26782,6 +26799,10 @@ namespace Loom.ZombieBattleground.Protobuf {
         output.WriteRawTag(16);
         output.WriteEnum((int) AffectObjectType);
       }
+      if (parameter_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Parameter);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -26795,6 +26816,9 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (AffectObjectType != 0) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AffectObjectType);
+      }
+      if (parameter_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Parameter);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -26812,6 +26836,12 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
       if (other.AffectObjectType != 0) {
         AffectObjectType = other.AffectObjectType;
+      }
+      if (other.parameter_ != null) {
+        if (parameter_ == null) {
+          parameter_ = new global::Loom.ZombieBattleground.Protobuf.Parameter();
+        }
+        Parameter.MergeFrom(other.Parameter);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -26832,6 +26862,198 @@ namespace Loom.ZombieBattleground.Protobuf {
             affectObjectType_ = (global::Loom.ZombieBattleground.Protobuf.AffectObjectType.Types.Enum) input.ReadEnum();
             break;
           }
+          case 26: {
+            if (parameter_ == null) {
+              parameter_ = new global::Loom.ZombieBattleground.Protobuf.Parameter();
+            }
+            input.ReadMessage(parameter_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class Parameter : pb::IMessage<Parameter> {
+    private static readonly pb::MessageParser<Parameter> _parser = new pb::MessageParser<Parameter>(() => new Parameter());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Parameter> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[146]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Parameter() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Parameter(Parameter other) : this() {
+      attack_ = other.attack_;
+      defense_ = other.defense_;
+      cardName_ = other.cardName_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Parameter Clone() {
+      return new Parameter(this);
+    }
+
+    /// <summary>Field number for the "Attack" field.</summary>
+    public const int AttackFieldNumber = 1;
+    private int attack_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Attack {
+      get { return attack_; }
+      set {
+        attack_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Defense" field.</summary>
+    public const int DefenseFieldNumber = 2;
+    private int defense_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Defense {
+      get { return defense_; }
+      set {
+        defense_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "CardName" field.</summary>
+    public const int CardNameFieldNumber = 3;
+    private string cardName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string CardName {
+      get { return cardName_; }
+      set {
+        cardName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Parameter);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Parameter other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Attack != other.Attack) return false;
+      if (Defense != other.Defense) return false;
+      if (CardName != other.CardName) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Attack != 0) hash ^= Attack.GetHashCode();
+      if (Defense != 0) hash ^= Defense.GetHashCode();
+      if (CardName.Length != 0) hash ^= CardName.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Attack != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Attack);
+      }
+      if (Defense != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Defense);
+      }
+      if (CardName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(CardName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Attack != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Attack);
+      }
+      if (Defense != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Defense);
+      }
+      if (CardName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CardName);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Parameter other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Attack != 0) {
+        Attack = other.Attack;
+      }
+      if (other.Defense != 0) {
+        Defense = other.Defense;
+      }
+      if (other.CardName.Length != 0) {
+        CardName = other.CardName;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Attack = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Defense = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            CardName = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -26846,7 +27068,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[146]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[147]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -27006,7 +27228,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[147]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[148]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -27120,7 +27342,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[148]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[149]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -27233,7 +27455,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[149]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[150]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -27374,7 +27596,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[150]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[151]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -27540,7 +27762,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[151]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[152]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -27658,7 +27880,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[152]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[153]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -27779,7 +28001,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[153]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[154]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -28139,7 +28361,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[154]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[155]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -28344,7 +28566,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[155]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[156]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -28529,7 +28751,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[156]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[157]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -28698,7 +28920,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[157]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[158]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -28861,7 +29083,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[158]; }
+      get { return global::Loom.ZombieBattleground.Protobuf.ZbReflection.Descriptor.MessageTypes[159]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
