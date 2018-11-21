@@ -370,8 +370,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             FindMatchRequest request = new FindMatchRequest
             {
-                UserId = userId /* ,
-                Tags = pvpTags */
+                UserId = userId,
+                Tags = pvpTags
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);

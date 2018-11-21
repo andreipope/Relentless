@@ -16233,11 +16233,15 @@ namespace Loom.ZombieBattleground.Protobuf
         public const int TagsFieldNumber = 6;
         private static readonly pb::FieldCodec<string> _repeated_tags_codec
             = pb::FieldCodec.ForString (50);
-        private readonly pbc::RepeatedField<string> tags_ = new pbc::RepeatedField<string> ();
+        private pbc::RepeatedField<string> tags_ = new pbc::RepeatedField<string> ();
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public pbc::RepeatedField<string> Tags
         {
             get { return tags_; }
+            set
+            {
+                tags_ = value;
+            }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16914,11 +16918,15 @@ namespace Loom.ZombieBattleground.Protobuf
         public const int TagsFieldNumber = 2;
         private static readonly pb::FieldCodec<string> _repeated_tags_codec
             = pb::FieldCodec.ForString (18);
-        private readonly pbc::RepeatedField<string> tags_ = new pbc::RepeatedField<string> ();
+        private pbc::RepeatedField<string> tags_ = new pbc::RepeatedField<string> ();
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public pbc::RepeatedField<string> Tags
         {
             get { return tags_; }
+            set
+            {
+                tags_ = value;
+            }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
