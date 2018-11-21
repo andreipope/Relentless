@@ -2294,6 +2294,47 @@ public class TestHelper
         "Valash"
     };
 
+    public IEnumerator AddValashHorde ()
+    {
+        yield return ClickGenericButton ("Image_BaackgroundGeneral");
+
+        yield return AssertCurrentPageName ("OverlordSelectionPage");
+
+        yield return PickOverlord ("Valash", false);
+
+        yield return PickOverlordAbility (0);
+
+        yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
+
+        yield return AssertCurrentPageName ("HordeEditingPage");
+
+        SetupArmyCards ();
+
+        yield return SetDeckTitle ("Valash");
+
+        yield return AddCardToHorde ("Life", "Azuraz", 4);
+
+        yield return AddCardToHorde ("Life", "Bloomer", 4);
+
+        yield return AddCardToHorde ("Life", "Zap", 4);
+
+        yield return AddCardToHorde ("Life", "Amber", 4);
+
+        yield return AddCardToHorde ("Life", "Bark", 4);
+
+        yield return AddCardToHorde ("Life", "Puffer", 2);
+
+        yield return AddCardToHorde ("Life", "Sapper", 2);
+
+        yield return AddCardToHorde ("Life", "Keeper", 2);
+
+        yield return AddCardToHorde ("Life", "Cactuz", 2);
+
+        yield return AddCardToHorde ("Life", "EverlaZting", 2);
+
+        yield return ClickGenericButton ("Button_Save");
+    }
+
     public IEnumerator AddKalileHorde ()
     {
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
@@ -2494,9 +2535,13 @@ public class TestHelper
 
     public IEnumerator AddCardToHorde (string elementName, string cardName, int count = 1)
     {
-        _pagesChecked = 0;
+        Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
+            x.Name == cardName);
 
-        yield return PickElement (elementName);
+        if (armyCard == null)
+        {
+            yield return PickElement (elementName);
+        }
 
         yield return AddCardToHorde2 (cardName, count);
     }

@@ -351,7 +351,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test_B4_CreateAnAbilityHorde ()
+    public IEnumerator Test_B4_CreateKalileHorde ()
     {
         _testHelper.SetTestName ("Solo - Create a Horde and save");
 
@@ -367,6 +367,30 @@ public class SingleplayerTests
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         yield return _testHelper.AddKalileHorde ();
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return null;
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_B5_CreateValashHorde ()
+    {
+        _testHelper.SetTestName ("Solo - Create a Horde and save");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.AddValashHorde ();
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
@@ -449,7 +473,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (900000)]
-    public IEnumerator Test_C3_PlayWithAnAbilityHorde ()
+    public IEnumerator Test_C3_PlayWithKalileHorde ()
     {
         _testHelper.SetTestName ("Solo - Gameplay");
 
@@ -467,6 +491,42 @@ public class SingleplayerTests
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         yield return _testHelper.SelectAHorde ("Kalile");
+
+        _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        yield return SoloGameplay ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        #endregion
+    }
+
+    [UnityTest]
+    [Timeout (900000)]
+    public IEnumerator Test_C4_PlayWithValashHorde ()
+    {
+        _testHelper.SetTestName ("Solo - Gameplay");
+
+        #region Solo Gameplay
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.SelectAHorde ("Valash");
 
         _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
 
