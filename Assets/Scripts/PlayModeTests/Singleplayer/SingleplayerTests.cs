@@ -586,6 +586,10 @@ public class SingleplayerTests
             yield return _testHelper.ClickGenericButton ("Button_Continue");
 
             yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+            yield return _testHelper.LetsThink ();
+            yield return _testHelper.LetsThink ();
+            yield return _testHelper.LetsThink ();
         }
     }
 

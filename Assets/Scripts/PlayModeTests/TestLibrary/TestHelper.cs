@@ -233,9 +233,8 @@ public class TestHelper
 
                 break;
             case "MainMenuPage":
-                yield break;
 
-                break;
+                yield break;
             default:
                 throw new ArgumentException ("Unhandled page: " + actualPageName);
         }
@@ -1171,52 +1170,54 @@ public class TestHelper
                     if (needTargetForAbility)
                     {
                         yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null);
-                        if (_boardArrowController.CurrentBoardArrow != null)
+
+                        if (target == null)
                         {
-                            _boardArrowController.CurrentBoardArrow.Dispose ();
+                            WaitStart (3);
+                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null || WaitTimeIsUp ());
+
+                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
                         }
-                        if (_abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null)
+                        else
                         {
-                            if (target != null)
+                            WaitStart (3);
+                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null || WaitTimeIsUp ());
+
+                            if (_abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null)
                             {
-                                _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.SetTarget (target);
+                                Debug.LogWarning ("Used the TargettingArrow");
 
-                                Debug.LogWarning ("TargettingArrow set");
-                            }
-                            else
-                            {
-                                _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.Dispose ();
+                                switch (target)
+                                {
+                                    case BoardUnitModel unit:
+                                        Debug.LogWarning ("BoardUnitModel");
 
-                                Debug.LogWarning ("TargettingArrow disposed");
+                                        _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
+                                        _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnCardSelected (_battlegroundController.GetBoardUnitViewByModel (unit));
+
+                                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                        break;
+                                    case Loom.ZombieBattleground.Player player:
+                                        Debug.LogWarning ("Player");
+
+                                        _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
+                                        _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnPlayerSelected (player);
+
+                                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                        break;
+                                    case null:
+                                        Debug.LogWarning ("Null");
+
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException (nameof (target), target, null);
+                                }
+
+                                // _boardArrowController.ResetCurrentBoardArrow ();
                             }
                         }
 
-                        switch (target)
-                        {
-                            case BoardUnitModel unit:
-                                Debug.LogWarning ("BoardUnitModel");
-
-                                _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
-                                break;
-                            case Loom.ZombieBattleground.Player player:
-                                Debug.LogWarning ("Player");
-
-                                _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
-                                break;
-                            case null:
-                                Debug.LogWarning ("Null");
-
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException (nameof (target), target, null);
-                        }
-
-                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction (true);
-
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer.BoardCards);
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
-
-                        _abilitiesController.ResolveAllAbilitiesOnUnit (target, inputDragStatus: false);
+                        yield return LetsThink ();
 
                         yield return null;
                     }
@@ -2310,7 +2311,7 @@ public class TestHelper
     #region Horde Creation / Editing
 
     private CollectionData _collectionData;
-    private List<Loom.ZombieBattleground.Data.Card> _createdArmyCards, _createdHordeCards;
+    private List<Loom.ZombieBattleground.Data.Card> _createdArmyCards;
 
     private List<string> _overlordNames = new List<string> () {
         "Brakuus",
@@ -2552,8 +2553,6 @@ public class TestHelper
         yield return LetsThink ();
     }
 
-    private int _pagesChecked;
-
     public IEnumerator AddCardToHorde (string elementName, string cardName, int count = 1)
     {
         Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
@@ -2730,8 +2729,6 @@ public class TestHelper
 
     #endregion
 
-    private string _expectedOverlordName, _actualOverlordName;
-
     public void RecordOverlordName (int index)
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
@@ -2835,6 +2832,21 @@ public class TestHelper
             yield return ClickGenericButton ("Button_OK");
         else
             yield return ClickGenericButton ("Button_GotIt");
+    }
+
+    private float _waitStartTime;
+    private float _waitAmount;
+
+    private void WaitStart (int waitAmount)
+    {
+        _waitStartTime = Time.unscaledTime;
+
+        _waitAmount = waitAmount;
+    }
+
+    private bool WaitTimeIsUp ()
+    {
+        return Time.unscaledTime > _waitStartTime + _waitAmount;
     }
 
     #endregion
