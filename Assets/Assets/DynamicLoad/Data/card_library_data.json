@@ -2176,6 +2176,7 @@
           "health": 6,
           "type": "WALKER",
           "rank": "GENERAL",
+          "uniqueAnimationType": "ShammannArrival",
           "abilities": [
             {
               "type": "SUMMON",
@@ -2212,13 +2213,20 @@
           "health": 0,
           "type": "WALKER",
           "rank": "GENERAL",
+          "uniqueAnimationType": "ZVirusArrival",
           "abilities": [
             {
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
               "callType": "ENTRY",
               "value": -1,
-              "buffType": "DEVOUR"
+              "buffType": "DEVOUR",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ZVirus_Ability"
+                }
+              ]
             }
           ],
           "cardViewInfo": {

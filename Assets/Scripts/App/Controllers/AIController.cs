@@ -704,8 +704,6 @@ namespace Loom.ZombieBattleground
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
 
-                        boardUnitViewElement.PlayArrivalAnimation();
-
                         _gameplayManager.GetController<RanksController>().UpdateRanksByElements(card.Owner.BoardCards, card, ranksBuffAction);
 
                         _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
@@ -741,6 +739,7 @@ namespace Loom.ZombieBattleground
                                     waiterAction.ForceActionDone();
                                 }
                             });
+                        boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                         break;
                     }
                 case Enumerators.CardKind.SPELL:
