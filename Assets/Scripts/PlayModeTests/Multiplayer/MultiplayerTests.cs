@@ -34,7 +34,7 @@ public class MultiplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test1_MatchmakingCancel ()
+    public IEnumerator Test_A1_MatchmakingCancel ()
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
 
@@ -59,6 +59,8 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
+        yield return _testHelper.LetsThink ();
+
         yield return _testHelper.ClickGenericButton ("Button_Cancel");
 
         yield return _testHelper.LetsThink ();
@@ -66,7 +68,7 @@ public class MultiplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test2_MatchmakingTimeout ()
+    public IEnumerator Test_A2_MatchmakingTimeout ()
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
 
@@ -100,9 +102,9 @@ public class MultiplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test3_MatchmakeAndQuit ()
+    public IEnumerator Test_A3_MatchmakeAndQuit ()
     {
-        _testHelper.SetTestName ("Tutorial - Matchmaking And Quit");
+        _testHelper.SetTestName ("PvP - Matchmaking And Quit");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -150,9 +152,9 @@ public class MultiplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test4_MatchmakeAndPlay ()
+    public IEnumerator Test_A4_MatchmakeAndPlay ()
     {
-        _testHelper.SetTestName ("Tutorial - Matchmaking And Play");
+        _testHelper.SetTestName ("PvP - Matchmaking And Play");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -202,7 +204,82 @@ public class MultiplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test5_CreateAHordeAndSave ()
+    public IEnumerator Test_A5_MatchmakingCancelAndMatchmake ()
+    {
+        _testHelper.SetTestName ("PvP - Create a Horde and save");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
+
+        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_CasualType");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        int selectedHordeIndex = 1;
+
+        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
+
+        #region Matchmaking Cancel
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTestNoOpponentCancel"
+        });
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Cancel");
+
+        #endregion
+
+        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
+
+        #region Matchmake and Quit
+
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+
+        _testHelper.AssertOverlordName ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Settings");
+
+        yield return _testHelper.LetsThink ();
+
+        yield return _testHelper.ClickGenericButton ("Button_QuitToMainMenu");
+
+        yield return _testHelper.LetsThink ();
+
+        yield return _testHelper.RespondToYesNoOverlay (true);
+
+        yield return _testHelper.LetsThink ();
+
+        #endregion
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_B1_CreateAHordeAndSave ()
     {
         _testHelper.SetTestName ("PvP - Create a Horde and save");
 

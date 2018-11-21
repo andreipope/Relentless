@@ -456,11 +456,10 @@ public class TestHelper
             }
             else
             {
-                Assert.AreEqual (
-                    canvas1GameObject.transform.GetChild (1).name.Split ('(')[0],
-                    expectedPageName);
+                if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == expectedPageName)
+                    return true;
 
-                return true;
+                return false;
             }
         }
 

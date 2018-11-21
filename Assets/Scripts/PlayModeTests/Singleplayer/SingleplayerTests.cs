@@ -210,7 +210,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test1_TutorialNonSkip ()
+    public IEnumerator Test_A1_TutorialNonSkip ()
     {
         _testHelper.SetTestName ("Solo - Tutorial Non-Skip");
 
@@ -242,7 +242,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test2_TutorialSkip ()
+    public IEnumerator Test_A2_TutorialSkip ()
     {
         _testHelper.SetTestName ("Solo - Tutorial Skip");
 
@@ -266,7 +266,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test3_SoloGameplay ()
+    public IEnumerator Test_C1_PlayWithDefaultHorde ()
     {
         _testHelper.SetTestName ("Solo - Gameplay");
 
@@ -304,7 +304,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test4_CreateAHordeAndCancel ()
+    public IEnumerator Test_B1_CreateAHordeAndCancel ()
     {
         _testHelper.SetTestName ("Solo - Create a Horde and cancel");
 
@@ -341,7 +341,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test5_RemoveAllHordesExceptFirst ()
+    public IEnumerator Test_B2_RemoveAllHordesExceptFirst ()
     {
         _testHelper.SetTestName ("Solo - Remove all Hordes except first");
 
@@ -365,7 +365,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test6_CreateARazuHordeAndSave ()
+    public IEnumerator Test_B3_CreateARazuHordeAndSave ()
     {
         _testHelper.SetTestName ("Solo - Create a Horde and save");
 
@@ -389,7 +389,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test7_CreateAnAbilityHorde ()
+    public IEnumerator Test_B4_CreateAnAbilityHorde ()
     {
         _testHelper.SetTestName ("Solo - Create a Horde and save");
 
@@ -413,7 +413,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test8_PlayWithAnAbilityHorde ()
+    public IEnumerator Test_C2_PlayWithAnAbilityHorde ()
     {
         _testHelper.SetTestName ("Solo - Gameplay");
 
