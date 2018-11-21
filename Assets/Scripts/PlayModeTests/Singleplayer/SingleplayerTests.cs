@@ -418,7 +418,7 @@ public class SingleplayerTests
 
         int selectedHordeIndex = 0;
 
-        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
 
@@ -454,7 +454,7 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        yield return _testHelper.SelectAHorde ("Razu");
+        yield return _testHelper.SelectAHordeByName ("Razu");
 
         _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
 
@@ -490,7 +490,7 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        yield return _testHelper.SelectAHorde ("Kalile");
+        yield return _testHelper.SelectAHordeByName ("Kalile");
 
         _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
 
@@ -526,7 +526,7 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        yield return _testHelper.SelectAHorde ("Valash");
+        yield return _testHelper.SelectAHordeByName ("Valash");
 
         _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
 

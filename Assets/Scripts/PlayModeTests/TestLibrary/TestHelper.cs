@@ -2622,7 +2622,7 @@ public class TestHelper
         private set;
     }
 
-    public IEnumerator SelectAHorde (string hordeName)
+    public IEnumerator SelectAHordeByName (string hordeName)
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
@@ -2651,7 +2651,7 @@ public class TestHelper
         yield return null;
     }
 
-    public IEnumerator SelectAHorde (int index)
+    public IEnumerator SelectAHordeByIndex (int index)
     {
         if (index + 1 >= GetNumberOfHordes ())
         {
@@ -2667,7 +2667,7 @@ public class TestHelper
 
     public IEnumerator RemoveAHorde (int index)
     {
-        yield return SelectAHorde (index);
+        yield return SelectAHordeByIndex (index);
 
         GameObject.Find ("Button_Delete").GetComponent<Button> ().onClick.Invoke ();
 

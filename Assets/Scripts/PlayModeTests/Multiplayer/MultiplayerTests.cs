@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -127,7 +127,7 @@ public class MultiplayerTests
 
         int selectedHordeIndex = 1;
 
-        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
 
@@ -177,7 +177,7 @@ public class MultiplayerTests
 
         int selectedHordeIndex = 1;
 
-        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
 
@@ -223,9 +223,9 @@ public class MultiplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        int selectedHordeIndex = 1;
+        int selectedHordeIndex = 0;
 
-        yield return _testHelper.SelectAHorde (selectedHordeIndex);
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
 
