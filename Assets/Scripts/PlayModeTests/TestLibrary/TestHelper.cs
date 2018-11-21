@@ -22,8 +22,8 @@ public class TestHelper
     }
 
     private List<string> _testerKeys = new List<string> {
-        "f12249ff43e4",
-        "f32ef9a2cfcb"
+        "1b84dd3a623c",
+        "1e0575c58ee5"
     };
 
     private TesterType _testerType = TesterType.Active;
@@ -2360,27 +2360,21 @@ public class TestHelper
 
         yield return SetDeckTitle ("Kalile");
 
-        yield return AddCardToHorde ("Air", "Wheezy", 4);
+        yield return AddCardToHorde ("Air", "Whizpar", 4);
 
-        yield return AddCardToHorde ("Air", "Pushhh", 2);
+        yield return AddCardToHorde ("Air", "Soothsayer", 4);
 
-        yield return AddCardToHorde ("Air", "Ztormcaller", 2);
+        yield return AddCardToHorde ("Air", "FumeZ", 4);
 
-        yield return AddCardToHorde ("Water", "Blizzard", 2);
+        yield return AddCardToHorde ("Air", "Breezee", 4);
 
-        yield return AddCardToHorde ("Water", "Jetter", 2);
+        yield return AddCardToHorde ("Air", "Banshee", 4);
 
-        yield return AddCardToHorde ("Water", "Zhatterer", 4);
+        yield return AddCardToHorde ("Air", "Zhocker", 4);
 
-        yield return AddCardToHorde ("Fire", "BlaZter", 4);
+        yield return AddCardToHorde ("Air", "Whiffer", 4);
 
-        yield return AddCardToHorde ("Fire", "Cynderman", 2);
-
-        yield return AddCardToHorde ("Life", "PreZerver", 4);
-
-        yield return AddCardToHorde ("Life", "Shroom", 2);
-
-        yield return AddCardToHorde ("Life", "Zpitter", 2);
+        yield return AddCardToHorde ("Air", "Bouncer", 2);
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -2413,13 +2407,13 @@ public class TestHelper
 
         yield return AddCardToHorde ("Fire", "BurZt", 4);
 
-        yield return AddCardToHorde ("Fire", "BlaZter", 4);
+        yield return AddCardToHorde ("Fire", "Firecaller", 4);
 
         yield return AddCardToHorde ("Fire", "Burrrnn", 2);
 
-        yield return AddCardToHorde ("Fire", "Cynderman", 2);
-
         yield return AddCardToHorde ("Fire", "Werezomb", 2);
+
+        yield return AddCardToHorde ("Fire", "Modo", 2);
 
         yield return ClickGenericButton ("Button_Save");
     }
