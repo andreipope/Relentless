@@ -216,6 +216,9 @@ public class SingleplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         #region Tutorial Non-Skip
@@ -271,6 +274,9 @@ public class SingleplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         yield return _testHelper.MainMenuTransition ("Button_SoloMode");
@@ -303,6 +309,9 @@ public class SingleplayerTests
         _testHelper.SetTestName ("Solo - Create a Horde and cancel");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
@@ -338,6 +347,9 @@ public class SingleplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         yield return _testHelper.MainMenuTransition ("Button_SoloMode");
@@ -359,6 +371,9 @@ public class SingleplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         yield return _testHelper.MainMenuTransition ("Button_SoloMode");
@@ -379,6 +394,9 @@ public class SingleplayerTests
         _testHelper.SetTestName ("Solo - Create a Horde and save");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
@@ -402,6 +420,9 @@ public class SingleplayerTests
         #region Solo Gameplay
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 

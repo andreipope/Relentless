@@ -40,6 +40,9 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         yield return _testHelper.MainMenuTransition ("Button_PvPMode");
@@ -69,6 +72,9 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         yield return _testHelper.MainMenuTransition ("Button_PvPMode");
@@ -87,7 +93,7 @@ public class MultiplayerTests
 
         yield return _testHelper.AssertPvPStartedOrMatchmakingFailed (
                 PlayAMatch (),
-                PressOK ());
+                _testHelper.PressOK ());
 
         yield return _testHelper.LetsThink ();
     }
@@ -99,6 +105,9 @@ public class MultiplayerTests
         _testHelper.SetTestName ("Tutorial - Matchmaking And Quit");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
@@ -146,6 +155,9 @@ public class MultiplayerTests
         _testHelper.SetTestName ("Tutorial - Matchmaking And Play");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
@@ -196,6 +208,9 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         yield return _testHelper.MainMenuTransition ("Button_PvPMode");
@@ -230,11 +245,6 @@ public class MultiplayerTests
         yield return _testHelper.ClickGenericButton ("Button_Continue");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-    }
-
-    private IEnumerator PressOK ()
-    {
-        yield return _testHelper.ClickGenericButton ("Button_GotIt");
     }
 }
 
@@ -276,6 +286,9 @@ public class MultiplayerPassiveTests
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
         yield return _testHelper.MainMenuTransition ("Button_PvPMode");
@@ -296,7 +309,7 @@ public class MultiplayerPassiveTests
 
             yield return _testHelper.AssertPvPStartedOrMatchmakingFailed (
                 PlayAMatch (),
-                PressOK ());
+                _testHelper.PressOK ());
 
             yield return _testHelper.LetsThink ();
         }
@@ -319,13 +332,5 @@ public class MultiplayerPassiveTests
         yield return _testHelper.ClickGenericButton ("Button_Continue");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-    }
-
-    private IEnumerator PressOK ()
-    {
-        if (GameObject.Find ("Button_OK") != null)
-            yield return _testHelper.ClickGenericButton ("Button_OK");
-        else
-            yield return _testHelper.ClickGenericButton ("Button_GotIt");
     }
 }

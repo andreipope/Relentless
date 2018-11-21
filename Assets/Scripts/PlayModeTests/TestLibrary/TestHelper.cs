@@ -22,8 +22,8 @@ public class TestHelper
     }
 
     private List<string> _testerKeys = new List<string> {
-        "8adb560cd844",
-        "898c4798b9f4"
+        "f12249ff43e4",
+        "f32ef9a2cfcb"
     };
 
     private TesterType _testerType = TesterType.Active;
@@ -2706,5 +2706,13 @@ public class TestHelper
     {
         Expected,
         Actual
+    }
+
+    public IEnumerator PressOK ()
+    {
+        if (GameObject.Find ("Button_OK") != null)
+            yield return ClickGenericButton ("Button_OK");
+        else
+            yield return ClickGenericButton ("Button_GotIt");
     }
 }
