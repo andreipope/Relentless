@@ -62,6 +62,8 @@ namespace Loom.ZombieBattleground
 
         private readonly AnimationsController _animationsController;
 
+        private readonly ActionsQueueController _actionsQueueController;
+
         private readonly GameObject _avatarObject;
 
         private readonly Animator _overlordFactionFrameAnimator;
@@ -110,6 +112,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             CardsInDeck = new List<WorkingCard>();
             CardsInGraveyard = new List<WorkingCard>();
@@ -634,9 +637,16 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
                 if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
                 {
-                    _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
-                                                (int)_pvpManager.MatchMetadata.Id,
-                                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
+                    _actionsQueueController.ClearActions();
+
+                    _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                    {
+                        _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
+                                                    (int)_pvpManager.MatchMetadata.Id,
+                                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
+
+                        completeCallback?.Invoke();
+                    });
                 }
             }
             else
