@@ -38,6 +38,10 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
 
+        _testHelper.SetPvPTags (new[] {
+            "pvpTestNoOpponentCancel"
+        });
+
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -52,10 +56,6 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_CasualType");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        _testHelper.SetPvPTags (new[] {
-            "pvpTestNoOpponentCancel"
-        });
 
         int selectedHordeIndex = 0;
 
@@ -78,6 +78,10 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
 
+        _testHelper.SetPvPTags (new[] {
+            "pvpTestNoOpponentTimeout"
+        });
+
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -92,10 +96,6 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_CasualType");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        _testHelper.SetPvPTags (new[] {
-            "pvpTestNoOpponentTimeout"
-        });
 
         int selectedHordeIndex = 0;
 
@@ -118,6 +118,10 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Quit");
 
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
+
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -132,10 +136,6 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_CasualType");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        _testHelper.SetPvPTags (new[] {
-            "pvpTest"
-        });
 
         int selectedHordeIndex = 0;
 
@@ -168,6 +168,10 @@ public class MultiplayerTests
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Play");
 
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
+
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -182,10 +186,6 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_CasualType");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        _testHelper.SetPvPTags (new[] {
-            "pvpTest"
-        });
 
         int selectedHordeIndex = 0;
 
@@ -362,6 +362,10 @@ public class MultiplayerPassiveTests
     {
         _testHelper.SetTestName ("PvP - Matchmake And Play");
 
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
+
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
@@ -376,10 +380,6 @@ public class MultiplayerPassiveTests
         yield return _testHelper.MainMenuTransition ("Button_CasualType");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        _testHelper.SetPvPTags (new[] {
-            "pvpTest"
-        });
 
         int selectedHordeIndex = 0;
 
