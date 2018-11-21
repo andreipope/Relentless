@@ -1170,6 +1170,21 @@ public class TestHelper
                         {
                             _boardArrowController.CurrentBoardArrow.Dispose ();
                         }
+                        if (_abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null)
+                        {
+                            if (target != null)
+                            {
+                                _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.SetTarget (target);
+
+                                Debug.LogWarning ("TargettingArrow set");
+                            }
+                            else
+                            {
+                                _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.Dispose ();
+
+                                Debug.LogWarning ("TargettingArrow disposed");
+                            }
+                        }
 
                         switch (target)
                         {
