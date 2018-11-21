@@ -6,22 +6,22 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class HealTargetAbilityView : AbilityViewBase<HealTargetAbility>
+    public class RestoreDefRandomlySplitAbilityView : AbilityViewBase<RestoreDefRandomlySplitAbility>
     {
         private BattlegroundController _battlegroundController;
 
         private string _cardName;
 
-        private List<BoardObject> _targets;
+        private List<object> _targets;
 
-        public HealTargetAbilityView(HealTargetAbility ability) : base(ability)
+        public RestoreDefRandomlySplitAbilityView(RestoreDefRandomlySplitAbility ability) : base(ability)
         {
             _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targets = info as List<BoardObject>;
+            _targets = info as List<object>;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
@@ -82,30 +82,29 @@ namespace Loom.ZombieBattleground
                 }
 
                 bool isUnit = false;
-                BoardUnitModel unitModel = null;
-
-                foreach (BoardObject boardObject in _targets)
+                BoardUnitView unitModel = null;
+                foreach (object boardObject in _targets)
                 {
                     switch (boardObject)
                     {
-                        case BoardUnitModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                        case BoardUnitView unit:
+                            targetPosition = unit.Transform.position;
                             isUnit = true;
                             break;
                         case Player player:
-                            targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;
+                            targetPosition = player.AvatarObject.transform.position;
                             isUnit = false;
                             break;
                     }
 
-                    CreateVfx(targetPosition + offset, true, delayBeforeDestroy);
-
                     if (isUnit)
                     {
-                        unitModel = boardObject as BoardUnitModel;
+                        CreateVfx(targetPosition + offset, true, delayBeforeDestroy);
 
+                        unitModel = boardObject as BoardUnitView;
+                       
                         string objectName = "WalkerMask";
-                        switch (unitModel.InitialUnitType)
+                        switch (unitModel.Model.InitialUnitType)
                         {
                             case Enumerators.CardType.FERAL:
                                 objectName = "FeralMask";

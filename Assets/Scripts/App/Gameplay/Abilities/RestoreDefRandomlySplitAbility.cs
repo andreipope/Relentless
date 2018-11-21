@@ -41,6 +41,13 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             FillRandomTargets();
+            InvokeActionTriggered(_targets);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
             SplitDefense();
         }
 

@@ -17,12 +17,18 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AbilitySubTrigger SubTrigger { get; }
 
+        private List<BoardObject> _targets;
+
+        private Action _vfxAnimationEndedCallback;
+
         public HealTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Count = ability.Count;
             SubTrigger = ability.AbilitySubTrigger;
+
+            _targets = new List<BoardObject>();
         }
 
         public override void Activate()
@@ -40,12 +46,16 @@ namespace Loom.ZombieBattleground
                 {
                    if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
                    {
-                       HealOverlord();
+                        _targets.Add(PlayerCallerOfAbility);
+                        InvokeActionTriggered(_targets);
+                        _vfxAnimationEndedCallback = HealOverlord;
                    }
                    else
                    {
-                       HealRandomCountOfAllies();
-                   }
+                        HealRandomCountOfAllies();
+                        InvokeActionTriggered(_targets);
+                        _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                    }
                 }
              }
         }
@@ -56,7 +66,9 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                InvokeActionTriggered();
+                _targets.Add(TargetUnit);
+                InvokeActionTriggered(_targets);
+                _vfxAnimationEndedCallback = HealSelectedTarget;
             }
         }
 
@@ -121,42 +133,43 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            HealSelectedTarget();
+            _vfxAnimationEndedCallback?.Invoke();
         }
 
         private void HealRandomCountOfAllies()
         {
-            List<BoardObject> allies = new List<BoardObject>();
-
             if (PredefinedTargets != null)
             {
-                allies = PredefinedTargets;
+                _targets = PredefinedTargets;
             }
             else
             {
 
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
-                    allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
 
-                    if (AbilityUnitOwner != null && allies.Contains(AbilityUnitOwner))
-                        allies.Remove(AbilityUnitOwner);
+                    if (AbilityUnitOwner != null && _targets.Contains(AbilityUnitOwner))
+                        _targets.Remove(AbilityUnitOwner);
                 }
 
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
                 {
-                    allies.Add(PlayerCallerOfAbility);
+                    _targets.Add(PlayerCallerOfAbility);
                 }
 
-                allies = InternalTools.GetRandomElementsFromList(allies, Count);
+                _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
+        }
 
+        private void HealRandomCountOfAlliesCompleted()
+        {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int value = 0;
-            foreach (BoardObject boardObject in allies)
+            foreach (BoardObject boardObject in _targets)
             {
-                switch(boardObject)
+                switch (boardObject)
                 {
                     case BoardUnitModel unit:
                         value = unit.MaxCurrentHp - unit.CurrentHp;
@@ -177,7 +190,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
