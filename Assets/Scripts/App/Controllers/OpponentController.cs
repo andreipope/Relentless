@@ -192,16 +192,25 @@ namespace Loom.ZombieBattleground
 
         public void GotActionEndTurn(EndTurnModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _battlegroundController.EndTurn();
         }
 
         public void GotActionDrawCard(WorkingCard drawedCard)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
         public void GotActionPlayCard(WorkingCard card, int position)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
                 switch (workingCard.LibraryCard.CardKind)
@@ -253,6 +262,9 @@ namespace Loom.ZombieBattleground
 
         public void GotActionCardAttack(CardAttackModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, model.CardId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
@@ -275,6 +287,9 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.InstanceId);
 
             if (boardObjectCaller == null)
@@ -315,6 +330,9 @@ namespace Loom.ZombieBattleground
 
         public void GotActionUseOverlordSkill(UseOverlordSkillModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
@@ -342,11 +360,17 @@ namespace Loom.ZombieBattleground
 
         public void GotActionMulligan(MulliganModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             // todo implement logic..
         }
 
         public void GotActionRankBuff(WorkingCard card, IList<Unit> targets)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             List<BoardUnitView> units = _battlegroundController.GetTargetsById(targets)
                 .Cast<BoardUnitModel>()
                 .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
