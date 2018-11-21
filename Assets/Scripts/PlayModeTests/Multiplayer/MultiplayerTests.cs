@@ -57,6 +57,12 @@ public class MultiplayerTests
             "pvpTestNoOpponentCancel"
         });
 
+        int selectedHordeIndex = 0;
+
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
+
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
         yield return _testHelper.LetsThink ();
@@ -90,6 +96,12 @@ public class MultiplayerTests
         _testHelper.SetPvPTags (new[] {
             "pvpTestNoOpponentTimeout"
         });
+
+        int selectedHordeIndex = 0;
+
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -125,7 +137,7 @@ public class MultiplayerTests
             "pvpTest"
         });
 
-        int selectedHordeIndex = 1;
+        int selectedHordeIndex = 0;
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
@@ -175,7 +187,7 @@ public class MultiplayerTests
             "pvpTest"
         });
 
-        int selectedHordeIndex = 1;
+        int selectedHordeIndex = 0;
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
@@ -368,6 +380,12 @@ public class MultiplayerPassiveTests
         _testHelper.SetPvPTags (new[] {
             "pvpTest"
         });
+
+        int selectedHordeIndex = 0;
+
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
 
         while (true)
         {
