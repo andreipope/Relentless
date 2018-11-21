@@ -334,7 +334,9 @@ public class MultiplayerPassiveTests
     {
         _testHelper.SetTestName ("PvP - Matchmake And Play");
 
-        _testHelper.SetPvPTags (null);
+        _testHelper.SetPvPTags (new[] {
+            "pvpTest"
+        });
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
