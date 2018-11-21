@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
-    public class PlayerOrderPopup : IUIPopup
+    public class PlayerOrderPopup : MonoBehaviour, IUIPopup
     {
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -39,8 +39,13 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
-        private bool _startWithSecondPlayer;
-        private bool _startWithSecondOpponent;
+        private float _rotationElapsedTime;
+        private bool _isPlayerHasStartingTurn;
+        private bool _areCardsRotating;
+        private bool _lastPlayerTurnValue;
+        private bool _lastOpponentTurnValue;
+
+        private const float RotationSpeed = 400f;
 
         public void Init()
         {
@@ -49,6 +54,12 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+        }
+
+        private void Awake()
+        {
+            Init();
+            Show();
         }
 
         public void Dispose()
@@ -75,6 +86,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
+            _rotationElapsedTime = 0f;
+            _areCardsRotating = false;
         }
 
         public void SetMainPriority()
@@ -110,6 +123,9 @@ namespace Loom.ZombieBattleground
 
             Self.SetActive(true);
             _selfAnimator.Play(0);
+
+            EnableOpponentBackCard();
+            EnablePlayerBackCard();
         }
 
         public void Show(object data)
@@ -123,37 +139,32 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if(Self == null)
+            DoAnimation();
+        }
+
+        private void DoAnimation()
+        {
+            if (Self == null)
                 return;
 
-            if (_opponentCardBackObject.activeSelf)
+            _rotationElapsedTime += Time.deltaTime;
+            if (_areCardsRotating)
             {
-                _opponentCardFrontObject.SetActive(false);
-                _opponentFirstTurnObject.SetActive(false);
-                _opponentSecondTurnObject.SetActive(false);
+                CheckPlayerObjects();
+                CheckOpponentObjects();
             }
-            else if(_opponentCardFrontObject.activeSelf && !_opponentFirstTurnObject.activeSelf && !_opponentSecondTurnObject.activeSelf)
+            else
             {
-                _opponentCardBackObject.SetActive(false);
-                _opponentFirstTurnObject.transform.localScale = Vector3.one;
-                _opponentSecondTurnObject.transform.localScale = Vector3.one;
-                _opponentFirstTurnObject.SetActive(_startWithSecondPlayer);
-                _opponentSecondTurnObject.SetActive(!_startWithSecondPlayer);
-            }
+                if (_rotationElapsedTime > 7f)
+                {
+                    _uiManager.HidePopup<PlayerOrderPopup>();
 
-            if (_playerCardBackObject.activeSelf)
-            {
-                _playerCardFrontObject.SetActive(false);
-                _playerFirstTurnObject.SetActive(false);
-                _playerSecondTurnObject.SetActive(false);
-            }
-            else if(_playerCardFrontObject.activeSelf && !_playerFirstTurnObject.activeSelf && !_playerSecondTurnObject.activeSelf)
-            {
-                _playerCardBackObject.SetActive(false);
-                _playerFirstTurnObject.transform.localScale = Vector3.one;
-                _playerSecondTurnObject.transform.localScale = Vector3.one;
-                _playerFirstTurnObject.SetActive(_startWithSecondOpponent);
-                _playerSecondTurnObject.SetActive(!_startWithSecondOpponent);
+                    if (_gameplayManager.CurrentPlayer != null)
+                    {
+                        _gameplayManager.GetController<PlayerController>().SetHand();
+                        _gameplayManager.GetController<CardsController>().StartCardDistribution();
+                    }
+                }
             }
         }
 
@@ -172,273 +183,115 @@ namespace Loom.ZombieBattleground
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
 
-            DoAnimationOfWhoseTurn();
-
-            if (_gameplayManager.CurrentPlayer == null)
-            {
-                _uiManager.HidePopup<PlayerOrderPopup>();
-                return;
-            }
-
-            _timerManager.AddTimer(
-                x =>
-                {
-                    if(_selfAnimator != null)
-                        _selfAnimator.SetTrigger("Exit");
-
-                    _timerManager.AddTimer(
-                        y =>
-                        {
-                            _uiManager.HidePopup<PlayerOrderPopup>();
-
-                            if(_gameplayManager.CurrentPlayer != null)
-                            {
-                                _gameplayManager.GetController<PlayerController>().SetHand();
-                                _gameplayManager.GetController<CardsController>().StartCardDistribution();
-                            }
-                        },
-                        null,
-                        1.2f);
-                },
-                null,
-                6f);
+            _rotationElapsedTime = 0f;
+            _isPlayerHasStartingTurn = _gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
+            _areCardsRotating = true;
+            _lastPlayerTurnValue = _isPlayerHasStartingTurn;
+            _lastOpponentTurnValue = !_isPlayerHasStartingTurn;
+            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
         }
 
-        private void DoAnimationOfWhoseTurn()
+        private void CheckPlayerObjects()
         {
-            const int turnsCount = 23;
-            const float rotateTime = 0.125f;
-            const float rotateAngle = 90f;
+            _playerTurnRootObject.transform.Rotate(Vector3.up * Time.deltaTime * RotationSpeed);
 
+
+            if (_playerTurnRootObject.transform.localEulerAngles.y >= 90f &&
+                _playerTurnRootObject.transform.localEulerAngles.y < 270f)
+            {
+                if(_rotationElapsedTime > 4f && _playerTurnRootObject.transform.localEulerAngles.y >= 90f)
+                {
+                    EnablePlayerFrontCard(_isPlayerHasStartingTurn);
+                    if (_playerTurnRootObject.transform.localEulerAngles.y >= 180f)
+                    {
+                        _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
+                        _areCardsRotating = false;
+                    }
+                }
+                else
+                {
+                    if (!_playerCardFrontObject.activeSelf)
+                    {
+                        EnablePlayerFrontCard(_lastPlayerTurnValue);
+                        _lastPlayerTurnValue = !_lastPlayerTurnValue;
+                    }
+                }
+            }
+            else if (_playerTurnRootObject.transform.localEulerAngles.y >= 270f)
+            {
+                EnablePlayerBackCard();
+            }
+        }
+
+        private void CheckOpponentObjects()
+        {
+            _opponentTurnRootObject.transform.Rotate(Vector3.up * Time.deltaTime * RotationSpeed);
+            if (_opponentTurnRootObject.transform.localEulerAngles.y >= 90f &&
+                _opponentTurnRootObject.transform.localEulerAngles.y < 270f)
+            {
+                if(_rotationElapsedTime > 4f && _opponentTurnRootObject.transform.localEulerAngles.y >= 90f)
+                {
+                    EnableOpponentFrontCard(!_isPlayerHasStartingTurn);
+                    if (_opponentTurnRootObject.transform.localEulerAngles.y >= 180f)
+                        _areCardsRotating = false;
+                }
+                else
+                {
+                    if (!_opponentCardFrontObject.activeSelf)
+                    {
+                        EnableOpponentFrontCard(_lastOpponentTurnValue);
+                        _lastOpponentTurnValue = !_lastOpponentTurnValue;
+                    }
+                }
+            }
+            else if (_opponentTurnRootObject.transform.localEulerAngles.y >= 270f)
+            {
+                EnableOpponentBackCard();
+            }
+        }
+
+        private void EnablePlayerFrontCard(bool isFirstTurn)
+        {
+            _playerCardBackObject.SetActive(false);
+
+            _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
+            _playerFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+            _playerSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+
+            _playerCardFrontObject.SetActive(true);
+            _playerFirstTurnObject.SetActive(isFirstTurn);
+            _playerSecondTurnObject.SetActive(!isFirstTurn);
+
+
+        }
+
+        private void EnablePlayerBackCard()
+        {
             _playerCardBackObject.SetActive(true);
             _playerCardFrontObject.SetActive(false);
             _playerFirstTurnObject.SetActive(false);
             _playerSecondTurnObject.SetActive(false);
+        }
 
+        private void EnableOpponentFrontCard(bool isFirstTurn)
+        {
+            _opponentCardBackObject.SetActive(false);
+            _opponentCardFrontObject.SetActive(true);
+
+            _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
+            _opponentFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+            _opponentSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+
+            _opponentFirstTurnObject.SetActive(isFirstTurn);
+            _opponentSecondTurnObject.SetActive(!isFirstTurn);
+        }
+
+        private void EnableOpponentBackCard()
+        {
             _opponentCardBackObject.SetActive(true);
             _opponentCardFrontObject.SetActive(false);
             _opponentFirstTurnObject.SetActive(false);
             _opponentSecondTurnObject.SetActive(false);
-
-            bool isFrontViewOpponent = false;
-            bool isFrontViewPlayer = false;
-
-            bool isLatestSecondOpponent = !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer);
-            bool isLatestSecondPlayer = !_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
-
-            bool startWithSecondOpponent = !isLatestSecondOpponent;
-            bool startWithSecondPlayer = !isLatestSecondPlayer;
-
-            // opponent
-            Sequence sequenceOpponent = DOTween.Sequence();
-
-            for (int i = 1; i < turnsCount; i++)
-            {
-                int index = i;
-                sequenceOpponent.Append(
-                    _opponentTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime));
-                sequenceOpponent.AppendCallback(
-                    () =>
-                    {
-                        // make sure in the end, the card show in right order
-                        if (index == turnsCount - 1)
-                        {
-                            _opponentTurnRootObject.transform.localEulerAngles = Vector3.zero;
-                            _opponentCardBackObject.transform.localScale = Vector3.one;
-                            _opponentCardFrontObject.transform.localScale = Vector3.one;
-                            _opponentFirstTurnObject.transform.localScale = Vector3.one;
-                            _opponentSecondTurnObject.transform.localScale = Vector3.one;
-
-                            _opponentCardBackObject.SetActive(false);
-                            _opponentCardFrontObject.SetActive(true);
-
-                            _opponentFirstTurnObject.SetActive(startWithSecondOpponent);
-                            _opponentSecondTurnObject.SetActive(!startWithSecondOpponent);
-
-                        }
-
-                        if (Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f < 45 &&
-                            Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 90f > -45 ||
-                            Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f < 45 &&
-                            Mathf.Abs(_opponentTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
-                        {
-                            CheckOpponentObjects(ref isFrontViewOpponent, isLatestSecondOpponent, index,
-                                ref startWithSecondOpponent);
-
-                            _startWithSecondPlayer = startWithSecondOpponent;
-                        }
-                    });
-            }
-
-            sequenceOpponent.Play();
-
-            Sequence sequence = DOTween.Sequence();
-
-            for (int i = 1; i < turnsCount; i++)
-            {
-                int index = i;
-                sequence.Append(
-                    _playerTurnRootObject.transform.DOLocalRotate(new Vector3(0, index * rotateAngle), rotateTime));
-                sequence.AppendCallback(
-                    () =>
-                    {
-                        if (index == turnsCount - 1)
-                        {
-                            _playerTurnRootObject.transform.localEulerAngles = Vector3.zero;
-                            _playerCardBackObject.transform.localScale = Vector3.one;
-                            _playerCardFrontObject.transform.localScale = Vector3.one;
-                            _playerFirstTurnObject.transform.localScale = Vector3.one;
-                            _playerSecondTurnObject.transform.localScale = Vector3.one;
-
-                            _playerCardBackObject.SetActive(false);
-                            _playerCardFrontObject.SetActive(true);
-
-                            _playerFirstTurnObject.SetActive(startWithSecondPlayer);
-                            _playerSecondTurnObject.SetActive(!startWithSecondPlayer);
-                        }
-
-                        if (Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f < 45 &&
-                            Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 90f > -45 ||
-                            Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f < 45 &&
-                            Mathf.Abs(_playerTurnRootObject.transform.localEulerAngles.y) - 270f > -45)
-                        {
-                            CheckPlayerObjects(ref isFrontViewPlayer, ref startWithSecondPlayer);
-                            _startWithSecondPlayer = startWithSecondPlayer;
-                        }
-
-                        if (index == turnsCount - 1)
-                        {
-                            _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
-                        }
-                    });
-            }
-
-            sequence.Play();
-
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
-        }
-
-        private void CheckPlayerObjects(ref bool isFrontView, ref bool startWithSecondPlayer)
-        {
-            isFrontView = !isFrontView;
-
-            _playerCardFrontObject.SetActive(isFrontView);
-            _playerCardBackObject.SetActive(!isFrontView);
-
-            float finalRotate = _playerTurnRootObject.transform.localEulerAngles.y;
-
-            if (Mathf.Abs(finalRotate) >= 180)
-            {
-                _playerFirstTurnObject.SetActive(false);
-                _playerSecondTurnObject.SetActive(false);
-
-                if (isFrontView)
-                {
-                    _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _playerCardBackObject.transform.localScale = Vector3.one;
-                }
-                else
-                {
-                    _playerCardFrontObject.transform.localScale = Vector3.one;
-                    _playerCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
-                }
-            }
-            else if (Mathf.Abs(finalRotate) >= 0)
-            {
-                if (startWithSecondPlayer)
-                {
-                    _playerFirstTurnObject.SetActive(false);
-                    _playerSecondTurnObject.SetActive(true);
-
-                    startWithSecondPlayer = false;
-                }
-                else
-                {
-                    _playerFirstTurnObject.SetActive(true);
-                    _playerSecondTurnObject.SetActive(false);
-
-                    startWithSecondPlayer = true;
-                }
-
-                if (isFrontView)
-                {
-                    _playerFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _playerSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
-
-                    _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _playerCardBackObject.transform.localScale = Vector3.one;
-                }
-                else
-                {
-                    _playerFirstTurnObject.transform.localScale = Vector3.one;
-                    _playerSecondTurnObject.transform.localScale = Vector3.one;
-
-                    _playerCardFrontObject.transform.localScale = Vector3.one;
-                    _playerCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
-                }
-            }
-        }
-
-        private void CheckOpponentObjects(
-            ref bool isFrontView, bool isLatestSecondOpponent, int index, ref bool startWithSecondOpponent)
-        {
-            isFrontView = !isFrontView;
-
-            _opponentCardFrontObject.SetActive(isFrontView);
-            _opponentCardBackObject.SetActive(!isFrontView);
-
-            float finalRotate = _opponentTurnRootObject.transform.localEulerAngles.y;
-
-            if (Mathf.Abs(finalRotate) >= 180)
-            {
-                _opponentFirstTurnObject.SetActive(false);
-                _opponentSecondTurnObject.SetActive(false);
-
-                if (isFrontView)
-                {
-                    _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _opponentCardBackObject.transform.localScale = Vector3.one;
-                }
-                else
-                {
-                    _opponentCardFrontObject.transform.localScale = Vector3.one;
-                    _opponentCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
-                }
-            }
-            else if (Mathf.Abs(finalRotate) >= 0)
-            {
-                if (startWithSecondOpponent)
-                {
-                    _opponentFirstTurnObject.SetActive(false);
-                    _opponentSecondTurnObject.SetActive(true);
-
-                    startWithSecondOpponent = false;
-                }
-                else
-                {
-                    _opponentFirstTurnObject.SetActive(true);
-                    _opponentSecondTurnObject.SetActive(false);
-
-                    startWithSecondOpponent = true;
-                }
-
-                if (isFrontView)
-                {
-                    _opponentFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _opponentSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
-
-                    _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                    _opponentCardBackObject.transform.localScale = Vector3.one;
-                }
-                else
-                {
-                    _opponentFirstTurnObject.transform.localScale = Vector3.one;
-                    _opponentSecondTurnObject.transform.localScale = Vector3.one;
-
-                    _opponentCardFrontObject.transform.localScale = Vector3.one;
-                    _opponentCardBackObject.transform.localScale = new Vector3(-1, 1, 1);
-                }
-            }
         }
     }
 }
