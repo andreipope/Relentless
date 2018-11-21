@@ -94,7 +94,7 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
         yield return _testHelper.AssertPvPStartedOrMatchmakingFailed (
-                PlayAMatch (),
+                _testHelper.PlayAMatch (),
                 _testHelper.PressOK ());
 
         yield return _testHelper.LetsThink ();
@@ -305,23 +305,12 @@ public class MultiplayerTests
         yield return null;
     }
 
-    private IEnumerator PlayAMatch ()
+    [UnityTest]
+    public IEnumerator TestN_Cleanup ()
     {
-        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+        // Nothing, just to ascertain cleanup
 
-        _testHelper.InitalizePlayer ();
-
-        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
-
-        yield return _testHelper.DecideWhichCardsToPick ();
-
-        yield return _testHelper.WaitUntilOurFirstTurn ();
-
-        yield return _testHelper.MakeMoves ();
-
-        yield return _testHelper.ClickGenericButton ("Button_Continue");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return null;
     }
 }
 
@@ -385,29 +374,18 @@ public class MultiplayerPassiveTests
             yield return _testHelper.ClickGenericButton ("Button_Battle");
 
             yield return _testHelper.AssertPvPStartedOrMatchmakingFailed (
-                PlayAMatch (),
+                _testHelper.PlayAMatch (),
                 _testHelper.PressOK ());
 
             yield return _testHelper.LetsThink ();
         }
     }
 
-    private IEnumerator PlayAMatch ()
+    [UnityTest]
+    public IEnumerator TestN_Cleanup ()
     {
-        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+        // Nothing, just to ascertain cleanup
 
-        _testHelper.InitalizePlayer ();
-
-        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
-
-        yield return _testHelper.DecideWhichCardsToPick ();
-
-        yield return _testHelper.WaitUntilOurFirstTurn ();
-
-        yield return _testHelper.MakeMoves ();
-
-        yield return _testHelper.ClickGenericButton ("Button_Continue");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return null;
     }
 }

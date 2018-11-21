@@ -266,44 +266,6 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test_C1_PlayWithDefaultHorde ()
-    {
-        _testHelper.SetTestName ("Solo - Gameplay");
-
-        #region Solo Gameplay
-
-        yield return _testHelper.MainMenuTransition ("Button_Play");
-
-        yield return _testHelper.AssertIfWentDirectlyToTutorial (
-            _testHelper.GoBackToMainAndPressPlay ());
-
-        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
-
-        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        int selectedHordeIndex = 0;
-
-        yield return _testHelper.SelectAHorde (selectedHordeIndex);
-
-        _testHelper.RecordOverlordName (selectedHordeIndex);
-
-        yield return _testHelper.MainMenuTransition ("Button_Battle");
-
-        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
-
-        yield return SoloGameplay ();
-
-        yield return _testHelper.ClickGenericButton ("Button_Continue");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        #endregion
-    }
-
-    [UnityTest]
-    [Timeout (500000)]
     public IEnumerator Test_B1_CreateAHordeAndCancel ()
     {
         _testHelper.SetTestName ("Solo - Create a Horde and cancel");
@@ -413,7 +375,7 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (500000)]
-    public IEnumerator Test_C2_PlayWithAnAbilityHorde ()
+    public IEnumerator Test_C1_PlayWithDefaultHorde ()
     {
         _testHelper.SetTestName ("Solo - Gameplay");
 
@@ -430,11 +392,83 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        int selectedHordeIndex = 1;
+        int selectedHordeIndex = 0;
 
         yield return _testHelper.SelectAHorde (selectedHordeIndex);
 
         _testHelper.RecordOverlordName (selectedHordeIndex);
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        yield return SoloGameplay ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        #endregion
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_C2_PlayWithRazuHorde ()
+    {
+        _testHelper.SetTestName ("Solo - Gameplay");
+
+        #region Solo Gameplay
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.SelectAHorde ("Razu");
+
+        _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        yield return SoloGameplay ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        #endregion
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_C3_PlayWithAnAbilityHorde ()
+    {
+        _testHelper.SetTestName ("Solo - Gameplay");
+
+        #region Solo Gameplay
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        yield return _testHelper.SelectAHorde ("Kalile");
+
+        _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 

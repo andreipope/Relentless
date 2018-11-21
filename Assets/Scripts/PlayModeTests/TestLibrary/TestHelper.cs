@@ -2571,6 +2571,41 @@ public class TestHelper
             return -1;
     }
 
+    public int SelectedHordeIndex
+    {
+        get;
+        private set;
+    }
+
+    public IEnumerator SelectAHorde (string hordeName)
+    {
+        GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
+
+        SelectedHordeIndex = -1;
+        bool hordeSelected = false;
+
+        for (int i = 0; i < GetNumberOfHordes () - 1; i++)
+        {
+            Transform selectedHordeTransform = hordesParent.transform.GetChild (i);
+
+            if (selectedHordeTransform?.Find ("Panel_Description/Text_Description")?.GetComponent<TextMeshProUGUI> ()?.text != null &&
+                selectedHordeTransform?.Find ("Panel_Description/Text_Description")?.GetComponent<TextMeshProUGUI> ()?.text == hordeName)
+            {
+                selectedHordeTransform.Find ("Button_Select").GetComponent<Button> ().onClick.Invoke ();
+
+                SelectedHordeIndex = i;
+                hordeSelected = true;
+            }
+        }
+
+        if (!hordeSelected)
+        {
+            Assert.Fail ("Couldn't find Horde by that name");
+        }
+
+        yield return null;
+    }
+
     public IEnumerator SelectAHorde (int index)
     {
         if (index + 1 >= GetNumberOfHordes ())
@@ -2579,8 +2614,8 @@ public class TestHelper
         }
 
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
-        Transform removalHordeTransform = hordesParent.transform.GetChild (index);
-        removalHordeTransform.Find ("Button_Select").GetComponent<Button> ().onClick.Invoke ();
+        Transform selectedHordeTransform = hordesParent.transform.GetChild (index);
+        selectedHordeTransform.Find ("Button_Select").GetComponent<Button> ().onClick.Invoke ();
 
         yield return LetsThink ();
     }
@@ -2707,6 +2742,27 @@ public class TestHelper
         Actual
     }
 
+    #region PvP gameplay
+
+    public IEnumerator PlayAMatch ()
+    {
+        yield return AssertCurrentPageName ("GameplayPage");
+
+        InitalizePlayer ();
+
+        yield return WaitUntilPlayerOrderIsDecided ();
+
+        yield return DecideWhichCardsToPick ();
+
+        yield return WaitUntilOurFirstTurn ();
+
+        yield return MakeMoves ();
+
+        yield return ClickGenericButton ("Button_Continue");
+
+        yield return AssertCurrentPageName ("HordeSelectionPage");
+    }
+
     public IEnumerator PressOK ()
     {
         if (GameObject.Find ("Button_OK") != null)
@@ -2714,4 +2770,6 @@ public class TestHelper
         else
             yield return ClickGenericButton ("Button_GotIt");
     }
+
+    #endregion
 }
