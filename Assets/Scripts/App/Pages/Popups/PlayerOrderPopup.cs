@@ -116,8 +116,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(true);
             _selfAnimator.Play(0);
 
-            EnableBackCard(false);
-            EnableBackCard(true);
+            EnableBackCard(_opponentCardBackObject, _opponentCardFrontObject, _opponentFirstTurnObject, _opponentSecondTurnObject);
+            EnableBackCard(_playerCardBackObject, _playerCardFrontObject, _playerFirstTurnObject, _playerSecondTurnObject);
         }
 
         public void Show(object data)
@@ -193,7 +193,7 @@ namespace Loom.ZombieBattleground
             {
                 if(_rotationElapsedTime >= StopRotatingCardsTime  && _playerTurnRootObject.transform.localEulerAngles.y >= 90f)
                 {
-                    EnableFrontCard(true, _isPlayerHasStartingTurn);
+                    EnableFrontCard(_playerCardBackObject, _playerCardFrontObject, _playerFirstTurnObject, _playerSecondTurnObject, _isPlayerHasStartingTurn);
                     if (_playerTurnRootObject.transform.localEulerAngles.y >= 180f)
                     {
                         _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
@@ -204,14 +204,14 @@ namespace Loom.ZombieBattleground
                 {
                     if (!_playerCardFrontObject.activeSelf)
                     {
-                        EnableFrontCard(true, _lastPlayerTurnValue);
+                        EnableFrontCard(_playerCardBackObject, _playerCardFrontObject, _playerFirstTurnObject, _playerSecondTurnObject, _lastPlayerTurnValue);
                         _lastPlayerTurnValue = !_lastPlayerTurnValue;
                     }
                 }
             }
             else if (_playerTurnRootObject.transform.localEulerAngles.y >= 270f)
             {
-                EnableBackCard(true);
+                EnableBackCard(_playerCardBackObject, _playerCardFrontObject, _playerFirstTurnObject, _playerSecondTurnObject);
             }
         }
 
@@ -223,7 +223,7 @@ namespace Loom.ZombieBattleground
             {
                 if(_rotationElapsedTime >= StopRotatingCardsTime && _opponentTurnRootObject.transform.localEulerAngles.y >= 90f)
                 {
-                    EnableFrontCard(false, !_isPlayerHasStartingTurn);
+                    EnableFrontCard(_opponentCardBackObject, _opponentCardFrontObject, _opponentFirstTurnObject, _opponentSecondTurnObject, !_isPlayerHasStartingTurn);
                     if (_opponentTurnRootObject.transform.localEulerAngles.y >= 180f)
                         _areCardsRotating = false;
                 }
@@ -231,61 +231,36 @@ namespace Loom.ZombieBattleground
                 {
                     if (!_opponentCardFrontObject.activeSelf)
                     {
-                        EnableFrontCard(false, _lastOpponentTurnValue);
+                        EnableFrontCard(_opponentCardBackObject, _opponentCardFrontObject, _opponentFirstTurnObject, _opponentSecondTurnObject, _lastOpponentTurnValue);
                         _lastOpponentTurnValue = !_lastOpponentTurnValue;
                     }
                 }
             }
             else if (_opponentTurnRootObject.transform.localEulerAngles.y >= 270f)
             {
-                EnableBackCard(false);
+                EnableBackCard(_opponentCardBackObject, _opponentCardFrontObject, _opponentFirstTurnObject, _opponentSecondTurnObject);
             }
         }
 
-        private void EnableFrontCard(bool isPlayer, bool isFirstTurn)
+        private void EnableFrontCard(GameObject cardBackObj, GameObject cardFrontObj, GameObject firstTurnObj, GameObject secondTurnObj, bool isFirstTurn)
         {
-            if(isPlayer)
-            {
-                _playerCardBackObject.SetActive(false);
+            cardBackObj.SetActive(false);
 
-                _playerCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                _playerFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
-                _playerSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
+            cardFrontObj.transform.localScale = new Vector3(-1, 1, 1);
+            firstTurnObj.transform.localScale = new Vector3(-1, 1, 1);
+            secondTurnObj.transform.localScale = new Vector3(-1, 1, 1);
 
-                _playerCardFrontObject.SetActive(true);
-                _playerFirstTurnObject.SetActive(isFirstTurn);
-                _playerSecondTurnObject.SetActive(!isFirstTurn);
-            }
-            else
-            {
-                _opponentCardBackObject.SetActive(false);
-                _opponentCardFrontObject.SetActive(true);
-
-                _opponentCardFrontObject.transform.localScale = new Vector3(-1, 1, 1);
-                _opponentFirstTurnObject.transform.localScale = new Vector3(-1, 1, 1);
-                _opponentSecondTurnObject.transform.localScale = new Vector3(-1, 1, 1);
-
-                _opponentFirstTurnObject.SetActive(isFirstTurn);
-                _opponentSecondTurnObject.SetActive(!isFirstTurn);
-            }
+            cardFrontObj.SetActive(true);
+            firstTurnObj.SetActive(isFirstTurn);
+            secondTurnObj.SetActive(!isFirstTurn);
         }
 
-        private void EnableBackCard(bool isPlayer)
+        private void EnableBackCard(GameObject cardBackObj, GameObject cardFrontObj, GameObject firstTurnObj, GameObject secondTurnObj)
         {
-            if(isPlayer)
-            {
-                _playerCardBackObject.SetActive(true);
-                _playerCardFrontObject.SetActive(false);
-                _playerFirstTurnObject.SetActive(false);
-                _playerSecondTurnObject.SetActive(false);
-            }
-            else
-            {
-                _opponentCardBackObject.SetActive(true);
-                _opponentCardFrontObject.SetActive(false);
-                _opponentFirstTurnObject.SetActive(false);
-                _opponentSecondTurnObject.SetActive(false);
-            }
+            cardBackObj.SetActive(true);
+            cardFrontObj.SetActive(false);
+            firstTurnObj.SetActive(false);
+            secondTurnObj.SetActive(false);
         }
     }
 }
