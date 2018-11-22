@@ -94,10 +94,7 @@ namespace Loom.ZombieBattleground
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
                                             ref List<HandBoardCard> cards)
         {
-            InternalTools.DoActionDelayed(() =>
-            {
-                CardsController.SummonUnitFromHand(owner, boardCard);
-            }, 0.25f);
+            CardsController.SummonUnitFromHand(owner, boardCard);
 
             cards.Add(boardCard.HandBoardCard);
 
