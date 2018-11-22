@@ -2977,7 +2977,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/StaplerVFX"
+                  "Path": "Prefabs/VFX/Skills/RestoreStaplerVFX"
                 }
               ]
             }
