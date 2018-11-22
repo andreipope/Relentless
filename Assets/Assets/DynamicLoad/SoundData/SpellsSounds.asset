@@ -12,4 +12,9 @@ MonoBehaviour:
   m_Name: SpellsSounds
   m_EditorClassIdentifier: 
   soundList:
-  - CZB_AUD_NailBomb_F3_EXP
+  - ZB_AUD_NailBomb_F1_EXP
+  - CZB_AUD_Goo_Beaker_F1_EXP
+  - CZB_AUD_Goo_Bottles_F1_EXP
+  - CZB_AUD_Chainsaw_Entry_F3_EXP
+  - CZB_AUD_Bat_F1_EXP
+  - CZB_AUD_Fresh_Meat_F2_EXP

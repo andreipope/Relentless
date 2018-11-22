@@ -88,6 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4391513453354652}
   - component: {fileID: 95400998425217478}
+  - component: {fileID: 114997597036640386}
   m_Layer: 0
   m_Name: FreshMeatVFX
   m_TagString: Untagged
@@ -461,6 +462,27 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114997597036640386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1432910341675260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: Fresh Meat
+  delayBeforeEffect: 5
+  delayAfterEffect: 1
+  delayForChangeState: 0
+  soundName: CZB_AUD_Fresh_Meat_F2_EXP
+  delayForSound: 0
+  offset: {x: 0, y: 0, z: 0}
+  rotationParameters:
+    isOnlyForLocalPlayer: 1
+    rotation: {x: 180, y: 0, z: 0}
 --- !u!198 &198140576121219566
 ParticleSystem:
   m_ObjectHideFlags: 1

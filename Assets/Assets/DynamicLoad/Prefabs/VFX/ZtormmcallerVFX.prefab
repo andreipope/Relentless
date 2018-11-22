@@ -38,8 +38,9 @@ GameObject:
   - component: {fileID: 4025563040520262}
   - component: {fileID: 198892573463468856}
   - component: {fileID: 199597680497031346}
+  - component: {fileID: 114586882265873262}
   m_Layer: 9
-  m_Name: Ztormmcaller
+  m_Name: ZtormmcallerVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -506,6 +507,23 @@ Transform:
   m_Father: {fileID: 4025563040520262}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &114586882265873262
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1102502254032026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: Ztormmcaller
+  delayBeforeEffect: 5
+  delayAfterEffect: 1.5
+  delayForChangeState: 0
+  soundName: CZB_AUD_Ztormmcaller_F1_EXP
+  offset: {x: 0, y: 0, z: 0}
 --- !u!198 &198179744923992152
 ParticleSystem:
   m_ObjectHideFlags: 1

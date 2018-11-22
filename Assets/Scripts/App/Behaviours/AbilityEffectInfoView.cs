@@ -1,7 +1,8 @@
 using Loom.ZombieBattleground.Common;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 
 namespace Loom.ZombieBattleground
 {
@@ -18,6 +19,19 @@ namespace Loom.ZombieBattleground
 
         public string soundName;
 
+        [Range(0, 20)]
+        public float delayForSound;
+
         public Vector3 offset;
+
+        public RotationEffectParam rotationParameters;
+    }
+
+    [Serializable]
+    public class RotationEffectParam
+    {
+        public bool isOnlyForLocalPlayer;
+
+        public Vector3 rotation;
     }
 }

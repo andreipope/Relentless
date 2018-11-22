@@ -3022,7 +3022,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/GooBeaker"
+                  "Path": "Prefabs/VFX/GooBottles"
                 }
               ]
             }

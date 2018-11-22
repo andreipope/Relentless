@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
+        private string _cardName;
+
         public SwingAbilityView(SwingAbility ability) : base(ability)
         {
             _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -16,6 +18,11 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+            _cardName = "";
+            float delayAfter = 0;
+            float delayBeforeDestroy = 3f;
+            string soundName = string.Empty;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 BoardUnitModel unit = (BoardUnitModel)info;
@@ -24,23 +31,26 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    _cardName = effectInfo.cardName;
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    soundName = effectInfo.soundName;
+                }
+
                 VfxObject = Object.Instantiate(VfxObject);
                 VfxObject.transform.position = targetPosition;
-                ParticlesController.RegisterParticleSystem(VfxObject, true, 5);
+                ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
             }
 
-            float delay = 0f;
-
-            switch (Ability.AbilityEffectType)
+            if (!string.IsNullOrEmpty(soundName))
             {
-                case Enumerators.AbilityEffectType.SWING_LIGHTNING:
-                    delay = 1.5f;
-                    break;
-                default:
-                    delay = 0;
-                    break;
+                SoundManager.PlaySound(Enumerators.SoundType.CARDS, soundName, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
             }
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delay);
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
 

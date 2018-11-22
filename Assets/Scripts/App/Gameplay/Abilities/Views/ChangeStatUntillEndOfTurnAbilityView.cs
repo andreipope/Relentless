@@ -7,15 +7,9 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatUntillEndOfTurnAbilityView : AbilityViewBase<ChangeStatUntillEndOfTurnAbility>
     {
-        private const float DELAY_AFTER_IMPACT_FRESH_MEAT = 1f;
-
-        private const float DELAY_DESTROY_IMPACT_FRESH_MEAT = 5f;
-
-        private float _delayAfterImpact;
-
-        private float _delayDestroyImpact;
-
         private BattlegroundController _battlegroundController;
+
+        private string _cardName;
 
         public ChangeStatUntillEndOfTurnAbilityView(ChangeStatUntillEndOfTurnAbility ability) : base(ability)
         {
@@ -24,8 +18,6 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            SetDelays();
-
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
                 Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
@@ -46,44 +38,64 @@ namespace Loom.ZombieBattleground
         private void ActionCompleted()
         {
             ClearParticles();
+            _cardName = "";
+            float delayAfter = 0;
+            float delayBeforeDestroy = 3f;
+            float delaySound = 0;
+            string soundName = string.Empty;
 
-            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            Debug.LogError(1111);
+
+            //if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
+                bool isOnlyForLocalPlayer = false;
+                Vector3 rotation = Vector3.zero;
+
                 Vector3 targetPosition = Ability.PlayerCallerOfAbility.AvatarObject.transform.position;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-                CreateVfx(targetPosition, true, _delayDestroyImpact, true);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FreshMeatVFX");//(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-
-                if(Ability.AbilityEffectType == Enumerators.AbilityEffectType.CHANGE_STAT_FRESH_MEAT && !Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
                 {
-                    VfxObject.transform.eulerAngles = new Vector3(180, VfxObject.transform.eulerAngles.y, VfxObject.transform.eulerAngles.z);
+                    _cardName = effectInfo.cardName;
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    soundName = effectInfo.soundName;
+                    delaySound = effectInfo.delayForSound;
+
+                    isOnlyForLocalPlayer = effectInfo.rotationParameters.isOnlyForLocalPlayer;
+                    rotation = effectInfo.rotationParameters.rotation;
+                    Debug.LogError(2222);
+
+                }
+
+                CreateVfx(targetPosition, true, delayBeforeDestroy, true);
+                Debug.LogError(VfxObject.name);
+
+
+                if (isOnlyForLocalPlayer == Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                {
+                    VfxObject.transform.eulerAngles = rotation;
+                    Debug.LogError(3333);
                 }
             }
 
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, _delayAfterImpact);
+            if (!string.IsNullOrEmpty(soundName))
+            {
+                InternalTools.DoActionDelayed(() =>
+                {
+                    SoundManager.PlaySound(Enumerators.SoundType.SPELLS, soundName, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+                }, delaySound);
+            }
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
             base.CreateVfx(pos, autoDestroy, duration, justPosition);
-        }
-
-        private void SetDelays()
-        {
-            _delayAfterImpact = 0;
-            _delayDestroyImpact = 3f;
-
-            switch (Ability.AbilityEffectType)
-            {
-                case Enumerators.AbilityEffectType.CHANGE_STAT_FRESH_MEAT:
-                    _delayAfterImpact = DELAY_AFTER_IMPACT_FRESH_MEAT;
-                    _delayDestroyImpact = DELAY_DESTROY_IMPACT_FRESH_MEAT;
-                    break;
-                default:
-                    break;
-            }
         }
     }
 }

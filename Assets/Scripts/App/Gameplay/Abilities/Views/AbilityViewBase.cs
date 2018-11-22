@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         protected IGameplayManager GameplayManager;
 
+        protected ISoundManager SoundManager;
+
         protected ParticlesController ParticlesController;
 
         protected AbilityBase Ability;
@@ -26,6 +28,7 @@ namespace Loom.ZombieBattleground
             Ability = ability;
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             GameplayManager = GameClient.Get<IGameplayManager>();
+            SoundManager = GameClient.Get<ISoundManager>();
             ParticlesController = GameplayManager.GetController<ParticlesController>();
             ParticleIds = new List<ulong>();
 
