@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground.Helpers
         {
             List<T> list = new List<T>();
 
-            if (root.Count < count)
+            if (root.Count <= count)
             {
                 list.AddRange(root);
             }

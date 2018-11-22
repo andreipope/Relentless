@@ -34,9 +34,9 @@ namespace Loom.ZombieBattleground
 
         private GameObject _cardSetsIcons;
 
-        private int _numSets, _currentElementPage, _numElementPages;
+        private int _currentElementPage, _numElementPages;
 
-        private Enumerators.SetType _currentSet;
+        private Enumerators.SetType _currentSet = Enumerators.SetType.FIRE;
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
@@ -238,9 +238,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet < 0)
+                if (_currentSet < Enumerators.SetType.FIRE)
                 {
-                    _currentSet = (Enumerators.SetType) (_numSets - 1);
+                    _currentSet = Enumerators.SetType.ITEM;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -257,9 +257,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if ((int) _currentSet >= _numSets)
+                if (_currentSet > Enumerators.SetType.ITEM)
                 {
-                    _currentSet = 0;
+                    _currentSet = Enumerators.SetType.FIRE;
                     _currentElementPage = 0;
                 }
                 else
@@ -273,7 +273,7 @@ namespace Loom.ZombieBattleground
 
         public void LoadCards(int page, Enumerators.SetType setType)
         {
-            _toggleGroup.transform.GetChild((int) setType).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
@@ -323,7 +323,7 @@ namespace Loom.ZombieBattleground
 
                 _createdBoardCards.Add(boardCard);
 
-                if (boardCard.LibraryCard.Id == _highlightingVFXItem.CardId)
+                if (boardCard.LibraryCard.MouldId == _highlightingVFXItem.MouldId)
                 {
                     _highlightingVFXItem.ChangeState(true);
                 }
@@ -352,9 +352,8 @@ namespace Loom.ZombieBattleground
                 CardPositions.Add(placeholder);
             }
 
-            _numSets = _dataManager.CachedCardsLibraryData.Sets.Count - 1;
             CalculateNumberOfPages();
-            LoadCards(0, 0);
+            LoadCards(0, _currentSet);
 
             //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
             //we'll have to change this.
@@ -367,7 +366,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < _cardSetsIcons.transform.childCount; i++)
             {
                 GameObject c = _cardSetsIcons.transform.GetChild(i).GetChild(0).gameObject;
-                c.SetActive(i == (int) _currentSet);
+                c.SetActive(i == _currentSet - Enumerators.SetType.FIRE);
             }
         }
 

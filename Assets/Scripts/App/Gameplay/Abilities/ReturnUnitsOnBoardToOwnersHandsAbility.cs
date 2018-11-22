@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -33,6 +33,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             _units = new List<BoardUnitView>();
             _units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
             _units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
@@ -43,7 +45,7 @@ namespace Loom.ZombieBattleground
 
             if (Value > 0)
             {
-                _units = _units.Where(x => x.Model.Card.RealCost <= Value).ToList();
+                _units = _units.Where(x => x.Model.Card.InstanceCard.Cost <= Value).ToList();
             }
 
             InvokeActionTriggered(_units);
@@ -62,6 +64,8 @@ namespace Loom.ZombieBattleground
             {
                 ReturnBoardUnitToHand(unit);
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }
