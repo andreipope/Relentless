@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -30,7 +31,9 @@ namespace Loom.ZombieBattleground
     [Serializable]
     public class RotationEffectParam
     {
-        public bool isOnlyForLocalPlayer;
+        public bool replaceRotation;
+
+        public bool isLocalPlayer;
 
         public Vector3 rotation;
     }

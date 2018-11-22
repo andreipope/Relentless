@@ -44,16 +44,16 @@ namespace Loom.ZombieBattleground
             float delaySound = 0;
             string soundName = string.Empty;
 
-            Debug.LogError(1111);
 
-            //if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                bool isOnlyForLocalPlayer = false;
+                bool isLocalPlayer = false;
+                bool isReplaceRotation = false;
                 Vector3 rotation = Vector3.zero;
 
                 Vector3 targetPosition = Ability.PlayerCallerOfAbility.AvatarObject.transform.position;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FreshMeatVFX");//(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
@@ -64,29 +64,24 @@ namespace Loom.ZombieBattleground
                     soundName = effectInfo.soundName;
                     delaySound = effectInfo.delayForSound;
 
-                    isOnlyForLocalPlayer = effectInfo.rotationParameters.isOnlyForLocalPlayer;
+                    isReplaceRotation = effectInfo.rotationParameters.replaceRotation; ;
+                    isLocalPlayer = effectInfo.rotationParameters.isLocalPlayer;
                     rotation = effectInfo.rotationParameters.rotation;
-                    Debug.LogError(2222);
 
                 }
 
                 CreateVfx(targetPosition, true, delayBeforeDestroy, true);
-                Debug.LogError(VfxObject.name);
 
 
-                if (isOnlyForLocalPlayer == Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                if (isReplaceRotation && isLocalPlayer == Ability.PlayerCallerOfAbility.IsLocalPlayer)
                 {
                     VfxObject.transform.eulerAngles = rotation;
-                    Debug.LogError(3333);
                 }
             }
 
             if (!string.IsNullOrEmpty(soundName))
             {
-                InternalTools.DoActionDelayed(() =>
-                {
-                    SoundManager.PlaySound(Enumerators.SoundType.SPELLS, soundName, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }, delaySound);
+                PlaySound(soundName, delaySound);
             }
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);

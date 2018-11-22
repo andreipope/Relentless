@@ -80,6 +80,16 @@ namespace Loom.ZombieBattleground
                 ParticlesController.DestroyParticle(id);
             }
         }
+
+        protected void PlaySound(string clipTitle, float delay)
+        {
+            Enumerators.SoundType type = Ability.CardKind == Enumerators.CardKind.CREATURE ? Enumerators.SoundType.CARDS : Enumerators.SoundType.SPELLS; 
+
+            Helpers.InternalTools.DoActionDelayed(() =>
+            {
+                SoundManager.PlaySound(type, clipTitle, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+            }, delay);
+        }
     }
 
     public abstract class AbilityViewBase<TAbility> : AbilityViewBase where TAbility : AbilityBase

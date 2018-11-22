@@ -481,7 +481,8 @@ MonoBehaviour:
   delayForSound: 0
   offset: {x: 0, y: 0, z: 0}
   rotationParameters:
-    isOnlyForLocalPlayer: 1
+    replaceRotation: 1
+    isLocalPlayer: 0
     rotation: {x: 180, y: 0, z: 0}
 --- !u!198 &198140576121219566
 ParticleSystem:

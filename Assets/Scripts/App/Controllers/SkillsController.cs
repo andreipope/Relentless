@@ -700,6 +700,12 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(particle, true, 6f);
             }
 
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.OverlordSkill.ToString().ToLowerInvariant(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
+
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
@@ -1424,7 +1430,12 @@ namespace Loom.ZombieBattleground
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
                 _battlegroundController.DestroyBoardUnit(boardUnitModel);
 
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, "ZB_AUD_shatterCard_F1_EXP", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                //_soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, "ZB_AUD_shatterCard_F1_EXP", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLowerInvariant() + "_Impact",
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1534,6 +1545,8 @@ namespace Loom.ZombieBattleground
             if (target != null && target is BoardUnitModel unit)
             {
                 unit.SetAsFeralUnit();
+
+                Debug.LogError(skill.OverlordSkill.ToString().ToLowerInvariant());
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"),
