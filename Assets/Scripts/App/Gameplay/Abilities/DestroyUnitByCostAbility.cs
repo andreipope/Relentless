@@ -45,7 +45,6 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitModel GetRandomUnit()
         {
-            BoardUnitModel unit = null;
             List<BoardUnitModel> units = null;
 
             if (PredefinedTargets != null)
@@ -62,11 +61,10 @@ namespace Loom.ZombieBattleground
 
             if (units != null && units.Count > 0)
             {
-                units = InternalTools.GetRandomElementsFromList(units, 1);
-                unit = units[0];
+                return InternalTools.GetRandomElementsFromList(units, 1)[0];
             }
 
-            return unit;
+            return null;
         }
 
         private void DestroyUnit(BoardUnitModel unit)
