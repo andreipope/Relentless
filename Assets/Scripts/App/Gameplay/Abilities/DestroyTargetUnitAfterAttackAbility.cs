@@ -17,9 +17,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilityUnitOwner.AddEffectOnUnit(Enumerators.EffectOnUnitType.Destroy);
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Destroy);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         public override void Action(object info = null)

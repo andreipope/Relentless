@@ -10,7 +10,7 @@ public class HandBoardCard : OwnableBoardObject
 
     public bool Enabled = true;
 
-    protected BoardCard CardView;
+    public BoardCard CardView { get; protected set; }
 
     protected bool StartedDrag;
 
@@ -127,6 +127,9 @@ public class HandBoardCard : OwnableBoardObject
             return;
 
         if (!StartedDrag)
+            return;
+
+        if (_gameplayManager.IsGameEnded)
             return;
 
         _cardsController.ResetPlayerCardsOnBattlegroundPosition();

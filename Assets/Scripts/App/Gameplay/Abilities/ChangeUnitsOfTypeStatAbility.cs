@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             StatType = ability.AbilityStatType;
-            SetType = Utilites.CastStringTuEnum<Enumerators.SetType>(ability.SetType);
+            SetType = ability.AbilitySetType;
             Value = ability.Value;
         }
 
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.PERMANENT)
                 return;

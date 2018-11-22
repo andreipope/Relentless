@@ -10,14 +10,13 @@ public static class LoomTestContext
 {
     public static BackendFacade BackendFacade;
 
-    public static BackendDataControlMediator BackendDataControlMediator;
+    public static UserDataModel UserDataModel;
 
     public static void TestSetUp(string userId = "Loom")
     {
-        BackendEndpoint backendEndpoint =
-            BackendEndpointsContainer.Endpoints[BackendPurpose.Local];
+        BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Local];
         BackendFacade = new BackendFacade(backendEndpoint);
-        BackendDataControlMediator.UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
+        UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
     }
 
     public static void TestTearDown()
@@ -41,10 +40,10 @@ public static class LoomTestContext
         try
         {
             await func();
-        }
-        catch (Exception)
-        {
             throw new AssertionException("Expected an exception");
+        }
+        catch
+        {
         }
     }
 
@@ -76,7 +75,7 @@ public static class LoomTestContext
         if (BackendFacade.Contract != null && BackendFacade.IsConnected)
             return;
 
-        await BackendFacade.CreateContract(BackendDataControlMediator.UserDataModel.PrivateKey);
+        await BackendFacade.CreateContract(UserDataModel.PrivateKey);
     }
 
     private static IEnumerator TaskAsIEnumerator(Task task)
@@ -87,8 +86,9 @@ public static class LoomTestContext
         }
 
         if (task.IsFaulted)
-
+        {
             // ReSharper disable once PossibleNullReferenceException
             throw task.Exception;
+        }
     }
 }

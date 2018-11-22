@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -315,7 +316,7 @@ namespace Loom.ZombieBattleground
                         CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
                         List<WorkingCard> opponentCardsInHand =
                             OpponentPlayer.PvPPlayerState.CardsInHand
-                                .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, OpponentPlayer))
+                                .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
 
                         OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
