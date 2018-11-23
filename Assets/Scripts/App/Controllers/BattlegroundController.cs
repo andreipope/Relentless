@@ -971,14 +971,10 @@ namespace Loom.ZombieBattleground
             newPlayerOwner.CardsOnBoard.Add(unit.Card);
             newPlayerOwner.BoardCards.Add(view);
 
-            if (newPlayerOwner.IsLocalPlayer)
-            {
-                UpdatePositionOfBoardUnitsOfPlayer(newPlayerOwner.BoardCards);
-            }
-            else
-            {
-                UpdatePositionOfBoardUnitsOfOpponent();
-            }
+            view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+
+            UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+            UpdatePositionOfBoardUnitsOfOpponent();
         }
 
         public void DistractUnit(BoardUnitView boardUnit)

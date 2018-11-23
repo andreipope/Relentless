@@ -169,16 +169,13 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer.ThrowOnHandChanged();
 
-            if (!_gameplayManager.IsTutorial)
+            if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP && !_gameplayManager.IsTutorial)
             {
                 _gameplayManager.CurrentPlayer.CardsInDeck =
-                    _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
-                _battlegroundController.StartGameplayTurns();
+                _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
             }
-            else
-            {
-                _battlegroundController.StartGameplayTurns();
-            }
+
+            _battlegroundController.StartGameplayTurns();
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {

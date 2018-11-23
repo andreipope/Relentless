@@ -162,6 +162,8 @@ namespace Loom.ZombieBattleground
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.WorkingCard);
                     break;
+                case null:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pastActionParam.Caller), pastActionParam.Caller, null);
             }
