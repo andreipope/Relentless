@@ -256,6 +256,9 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
+                _gameplayManager.OpponentPlayer.RemoveCardFromDeck(card);
+                _gameplayManager.OpponentPlayer.AddCardToGraveyard(card);
+
                 _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             });
         }
