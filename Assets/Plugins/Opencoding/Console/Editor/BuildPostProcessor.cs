@@ -23,7 +23,7 @@ namespace Opencoding.Console.Editor
 			var debugConsoles = UnityEngine.Object.FindObjectsOfType<DebugConsole>();
 		    if (debugConsoles.Length > 1)
 		    {
-#if UNITY_5_0 || UNITY_5_1 || UNITY_5_2
+#if UNITY_5_0 || (UNITY_5_1 || UNITY_5_2)
                 throw new InvalidOperationException("More than one debug console in the scene " +
 		                                            EditorApplication.currentScene);
 #else
@@ -54,7 +54,7 @@ namespace Opencoding.Console.Editor
 
 			if (debugConsole.Settings.AutoSetVersion)
 			{
-#if UNITY_IOS || UNITY_ANDROID || !UNITY_5
+#if UNITY_IOS || (UNITY_ANDROID || !UNITY_5)
 				debugConsole.Settings.GameVersion = PlayerSettings.bundleVersion;
 #else
 				debugConsole.Settings.GameVersion = Application.version;
