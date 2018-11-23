@@ -432,6 +432,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
                 catch (Exception e)
                 {
+                    Debug.Log("Unsubscribe Error " + e);
                 }
 
             }
