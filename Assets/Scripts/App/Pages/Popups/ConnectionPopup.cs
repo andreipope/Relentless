@@ -12,6 +12,7 @@ namespace Loom.ZombieBattleground
         public event Action CancelMatchmakingClicked;
 
         public Func<Task> ConnectFunc;
+        public Func<Task> ConnectFuncInGameplay;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -48,6 +49,7 @@ namespace Loom.ZombieBattleground
         public void Hide()
         {
             ConnectFunc = null;
+            ConnectFuncInGameplay = null;
 
             if (Self == null)
                 return;
@@ -116,9 +118,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public async Task ExecuteConnectionFailedInGamePlay()
+        {
+            Task task = ConnectFuncInGameplay?.Invoke();
+
+        }
+
         public void ShowFailedInGame()
         {
             SetUIState(ConnectionState.ConnectionFailedInGame);
+        }
+
+        public void ShowFailedInGamePlay()
+        {
+            SetUIState(ConnectionState.ConnectionFailedInGameplay);
         }
 
         public void ShowLookingForMatch()
@@ -136,9 +149,16 @@ namespace Loom.ZombieBattleground
             await ExecuteConnection();
         }
 
-        private void PressedCloseHandler()
+        private async void PressedCloseHandler()
         {
-            Hide();
+            if (ConnectFuncInGameplay != null)
+            {
+                await ExecuteConnectionFailedInGamePlay();
+            }
+            else
+            {
+                Hide();
+            }
         }
 
         private void PressedCancelMatchmakingHandler()
@@ -179,6 +199,14 @@ namespace Loom.ZombieBattleground
                     _failedGroup.gameObject.SetActive(false);
                     _matchMakingGroup.gameObject.SetActive(true);
                     break;
+                case ConnectionState.ConnectionFailedInGameplay:
+                    _connectingGroup.gameObject.SetActive(false);
+                    _failedGroup.gameObject.SetActive(true);
+                    _matchMakingGroup.gameObject.SetActive(false);
+                    _closeButton.gameObject.SetActive(true);
+                    _reconnectButton.gameObject.SetActive(false);
+                    _quitButton.gameObject.SetActive(false);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -192,7 +220,9 @@ namespace Loom.ZombieBattleground
 
             ConnectionFailedInGame,
 
-            LookingForMatch
+            LookingForMatch,
+
+            ConnectionFailedInGameplay
         }
     }
 }

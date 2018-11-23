@@ -60,6 +60,7 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
+        private IGameplayManager _gameplayManager;
 
         private CancellationTokenSource _matchmakingCancellationTokenSource;
         private bool _isMatchmakingInProgress;
@@ -68,6 +69,10 @@ namespace Loom.ZombieBattleground
         private bool _isWaitForTurnTimerStart;
         private float _waitForTurnTimer;
 
+        private bool _isInternetBroken = false;
+        private float _checkInternetInterval = 5f;
+        private float _elapsedInternetCheckTime;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -75,7 +80,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-
+            _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
@@ -90,6 +95,21 @@ namespace Loom.ZombieBattleground
                 {
                     ResetWaitForTurnTimer();
                     await _backendFacade.CheckPlayerStatus(MatchMetadata.Id);
+                }
+            }
+
+            if (_gameplayManager.CurrentPlayer != null && !_isInternetBroken)
+            {
+                _elapsedInternetCheckTime += Time.deltaTime;
+                if (_elapsedInternetCheckTime >= _checkInternetInterval)
+                {
+                    if (Application.internetReachability == NetworkReachability.NotReachable)
+                    {
+                        _isInternetBroken = true;
+                        _backendFacade.ShowConnectionPopup();
+
+                    }
+                    _elapsedInternetCheckTime = 0f;
                 }
             }
         }
@@ -324,6 +344,7 @@ namespace Loom.ZombieBattleground
 
         private async Task LoadInitialGameState()
         {
+            _isInternetBroken = false;
             GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
             Debug.LogWarning("Initial game state:\n" + InitialGameState);
