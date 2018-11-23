@@ -5,9 +5,11 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Loom.ZombieBattleground.OverlordManager;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -30,7 +32,13 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _skillDescription;
 
-        private Transform _abilitiesGroup;
+        private TextMeshProUGUI _message;
+
+        private HorizontalLayoutGroup _abilitiesGroup;
+
+        private GameObject _rewardSkillObject;
+
+        private GameObject _rewardDisabledObject;
 
         private List<AbilityViewItem> _abilities;
 
@@ -86,15 +94,21 @@ namespace Loom.ZombieBattleground
             _buttonOk = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
-            _abilitiesGroup = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/Abilities");
+            _rewardSkillObject = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/RewardSkill_Panel").gameObject;
+
+            _rewardDisabledObject = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/RewardDisabled_Panel").gameObject;
+
+            _abilitiesGroup = _rewardSkillObject.transform.Find("Abilities").GetComponent<HorizontalLayoutGroup>();
+
+            _message = _rewardDisabledObject.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 
             _currentLevel = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/Text_Level")
                 .GetComponent<TextMeshProUGUI>();
 
-            _skillName = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/SkillName")
+            _skillName = _rewardSkillObject.transform.Find("SkillName")
                 .GetComponent<TextMeshProUGUI>();
 
-            _skillDescription = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/SkillDescription")
+            _skillDescription = _rewardSkillObject.transform.Find("SkillDescription")
                 .GetComponent<TextMeshProUGUI>();
 
             Self.SetActive(true);
@@ -105,19 +119,14 @@ namespace Loom.ZombieBattleground
             int heroId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
 
             _selectedHero = dataManager.CachedHeroesData.HeroesParsed[heroId];
+
             string heroName = _selectedHero.Element.ToLowerInvariant();
             _selectHeroSpriteRenderer.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
 
             _currentLevel.text = _selectedHero.Level.ToString();
 
-            _abilities.Clear();
-
             FillInfo();
-
-            AbilityViewItem newOpenAbility = _abilities.FindLast((x) => x.Skill != null);
-            newOpenAbility.IsSelected = true;
-            AbilityInstanceOnSelectionChanged(newOpenAbility);
         }
 
         public void Show(object data)
@@ -127,12 +136,46 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo()
         {
+            LevelReward levelReward = GameClient.Get<IOverlordManager>().GetLevelReward(_selectedHero);
+
+            if (levelReward != null)
+            {
+                switch (levelReward.Reward)
+                {
+                    case LevelReward.OverlordSkillRewardItem skillReward:
+                        {
+                            _rewardDisabledObject.SetActive(false);
+                            _rewardSkillObject.SetActive(true);
+
+                            FillRewardSkillInfo();
+
+                            AbilityViewItem newOpenAbility = _abilities.FindLast((x) => x.Skill != null);
+                            newOpenAbility.IsSelected = true;
+                            AbilityInstanceOnSelectionChanged(newOpenAbility);
+                        }
+                        break;
+                    case LevelReward.UnitRewardItem unitReward:
+                    case LevelReward.ItemReward itemReward:
+                    default:
+                        {
+                            _rewardDisabledObject.SetActive(true);
+                            _rewardSkillObject.SetActive(false);
+                            _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void FillRewardSkillInfo()
+        {
+            _abilities.Clear();
+
             AbilityViewItem abilityInstance = null;
-            Debug.LogError(_selectedHero.Skills.Count);
             for (int i = 0; i < _abilityListSize; i++)
             {
-                abilityInstance = new AbilityViewItem(_abilitiesGroup);
-                if (i < 2)//(_selectedHero.Skills[i].Unlocked)
+                abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
+                if (i < _selectedHero.Skills.Count && _selectedHero.Skills[i].Unlocked)
                 {
                     abilityInstance.Skill = _selectedHero.Skills[i];
                 }
