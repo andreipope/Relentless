@@ -101,7 +101,6 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.CurrentPlayer != null && !_isInternetBroken)
             {
                 _elapsedInternetCheckTime += Time.deltaTime;
-                Debug.LogError(_elapsedInternetCheckTime);
                 if (_elapsedInternetCheckTime >= _checkInternetInterval)
                 {
                     if (Application.internetReachability == NetworkReachability.NotReachable)

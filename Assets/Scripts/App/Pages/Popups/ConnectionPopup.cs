@@ -65,7 +65,6 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            Debug.LogError("Connection Ppo Up");
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
