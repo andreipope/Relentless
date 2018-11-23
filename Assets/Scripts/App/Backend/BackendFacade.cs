@@ -425,9 +425,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (_subscribeCount > 0)
             {
                 Debug.Log("Unsubscribing from Event - Current Subscriptions = " + _subscribeCount);
-                await reader.UnsubscribeAsync(EventHandler);
-                _subscribeCount--;
-                Debug.Log("Final Subscriptions = " + _subscribeCount);
+                try
+                {
+                    await reader.UnsubscribeAsync(EventHandler);
+                    _subscribeCount--;
+                }
+                catch (Exception e)
+                {
+                }
+
             }
             else
             {
@@ -504,15 +510,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
         }
 
-        private void ShowConnectionPopup()
+        public void ShowConnectionPopup()
         {
             IUIManager uiManager = GameClient.Get<IUIManager>();
             IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
             ConnectionPopup connectionPopup = uiManager.GetPopup<ConnectionPopup>();
+
+            if (gameplayManager.CurrentPlayer == null)
+            {
+                return;
+            }
+
             if (connectionPopup.Self == null)
             {
                 Func<Task> connectFuncInGame = async () =>
                 {
+                    GameClient.Get<IQueueManager>().Clear();
                     gameplayManager.CurrentPlayer.ThrowLeaveMatch();
                     gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                     GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
