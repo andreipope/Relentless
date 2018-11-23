@@ -104,8 +104,9 @@ namespace Loom.ZombieBattleground
                 ? GameClient.Get<ITutorialManager>().CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId
                 : dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
 
-            _currentPlayerHero = dataManager.CachedHeroesData.HeroesParsed[heroId];
-            string heroName = _currentPlayerHero.Element.ToLowerInvariant();
+            _currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
+            string heroName = _currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
+
             _selectHeroSpriteRenderer.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
 

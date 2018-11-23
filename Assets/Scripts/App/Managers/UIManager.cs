@@ -68,6 +68,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new PlayerOrderPopup());
             _uiPopups.Add(new TermsPopup());
             _uiPopups.Add(new LoginPopup());
+            _uiPopups.Add(new MatchMakingPopup());
             _uiPopups.Add(new ConnectionPopup());
             _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
@@ -111,6 +112,14 @@ namespace Loom.ZombieBattleground
             foreach (IUIElement page in Pages)
             {
                 page.Hide();
+            }
+        }
+
+        public void HideAllPopups()
+        {
+            foreach (IUIPopup popup in _uiPopups)
+            {
+                popup.Hide();
             }
         }
 

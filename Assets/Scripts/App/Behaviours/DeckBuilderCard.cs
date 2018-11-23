@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
     {
         public HordeEditingPage Scene;
 
-        public Card Card;
+        public IReadOnlyCard Card;
 
         public bool IsHordeItem;
 

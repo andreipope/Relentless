@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
         private BoardArrowController _boardArrowController;
 
-        private Enumerators.AiType _aiType;
+        private Enumerators.AIType _aiType;
 
         private List<BoardUnitModel> _attackedUnitTargets;
 
@@ -103,17 +103,12 @@ namespace Loom.ZombieBattleground
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
                 int deckId = _gameplayManager.OpponentDeckId;
-                Deck deck = _dataManager.CachedOpponentDecksData.Decks.First(d => d.Id == deckId);
+                Deck deck = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == deckId).Deck;
                 foreach (DeckCardData card in deck.Cards)
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        workingDeck.Add(
-                            new WorkingCard(
-                                _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName),
-                                _gameplayManager.OpponentPlayer
-                                )
-                            );
+                        workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, _gameplayManager.OpponentPlayer));
                     }
                 }
 
@@ -165,19 +160,12 @@ namespace Loom.ZombieBattleground
 
         private void SetAiTypeByDeck()
         {
-            Deck deck =
-                _dataManager.CachedOpponentDecksData.Decks.Find(d => d.Id == _gameplayManager.OpponentDeckId);
+            AIDeck aiDeck =
+                _dataManager.CachedAiDecksData.Decks.Find(d => d.Deck.Id == _gameplayManager.OpponentDeckId);
 
-            if (deck != null)
+            if (aiDeck != null)
             {
-                if (!string.IsNullOrEmpty(deck.Type))
-                {
-                    SetAiType(Utilites.CastStringTuEnum<Enumerators.AiType>(deck.Type, true));
-                }
-                else
-                {
-                    SetAiType(Enumerators.AiType.MIXED_AI); // DEFAULT
-                }
+                SetAiType(aiDeck.Type != Enumerators.AIType.UNDEFINED ? aiDeck.Type : Enumerators.AIType.MIXED_AI);
             }
             else
             {
@@ -185,7 +173,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetAiType(Enumerators.AiType aiType)
+        public void SetAiType(Enumerators.AIType aiType)
         {
             _aiType = aiType;
         }
@@ -386,8 +374,8 @@ namespace Loom.ZombieBattleground
             }
 
             int totalValue = GetPlayerAttackingValue();
-            if ((totalValue >= _gameplayManager.OpponentPlayer.Defense || _aiType == Enumerators.AiType.BLITZ_AI ||
-                _aiType == Enumerators.AiType.TIME_BLITZ_AI))
+            if ((totalValue >= _gameplayManager.OpponentPlayer.Defense || _aiType == Enumerators.AIType.BLITZ_AI ||
+                _aiType == Enumerators.AIType.TIME_BLITZ_AI))
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
@@ -610,8 +598,8 @@ namespace Loom.ZombieBattleground
                     {
                         foreach(AbilityData data in abilitiesWithTargets)
                         {
-                            if (data.AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
-                                data.AbilityActivityType == Enumerators.AbilityActivityType.ACTIVE)
+                            if (data.CallType == Enumerators.AbilityCallType.ENTRY &&
+                                data.ActivityType == Enumerators.AbilityActivityType.ACTIVE)
                             {
                                 needTargetForAbility = true;
                             }
@@ -657,7 +645,7 @@ namespace Loom.ZombieBattleground
                         }
                 }
 
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.RealCost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             });
         }
 
@@ -789,7 +777,7 @@ namespace Loom.ZombieBattleground
 
         private BoardObject GetAbilityTarget(WorkingCard card)
         {
-            Card libraryCard = card.LibraryCard;
+            IReadOnlyCard libraryCard = card.LibraryCard;
 
             BoardObject target = null;
 
@@ -1048,7 +1036,7 @@ namespace Loom.ZombieBattleground
 
             foreach (WorkingCard item in list)
             {
-                cards.Add(_dataManager.CachedCardsLibraryData.GetCard(item.CardId));
+                cards.Add(_dataManager.CachedCardsLibraryData.GetCardFromName(item.LibraryCard.Name));
             }
 
             cards = cards.OrderBy(x => x.Cost).ThenBy(y => y.Cost.ToString().Length).ToList();
@@ -1059,7 +1047,7 @@ namespace Loom.ZombieBattleground
 
             foreach (Card item in cards)
             {
-                sortedList.Add(list.Find(x => x.CardId == item.Id && !sortedList.Contains(x)));
+                sortedList.Add(list.Find(x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains(x)));
             }
 
             list.Clear();
