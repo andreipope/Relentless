@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.BackendCommunication;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,6 +16,7 @@ namespace Loom.ZombieBattleground
     public class MulliganPopup : IUIPopup
     {
         public GameObject Self { get; private set; }
+        public event Action<List<WorkingCard>> MulliganCards;
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
@@ -203,6 +205,8 @@ namespace Loom.ZombieBattleground
         public void KeepButtonOnClickHandler()
         {
             _gameplayManager.GetController<CardsController>().CardsDistribution(_mulliganCardItems.FindAll((x) => x.CardShouldBeChanged).Select((k) => k.card).ToList());
+
+            MulliganCards?.Invoke(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.card).ToList());
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Hide();
         }        

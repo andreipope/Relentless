@@ -111,6 +111,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Player.CardPlayed += CardPlayedHandler;
                     Player.CardAttacked += CardAttackedHandler;
                     Player.LeaveMatch += LeaveMatchHandler;
+                    GameClient.Get<UIManager>().GetPopup<MulliganPopup>().MulliganCards += MulliganHandler;
 
                     _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
                     _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;

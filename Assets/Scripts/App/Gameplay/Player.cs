@@ -322,7 +322,7 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> CardsInGraveyard { get; }
 
-        public List<WorkingCard> CardsInHand { get; }
+        public List<WorkingCard> CardsInHand { get; set; }
 
         public List<WorkingCard> CardsOnBoard { get; }
 

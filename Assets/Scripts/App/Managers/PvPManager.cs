@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
@@ -315,8 +317,43 @@ namespace Loom.ZombieBattleground
                             if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                             {
                                 _isWaitForTurnTimerStart = true;
+                            } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                            {
+                                InitialPlayerState playerState = playerActionEvent.Match.PlayerStates.First(state =>
+                                state.Id == _backendDataControlMediator.UserDataModel.UserId);
+                                                                                                     
+                                _gameplayManager.CurrentPlayer.CardsInDeck = new List<WorkingCard>();
+
+                                /*
+                                foreach (CardInstance cardInstance in playerState.CardsInDeck)
+                                {
+                                    _gameplayManager.CurrentPlayer.CardsInDeck.Add(cardInstance.FromProtobuf(_gameplayManager.CurrentPlayer));
+                                }
+                                */
                             }
                             return;
+                        } else {
+                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                            {
+                                InitialPlayerState playerState = playerActionEvent.Match.PlayerStates.First(state =>
+                                state.Id != _backendDataControlMediator.UserDataModel.UserId);
+
+                                _gameplayManager.OpponentPlayer.CardsInDeck = new List<WorkingCard>();
+
+                                /*
+                                foreach (CardInstance cardInstance in playerState.)
+                                {
+                                    _gameplayManager.OpponentPlayer.CardsInDeck.Add(cardInstance.FromProtobuf(_gameplayManager.OpponentPlayer));
+                                }
+
+                                _gameplayManager.OpponentPlayer.CardsInHand = new List<WorkingCard>();
+
+                                foreach (CardInstance cardInstance in playerState.CardsInHand)
+                                {
+                                    _gameplayManager.OpponentPlayer.CardsInHand.Add(cardInstance.FromProtobuf(_gameplayManager.OpponentPlayer));
+                                }
+                                */
+                            }
                         }
 
                         OnReceivePlayerActionType(playerActionEvent);

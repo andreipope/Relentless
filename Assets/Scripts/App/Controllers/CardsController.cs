@@ -186,11 +186,14 @@ namespace Loom.ZombieBattleground
         public void CardsDistribution(List<WorkingCard> mulliganCards)
         {
             Player player = _gameplayManager.CurrentPlayer;
-            List<WorkingCard> randomCards = InternalTools.GetRandomElementsFromList(
-                player.CardsInDeck.Except(player.CardsPreparingToHand).ToList(),
-                mulliganCards.Count);
+            List<WorkingCard> randomCards = new List<WorkingCard>();
+            for (int i = 0; i < mulliganCards.Count; i++) {
+                randomCards.Add(player.CardsInDeck[0]);
+            }
             player.CardsPreparingToHand = player.CardsPreparingToHand.Except(mulliganCards).ToList();
             player.CardsPreparingToHand.AddRange(randomCards);
+
+            
 
             EndCardDistribution();
         }

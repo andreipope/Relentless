@@ -174,7 +174,7 @@ namespace Loom.ZombieBattleground
 
         private void OnMulliganProcessHandler(PlayerActionMulligan actionMulligan)
         {
-
+  
         }
 
         private void OnRankBuffHandler(PlayerActionRankBuff actionRankBuff)
