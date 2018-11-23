@@ -2996,6 +2996,61 @@
           }
         },
         {  
+          "id":"115",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Shovel",
+          "description":"3 damage to an enemy OR restore 3 Def to an ally",
+          "flavorText":"Friendly neighborhood shovel!",
+          "picture":"shovel_normal",
+          "rank":"MINION",
+          "type":"WALKER",
+          "cost":3,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"CHOOSABLE_ABILITIES",
+              "activityType":"PASSIVE",
+              "callType":"ENTRY",
+              "targetType":"OPPONENT_CARD | PLAYER_CARD",
+              "buffType":"ENTRY",
+              "choosableAbilities":[  
+                {  
+                  "description":"3 damage to an enemy",
+                  "abilityData":{  
+                    "type":"DAMAGE_TARGET",
+                    "activityType":"active",
+                    "callType":"entry",
+                    "targetType":"opponent | opponent_card",
+                    "value":3,
+                    "buffType":"ENTRY"
+                  }
+                },
+                {  
+                  "description":"restore 3 def to an ally",
+                  "abilityData":{  
+                    "type":"HEAL",
+                    "activityType":"active",
+                    "callType":"entry",
+                    "targetType":"player | player_card",
+                    "value":3,
+                    "buffType":"ENTRY"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {  
           "id":"41",
           "kind":"SPELL",
           "set":"ITEM",
