@@ -317,16 +317,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void MulliganHandler(List<WorkingCard> cards)
             {
+                PlayerActionMulligan playerActionMulligan = new PlayerActionMulligan();
+
+                foreach (WorkingCard card in cards)
+                {
+                    playerActionMulligan.MulliganedCards.Add(card.ToProtobuf());
+                }
+
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
                     ActionType = PlayerActionType.Types.Enum.Mulligan,
                     PlayerId = playerId,
-                    Mulligan = new PlayerActionMulligan
-                    {
-                        // TODO : cant able to set the mulligan cards, no setter in zb protobuf
-                        //MulliganedCards = GetMulliganCards(cards)
-                    }
+                    Mulligan = playerActionMulligan
                 };
 
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
