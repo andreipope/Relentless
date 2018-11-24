@@ -545,9 +545,9 @@ public class SingleplayerTests
 
     [UnityTest]
     [Timeout (3600000)]
-    public IEnumerator Test_C5_PlayWithAllFourHordes ()
+    public IEnumerator Test_C5_PlayWithAllHordes ()
     {
-        _testHelper.SetTestName ("Solo - Gameplay with 4 Hordes");
+        _testHelper.SetTestName ("Solo - Gameplay with All Hordes");
 
         yield return _testHelper.MainMenuTransition ("Button_Play");
 
@@ -560,16 +560,11 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        if (_testHelper.GetNumberOfHordes () <= 3)
-        {
-            Assert.Fail ("Please, check out doc for guidance on how to run this test");
-        }
-
         float allowedTestTime = 3000f;
         int hordeIndex = -1;
         while (_testHelper.GetTestTime () <= allowedTestTime)
         {
-            hordeIndex = (hordeIndex + 1) % 4;
+            hordeIndex = (hordeIndex + 1) % (_testHelper.GetNumberOfHordes () - 1);
 
             int selectedHordeIndex = hordeIndex;
 

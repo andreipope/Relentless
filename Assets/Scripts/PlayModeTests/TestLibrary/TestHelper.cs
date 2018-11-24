@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
 using UnityEngine.UI;
 using TMPro; // Used this trick to add it: https://forum.unity.com/threads/namespace-tmpro-not-found-in-test-runner-test.541387/#post-3570214
 
@@ -594,6 +593,57 @@ public class TestHelper
         _virtualInputModule.Release ();
 
         yield return null;
+    }
+
+    private Button dummyButton;
+
+    public IEnumerator ButtonHoverCheck (string buttonName)
+    {
+        GameObject targetGameObject = GameObject.Find (buttonName);
+
+        if (targetGameObject != null)
+        {
+            if (targetGameObject.GetComponent<ButtonShiftingContent> () != null)
+            {
+                ButtonShiftingContent targetButtonShiftingContent = targetGameObject.GetComponent<ButtonShiftingContent> ();
+
+                yield return FakeOutButtonEventClickAndCheck (targetButtonShiftingContent.onClick, buttonName);
+            }
+            else if (targetGameObject.GetComponent<Button> () != null)
+            {
+                Button targetButton = targetGameObject.GetComponent<Button> ();
+
+                yield return FakeOutButtonEventClickAndCheck (targetButton.onClick, buttonName);
+            }
+        }
+
+        yield return null;
+    }
+
+    private IEnumerator FakeOutButtonEventClickAndCheck (Button.ButtonClickedEvent buttonClickedEvent, string buttonName)
+    {
+        bool buttonClickable = false;
+
+        dummyButton.onClick = buttonClickedEvent;
+        buttonClickedEvent = new Button.ButtonClickedEvent ();
+        buttonClickedEvent.AddListener (() => { buttonClickable = true; });
+
+        WaitStart (3);
+        MoveCursorToObject (buttonName, 1);
+        FakeClick ();
+
+        yield return new WaitUntil (() => buttonClickable || WaitTimeIsUp ());
+
+        if (!buttonClickable)
+        {
+            Assert.Fail ("Button is not clickable: " + buttonName);
+        }
+        else
+        {
+            buttonClickedEvent = dummyButton.onClick;
+            dummyButton.onClick = new Button.ButtonClickedEvent ();
+            dummyButton.onClick.RemoveAllListeners ();
+        }
     }
 
     public IEnumerator HandleLogin ()
