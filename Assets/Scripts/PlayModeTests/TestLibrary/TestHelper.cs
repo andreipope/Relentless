@@ -434,6 +434,9 @@ public class TestHelper
         return false;
     }
 
+    /// <summary>
+    /// In case Terms Popup shows up, the method closes it.
+    /// </summary>
     public IEnumerator CloseTermsPopupIfRequired ()
     {
         if (GameObject.Find("TermsPopup(Clone)") != null)
@@ -470,6 +473,16 @@ public class TestHelper
         return false;
     }
 
+    /// <summary>
+    /// Checks current page’s name and confirms that it’s correct with what was expected.
+    /// </summary>
+    /// <remarks>
+    /// In case we decide to use this, we need to use it for every page. Using it for just a single one may not work as expected.
+    /// </remarks>
+    /// <example>
+    /// yield return AssertCurrentPageName ("MainMenuPage");
+    /// </example>
+    /// <param name="expectedPageName">Page name</param>
     public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
     {
         if (expectedPageName == lastCheckedPageName)
@@ -510,6 +523,12 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Goes back by one page and clicks on "Play" button.
+    /// </summary>
+    /// <remarks>
+    /// Used when tutorial is shown instead of letting the script to test what it is meant for.
+    /// </remarks>
     public IEnumerator GoBackToMainAndPressPlay ()
     {
         yield return GoOnePageHigher ();
@@ -517,6 +536,10 @@ public class TestHelper
         yield return MainMenuTransition ("Button_Play");
     }
 
+    /// <summary>
+    /// Adds virtual input module to the scene to handle fake mouse movements and clicks.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator AddVirtualInputModule ()
     {
         GameObject testSetup = GameObject.Instantiate (Resources.Load<GameObject> ("Prefabs/TestSetup"));
@@ -531,6 +554,11 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Moves cursor to the location of the object
+    /// </summary>
+    /// <param name="objectName">Name of the object in the scene</param>
+    /// <param name="duration">Movement duration</param>
     public IEnumerator MoveCursorToObject (string objectName, float duration)
     {
         GameObject targetObject = GameObject.Find (objectName);
@@ -551,6 +579,12 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Clicks using the virtual mouse cursor.
+    /// </summary>
+    /// <remarks>
+    /// Useful only on UI items.
+    /// </remarks>
     public IEnumerator FakeClick ()
     {
         _virtualInputModule.Press ();
@@ -588,6 +622,12 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Takes name of the gameObject that has Button or ButtonShiftingContent component and clicks it.
+    /// </summary>
+    /// <param name="buttonName">Name of the button to click</param>
+    /// <param name="parentGameObject">(Optional) Parent object to look under</param>
+    /// <param name="count">(Optional) Number of times to click</param>
     public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null, int count = 1)
     {
         GameObject menuButtonGameObject = null;
@@ -635,6 +675,11 @@ public class TestHelper
         return GameObject.Find (buttonName) != null;
     }
 
+    /// <summary>
+    /// Takes a transition path (list of buttons to click) and goes through them clicking each.
+    /// </summary>
+    /// <param name="transitionPath">Slash separated list of buttons</param>
+    /// <param name="delay">(Optional) Delay between clicks</param>
     public IEnumerator MainMenuTransition (string transitionPath, float delay = 2f)
     {
         foreach (string buttonName in transitionPath.Split ('/'))
@@ -645,6 +690,10 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Clicks on the overlay Yes/No button.
+    /// </summary>
+    /// <param name="isResponseYes">Is the response Yes?</param>
     public IEnumerator RespondToYesNoOverlay (bool isResponseYes)
     {
         string buttonName = isResponseYes ? "Button_Yes" : "Button_No";
@@ -657,6 +706,9 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Waits until a page unloads.
+    /// </summary>
     public IEnumerator WaitUntilPageUnloads ()
     {
         yield return new WaitUntil (() => {
@@ -1169,52 +1221,83 @@ public class TestHelper
 
                     if (needTargetForAbility)
                     {
-                        yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null);
-
                         if (target == null)
                         {
+                            Debug.LogWarning ("About to discard ability.");
+
                             WaitStart (3);
-                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null || WaitTimeIsUp ());
+                            yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
+                            _boardArrowController.ResetCurrentBoardArrow ();
+
+                            WaitStart (3);
+                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
+                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+
+                            /* WaitStart (3);
+                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability != null || WaitTimeIsUp ());
+
+                            Debug.LogWarning ("About to discard ability: " + _abilitiesController.CurrentActiveAbility.Ability.AbilityData.Name);
 
                             _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                            _boardArrowController.ResetCurrentBoardArrow ();
+                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget (); */
                         }
                         else
                         {
+                            Debug.LogWarning ("About to use ability.");
+
                             WaitStart (3);
-                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null || WaitTimeIsUp ());
+                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility?.Ability?.TargettingArrow != null || WaitTimeIsUp ());
 
                             if (_abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null)
                             {
                                 Debug.LogWarning ("Used the TargettingArrow");
 
-                                switch (target)
+                                if (target != null)
                                 {
-                                    case BoardUnitModel unit:
-                                        Debug.LogWarning ("BoardUnitModel");
+                                    switch (target)
+                                    {
+                                        case BoardUnitModel unit:
+                                            Debug.LogWarning ("BoardUnitModel");
+                                            
+                                            _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
+                                            // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnCardSelected (_battlegroundController.GetBoardUnitViewByModel (unit));
 
-                                        _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
-                                        _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnCardSelected (_battlegroundController.GetBoardUnitViewByModel (unit));
+                                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+                                            break;
+                                        case Loom.ZombieBattleground.Player player:
+                                            Debug.LogWarning ("Player");
+                                            
+                                            _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
+                                            // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnPlayerSelected (player);
 
-                                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                        break;
-                                    case Loom.ZombieBattleground.Player player:
-                                        Debug.LogWarning ("Player");
+                                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+                                            break;
+                                        case null:
+                                            Debug.LogWarning ("Null");
 
-                                        _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
-                                        _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnPlayerSelected (player);
+                                            break;
+                                        default:
+                                            throw new ArgumentOutOfRangeException (nameof (target), target, null);
+                                    }
 
-                                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                        break;
-                                    case null:
-                                        Debug.LogWarning ("Null");
+                                    _boardArrowController.ResetCurrentBoardArrow ();
 
-                                        break;
-                                    default:
-                                        throw new ArgumentOutOfRangeException (nameof (target), target, null);
+                                    yield return LetsThink ();
                                 }
+                                else
+                                {
+                                    WaitStart (3);
+                                    yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
+                                    _boardArrowController.ResetCurrentBoardArrow ();
 
-                                // _boardArrowController.ResetCurrentBoardArrow ();
+                                    WaitStart (3);
+                                    yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
+                                    _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                    _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+                                }
                             }
                         }
 
@@ -2090,9 +2173,9 @@ public class TestHelper
             } */
 
             skill.EndDoSkill ();
-        };
 
-        _boardArrowController.ResetCurrentBoardArrow ();
+            // _boardArrowController.ResetCurrentBoardArrow ();
+        };
 
         skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target, action: callback);
 
