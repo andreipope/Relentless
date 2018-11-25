@@ -163,8 +163,6 @@ public class MultiplayerTests
 
         yield return _testHelper.RespondToYesNoOverlay (true);
 
-        yield return _testHelper.GoBackToMainPage ();
-
         yield return _testHelper.LetsThink ();
     }
 
