@@ -3051,7 +3051,7 @@ public class TestHelper
         yield return AddCardToHorde2 (cardName, count);
     }
 
-    public IEnumerator AddCardToHorde2 (string cardName, int count = 1)
+    private IEnumerator AddCardToHorde2 (string cardName, int count = 1)
     {
         int checkedPage;
 
