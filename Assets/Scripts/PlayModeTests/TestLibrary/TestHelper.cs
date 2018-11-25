@@ -1570,6 +1570,77 @@ public class TestHelper
                             PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                             _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
                         });
+
+                        yield return null;
+
+                        if (needTargetForAbility)
+                        {
+                            if (target == null)
+                            {
+                                Debug.LogWarning ("About to discard ability.");
+
+                                WaitStart (3);
+                                yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
+                                _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+                            }
+                            else
+                            {
+                                Debug.LogWarning ("About to use ability.");
+
+                                WaitStart (3);
+                                yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility?.Ability?.TargettingArrow != null || WaitTimeIsUp ());
+
+                                if (_abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null)
+                                {
+                                    Debug.LogWarning ("Used the TargettingArrow");
+
+                                    if (target != null)
+                                    {
+                                        switch (target)
+                                        {
+                                            case BoardUnitModel unit:
+                                                Debug.LogWarning ("BoardUnitModel");
+
+                                                _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
+                                                // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnCardSelected (_battlegroundController.GetBoardUnitViewByModel (unit));
+
+                                                _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                                _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+                                                break;
+                                            case Loom.ZombieBattleground.Player player:
+                                                Debug.LogWarning ("Player");
+
+                                                _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
+                                                // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnPlayerSelected (player);
+
+                                                _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                                _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+                                                break;
+                                            case null:
+                                                Debug.LogWarning ("Null");
+
+                                                break;
+                                            default:
+                                                throw new ArgumentOutOfRangeException (nameof (target), target, null);
+                                        }
+
+                                        yield return LetsThink ();
+                                    }
+                                    else
+                                    {
+                                        WaitStart (3);
+                                        yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
+                                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                                        _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+                                    }
+                                }
+                            }
+
+                            yield return LetsThink ();
+
+                            yield return null;
+                        }
                     }
                     else
                     {
