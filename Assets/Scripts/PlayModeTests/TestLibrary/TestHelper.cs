@@ -632,6 +632,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Goes through list of buttons and checks if they are clickable.
+    /// </summary>
+    /// <param name="buttonNames">Button names.</param>
     public IEnumerator ButtonListClickCheck (string[] buttonNames)
     {
         foreach (string buttonName in buttonNames)
@@ -646,6 +650,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Checks if a button is clickable.
+    /// </summary>
+    /// <param name="buttonName">Button name.</param>
     public IEnumerator ButtonClickCheck (string buttonName)
     {
         GameObject targetGameObject = GameObject.Find (buttonName);
@@ -923,6 +931,10 @@ public class TestHelper
 
     #region Interactions with PvP module
 
+    /// <summary>
+    /// Sets tags to be used by the matchmaking system.
+    /// </summary>
+    /// <param name="tags">Tags</param>
     public void SetPvPTags (string[] tags)
     {
         if (tags == null || tags.Length <= 0)
@@ -954,6 +966,10 @@ public class TestHelper
 
     private List<WorkingCard> _normalUnitCardInHand, _normalSpellCardInHand;
 
+    /// <summary>
+    /// Initalizes the player.
+    /// </summary>
+    /// <remarks>Created to be in line with AIController.</remarks>
     public void InitalizePlayer ()
     {
         _attackedUnitTargets = new List<BoardUnitModel> ();
@@ -965,6 +981,9 @@ public class TestHelper
         _callAbilityAction = null; // _actionsQueueController.AddNewActionInToQueue (null);
     }
 
+    /// <summary>
+    /// Once the turn is started, goes through (AI) steps, to make logical moves.
+    /// </summary>
     public IEnumerator TurnStartedHandler ()
     {
         yield return LetsThink ();
@@ -1010,13 +1029,19 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Once turn ends, clears up lists, to be used in next turn.
+    /// </summary>
     public void TurnEndedHandler ()
     {
         _attackedUnitTargets.Clear ();
         _unitsToIgnoreThisTurn.Clear ();
     }
 
-    // AI step 1
+    /// <summary>
+    /// AI step 1: Plays cards from hand to board
+    /// </summary>
+    /// <remarks>Logic taken from AIController.</remarks>
     public IEnumerator PlayCardsFromHand ()
     {
         yield return CheckGooCard ();
@@ -1064,6 +1089,10 @@ public class TestHelper
     }
 
     // AI step 2
+    /// <summary>
+    /// AI step 2: Plays cards from board
+    /// </summary>
+    /// <remarks>Logic taken from AIController.</remarks>
     private IEnumerator UseUnitsOnBoard ()
     {
         List<BoardUnitModel> unitsOnBoard = new List<BoardUnitModel> ();
@@ -1208,7 +1237,10 @@ public class TestHelper
     }
 
     // todo: review
-    // AI step 3
+    /// <summary>
+    /// AI step 3: Uses player skills
+    /// </summary>
+    /// <remarks>Logic taken from AIController.</remarks>
     private IEnumerator UsePlayerSkills ()
     {
         bool wasAction = false;
@@ -1371,6 +1403,11 @@ public class TestHelper
         return true;
     }
 
+    /// <summary>
+    /// Playes cards with specified indices from hand to board.
+    /// </summary>
+    /// <remarks>Was written specifically for tutorials, where we need to play cards with certain indices.</remarks>
+    /// <param name="cardIndices">Card indices.</param>
     public IEnumerator PlayCardFromHandToBoard (int[] cardIndices)
     {
         foreach (int cardIndex in cardIndices)
@@ -1551,6 +1588,13 @@ public class TestHelper
     }
 
     // todo: reconsider having this
+    /// <summary>
+    /// Plays cards with defined indices.
+    /// </summary>
+    /// <remarks>Was written specifically for tutorials, where we need to play cards with certain indices.</remarks>
+    /// <param name="attackerCardIndices">Attacker card indices.</param>
+    /// <param name="attackedCardIndices">Attacked card indices.</param>
+    /// <param name="opponentPlayer">If set to <c>true</c> opponent player.</param>
     public IEnumerator PlayCardFromBoardToOpponent (
         int[] attackerCardIndices,
         int[] attackedCardIndices,
@@ -2156,7 +2200,16 @@ public class TestHelper
     }
 
     // todo: review
-    public void DoBoardSkill (BoardSkill skill, BoardObject overrideTarget = null, Enumerators.AffectObjectType selectedTargetType = Enumerators.AffectObjectType.None)
+    /// <summary>
+    /// Uses a skill (potentially on specific object).
+    /// </summary>
+    /// <param name="skill">Skill.</param>
+    /// <param name="overrideTarget">Override target.</param>
+    /// <param name="selectedTargetType">Selected target type.</param>
+    public void DoBoardSkill (
+        BoardSkill skill,
+        BoardObject overrideTarget = null,
+        Enumerators.AffectObjectType selectedTargetType = Enumerators.AffectObjectType.None)
     {
         if (overrideTarget != null)
         {
@@ -2412,6 +2465,9 @@ public class TestHelper
         yield return new WaitForSeconds (1.1f);
     }
 
+    /// <summary>
+    /// Waits until the player order is decided and records the player overlord’s name in the process (in case we need it for assertion).
+    /// </summary>
     public IEnumerator WaitUntilPlayerOrderIsDecided ()
     {
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
@@ -2423,6 +2479,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Picks Mulligan Cards.
+    /// </summary>
+    /// <remarks>todo: Doesn't work, after the latest changes done to the way this is handled.</remarks>
     public IEnumerator DecideWhichCardsToPick ()
     {
         /* CardsController cardsController = _gameplayManager.GetController<CardsController> ();
@@ -2457,6 +2517,9 @@ public class TestHelper
         yield return ClickGenericButton ("Button_Keep");
     }
 
+    /// <summary>
+    /// Ends the turn for the player.
+    /// </summary>
     public IEnumerator EndTurn ()
     {
         _battlegroundController.StopTurn ();
@@ -2467,6 +2530,9 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Waits for player’s first turn, to start off playing. In case it is our turn, it does nothing, if not, it tracks until input is unblocked.
+    /// </summary>
     public IEnumerator WaitUntilOurFirstTurn ()
     {
         if (_gameplayManager.CurrentTurnPlayer.Id == _gameplayManager.CurrentPlayer.Id)
@@ -2483,11 +2549,18 @@ public class TestHelper
         yield return LetsThink ();
     }
 
+    /// <summary>
+    /// Waits until AIBrain stops thinking.
+    /// </summary>
+    /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
     public IEnumerator WaitUntilAIBrainStops ()
     {
         yield return new WaitUntil (() => _gameplayManager.GetController<AIController> ().IsBrainWorking == false);
     }
 
+    /// <summary>
+    /// Waits until player’s turn starts.
+    /// </summary>
     public IEnumerator WaitUntilOurTurnStarts ()
     {
         yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null);
@@ -2495,12 +2568,19 @@ public class TestHelper
         yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") == null);
     }
 
+    /// <summary>
+    /// Waits until player can make a move.
+    /// </summary>
     public IEnumerator WaitUntilInputIsUnblocked ()
     {
         yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn ());
     }
 
     // todo: reconsider having this
+    /// <summary>
+    /// Uses primary skill on opponent player.
+    /// </summary>
+    /// <remarks>Was written specifically for tutorials.</remarks>
     public IEnumerator UseSkillToOpponentPlayer ()
     {
         DoBoardSkill (_testBroker.GetPlayerPrimarySkill (_player), _testBroker.GetPlayer (_opponent), Enumerators.AffectObjectType.Player);
@@ -2512,6 +2592,10 @@ public class TestHelper
     }
 
     // todo: reconsider having this
+    /// <summary>
+    /// Plays all non-sleeping cards to attack the enemy player
+    /// </summary>
+    /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
     public IEnumerator PlayNonSleepingCardsFromBoardToOpponentPlayer ()
     {
         foreach (BoardUnitView boardUnitView in _battlegroundController.PlayerBoardCards)
@@ -2531,6 +2615,11 @@ public class TestHelper
     }
 
     // todo: reconsider having this
+    /// <summary>
+    /// Waits until the card is added to board.
+    /// </summary>
+    /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
+    /// <param name="boardName">Board name.</param>
     public IEnumerator WaitUntilCardIsAddedToBoard (string boardName)
     {
         Transform boardTransform = GameObject.Find (boardName).transform;
@@ -2539,10 +2628,14 @@ public class TestHelper
         yield return new WaitUntil (() => (boardChildrenCount < boardTransform.childCount) && (boardChildrenCount < _battlegroundController.OpponentBoardCards.Count));
     }
 
-    public IEnumerator MakeMoves ()
+    /// <summary>
+    /// Makes specified number of moves (if timeout allows).
+    /// </summary>
+    /// <param name="maxTurns">Max number of turns.</param>
+    public IEnumerator MakeMoves (int maxTurns = 100)
     {
         // if it doesn't end in 100 moves, end the game anyway
-        for (int turns = 1; turns <= 100; turns++)
+        for (int turns = 1; turns <= maxTurns; turns++)
         {
             yield return TurnStartedHandler ();
 
@@ -2571,6 +2664,9 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Checks if game has ended.
+    /// </summary>
     public bool IsGameEnded ()
     {
         if (_gameplayManager == null || _gameplayManager.IsGameEnded)
@@ -2609,6 +2705,9 @@ public class TestHelper
         "Valash"
     };
 
+    /// <summary>
+    /// Adds a Valash Deck and cards from Life group.
+    /// </summary>
     public IEnumerator AddValashHorde ()
     {
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
@@ -2650,6 +2749,9 @@ public class TestHelper
         yield return ClickGenericButton ("Button_Save");
     }
 
+    /// <summary>
+    /// Adss a Kalile Horde and cards from Air group.
+    /// </summary>
     public IEnumerator AddKalileHorde ()
     {
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
@@ -2687,6 +2789,9 @@ public class TestHelper
         yield return ClickGenericButton ("Button_Save");
     }
 
+    /// <summary>
+    /// Adds a Razu Horde deck and cards from Fire group.
+    /// </summary>
     public IEnumerator AddRazuHorde ()
     {
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
@@ -2726,6 +2831,9 @@ public class TestHelper
         yield return ClickGenericButton ("Button_Save");
     }
 
+    /// <summary>
+    /// Creates list of cards according to the ones available on the page.
+    /// </summary>
     public void SetupArmyCards ()
     {
         FillCollectionData ();
@@ -2742,6 +2850,11 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Picks an overlord, by the specified name.
+    /// </summary>
+    /// <param name="overlordName">Overlord name.</param>
+    /// <param name="goRight">If set to <c>true</c> goes right, until finds what you set.</param>
     public IEnumerator PickOverlord (string overlordName, bool goRight = true)
     {
         int selectedIndex = 0;
@@ -2770,6 +2883,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Picks the overlord ability.
+    /// </summary>
+    /// <param name="index">Index.</param>
     public IEnumerator PickOverlordAbility (int index)
     {
         GameObject abilitiesParent = GameObject.Find ("Abilities");
@@ -2784,6 +2901,10 @@ public class TestHelper
         yield return LetsThink ();
     }
 
+    /// <summary>
+    /// Sets the name/title of the deck.
+    /// </summary>
+    /// <param name="deckTitle">Deck title.</param>
     public IEnumerator SetDeckTitle (string deckTitle)
     {
         GameObject deckTitleInput = GameObject.Find ("DeckTitleInputText");
@@ -2808,7 +2929,7 @@ public class TestHelper
 
     private string _currentElementName = "";
 
-    public IEnumerator PickElement (string elementName)
+    private IEnumerator PickElement (string elementName)
     {
         Transform elementsParent = GameObject.Find ("ElementsToggles").transform;
 
@@ -2840,6 +2961,12 @@ public class TestHelper
         yield return LetsThink ();
     }
 
+    /// <summary>
+    /// Adds a card to the Horde from specified element.
+    /// </summary>
+    /// <param name="elementName">Element name.</param>
+    /// <param name="cardName">Card name.</param>
+    /// <param name="count">Count.</param>
     public IEnumerator AddCardToHorde (string elementName, string cardName, int count = 1)
     {
         Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
@@ -2892,27 +3019,9 @@ public class TestHelper
         yield return null;
     }
 
-    public IEnumerator AddCardToHorde (string cardName, bool overQuota = false)
-    {
-        Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
-                             x.Name == cardName);
-
-        Debug.Log ("Adding " + cardName + " (" + armyCard.Cost + ")");
-
-        _uiManager.GetPage<HordeEditingPage> ().AddCardToDeck (null, armyCard);
-
-        yield return LetsThink ();
-
-        if (overQuota)
-        {
-            ClickGenericButton ("Button_GotIt");
-
-            yield return LetsThink ();
-        }
-
-        yield return null;
-    }
-
+    /// <summary>
+    /// Gets the number of Hordes.
+    /// </summary>
     public int GetNumberOfHordes ()
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
@@ -2929,6 +3038,10 @@ public class TestHelper
         private set;
     }
 
+    /// <summary>
+    /// Selects a Horde by name.
+    /// </summary>
+    /// <param name="hordeName">Horde name.</param>
     public IEnumerator SelectAHordeByName (string hordeName)
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
@@ -2958,6 +3071,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Selects a Horde by index.
+    /// </summary>
+    /// <param name="index">Index.</param>
     public IEnumerator SelectAHordeByIndex (int index)
     {
         if (index + 1 >= GetNumberOfHordes ())
@@ -2972,6 +3089,10 @@ public class TestHelper
         yield return LetsThink ();
     }
 
+    /// <summary>
+    /// Removes a Horde by index.
+    /// </summary>
+    /// <param name="index">Index.</param>
     public IEnumerator RemoveAHorde (int index)
     {
         yield return SelectAHordeByIndex (index);
@@ -2981,6 +3102,9 @@ public class TestHelper
         yield return LetsThink ();
     }
 
+    /// <summary>
+    /// Removes all Hordes except first.
+    /// </summary>
     public IEnumerator RemoveAllHordesExceptDefault ()
     {
         for (int i = GetNumberOfHordes () - 2; i >= 1; i--)
@@ -3016,7 +3140,7 @@ public class TestHelper
 
     #endregion
 
-    public void RecordOverlordName (int index)
+    public void RecordExpectedOverlordName (int index)
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
@@ -3037,7 +3161,7 @@ public class TestHelper
 
     private string _recordedExpectedValue, _recordedActualValue;
 
-    public void RecordAValue (string value, RecordedValue recordedValue)
+    private void RecordAValue (string value, RecordedValue recordedValue)
     {
         if (value.Length <= 1)
             return;
@@ -3055,6 +3179,12 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Records a value (expected or actual) to be used for assertion.
+    /// </summary>
+    /// <param name="parentTransform">Parent transform.</param>
+    /// <param name="objectName">Object name.</param>
+    /// <param name="recordedValue">Recorded value.</param>
     public void RecordAValue (Transform parentTransform, string objectName, RecordedValue recordedValue)
     {
         if (parentTransform != null)
@@ -3067,6 +3197,9 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Checks and confirms that Overlord name is as expected.
+    /// </summary>
     public void AssertOverlordName ()
     {
         if (_recordedExpectedValue.Length <= 0 || _recordedActualValue.Length <= 0 || _recordedExpectedValue == "Default")
@@ -3094,6 +3227,9 @@ public class TestHelper
 
     #region PvP gameplay
 
+    /// <summary>
+    /// Plays a match and once the match finishes, presses on Continue button.
+    /// </summary>
     public IEnumerator PlayAMatch ()
     {
         yield return AssertCurrentPageName ("GameplayPage");
@@ -3113,6 +3249,10 @@ public class TestHelper
         yield return AssertCurrentPageName ("HordeSelectionPage");
     }
 
+    /// <summary>
+    /// Presses OK or GotIt button if it's on.
+    /// </summary>
+    /// <remarks>Useful where you expect to get a popup with this button.</remarks>
     public IEnumerator PressOK ()
     {
         if (GameObject.Find ("Button_OK") != null)
@@ -3124,6 +3264,11 @@ public class TestHelper
     private float _waitStartTime;
     private float _waitAmount;
 
+    /// <summary>
+    /// Starts the waiting process.
+    /// </summary>
+    /// <remarks>Useful in case you have concern of getting a response for a request. To be coupled with WaitTimeIsUp.</remarks>
+    /// <param name="waitAmount">Wait amount.</param>
     private void WaitStart (int waitAmount)
     {
         _waitStartTime = Time.unscaledTime;
@@ -3131,6 +3276,11 @@ public class TestHelper
         _waitAmount = waitAmount;
     }
 
+    /// <summary>
+    /// Checks if waiting amount has been reached
+    /// </summary>
+    /// <remarks>Useful in case you have concern of getting a response for a request. To be coupled with WaitStart.</remarks>
+    /// <returns><c>true</c>, if time is up, <c>false</c> otherwise.</returns>
     private bool WaitTimeIsUp ()
     {
         return Time.unscaledTime > _waitStartTime + _waitAmount;

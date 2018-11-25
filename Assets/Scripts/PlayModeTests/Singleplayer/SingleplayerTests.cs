@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using System.Collections;
-using UnityEngine;
 using UnityEngine.TestTools;
 
 public class SingleplayerTests
@@ -420,7 +419,7 @@ public class SingleplayerTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -456,7 +455,7 @@ public class SingleplayerTests
 
         yield return _testHelper.SelectAHordeByName ("Razu");
 
-        _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (_testHelper.SelectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -492,7 +491,7 @@ public class SingleplayerTests
 
         yield return _testHelper.SelectAHordeByName ("Kalile");
 
-        _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (_testHelper.SelectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -528,7 +527,7 @@ public class SingleplayerTests
 
         yield return _testHelper.SelectAHordeByName ("Valash");
 
-        _testHelper.RecordOverlordName (_testHelper.SelectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (_testHelper.SelectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -570,7 +569,7 @@ public class SingleplayerTests
 
             yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-            _testHelper.RecordOverlordName (selectedHordeIndex);
+            _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
             yield return _testHelper.MainMenuTransition ("Button_Battle");
 
@@ -609,7 +608,7 @@ public class SingleplayerTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 

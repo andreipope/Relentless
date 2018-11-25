@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using System.Collections;
-using UnityEngine;
 using UnityEngine.TestTools;
 
 public class MultiplayerTests
@@ -57,7 +56,7 @@ public class MultiplayerTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         _testHelper.SetPvPTags (new[] {
             "pvpTestNoOpponentCancel"
@@ -99,7 +98,7 @@ public class MultiplayerTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         _testHelper.SetPvPTags (new[] {
             "pvpTestNoOpponentTimeout"
@@ -141,7 +140,7 @@ public class MultiplayerTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         _testHelper.SetPvPTags (new[] {
             "pvpTest"
@@ -191,7 +190,7 @@ public class MultiplayerTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         _testHelper.SetPvPTags (new[] {
             "pvpTest"
@@ -245,7 +244,7 @@ public class MultiplayerTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         #region Matchmaking Cancel
 
@@ -369,7 +368,7 @@ public class MultiplayerPassiveTests
 
         yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
         while (true)
         {
