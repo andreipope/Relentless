@@ -338,6 +338,9 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Asserts if we've logged in or login failed, so that the test doesn't get stuck in the login screen in the case of issue and instead reports the issue.
+    /// </summary>
     public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2)
     {
         yield return CombinedCheck (
@@ -347,6 +350,9 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Asserts if we were sent to tutorial. This is used to get out of tutorial, so that test can go on with its purpose.
+    /// </summary>
     public IEnumerator AssertIfWentDirectlyToTutorial (IEnumerator callback1, IEnumerator callback2 = null)
     {
         yield return CombinedCheck (
@@ -354,6 +360,11 @@ public class TestHelper
             CheckCurrentPageName, "PlaySelectionPage", callback2);
     }
 
+    // @todo: Get this to working using an artificial timeout
+    /// <summary>
+    /// Asserts if PvP match is started or matchmaking has failed.
+    /// </summary>
+    /// <remarks>This currently doesn't work, as timeouts have been removed.</remarks>
     public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
     {
         yield return CombinedCheck (
@@ -363,6 +374,9 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Is used whenever we need a combined check, instead of a single one.
+    /// </summary>
     private IEnumerator CombinedCheck (
         Func<string, bool> check1, string parameter1, IEnumerator callback1,
         Func<string, bool> check2, string parameter2, IEnumerator callback2)
@@ -392,6 +406,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Checks if login box appeared.
+    /// </summary>
+    /// <returns><c>true</c>, if if login box appeared was checked, <c>false</c> otherwise.</returns>
     private bool CheckIfLoginBoxAppeared (string dummyparameter)
     {
         GameObject loginBox = GameObject.Find ("InputField_Beta");
@@ -404,6 +422,10 @@ public class TestHelper
         return false;
     }
 
+    /// <summary>
+    /// Checks if login error occured.
+    /// </summary>
+    /// <returns><c>true</c>, if if login error occured, <c>false</c> otherwise.</returns>
     private bool CheckIfLoginErrorOccured (string dummyParameter)
     {
         GameObject errorTextObject = GameObject.Find ("Beta_Group/Text_Error");
@@ -416,6 +438,10 @@ public class TestHelper
         return false;
     }
 
+    /// <summary>
+    /// Checks if matchmaking error occured.
+    /// </summary>
+    /// <returns><c>true</c>, if if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
     private bool CheckIfMatchmakingErrorOccured (string dummyParameter)
     {
         // Initially
@@ -457,6 +483,11 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Checks if the name of the current page is as expected.
+    /// </summary>
+    /// <returns><c>true</c>, if current page name is as expected, <c>false</c> otherwise.</returns>
+    /// <param name="expectedPageName">Expected page name.</param>
     private bool CheckCurrentPageName (string expectedPageName)
     {
         if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
@@ -619,6 +650,9 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// (Deprecated) Submits the tester key.
+    /// </summary>
     private IEnumerator SubmitTesterKey ()
     {
         InputField testerKeyField = null;
@@ -678,6 +712,11 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Checks if the button exists.
+    /// </summary>
+    /// <returns><c>true</c>, if button exists, <c>false</c> otherwise.</returns>
+    /// <param name="buttonName">Button name.</param>
     public bool IsButtonExist (string buttonName)
     {
         return GameObject.Find (buttonName) != null;
