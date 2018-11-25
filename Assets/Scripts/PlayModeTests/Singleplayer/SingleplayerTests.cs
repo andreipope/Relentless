@@ -594,9 +594,7 @@ public class SingleplayerTests
     {
         _testHelper.SetTestName ("Solo - Start Playing, Quit and Check if Buttons Work");
 
-        yield return _testHelper.ButtonHoverCheck ("Button_Play");
-
-        /* yield return _testHelper.MainMenuTransition ("Button_Play");
+        yield return _testHelper.MainMenuTransition ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
             _testHelper.GoBackToMainAndPressPlay ());
@@ -605,7 +603,42 @@ public class SingleplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_SoloMode");
 
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage"); */
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        int selectedHordeIndex = 0;
+
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
+
+        _testHelper.RecordOverlordName (selectedHordeIndex);
+
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
+        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+
+        _testHelper.AssertOverlordName ();
+
+        yield return _testHelper.ClickGenericButton ("Button_Settings");
+
+        yield return _testHelper.ClickGenericButton ("Button_QuitToMainMenu");
+
+        yield return _testHelper.RespondToYesNoOverlay (true);
+
+        yield return _testHelper.AssertCurrentPageName ("MainMenuPage");
+
+        yield return _testHelper.LetsThink ();
+
+        yield return _testHelper.ButtonListClickCheck (new string[] {
+            "Button_Army",
+            "Button_Credits",
+            "Button_OpenPacks",
+            "Button_Play",
+            "Button_Settings",
+            "Button_Shop"
+        });
+
+        yield return _testHelper.LetsThink ();
     }
 
     [UnityTest]

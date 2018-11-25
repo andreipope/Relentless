@@ -632,13 +632,13 @@ public class TestHelper
         yield return null;
     }
 
-    private Button dummyButton;
-
-    public IEnumerator ButtonListHoverCheck (string[] buttonNames)
+    public IEnumerator ButtonListClickCheck (string[] buttonNames)
     {
         foreach (string buttonName in buttonNames)
         {
-            yield return ButtonHoverCheck (buttonName);
+            yield return ButtonClickCheck (buttonName);
+
+            yield return LetsThink ();
 
             yield return null;
         }
@@ -646,7 +646,7 @@ public class TestHelper
         yield return null;
     }
 
-    public IEnumerator ButtonHoverCheck (string buttonName)
+    public IEnumerator ButtonClickCheck (string buttonName)
     {
         GameObject targetGameObject = GameObject.Find (buttonName);
 
@@ -654,46 +654,11 @@ public class TestHelper
         {
             if (targetGameObject.GetComponent<ButtonShiftingContent> () != null)
             {
-                ButtonShiftingContent targetButtonShiftingContent = targetGameObject.GetComponent<ButtonShiftingContent> ();
+                ButtonShiftingContent targetButton = targetGameObject.GetComponent<ButtonShiftingContent> ();
 
                 bool buttonClickable = false;
 
-                dummyButton = new GameObject ().AddComponent<Button> ();
-
-                dummyButton.onClick = targetButtonShiftingContent.onClick;
-                targetButtonShiftingContent.onClick = new Button.ButtonClickedEvent ();
-                targetButtonShiftingContent.onClick.AddListener (() => { buttonClickable = true; });
-
-                yield return null;
-
-                yield return MoveCursorToObject (buttonName, 1);
-                yield return FakeClick ();
-
-                yield return null;
-
-                WaitStart (3);
-                yield return new WaitUntil (() => buttonClickable || WaitTimeIsUp ());
-
-                if (!buttonClickable)
-                {
-                    Assert.Fail ("Button is not clickable: " + buttonName);
-                }
-                else
-                {
-                    targetButtonShiftingContent.onClick = dummyButton.onClick;
-                    dummyButton.onClick = new Button.ButtonClickedEvent ();
-                    dummyButton.onClick.RemoveAllListeners ();
-                }
-
-                yield return null;
-            }
-            else if (targetGameObject.GetComponent<Button> () != null)
-            {
-                Button targetButton = targetGameObject.GetComponent<Button> ();
-
-                bool buttonClickable = false;
-
-                dummyButton = new GameObject ().AddComponent<Button> ();
+                Button dummyButton = new GameObject ().AddComponent<Button> ();
 
                 dummyButton.onClick = targetButton.onClick;
                 targetButton.onClick = new Button.ButtonClickedEvent ();
@@ -711,6 +676,10 @@ public class TestHelper
 
                 if (!buttonClickable)
                 {
+                    targetButton.onClick = dummyButton.onClick;
+                    dummyButton.onClick = new Button.ButtonClickedEvent ();
+                    dummyButton.onClick.RemoveAllListeners ();
+
                     Assert.Fail ("Button is not clickable: " + buttonName);
                 }
                 else
@@ -718,10 +687,98 @@ public class TestHelper
                     targetButton.onClick = dummyButton.onClick;
                     dummyButton.onClick = new Button.ButtonClickedEvent ();
                     dummyButton.onClick.RemoveAllListeners ();
+
+                    Debug.Log ("Checked button and it worked fine: " + buttonName);
                 }
 
                 yield return null;
             }
+            else if (targetGameObject.GetComponent<MenuButtonNoGlow> () != null)
+            {
+                MenuButtonNoGlow targetButton = targetGameObject.GetComponent<MenuButtonNoGlow> ();
+
+                bool buttonClickable = false;
+
+                MenuButtonNoGlow dummyButton = new GameObject ().AddComponent<MenuButtonNoGlow> ();
+
+                dummyButton.Clicked = targetButton.Clicked;
+                targetButton.Clicked = new UnityEngine.Events.UnityEvent ();
+                targetButton.Clicked.AddListener (() => { buttonClickable = true; });
+
+                yield return null;
+
+                yield return MoveCursorToObject (buttonName, 1);
+                yield return FakeClick ();
+
+                yield return null;
+
+                WaitStart (3);
+                yield return new WaitUntil (() => buttonClickable || WaitTimeIsUp ());
+
+                if (!buttonClickable)
+                {
+                    targetButton.Clicked = dummyButton.Clicked;
+                    dummyButton.Clicked = new Button.ButtonClickedEvent ();
+                    dummyButton.Clicked.RemoveAllListeners ();
+
+                    Assert.Fail ("Button is not clickable: " + buttonName);
+                }
+                else
+                {
+                    targetButton.Clicked = dummyButton.Clicked;
+                    dummyButton.Clicked = new Button.ButtonClickedEvent ();
+                    dummyButton.Clicked.RemoveAllListeners ();
+
+                    Debug.Log ("Checked button and it worked fine: " + buttonName);
+                }
+
+                yield return null;
+            }
+            else if (targetGameObject.GetComponent<Button> () != null)
+            {
+                Button targetButton = targetGameObject.GetComponent<Button> ();
+
+                bool buttonClickable = false;
+
+                Button dummyButton = new GameObject ().AddComponent<Button> ();
+
+                dummyButton.onClick = targetButton.onClick;
+                targetButton.onClick = new Button.ButtonClickedEvent ();
+                targetButton.onClick.AddListener (() => { buttonClickable = true; });
+
+                yield return null;
+
+                yield return MoveCursorToObject (buttonName, 1);
+                yield return FakeClick ();
+
+                yield return null;
+
+                WaitStart (3);
+                yield return new WaitUntil (() => buttonClickable || WaitTimeIsUp ());
+
+                if (!buttonClickable)
+                {
+                    targetButton.onClick = dummyButton.onClick;
+                    dummyButton.onClick = new Button.ButtonClickedEvent ();
+                    dummyButton.onClick.RemoveAllListeners ();
+
+                    Assert.Fail ("Button is not clickable: " + buttonName);
+                }
+                else
+                {
+                    targetButton.onClick = dummyButton.onClick;
+                    dummyButton.onClick = new Button.ButtonClickedEvent ();
+                    dummyButton.onClick.RemoveAllListeners ();
+
+                    Debug.Log ("Checked button and it worked fine: " + buttonName);
+                }
+
+                yield return null;
+            }
+        }
+        else
+        {
+            Assert.Fail ("Button wasn't found: " + buttonName);
         }
 
         yield return null;
