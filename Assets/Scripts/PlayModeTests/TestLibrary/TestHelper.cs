@@ -38,6 +38,7 @@ public class TestHelper
     private GameObject _testerGameObject;
     private UnityEngine.EventSystems.VirtualInputModule _virtualInputModule;
     private RectTransform _fakeCursorTransform;
+    private GameObject _fakeCursorGameObject;
 
     private string _testName;
     private float _testStartTime;
@@ -48,7 +49,7 @@ public class TestHelper
     private Enumerators.MatchPlayer _player;
     private Enumerators.MatchPlayer _opponent;
 
-    private float _positionalTolerance = 5f;
+    private float _positionalTolerance = 0.1f;
 
     private IGameplayManager _gameplayManager;
     private IUIManager _uiManager;
@@ -542,7 +543,8 @@ public class TestHelper
     public IEnumerator AddVirtualInputModule ()
     {
         GameObject testSetup = GameObject.Instantiate (Resources.Load<GameObject> ("Prefabs/TestSetup"));
-        _fakeCursorTransform = testSetup.transform.Find ("Canvas/FakeCursor").GetComponent<RectTransform> ();
+        _fakeCursorGameObject = testSetup.transform.Find ("Canvas/FakeCursor").gameObject;
+        _fakeCursorTransform = _fakeCursorGameObject.GetComponent<RectTransform> ();
         Camera uiCamera = testSetup.transform.Find ("UI Camera").GetComponent<Camera> ();
 
         UnityEngine.EventSystems.StandaloneInputModule inputModule = GameObject.FindObjectOfType<UnityEngine.EventSystems.StandaloneInputModule> ();
@@ -597,6 +599,18 @@ public class TestHelper
 
     private Button dummyButton;
 
+    public IEnumerator ButtonListHoverCheck (string[] buttonNames)
+    {
+        foreach (string buttonName in buttonNames)
+        {
+            yield return ButtonHoverCheck (buttonName);
+
+            yield return null;
+        }
+
+        yield return null;
+    }
+
     public IEnumerator ButtonHoverCheck (string buttonName)
     {
         GameObject targetGameObject = GameObject.Find (buttonName);
@@ -607,43 +621,75 @@ public class TestHelper
             {
                 ButtonShiftingContent targetButtonShiftingContent = targetGameObject.GetComponent<ButtonShiftingContent> ();
 
-                yield return FakeOutButtonEventClickAndCheck (targetButtonShiftingContent.onClick, buttonName);
+                bool buttonClickable = false;
+
+                dummyButton = new GameObject ().AddComponent<Button> ();
+
+                dummyButton.onClick = targetButtonShiftingContent.onClick;
+                targetButtonShiftingContent.onClick = new Button.ButtonClickedEvent ();
+                targetButtonShiftingContent.onClick.AddListener (() => { buttonClickable = true; });
+
+                yield return null;
+
+                yield return MoveCursorToObject (buttonName, 1);
+                yield return FakeClick ();
+
+                yield return null;
+
+                WaitStart (3);
+                yield return new WaitUntil (() => buttonClickable || WaitTimeIsUp ());
+
+                if (!buttonClickable)
+                {
+                    Assert.Fail ("Button is not clickable: " + buttonName);
+                }
+                else
+                {
+                    targetButtonShiftingContent.onClick = dummyButton.onClick;
+                    dummyButton.onClick = new Button.ButtonClickedEvent ();
+                    dummyButton.onClick.RemoveAllListeners ();
+                }
+
+                yield return null;
             }
             else if (targetGameObject.GetComponent<Button> () != null)
             {
                 Button targetButton = targetGameObject.GetComponent<Button> ();
 
-                yield return FakeOutButtonEventClickAndCheck (targetButton.onClick, buttonName);
+                bool buttonClickable = false;
+
+                dummyButton = new GameObject ().AddComponent<Button> ();
+
+                dummyButton.onClick = targetButton.onClick;
+                targetButton.onClick = new Button.ButtonClickedEvent ();
+                targetButton.onClick.AddListener (() => { buttonClickable = true; });
+
+                yield return null;
+
+                yield return MoveCursorToObject (buttonName, 1);
+                yield return FakeClick ();
+
+                yield return null;
+
+                WaitStart (3);
+                yield return new WaitUntil (() => buttonClickable || WaitTimeIsUp ());
+
+                if (!buttonClickable)
+                {
+                    Assert.Fail ("Button is not clickable: " + buttonName);
+                }
+                else
+                {
+                    targetButton.onClick = dummyButton.onClick;
+                    dummyButton.onClick = new Button.ButtonClickedEvent ();
+                    dummyButton.onClick.RemoveAllListeners ();
+                }
+
+                yield return null;
             }
         }
 
         yield return null;
-    }
-
-    private IEnumerator FakeOutButtonEventClickAndCheck (Button.ButtonClickedEvent buttonClickedEvent, string buttonName)
-    {
-        bool buttonClickable = false;
-
-        dummyButton.onClick = buttonClickedEvent;
-        buttonClickedEvent = new Button.ButtonClickedEvent ();
-        buttonClickedEvent.AddListener (() => { buttonClickable = true; });
-
-        WaitStart (3);
-        MoveCursorToObject (buttonName, 1);
-        FakeClick ();
-
-        yield return new WaitUntil (() => buttonClickable || WaitTimeIsUp ());
-
-        if (!buttonClickable)
-        {
-            Assert.Fail ("Button is not clickable: " + buttonName);
-        }
-        else
-        {
-            buttonClickedEvent = dummyButton.onClick;
-            dummyButton.onClick = new Button.ButtonClickedEvent ();
-            dummyButton.onClick.RemoveAllListeners ();
-        }
     }
 
     public IEnumerator HandleLogin ()

@@ -589,6 +589,26 @@ public class SingleplayerTests
     }
 
     [UnityTest]
+    [Timeout (900000)]
+    public IEnumerator Test_C6_StartPlayingQuitAndCheckButtons ()
+    {
+        _testHelper.SetTestName ("Solo - Start Playing, Quit and Check if Buttons Work");
+
+        yield return _testHelper.ButtonHoverCheck ("Button_Play");
+
+        /* yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
+
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage"); */
+    }
+
+    [UnityTest]
     public IEnumerator TestN_Cleanup ()
     {
         // Nothing, just to ascertain cleanup
