@@ -73,11 +73,19 @@ public class TestHelper
 
     private Loom.ZombieBattleground.Player _currentPlayer, _opponentPlayer;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:TestHelper"/> class.
+    /// </summary>
+    /// <param name="testerType">Tester type.</param>
     public TestHelper (int testerType = 0)
     {
-        _testerType = (TesterType)testerType;
+        _testerType = (TesterType) testerType;
     }
 
+    /// <summary>
+    /// Sets the name of the test. It is used to log the result (time taken) at the end of the test.
+    /// </summary>
+    /// <param name="testName">Test name.</param>
     public void SetTestName (string testName = "")
     {
         _testName = testName;
@@ -94,6 +102,9 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// SetUp method to be used for most Solo and PvP tests. Logs in and sets up a number of stuff.
+    /// </summary>
     public IEnumerator SetUp ()
     {
         _testStartTime = Time.unscaledTime;
@@ -138,6 +149,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// TearDown method to be used to clear up everything after either a successful or unsuccessful test.
+    /// </summary>
+    /// <remarks>Generally is used only for the last test in the group.</remarks>
     public IEnumerator TearDown_Cleanup ()
     {
         Scene dontDestroyOnLoadScene = _testerGameObject.scene;
@@ -162,6 +177,10 @@ public class TestHelper
         yield return SceneManager.UnloadSceneAsync (currentScene);
     }
 
+    /// <summary>
+    /// TearDown method to be used to go back to MainMenuPage, so that other tests can take it from there and go further.
+    /// </summary>
+    /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
     public IEnumerator TearDown_GoBackToMainScreen ()
     {
         while (lastCheckedPageName != "MainMenuPage")
@@ -174,6 +193,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Goes one page higher in the page hierarchy, towards MainMenuPage.
+    /// </summary>
+    /// <remarks>Generally we need a number of these to actually get to the MainMenuPage.</remarks>
     public IEnumerator GoOnePageHigher ()
     {
         yield return new WaitUntil (() =>
@@ -242,14 +265,21 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Gets the time since the start of the test.
+    /// </summary>
     public float GetTestTime ()
     {
         return Time.unscaledTime - _testStartTime;
     }
 
+    /// <summary>
+    /// Reports the test time.
+    /// </summary>
+    /// <remarks>Generally is used at the of the test, to report the time it took to run it.</remarks>
     public IEnumerator ReportTestTime ()
     {
-        Debug.LogFormat (
+        Debug.LogWarningFormat (
            "\"{0}\" test successfully finished in {1} seconds.",
            _testName,
            Time.unscaledTime - _testStartTime
@@ -290,32 +320,6 @@ public class TestHelper
         canvas1GameObject = GameObject.Find ("Canvas1");
         canvas2GameObject = GameObject.Find ("Canvas2");
         canvas3GameObject = GameObject.Find ("Canvas3");
-
-        yield return null;
-    }
-
-    public IEnumerator GoBackToMainPage ()
-    {
-        yield return new WaitUntil (() => {
-            if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
-            {
-                if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-            return false;
-        });
-
-        if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] != "MainMenuPage")
-        {
-            yield return ClickGenericButton ("Button_Back");
-
-            yield return GoBackToMainPage ();
-        }
 
         yield return null;
     }
@@ -596,6 +600,10 @@ public class TestHelper
         yield return null;
     }
 
+    /// <summary>
+    /// Logs in into the game using one of the keys. Picks a correct one depending on whether it is an passive or active tester.
+    /// </summary>
+    /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
         GameObject pressAnyText = null;
@@ -2203,7 +2211,10 @@ public class TestHelper
 
     #endregion
 
-    // Some thinking - delay between general actions
+    /// <summary>
+    /// Waits for a specific amount of time.
+    /// </summary>
+    /// <remarks>to be in line with AI Brain, 1.1f was taken as value from AIController.</remarks>
     public IEnumerator LetsThink ()
     {
         yield return new WaitForSeconds (1.1f);
