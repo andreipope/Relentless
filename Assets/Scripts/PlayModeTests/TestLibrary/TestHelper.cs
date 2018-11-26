@@ -1345,14 +1345,14 @@ public class TestHelper
                     break;
                 if (CardCanBePlayable (card))
                 {
-                    PlayCardFromHandToBoard (card);
+                    yield return PlayCardFromHandToBoard (card);
                     wasAction = true;
                     yield return LetsThink ();
                     yield return LetsThink ();
                 }
             }
 
-            PlayCardFromHandToBoard (expensiveCard);
+            yield return PlayCardFromHandToBoard (expensiveCard);
 
             yield return LetsThink ();
             yield return LetsThink ();
@@ -1426,7 +1426,7 @@ public class TestHelper
         {
             BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
-            PlayCardFromHandToBoard (boardCard.WorkingCard);
+            yield return PlayCardFromHandToBoard (boardCard.WorkingCard);
 
             yield return LetsThink ();
             yield return LetsThink ();
@@ -2630,6 +2630,13 @@ public class TestHelper
         }
 
         yield return LetsThink ();
+    }
+
+    public IEnumerator WaitUntilWeHaveACardAtHand ()
+    {
+        yield return new WaitUntil (() => _battlegroundController.PlayerHandCards.Count >= 1);
+
+        yield return null;
     }
 
     /// <summary>
