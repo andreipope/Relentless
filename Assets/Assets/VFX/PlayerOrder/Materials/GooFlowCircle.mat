@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: GooExpandedTubeMat
+  m_Name: GooFlowCircle
   m_Shader: {fileID: 4800000, guid: 98ad3126eff91b247a9bdd71bf16bf59, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
@@ -47,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NewTex_1:
-        m_Texture: {fileID: 2800000, guid: c2c4e7379c8ff644a9cbaf23d0e74811, type: 3}
+        m_Texture: {fileID: 2800000, guid: 45901ad68ff64c943b42d64fa5b7ca69, type: 3}
         m_Scale: {x: -1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -59,7 +59,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SourceNewTex_1:
-        m_Texture: {fileID: 2800000, guid: c2c4e7379c8ff644a9cbaf23d0e74811, type: 3}
+        m_Texture: {fileID: 2800000, guid: 45901ad68ff64c943b42d64fa5b7ca69, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -70,7 +70,7 @@ Material:
     - AnimatedTwistUV_AnimatedTwistUV_Speed_1: 0
     - DistortionUV_DistanceX_1: 0
     - DistortionUV_DistanceY_1: 0.556
-    - DistortionUV_Speed_1: 2
+    - DistortionUV_Speed_1: 1.96
     - DistortionUV_WaveX_1: 109
     - DistortionUV_WaveY_1: 14
     - _BumpScale: 1
