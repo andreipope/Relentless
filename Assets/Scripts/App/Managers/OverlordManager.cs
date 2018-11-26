@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         private OvelordExperienceInfo _ovelordXPInfo;
 
+        public Hero HeroInStartGame { get; private set; }
+
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
@@ -24,6 +26,8 @@ namespace Loom.ZombieBattleground
 
             _ovelordXPInfo = JsonConvert.DeserializeObject<OvelordExperienceInfo>(
                             _loadObjectsManager.GetObjectByPath<TextAsset>("Data/overlord_experience_data").text);
+
+            _gameplayManager.GameInitialized += OnGameInitializedHandler;
         }
 
         public void Dispose()
@@ -52,6 +56,11 @@ namespace Loom.ZombieBattleground
             ChangeExperience(hero, action.Experience);
         }
 
+        public LevelReward GetLevelReward(Hero hero)
+        {
+            return _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
+        }
+
         private void CheckLevel(Hero hero)
         {
             if (hero.Experience >= GetRequiredExperienceForNewLevel(hero))
@@ -69,8 +78,7 @@ namespace Loom.ZombieBattleground
 
         private void ApplyReward(Hero hero)
         {
-            LevelReward levelReward = _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
-
+            LevelReward levelReward = GetLevelReward(hero);
             if (levelReward != null)
             {
                 switch (levelReward.Reward)
@@ -110,6 +118,23 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(levelReward.Reward), levelReward.Reward, null);
                 }
             }
+        }
+
+        private void OnGameInitializedHandler()
+        {
+            Hero selfHero = _gameplayManager.CurrentPlayer.SelfHero;
+            HeroInStartGame = new Hero(
+                selfHero.HeroId,
+                selfHero.Icon,
+                selfHero.Name,
+                selfHero.ShortDescription,
+                selfHero.LongDescription,
+                selfHero.Experience,
+                selfHero.Level,
+                selfHero.HeroElement,
+                selfHero.Skills,
+                selfHero.PrimarySkill,
+                selfHero.SecondarySkill);
         }
 
         public class LevelReward

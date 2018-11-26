@@ -765,6 +765,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
                     ability = new DestroyUnitByTypeAbility(cardKind, abilityData);
+                    abilityView = new DestroyUnitByTypeAbilityView((DestroyUnitByTypeAbility)ability);
                     break;
                 case Enumerators.AbilityType.LOWER_COST_OF_CARD_IN_HAND:
                     ability = new LowerCostOfCardInHandAbility(cardKind, abilityData);
@@ -792,6 +793,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT:
                     ability = new TakeControlEnemyUnitAbility(cardKind, abilityData);
+                    abilityView = new TakeControlEnemyUnitAbilityView((TakeControlEnemyUnitAbility)ability);
                     break;
                 case Enumerators.AbilityType.GUARD:
                     ability = new ShieldAbility(cardKind, abilityData);

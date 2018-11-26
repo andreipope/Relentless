@@ -373,8 +373,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardName: Leash
-  delayBeforeEffect: 5
+  cardName: 
+  delayBeforeEffect: 3
   delayAfterEffect: 0
   delayForChangeState: 0
   soundName: 

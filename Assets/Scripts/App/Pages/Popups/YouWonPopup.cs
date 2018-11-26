@@ -19,6 +19,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        IOverlordManager _overlordManager;
+
         private Button _buttonOk;
 
         private TextMeshProUGUI _message;
@@ -33,10 +35,17 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
+        private Hero _heroInStartGame;
+
+        private Hero _currentPlayerHero;
+
+        private bool _isLevelUp;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _overlordManager = GameClient.Get<IOverlordManager>();
         }
 
         public void Dispose()
@@ -95,35 +104,43 @@ namespace Loom.ZombieBattleground
                 ? GameClient.Get<ITutorialManager>().CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId
                 : dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
 
-            Hero currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
-            string heroName = currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
+            _currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
+            string heroName = _currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
+
             _selectHeroSpriteRenderer.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
 
-            // TODO : instead of 1000, should be a value accordint to Level
-            // TODO : instead of 400, should be how much player experinece on wining game
-            _currentLevel.text = currentPlayerHero.Level.ToString();
-            _nextLevel.text = (currentPlayerHero.Level + 1).ToString();
-            float currentExperiencePercentage = (float) currentPlayerHero.Experience / 1000;
+            _currentLevel.text = _currentPlayerHero.Level.ToString();
+            _nextLevel.text = (_currentPlayerHero.Level + 1).ToString();
+
+            _heroInStartGame = _overlordManager.HeroInStartGame;
+
+            _isLevelUp = false;
+
+            float currentExperiencePercentage = (float)_heroInStartGame.Experience / _overlordManager.GetRequiredExperienceForNewLevel(_heroInStartGame);
             _experienceBar.fillAmount = currentExperiencePercentage;
-            GameClient.Get<IOverlordManager>().ChangeExperience(currentPlayerHero, 400);
-            float updatedExperiencePercetage = (float) currentPlayerHero.Experience / 1000;
 
-            if (updatedExperiencePercetage < currentExperiencePercentage)
-            {
-                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(updatedExperiencePercetage,
-                    currentPlayerHero.Level));
-            }
-            else
-            {
-                MainApp.Instance.StartCoroutine(FillExperinceBar(updatedExperiencePercetage));
-            }
+            FillingExperinceBar();
 
-            // save to data manager cached hero list
             int index = dataManager.CachedHeroesData.Heroes.FindIndex(hero => hero.HeroId == heroId);
             if (index != -1)
             {
-                dataManager.CachedHeroesData.Heroes[index] = currentPlayerHero;
+                dataManager.CachedHeroesData.Heroes[index] = _currentPlayerHero;
+            }
+        }
+
+        private void FillingExperinceBar()
+        {
+            if (_currentPlayerHero.Level > _heroInStartGame.Level)
+            {
+                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(_currentPlayerHero.Level));
+            }
+            else if (_currentPlayerHero.Experience > _heroInStartGame.Experience)
+            {
+                float updatedExperiencePercetage = (float)_currentPlayerHero.Experience
+                    / _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerHero);
+
+                MainApp.Instance.StartCoroutine(FillExperinceBar(updatedExperiencePercetage));
             }
         }
 
@@ -143,25 +160,29 @@ namespace Loom.ZombieBattleground
 
             yield return _experienceFillWait;
             _buttonOk.gameObject.SetActive(true);
+
+            if(_isLevelUp)
+            {
+                _uiManager.DrawPopup<LevelUpPopup>();
+            }
         }
 
-        private IEnumerator FillExperinceBarWithLevelUp(float xpPercentage, int currentLevel)
+        private IEnumerator FillExperinceBarWithLevelUp(int currentLevel)
         {
             yield return _experienceFillWait;
             _experienceBar.DOFillAmount(1, 1f);
-
-            // show level up pop up or something
+            
             yield return _experienceFillWait;
 
             _experienceBar.fillAmount = 0f;
             _currentLevel.text = currentLevel.ToString();
             _nextLevel.text = (currentLevel + 1).ToString();
 
-            yield return _experienceFillWait;
-            _experienceBar.DOFillAmount(xpPercentage, 1f);
+            _heroInStartGame.Level++;
 
-            yield return _experienceFillWait;
-            _buttonOk.gameObject.SetActive(true);
+            _isLevelUp = true;
+
+            FillingExperinceBar();
         }
 
         private void OnClickOkButtonEventHandler()

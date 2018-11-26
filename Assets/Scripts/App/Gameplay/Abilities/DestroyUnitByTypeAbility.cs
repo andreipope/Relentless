@@ -16,8 +16,6 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Action(object info = null)
@@ -56,8 +54,15 @@ namespace Loom.ZombieBattleground
             {
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
-                Action();
+                InvokeActionTriggered();
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }
