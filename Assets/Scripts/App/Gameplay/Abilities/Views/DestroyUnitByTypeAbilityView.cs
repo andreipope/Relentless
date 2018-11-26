@@ -46,15 +46,27 @@ namespace Loom.ZombieBattleground
         {
             ClearParticles();
 
+            float delayAfter = 0f;
+            float beforeDelay = 3f;
+            float delayBeforeUnitActivate = 0f;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    beforeDelay = effectInfo.delayBeforeEffect;
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeUnitActivate = effectInfo.delayForChangeState;
+                }
+
                 VfxObject = Object.Instantiate(VfxObject);
                 VfxObject.transform.position = targetPosition + new Vector3(0.35f, 0f, 0);
-                ParticlesController.RegisterParticleSystem(VfxObject, true, 6);
+                ParticlesController.RegisterParticleSystem(VfxObject, true, beforeDelay);
 
                 InternalTools.DoActionDelayed(() =>
                 {
@@ -67,12 +79,11 @@ namespace Loom.ZombieBattleground
                     {
                         _backgroundCameraObject.transform.DOShakePosition(.4f, strength, 10, 0, false, false);
                     }
-                }, 2.5f);
+                }, delayBeforeUnitActivate);
             }
 
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, 3f);
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
-
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
