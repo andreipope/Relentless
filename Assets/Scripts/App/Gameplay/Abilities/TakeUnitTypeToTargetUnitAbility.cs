@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel target = null;
             if (PredefinedTargets != null)
             {
-                allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+                allies = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
 
                 if (allies.Count > 0)
                 {
@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                unit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
     }
 }

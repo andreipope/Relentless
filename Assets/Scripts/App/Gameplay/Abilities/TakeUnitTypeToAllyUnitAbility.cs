@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
                         if (PredefinedTargets != null)
                         {
-                            allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+                            allies = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
 
                             if (allies.Count > 0)
                             {
@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
                                    allies[0]
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                             }
                         }
                         else
@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
                                    allies[random]
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                             }
                         }
                     }
@@ -142,14 +142,14 @@ namespace Loom.ZombieBattleground
                         }
 
                         AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
-                            AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                            AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
                                .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType &&
-                                      unit.Card.RealCost <= Cost && unit.InitialUnitType != UnitType)
+                                      unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType)
                                .ToList();
 
                         foreach (BoardUnitModel unit in allies)
@@ -158,7 +158,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
-                            AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                            AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                     }
                     break;
             }

@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            AbilityUnitOwner.AddEffectOnUnit(Enumerators.EffectOnUnitType.Chainsaw);
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
         }
 
         public override void Action(object info = null)
@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                        TargetUnit
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
 
-                AbilityUnitOwner.RemoveEffectFromUnit(Enumerators.EffectOnUnitType.Chainsaw);
+                AbilityUnitOwner.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
             }
         }
 

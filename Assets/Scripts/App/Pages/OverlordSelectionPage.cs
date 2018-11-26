@@ -286,7 +286,7 @@ namespace Loom.ZombieBattleground
                 Transform glowContainer = SelfObject.transform.Find("Glow");
                 Transform glowObject = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>(
-                            "Prefabs/VFX/UI/Overlord/ZB_ANM_OverLordSelector_" + SelfHero.Element), glowContainer, false).transform;
+                            "Prefabs/VFX/UI/Overlord/ZB_ANM_OverLordSelector_" + SelfHero.HeroElement), glowContainer, false).transform;
 
                 _glowMeshMaterial = glowObject.Find("VFX_All/MeshGlow").GetComponent<MeshRenderer>().material;
                 _glowParticleShine = glowObject.Find("VFX_All/glowingEffect/energy").GetComponent<ParticleSystemRenderer>().material;
@@ -306,11 +306,11 @@ namespace Loom.ZombieBattleground
 
                 _overlordPictureSprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseOverlord/portrait_" +
-                        SelfHero.Element.ToLowerInvariant() + "_hero");
+                        SelfHero.HeroElement.ToString().ToLowerInvariant() + "_hero");
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
                 _elementIconSprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" +
-                        SelfHero.Element.ToLowerInvariant());
+                        SelfHero.HeroElement.ToString().ToLowerInvariant());
 
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
 

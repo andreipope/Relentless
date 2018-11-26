@@ -1,5 +1,5 @@
 {
-  "buffs": [
+  "cardTypes": [
     {
       "name": "Feral",
       "tooltip": "Can attack when this zombie enters the battleground",
@@ -9,7 +9,9 @@
       "name": "Heavy",
       "tooltip": "Enemies must attack this zombie first",
       "type": "HEAVY"
-    },
+    }
+  ],
+  "mechanics": [
     {
       "name": "Entry",
       "tooltip": "Ability activates when this zombie enters the battleground",

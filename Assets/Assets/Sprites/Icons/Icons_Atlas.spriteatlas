@@ -133,7 +133,7 @@ SpriteAtlas:
   - battleground_mechanic_icon_swingx
   - battleground_past_action_bar_icon_attackdebuff
   - 506709160
-  - battleground_mechanic_icon_overflow
+  - battleground_mechanic_icon_overflowx
   - battleground_mechanic_icon_death
   - battleground_past_action_bar_icon_shielddebuff
   - battleground_mechanic_icon_freeze

@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         public uint LeadingSpaces { get; set; } = 8;
 
+        private HashSet<string> _addedTypes = new HashSet<string>();
+
         public ProtobufAotHintGenerator(string protobufNamespace, IEnumerable<MessageDescriptor> messageDescriptors)
         {
             ProtobufNamespace = protobufNamespace;
@@ -23,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         public string GenerateAotHint()
         {
+            _addedTypes.Clear();
+
             StringBuilder sb = new StringBuilder();
 
             foreach (MessageDescriptor descriptorMessageType in MessageDescriptors)
@@ -37,10 +41,17 @@ namespace Loom.ZombieBattleground
         {
             string declaringTypeFullString = GetGenericTypeName(declaringType, true, true);
             string propertyTypeFullString = GetGenericTypeName(type, true, true);
-            stringBuilder.Append(' ', (int) LeadingSpaces);
-            stringBuilder.Append(
-                $"new {ProtobufNamespace}.Reflection.ReflectionUtil.ReflectionHelper" +
-                $"<{declaringTypeFullString}, {propertyTypeFullString}>().ToString();" + Environment.NewLine);
+            foreach (string typeFullString in new [] {declaringTypeFullString, propertyTypeFullString})
+            {
+                if (_addedTypes.Contains(typeFullString))
+                    continue;
+
+                stringBuilder.Append(' ', (int) LeadingSpaces);
+                stringBuilder.Append($"Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<{typeFullString}>();");
+                stringBuilder.Append(Environment.NewLine);
+
+                _addedTypes.Add(typeFullString);
+            }
         }
 
         private void ProcessMessageDescriptor(StringBuilder sb, MessageDescriptor messageDescriptor)

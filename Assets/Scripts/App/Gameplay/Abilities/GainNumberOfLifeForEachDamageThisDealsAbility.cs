@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         public override void Action(object info = null)
@@ -52,6 +52,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !_isAttacker)
                 return;
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
             InvokeActionTriggered();
         }
@@ -59,6 +60,8 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             Action(_damage);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

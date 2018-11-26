@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class FromProtobufExtensions
     {
-        public static CollectionCardData FromProtobuf(this CardCollection cardCollection)
+        public static CollectionCardData FromProtobuf(this CardCollectionCard cardCollection)
         {
             return new CollectionCardData
             {
@@ -26,147 +26,170 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static FloatVector3 FromProtobuf(this Coordinates coordinates)
+        public static Unit FromProtobuf(this Protobuf.Unit unit)
         {
-            return new FloatVector3(coordinates.X, coordinates.Y, coordinates.Z);
+            Unit.ParameterType Parameter = new Unit.ParameterType();
+
+            if (unit.Parameter != null)
+            {
+                Parameter = new Unit.ParameterType
+                (
+                    unit.Parameter.Attack,
+                    unit.Parameter.Defense,
+                    unit.Parameter.CardName
+                );
+            }
+
+            return new Unit(
+                unit.InstanceId,
+                (Enumerators.AffectObjectType) unit.AffectObjectType,
+                Parameter
+            );
         }
 
-        public static AbilityData FromProtobuf(this Ability ability)
+        public static FloatVector3 FromProtobuf(this Vector3Float vector)
         {
-            List<AbilityData.VisualEffectInfo> VisualEffectsToPlay = new List<AbilityData.VisualEffectInfo>();
+            return new FloatVector3(vector.X, vector.Y, vector.Z);
+        }
 
-            if (ability.VisualEffectsToPlay != null)
-            {
-                foreach (VisualEffectInfo info in ability.VisualEffectsToPlay)
-                {
-                    VisualEffectsToPlay.Add(new AbilityData.VisualEffectInfo()
-                    {
-                        Path = info.Path,
-                        Type = Utilites.CastStringTuEnum<Enumerators.VisualEffectType>(info.Type, true)
-                    });
-                }
-            }
+        public static AbilityData FromProtobuf(this CardAbility ability)
+        {
+            return new AbilityData(
+                (Enumerators.AbilityType) ability.Type,
+                (Enumerators.AbilityActivityType) ability.ActivityType,
+                (Enumerators.AbilityCallType) ability.Trigger,
+                ability.TargetTypes.Select(t => (Enumerators.AbilityTargetType) t).ToList(),
+                (Enumerators.StatType) ability.Stat,
+                (Enumerators.SetType) ability.Set,
+                (Enumerators.AbilityEffectType) ability.Effect,
+                (Enumerators.AttackRestriction) ability.AttackRestriction,
+                (Enumerators.CardType) ability.TargetCardType,
+                (Enumerators.UnitStatusType) ability.TargetUnitSpecialStatus,
+                (Enumerators.CardType) ability.TargetUnitType,
+                ability.Value,
+                ability.Attack,
+                ability.Defense,
+                ability.Name,
+                ability.Turns,
+                ability.Count,
+                ability.Delay,
+                ability.VisualEffectsToPlay.Select(v => v.FromProtobuf()).ToList(),
+                (Enumerators.GameMechanicDescriptionType) ability.GameMechanicDescriptionType,
+                (Enumerators.SetType) ability.TargetSet,
+                (Enumerators.AbilitySubTrigger) ability.SubTrigger,
+                ability.ChoosableAbilities.Select(c => c.FromProtobuf()).ToList(),
+                ability.Defense2,
+                ability.Cost
+            );
+        }
 
-            List<AbilityData.ChoosableAbility> ChoosableAbilities = new List<AbilityData.ChoosableAbility>();
+        public static Hero FromProtobuf(this Protobuf.Hero hero)
+        {
+            return new Hero(
+                (int) hero.HeroId,
+                hero.Icon,
+                hero.Name,
+                hero.ShortDescription,
+                hero.LongDescription,
+                hero.Experience,
+                (int) hero.Level,
+                (Enumerators.SetType) hero.Element,
+                hero.Skills.Select(skill => skill.FromProtobuf()).ToList(),
+                hero.PrimarySkill,
+                hero.SecondarySkill
+            );
+        }
 
-            if (ability.ChoosableAbilities != null)
-            {
-                foreach (ChoosableAbility choosableAbility in ability.ChoosableAbilities)
-                {
-                    ChoosableAbilities.Add(new AbilityData.ChoosableAbility()
-                    {
-                        Description = choosableAbility.Description,
-                        AbilityData = FromProtobuf(choosableAbility.AbilityData)
-                    });
-                }
-            }
+        public static HeroSkill FromProtobuf(this Protobuf.Skill skill)
+        {
+            return new HeroSkill(
+                skill.Title,
+                skill.IconPath,
+                skill.Description,
+                skill.Cooldown,
+                skill.InitialCooldown,
+                skill.Value,
+                skill.Attack,
+                skill.Count,
+                (Enumerators.OverlordSkill) skill.Skill_,
+                skill.SkillTargets.Select(t => (Enumerators.SkillTargetType) t).ToList(),
+                (Enumerators.UnitStatusType) skill.TargetUnitSpecialStatus,
+                skill.ElementTargets.Select(t => (Enumerators.SetType) t).ToList()
+            );
+        }
 
-            return new AbilityData
-            {
-                BuffType = ability.BuffType,
-                Type = ability.Type,
-                ActivityType = ability.ActivityType,
-                CallType = ability.CallType,
-                TargetType = ability.TargetType,
-                StatType = ability.StatType,
-                SetType = ability.SetType,
-                EffectType = ability.EffectType,
-                CardType = ability.CardType,
-                UnitStatus = ability.UnitStatus,
-                UnitType = ability.UnitType,
-                Value = ability.Value,
-                Damage = ability.Damage,
-                Health = ability.Health,
-                AttackInfo = ability.AttackInfo,
-                Name = ability.Name,
-                Turns = ability.Turns,
-                Count = ability.Count,
-                Delay = ability.Delay,
-                VisualEffectsToPlay = VisualEffectsToPlay,
-                SubTrigger = ability.SubTrigger,
-                ChoosableAbilities = ChoosableAbilities,
-                Defense = ability.Defense,
-                Cost = ability.Cost, 
-            };
+        public static AIDeck FromProtobuf(this Protobuf.AIDeck aiDeck)
+        {
+            return new AIDeck(
+                aiDeck.Deck.FromProtobuf(),
+                (Enumerators.AIType) aiDeck.Type
+            );
+        }
+
+        public static Deck FromProtobuf(this Protobuf.Deck deck)
+        {
+            return new Deck(
+                deck.Id,
+                (int) deck.HeroId,
+                deck.Name,
+                deck.Cards.Select(skill => skill.FromProtobuf()).ToList(),
+                deck.PrimarySkill,
+                deck.SecondarySkill
+            );
+        }
+
+        public static DeckCardData FromProtobuf(this Protobuf.DeckCard card)
+        {
+            return new DeckCardData(
+                card.CardName,
+                (int) card.Amount
+            );
+        }
+
+        public static AbilityData.VisualEffectInfo FromProtobuf(this CardAbility.Types.VisualEffectInfo visualEffectInfo)
+        {
+            return new AbilityData.VisualEffectInfo(
+                (Enumerators.VisualEffectType) visualEffectInfo.Type,
+                visualEffectInfo.Path
+            );
+        }
+
+        public static AbilityData.ChoosableAbility FromProtobuf(this CardChoosableAbility choosableAbility)
+        {
+            return new AbilityData.ChoosableAbility(
+                choosableAbility.Description,
+                choosableAbility.AbilityData.FromProtobuf()
+            );
         }
 
         public static CardViewInfo FromProtobuf(this Protobuf.CardViewInfo cardViewInfo)
         {
             if (cardViewInfo == null)
-            {
                 return null;
-            }
 
-            return new CardViewInfo
-            {
-                Position = cardViewInfo.Position.FromProtobuf(),
-                Scale = cardViewInfo.Scale.FromProtobuf()
-            };
+            return new CardViewInfo(cardViewInfo.Position.FromProtobuf(), cardViewInfo.Scale.FromProtobuf());
         }
 
         public static Card FromProtobuf(this Protobuf.Card card)
         {
-            List<AbilityData> abilities = card.Abilities.Select(x => x.FromProtobuf()).ToList();
-            List<AbilityData> initialAbilities = new List<AbilityData>();
-            initialAbilities.AddRange(abilities);
-
-            return new Card
-            {
-                Id = (int) card.Id,
-                Kind = card.Kind,
-                Name = card.Name,
-                Cost = card.Cost,
-                Description = card.Description,
-                FlavorText = card.FlavorText,
-                Picture = card.Picture,
-                Damage = card.Damage,
-                Health = card.Health,
-                Rank = card.Rank,
-                Type = card.Type,
-                Frame = card.Frame,
-                Abilities = abilities,
-                InitialAbilities = initialAbilities,
-                CardViewInfo = card.CardViewInfo.FromProtobuf(),
-                UniqueAnimation = !string.IsNullOrEmpty(card.UniqueAnimation) ? card.UniqueAnimation : "None"
-            };
-        }
-
-        public static CardsLibraryData FromProtobuf(this ListCardLibraryResponse listCardLibraryResponse)
-        {
-            return new CardsLibraryData
-            {
-                Sets = listCardLibraryResponse.Sets.Select(set => set.FromProtobuf()).ToList()
-            };
-        }
-
-        public static CardSet FromProtobuf(this Protobuf.CardSet cardSet)
-        {
-            return new CardSet
-            {
-                Name = !string.IsNullOrEmpty(cardSet.Name) ? cardSet.Name : "none",
-                Cards = cardSet.Cards.Select(card => card.FromProtobuf()).ToList()
-            };
-        }
-/*
-        public static OpponentDeck FromProtobuf(this Protobuf.Deck deck)
-        {
-            return new OpponentDeck
-            {
-                Id = (int)deck.Id,
-                HeroId = (int)deck.HeroId,
-                Type = string.Empty,
-                Cards = deck.Cards.Select(card => card.GetDeckCardData()).ToList()
-            };
-        }
-        */
-        //TOTO: review does need this function at all
-        private static DeckCardData GetDeckCardData(this CardCollection cardCollection)
-        {
-            return new DeckCardData
-            {
-                CardName = cardCollection.CardName,
-                Amount = (int)cardCollection.Amount
-            };
+            return new Card(
+                card.MouldId,
+                card.Name,
+                card.GooCost,
+                card.Description,
+                card.FlavorText,
+                card.Picture,
+                card.Attack,
+                card.Defense,
+                (Enumerators.SetType) card.Set,
+                card.Frame,
+                (Enumerators.CardKind) card.Kind,
+                (Enumerators.CardRank) card.Rank,
+                (Enumerators.CardType) card.Type,
+                card.Abilities.Select(a => a.FromProtobuf()).ToList(),
+                card.CardViewInfo.FromProtobuf(),
+                (Enumerators.UniqueAnimationType) card.UniqueAnimation
+            );
         }
 
         public static List<CardInstance> FromProtobuf(this RepeatedField<CardInstance> repeatedFieldCardInstance)
@@ -176,65 +199,15 @@ namespace Loom.ZombieBattleground.Data
             return cardInstances;
         }
 
-        public static WorkingCard FromProtobuf(CardInstance cardInstance, Player player)
+        public static WorkingCard FromProtobuf(this CardInstance cardInstance, Player player)
         {
-            CardPrototype cardPrototype = cardInstance.Prototype;
-
-            List<AbilityData> abilities = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards.
-                Find(x => x.Id == cardPrototype.DataId).Clone().Abilities;
-
-            List<AbilityData> initialAbilities = new List<AbilityData>();
-            initialAbilities.AddRange(abilities);
-
-            Card card = new Card
-            {
-                Id = cardPrototype.DataId,
-                Kind = cardPrototype.Kind,
-                Name = cardPrototype.Name,
-                Cost = cardPrototype.GooCost,
-                Description = cardPrototype.Description,
-                FlavorText = cardPrototype.FlavorText,
-                Picture = cardPrototype.Picture,
-                Damage = cardPrototype.InitialDamage,
-                Health = cardPrototype.InitialDefence,
-                Rank = cardPrototype.Rank,
-                Type = cardPrototype.Type,
-                CardViewInfo = new CardViewInfo
-                {
-                    Position = new FloatVector3
-                    {
-                        X = cardPrototype.CardViewInfo.Position.X,
-                        Y = cardPrototype.CardViewInfo.Position.Y,
-                        Z = cardPrototype.CardViewInfo.Position.Z
-                    },
-                    Scale = new FloatVector3
-                    {
-                        X = cardPrototype.CardViewInfo.Scale.X,
-                        Y = cardPrototype.CardViewInfo.Scale.Y,
-                        Z = cardPrototype.CardViewInfo.Scale.Z
-                    }
-                },
-                Frame = cardPrototype.Frame,
-                CardSetType = (Enumerators.SetType)cardPrototype.CardSetType,
-                CardRank = (Enumerators.CardRank)cardPrototype.CreatureRank,
-                CardType = (Enumerators.CardType)cardPrototype.CreatureType,
-                CardKind = (Enumerators.CardKind)cardPrototype.CardKind,
-                UniqueAnimationType = string.IsNullOrEmpty(cardPrototype.UniqueAnimation) ? Enumerators.UniqueAnimationType.None :
-                                          Utilites.CastStringTuEnum<Enumerators.UniqueAnimationType>(cardPrototype.UniqueAnimation, true),
-                Abilities = abilities,
-                InitialAbilities = initialAbilities
-            };
-
-            return new WorkingCard(card, player, cardInstance.InstanceId);
-        }
-
-        public static List<Unit> FromProtobuf(this RepeatedField<Unit> repeatedListUnits)
-        {
-            List<Unit> units = new List<Unit>();
-
-            units.AddRange(repeatedListUnits);
-
-            return units;
+            return
+                new WorkingCard(
+                    cardInstance.Prototype.FromProtobuf(),
+                    cardInstance.Instance.FromProtobuf(),
+                    player,
+                    cardInstance.InstanceId
+                );
         }
     }
 }
