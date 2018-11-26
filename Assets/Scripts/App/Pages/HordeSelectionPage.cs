@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
 
             _hordeSelection = _selfPage.transform.Find("Panel_DecksContainer/SelectionMask/Selection");
 
-            _battleButtonGlow = _selfPage.transform.Find("Button_Battle/BattleButtonGlowing").gameObject;
+            _battleButtonGlow = _selfPage.transform.Find("Button_Battle/Pulse").gameObject;
 
             // new horde deck object
             _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;
@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground
                     new HordeDeckObject(
                         _containerOfDecks,
                         _dataManager.CachedDecksData.Decks[i],
-                        _dataManager.CachedHeroesData.HeroesParsed.Find(x =>
+                        _dataManager.CachedHeroesData.Heroes.Find(x =>
                             x.HeroId == _dataManager.CachedDecksData.Decks[i].HeroId),
                         i);
                 hordeDeck.HordeDeckSelected += HordeDeckSelectedHandler;
@@ -421,10 +421,10 @@ namespace Loom.ZombieBattleground
 
                 _setTypeIcon.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" +
-                        SelfHero.Element.ToLowerInvariant());
+                        SelfHero.HeroElement.ToString().ToLowerInvariant());
                 _hordePicture.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" +
-                        SelfHero.Element.ToLowerInvariant());
+                        SelfHero.HeroElement.ToString().ToLowerInvariant());
 
                 _buttonSelect.onClick.AddListener(SelectButtonOnClickHandler);
             }

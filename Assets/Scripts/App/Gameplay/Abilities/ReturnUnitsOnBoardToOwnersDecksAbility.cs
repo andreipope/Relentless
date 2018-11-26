@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             // implement animation
-            unit.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Card.LibraryCard.Clone(), unit.OwnerPlayer));
+            unit.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Card.LibraryCard, unit.Card.LibraryCard, unit.OwnerPlayer));
             unit.MoveUnitFromBoardToDeck();
         }
     }

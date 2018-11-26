@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         public int UnitDefense = 0;
 
-        public int UnitCost = 999;
+        public int UnitCost = 0;
 
         private IInputManager _inputManager;
 
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
                     {
                         if ((UnitDefense > 0 && unit.Model.CurrentHp <= UnitDefense) || UnitDefense == 0)
                         {
-                            if (unit.Model.Card.RealCost <= UnitCost)
+                            if (unit.Model.Card.InstanceCard.Cost <= UnitCost || UnitCost == 0)
                             {
                                 if (SelfBoardCreature != unit)
                                 {

@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground
             if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
             }
             GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
@@ -294,6 +294,9 @@ namespace Loom.ZombieBattleground
 
         private async void NextStepCommonEndActions()
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _currentTutorialStepIndex++;
 
             CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];

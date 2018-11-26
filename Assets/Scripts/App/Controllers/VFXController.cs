@@ -135,6 +135,9 @@ namespace Loom.ZombieBattleground
 
                     _particlesController.RegisterParticleSystem(effect, true, 5f);
 
+                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK, Constants.CreatureAttackSoundVolume,
+                        false, false, true);
+
                     if (damage > 4)
                     {
                         _timerManager.AddTimer(
@@ -148,14 +151,6 @@ namespace Loom.ZombieBattleground
                             },
                             null,
                             0.5f);
-
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_2,
-                            Constants.CreatureAttackSoundVolume, false, false, true);
-                    }
-                    else
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK_1,
-                            Constants.CreatureAttackSoundVolume, false, false, true);
                     }
 
                     break;
@@ -183,6 +178,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Transform transform:
                     position = transform.transform.position;
+                    break;
+                case Vector3 actualPosition:
+                    position = actualPosition;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -379,7 +377,8 @@ namespace Loom.ZombieBattleground
             GameObject effect = Object.Instantiate(_battlegroundTouchPrefab);
             effect.transform.position = Utilites.CastVfxPosition(position);
             _particlesController.RegisterParticleSystem(effect, true, 5f);
-		}
+            _soundManager.PlaySound(Enumerators.SoundType.BATTLEGROUND_TOUCH_EFFECT, Constants.SfxSoundVolume);
+        }
 
         public float AngleBetweenVector3(Vector3 from, Vector3 target)
         {

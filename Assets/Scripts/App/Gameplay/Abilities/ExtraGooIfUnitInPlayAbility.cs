@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -35,6 +35,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo + Value, MinExtraGooValue, MaxExtraGooValue);
+            PlayerCallerOfAbility.CurrentGoo += Value;
         }
 
         protected override void UnitDiedHandler()
@@ -42,6 +43,7 @@ namespace Loom.ZombieBattleground
             base.UnitDiedHandler();
 
             PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo - Value, MinExtraGooValue, MaxExtraGooValue);
+            PlayerCallerOfAbility.CurrentGoo -= Value;
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -46,7 +47,21 @@ namespace Loom.ZombieBattleground
             ClearOldUnitsOnBoard();
             GenerateNewUnitsOnBoard();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            List<ParametrizedAbilityBoardObject> targets = new List<ParametrizedAbilityBoardObject>();
+
+            foreach(ReplaceUnitInfo unitinfo in _replaceUnitInfos)
+            {
+                targets.Add(new ParametrizedAbilityBoardObject()
+                {
+                    BoardObject = unitinfo.OldUnitView.Model,
+                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                    {
+                        CardName = unitinfo.NewUnitCardTitle
+                    }
+                });
+            }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         private void GetInfosAboutUnitsOnBoard()
@@ -56,13 +71,24 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _boardUnits.AddRange(GameplayManager.OpponentPlayer.BoardCards.FindAll(x => CardsController.GetSetOfCard(x.Model.Card.LibraryCard) == SetType.ToString()));
+                        _boardUnits.AddRange(GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _boardUnits.AddRange(GameplayManager.CurrentPlayer.BoardCards.FindAll(x => CardsController.GetSetOfCard(x.Model.Card.LibraryCard) == SetType.ToString()));
+                        _boardUnits.AddRange(GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                }
+            }
+
+
+            if (AbilityUnitOwner != null)
+            {
+                BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
+
+                if (_boardUnits.Contains(view))
+                {
+                    _boardUnits.Remove(view);
                 }
             }
         }
@@ -71,47 +97,84 @@ namespace Loom.ZombieBattleground
         {
             foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
-                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle);
+                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, position: unitInfo.Position);
             }
         }
 
         private void ClearOldUnitsOnBoard()
         {
-            foreach(ReplaceUnitInfo unitInfo in _replaceUnitInfos)
+            if (PredefinedTargets != null)
             {
-                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
-                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
-               
-                Object.Destroy(unitInfo.OldUnitView.GameObject);
+                foreach (BoardUnitView unit in _boardUnits)
+                {
+                    unit.Model.OwnerPlayer.BoardCards.Remove(unit);
+                    unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model.Card);
+
+                    Object.Destroy(unit.GameObject);
+                }
             }
+            else
+            {
+	            foreach(ReplaceUnitInfo unitInfo in _replaceUnitInfos)
+	            {
+	                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
+	                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
+	               
+	                Object.Destroy(unitInfo.OldUnitView.GameObject);
+	            }
+	        }
         }
 
         private void GetPossibleNewUnits()
         {
-            ReplaceUnitInfo replaceUnitInfo = null;
-            foreach (BoardUnitView unit in _boardUnits)
+            if (PredefinedTargets != null)
             {
-                replaceUnitInfo = new ReplaceUnitInfo()
+                BoardUnitView unit;
+                foreach (ParametrizedAbilityBoardObject boardObject in PredefinedTargets)
                 {
-                    OldUnitCost = unit.Model.Card.RealCost,
-                    NewUnitPossibleCost = unit.Model.Card.RealCost + 1,
-                    OldUnitView = unit,
-                    OwnerPlayer = unit.Model.OwnerPlayer
-                };
+                    unit = BattlegroundController.GetBoardUnitViewByModel(boardObject.BoardObject as BoardUnitModel);
 
-                _replaceUnitInfos.Add(replaceUnitInfo);
+                    _replaceUnitInfos.Add(new ReplaceUnitInfo()
+                    {
+                        OldUnitView = unit,
+                        NewUnitCardTitle = boardObject.Parameters.CardName,
+                        OwnerPlayer = unit.Model.OwnerPlayer,
+                        Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit)
+                    });
+                }
             }
+            else
+            {
+	            ReplaceUnitInfo replaceUnitInfo = null;
+	            foreach (BoardUnitView unit in _boardUnits)
+	            {
+	                replaceUnitInfo = new ReplaceUnitInfo()
+	                {
+	                    OldUnitCost = unit.Model.Card.InstanceCard.Cost,
+	                    NewUnitPossibleCost = unit.Model.Card.InstanceCard.Cost + 1,
+	                    OldUnitView = unit,
+	                    OwnerPlayer = unit.Model.OwnerPlayer,
+	                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit)
+	                };
 
-            _replaceUnitInfos.ForEach(GetPossibleNewUnitByMinCost);
+	                _replaceUnitInfos.Add(replaceUnitInfo);
+	            }
+
+	            _replaceUnitInfos.ForEach(GetPossibleNewUnitByMinCost);
+			}
         }
 
         private void GetPossibleNewUnitByMinCost(ReplaceUnitInfo replaceUnitInfo)
         {
-            List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost);
+            List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards
+                .Where(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost && x.CardSetType == SetType)
+                .ToList();
 
             if (possibleUnits.Count == 0)
             {
-                possibleUnits = DataManager.CachedCardsLibraryData.Cards.FindAll(x => x.Cost >= replaceUnitInfo.OldUnitCost);
+                possibleUnits = DataManager.CachedCardsLibraryData.Cards
+                    .Where(x => x.Cost >= replaceUnitInfo.OldUnitCost && x.CardSetType == SetType)
+                    .ToList();
             }
 
             replaceUnitInfo.NewUnitCardTitle = possibleUnits[UnityEngine.Random.Range(0, possibleUnits.Count)].Name;
@@ -125,6 +188,7 @@ namespace Loom.ZombieBattleground
             public BoardUnitView OldUnitView;
             public BoardUnitView NewUnitView;
             public Player OwnerPlayer;
+            public int Position;
         }
 
     }

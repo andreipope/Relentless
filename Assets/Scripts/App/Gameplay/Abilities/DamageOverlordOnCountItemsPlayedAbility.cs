@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
         {
             object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
 
-            BattleController.AttackPlayerByAbility(caller, AbilityData, player);
+            BattleController.AttackPlayerByAbility(caller, AbilityData, player, _damage);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = player,
                         HasValue = true,
-                        Value = _damage
+                        Value = -_damage
                     }
                 }
             });

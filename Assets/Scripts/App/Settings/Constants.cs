@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.5";
+        internal const string CurrentVersionBase = "0.1.7";
 
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
@@ -12,15 +12,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalUserDataFileName = "0412DD0.dat";
 
-        internal const string LocalCardsLibraryDataFileName = "card_library_data.json";
-
-        internal const string LocalCollectionDataFileName = "collection_data.json";
-
-        internal const string LocalHeroesDataFileName = "heroes_data.json";
-
-        internal const string LocalDecksDataFileName = "decks_data.json";
-
-        internal const string LocalOpponentDecksDataFileName = "opponent_decks_data.json";
+        internal const string LocalCardsLibraryDataFileName = "card_library.json";
 
         internal const string LocalCreditsDataFileName = "credits_data.json";
 
@@ -144,7 +136,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;
 
-        internal static Vector3 DefaultPositionOfBoardCard = new Vector3(6, 0, 0);
+        internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
+        internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
 
         internal const string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
         internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";

@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -15,8 +16,6 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -38,7 +37,7 @@ namespace Loom.ZombieBattleground
 
             BoardObject target = null;
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.None;
+            Enumerators.ActionType actionType;
 
             bool isFreezed = false;
 
@@ -74,11 +73,11 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                target
-            }, AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString(), true));
+            }, AbilityData.AbilityType, (AffectObjectType.Types.Enum) AffectObjectType);
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                 Target = target,
@@ -88,7 +87,7 @@ namespace Loom.ZombieBattleground
 
             if (isFreezed)
             {
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Freeze,
                     Target = target,
@@ -99,7 +98,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = actionType,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
     }

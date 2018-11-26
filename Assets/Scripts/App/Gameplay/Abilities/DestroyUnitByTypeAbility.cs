@@ -22,12 +22,28 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BattlegroundController.DestroyBoardUnit(TargetUnit);
-
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            BattlegroundController.DestroyBoardUnit(TargetUnit);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                            Target = TargetUnit
+                        }
+                    }
+            });
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
@@ -36,6 +52,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 InvokeActionTriggered();
             }
         }

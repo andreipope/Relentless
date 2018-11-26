@@ -11,23 +11,29 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
+        private List<BoardUnitView> _boardUnits;
+
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Health = ability.Health;
             Damage = ability.Damage;
+
+            _boardUnits = new List<BoardUnitView>();
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action();
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
+            InvokeActionTriggered();
         }
 
 
@@ -38,16 +44,31 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
-            Action();
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
+            InvokeActionTriggered();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            Player opponent = GetOpponentOverlord();
+            _boardUnits.Clear();
 
-            foreach (BoardUnitView unit in opponent.BoardCards)
+            foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+            {
+                switch (targetType)
+                {
+                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards);
+                        break;
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards);
+                        break;
+                }
+            }
+
+            foreach (BoardUnitView unit in _boardUnits)
             {
                 if (Damage != 0)
                 {
@@ -74,10 +95,11 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            Player opponent = GetOpponentOverlord();
-
-            foreach (BoardUnitView unit in opponent.BoardCards)
+            foreach (BoardUnitView unit in _boardUnits)
             {
+                if (unit == null || unit.Model == null)
+                    continue;
+
                 if (unit.Model.DamageDebuffUntillEndOfTurn != 0)
                 {
                     unit.Model.CurrentDamage += Mathf.Abs(unit.Model.DamageDebuffUntillEndOfTurn);
@@ -91,7 +113,18 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            _boardUnits.Clear();
+
             AbilitiesController.DeactivateAbility(ActivityId);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

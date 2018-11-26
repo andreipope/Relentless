@@ -1,10 +1,8 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground
 {
@@ -24,6 +22,8 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.AppState _finishMatchAppState;
 
+        private int _onPvPManagerGameStartedActionHandlerCounter;
+
         public Enumerators.MatchType MatchType { get; set; }
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
@@ -41,6 +41,7 @@ namespace Loom.ZombieBattleground
             _finishMatchAppState = appStateAfterMatch;
 
             _uiManager.HideAllPages();
+            _uiManager.HideAllPopups();
             _uiManager.DrawPopup<LoadingGameplayPopup>();
 
             _gameplayManager.ResetWholeGameplayScene();
@@ -59,29 +60,33 @@ namespace Loom.ZombieBattleground
                     {
                         try
                         {
-                            GameClient.Get<IQueueManager>().StartNetworkThread();
-                            _uiManager.DrawPopup<ConnectionPopup>();
+                            GameClient.Get<IQueueManager>().Clear();
 
-                            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-                            connectionPopup.ShowLookingForMatch();
-                            connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
-
-                            bool success = await _pvpManager.FindMatch();
-                            if (!success)
-                                return;
-
-                            if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
-                            {
-                                StartPvPMatch();
+                            if (_onPvPManagerGameStartedActionHandlerCounter < 0) {
+                                _onPvPManagerGameStartedActionHandlerCounter = 0;
+                                Debug.Log("OnPvPManagerGameStartedActionReceived was unsubscribed more than required.");
                             }
-                            else
-                            {
-                                _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
+
+                            while (_onPvPManagerGameStartedActionHandlerCounter > 0) {
+                                _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
+                                _onPvPManagerGameStartedActionHandlerCounter--;
+                                Debug.Log("Unsubscribing on PVP, OnPvPManagerGameStartedActionReceived.");
                             }
+
+                            _uiManager.DrawPopup<MatchMakingPopup>();
+
+                            MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+                            await matchMakingPopup.InitiateRegisterPlayerToPool(_uiManager.GetPage<GameplayPage>().CurrentDeckId);
+                            matchMakingPopup.CancelMatchmakingClicked += MatchMakingPopupOnCancelMatchmakingClicked;
+
+                            _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
+                            _onPvPManagerGameStartedActionHandlerCounter++;
                         }
                         catch (Exception e) {
                             Debug.LogWarning(e);
-                            _uiManager.GetPopup<ConnectionPopup>().Hide();
+                            MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+                            matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
+                            matchMakingPopup.Hide();
                             _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
                         }
                     }
@@ -92,19 +97,53 @@ namespace Loom.ZombieBattleground
 
         }
 
-        private async void ConnectionPopupOnCancelMatchmakingClicked()
+        public async void DebugFindPvPMatch(Deck deck)
+        {
+            /*
+            try
+            {
+                _uiManager.DrawPopup<ConnectionPopup>();
+
+                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                connectionPopup.ShowLookingForMatch();
+                connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
+
+                bool success = await _pvpManager.DebugFindMatch(deck);
+                if (!success)
+                    return;
+
+                if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
+                {
+                    StartPvPMatch();
+                }
+                else
+                {
+                    _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
+                }
+            }
+            catch (Exception e) {
+                Debug.LogWarning(e);
+                _uiManager.GetPopup<ConnectionPopup>().Hide();
+                _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
+            }
+            */
+        }
+
+        private async void MatchMakingPopupOnCancelMatchmakingClicked()
         {
             try
             {
-                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-                connectionPopup.CancelMatchmakingClicked -= ConnectionPopupOnCancelMatchmakingClicked;
-                connectionPopup.Hide();
+                _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
+                _onPvPManagerGameStartedActionHandlerCounter--;
+                MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+                matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
+                matchMakingPopup.Hide();
                 await _pvpManager.CancelFindMatch();
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
-                _uiManager.GetPopup<ConnectionPopup>().Hide();
+                _uiManager.GetPopup<MatchMakingPopup>().Hide();
                 _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
             }
         }
@@ -150,9 +189,13 @@ namespace Loom.ZombieBattleground
             CreateLocalMatch();
         }
 
-        private void OnPvPManagerGameStartedActionReceived()
+        public void OnPvPManagerGameStartedActionReceived()
         {
+            MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
+            matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
+            matchMakingPopup.Hide();
             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
+            _onPvPManagerGameStartedActionHandlerCounter--;
             StartPvPMatch();
         }
 

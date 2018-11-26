@@ -1,4 +1,5 @@
 using System;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -24,6 +25,8 @@ namespace Loom.ZombieBattleground
 
         protected PastActionReportPanel _mainRoot;
 
+        private Vector3 _startPosition;
+
         public PastReportActionSmall(PastActionReportPanel root, GameObject prefab, Transform parent, PastActionsPopup.PastActionParam pastActionParam)
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -39,8 +42,8 @@ namespace Loom.ZombieBattleground
 
             PreviewImage.sprite = GetPreviewImage();
 
-            OnBehaviourHandler behaviour = SelfObject.transform.Find("Collider").GetComponent<OnBehaviourHandler>();
-            behaviour.MouseDownTriggered += MouseDownHandler;
+            OnPastReportActionHandler behaviour = SelfObject.transform.Find("Border").GetComponent<OnPastReportActionHandler>();
+            behaviour.PointerDowned += MouseDownHandler;
         }
 
         public void Update()
@@ -55,12 +58,31 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void MouseDownHandler(GameObject obj)
+        public void MouseDownHandler(BaseEventData data)
         {
-            if (!_mainRoot.IsDrawing)
+            if (Input.GetMouseButtonDown(0))
             {
-                UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
-                _mainRoot.IsDrawing = true;
+                if (!_mainRoot.IsDrawing)
+                {
+                    _startPosition = Input.mousePosition;
+                    Helpers.InternalTools.DoActionDelayed(PastActionReportClickCompleted, 0.15f);
+                }
+            }
+        }
+
+        private void PastActionReportClickCompleted()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (!_mainRoot.IsDrawing)
+                {
+                    float delta = Vector3.Distance(_startPosition, Input.mousePosition);
+                    if (delta <= 30f)
+                    {
+                        UIManager.DrawPopup<PastActionsPopup>(PastActionReport);
+                        _mainRoot.IsDrawing = true;
+                    }
+                }
             }
         }
 
@@ -81,11 +103,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardUnitModel unit:
                     {
-                        string setName = CardsController.GetSetOfCard(unit.Card.LibraryCard);
+                        Enumerators.SetType setType = CardsController.GetSetOfCard(unit.Card.LibraryCard);
                         string rank = unit.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = unit.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;
@@ -97,13 +119,15 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardSpell spell:
                     {
-                        string setName = CardsController.GetSetOfCard(spell.Card.LibraryCard);
+                        Enumerators.SetType setType = CardsController.GetSetOfCard(spell.Card.LibraryCard);
                         string rank = spell.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = spell.Card.LibraryCard.Picture.ToLowerInvariant();
 
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rank, picture);
+                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
+                    break;
+                case null:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(PastActionReport.Caller), PastActionReport.Caller, null);

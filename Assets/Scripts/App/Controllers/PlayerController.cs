@@ -93,7 +93,6 @@ namespace Loom.ZombieBattleground
         {
             StopHandTimer();
             _timerManager.StopTimer(SetStatusZoomingFalse);
-            _timerManager.StopTimer(UpdateCardDistribution);
         }
 
         public void InitializePlayer(int playerId)
@@ -122,7 +121,7 @@ namespace Loom.ZombieBattleground
 // playerDeck.Add("Nail Bomb");
 #endif
 
-                                workingDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName), player));
+                                workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, player));
                             }
                         }
 
@@ -131,7 +130,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.MatchType.PVP:
                         foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
                         {
-                            workingDeck.Add(_pvpManager.GetWorkingCardFromCardInstance(cardInstance, player));
+                            workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
 
                         isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
@@ -158,7 +157,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
                         player.PvPPlayerState.CardsInHand
-                        .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, player))
+                        .Select(instance => instance.FromProtobuf(player))
                         .ToList();
 
                     player.SetFirstHandForPvPMatch(workingCards);
@@ -167,13 +166,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            _timerManager.AddTimer(UpdateCardDistribution);
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-        }
-
-        private void UpdateCardDistribution(object[] param)
-        {
-            _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
         }
 
         public virtual void GameStartedHandler()
@@ -311,7 +304,7 @@ namespace Loom.ZombieBattleground
                         BoardUnitView selectedBoardUnitView =
                             _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                         if (selectedBoardUnitView != null && (!_battlegroundController.IsPreviewActive ||
-                            selectedBoardUnitView.Model.Card.Id != _battlegroundController.CurrentPreviewedCardId))
+                            selectedBoardUnitView.Model.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
                         {
                             float delta = Application.isMobilePlatform ?
                                 Constants.PointerMinDragDelta * 2f :

@@ -840,8 +840,8 @@
         "PlayerInfo": {
           "Health": 9,
           "MaximumHealth": 20,
-          "CurrentGoo": 7,
-          "MaximumGoo": 7,
+          "CurrentGoo": 9,
+          "MaximumGoo": 9,
           "HeroId": 4,
           "CardsInHand": [
           ],
@@ -858,7 +858,7 @@
           ]
         },
         "OpponentInfo": {
-          "Health": 12,
+          "Health": 14,
           "MaximumHealth": 20,
           "CurrentGoo": 10,
           "MaximumGoo": 10,
@@ -881,6 +881,7 @@
       },
       "PlayerTurnFirst": true
     },
+	
     {
       "TutorialId": 1,
       "TutorialDataSteps": [
@@ -1017,7 +1018,7 @@
           "id": 7,
           "janePose": "POINTING",
           "janeText": "Goo-Carriers give you extra goo to spend for this turn only! \nThis effect is called <b><color=\"orange\"><u>Overflow</u></color></b>.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_16_overflow",
@@ -1026,16 +1027,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 8,
           "janePose": "POINTING",
           "janeText": "Remember, only Goo-Carriers of the same element as your Overlord will work.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_17_work",
@@ -1044,16 +1045,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 9,
           "janePose": "POINTING",
           "janeText": "Overflow is for this turn only, and comes with some setbacks. \nSo... it's a calculated risk!",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_18_setbacks",
@@ -1062,16 +1063,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 10,
           "janePose": "POINTING",
           "janeText": "Each goo-carrier has it's own drawback depending on \nit's elemental faction",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_19_drawback",
@@ -1080,16 +1081,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 11,
           "janePose": "THINKING",
           "janeText": "Toxic zombies specialize in dealing extra damage.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_19a_extra",
@@ -1098,16 +1099,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 12,
           "janePose": "THINKING",
           "janeText": "For example, Toxic Goo-carriers deal damage to your own Overlord.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_19b_own",
@@ -1116,9 +1117,9 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {

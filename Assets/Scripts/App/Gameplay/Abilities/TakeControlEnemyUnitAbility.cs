@@ -11,13 +11,18 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered();
             }
         }
 
@@ -30,7 +35,14 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
               TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

@@ -10,39 +10,49 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        private Player _opponent;
+
         public FreezeUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
         }
 
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            foreach (BoardUnitView unit in _opponent.BoardCards)
+            {
+                unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
+            }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
+        }
+
         public override void Activate()
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            _opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+            GameplayManager.OpponentPlayer :
+            GameplayManager.CurrentPlayer;
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-
-            Action();
+            InvokeActionTriggered(_opponent);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
+        }
 
-            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
-                GameplayManager.OpponentPlayer :
-                GameplayManager.CurrentPlayer;
-
-            foreach (BoardUnitView unit in opponent.BoardCards)
-            {
-                unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
-                CreateVfx(unit.Transform.position, true, 5f);
-            }
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
         }
     }
 }
