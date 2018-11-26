@@ -37,17 +37,17 @@ namespace Loom.ZombieBattleground.Data
 
         public List<DeckCardData> Cards;
 
-        public int PrimarySkill { get; set; }
+        public Enumerators.OverlordSkill PrimarySkill { get; set; }
 
-        public int SecondarySkill { get; set; }
+        public Enumerators.OverlordSkill SecondarySkill { get; set; }
 
         public Deck(
             long id,
             int heroId,
             string name,
             List<DeckCardData> cards,
-            int primarySkill,
-            int secondarySkill
+            Enumerators.OverlordSkill primarySkill,
+            Enumerators.OverlordSkill secondarySkill
             )
         {
             Id = id;

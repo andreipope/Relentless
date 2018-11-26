@@ -65,6 +65,9 @@ namespace Loom.ZombieBattleground
             hero.Level++;
 
             ApplyReward(hero);
+
+            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void ApplyReward(Hero hero)
@@ -97,7 +100,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case LevelReward.OverlordSkillRewardItem skillReward:
-                        hero.GetSkill(skillReward.OverlordSkill).Unlocked = true;
+                        hero.GetSkill(skillReward.SkillIndex).Unlocked = true;
                         break;
                     case LevelReward.ItemReward itemReward:
                         break;
@@ -122,7 +125,7 @@ namespace Loom.ZombieBattleground
 
             public class OverlordSkillRewardItem : ItemReward
             {
-                public Enumerators.OverlordSkill OverlordSkill;
+                public int SkillIndex;
             }
 
             public class ItemReward

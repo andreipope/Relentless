@@ -239,10 +239,33 @@ namespace Loom.ZombieBattleground
 
             horde.Select();
 
-            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
-                 horde.SelfHero.GetSkill(horde.SelfDeck.PrimarySkill).IconPath);
-            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
-               horde.SelfHero.GetSkill(horde.SelfDeck.SecondarySkill).IconPath);
+            HeroSkill workableSkill = horde.SelfHero.GetSkill(horde.SelfDeck.PrimarySkill);
+            string iconPath = string.Empty;
+            string iconPathLocked = "Images/OverlordAbilitiesIcons/overlordability_silo_closed";
+
+            if (workableSkill == null)
+            {
+                iconPath = iconPathLocked;
+            }
+            else
+            {
+                iconPath = workableSkill.IconPath;
+            }
+
+            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+
+            workableSkill = horde.SelfHero.GetSkill(horde.SelfDeck.SecondarySkill);
+
+            if (workableSkill == null)
+            {
+                iconPath = iconPathLocked;
+            }
+            else
+            {
+                iconPath = workableSkill.IconPath;
+            }
+
+            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
 
             _selectedDeckId = (int) horde.SelfDeck.Id;
 
@@ -524,6 +547,9 @@ namespace Loom.ZombieBattleground
                 HeroSkill skill = skillIndex == 0 ?
                     deck.SelfHero.GetSkill(deck.SelfDeck.PrimarySkill) :
                     deck.SelfHero.GetSkill(deck.SelfDeck.SecondarySkill);
+
+                if (skill == null)
+                    return;
 
                 _uiManager.DrawPopup<OverlordAbilityTooltipPopup>(skill);
             }
