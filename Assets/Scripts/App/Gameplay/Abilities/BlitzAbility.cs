@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilityUnitOwner.ApplyBuff(Enumerators.BuffType.RUSH);
             AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
         }
     }
