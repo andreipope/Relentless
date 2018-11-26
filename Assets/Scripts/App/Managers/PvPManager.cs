@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
+        public Google.Protobuf.Collections.RepeatedField<string> PvPTags { get; set; }
+
         private IUIManager _uiManager;
         private IDataManager _dataManager;
         private BackendFacade _backendFacade;
@@ -82,6 +84,11 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
+
+            if (PvPTags == null)
+            {
+                PvPTags = new Google.Protobuf.Collections.RepeatedField<string> ();
+            }
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }
@@ -141,6 +148,81 @@ namespace Loom.ZombieBattleground
         {
             _isWaitForTurnTimerStart = false;
             await _backendFacade.UnsubscribeEvent();
+        }
+
+        public async Task<bool> FindMatch()
+        {
+            //TODO cleanup, since there's the new matchmaking
+            long? matchId = null;
+            try
+            {
+                _matchmakingCancellationTokenSource?.Dispose();
+                _matchmakingCancellationTokenSource = new CancellationTokenSource();
+                _isMatchmakingInProgress = true;
+                _matchmakingTimeoutCounter = 0;
+
+                _queueManager.Active = false;
+                _queueManager.Clear();
+
+                InitialGameState = null;
+                MatchMetadata = null;
+
+                FindMatchResponse findMatchResponse =
+                    await _backendFacade.FindMatch(
+                        _backendDataControlMediator.UserDataModel.UserId /* ,
+                        PvPTags */
+                        //_uiManager.GetPage<GameplayPage>().CurrentDeckId,
+                        //CustomGameModeAddress
+                    );
+                Debug.LogWarning("FindMatchResponse:\n" + findMatchResponse);
+                matchId = findMatchResponse.Match.Id;
+                if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                    return false;
+
+                await _backendFacade.SubscribeEvent(findMatchResponse.Match.Topics.ToList());
+                Debug.LogWarning("SubscribeEvent complete");
+                if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                    return false;
+
+                GetMatchResponse getMatchResponse = await _backendFacade.GetMatch(findMatchResponse.Match.Id);
+                Debug.LogWarning("GetMatch complete, status: " + getMatchResponse.Match.Status);
+                if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                    return false;
+
+                MatchMetadata = new MatchMetadata(
+                    findMatchResponse.Match.Id,
+                    findMatchResponse.Match.Topics,
+                    getMatchResponse.Match.Status
+                );
+
+                if (MatchMetadata.Status == Match.Types.Status.Started)
+                {
+                    Debug.LogWarning("Status == Started, loading initial state immediately");
+                    await LoadInitialGameState();
+                    if (_matchmakingCancellationTokenSource.IsCancellationRequested)
+                        return false;
+
+                    _isMatchmakingInProgress = false;
+
+                    // if its not player turn, start timer to check later if other player left the game or not
+                    if (!IsCurrentPlayer())
+                    {
+                        _isWaitForTurnTimerStart = true;
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+                await StopMatchmaking(matchId);
+                throw;
+            }
+            finally
+            {
+                _queueManager.Active = true;
+            }
+
+            return true;
         }
 
         public async Task<bool> DebugFindMatch(Deck deck)
