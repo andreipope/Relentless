@@ -367,9 +367,12 @@ public class TestHelper
     /// <remarks>This currently doesn't work, as timeouts have been removed.</remarks>
     public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
     {
+        WaitStart (60);
+
         yield return CombinedCheck (
             CheckCurrentPageName, "GameplayPage", callback1,
-            CheckIfMatchmakingErrorOccured, "", callback2);
+            // CheckIfMatchmakingErrorOccured, "", callback2);
+            WaitTimeIsUp, "", callback2);
 
         yield return null;
     }

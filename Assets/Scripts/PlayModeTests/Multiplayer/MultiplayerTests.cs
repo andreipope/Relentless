@@ -339,9 +339,9 @@ public class MultiplayerPassiveTests
 
     [UnityTest]
     [Timeout (1800000)]
-    public IEnumerator Test1_MatchmakeAndPlay ()
+    public IEnumerator Test_A1_MatchmakeAndPlay ()
     {
-        _testHelper.SetTestName ("PvP - Matchmake And Play");
+        _testHelper.SetTestName ("PvP - Passive Matchmake And Play");
 
         _testHelper.SetPvPTags (new[] {
             "pvpTest"
