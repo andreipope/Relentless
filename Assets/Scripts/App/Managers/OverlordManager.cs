@@ -122,19 +122,19 @@ namespace Loom.ZombieBattleground
 
         private void OnGameInitializedHandler()
         {
-            Hero tempHero = _gameplayManager.CurrentPlayer.SelfHero;
+            Hero selfHero = _gameplayManager.CurrentPlayer.SelfHero;
             HeroInStartGame = new Hero(
-                tempHero.HeroId,
-                tempHero.Icon,
-                tempHero.Name,
-                tempHero.ShortDescription,
-                tempHero.LongDescription,
-                tempHero.Experience,
-                tempHero.Level,
-                tempHero.HeroElement,
-                tempHero.Skills,
-                tempHero.PrimarySkill,
-                tempHero.SecondarySkill);
+                selfHero.HeroId,
+                selfHero.Icon,
+                selfHero.Name,
+                selfHero.ShortDescription,
+                selfHero.LongDescription,
+                selfHero.Experience,
+                selfHero.Level,
+                selfHero.HeroElement,
+                selfHero.Skills,
+                selfHero.PrimarySkill,
+                selfHero.SecondarySkill);
         }
 
         public class LevelReward
