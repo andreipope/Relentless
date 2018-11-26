@@ -3,6 +3,7 @@ using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -76,7 +77,9 @@ namespace Loom.ZombieBattleground
                 {
                     case LevelReward.UnitRewardItem unitReward:
                         {
-                            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(x => x.CardRank == unitReward.Rank);
+                            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards
+                                .Where(x => x.CardRank == unitReward.Rank)
+                                .ToList();
                             Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
                             CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
                             if (foundCard != null)

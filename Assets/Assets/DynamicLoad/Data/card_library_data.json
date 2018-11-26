@@ -743,7 +743,7 @@
                 },
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/IceBolt_Impact"
+                  "Path": "Prefabs/VFX/Skills/ShatterCardDestroyVFX"
                 }
               ]
             }
@@ -1526,7 +1526,14 @@
               "activityType": "passive",
               "callType": "ATTACK",
               "value": 1,
-              "buffType": "SWING"
+              "effectType": "SWING_LIGHTNING",
+              "buffType": "SWING",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ZtormmcallerVFX"
+                }
+              ]
             },
             {
               "type": "DAMAGE_TARGET",
@@ -1534,7 +1541,7 @@
               "callType": "ENTRY",
               "targetType": "player_card|opponent_card|player|opponent",
               "value": 1,
-              "buffType": "ENTRY"
+              "buffType": "ENTRY" 
             }
           ],
           "cardViewInfo": {
@@ -1838,6 +1845,44 @@
             }
           }
         },
+        {  
+          "id":"120",
+          "kind":"CREATURE",
+          "set":"LIFE",
+          "name":"WiZp",
+          "description":"Reanimate",
+          "flavorText":"Zeeee... peski littl-- oh its you?!",
+          "picture":"WiZp",
+          "rank":"MINION",
+          "type":"WALKER",
+          "damage":1,
+          "health":1,
+          "cost":3,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"REANIMATE_UNIT",
+              "activityType":"PASSIVE",
+              "callType":"DEATH",
+              "buffType":"DEATH",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ReanimateVFX"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": 148,
           "kind": "CREATURE",
@@ -2022,7 +2067,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/HealingTouchVFX"
+                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
                 }
               ]
             }
@@ -2039,6 +2084,85 @@
               "z": 0.6
             }
           }
+        },
+        {  
+          "id":"74",
+          "kind":"CREATURE",
+          "set":"LIFE",
+          "name":"PreZerver",
+          "description":"<b>Entry:</b> Restore 2 Def to a zombie",
+          "flavorText":"Need a hand?",
+          "picture":"PreZerver",
+          "rank":"MINION",
+          "type":"WALKER",
+          "damage":1,
+          "health":1,
+          "cost":2,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"HEAL",
+              "activityType":"ACTIVE",
+              "callType":"ENTRY",
+              "targetType":"PLAYER_CARD | OPPONENT_CARD",
+              "value":2,
+              "buffType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
+                }
+              ]
+            }
+          ]
+        },
+        {  
+          "id":"72",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Zed Kit",
+          "description":"Restore all Def to 2 random ally zombies",
+          "flavorText":"Mending broken limbs since 1888",
+          "picture":"zedkit",
+          "rank":"MINION",
+          "type":"WALKER",
+          "cost":4,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"HEAL",
+              "activityType":"PASSIVE",
+              "callType":"ENTRY",
+              "targetType":"PLAYER_CARD",
+              "value":99,
+              "buffType":"ENTRY",
+              "count":2,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": 45,
@@ -2131,6 +2255,7 @@
           "health": 6,
           "type": "WALKER",
           "rank": "GENERAL",
+          "uniqueAnimationType": "ShammannArrival",
           "abilities": [
             {
               "type": "SUMMON",
@@ -2167,13 +2292,20 @@
           "health": 0,
           "type": "WALKER",
           "rank": "GENERAL",
+          "uniqueAnimationType": "ZVirusArrival",
           "abilities": [
             {
               "type": "DEVOUR_ZOMBIES_AND_COMBINE_STATS",
               "activityType": "active",
               "callType": "ENTRY",
               "value": -1,
-              "buffType": "DEVOUR"
+              "buffType": "DEVOUR",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ZVirus_Ability"
+                }
+              ]
             }
           ],
           "cardViewInfo": {
@@ -2749,6 +2881,36 @@
             }
           }
         },
+        {  
+          "id":"68",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Whistle",
+          "description":"Draw a card",
+          "flavorText":"Get over here, STAT!",
+          "picture":"Whistle",
+          "rank":"MINION",
+          "type":"WALKER",
+          "cost":1,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"DRAW_CARD",
+              "activityType":"PASSIVE",
+              "callType":"ENTRY",
+              "buffType":"ENTRY"
+            }
+          ]
+        },
         {
           "id": 70,
           "kind": "SPELL",
@@ -2832,6 +2994,46 @@
               "z": 0.55
             }
           }
+        },
+        {  
+          "id":"41",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Super Serum",
+          "description":"Give an ally Zombie +3/+3; <b>End:</b> -3 DEF",
+          "flavorText":"Captain Zamberica - here we goo!!",
+          "picture":"superserum",
+          "rank":"MINION",
+          "type":"WALKER",
+          "cost":5,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"UNIT_WEAPON",
+              "activityType":"ACTIVE",
+              "callType":"ENTRY",
+              "targetType":"PLAYER_CARD",
+              "value":3,
+              "buffType":"END",
+              "health":3,
+              "damage":3,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/SuperSerumVFX"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": 16,
@@ -2958,6 +3160,80 @@
               "z": 0.55
             }
           }
+        },
+        {
+          "id":"40",
+          "kind":"SPELL",
+          "set":"Item",
+          "name":"Bat",
+          "description":"2 damage to a zombie and Distract it",
+          "flavorText":"Simple but soooo effective ",
+          "picture":"Bat",
+          "rank":"Minion",
+          "type":"Walker",
+          "cost":3,
+          "cardViewInfo":{  
+            "position":{  
+
+           },
+          "scale":{  
+             "x":0.6,
+             "y":0.6,
+             "z":0.6
+           }
+         },
+         "abilities":[  
+         {  
+           "type":"DAMAGE_AND_DISTRACT_TARGET",
+           "activityType":"active",
+           "callType":"entry",
+           "targetType":"player_card | opponent_card",
+           "value":2,
+           "buffType":"ENTRY",
+           "damage":2,
+           "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/BatEntry"
+                }
+              ]
+            }
+         ]
+        }
+        {
+          "id": "116",
+          "kind": "SPELL",
+          "set": "Item",
+          "name": "Shopping Cart",
+          "description": "\u003cb\u003eEntry:\u003c/b\u003e All ally zombies get Swing 1",
+          "flavorText": "Silly fun times... until someone loses an eye or a head!",
+          "picture": "ShoppingCart",
+          "rank": "Minion",
+          "type": "Walker",
+          "cost": 4,
+          "cardViewInfo": {
+            "position": { },
+            "scale": {
+             "x": 0.6,
+             "y": 0.6,
+             "z": 0.6
+            }
+          },
+          "abilities": [
+            {
+              "type": "TAKE_SWING_TO_UNITS",
+              "activityType": "passive",
+              "callType": "entry",
+              "targetType": "player_card",
+              "buffType": "ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/ShoppingCart"
+                }
+              ]
+            }
+          ]
         }
       ]
     },

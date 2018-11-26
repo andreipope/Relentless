@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardKind CardKind;
 
-        public Card CardOwnerOfAbility;
+        public IReadOnlyCard CardOwnerOfAbility;
 
         public WorkingCard MainWorkingCard;
 
@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
 
         public Player SelectedPlayer;
 
-        public List<BoardObject> PredefinedTargets;
+        public List<ParametrizedAbilityBoardObject> PredefinedTargets;
 
         protected AbilitiesController AbilitiesController;
 
@@ -87,6 +87,8 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _opponenentAvatar;
 
+        protected GameAction<object> AbilityProcessingAction;
+
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -104,8 +106,8 @@ namespace Loom.ZombieBattleground
 
             AbilityData = ability;
             CardKind = cardKind;
-            AbilityActivityType = ability.AbilityActivityType;
-            AbilityCallType = ability.AbilityCallType;
+            AbilityActivityType = ability.ActivityType;
+            AbilityCallType = ability.CallType;
             AbilityTargetTypes = ability.AbilityTargetTypes;
             AbilityEffectType = ability.AbilityEffectType;
             _playerAvatar = GameplayManager.CurrentPlayer;
@@ -415,7 +417,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected object GetCaller()
+        public object GetCaller()
         {
             return AbilityUnitOwner ?? (object) BoardSpell;
         }

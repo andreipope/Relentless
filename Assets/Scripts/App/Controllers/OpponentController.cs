@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.MatchType.PVP:
                         foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
                         {
-                            deck.Add(_pvpManager.GetWorkingCardFromCardInstance(cardInstance, player));
+                            deck.Add(cardInstance.FromProtobuf(player));
                         }
 
                         isMainTurnSecond = GameClient.Get<IPvPManager>().IsCurrentPlayer();
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
-            GotActionPlayCard(FromProtobufExtensions.FromProtobuf(cardPlay.Card, _gameplayManager.OpponentPlayer),
+            GotActionPlayCard(cardPlay.Card.FromProtobuf(_gameplayManager.OpponentPlayer),
                               cardPlay.Position);
         }
 
@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
 
         private void OnDrawCardHandler(PlayerActionDrawCard actionDrawCard)
         {
-            GotActionDrawCard(FromProtobufExtensions.FromProtobuf(actionDrawCard.CardInstance, _gameplayManager.OpponentPlayer));
+            GotActionDrawCard(actionDrawCard.CardInstance.FromProtobuf(_gameplayManager.OpponentPlayer));
         }
 
         private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
@@ -156,8 +156,8 @@ namespace Loom.ZombieBattleground
             GotActionUseCardAbility(new UseCardAbilityModel()
             {
                 CardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(actionUseCardAbility.CardKind.ToString()),
-                Card = FromProtobufExtensions.FromProtobuf(actionUseCardAbility.Card, _gameplayManager.OpponentPlayer),
-                Targets = FromProtobufExtensions.FromProtobuf(actionUseCardAbility.Targets),
+                Card = actionUseCardAbility.Card.FromProtobuf(_gameplayManager.OpponentPlayer),
+                Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
                 AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(actionUseCardAbility.AbilityType)
             });
         }
@@ -179,10 +179,11 @@ namespace Loom.ZombieBattleground
 
         private void OnRankBuffHandler(PlayerActionRankBuff actionRankBuff)
         {
-            GotActionRankBuff(FromProtobufExtensions.FromProtobuf(actionRankBuff.Card, _gameplayManager.OpponentPlayer),
-                              FromProtobufExtensions.FromProtobuf(actionRankBuff.Targets));
+            GotActionRankBuff(
+                actionRankBuff.Card.FromProtobuf(_gameplayManager.OpponentPlayer),
+                actionRankBuff.Targets.Select(t => t.FromProtobuf()).ToList()
+                );
         }
-         
 
         #endregion
 
@@ -191,16 +192,25 @@ namespace Loom.ZombieBattleground
 
         public void GotActionEndTurn(EndTurnModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _battlegroundController.EndTurn();
         }
 
         public void GotActionDrawCard(WorkingCard drawedCard)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
         public void GotActionPlayCard(WorkingCard card, int position)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
                 switch (workingCard.LibraryCard.CardKind)
@@ -220,7 +230,7 @@ namespace Loom.ZombieBattleground
                             Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count),
                             boardUnitViewElement);
 
-                        boardUnitViewElement.PlayArrivalAnimation();
+                        boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
 
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
 
@@ -246,12 +256,15 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.RealCost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             });
         }
 
         public void GotActionCardAttack(CardAttackModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, model.CardId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
@@ -261,32 +274,65 @@ namespace Loom.ZombieBattleground
             };
 
             BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel(attackerUnit);
-            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
+
+            if (attackerUnitView != null)
+            {
+                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
+            }
+            else
+            {
+                Debug.LogError("Attacker with card Id " + model.CardId + " not found on this client in match.");
+            }
         }
 
         public void GotActionUseCardAbility(UseCardAbilityModel model)
         {
-            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.Id);
+            if (_gameplayManager.IsGameEnded)
+                return;
 
-            if(boardObjectCaller == null)
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.InstanceId);
+
+            if (boardObjectCaller == null)
             {
-                GameClient.Get<IQueueManager>().AddAction(() =>
+                // FIXME: why do we have recursion here??
+                GameClient.Get<IQueueManager>().AddTask(async () =>
                 {
+                    await new WaitForUpdate();
                     GotActionUseCardAbility(model);
                 });
 
                 return;
             }
 
+            List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
+
+            foreach(Unit unit in model.Targets)
+            {
+                parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject()
+                {
+                    BoardObject = _battlegroundController.GetTargetById(unit.InstanceId,
+                             Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(unit.AffectObjectType.ToString(), true)),
+                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                    {
+                        Attack = unit.Parameter.Attack,
+                        Defense = unit.Parameter.Defense,
+                        CardName = unit.Parameter.CardName,
+                    }
+                });
+            }
+
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
                                                       boardObjectCaller,
-                                                      _battlegroundController.GetTargetsById(model.Targets),
+                                                      parametrizedAbilityObjects,
                                                       model.Card,
                                                       _gameplayManager.OpponentPlayer);
         }
 
         public void GotActionUseOverlordSkill(UseOverlordSkillModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
@@ -314,11 +360,17 @@ namespace Loom.ZombieBattleground
 
         public void GotActionMulligan(MulliganModel model)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             // todo implement logic..
         }
 
-        public void GotActionRankBuff(WorkingCard card, List<Unit> targets)
+        public void GotActionRankBuff(WorkingCard card, IList<Unit> targets)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             List<BoardUnitView> units = _battlegroundController.GetTargetsById(targets)
                 .Cast<BoardUnitModel>()
                 .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();

@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,9 +14,13 @@ namespace Loom.ZombieBattleground
         private UnitWeaponAbility _unitWeaponAbility;
 
         private ulong _id;
+        private ISoundManager _soundManager;
+
+        private string _cardName;
 
         public UnitWeaponAbilityView(UnitWeaponAbility ability) : base(ability)
         {
+            _soundManager = GameClient.Get<ISoundManager>();
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
             _abilitiesController = GameplayManager.GetController<AbilitiesController>();
         }
@@ -41,6 +46,11 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            float delayAfter = 0;
+            string soundName = string.Empty;
+            _cardName = "";
+            float delayBeforeDestroy = 3f;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Enumerators.VisualEffectType effectType = Enumerators.VisualEffectType.Impact;
@@ -63,23 +73,65 @@ namespace Loom.ZombieBattleground
                     effectType = Enumerators.VisualEffectType.Impact;
                 }
 
+                Vector3 offset = Vector3.zero;
+
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
                 VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform, false);
-                VfxObject.transform.localPosition = Vector3.forward * 3f;
+
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    _cardName = effectInfo.cardName;
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    soundName = effectInfo.soundName;
+                    offset = effectInfo.offset;
+                }
+
+                VfxObject.transform.localPosition = offset;
                 _id = ParticlesController.RegisterParticleSystem(VfxObject);
                 ParticleIds.Add(_id);
+
+                if (soundName != string.Empty)
+                {
+                    Enumerators.SoundType soundType = Ability.GetCaller() is BoardSpell ? Enumerators.SoundType.SPELLS : Enumerators.SoundType.CARDS;
+
+                    _soundManager.PlaySound(
+                        soundType,
+                        soundName,
+                        Constants.ZombiesSoundVolume / 2f,
+                        Enumerators.CardSoundType.NONE);
+                }
             }
 
-            Ability.InvokeVFXAnimationEnded();
+            switch (_cardName)
+            {
+                case "SuperSerum":
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        ParticlesController.DestroyParticle(_id);
+
+                    }, delayBeforeDestroy);
+                    break;
+                default:
+                    break;
+            }
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
         private void TurnEndedEventHandler()
         {
-            ParticlesController.DestroyParticle(_id);
-
+            switch (_cardName)
+            {
+                case "Chainsaw":
+                    ParticlesController.DestroyParticle(_id);
+                    break;
+                default:
+                    break;
+            }
             Ability.TurnEndedEvent -= TurnEndedEventHandler;
         }
-
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {

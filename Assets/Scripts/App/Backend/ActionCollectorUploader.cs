@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.DrawCard,
+                    ActionType = PlayerActionType.Types.Enum.DrawCard,
                     PlayerId = playerId,
                     DrawCard = new PlayerActionDrawCard
                     {
@@ -175,17 +175,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.CardPlay,
+                    ActionType = PlayerActionType.Types.Enum.CardPlay,
                     PlayerId = playerId,
                     CardPlay = new PlayerActionCardPlay
                     {
-                        Card = new CardInstance
-                        {
-                            InstanceId = card.Id,
-                            Prototype = card.LibraryCard.GetCardPrototype(),
-                            Defense = card.Health,
-                            Attack = card.Damage,
-                        },
+                        Card = card.ToProtobuf(),
                         Position = position
                     }
                 };
@@ -198,7 +192,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.EndTurn,
+                    ActionType = PlayerActionType.Types.Enum.EndTurn,
                     PlayerId = playerId,
                     EndTurn = new PlayerActionEndTurn()
                 };
@@ -211,7 +205,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.LeaveMatch,
+                    ActionType = PlayerActionType.Types.Enum.LeaveMatch,
                     PlayerId = playerId,
                     LeaveMatch = new PlayerActionLeaveMatch()
                 };
@@ -219,26 +213,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, AffectObjectType type, int instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, AffectObjectType.Types.Enum type, int instanceId)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.CardAttack,
+                    ActionType = PlayerActionType.Types.Enum.CardAttack,
                     PlayerId = playerId,
                     CardAttack = new PlayerActionCardAttack
                     {
-                        Attacker = new CardInstance
-                        {
-                            InstanceId = attacker.Id,
-                            Prototype = attacker.LibraryCard.GetCardPrototype(),
-                            Defense = attacker.Health,
-                            Attack = attacker.Damage
-                        },
+                        Attacker = attacker.ToProtobuf(),
                         AffectObjectType = type,
-                        Target = new Unit
+                        Target = new Protobuf.Unit
                         {
-                            InstanceId = instanceId
+                            InstanceId = instanceId,
+                            Parameter = new Parameter() { }
                         }
                     }
                 };
@@ -246,68 +235,82 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 
-            private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
-                                                  AffectObjectType affectObjectType, List<BoardObject> targets = null)
+            private void AbilityUsedHandler(
+                WorkingCard card,
+                Enumerators.AbilityType abilityType,
+                CardKind.Types.Enum cardKind,
+                AffectObjectType.Types.Enum affectObjectType,
+                List<ParametrizedAbilityBoardObject> targets = null)
             {
-                await Task.Delay(300);
-
-                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
+                PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed()
                 {
                     CardKind = cardKind,
                     AbilityType = abilityType.ToString(),
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = card.LibraryCard.GetCardPrototype(),
-                        Defense = card.Health,
-                        Attack = card.Damage
-                    }
+                    Card = card.ToProtobuf()
                 };
 
-                Unit targetUnit;
+                Protobuf.Unit targetUnit;
                 if (targets != null)
                 {
-                    foreach(BoardObject boardObject in targets)
+                    foreach(ParametrizedAbilityBoardObject parametrizedAbility in targets)
                     {
-                        targetUnit = new Unit();
+                        if (parametrizedAbility.BoardObject == null)
+                            continue;
+                            
+                        targetUnit = new Protobuf.Unit();
 
-                        if (boardObject is BoardUnitModel model)
+                        if (parametrizedAbility.BoardObject is BoardUnitModel model)
                         {
-                            targetUnit = new Unit()
+                            targetUnit = new Protobuf.Unit
                             {
-                                InstanceId = model.Card.Id,
-                                AffectObjectType =  AffectObjectType.Character
+                                InstanceId = model.Card.InstanceId,
+                                AffectObjectType =  AffectObjectType.Types.Enum.Character,
+                                Parameter = new Parameter()
+                                {
+                                    Attack = parametrizedAbility.Parameters.Attack,
+                                    Defense = parametrizedAbility.Parameters.Defense,
+                                    CardName = parametrizedAbility.Parameters.CardName
+                                }
                             };
                         }
-                        else if (boardObject is Player player)
+                        else if (parametrizedAbility.BoardObject is Player player)
                         {
-                            targetUnit = new Unit()
+                            targetUnit = new Protobuf.Unit
                             {
                                 InstanceId = player.Id == 0 ? 1 : 0,
-                                AffectObjectType = AffectObjectType.Player
+                                AffectObjectType = AffectObjectType.Types.Enum.Player,
+                                Parameter = new Parameter() { }
                             };
                         }
-                        else if(boardObject is HandBoardCard handCard)
+                        else if(parametrizedAbility.BoardObject is HandBoardCard handCard)
                         {
-                            targetUnit = new Unit()
+                            targetUnit = new Protobuf.Unit
                             {
-                                InstanceId = handCard.Id,
-                                AffectObjectType = AffectObjectType.Card
+                                InstanceId = handCard.CardView.WorkingCard.InstanceId,
+                                AffectObjectType = AffectObjectType.Types.Enum.Card,
+                                Parameter = new Parameter()
+                                {
+                                    Attack = parametrizedAbility.Parameters.Attack,
+                                    Defense = parametrizedAbility.Parameters.Defense,
+                                    CardName = parametrizedAbility.Parameters.CardName
+                                }
                             };
                         }
 
-                        CardAbilityUsed.Targets.Add(targetUnit);
+                        cardAbilityUsed.Targets.Add(targetUnit);
                     }
                 }
 
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.CardAbilityUsed,
+                    ActionType = PlayerActionType.Types.Enum.CardAbilityUsed,
                     PlayerId = playerId,
-                    CardAbilityUsed = CardAbilityUsed
+                    CardAbilityUsed = cardAbilityUsed
 
                 };
+
+                 UnityEngine.Debug.LogWarning("Action json send = " + Newtonsoft.Json.JsonConvert.SerializeObject(playerAction));
 
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
@@ -317,7 +320,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.Mulligan,
+                    ActionType = PlayerActionType.Types.Enum.Mulligan,
                     PlayerId = playerId,
                     Mulligan = new PlayerActionMulligan
                     {
@@ -333,21 +336,33 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private void SkillUsedHandler(BoardSkill skill, BoardObject target)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                AffectObjectType affectObjectType = target is Player ? AffectObjectType.Player : AffectObjectType.Character;
-                Unit targetUnit = null;
+                AffectObjectType.Types.Enum affectObjectType =
+                    target is Player ?
+                        AffectObjectType.Types.Enum.Player :
+                        AffectObjectType.Types.Enum.Character;
+                Protobuf.Unit targetUnit = null;
 
-                if(target is BoardUnitModel unit)
+                switch (target)
                 {
-                    targetUnit = new Unit() { InstanceId = unit.Card.Id };
-                }
-                else if(target is Player player)
-                {
-                    targetUnit = new Unit() { InstanceId = player.Id == 0 ? 1 : 0 };
+                    case BoardUnitModel unit:
+                        targetUnit = new Protobuf.Unit
+                        {
+                            InstanceId = unit.Card.InstanceId,
+                            Parameter = new Parameter() { }
+                        };
+                        break;
+                    case Player player:
+                        targetUnit = new Protobuf.Unit
+                        {
+                            InstanceId = player.Id == 0 ? 1 : 0,
+                            Parameter = new Parameter() { }
+                        };
+                        break;
                 }
 
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.OverlordSkillUsed,
+                    ActionType = PlayerActionType.Types.Enum.OverlordSkillUsed,
                     PlayerId = playerId,
                     OverlordSkillUsed = new PlayerActionOverlordSkillUsed
                     {
@@ -366,22 +381,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
                 {
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = card.LibraryCard.GetCardPrototype(),
-                        Defense = card.Health,
-                        Attack = card.Damage
-                    }
+                    Card = card.ToProtobuf()
                 };
 
-                Unit unit;
+                Protobuf.Unit unit;
                 foreach (BoardUnitView view in units)
                 {
-                    unit = new Unit()
+                    unit = new Protobuf.Unit
                     {
-                        InstanceId = view.Model.Card.Id,
-                        AffectObjectType = AffectObjectType.Character
+                        InstanceId = view.Model.Card.InstanceId,
+                        AffectObjectType = AffectObjectType.Types.Enum.Character,
+                        Parameter = new Parameter() { }
                     };
 
                     rankBuff.Targets.Add(unit);
@@ -389,7 +399,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.RankBuff,
+                    ActionType = PlayerActionType.Types.Enum.RankBuff,
                     PlayerId = playerId,
                     RankBuff = rankBuff
                 };

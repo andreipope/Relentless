@@ -16,13 +16,15 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             StatType = ability.AbilityStatType;
+            Damage = ability.Damage;
+            Health = ability.Health;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;

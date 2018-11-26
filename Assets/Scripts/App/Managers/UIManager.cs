@@ -67,12 +67,15 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new PlayerOrderPopup());
             _uiPopups.Add(new TermsPopup());
             _uiPopups.Add(new LoginPopup());
+            _uiPopups.Add(new MatchMakingPopup());
             _uiPopups.Add(new ConnectionPopup());
             _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
             _uiPopups.Add(new PastActionsPopup());
-            _uiPopups.Add(new SettingsPopup());            
+            _uiPopups.Add(new SettingsPopup());
             _uiPopups.Add(new UpdatePopup());
+            _uiPopups.Add(new MulliganPopup());
+            _uiPopups.Add(new LoadDataMessagePopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
@@ -108,6 +111,14 @@ namespace Loom.ZombieBattleground
             foreach (IUIElement page in Pages)
             {
                 page.Hide();
+            }
+        }
+
+        public void HideAllPopups()
+        {
+            foreach (IUIPopup popup in _uiPopups)
+            {
+                popup.Hide();
             }
         }
 

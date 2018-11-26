@@ -95,8 +95,8 @@ namespace Loom.ZombieBattleground
                 ? GameClient.Get<ITutorialManager>().CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId
                 : dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
 
-            Hero currentPlayerHero = dataManager.CachedHeroesData.HeroesParsed[heroId];
-            string heroName = currentPlayerHero.Element.ToLowerInvariant();
+            Hero currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
+            string heroName = currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
             _selectHeroSpriteRenderer.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
 
@@ -170,7 +170,14 @@ namespace Loom.ZombieBattleground
 
             _uiManager.HidePopup<YouWonPopup>();
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+            if (GameClient.Get<IGameplayManager>().IsTutorial)
+            {
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
+            }
+            else
+            {
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+            }
         }
     }
 }

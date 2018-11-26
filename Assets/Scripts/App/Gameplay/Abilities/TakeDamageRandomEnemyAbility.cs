@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
 
             if (PredefinedTargets != null)
             {
-                _targets = PredefinedTargets;
+                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
             }
             else
             {
@@ -66,9 +66,11 @@ namespace Loom.ZombieBattleground
                     switch (abilityTarget)
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
                             _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                        case Enumerators.AbilityTargetType.PLAYER_CARD:
                             _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                             break;
                         case Enumerators.AbilityTargetType.PLAYER:
@@ -121,7 +123,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
 
@@ -149,11 +151,11 @@ namespace Loom.ZombieBattleground
 
             switch (target)
             {
-                case Player allyPlayer:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer, damageOverride);
+                case Player player:
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, damageOverride);
                     break;
-                case BoardUnitModel allyUnit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit, damageOverride);
+                case BoardUnitModel unit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, damageOverride);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
