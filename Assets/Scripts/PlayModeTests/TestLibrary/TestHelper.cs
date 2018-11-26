@@ -374,6 +374,15 @@ public class TestHelper
         yield return null;
     }
 
+    public IEnumerator AssertMulliganPopupCameUp (IEnumerator callback1, IEnumerator callback2)
+    {
+        WaitStart (5);
+
+        yield return CombinedCheck (
+            CheckIfMulliganPopupCameUp, "", callback1,
+            WaitTimeIsUp, "", callback2);
+    }
+
     /// <summary>
     /// Is used whenever we need a combined check, instead of a single one.
     /// </summary>
@@ -444,13 +453,6 @@ public class TestHelper
     /// <returns><c>true</c>, if if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
     private bool CheckIfMatchmakingErrorOccured (string dummyParameter)
     {
-        // Initially
-        // Canvas2 / ConnectionPopup(Clone)
-
-        // Then
-        // ConnectionPopup is removed, WarningPopup is added
-        // Canvas3 / WarningPopup(Clone)
-
         if (canvas3GameObject != null && canvas3GameObject.transform.childCount >= 2)
         {
             if (canvas3GameObject.transform.GetChild (1).name.Split ('(')[0] == "WarningPopup")
@@ -460,6 +462,14 @@ public class TestHelper
 
             return false;
         }
+
+        return false;
+    }
+
+    private bool CheckIfMulliganPopupCameUp (string dummyParameter)
+    {
+        if (GameObject.Find ("MulliganPopup(Clone)") != null)
+            return true;
 
         return false;
     }
@@ -805,7 +815,7 @@ public class TestHelper
         GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
         yield return CombinedCheck (
-            CheckIfLoginBoxAppeared, "", SubmitTesterKey (),
+            CheckIfLoginBoxAppeared, "", null,
             CheckCurrentPageName, "MainMenuPage", null);
 
         yield return null;
@@ -3352,7 +3362,7 @@ public class TestHelper
     /// </summary>
     /// <remarks>Useful in case you have concern of getting a response for a request. To be coupled with WaitStart.</remarks>
     /// <returns><c>true</c>, if time is up, <c>false</c> otherwise.</returns>
-    private bool WaitTimeIsUp ()
+    private bool WaitTimeIsUp (string dummyParameter = "")
     {
         return Time.unscaledTime > _waitStartTime + _waitAmount;
     }

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 public class SingleplayerTests
@@ -198,7 +199,9 @@ public class SingleplayerTests
 
         _testHelper.AssertOverlordName ();
 
-        yield return _testHelper.DecideWhichCardsToPick ();
+        yield return _testHelper.AssertMulliganPopupCameUp (
+            _testHelper.DecideWhichCardsToPick (),
+            null);
 
         yield return _testHelper.WaitUntilOurFirstTurn ();
 
