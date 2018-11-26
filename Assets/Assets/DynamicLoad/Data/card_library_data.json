@@ -3032,7 +3032,13 @@
                     "callType":"entry",
                     "targetType":"opponent | opponent_card",
                     "value":3,
-                    "buffType":"ENTRY"
+                    "buffType":"ENTRY",
+                    "VisualEffectsToPlay": [
+                    {
+                      "Type": "Impact",
+                      "Path": "Prefabs/VFX/ShovelDamage"
+                    }
+              ]
                   }
                 },
                 {  
@@ -3043,7 +3049,12 @@
                     "callType":"entry",
                     "targetType":"player | player_card",
                     "value":3,
-                    "buffType":"ENTRY"
+                    "buffType":"ENTRY",
+                    "VisualEffectsToPlay": [
+                    {
+                      "Type": "Impact",
+                      "Path": "Prefabs/VFX/RestoreVFX"
+                    }
                   }
                 }
               ]
