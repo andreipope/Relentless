@@ -59,6 +59,8 @@ public class SingleplayerTests
             yield return _testHelper.ClickGenericButton ("Button_Next");
         }
 
+        yield return _testHelper.WaitUntilWeHaveACardAtHand ();
+
         yield return _testHelper.PlayCardFromHandToBoard (new[] { 0 });
 
         yield return _testHelper.ClickGenericButton ("Button_Next");
