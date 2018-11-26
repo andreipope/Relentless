@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground.Data
         public static HeroSkill FromProtobuf(this Protobuf.Skill skill)
         {
             return new HeroSkill(
-                skill.Id,
+                (int)skill.Id,
                 skill.Title,
                 skill.IconPath,
                 skill.Description,
