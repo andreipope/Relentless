@@ -2882,6 +2882,53 @@
           }
         },
         {  
+          "mouldId":"118",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Leash",
+          "description":"<b>Entry:</b> Gain control of a random enemy zombie",
+          "flavorText":"No more BRAINZZZZZ",
+          "picture":"Leash",
+          "rank":"MINION",
+          "type":"WALKER",
+          "gooCost":6,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"TAKE_CONTROL_ENEMY_UNIT",
+              "activityType":"ACTIVE",
+              "trigger":"ENTRY",
+              "targetTypes":[  
+                "OPPONENT_CARD"
+              ],
+              "gameMechanicDescriptionType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/LeashWalker"
+                },
+                {
+                  "Type": "Impact_Feral",
+                  "Path": "Prefabs/VFX/LeashFeral"
+                },
+                {
+                  "Type": "Impact_Heavy",
+                  "Path": "Prefabs/VFX/LeashHeavy"
+                }
+              ]
+            }
+          ]
+        },
+        {  
           "id":"68",
           "kind":"SPELL",
           "set":"ITEM",

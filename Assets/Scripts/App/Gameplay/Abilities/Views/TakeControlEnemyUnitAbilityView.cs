@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -14,8 +15,13 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+            float delayBeforeDestroy = 3f;
+            float delayAfter = 0;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
+                Vector3 offset = Vector3.zero;
+
                 Enumerators.VisualEffectType effectType = Enumerators.VisualEffectType.Impact;
 
                 switch (Ability.TargetUnit.InitialUnitType)
@@ -36,13 +42,26 @@ namespace Loom.ZombieBattleground
                     effectType = Enumerators.VisualEffectType.Impact;
                 }
 
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+                Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform;
+
+                Vector3 targetPosition = unitTransform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
-                CreateVfx(targetPosition, true);
+
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    offset = effectInfo.offset;
+                }
+
+                CreateVfx(targetPosition, true, delayBeforeDestroy);
+                VfxObject.transform.SetParent(unitTransform, false);
+                VfxObject.transform.localPosition = offset;
             }
 
-            Ability.InvokeVFXAnimationEnded();
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
