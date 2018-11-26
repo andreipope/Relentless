@@ -344,9 +344,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
                 RandomSeed = (long)Time.time,
-                Tags = { }, // pvpTags,
+                Tags = { },
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
+
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
 
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
@@ -370,9 +378,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             FindMatchRequest request = new FindMatchRequest
             {
-                UserId = userId /* ,
-                Tags = pvpTags */
+                UserId = userId
             };
+
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
         }
