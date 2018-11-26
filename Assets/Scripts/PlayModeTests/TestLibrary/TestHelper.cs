@@ -875,6 +875,8 @@ public class TestHelper
             return false;
         });
 
+        yield return LetsThink (0.5f);
+
         if (count >= 2)
         {
             yield return ClickGenericButton (buttonName, parentGameObject, count - 1);
@@ -2541,9 +2543,9 @@ public class TestHelper
     /// Waits for a specific amount of time.
     /// </summary>
     /// <remarks>to be in line with AI Brain, 1.1f was taken as value from AIController.</remarks>
-    public IEnumerator LetsThink ()
+    public IEnumerator LetsThink (float thinkTime = 1.1f)
     {
-        yield return new WaitForSeconds (1.1f);
+        yield return new WaitForSeconds (thinkTime);
     }
 
     /// <summary>
@@ -3244,8 +3246,10 @@ public class TestHelper
 
     private void RecordAValue (string value, RecordedValue recordedValue)
     {
-        if (value.Length <= 1)
-            return;
+        if (value == null || value.Length <= 1)
+        {
+            value = "";
+        }
 
         switch (recordedValue)
         {
