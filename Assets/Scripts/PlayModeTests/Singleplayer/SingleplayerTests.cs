@@ -627,6 +627,7 @@ public class SingleplayerTests
         yield return _testHelper.AssertCurrentPageName ("MainMenuPage");
 
         yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink ();
 
         yield return _testHelper.ButtonListClickCheck (new string[] {
             "Button_Army",
