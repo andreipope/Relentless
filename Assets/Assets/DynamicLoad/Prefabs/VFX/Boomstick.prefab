@@ -21,24 +21,8 @@ GameObject:
   - component: {fileID: 4277838956231708}
   - component: {fileID: 198000915782378562}
   - component: {fileID: 199180027814725988}
-  m_Layer: 9
-  m_Name: Muzzle (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1115142776755548
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4557740895082192}
-  - component: {fileID: 95859210067490828}
   m_Layer: 0
-  m_Name: '!!NULL_CAMERAS_SHAKE_ANIM_FILE'
+  m_Name: Muzzle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,7 +38,7 @@ GameObject:
   - component: {fileID: 4486772944245248}
   - component: {fileID: 198218636144095140}
   - component: {fileID: 199355920189741190}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CrepuscularH2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +55,7 @@ GameObject:
   - component: {fileID: 4540726413236554}
   - component: {fileID: 198008793811157034}
   - component: {fileID: 199783447265527040}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,6 +70,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4221449289152818}
+  - component: {fileID: 114584794729214562}
   m_Layer: 0
   m_Name: Boomstick
   m_TagString: Untagged
@@ -103,7 +88,7 @@ GameObject:
   - component: {fileID: 4021134682572834}
   - component: {fileID: 198914837632184792}
   - component: {fileID: 199475661646547082}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +105,7 @@ GameObject:
   - component: {fileID: 4616392870414286}
   - component: {fileID: 198056952940114440}
   - component: {fileID: 199187642014365324}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +122,7 @@ GameObject:
   - component: {fileID: 4756209799858818}
   - component: {fileID: 198541528051630218}
   - component: {fileID: 199938342167708556}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CrepuscularH1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +139,7 @@ GameObject:
   - component: {fileID: 4871576701704428}
   - component: {fileID: 198881054984071230}
   - component: {fileID: 199567355119255120}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Holes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +156,7 @@ GameObject:
   - component: {fileID: 4848436537011712}
   - component: {fileID: 198938782283074712}
   - component: {fileID: 199800102599421580}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Holes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +170,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1686652901579540}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.21, y: 2.94, z: -0.5}
+  m_LocalPosition: {x: 0, y: 0.162, z: -0.5}
   m_LocalScale: {x: 0.83554006, y: 0.83554095, z: 0.83554095}
   m_Children:
   - {fileID: 4871576701704428}
@@ -196,7 +181,7 @@ Transform:
   - {fileID: 4486772944245248}
   - {fileID: 4540726413236554}
   m_Father: {fileID: 4221449289152818}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!4 &4221449289152818
 Transform:
@@ -205,10 +190,9 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1324011785564020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2150502, y: -1.0531435, z: -1.1738281}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4557740895082192}
   - {fileID: 4021134682572834}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -252,19 +236,6 @@ Transform:
   m_Father: {fileID: 4021134682572834}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 0}
---- !u!4 &4557740895082192
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1115142776755548}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4221449289152818}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4616392870414286
 Transform:
   m_ObjectHideFlags: 1
@@ -317,24 +288,23 @@ Transform:
   m_Father: {fileID: 4021134682572834}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!95 &95859210067490828
-Animator:
-  serializedVersion: 3
+--- !u!114 &114584794729214562
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1115142776755548}
+  m_GameObject: {fileID: 1324011785564020}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4337c1c7f46578742ba565b157532d82, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: 
+  delayBeforeEffect: 4
+  delayAfterEffect: 2
+  delayForChangeState: 0
+  soundName: 
+  offset: {x: 0, y: 0, z: 0}
 --- !u!198 &198000915782378562
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -345,7 +315,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -4944,7 +4914,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -9606,7 +9576,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -14268,7 +14238,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -18876,7 +18846,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -23484,7 +23454,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -28083,7 +28053,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -32682,7 +32652,7 @@ ParticleSystem:
   lengthInSec: 4
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0

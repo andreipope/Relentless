@@ -61,6 +61,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public GameObject Self
+        {
+            get
+            {
+                return _selfPage;
+            }
+        }
+
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;

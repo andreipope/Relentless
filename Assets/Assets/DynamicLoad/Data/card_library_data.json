@@ -2943,7 +2943,13 @@
               ],
               "attack":2,
               "count":3,
-              "gameMechanicDescriptionType":"ENTRY"
+              "gameMechanicDescriptionType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Boomstick"
+                }
+              ]
             }
           ]
         },

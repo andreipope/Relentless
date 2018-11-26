@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
@@ -94,6 +95,8 @@ namespace Loom.ZombieBattleground
 
                     CreateVfx(targetPosition + offset, true, delayBeforeDestroy);
                 }
+
+                GameClient.Get<ICameraManager>().ShakeGameplay(Enumerators.ShakeType.Short);
             }
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
