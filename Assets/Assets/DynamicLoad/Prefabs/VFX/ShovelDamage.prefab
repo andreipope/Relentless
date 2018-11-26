@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4734827051727384}
   - component: {fileID: 198947916344937330}
   - component: {fileID: 199129971874254876}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4550039369379140}
   - component: {fileID: 198810493099223500}
   - component: {fileID: 199401383020161008}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pulse (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 4543737414085960}
   - component: {fileID: 198306985739478592}
   - component: {fileID: 199670435384517012}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pulse (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 4758352204240582}
   - component: {fileID: 198969258544227610}
   - component: {fileID: 199516948303102932}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Swish (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 4219535222571574}
   - component: {fileID: 198812234505804362}
   - component: {fileID: 199938784694598456}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pulse (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 4390427244730238}
   - component: {fileID: 198061740151224970}
   - component: {fileID: 199051805333660996}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Crep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 4141793880890266}
   - component: {fileID: 198652066520691580}
   - component: {fileID: 199236296409241256}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Crep (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -284,7 +284,7 @@ ParticleSystem:
   lengthInSec: 2.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -4901,7 +4901,7 @@ ParticleSystem:
   lengthInSec: 2.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -9500,7 +9500,7 @@ ParticleSystem:
   lengthInSec: 2.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -14117,7 +14117,7 @@ ParticleSystem:
   lengthInSec: 2.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -18716,7 +18716,7 @@ ParticleSystem:
   lengthInSec: 2.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -23315,7 +23315,7 @@ ParticleSystem:
   lengthInSec: 2.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -27914,7 +27914,7 @@ ParticleSystem:
   lengthInSec: 2.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
