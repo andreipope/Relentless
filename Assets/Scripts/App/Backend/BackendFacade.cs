@@ -323,7 +323,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
-            /* string tags = "";
+            string tags = "";
             if (pvpTags != null)
             {
                 foreach (string tag in pvpTags)
@@ -333,7 +333,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             Debug.LogWarning ("PvPTags: " + tags);
 
-            if (pvpTags == null)
+            /* if (pvpTags == null)
             {
                 pvpTags = new Google.Protobuf.Collections.RepeatedField<string> ();
             } */
@@ -361,7 +361,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<FindMatchResponse> FindMatch(string userId, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
-            /* string tags = "";
+            string tags = "";
             if (pvpTags != null)
             {
                 foreach (string tag in pvpTags)
@@ -371,7 +371,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             Debug.LogWarning ("PvPTags: " + tags);
 
-            if (pvpTags == null)
+            /* if (pvpTags == null)
             {
                 pvpTags = new Google.Protobuf.Collections.RepeatedField<string>();
             } */
