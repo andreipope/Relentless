@@ -695,5 +695,11 @@ namespace Loom.ZombieBattleground.Common
             ShammannArrival,
             ZVirusArrival
         }
+
+        public enum CardNameOfAbility
+        {
+            None,
+            Bulldozer
+        }
     }
 }

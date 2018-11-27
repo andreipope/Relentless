@@ -953,6 +953,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DESTROY_UNITS:
                     ability = new DestroyUnitsAbility(cardKind, abilityData);
+                    abilityView = new DestroyUnitsAbilityView((DestroyUnitsAbility)ability);
                     break;
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_UNIT_AND_SWING:
                     ability = new DealDamageToUnitAndSwing(cardKind, abilityData);
