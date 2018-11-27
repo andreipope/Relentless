@@ -40,6 +40,7 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("Type")]
         public Enumerators.CardType CardType { get; protected set; }
 
+        [JsonIgnore]
         public List<AbilityData> InitialAbilities { get; }
 
         public List<AbilityData> Abilities { get; private set; }

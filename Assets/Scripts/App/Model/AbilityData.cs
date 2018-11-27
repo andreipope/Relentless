@@ -190,6 +190,16 @@ namespace Loom.ZombieBattleground.Data
                 Type = source.Type;
                 Path = source.Path;
             }
+
+            public void ForceSetPath(string path)
+            {
+                Path = path;
+            }
+
+            public void ForceSetType(Enumerators.VisualEffectType type)
+            {
+                Type = type;
+            }
         }
 
         public class ChoosableAbility
