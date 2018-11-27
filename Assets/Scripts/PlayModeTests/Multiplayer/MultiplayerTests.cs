@@ -110,7 +110,7 @@ public class MultiplayerTests
 
         yield return _testHelper.AssertPvPStartedOrMatchmakingFailed (
                 _testHelper.PlayAMatch (),
-                _testHelper.PressOK ());
+                _testHelper.ClickGenericButton ("Button_Cancel"));
 
         yield return _testHelper.LetsThink ();
     }
