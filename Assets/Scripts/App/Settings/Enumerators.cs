@@ -151,7 +151,8 @@ namespace Loom.ZombieBattleground.Common
             CHOOSABLE_ABILITIES,
             COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
             GAIN_GOO,
-            BLITZ
+            BLITZ,
+            DRAW_CARD_BY_FACTION
         }
 
         public enum ActionType

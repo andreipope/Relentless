@@ -737,11 +737,7 @@ namespace Loom.ZombieBattleground
             if (Model.OwnerPlayer != null && Model.OwnerPlayer.IsLocalPlayer && _playerController.IsActive && Model.UnitCanBeUsable())
             {
                 _fightTargetingArrow = _boardArrowController.BeginTargetingArrowFrom<BattleBoardArrow>(Transform);
-                _fightTargetingArrow.TargetsType = new List<Enumerators.SkillTargetType>
-                {
-                    Enumerators.SkillTargetType.OPPONENT,
-                    Enumerators.SkillTargetType.OPPONENT_CARD
-                };
+                _fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
                 _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
                 _fightTargetingArrow.Owner = this;
 

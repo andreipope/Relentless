@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
     public class AbilitiesController : IController
     {
         public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind.Types.Enum,
-                            Protobuf.AffectObjectType.Types.Enum, List<ParametrizedAbilityBoardObject>> AbilityUsed;
+                            Protobuf.AffectObjectType.Types.Enum, List<ParametrizedAbilityBoardObject>, List<WorkingCard>> AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -604,8 +604,22 @@ namespace Loom.ZombieBattleground
                                 card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
                                     Protobuf.CardKind.Types.Enum.Spell :
                                     Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, targets);
+                                affectObjectType, targets, null);
         }
+
+        public void ThrowUseAbilityEvent(WorkingCard card, List<WorkingCard> cards,
+                                 Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
+        {
+            if (card == null || !card.Owner.IsLocalPlayer)
+                return;
+
+            AbilityUsed?.Invoke(card, abilityType,
+                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
+                                    Protobuf.CardKind.Types.Enum.Spell :
+                                    Protobuf.CardKind.Types.Enum.Creature,
+                                affectObjectType, null, cards);
+        }
+
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
                                          Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
@@ -628,7 +642,7 @@ namespace Loom.ZombieBattleground
                                 card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
                                     Protobuf.CardKind.Types.Enum.Spell :
                                     Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, parametrizedAbilityBoardObjects);
+                                affectObjectType, parametrizedAbilityBoardObjects, null);
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
@@ -974,6 +988,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.BLITZ:
                     ability = new BlitzAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DRAW_CARD_BY_FACTION:
+                    ability = new DrawCardByFactionAbility(cardKind, abilityData);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);

@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
+        public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
+
         public BoardUnitModel()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -76,6 +78,12 @@ namespace Loom.ZombieBattleground
             CanAttackByDefault = true;
 
             UnitStatus = Enumerators.UnitStatusType.NONE;
+
+            AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
+            {
+                Enumerators.SkillTargetType.OPPONENT,
+                Enumerators.SkillTargetType.OPPONENT_CARD
+            };
 
             IsAllAbilitiesResolvedAtStart = true;
 
