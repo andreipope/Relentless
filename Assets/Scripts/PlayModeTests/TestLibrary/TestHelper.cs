@@ -521,6 +521,8 @@ public class TestHelper
         return false;
     }
 
+    private int pageTransitionWaitTime = 30;
+
     /// <summary>
     /// Checks current page’s name and confirms that it’s correct with what was expected.
     /// </summary>
@@ -536,8 +538,18 @@ public class TestHelper
         if (expectedPageName == lastCheckedPageName)
             yield break;
 
+        WaitStart (pageTransitionWaitTime);
+        bool transitionTimeout = false;
+
         GameObject errorTextObject = null;
         yield return new WaitUntil (() => {
+            if (WaitTimeIsUp ())
+            {
+                transitionTimeout = true;
+
+                return true;
+            }
+
             if (errorTextName.Length >= 1)
             {
                 errorTextObject = GameObject.Find (errorTextName);
@@ -562,6 +574,12 @@ public class TestHelper
 
             return false;
         });
+
+        if (transitionTimeout)
+        {
+            FailWithMessage ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
+        }
+
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
 
         Assert.AreEqual (expectedPageName, actualPageName);
@@ -2620,6 +2638,9 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilOurFirstTurn ()
     {
+        if (IsGameEnded ())
+            yield break;
+
         if (_gameplayManager.CurrentTurnPlayer.Id == _gameplayManager.CurrentPlayer.Id)
         {
             yield return null;
@@ -2735,27 +2756,34 @@ public class TestHelper
         // if it doesn't end in 100 moves, end the game anyway
         for (int turns = 1; turns <= maxTurns; turns++)
         {
+            Debug.Log ("a 0");
+
             yield return TurnStartedHandler ();
+
+            Debug.Log ("a 1");
 
             TurnEndedHandler ();
 
             if (IsGameEnded ())
                 yield break;
 
-            if (IsGameEnded ())
-                break;
-
             yield return EndTurn ();
+
+            Debug.Log ("a 2");
 
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilOurTurnStarts ();
 
+            Debug.Log ("a 3");
+
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilInputIsUnblocked ();
+
+            Debug.Log ("a 4");
 
             if (IsGameEnded ())
                 break;
@@ -3330,7 +3358,7 @@ public class TestHelper
     /// <summary>
     /// Plays a match and once the match finishes, presses on Continue button.
     /// </summary>
-    public IEnumerator PlayAMatch ()
+    public IEnumerator PlayAMatch (int maxTurns = 100)
     {
         yield return AssertCurrentPageName ("GameplayPage");
 
@@ -3344,11 +3372,17 @@ public class TestHelper
 
         yield return WaitUntilOurFirstTurn ();
 
-        yield return MakeMoves ();
+        yield return MakeMoves (maxTurns);
+
+        Debug.LogWarning ("0");
 
         yield return ClickGenericButton ("Button_Continue");
 
+        Debug.LogWarning ("1");
+
         yield return AssertCurrentPageName ("HordeSelectionPage");
+
+        Debug.LogWarning ("2");
     }
 
     /// <summary>
@@ -3365,8 +3399,8 @@ public class TestHelper
 
     #endregion
 
-    private float _waitStartTime;
-    private float _waitAmount;
+    private float _waitStartTime, _turnStartTime;
+    private float _waitAmount, _turnWaitAmount;
 
     /// <summary>
     /// Starts the waiting process.
@@ -3388,5 +3422,17 @@ public class TestHelper
     private bool WaitTimeIsUp (string dummyParameter = "")
     {
         return Time.unscaledTime > _waitStartTime + _waitAmount;
+    }
+
+    private void TurnWaitStart (int waitAmount)
+    {
+        _turnStartTime = Time.time;
+
+        _turnWaitAmount = waitAmount;
+    }
+
+    private bool TurnTimeIsUp ()
+    {
+        return Time.time > _turnStartTime + _turnWaitAmount;
     }
 }
