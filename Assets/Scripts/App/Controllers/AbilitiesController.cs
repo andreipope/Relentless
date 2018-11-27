@@ -789,6 +789,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY:
                     ability = new TakeDamageRandomEnemyAbility(cardKind, abilityData);
+                    abilityView = new TakeDamageRandomEnemyAbilityView((TakeDamageRandomEnemyAbility)ability);
                     break;
                 case Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT:
                     ability = new TakeControlEnemyUnitAbility(cardKind, abilityData);
@@ -957,6 +958,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_UNIT_AND_SWING:
                     ability = new DealDamageToUnitAndSwing(cardKind, abilityData);
+                    abilityView = new DealDamageToUnitAndSwingView((DealDamageToUnitAndSwing)ability);
                     break;
                 case Enumerators.AbilityType.SET_ATTACK_AVAILABILITY:
                     ability = new SetAttackAvailabilityAbility(cardKind, abilityData);

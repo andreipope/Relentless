@@ -701,5 +701,11 @@ namespace Loom.ZombieBattleground.Common
             None,
             Bulldozer
         }
+        
+        public enum ShakeType
+        {
+            Short,
+            Long
+        }
     }
 }
