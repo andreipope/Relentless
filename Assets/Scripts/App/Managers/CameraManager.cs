@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
@@ -14,9 +16,17 @@ namespace Loom.ZombieBattleground.Gameplay
 
         private ITimerManager _timerManager;
 
+        private IUIManager _uiManager;
+
         private CanvasGroup[] _fadeImageGroups;
 
         private float _fadeGoalValue = 1f;
+
+        private GameObject _gameplayCamerasObject;
+
+        private GameObject _otherCamerasObject;
+
+        private Dictionary<Enumerators.ShakeType, Vector3[]> _shakePoints;
 
         public bool IsFading { get; private set; }
 
@@ -64,6 +74,20 @@ namespace Loom.ZombieBattleground.Gameplay
             }, FadeDelay, true);
         }
 
+        public void ShakeGameplay(Enumerators.ShakeType type)
+        {
+            Vector3[] uiPoints = new Vector3[_shakePoints[type].Length];
+            for (int i = 0; i < _shakePoints[type].Length; i++)
+            {
+                uiPoints[i] = Camera.main.ScreenToViewportPoint(_shakePoints[type][i]);
+            }
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(_gameplayCamerasObject.transform.DOPath(_shakePoints[type], 0.05f));
+            sequence.Append(_otherCamerasObject.transform.DOPath(_shakePoints[type], 0.05f));
+            sequence.Append(_uiManager.GetPage<GameplayPage>().Self.transform.DOPath(uiPoints, 0.05f));
+        }
+
         public void Dispose()
         {
         }
@@ -71,6 +95,7 @@ namespace Loom.ZombieBattleground.Gameplay
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
+            _uiManager = GameClient.Get<IUIManager>();
             _fadeImageGroups = new CanvasGroup[3];
 
             _fadeImageGroups[0] = GameObject.Find("Canvas1/Image_Fade").GetComponent<CanvasGroup>();
@@ -82,10 +107,33 @@ namespace Loom.ZombieBattleground.Gameplay
             _fadeImageGroups[0].gameObject.SetActive(false);
             _fadeImageGroups[1].gameObject.SetActive(false);
             _fadeImageGroups[2].gameObject.SetActive(false);
+
+            _otherCamerasObject = GameObject.Find("Cameras");
+
+            FillShakePoints();
+
+            GameClient.Get<IGameplayManager>().GameInitialized += GameInitializedEventHandler;
+        }
+
+        private void FillShakePoints()
+        {
+            _shakePoints = new Dictionary<Enumerators.ShakeType, Vector3[]>();
+            _shakePoints.Add(Enumerators.ShakeType.Short, new Vector3[]
+            {
+                new Vector2(0, 0.19f),
+                new Vector2(0, -0.03f),
+                Vector3.zero
+            });
         }
 
         public void Update()
         {
+
+        }
+
+        private void GameInitializedEventHandler()
+        {
+            _gameplayCamerasObject = GameObject.Find("GamePlayCameras");
         }
 
         private void PrepareFading(bool fadeIn, int level, bool isLastSibling = true)
