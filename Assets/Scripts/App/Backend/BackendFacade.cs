@@ -321,7 +321,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, List<string> pvpTags = null)
         {
             string tags = "";
             if (pvpTags != null)
@@ -359,7 +359,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
+        public async Task<FindMatchResponse> FindMatch(string userId, List<string> pvpTags = null)
         {
             string tags = "";
             if (pvpTags != null)
