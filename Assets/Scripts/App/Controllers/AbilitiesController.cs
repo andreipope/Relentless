@@ -943,6 +943,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DESTROY_UNIT_BY_COST:
                     ability = new DestroyUnitByCostAbility(cardKind, abilityData);
+                    abilityView = new DestroyUnitByCostAbilityView((DestroyUnitByCostAbility)ability);
                     break;
                 case Enumerators.AbilityType.DELAYED_PLACE_COPIES_IN_PLAY_DESTROY_UNIT:
                     ability = new DelayedPlaceCopiesInPlayDestroyUnitAbility(cardKind, abilityData);

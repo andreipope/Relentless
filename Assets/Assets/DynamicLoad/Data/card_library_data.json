@@ -2935,6 +2935,46 @@
           ]
         },
         {  
+          "mouldId":"112",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Torch",
+          "description":"Destroy a random zombie that costs 3 goo or less",
+          "flavorText":"Bringing out the pyro-enthusiast in all of us",
+          "picture":"Torch",
+          "rank":"MINION",
+          "type":"WALKER",
+          "gooCost":3,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"DESTROY_UNIT_BY_COST",
+              "activityType":"PASSIVE",
+              "trigger":"ENTRY",
+              "targetTypes":[  
+                "OPPONENT_CARD"
+              ],
+              "subTrigger":"RandomUnit",
+              "cost":3,
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Torch"
+                }
+              ]
+            }
+          ]
+        },
+        {  
           "id":"68",
           "kind":"SPELL",
           "set":"ITEM",
