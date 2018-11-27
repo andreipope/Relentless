@@ -2626,7 +2626,13 @@ public class TestHelper
         }
         else
         {
+            if (IsGameEnded ())
+                yield break;
+
             yield return WaitUntilOurTurnStarts ();
+
+            if (IsGameEnded ())
+                yield break;
 
             yield return WaitUntilInputIsUnblocked ();
         }
