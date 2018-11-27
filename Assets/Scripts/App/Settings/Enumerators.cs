@@ -696,6 +696,12 @@ namespace Loom.ZombieBattleground.Common
             ZVirusArrival
         }
 
+        public enum CardNameOfAbility
+        {
+            None,
+            Bulldozer
+        }
+
         public enum AbilityEffectInfoPositionType
         {
             Target,
@@ -705,6 +711,7 @@ namespace Loom.ZombieBattleground.Common
         public enum ShakeType
         {
             Short,
+            Medium,
             Long
         }
     }

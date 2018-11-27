@@ -124,6 +124,14 @@ namespace Loom.ZombieBattleground.Gameplay
                 new Vector2(0, -0.03f),
                 Vector3.zero
             });
+            _shakePoints.Add(Enumerators.ShakeType.Medium, new Vector3[]
+            {
+                new Vector2(0.07f, -0.125f),
+                new Vector2(0.1f, 0.027f),
+                new Vector2(0.83f, -0.10f),
+                new Vector2(0.83f, 0.054f),
+                Vector3.zero
+            });
         }
 
         public void Update()

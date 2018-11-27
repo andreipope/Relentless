@@ -3403,6 +3403,46 @@
             }
           }
         },
+        {  
+          "mouldId":"119",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Bulldozer",
+          "description":"<b>Entry:</b> Destroy all zombies in play",
+          "flavorText":"When you REALLY want to level (with) someone",
+          "picture":"Bulldozer",
+          "rank":"MINION",
+          "type":"WALKER",
+          "gooCost":10,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"DESTROY_UNITS",
+              "activityType":"PASSIVE",
+              "trigger":"ENTRY",
+              "targetTypes":[  
+                "OPPONENT_ALL_CARDS",
+                "PLAYER_ALL_CARDS"
+              ],
+              "gameMechanicDescriptionType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Bulldozer"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id":"40",
           "kind":"SPELL",

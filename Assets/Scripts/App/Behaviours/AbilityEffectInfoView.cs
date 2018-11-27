@@ -8,6 +8,8 @@ namespace Loom.ZombieBattleground
     {
         public string cardName;
 
+        public Enumerators.CardNameOfAbility cardNameOfAbility;
+
         [Range(0, 20)]
         public float delayBeforeEffect;
         [Range(0, 20)]
