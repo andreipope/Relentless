@@ -3154,6 +3154,47 @@
             }
           ]
         },
+        {  
+          "mouldId":"39",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Molotov",
+          "description":"3 damage to a zombie, and adjacent zombies",
+          "flavorText":"Not suitable for n00bs and lightweights",
+          "picture":"Molotov",
+          "rank":"MINION",
+          "type":"WALKER",
+          "gooCost":4,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"DEAL_DAMAGE_TO_UNIT_AND_SWING",
+              "activityType":"ACTIVE",
+              "trigger":"ENTRY",
+              "targetTypes":[  
+                "OPPONENT_CARD"
+              ],
+              "value":3,
+              "attack":3,
+              "gameMechanicDescriptionType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/MolotovVfx"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": 16,
           "kind": "SPELL",
