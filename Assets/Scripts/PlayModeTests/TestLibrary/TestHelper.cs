@@ -959,8 +959,7 @@ public class TestHelper
             return;
         }
 
-        _pvpManager.PvPTags = new Loom.Google.Protobuf.Collections.RepeatedField<string> ();
-
+        _pvpManager.PvPTags = new List<string> ();
         foreach (string tag in tags)
         {
             _pvpManager.PvPTags.Add (tag);
@@ -3333,7 +3332,9 @@ public class TestHelper
 
         yield return WaitUntilPlayerOrderIsDecided ();
 
-        yield return DecideWhichCardsToPick ();
+        yield return _testHelper.AssertMulliganPopupCameUp (
+            _testHelper.DecideWhichCardsToPick (),
+            null);
 
         yield return WaitUntilOurFirstTurn ();
 
@@ -3355,6 +3356,8 @@ public class TestHelper
         else
             yield return ClickGenericButton ("Button_GotIt");
     }
+
+    #endregion
 
     private float _waitStartTime;
     private float _waitAmount;
@@ -3380,6 +3383,4 @@ public class TestHelper
     {
         return Time.unscaledTime > _waitStartTime + _waitAmount;
     }
-
-    #endregion
 }

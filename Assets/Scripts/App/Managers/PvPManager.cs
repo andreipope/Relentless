@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
-        public Google.Protobuf.Collections.RepeatedField<string> PvPTags { get; set; }
+        public List<string> PvPTags { get; set; }
 
         private IUIManager _uiManager;
         private IDataManager _dataManager;
@@ -87,7 +88,7 @@ namespace Loom.ZombieBattleground
 
             if (PvPTags == null)
             {
-                PvPTags = new Google.Protobuf.Collections.RepeatedField<string> ();
+                PvPTags = new List<string> ();
             }
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
