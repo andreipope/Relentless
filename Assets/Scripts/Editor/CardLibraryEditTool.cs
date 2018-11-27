@@ -60,12 +60,6 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             DrawExportFunctions();
         }
 
-
-        private void DrawChoosingCard()
-        {
-
-        }
-
         private void DrawCardLibraryImporting()
         {
             GUILayout.Label("Importing Card Library", EditorStyles.boldLabel);
@@ -127,7 +121,7 @@ namespace Loom.ZombieBattleground.Helpers.Tools
                 string[] vfxTypes = Enum.GetNames(typeof(Enumerators.VisualEffectType));
                 int indexOfVfxType = 0;
 
-                foreach (var abilityInfo in _selectedCard.Abilities)
+                foreach (Data.AbilityData abilityInfo in _selectedCard.Abilities)
                 {
                     GUILayout.Label(abilityInfo.AbilityType.ToString(), EditorStyles.miniBoldLabel);
 
@@ -158,7 +152,7 @@ namespace Loom.ZombieBattleground.Helpers.Tools
 
                     if (vfxesToDelete.Count > 0)
                     {
-                        foreach (var vfx in vfxesToDelete)
+                        foreach (Data.AbilityData.VisualEffectInfo vfx in vfxesToDelete)
                         {
                             abilityInfo.VisualEffectsToPlay.Remove(vfx);
                         }
