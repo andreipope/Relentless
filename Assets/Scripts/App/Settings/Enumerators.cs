@@ -701,7 +701,13 @@ namespace Loom.ZombieBattleground.Common
             None,
             Bulldozer
         }
-        
+
+        public enum AbilityEffectInfoPositionType
+        {
+            Target,
+            Overlord
+        }
+
         public enum ShakeType
         {
             Short,
