@@ -219,10 +219,7 @@ namespace Loom.ZombieBattleground.Common
         public enum AttackRestriction
         {
             NONE,
-            ONLY_DIFFERENT,
-
-            OPPONENT,
-            OPPONENT_UNIT
+            ONLY_DIFFERENT
         }
 
         public enum GameMechanicDescriptionType
