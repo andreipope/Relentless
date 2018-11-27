@@ -79,6 +79,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b8c43c726644c9948a49138afa6d1c09, type: 3}
   - {fileID: 21300000, guid: 7eca5992725060d4cb97b91ee81d7d51, type: 3}
   - {fileID: 21300000, guid: 375428a29e5f8dd4a8b177eae8cc58eb, type: 3}
+  - {fileID: 21300000, guid: ed0118b239883544995ee766fafd5f19, type: 3}
   - {fileID: 21300000, guid: 57c7a8b2f158c4849b4e362c577405e1, type: 3}
   - {fileID: 21300000, guid: 02151fb275119b44ab8e5f5519f5aebe, type: 3}
   - {fileID: 21300000, guid: 2fb1b9c24f9a832498611fbde7cd3e2c, type: 3}
@@ -107,7 +108,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7623f5644e7867048afc59215db4870f, type: 3}
   - {fileID: 21300000, guid: 9343fc74ae90f374b98f918e720eec8b, type: 3}
   - {fileID: 21300000, guid: 313765840803cbe4dbf75a9ddc0faf57, type: 3}
-  - {fileID: 21300000, guid: b4224d84d25fa0b4d9892ab82a3b50cb, type: 3}
   - {fileID: 21300000, guid: c9b51d9424ce7534e98a91111ccc8c8c, type: 3}
   - {fileID: 21300000, guid: 528f82c4ba69eab46bf4de90df61b68d, type: 3}
   - {fileID: 21300000, guid: 9c4336c40d8a3c945980e74286afb48f, type: 3}
@@ -130,7 +130,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: fb3089d55ba7e5649bca496af01f371b, type: 3}
   - {fileID: 21300000, guid: 189eaaf5892de8d42ac35534954b8134, type: 3}
   - {fileID: 21300000, guid: 37369126d1b4bc843965118a1dda532c, type: 3}
-  - {fileID: 21300000, guid: e2773326f41d06642ac0cac6d5a7b866, type: 3}
   - {fileID: 21300000, guid: 60ccd436b2dece340a0bd3bf9c699d66, type: 3}
   - {fileID: 21300000, guid: 0f3d4736e704d9c4b8a65b05c88c2f87, type: 3}
   - {fileID: 21300000, guid: fa8681562cf83ea4ab5bf6ca9d7035c1, type: 3}
@@ -155,6 +154,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 10bf2157e67d01e43a3b23ee4c70a575, type: 3}
   - {fileID: 21300000, guid: edd92a57991e4d340ba2211a86595dee, type: 3}
   - {fileID: 21300000, guid: 69d2da7764965254086af3740877ed3f, type: 3}
+  - {fileID: 21300000, guid: aefa8d877ebb87e48b2ab16399358895, type: 3}
   - {fileID: 21300000, guid: c6ca6497e44c51d4689747a885076b5c, type: 3}
   - {fileID: 21300000, guid: 70b325b7e307e63428c9c419e8651096, type: 3}
   - {fileID: 21300000, guid: 48baefb7be0377b40bc01e12b576735b, type: 3}
@@ -171,11 +171,13 @@ SpriteAtlas:
   - {fileID: 21300000, guid: cfece3e8efe44174fbdc7bce0e30e3f1, type: 3}
   - {fileID: 21300000, guid: 1fc53129a060d5d4ba48f8a9cc876199, type: 3}
   - {fileID: 21300000, guid: 1fc7603994bb34c1ca24b1eea95b8d8e, type: 3}
+  - {fileID: 21300000, guid: 0e17554964c50454b951fbe4c1df597e, type: 3}
   - {fileID: 21300000, guid: cf7dc649d150d0d4e8fe18b8a871184c, type: 3}
   - {fileID: 21300000, guid: c5e31e4912749c14b9759d2db630b559, type: 3}
   - {fileID: 21300000, guid: e270277903bda264d82dd5574aab76ab, type: 3}
   - {fileID: 21300000, guid: 3d504489beb8d1d479481583b38602ab, type: 3}
   - {fileID: 21300000, guid: 6be0f589984364b36a26940c7db4ebb4, type: 3}
+  - {fileID: 21300000, guid: a4d6b7a9e52d84042bce63bc9f8e3ff2, type: 3}
   - {fileID: 21300000, guid: e9c952c9674fdaf439f41eda021ca8fc, type: 3}
   - {fileID: 21300000, guid: b369f7d985ccd794d8bb612d71d903b8, type: 3}
   - {fileID: 21300000, guid: 15d3edf9633f401428ca0e407634b4e4, type: 3}
@@ -211,7 +213,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ba277c5ce178c004b962f363f10485f2, type: 3}
   - {fileID: 21300000, guid: 2591226c78e411042a3c03908b64db9d, type: 3}
   - {fileID: 21300000, guid: 5651366cfa3b80a4186324a8e03f552a, type: 3}
-  - {fileID: 21300000, guid: 38bd3c6cdc231134fab2b41bc2ad336f, type: 3}
   - {fileID: 21300000, guid: a100a18c21e19f44b87052b91a4d12c0, type: 3}
   - {fileID: 21300000, guid: 59ae339c010ec5342a5304708a09011d, type: 3}
   - {fileID: 21300000, guid: 1b3e38ecace8a0647b2d6cc6c1e149c6, type: 3}
@@ -237,6 +238,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b47f7bce96c4dbb4aa93464e155929d2, type: 3}
   - {fileID: 21300000, guid: d2917edeb739d644a9499e7c48f5a7fe, type: 3}
   - {fileID: 21300000, guid: 542eb7fea766fef42bf0f16a538b30c7, type: 3}
+  - {fileID: 21300000, guid: 4eb7bc0f869594a4e9cd55875c0f2b77, type: 3}
   - {fileID: 21300000, guid: 36028b1fffa1c734c83c62f7cfea924d, type: 3}
   - {fileID: 21300000, guid: 170c5a6f3b04f8841bcb9bc9eecd4b62, type: 3}
   - {fileID: 21300000, guid: bcb6907f470b40140bc10d5eb4ddad8e, type: 3}
@@ -283,6 +285,7 @@ SpriteAtlas:
   - toxic_commander_zeeter
   - earth_minion_slab
   - item_minion_molotov
+  - air_commander_ztormshield
   - water_minion_znowy
   - fire_commander_volcan
   - toxic_general_cherno-bill
@@ -311,7 +314,6 @@ SpriteAtlas:
   - water_general_tzunamy
   - water_officer_geyzer
   - earth_officer_spiker
-  - air_officer_ztormmcaller
   - item_minion_freshmeat
   - fire_minion_firewall
   - earth_minion_pebble
@@ -334,7 +336,6 @@ SpriteAtlas:
   - others_minion_taintedgoo
   - water_officer_embryo
   - air_minion_whizpar
-  - air_commander_ztrom
   - toxic_officer_znipe
   - fire_officer_cynderman
   - air_general_embryo
@@ -359,6 +360,7 @@ SpriteAtlas:
   - life_commander_vindrom
   - life_minion_grower
   - item_minion_leash
+  - air_officer_aura
   - item_minion_torch
   - fire_minion_embryo
   - air_general_zeuz
@@ -375,11 +377,13 @@ SpriteAtlas:
   - air_minion_banshee
   - fire_minion_rabiez
   - life_officer_shroom
+  - toxic_officer_zhank
   - fire_commander_cynderman
   - toxic_commander_boomer
   - earth_general_embryo
   - air_general_mindflayer
   - water_minion_izze
+  - fire_commander_fire-eater
   - life_commander_embryo
   - earth_minion_hardy
   - fire_general_cerberus
@@ -415,7 +419,6 @@ SpriteAtlas:
   - fire_minion_burzt
   - toxic_officer_azzazzin
   - life_officer_embryo
-  - air_commander_ztormshield
   - water_minion_embryo
   - fire_minion_firecaller
   - Toxic_Minion_Ectoplasm
@@ -441,13 +444,14 @@ SpriteAtlas:
   - others_minion_corruptedgoo
   - toxic_minion_wazte
   - air_officer_gaz
+  - earth_commander_earthshaker_exclusive
   - life_officer_everlazting
   - earth_commander_defender
   - toxic_minion_toxin
   - fire_minion_quazi
   - water_commander_maelstrom
   - toxic_minion_zcavenger
-  - air_commander_ztormmcaller
+  - air_officer_ztormmcaller
   - toxic_minion_zmiley
   - item_minion_shoppingcart
   - life_general_embryo
