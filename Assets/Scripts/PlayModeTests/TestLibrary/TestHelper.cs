@@ -3332,8 +3332,8 @@ public class TestHelper
 
         yield return WaitUntilPlayerOrderIsDecided ();
 
-        yield return _testHelper.AssertMulliganPopupCameUp (
-            _testHelper.DecideWhichCardsToPick (),
+        yield return AssertMulliganPopupCameUp (
+            DecideWhichCardsToPick (),
             null);
 
         yield return WaitUntilOurFirstTurn ();
