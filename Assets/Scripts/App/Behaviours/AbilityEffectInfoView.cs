@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -19,5 +18,15 @@ namespace Loom.ZombieBattleground
         public string soundName;
 
         public Vector3 offset;
+
+
+        public AbilityInfoPositionBlock positionInfo;
+    }
+
+    [Serializable]
+    public class AbilityInfoPositionBlock
+    {
+        public Enumerators.AbilityEffectInfoPositionType type;
+
     }
 }

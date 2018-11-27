@@ -696,6 +696,12 @@ namespace Loom.ZombieBattleground.Common
             ZVirusArrival
         }
 
+        public enum AbilityEffectInfoPositionType
+        {
+            Target,
+            Overlord
+        }
+
         public enum ShakeType
         {
             Short,

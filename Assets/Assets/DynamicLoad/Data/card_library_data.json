@@ -3279,6 +3279,46 @@
             }
           }
         },
+        {  
+          "mouldId":"113",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Extinguisher",
+          "description":"<b>Entry:</b> Freeze all enemy zombies",
+          "flavorText":"Psssshhhhhhhhhhh",
+          "picture":"extinguisher",
+          "rank":"MINION",
+          "type":"WALKER",
+          "gooCost":4,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"FREEZE_UNITS",
+              "activityType":"PASSIVE",
+              "trigger":"ENTRY",
+              "targetTypes":[  
+                "OPPONENT_CARD"
+              ],
+              "value":1,
+              "gameMechanicDescriptionType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Extinguisher"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": 17,
           "kind": "SPELL",
