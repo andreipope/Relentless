@@ -701,5 +701,11 @@ namespace Loom.ZombieBattleground.Common
             Target,
             Overlord
         }
+
+        public enum ShakeType
+        {
+            Short,
+            Long
+        }
     }
 }

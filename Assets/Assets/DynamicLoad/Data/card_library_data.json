@@ -2964,6 +2964,48 @@
             }
           ]
         },
+        {  
+          "mouldId":"154",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Boomstick",
+          "description":"2 damage to 3 random zombies in play",
+          "flavorText":"Thank you for your service!",
+          "picture":"Boomstick",
+          "rank":"MINION",
+          "type":"WALKER",
+          "gooCost":2,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"TAKE_DAMAGE_RANDOM_ENEMY",
+              "activityType":"PASSIVE",
+              "trigger":"ENTRY",
+              "targetTypes":[  
+                "OPPONENT_ALL_CARDS",
+                "PLAYER_ALL_CARDS"
+              ],
+              "attack":2,
+              "count":3,
+              "gameMechanicDescriptionType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/Boomstick"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": 70,
           "kind": "SPELL",
@@ -3149,6 +3191,47 @@
                 {
                   "Type": "Impact",
                   "Path": "Prefabs/VFX/SuperSerumVFX"
+                }
+              ]
+            }
+          ]
+        },
+        {  
+          "mouldId":"39",
+          "kind":"SPELL",
+          "set":"ITEM",
+          "name":"Molotov",
+          "description":"3 damage to a zombie, and adjacent zombies",
+          "flavorText":"Not suitable for n00bs and lightweights",
+          "picture":"Molotov",
+          "rank":"MINION",
+          "type":"WALKER",
+          "gooCost":4,
+          "cardViewInfo":{  
+            "position":{  
+
+            },
+            "scale":{  
+              "x":0.6,
+              "y":0.6,
+              "z":0.6
+            }
+          },
+          "abilities":[  
+            {  
+              "type":"DEAL_DAMAGE_TO_UNIT_AND_SWING",
+              "activityType":"ACTIVE",
+              "trigger":"ENTRY",
+              "targetTypes":[  
+                "OPPONENT_CARD"
+              ],
+              "value":3,
+              "attack":3,
+              "gameMechanicDescriptionType":"ENTRY",
+              "VisualEffectsToPlay": [
+                {
+                  "Type": "Impact",
+                  "Path": "Prefabs/VFX/MolotovVfx"
                 }
               ]
             }
