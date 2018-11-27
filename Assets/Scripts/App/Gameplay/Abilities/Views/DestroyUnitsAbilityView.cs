@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +10,11 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
+        private ICameraManager _cameraManager;
+
         private List<BoardUnitView> _unitsViews;
 
-        #region Bulldozer
+        #region BulldozerFields
 
         private GameObject opponentLineObject;
 
@@ -23,6 +26,8 @@ namespace Loom.ZombieBattleground
         public DestroyUnitsAbilityView(DestroyUnitsAbility ability) : base(ability)
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
+
+            _cameraManager = GameClient.Get<ICameraManager>();
 
             _unitsViews = new List<BoardUnitView>();
         }
@@ -36,9 +41,9 @@ namespace Loom.ZombieBattleground
             Vector3 offset = Vector3.zero;
             Enumerators.CardNameOfAbility cardNameOfAbility = Enumerators.CardNameOfAbility.None;
 
-            //if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Bulldozer");//(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
@@ -54,6 +59,9 @@ namespace Loom.ZombieBattleground
                 switch (cardNameOfAbility)
                 {
                     case Enumerators.CardNameOfAbility.None:
+                        {
+                            CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
+                        }
                         break;
                     case Enumerators.CardNameOfAbility.Bulldozer:
                         {
@@ -74,6 +82,7 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
+        #region Bulldozer
         private void OnUpdateEventHandler()
         {
             BoardUnitView unitView;
@@ -87,6 +96,7 @@ namespace Loom.ZombieBattleground
                         unitView.ChangeModelVisibility(false);
                         CreateSubParticle(unitView.Transform.position);
                         _unitsViews.Remove(unitView);
+                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
                     }
                 }
                 else
@@ -96,6 +106,7 @@ namespace Loom.ZombieBattleground
                         unitView.ChangeModelVisibility(false);
                         CreateSubParticle(unitView.Transform.position);
                         _unitsViews.Remove(unitView);
+                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
                     }
                 }
             }
@@ -118,5 +129,6 @@ namespace Loom.ZombieBattleground
         {
             base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
+        #endregion
     }
 }

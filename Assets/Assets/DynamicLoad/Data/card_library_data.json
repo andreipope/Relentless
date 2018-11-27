@@ -3368,7 +3368,7 @@
           "kind":"SPELL",
           "set":"ITEM",
           "name":"Bulldozer",
-          "description":"\u003cb\u003eEntry:\u003c/b\u003e Destroy all zombies in play",
+          "description":"<b>Entry:</b> Destroy all zombies in play",
           "flavorText":"When you REALLY want to level (with) someone",
           "picture":"Bulldozer",
           "rank":"MINION",

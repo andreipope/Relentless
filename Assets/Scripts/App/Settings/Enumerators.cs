@@ -705,6 +705,7 @@ namespace Loom.ZombieBattleground.Common
         public enum ShakeType
         {
             Short,
+            Medium,
             Long
         }
     }
