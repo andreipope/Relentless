@@ -200,7 +200,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 
-            private async void LeaveMatchHandler()
+            private void LeaveMatchHandler()
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -210,8 +210,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     LeaveMatch = new PlayerActionLeaveMatch()
                 };
 
-                await _backendFacade.SendAction(_pvpManager.MatchMetadata.Id, playerAction);
-                //_backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
             }
 
             private void CardAttackedHandler(WorkingCard attacker, AffectObjectType.Types.Enum type, int instanceId)

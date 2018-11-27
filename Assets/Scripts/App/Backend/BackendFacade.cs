@@ -511,31 +511,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
         }
 
-        // send action directly, without adding in queue
-        public async Task SendAction(long matchId, PlayerAction playerAction)
-        {
-            PlayerActionRequest request = new PlayerActionRequest
-            {
-                MatchId = matchId,
-                PlayerAction = playerAction
-            };
-
-            try
-            {
-                await Contract.CallAsync(SendPlayerActionMethod, request);
-            }
-            catch (TimeoutException exception)
-            {
-                Debug.LogError(" Time out == " + exception);
-                ShowConnectionPopup();
-            }
-            catch (Exception exception)
-            {
-                Debug.LogError(" other == " + exception);
-                ShowConnectionPopup();
-            }
-        }
-
         public void ShowConnectionPopup()
         {
             IUIManager uiManager = GameClient.Get<IUIManager>();
