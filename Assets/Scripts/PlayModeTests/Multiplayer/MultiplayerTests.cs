@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 public class MultiplayerTests
@@ -200,23 +201,7 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
-        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
-
-        _testHelper.InitalizePlayer ();
-
-        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
-
-        _testHelper.AssertOverlordName ();
-
-        yield return _testHelper.DecideWhichCardsToPick ();
-
-        yield return _testHelper.WaitUntilOurFirstTurn ();
-
-        yield return _testHelper.MakeMoves ();
-
-        yield return _testHelper.ClickGenericButton ("Button_Continue");
-
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return _testHelper.PlayAMatch ();
     }
 
     [UnityTest]
