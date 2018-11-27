@@ -2170,6 +2170,11 @@ public class TestHelper
             _testBroker.GetPlayer (_player).CardsInHand.FindAll (x =>
                  x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
+        /* foreach (WorkingCard workingCard in list)
+        {
+            Debug.Log ("+ " + workingCard.LibraryCard.MouldId + ": " + workingCard.LibraryCard.Name);
+        } */
+
         List<Loom.ZombieBattleground.Data.Card> cards = new List<Loom.ZombieBattleground.Data.Card> ();
 
         foreach (WorkingCard item in list)
@@ -2185,7 +2190,9 @@ public class TestHelper
 
         foreach (Loom.ZombieBattleground.Data.Card item in cards)
         {
-            sortedList.Add (list.Find (x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains (x)));
+            // Debug.Log ("- " + item.MouldId + ": " + item.Name);
+
+            sortedList.Add (list.Find (x => x.LibraryCard.Name == item.Name && !sortedList.Contains (x)));
         }
 
         list.Clear ();
