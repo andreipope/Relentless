@@ -10,6 +10,10 @@ namespace Loom.ZombieBattleground
     {
         public int Cost { get; }
 
+        private BoardUnitModel _unit;
+
+        private bool _isRandom;
+
         public DestroyUnitByCostAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -25,7 +29,10 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                DestroyUnit(GetRandomUnit());
+                _isRandom = true;
+                _unit = GetRandomUnit();
+                InvokeActionTriggered(_unit);
+                
             }
         }
 
@@ -34,6 +41,22 @@ namespace Loom.ZombieBattleground
             base.InputEndedHandler();
 
             if (IsAbilityResolved)
+            {
+                _isRandom = false;
+                _unit = TargetUnit;
+                InvokeActionTriggered(_unit);
+            }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            if(_isRandom)
+            {
+                DestroyUnit(_unit);
+            }
+            else
             {
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
