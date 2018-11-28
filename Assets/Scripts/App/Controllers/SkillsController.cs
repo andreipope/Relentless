@@ -126,13 +126,13 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                PlayerPrimarySkill.Hide();
-                PlayerSecondarySkill.Hide();
+                PlayerPrimarySkill?.Hide();
+                PlayerSecondarySkill?.Hide();
             }
             else
             {
-                OpponentPrimarySkill.Hide();
-                OpponentSecondarySkill.Hide();
+                OpponentPrimarySkill?.Hide();
+                OpponentSecondarySkill?.Hide();
             }
         }
 
@@ -140,13 +140,13 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                PlayerPrimarySkill.BlockSkill();
-                PlayerSecondarySkill.BlockSkill();
+                PlayerPrimarySkill?.BlockSkill();
+                PlayerSecondarySkill?.BlockSkill();
             }
             else
             {
-                OpponentPrimarySkill.BlockSkill();
-                OpponentSecondarySkill.BlockSkill();
+                OpponentPrimarySkill?.BlockSkill();
+                OpponentSecondarySkill?.BlockSkill();
             }
         }
 
@@ -154,13 +154,13 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                PlayerPrimarySkill.UnBlockSkill();
-                PlayerSecondarySkill.UnBlockSkill();
+                PlayerPrimarySkill?.UnBlockSkill();
+                PlayerSecondarySkill?.UnBlockSkill();
             }
             else
             {
-                OpponentPrimarySkill.UnBlockSkill();
-                OpponentSecondarySkill.UnBlockSkill();
+                OpponentPrimarySkill?.UnBlockSkill();
+                OpponentSecondarySkill?.UnBlockSkill();
             }
         }
 

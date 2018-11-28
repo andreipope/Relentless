@@ -872,7 +872,9 @@
           "CardsOnBoard": [
           ],
           "CardsOnGraveyard": [
-          ]
+          ],
+          "PrimaryOverlordSkill": "POISON_DART",
+          "SecondaryOverlordSkill": "TOXIC_POWER"
         },
         "OpponentInfo": {
           "Health": 14,
@@ -893,7 +895,9 @@
           "CardsOnBoard": [
           ],
           "CardsOnGraveyard": [
-          ]
+          ],
+          "PrimaryOverlordSkill": "FIRE_BOLT",
+          "SecondaryOverlordSkill": "RABIES"
         }
       },
       "PlayerTurnFirst": true
@@ -1571,7 +1575,9 @@
           ],
           "CardsOnGraveyard": [
 
-          ]
+          ],
+          "PrimaryOverlordSkill": "POISON_DART",
+          "SecondaryOverlordSkill": "TOXIC_POWER"
         },
         "OpponentInfo": {
           "Health": 6,
@@ -1590,11 +1596,13 @@
             {
               "Name": "Cerberus",
               "IsManuallyPlayable": true
-            },
+            }
           ],
           "CardsOnGraveyard": [
 
-          ]
+          ],
+          "PrimaryOverlordSkill": "FIRE_BOLT",
+          "SecondaryOverlordSkill": "RABIES"
         }
       },
       "PlayerTurnFirst": false

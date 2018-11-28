@@ -45,6 +45,9 @@ namespace Loom.ZombieBattleground
 
         public void ChangeExperience(Hero hero, int value)
         {
+            if (_gameplayManager.IsTutorial)
+                return;
+
             hero.Experience += value;
             CheckLevel(hero);
         }

@@ -142,6 +142,10 @@ namespace Loom.ZombieBattleground
 
                 MainApp.Instance.StartCoroutine(FillExperinceBar(updatedExperiencePercetage));
             }
+            else
+            {
+                _buttonOk.gameObject.SetActive(true);
+            }
         }
 
         public void Show(object data)

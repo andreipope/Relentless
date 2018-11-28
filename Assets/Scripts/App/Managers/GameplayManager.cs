@@ -71,6 +71,8 @@ namespace Loom.ZombieBattleground
 
         public Deck CurrentPlayerDeck { get; set; }
 
+        public Deck OpponentPlayerDeck { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -255,6 +257,8 @@ namespace Loom.ZombieBattleground
 
         private void StartInitializeGame()
         {
+            Debug.LogError(11111111);
+
             if (IsTutorial)
             {
                 IsSpecificGameplayBattleground = true;
