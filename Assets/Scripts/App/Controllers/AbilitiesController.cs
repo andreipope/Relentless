@@ -491,6 +491,8 @@ namespace Loom.ZombieBattleground
                                        {
                                            libraryCard.ForceUpdateAbilities(libraryCard.InitialAbilities);
 
+                                           card.WorkingCard.Owner.CurrentGoo += card.ManaCost;
+
                                            handCard.GameObject.SetActive(true);
                                            handCard.ResetToHandAnimation();
                                            handCard.CheckStatusOfHighlight();
@@ -1019,7 +1021,6 @@ namespace Loom.ZombieBattleground
             if (isPlayer)
             {
 
-                card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                 GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
