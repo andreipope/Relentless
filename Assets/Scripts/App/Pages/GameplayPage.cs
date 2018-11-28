@@ -219,10 +219,6 @@ namespace Loom.ZombieBattleground
 
         public void StartGame()
         {
-
-            Debug.LogError(11222222222111111);
-
-
             if (_battlegroundController == null)
             {
                 _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
