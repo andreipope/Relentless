@@ -176,6 +176,8 @@ namespace Loom.ZombieBattleground.Data
         {
             [JsonProperty("type")]
             public Enumerators.VisualEffectType Type { get; private set; }
+
+            [JsonProperty("path")]
             public string Path { get; private set; }
 
             [JsonConstructor]
