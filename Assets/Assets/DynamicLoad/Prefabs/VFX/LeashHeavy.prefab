@@ -121,6 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4999325162521116}
   - component: {fileID: 95026207766508900}
+  - component: {fileID: 114233916010519810}
   m_Layer: 0
   m_Name: LeashHeavy
   m_TagString: Untagged
@@ -361,6 +362,27 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114233916010519810
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1372624641812830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: 
+  cardNameOfAbility: 0
+  delayBeforeEffect: 4
+  delayAfterEffect: 0
+  delayForChangeState: 0
+  offset: {x: 0, y: 0, z: 2}
+  delayForSound: 0.75
+  soundName: CZB_AUD_Leash_F1_EXP
+  positionInfo:
+    type: 0
 --- !u!198 &198360880620080408
 ParticleSystem:
   m_ObjectHideFlags: 1

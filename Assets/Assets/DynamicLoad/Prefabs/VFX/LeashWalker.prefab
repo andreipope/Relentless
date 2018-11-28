@@ -374,11 +374,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: 
-  delayBeforeEffect: 3
+  cardNameOfAbility: 0
+  delayBeforeEffect: 4
   delayAfterEffect: 0
   delayForChangeState: 0
-  soundName: 
   offset: {x: 0, y: 0, z: 2}
+  delayForSound: 0.75
+  soundName: CZB_AUD_Leash_F1_EXP
+  positionInfo:
+    type: 0
 --- !u!198 &198031493579796892
 ParticleSystem:
   m_ObjectHideFlags: 1

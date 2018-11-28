@@ -124,8 +124,10 @@ namespace Loom.ZombieBattleground
             {
                 Action?.Invoke(Parameter, ActionDoneCallback);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                UnityEngine.Debug.LogError(ex);
+
                 if (!_actionDone)
                 {
                     ActionDoneCallback();

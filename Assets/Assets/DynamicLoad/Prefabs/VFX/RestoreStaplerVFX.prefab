@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 4041471415630622}
   - component: {fileID: 114872247447718928}
   m_Layer: 0
-  m_Name: RestoreVFX
+  m_Name: RestoreStaplerVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -412,11 +412,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: RestoreCard
+  cardNameOfAbility: 0
   delayBeforeEffect: 4
   delayAfterEffect: 1.5
   delayForChangeState: 0
   soundName: 
+  delayForSound: 0
   offset: {x: 0, y: 0.2, z: 0}
+  positionInfo:
+    type: 0
 --- !u!198 &198137208063652672
 ParticleSystem:
   m_ObjectHideFlags: 1

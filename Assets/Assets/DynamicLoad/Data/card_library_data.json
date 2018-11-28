@@ -2164,7 +2164,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
+                  "Path": "Prefabs/VFX/ZedKitRestoreVFX"
                 }
               ]
             }
@@ -3188,7 +3188,7 @@
                     "VisualEffectsToPlay": [
                     {
                       "Type": "Impact",
-                      "Path": "Prefabs/VFX/RestoreVFX"
+                      "Path": "Prefabs/VFX/ShovelRestoreVFX"
                     }
                   }
                 }

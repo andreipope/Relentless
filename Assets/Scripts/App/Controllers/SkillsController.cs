@@ -106,9 +106,6 @@ namespace Loom.ZombieBattleground
             int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
             int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
 
-            _gameplayManager.CurrentPlayer.SelfHero.Skills[primary].OverlordSkill = Enumerators.OverlordSkill.METEOR_SHOWER;
-            _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary].OverlordSkill = Enumerators.OverlordSkill.METEOR_SHOWER;
-
             if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
                 secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
             {
@@ -1665,12 +1662,6 @@ namespace Loom.ZombieBattleground
             units = unitsViews.Select((x) => x.Model).ToList();
 
             GameObject vfxObject = null;
-            ParticleSystem particle = null;
-            string path = "ParticleSystem/MeteorShowerVFX";
-
-            Debug.Log(skill.OverlordSkill.ToString().ToLowerInvariant());
-
-            skill.OverlordSkill = Enumerators.OverlordSkill.METEOR_SHOWER;
 
             foreach (BoardUnitModel unit in units)
             {
@@ -1682,12 +1673,6 @@ namespace Loom.ZombieBattleground
                 vfxObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MeteorShowerVFX"));
                 vfxObject.transform.position =  _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                 _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(vfxObject, true, 8);
-
-                particle = vfxObject.transform.Find(path).GetComponent<ParticleSystem>();
-                particle.GetComponent<OnParticleBehaviourHandler>().OnParticleTriggerEvent += MeteorShowerImpact;
-
-                MeteorShowerVfxMoved(particle, skill);
-
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -1710,38 +1695,12 @@ namespace Loom.ZombieBattleground
         {
             int random = UnityEngine.Random.Range(1, 4);
 
-            Debug.LogError(11111);
-
             _soundManager.PlaySound(
                 Enumerators.SoundType.OVERLORD_ABILITIES,
                 "meteor_shower" + "_Impact_0" + random.ToString(),
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
         }
-
-        private void MeteorShowerVfxMoved(ParticleSystem particle, HeroSkill skill)
-        {
-            float delay = 0;
-
-            for (int i = 0; i < 3; i++)
-            {
-                InternalTools.DoActionDelayed(() =>
-                {
-                    Debug.LogError(2222);
-
-                    particle.Emit(1);
-                    int random = UnityEngine.Random.Range(1, 4);
-
-                    _soundManager.PlaySound(
-                        Enumerators.SoundType.OVERLORD_ABILITIES,
-                        skill.OverlordSkill.ToString().ToLowerInvariant() + "_Moving_0" + random.ToString(),
-                        Constants.OverlordAbilitySoundVolume,
-                        Enumerators.CardSoundType.NONE);
-                }, delay);
-                delay += 0.25f;
-            }
-        }
-
         // EARTH
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)

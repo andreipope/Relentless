@@ -83,12 +83,17 @@ namespace Loom.ZombieBattleground
 
         protected void PlaySound(string clipTitle, float delay)
         {
-            Enumerators.SoundType type = Ability.CardKind == Enumerators.CardKind.CREATURE ? Enumerators.SoundType.CARDS : Enumerators.SoundType.SPELLS; 
-
-            Helpers.InternalTools.DoActionDelayed(() =>
+            if (!string.IsNullOrEmpty(clipTitle))
             {
-                SoundManager.PlaySound(type, clipTitle, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-            }, delay);
+                Enumerators.SoundType type = Ability.CardKind == Enumerators.CardKind.CREATURE ? Enumerators.SoundType.CARDS : Enumerators.SoundType.SPELLS;
+
+                Debug.LogError(type);
+
+                Helpers.InternalTools.DoActionDelayed(() =>
+                {
+                    SoundManager.PlaySound(type, clipTitle, Constants.SfxSoundVolume, isLoop: false);
+                }, delay);
+            }
         }
     }
 

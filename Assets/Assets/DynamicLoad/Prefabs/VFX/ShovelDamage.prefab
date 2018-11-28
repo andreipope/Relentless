@@ -269,11 +269,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: Shovel Damage
+  cardNameOfAbility: 0
   delayBeforeEffect: 3
   delayAfterEffect: 0.45
   delayForChangeState: 0
-  soundName: 
   offset: {x: 0, y: 0, z: 0}
+  delayForSound: 0
+  soundName: CZB_AUD_Shovel_Damage_F1_EXP
+  positionInfo:
+    type: 0
 --- !u!198 &198061740151224970
 ParticleSystem:
   m_ObjectHideFlags: 1

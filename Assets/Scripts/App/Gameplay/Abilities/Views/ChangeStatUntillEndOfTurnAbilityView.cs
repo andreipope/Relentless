@@ -43,14 +43,11 @@ namespace Loom.ZombieBattleground
             float delayBeforeDestroy = 3f;
             float delaySound = 0;
             string soundName = string.Empty;
+            Enumerators.AbilityEffectInfoPositionType positionType = Enumerators.AbilityEffectInfoPositionType.Target;
 
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                bool isLocalPlayer = false;
-                bool isReplaceRotation = false;
-                Vector3 rotation = Vector3.zero;
-
                 Vector3 targetPosition = Ability.PlayerCallerOfAbility.AvatarObject.transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
@@ -63,19 +60,15 @@ namespace Loom.ZombieBattleground
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
                     soundName = effectInfo.soundName;
                     delaySound = effectInfo.delayForSound;
-
-                    isReplaceRotation = effectInfo.rotationParameters.replaceRotation; ;
-                    isLocalPlayer = effectInfo.rotationParameters.isLocalPlayer;
-                    rotation = effectInfo.rotationParameters.rotation;
-
+                    positionType = effectInfo.positionInfo.type;
                 }
 
                 CreateVfx(targetPosition, true, delayBeforeDestroy, true);
 
 
-                if (isReplaceRotation && isLocalPlayer == Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                if(positionType == Enumerators.AbilityEffectInfoPositionType.Overlord && !Ability.PlayerCallerOfAbility.IsLocalPlayer)
                 {
-                    VfxObject.transform.eulerAngles = rotation;
+                    VfxObject.transform.eulerAngles = new Vector3(180, VfxObject.transform.eulerAngles.y, VfxObject.transform.eulerAngles.z);
                 }
             }
 

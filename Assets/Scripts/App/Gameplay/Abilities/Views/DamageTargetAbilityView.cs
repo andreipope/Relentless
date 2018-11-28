@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
 
             _delayBeforeMove = 0f;
 
+            float soundDelay = 0f;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
@@ -78,13 +80,14 @@ namespace Loom.ZombieBattleground
                     _delayAfterImpact = effectInfo.delayAfterEffect;
                     _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
                     _abilityActionCompletedSound = effectInfo.soundName;
+                    soundDelay = effectInfo.delayForSound;
                 }
 
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
 
                 if (!string.IsNullOrEmpty(_abilityActionCompletedSound))
                 {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionCompletedSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+                    PlaySound(_abilityActionCompletedSound, soundDelay);
                 }
             }
 
