@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground
 
         void SetLanguage(Enumerators.Language language, bool forceUpdate = false);
 
+        void LoadLanguageData(Enumerators.Language language);
         string GetUITranslation(string key);
     }
 }

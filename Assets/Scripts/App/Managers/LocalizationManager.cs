@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
@@ -11,11 +12,21 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
+        private ILoadObjectsManager _loadObjectsManager;
+
         public event Action<Enumerators.Language> LanguageWasChangedEvent;
 
         public Dictionary<SystemLanguage, Enumerators.Language> SupportedLanguages { get; private set; }
 
         public Enumerators.Language CurrentLanguage { get; private set; } = Enumerators.Language.NONE;
+
+        private Dictionary<string, string> _languageData;
+
+
+        public LocalizationManager()
+        {
+            _languageData = new Dictionary<string, string>();
+        }
 
         public void ApplyLocalization()
         {
@@ -50,13 +61,18 @@ namespace Loom.ZombieBattleground
 
             CurrentLanguage = language;
             _dataManager.CachedUserLocalData.AppLanguage = language;
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            LoadLanguageData(language);
 
             LanguageWasChangedEvent?.Invoke(CurrentLanguage);
         }
 
         public string GetUITranslation(string key)
         {
-            return "";
+            if (_languageData.ContainsKey(key))
+                return _languageData[key];
+
+            return string.Empty;
         }
 
         public void Dispose()
@@ -66,12 +82,19 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             FillLanguages();
         }
 
         public void Update()
         {
+        }
+
+        public void LoadLanguageData(Enumerators.Language language)
+        {
+            TextAsset localizationTextAsset = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/Localization/"+language);
+            _languageData = JsonConvert.DeserializeObject<Dictionary<string, string>>(localizationTextAsset.text);
         }
 
         private void FillLanguages()

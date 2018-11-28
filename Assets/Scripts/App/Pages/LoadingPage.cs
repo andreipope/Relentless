@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
 
             _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
-            UpdateLocalization();
+            //UpdateLocalization();
         }
 
         public async void Update()
@@ -163,6 +163,8 @@ namespace Loom.ZombieBattleground
 #endif
             _loadingText.text = "LOADING...";
 
+            UpdateLocalization();
+
             _pressAnyText.gameObject.SetActive(false);
             _loginForm.SetActive(false);
 
@@ -217,6 +219,11 @@ namespace Loom.ZombieBattleground
 
         private void UpdateLocalization()
         {
+            if (_selfPage == null)
+                return;
+
+            _loadingText.text = _localizationManager.GetUITranslation(_loadingText.gameObject.name);
+            _pressAnyText.text = _localizationManager.GetUITranslation(_pressAnyText.gameObject.name);
         }
 
         private async void OnSignupButtonPressed()

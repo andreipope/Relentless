@@ -55,14 +55,12 @@ namespace Loom.ZombieBattleground
 
         private List<string> _names;
 
-        private Dictionary<string, string> _localizationData;
 
         public DataManager(ConfigData configData)
         {
             FillCacheDataPaths();
             InitCachedData();
             ConfigData = configData;
-            _localizationData = new Dictionary<string, string>();
         }
 
         private void InitCachedData()
@@ -152,7 +150,7 @@ namespace Loom.ZombieBattleground
 
         public Task SaveCache(Enumerators.CacheDataType type)
         {
-            Debug.Log("== Saving cache type " + type);
+            Debug.LogError("== Saving cache type " + type);
 
             switch (type)
             {
@@ -199,7 +197,7 @@ namespace Loom.ZombieBattleground
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
             LoadLocalCachedData();
-            LoadLanguageData(CachedUserLocalData.AppLanguage);
+            _localizationManager.LoadLanguageData(CachedUserLocalData.AppLanguage);
 
             GameClient.Get<ISoundManager>().ApplySoundData();
 
@@ -391,12 +389,6 @@ namespace Loom.ZombieBattleground
             {
                 CachedUserLocalData = DeserializeObjectFromPersistentData<UserLocalData>(userLocalDataFilePath);
             }
-        }
-
-        private void LoadLanguageData(Enumerators.Language language)
-        {
-            TextAsset localizationTextAsset = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/Localization/"+language);
-            _localizationData = JsonConvert.DeserializeObject<Dictionary<string, string>>(localizationTextAsset.text);
         }
 
         private void FillCacheDataPaths()
