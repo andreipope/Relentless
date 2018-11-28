@@ -74,10 +74,10 @@ namespace Loom.ZombieBattleground
         {
             if (_skillsInitialized)
             {
-                PlayerPrimarySkill.Update();
-                PlayerSecondarySkill.Update();
-                OpponentPrimarySkill.Update();
-                OpponentSecondarySkill.Update();
+                PlayerPrimarySkill?.Update();
+                PlayerSecondarySkill?.Update();
+                OpponentPrimarySkill?.Update();
+                OpponentSecondarySkill?.Update();
             }
         }
 
@@ -103,8 +103,8 @@ namespace Loom.ZombieBattleground
             rootPage.OpponentSecondarySkillHandler.MouseUpTriggered +=
                 OpponentSecondarySkillHandlerMouseUpTriggeredHandler;
 
-            HeroSkill primary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayer.SelfHero.PrimarySkill);
-            HeroSkill secondary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayer.SelfHero.SecondarySkill);
+            HeroSkill primary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.PrimarySkill);
+            HeroSkill secondary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.SecondarySkill);
 
             if (primary != null && secondary != null)
             {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground
 {
@@ -64,5 +65,7 @@ namespace Loom.ZombieBattleground
         Player GetPlayerById(int id);
 
         PlayerMoveAction PlayerMoves { get; set; }
+
+        Deck CurrentPlayerDeck { get; set; }
     }
 }

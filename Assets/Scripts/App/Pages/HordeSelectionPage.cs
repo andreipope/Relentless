@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
         private List<HordeDeckObject> _hordeDecks;
         private HordeDeckObject _editingDeck;
 
-        private int _selectedDeckId = -1;
+        private Deck _selectedDeck;
 
         private int _scrolledDeck = -1;
 
@@ -149,7 +149,7 @@ namespace Loom.ZombieBattleground
             _gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             // todod improve I guess
-            _selectedDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
+            _selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
             _hordeSelection.gameObject.SetActive(false);
 
             LoadDeckObjects();
@@ -233,7 +233,7 @@ namespace Loom.ZombieBattleground
         {
             if (_hordeSelection.gameObject.activeSelf)
             {
-                HordeDeckObject selectedHorde = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+                HordeDeckObject selectedHorde = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
                 selectedHorde.Deselect();
             }
 
@@ -242,9 +242,9 @@ namespace Loom.ZombieBattleground
             _firstSkill.sprite = GetSpriteFromSkill(horde.SelfHero.GetSkill(horde.SelfDeck.PrimarySkill));
             _secondSkill.sprite = GetSpriteFromSkill(horde.SelfHero.GetSkill(horde.SelfDeck.SecondarySkill));
 
-            _selectedDeckId = (int) horde.SelfDeck.Id;
+            _selectedDeck =  horde.SelfDeck;
 
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_selectedDeck.Id;
 
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
@@ -274,7 +274,7 @@ namespace Loom.ZombieBattleground
         {
             if(_hordeSelection.gameObject.activeSelf)
             {
-                _hordeSelection.position = _hordeDecks.Find(x => x.SelfDeck.Id == _selectedDeckId).SelectionContainer.transform.position;
+                _hordeSelection.position = _hordeDecks.Find(x => x.SelfDeck == _selectedDeck).SelectionContainer.transform.position;
             }
         }
 
@@ -310,15 +310,15 @@ namespace Loom.ZombieBattleground
 
             if (_hordeDecks.Count > 0)
             {
-                HordeDeckObject foundDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+                HordeDeckObject foundDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
                 if (foundDeck == null)
                 {
-                    _selectedDeckId = (int) _hordeDecks[0].SelfDeck.Id;
+                    _selectedDeck =  _hordeDecks[0].SelfDeck;
                 }
             }
             else
             {
-                _selectedDeckId = -1;
+                _selectedDeck = null;
             }
 
             CenterTheSelectedDeck();
@@ -499,7 +499,8 @@ namespace Loom.ZombieBattleground
         private void BattleButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.GetPage<GameplayPage>().CurrentDeckId = _selectedDeckId;
+            _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_selectedDeck.Id;
+            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _selectedDeck;
             _matchManager.FindMatch();
         }
 
@@ -533,7 +534,7 @@ namespace Loom.ZombieBattleground
         private void SkillButtonOnSingleClickHandler(int skillIndex)
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (deck != null)
             {
                 HeroSkill skill = skillIndex == 0 ?
@@ -550,7 +551,7 @@ namespace Loom.ZombieBattleground
         private void SkillButtonOnDoubleClickHandler(int skillIndex)
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _editingDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+            _editingDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (_editingDeck != null)
             {
                 _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
@@ -575,7 +576,7 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
-            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+            HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (deck != null)
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -588,12 +589,12 @@ namespace Loom.ZombieBattleground
 
         private void EditButtonOnClickHandler()
         {
-            if (_selectedDeckId != -1)
+            if (_selectedDeck != null)
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-                _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = _selectedDeckId;
-                HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+                _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = (int)_selectedDeck.Id;
+                HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
                 _uiManager.GetPage<HordeEditingPage>().CurrentHero = deck.SelfHero;
                 _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
             }
@@ -606,7 +607,7 @@ namespace Loom.ZombieBattleground
             if (!status)
                 return;
 
-            HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
+            HordeDeckObject deckToDelete = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (deckToDelete != null)
             {
                 DeckDeletingHandler(deckToDelete);
