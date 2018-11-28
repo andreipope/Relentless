@@ -146,8 +146,8 @@ namespace Loom.ZombieBattleground.Data
             SkillTargetTypes = skillTargetTypes ?? new List<Enumerators.SkillTargetType>();
             TargetUnitStatusType = targetUnitStatusType;
             ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.SetType>();
-            CanSelectTarget = unlocked;
-            Unlocked = canSelectTarget;
+            CanSelectTarget = canSelectTarget;
+            Unlocked = unlocked;
         }
     }
 }
