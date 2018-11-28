@@ -50,6 +50,9 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
+            if (Self == null)
+                return;
+
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -158,6 +161,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.WorkingCard);
+                    break;
+                case null:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pastActionParam.Caller), pastActionParam.Caller, null);

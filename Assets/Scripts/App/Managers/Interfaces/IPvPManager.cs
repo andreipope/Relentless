@@ -41,8 +41,7 @@ namespace Loom.ZombieBattleground
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
-
-        Task<bool> FindMatch();
+        
         Task<bool> DebugFindMatch(Deck deck);
 
         Task CancelFindMatch();

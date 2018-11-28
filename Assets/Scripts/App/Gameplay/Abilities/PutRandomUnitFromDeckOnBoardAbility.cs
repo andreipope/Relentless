@@ -36,43 +36,58 @@ namespace Loom.ZombieBattleground
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            BoardCard boardCard;
-            Player playerOwner;
-            foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
+            if (PredefinedTargets != null)
             {
-                playerOwner = null;
-                switch (targetType)
+                IEnumerable<HandBoardCard> targets = PredefinedTargets.Select(x => x.BoardObject as HandBoardCard);
+
+                foreach (HandBoardCard target in targets)
                 {
-                    case Enumerators.AbilityTargetType.PLAYER:
-                        playerOwner = PlayerCallerOfAbility;
-                        break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        playerOwner = GetOpponentOverlord();
-                        break;
-                    default:
-                        throw new NotImplementedException(nameof(targetType) + " not implemented!");
+                    if (target != null)
+                    {
+                        PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards);
+                    }
+                    else
+                    {
+                        Debug.LogError("TARGET CARD FROM DECK IS INCORRECT!! TRYING TO PUT CARD ON BOARD FROM DECK - NULL");
+                    }
                 }
+            }
+            else
+            {
+                BoardCard boardCard;
+                Player playerOwner;
+                List<WorkingCard> filteredCards = null;
 
-
-                List<WorkingCard> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
-                filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count);
-
-                if (filteredCards.Count == 0)
-                    continue;
-
-                boardCard = PutCardOnBoard(filteredCards[0]);
-
-                boardCards.Add(boardCard.HandBoardCard);
-
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                    Target = boardCard,
-                });
+                    playerOwner = null;
+                    switch (targetType)
+                    {
+                        case Enumerators.AbilityTargetType.PLAYER:
+                            playerOwner = PlayerCallerOfAbility;
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                            playerOwner = GetOpponentOverlord();
+                            break;
+                        default:
+                            throw new NotImplementedException(nameof(targetType) + " not implemented!");
+                    }
+
+                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+
+                    filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count);
+
+                    if (filteredCards.Count == 0)
+                        continue;
+
+                    boardCard = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
+
+                    PutCardFromDeckToBoard(playerOwner, boardCard, ref TargetEffects, ref boardCards);
+                }
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(),
-            AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+                                                     AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -82,23 +97,20 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private BoardCard PutCardOnBoard(WorkingCard card)
+        private void PutCardFromDeckToBoard(Player owner, BoardCard boardCard,
+                                            ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
+                                            ref List<HandBoardCard> cards)
         {
-            BoardCard boardCard = new UnitBoardCard(Object.Instantiate(CardsController.CreatureCardViewPrefab));
-            boardCard.Init(card);
-            boardCard.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
-                                                                                 Constants.DefaultPositionOfOpponentBoardCard;
-            boardCard.GameObject.transform.localScale = Vector3.one * .3f;
-            boardCard.SetHighlightingEnabled(false);
+            owner.RemoveCardFromDeck(boardCard.WorkingCard);
+            CardsController.SummonUnitFromHand(owner, boardCard);
 
-            boardCard.HandBoardCard = new HandBoardCard(boardCard.GameObject, boardCard);
+            cards.Add(boardCard.HandBoardCard);
 
-            InternalTools.DoActionDelayed(() =>
+            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
-                CardsController.SummonUnitFromHand(card.Owner, boardCard);
-            }, 0.25f);
-
-            return boardCard;
+                ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
+                Target = boardCard,
+            });
         }
     }
 }

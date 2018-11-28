@@ -127,6 +127,8 @@ namespace Loom.ZombieBattleground
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;
+                case null:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(PastActionReport.Caller), PastActionReport.Caller, null);
             }

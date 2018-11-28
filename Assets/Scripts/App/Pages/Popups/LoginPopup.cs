@@ -3,7 +3,7 @@ using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;

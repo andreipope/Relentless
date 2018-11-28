@@ -431,11 +431,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (_subscribeCount > 0)
             {
                 Debug.Log("Unsubscribing from Event - Current Subscriptions = " + _subscribeCount);
-                await reader.UnsubscribeAsync(EventHandler);
-                _subscribeCount--;
-                Debug.Log("Final Subscriptions = " + _subscribeCount);
-            } 
-            else 
+                try
+                {
+                    await reader.UnsubscribeAsync(EventHandler);
+                    _subscribeCount--;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("Unsubscribe Error " + e);
+                }
+
+            }
+            else
             {
                 Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
             }
@@ -475,12 +482,66 @@ namespace Loom.ZombieBattleground.BackendCommunication
             switch (request)
             {
                 case PlayerActionRequest playerActionMessage:
-                    await Contract.CallAsync(SendPlayerActionMethod, playerActionMessage);
+                    try
+                    {
+                        await Contract.CallAsync(SendPlayerActionMethod, playerActionMessage);
+                    }
+                    catch (TimeoutException exception)
+                    {
+                        Debug.LogError(" Time out == " + exception);
+                        ShowConnectionPopup();
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.LogError(" other == " + exception);
+                        ShowConnectionPopup();
+                    }
                     break;
 
                 case EndMatchRequest endMatchMessage:
-                    await Contract.CallAsync(EndMatchMethod, endMatchMessage);
+                    try
+                    {
+                        await Contract.CallAsync(EndMatchMethod, endMatchMessage);
+                    }
+                    catch (TimeoutException exception)
+                    {
+                        Debug.LogError(" Time out == " + exception);
+                        ShowConnectionPopup();
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.LogError(" other == " + exception);
+                        ShowConnectionPopup();
+                    }
                     break;
+            }
+        }
+
+        public void ShowConnectionPopup()
+        {
+            IUIManager uiManager = GameClient.Get<IUIManager>();
+            IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+            ConnectionPopup connectionPopup = uiManager.GetPopup<ConnectionPopup>();
+
+            if (gameplayManager.CurrentPlayer == null)
+            {
+                return;
+            }
+
+            if (connectionPopup.Self == null)
+            {
+                Func<Task> connectFuncInGame = async () =>
+                {
+                    GameClient.Get<IQueueManager>().Clear();
+                    gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+                    gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                    connectionPopup.Hide();
+                };
+
+                connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
+                connectionPopup.Show();
+                connectionPopup.ShowFailedInGamePlay();
             }
         }
 

@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
             {
-                DamageTarget(GameplayManager.OpponentPlayer);
+                DamageTarget(GetOpponentOverlord());
             }
         }
 

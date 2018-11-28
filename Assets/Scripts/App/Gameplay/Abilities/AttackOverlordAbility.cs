@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
             InvokeActionTriggered();
         }
 
@@ -35,20 +37,42 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            Player targetObject = null; 
+
             foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, GetOpponentOverlord());
+                        targetObject = GetOpponentOverlord();
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, PlayerCallerOfAbility);
+                        targetObject = PlayerCallerOfAbility;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
+
+                BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
             }
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingOverlord,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = targetObject,
+                            HasValue = true,
+                            Value = -AbilityData.Value
+                        }
+                    }
+            });
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

@@ -615,6 +615,8 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
 
+                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 

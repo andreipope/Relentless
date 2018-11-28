@@ -137,6 +137,10 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
+            // FIX ME! THIS HACK ONLY FOR SOME RELEASE
+            EndCardDistribution();
+            return;
+
             if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
             {
                 EndCardDistribution();
@@ -169,16 +173,13 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer.ThrowOnHandChanged();
 
-            if (!_gameplayManager.IsTutorial)
+            if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP && !_gameplayManager.IsTutorial)
             {
                 _gameplayManager.CurrentPlayer.CardsInDeck =
-                    _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
-                _battlegroundController.StartGameplayTurns();
+                _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
             }
-            else
-            {
-                _battlegroundController.StartGameplayTurns();
-            }
+
+            _battlegroundController.StartGameplayTurns();
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -547,6 +548,8 @@ namespace Loom.ZombieBattleground
                             player.RemoveCardFromHand(card.WorkingCard);
 
                             player.BoardCards.Insert(indexOfCard, boardUnitView);
+
+                            card.FuturePositionOnBoard = player.BoardCards.Count - 1 - indexOfCard;
 
                             InternalTools.DoActionDelayed(
                                      () =>
