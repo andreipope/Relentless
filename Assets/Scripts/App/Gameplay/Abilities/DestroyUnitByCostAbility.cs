@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitModel GetRandomUnit()
         {
-            List<BoardUnitModel> units = null;
+            List<BoardUnitModel> units = new List<BoardUnitModel>();
 
             if (PredefinedTargets != null)
             {
@@ -78,7 +78,12 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
                 {
-                    units = GetOpponentOverlord().BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList();
+                    units.AddRange(GetOpponentOverlord().BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
+                }
+
+                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                {
+                    units.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
                 }
             }
 

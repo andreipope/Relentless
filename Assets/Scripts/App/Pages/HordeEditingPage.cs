@@ -79,7 +79,8 @@ namespace Loom.ZombieBattleground
 
         private CollectionData _collectionData;
 
-        private int _currentDeckId, _currentHeroId;
+        private int _currentDeckId;
+        private Hero _currentHero;
 
         private List<BoardCard> _createdArmyCards, _createdHordeCards;
 
@@ -108,9 +109,9 @@ namespace Loom.ZombieBattleground
             set => _currentDeckId = value;
         }
 
-        public int CurrentHeroId
+        public Hero CurrentHero
         {
-            set => _currentHeroId = value;
+            set => _currentHero = value;
         }
 
         public void Init()
@@ -275,7 +276,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentDeck = new Deck(
                     -1,
-                    _currentHeroId,
+                    _currentHero.HeroId,
                     "HORDE " + _dataManager.CachedDecksData.Decks.Count,
                     new List<DeckCardData>(),
                     0,
@@ -572,7 +573,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (_against[_dataManager.CachedHeroesData.Heroes[_currentHeroId].HeroElement] == card.CardSetType)
+            if (_against[_currentHero.HeroElement] == card.CardSetType)
             {
                 OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -744,7 +745,9 @@ namespace Loom.ZombieBattleground
             bool success = true;
             if (_currentDeckId == -1)
             {
-                _currentDeck.HeroId = _currentHeroId;
+                _currentDeck.HeroId = _currentHero.HeroId;
+                _currentDeck.PrimarySkill = _currentHero.PrimarySkill;
+                _currentDeck.SecondarySkill = _currentHero.SecondarySkill;
 
                 try
                 {

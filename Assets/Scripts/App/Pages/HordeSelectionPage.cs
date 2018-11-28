@@ -239,14 +239,8 @@ namespace Loom.ZombieBattleground
 
             horde.Select();
 
-			//TODO remove once we complete the ability selection process. For now, just hard coding values like everywhere else for overlord abilities.
-            horde.SelfDeck.PrimarySkill = 0;
-            horde.SelfDeck.SecondarySkill = 1;
-            
-            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
-                 horde.SelfHero.Skills[horde.SelfDeck.PrimarySkill].IconPath);
-            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
-               horde.SelfHero.Skills[horde.SelfDeck.SecondarySkill].IconPath);
+            _firstSkill.sprite = GetSpriteFromSkill(horde.SelfHero.GetSkill(horde.SelfDeck.PrimarySkill));
+            _secondSkill.sprite = GetSpriteFromSkill(horde.SelfHero.GetSkill(horde.SelfDeck.SecondarySkill));
 
             _selectedDeckId = (int) horde.SelfDeck.Id;
 
@@ -257,6 +251,23 @@ namespace Loom.ZombieBattleground
             _hordeSelection.gameObject.SetActive(true);
             RepositionSelection();
             BattleButtonUpdate();
+        }
+
+        private Sprite GetSpriteFromSkill(HeroSkill workableSkill)
+        {
+            string iconPath = string.Empty;
+            string iconPathLocked = "Images/OverlordAbilitiesIcons/overlordability_silo_closed";
+
+            if (workableSkill == null)
+            {
+                iconPath = iconPathLocked;
+            }
+            else
+            {
+                iconPath = workableSkill.IconPath;
+            }
+
+            return _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
         }
 
         private void RepositionSelection()
@@ -526,8 +537,11 @@ namespace Loom.ZombieBattleground
             if (deck != null)
             {
                 HeroSkill skill = skillIndex == 0 ?
-                    deck.SelfHero.Skills[deck.SelfHero.PrimarySkill] :
-                    deck.SelfHero.Skills[deck.SelfHero.SecondarySkill];
+                    deck.SelfHero.GetSkill(deck.SelfDeck.PrimarySkill) :
+                    deck.SelfHero.GetSkill(deck.SelfDeck.SecondarySkill);
+
+                if (skill == null)
+                    return;
 
                 _uiManager.DrawPopup<OverlordAbilityTooltipPopup>(skill);
             }
@@ -539,8 +553,14 @@ namespace Loom.ZombieBattleground
             _editingDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
             if (_editingDeck != null)
             {
-                //_uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
-                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(_editingDeck.SelfHero);
+                _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
+                _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(new object[]
+                {
+                    true,
+                    _editingDeck.SelfHero,
+                    skillIndex  == 0 ? true : false,
+                    _editingDeck.SelfDeck
+                });
             }
         }
 
@@ -574,7 +594,7 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = _selectedDeckId;
                 HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck.Id == _selectedDeckId);
-                _uiManager.GetPage<HordeEditingPage>().CurrentHeroId = deck.SelfHero.HeroId;
+                _uiManager.GetPage<HordeEditingPage>().CurrentHero = deck.SelfHero;
                 _appStateManager.ChangeAppState(Enumerators.AppState.DECK_EDITING);
             }
         }
@@ -598,6 +618,17 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+
+
+        private void AbilityPopupClosedEvent()
+        {
+            _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding -= AbilityPopupClosedEvent;
+
+            if (_selfPage != null)
+            {
+                LoadDeckObjects();
+            }
+        }
 
     }
 }

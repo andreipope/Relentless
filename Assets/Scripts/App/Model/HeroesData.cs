@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
@@ -14,15 +12,6 @@ namespace Loom.ZombieBattleground.Data
         public HeroesData(List<Hero> heroes)
         {
             Heroes = heroes ?? throw new ArgumentNullException(nameof(heroes));
-        }
-
-        [OnDeserialized]
-        private void OnDeserialized(StreamingContext context)
-        {
-            foreach (Hero item in Heroes)
-            {
-                item.ValidateSkillLocking();
-            }
         }
     }
 
@@ -47,9 +36,9 @@ namespace Loom.ZombieBattleground.Data
 
         public List<HeroSkill> Skills { get; private set; }
 
-        public int PrimarySkill { get; set; }
+        public Enumerators.OverlordSkill PrimarySkill;
 
-        public int SecondarySkill { get; set; }
+        public Enumerators.OverlordSkill  SecondarySkill;
 
         public string FullName => $"{Name}, {ShortDescription}";
 
@@ -63,8 +52,8 @@ namespace Loom.ZombieBattleground.Data
             int level,
             Enumerators.SetType heroElement,
             List<HeroSkill> skills,
-            int primarySkill,
-            int secondarySkill)
+            Enumerators.OverlordSkill primaryAbility,
+            Enumerators.OverlordSkill secondaryAbility)
         {
             HeroId = heroId;
             Icon = icon;
@@ -75,24 +64,26 @@ namespace Loom.ZombieBattleground.Data
             Level = level;
             HeroElement = heroElement;
             Skills = skills ?? new List<HeroSkill>();
-            PrimarySkill = primarySkill;
-            SecondarySkill = secondarySkill;
+            PrimarySkill = primaryAbility;
+            SecondarySkill = secondaryAbility;
         }
 
-        public void ValidateSkillLocking()
+        public HeroSkill GetSkill(Enumerators.OverlordSkill skill)
         {
-            //TODO: commented now in perspective of lock funcitonality for release stage
-            //int skillId = Level % 4;
-            int skillId = 2;
-            for (int i = 0; i < skillId; i++)
-            {
-                Skills[i].Unlocked = true;
-            }
+            return Skills.Find(x => x.OverlordSkill == skill);
+        }
+
+
+        public HeroSkill GetSkill(int id)
+        {
+            return Skills.Find(x => x.Id == id);
         }
     }
 
     public class HeroSkill
     {
+        public int Id { get; private set; }
+
         public string Title { get; private set; }
 
         public string IconPath { get; private set; }
@@ -121,10 +112,12 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("ElementTargets")]
         public List<Enumerators.SetType> ElementTargetTypes { get; private set; }
 
-        [JsonIgnore]
         public bool Unlocked { get; set; }
 
+        public bool CanSelectTarget { get; private set; }
+
         public HeroSkill(
+            int id,
             string title,
             string iconPath,
             string description,
@@ -136,8 +129,11 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.OverlordSkill overlordSkill,
             List<Enumerators.SkillTargetType> skillTargetTypes,
             Enumerators.UnitStatusType targetUnitStatusType,
-            List<Enumerators.SetType> elementTargetTypes)
+            List<Enumerators.SetType> elementTargetTypes,
+            bool unlocked,
+            bool canSelectTarget)
         {
+            Id = id;
             Title = title;
             IconPath = iconPath;
             Description = description;
@@ -150,6 +146,8 @@ namespace Loom.ZombieBattleground.Data
             SkillTargetTypes = skillTargetTypes ?? new List<Enumerators.SkillTargetType>();
             TargetUnitStatusType = targetUnitStatusType;
             ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.SetType>();
+            CanSelectTarget = canSelectTarget;
+            Unlocked = unlocked;
         }
     }
 }

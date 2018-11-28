@@ -74,6 +74,9 @@ namespace Loom.ZombieBattleground
             hero.Level++;
 
             ApplyReward(hero);
+
+            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void ApplyReward(Hero hero)
@@ -105,10 +108,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case LevelReward.OverlordSkillRewardItem skillReward:
-                        {
-                            //TODO: commented now in perspective of lock funcitonality for release stage
-                            //hero.Skills[skillReward.SkillIndex].Unlocked = true;
-                        }
+                        hero.GetSkill(skillReward.SkillIndex).Unlocked = true;
                         break;
                     case LevelReward.ItemReward itemReward:
                         break;
