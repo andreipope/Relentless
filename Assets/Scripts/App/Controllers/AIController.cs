@@ -666,6 +666,7 @@ namespace Loom.ZombieBattleground
             GameAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
 
             completeCallback?.Invoke();
+            _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
 
             switch (card.LibraryCard.CardKind)
             {
