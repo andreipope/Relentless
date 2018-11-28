@@ -8,12 +8,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public long Id { get; }
         public IList<string> Topics { get; }
         public Match.Types.Status Status { get; }
+        public bool UseClientGameLogic { get; }
 
-        public MatchMetadata(long id, IList<string> topics, Match.Types.Status status)
+        public MatchMetadata(long id, IList<string> topics, Match.Types.Status status, bool useClientGameLogic)
         {
             Id = id;
             Topics = topics;
             Status = status;
+            UseClientGameLogic = useClientGameLogic;
         }
     }
 }

@@ -179,7 +179,8 @@ namespace Loom.ZombieBattleground
                 MatchMetadata = new MatchMetadata(
                     findMatchResponse.Match.Id,
                     findMatchResponse.Match.Topics,
-                    getMatchResponse.Match.Status
+                    getMatchResponse.Match.Status,
+                    getMatchResponse.Match.UseClientGameLogic
                 );
 
                 if (MatchMetadata.Status == Match.Types.Status.Started)
@@ -250,7 +251,8 @@ namespace Loom.ZombieBattleground
                 MatchMetadata = new MatchMetadata(
                     findMatchResponse.Match.Id,
                     findMatchResponse.Match.Topics,
-                    getMatchResponse.Match.Status
+                    getMatchResponse.Match.Status,
+                    getMatchResponse.Match.UseClientGameLogic
                 );
 
                 if (MatchMetadata.Status == Match.Types.Status.Started)
@@ -313,7 +315,8 @@ namespace Loom.ZombieBattleground
             MatchMetadata = new MatchMetadata(
                 findMatchResponse.Match.Id,
                 findMatchResponse.Match.Topics,
-                findMatchResponse.Match.Status
+                findMatchResponse.Match.Status,
+                findMatchResponse.Match.UseClientGameLogic
             );
 
             _isMatchmakingInProgress = false;
