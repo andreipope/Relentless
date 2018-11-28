@@ -69,6 +69,8 @@ namespace Loom.ZombieBattleground
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
+        public Deck CurrentPlayerDeck { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
