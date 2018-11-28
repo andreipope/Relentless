@@ -239,7 +239,22 @@ namespace Loom.ZombieBattleground
 
             horde.Select();
 
-            HeroSkill workableSkill = horde.SelfHero.GetSkill(horde.SelfDeck.PrimarySkill);
+            _firstSkill.sprite = GetSpriteFromSkill(horde.SelfHero.GetSkill(horde.SelfDeck.PrimarySkill));
+            _secondSkill.sprite = GetSpriteFromSkill(horde.SelfHero.GetSkill(horde.SelfDeck.SecondarySkill));
+
+            _selectedDeckId = (int) horde.SelfDeck.Id;
+
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
+
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            _hordeSelection.gameObject.SetActive(true);
+            RepositionSelection();
+            BattleButtonUpdate();
+        }
+
+        private Sprite GetSpriteFromSkill(HeroSkill workableSkill)
+        {
             string iconPath = string.Empty;
             string iconPathLocked = "Images/OverlordAbilitiesIcons/overlordability_silo_closed";
 
@@ -252,30 +267,7 @@ namespace Loom.ZombieBattleground
                 iconPath = workableSkill.IconPath;
             }
 
-            _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
-
-            workableSkill = horde.SelfHero.GetSkill(horde.SelfDeck.SecondarySkill);
-
-            if (workableSkill == null)
-            {
-                iconPath = iconPathLocked;
-            }
-            else
-            {
-                iconPath = workableSkill.IconPath;
-            }
-
-            _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
-
-            _selectedDeckId = (int) horde.SelfDeck.Id;
-
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = _selectedDeckId;
-
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
-            _hordeSelection.gameObject.SetActive(true);
-            RepositionSelection();
-            BattleButtonUpdate();
+            return _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
         }
 
         private void RepositionSelection()
