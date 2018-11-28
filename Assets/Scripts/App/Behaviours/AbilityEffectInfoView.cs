@@ -1,7 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -10,6 +8,8 @@ namespace Loom.ZombieBattleground
     public class AbilityEffectInfoView : MonoBehaviour
     {
         public string cardName;
+
+        public Enumerators.CardNameOfAbility cardNameOfAbility;
 
         [Range(0, 20)]
         public float delayBeforeEffect;
@@ -25,16 +25,13 @@ namespace Loom.ZombieBattleground
 
         public Vector3 offset;
 
-        public RotationEffectParam rotationParameters;
+        public AbilityInfoPositionBlock positionInfo;
     }
 
     [Serializable]
-    public class RotationEffectParam
+    public class AbilityInfoPositionBlock
     {
-        public bool replaceRotation;
+        public Enumerators.AbilityEffectInfoPositionType type;
 
-        public bool isLocalPlayer;
-
-        public Vector3 rotation;
     }
 }

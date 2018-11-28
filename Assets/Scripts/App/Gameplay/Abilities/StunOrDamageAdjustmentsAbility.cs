@@ -87,7 +87,9 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 TargetUnit,
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
@@ -96,6 +98,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 InvokeActionTriggered();
             }
         }

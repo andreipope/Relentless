@@ -6,9 +6,9 @@
    "SpriteMeshSettings" : [
       {
          "k" : {
-            "Guid" : "be9de1248d29340ba98c6211a5c9f27b",
+            "Guid" : "cc0bd396eef03884184b698794b2c703",
             "LocalIdentifier" : 21300000,
-            "LastPath" : "Assets/Assets/Sprites/battleground_bg.png"
+            "LastPath" : "Assets/Assets/DynamicLoad/Images/Cards/Illustrations/air_commander_ztormcaller.png"
          },
          "v" : {
             "PlatformSharedTightMeshSettings" : {

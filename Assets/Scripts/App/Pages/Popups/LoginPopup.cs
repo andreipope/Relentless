@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
 using System.Numerics;
-using System.Text.RegularExpressions;
 using Loom.Client;
-using Loom.ZombieBattleground.BackendCommunication;
+using System.Security.Cryptography;
+using System.Text;
+using Loom.Client;using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
@@ -133,8 +134,11 @@ namespace Loom.ZombieBattleground
 
         private async void LoginProcess()
         {
-            string betaKey = SystemInfo.deviceUniqueIdentifier;
-            betaKey = Regex.Replace(betaKey, @"[^a-zA-Z0-9]", "");
+            string betaKey =
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(SystemInfo.deviceUniqueIdentifier.ToLowerInvariant()))) +
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(Application.productName.ToLowerInvariant())));
 
             // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
             SetUIState(LoginState.BetaKeyValidateAndLogin);
@@ -214,7 +218,6 @@ namespace Loom.ZombieBattleground
             betaKey = betaKey.ToLowerInvariant();
 
             byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
-            Array.Resize(ref betaKeySeed, 32);
 
             BigInteger userIdNumber = new BigInteger(betaKeySeed) + betaKeySeed.Sum(b => b * 2);
             userId = "ZombieSlayer_" + userIdNumber;

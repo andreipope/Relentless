@@ -66,6 +66,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+				AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 _targets.Add(TargetUnit);
                 InvokeActionTriggered(_targets);
                 _vfxAnimationEndedCallback = HealSelectedTarget;
@@ -79,7 +81,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 PlayerCallerOfAbility
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -110,7 +112,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 boardObject
-            }, AbilityData.AbilityType, Utilites.CastStringTuEnum<Protobuf.AffectObjectType>(AffectObjectType.ToString(), true));
+            }, AbilityData.AbilityType,  (Protobuf.AffectObjectType.Types.Enum) AffectObjectType);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -134,13 +136,15 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             _vfxAnimationEndedCallback?.Invoke();
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         private void HealRandomCountOfAllies()
         {
             if (PredefinedTargets != null)
             {
-                _targets = PredefinedTargets;
+                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
             }
             else
             {
@@ -190,7 +194,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

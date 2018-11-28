@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,10 @@ namespace Loom.ZombieBattleground
 {
     public class DestroyUnitsAbility : AbilityBase
     {
+        public event Action OnUpdateEvent;
+
+        private List<BoardUnitModel> _units;
+
         public DestroyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -16,7 +21,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -24,33 +29,51 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        public override void Update()
+        {
+            base.Update();
+
+            OnUpdateEvent?.Invoke();
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            List<BoardUnitModel> units = new List<BoardUnitModel>();
+            _units = new List<BoardUnitModel>();
+            List<BoardUnitView> unitsViews = new List<BoardUnitView>();
 
             foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
             {
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        units.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                        unitsViews.AddRange(GetOpponentOverlord().BoardCards);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        units.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                        unitsViews.AddRange(PlayerCallerOfAbility.BoardCards);
                         break;
                 }
             }
 
-            units.ForEach(BattlegroundController.DestroyBoardUnit);
+            _units = unitsViews.Select(x => x.Model).ToList();
 
+            InvokeActionTriggered(unitsViews);
+        }
 
-            if (units.Count > 0)
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            OnUpdateEvent = null;
+
+            _units.ForEach(BattlegroundController.DestroyBoardUnit);
+
+            if (_units.Count > 0)
             {
                 List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitModel unit in units)
+                foreach (BoardUnitModel unit in _units)
                 {
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
@@ -64,7 +87,7 @@ namespace Loom.ZombieBattleground
 
                 Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingCard;
 
-                if(units.Count > 1)
+                if (_units.Count > 1)
                 {
                     actionType = Enumerators.ActionType.CardAffectingMultipleCards;
                 }

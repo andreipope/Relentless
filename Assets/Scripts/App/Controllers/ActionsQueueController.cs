@@ -61,8 +61,13 @@ namespace Loom.ZombieBattleground
 
         public void StopAllActions()
         {
-            _actionsToDo.Clear();
+            ClearActions();
             _actionInProgress = null;
+        }
+
+        public void ClearActions()
+        {
+            _actionsToDo.Clear();
         }
 
         public void PostGameActionReport(PastActionsPopup.PastActionParam report)

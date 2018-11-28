@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground;
@@ -9,37 +10,25 @@ using UnityEngine;
 static class DecksCommandHandler
 {
     private static IMatchManager _matchManager;
-    private static IPvPManager _pvpManager;
-    private static ILoadObjectsManager _loadObjectsManager;
-
-    private static DecksData FixedDeckCollection { get; set; }
 
     public static void Initialize()
     {
         CommandHandlers.RegisterCommandHandlers(typeof(DecksCommandHandler));
 
         _matchManager = GameClient.Get<IMatchManager>();
-        _pvpManager = GameClient.Get<IPvPManager>();
-        _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-
-        FixedDeckCollection = JsonConvert.DeserializeObject<DecksData>(_loadObjectsManager.GetObjectByPath<TextAsset>("FixedDecks_data").text);
     }
-
 
     [CommandHandler(Description = "Find PvP Match with specific Deck Set")]
     public static void FindPvPMatch([Autocomplete(typeof(DecksCommandHandler), "DecksName")] string deckName)
     {
-        Deck selectedDeck = FixedDeckCollection.Decks.Find(deck => deck.Name == deckName);
-        _matchManager.DebugFindPvPMatch(selectedDeck);
-    }
-
-    public static IEnumerable<string> DecksName()
-    {
-        string[] deckNames = new string[FixedDeckCollection.Decks.Count];
-        for (var i = 0; i < FixedDeckCollection.Decks.Count; i++)
+        string path = Path.Combine(Application.persistentDataPath, "default_decks.json");
+        if (!File.Exists(path))
         {
-            deckNames[i] = FixedDeckCollection.Decks[i].Name;
+            Debug.LogError($"File '{path}' not found");
         }
-        return deckNames;
+
+        DecksData decksData = JsonConvert.DeserializeObject<DecksData>(File.ReadAllText(path));
+        Deck selectedDeck = decksData.Decks.Find(deck => deck.Name == deckName);
+        _matchManager.DebugFindPvPMatch(selectedDeck);
     }
 }

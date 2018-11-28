@@ -23,12 +23,14 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
             _unit = (BoardUnitModel) info;
            
@@ -83,6 +85,8 @@ namespace Loom.ZombieBattleground
                 targets.Add(_unit.OwnerPlayer.BoardCards[_targetIndex + 1].Model);
                 TakeDamageToUnit(_unit.OwnerPlayer.BoardCards[_targetIndex + 1]);
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

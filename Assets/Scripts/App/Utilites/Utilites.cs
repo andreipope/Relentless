@@ -71,20 +71,7 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
-        public static long GetCurrentUnixTimestampMillis()
-        {
-            DateTime localDateTime = DateTime.Now;
-            DateTime universalDateTime = localDateTime.ToUniversalTime();
-            return (long) (universalDateTime - UnixEpoch).TotalMilliseconds;
-        }
-
-        public static string FirstCharToUpper(string input)
-        {
-            if (String.IsNullOrEmpty(input))
-                throw new ArgumentException("input cannot be empty!");
-            return input.First().ToString().ToUpperInvariant() + input.Substring(1).ToLowerInvariant();
-        }
-
+        // FIXME: this has only drawbacks compared to using PlayerPrefs directly, what's the purpose of it?
         public static int GetIntValueFromPlayerPrefs(string key)
         {
             return PlayerPrefs.GetInt(key, 0);

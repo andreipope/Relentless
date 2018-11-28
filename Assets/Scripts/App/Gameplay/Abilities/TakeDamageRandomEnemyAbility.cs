@@ -18,12 +18,16 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.SetType SetType;
 
+        private List<BoardObject> _targets;
+
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Damage = ability.Damage;
             Count = ability.Count;
             SetType = ability.AbilitySetType;
+
+            _targets = new List<BoardObject>();
         }
 
         public override void Activate()
@@ -51,11 +55,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardObject> _targets;
-
             if (PredefinedTargets != null)
             {
-                _targets = PredefinedTargets;
+                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
             }
             else
             {
@@ -85,63 +87,24 @@ namespace Loom.ZombieBattleground
                 _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
 
-            VfxObject = null;
+            InvokeActionTriggered(_targets);
+            
 
-            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
-            {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
-            }
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
 
             foreach (object target in _targets)
             {
-                object targetObject = target;
-                Vector3 targetPosition = Vector3.zero;
-
-                switch (target)
-                {
-                    case Player player:
-                        targetPosition = player.AvatarObject.transform.position;
-                        break;
-                    case BoardUnitModel unit:
-                        targetPosition = BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
-                }
-
-                if (VfxObject != null)
-                {
-                    VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
-                    targetPosition = Utilites.CastVfxPosition(targetPosition);
-                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => { ActionCompleted(targetObject, targetPosition); });
-                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
-                }
-                else
-                {
-                    ActionCompleted(targetObject, targetPosition);
-                }
+                ActionCompleted(target);
             }
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
         }
 
-
-        private void ActionCompleted(object target, Vector3 targetPosition)
+        private void ActionCompleted(object target)
         {
-            ClearParticles();
-
-            GameObject vfxObject = null;
-
-            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
-            {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-
-                vfxObject = Object.Instantiate(vfxObject);
-                vfxObject.transform.position = targetPosition;
-                ParticlesController.RegisterParticleSystem(vfxObject, true);
-            }
-
             int damageOverride = Damage;
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)

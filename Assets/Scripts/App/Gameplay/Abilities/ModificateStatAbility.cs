@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
             }
             else if(AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
                     AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
@@ -45,7 +45,9 @@ namespace Loom.ZombieBattleground
                 {
                     List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
 
-                    foreach(BoardUnitView unit in units)
+                    units = InternalTools.GetRandomElementsFromList(units, Count);
+
+                    foreach (BoardUnitView unit in units)
                     {
                         ModificateStats(unit.Model);
                     }
@@ -158,7 +160,7 @@ namespace Loom.ZombieBattleground
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
                                     boardUnit
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                             }
                         }
                     }
