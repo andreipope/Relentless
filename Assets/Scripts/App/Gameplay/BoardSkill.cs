@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
 
             if (OwnerPlayer.IsLocalPlayer)
             {
-                if (Skill.SkillTargetTypes.Count > 0)
+                if (Skill.CanSelectTarget)
                 {
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
@@ -339,7 +339,7 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ActivateSelectTarget();
             }
 
-            if (Skill.SkillTargetTypes.Count == 0)
+            if (!Skill.CanSelectTarget)
             {
                 _skillsController.DoSkillAction(this, completeCallback, OwnerPlayer);
             }

@@ -666,6 +666,7 @@ namespace Loom.ZombieBattleground
             GameAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
 
             completeCallback?.Invoke();
+            _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
 
             switch (card.LibraryCard.CardKind)
             {
@@ -1341,7 +1342,14 @@ namespace Loom.ZombieBattleground
                 skill.EndDoSkill();
             };
 
-            skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+            if (skill.Skill.CanSelectTarget)
+            {
+                skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+            }
+            else
+            {
+                callback.Invoke();
+            }
         }
     }
 }

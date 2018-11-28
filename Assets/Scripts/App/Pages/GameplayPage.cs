@@ -345,8 +345,8 @@ namespace Loom.ZombieBattleground
 
         public void SetHeroInfo(Hero hero, string objectName, GameObject skillPrimary, GameObject skillSecondary)
         {
-            HeroSkill skillPrim = hero.Skills[hero.PrimarySkill];
-            HeroSkill skillSecond = hero.Skills[hero.SecondarySkill];
+            HeroSkill skillPrim = hero.GetSkill(hero.PrimarySkill);
+            HeroSkill skillSecond = hero.GetSkill(hero.SecondarySkill);
 
             skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skillPrim.IconPath);

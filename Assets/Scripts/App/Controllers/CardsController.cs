@@ -511,6 +511,7 @@ namespace Loom.ZombieBattleground
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
+                card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
 
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
