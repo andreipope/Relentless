@@ -96,8 +96,6 @@ namespace Loom.ZombieBattleground
             CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
             FillTutorialDeck();
 
-            Debug.LogError(000000000);
-
             IsTutorial = false;
         }
 

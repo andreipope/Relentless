@@ -257,8 +257,6 @@ namespace Loom.ZombieBattleground
 
         private void StartInitializeGame()
         {
-            Debug.LogError(11111111);
-
             if (IsTutorial)
             {
                 IsSpecificGameplayBattleground = true;
