@@ -283,8 +283,8 @@ namespace Loom.ZombieBattleground
             bool canStartBattle =
 #if !DEV_MODE
                 _hordeDecks.Count != 0 &&
-                _selectedDeckId != -1 &&
-                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() ==
+                _selectedDeck.Id != -1 &&
+                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() ==
                 Constants.MinDeckSize;
 #else
                 true;
@@ -510,8 +510,8 @@ namespace Loom.ZombieBattleground
 
 #if !DEV_MODE
             if (_hordeDecks.Count == 0 ||
-                _selectedDeckId == -1 ||
-                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeckId).SelfDeck.GetNumCards() < Constants.MinDeckSize)
+                _selectedDeck.Id == -1 ||
+                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() < Constants.MinDeckSize)
             {
                 _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
             }
