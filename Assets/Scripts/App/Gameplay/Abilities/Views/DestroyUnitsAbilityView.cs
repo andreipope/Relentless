@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground
             GameObject subObject = Object.Instantiate(_cardDissapearingPrefab);
             subObject.SetActive(true);
             subObject.transform.position = pos;
-            ParticlesController.RegisterParticleSystem(VfxObject, true, duration);
+            ParticlesController.RegisterParticleSystem(subObject, true, duration);
         }
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
