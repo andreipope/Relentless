@@ -420,32 +420,18 @@ namespace Loom.ZombieBattleground
                 ElementSlotsOfCards[i].SetStatus(i < amount);
             }
 
-            float offset = 0.5f;
-            float spacing = 2f;
+            float offset = 0;
+            float spacing = 1.5f;
             float offsetY = 0f;
-
-            if (maxCopies > 3)
-            {
-                offset = 0.8f;
-            }
-            else if (maxCopies > 2)
-            {
-                offset = 0.5f;
-            }
-            else if (maxCopies > 1)
-            {
-                offset = 0.7f;
-            }
-
 
             if (isArmy)
             {
-                spacing = 1.4f;
-                offset = -0.55f;
-                offsetY = -0.5f;
+                //spacing = 2.0f;
+                offset = 1.1f;
+                offsetY = -0.3f;
                 AmountTextForArmy.text = amount.ToString();
             }
-            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY, isArmy);
+            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
         }
 
         public void DrawTooltipInfoOfUnit(BoardUnitView unit)
