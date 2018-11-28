@@ -193,13 +193,16 @@ public class SingleplayerTests
         yield return null;
     }
 
-    private IEnumerator SoloGameplay ()
+    private IEnumerator SoloGameplay (bool assertOverlordName = false)
     {
         _testHelper.InitalizePlayer ();
 
         yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
 
-        _testHelper.AssertOverlordName ();
+        if (assertOverlordName)
+        {
+            _testHelper.AssertOverlordName ();
+        }
 
         yield return _testHelper.AssertMulliganPopupCameUp (
             _testHelper.DecideWhichCardsToPick (),
