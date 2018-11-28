@@ -212,8 +212,8 @@ namespace Loom.ZombieBattleground
             _timerManager.AddTimer(
                 x =>
                 {
-                    cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
-                    // CreateDeadAnimation(cardToDestroy);
+                  //  cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
+                    CreateDeadAnimation(cardToDestroy);
 
                     string cardDeathSoundName =
                         cardToDestroy.Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
