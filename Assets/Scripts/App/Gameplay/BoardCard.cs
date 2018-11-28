@@ -426,7 +426,6 @@ namespace Loom.ZombieBattleground
 
             if (isArmy)
             {
-                //spacing = 2.0f;
                 offset = 1.1f;
                 offsetY = -0.3f;
                 AmountTextForArmy.text = amount.ToString();
