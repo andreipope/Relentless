@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,23 +17,17 @@ namespace Loom.ZombieBattleground
 
         private ISoundManager _soundManager;
 
-        private Animator _selfAnimator;
+        private Animator _playerAnimator, _opponentAnimator;
+
+        private AnimationEventTriggering _animationEventTriggering;
 
         private TextMeshProUGUI _playerOverlordNameText, _opponentOverlordNameText;
 
         private Image _playerOverlordPicture, _opponentOverlordPicture;
 
-        private GameObject _opponentTurnRootObject,
-            _opponentFirstTurnObject,
-            _opponentSecondTurnObject,
-            _opponentCardBackObject,
-            _opponentCardFrontObject;
+        private const string _parameterName = "IsPlayerTurn";
 
-        private GameObject _playerTurnRootObject,
-            _playerFirstTurnObject,
-            _playerSecondTurnObject,
-            _playerCardBackObject,
-            _playerCardFrontObject;
+        private const float _durationOfShow = 4f;
 
         public GameObject Self { get; private set; }
 
@@ -63,6 +58,7 @@ namespace Loom.ZombieBattleground
             if (Self == null)
                 return;
 
+<<<<<<< HEAD
             _selfAnimator.StopPlayback();
 
             _playerCardBackObject.SetActive(true);
@@ -74,6 +70,9 @@ namespace Loom.ZombieBattleground
             _opponentCardFrontObject.SetActive(false);
             _opponentFirstTurnObject.SetActive(false);
             _opponentSecondTurnObject.SetActive(false);
+=======
+            _animationEventTriggering.AnimationEventTriggered -= AnimationEventTriggeredEventHandler;
+>>>>>>> content-development
 
             Self.SetActive(false);
             Object.Destroy(Self);
@@ -92,32 +91,31 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/PlayerOrderPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _selfAnimator = Self.transform.Find("Root").GetComponent<Animator>();
+            _playerAnimator = Self.transform.Find("Root/PlayerOrderCardFlip").GetComponent<Animator>();
 
-            _playerOverlordNameText = Self.transform.Find("Root/Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
+            _opponentAnimator = Self.transform.Find("Root/OpponentOrderCardFlip").GetComponent<Animator>();
+
+
+            _playerOverlordNameText = Self.transform.Find("UI_Root/UI_Over/Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
             _opponentOverlordNameText =
-                Self.transform.Find("Root/Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
+                Self.transform.Find("UI_Root/UI_Over/Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
 
-            _playerOverlordPicture = Self.transform.Find("Root/Image_PlayerOverlord").GetComponent<Image>();
-            _opponentOverlordPicture = Self.transform.Find("Root/Image_Mask_OpponentOverlord/Image_OpponentOverlord").GetComponent<Image>();
-
-            _opponentTurnRootObject = Self.transform.Find("Root/Item_OpponentOverlordTurn").gameObject;
-            _opponentFirstTurnObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_FirstTurn").gameObject;
-            _opponentSecondTurnObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_SecondTurn").gameObject;
-            _opponentCardBackObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_BackCard").gameObject;
-            _opponentCardFrontObject = Self.transform.Find("Root/Item_OpponentOverlordTurn/Image_FrontCard").gameObject;
-
-            _playerTurnRootObject = Self.transform.Find("Root/Item_PlayerOverlordTurn").gameObject;
-            _playerFirstTurnObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_FirstTurn").gameObject;
-            _playerSecondTurnObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_SecondTurn").gameObject;
-            _playerCardBackObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_BackCard").gameObject;
-            _playerCardFrontObject = Self.transform.Find("Root/Item_PlayerOverlordTurn/Image_FrontCard").gameObject;
+            _playerOverlordPicture = Self.transform.Find("UI_Root/UI_Over/Image_PlayerOverlord").GetComponent<Image>();
+            _opponentOverlordPicture = Self.transform.Find("UI_Root/UI/Image_Mask_OpponentOverlord/Image_OpponentOverlord").GetComponent<Image>();
 
             Self.SetActive(true);
+<<<<<<< HEAD
             _selfAnimator.Play(0);
 
             EnableBackCard(_opponentCardBackObject, _opponentCardFrontObject, _opponentFirstTurnObject, _opponentSecondTurnObject);
             EnableBackCard(_playerCardBackObject, _playerCardFrontObject, _playerFirstTurnObject, _playerSecondTurnObject);
+=======
+
+            _animationEventTriggering = _playerAnimator.GetComponent<AnimationEventTriggering>();
+            _animationEventTriggering.AnimationEventTriggered += AnimationEventTriggeredEventHandler;
+
+            InternalTools.DoActionDelayed(AnimationEnded, _durationOfShow);
+>>>>>>> content-development
         }
 
         public void Show(object data)
@@ -175,6 +173,7 @@ namespace Loom.ZombieBattleground
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
 
+<<<<<<< HEAD
             _rotationElapsedTime = 0f;
             _isPlayerHasStartingTurn = _gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
             _areCardsRotating = true;
@@ -261,6 +260,38 @@ namespace Loom.ZombieBattleground
             cardFrontObj.SetActive(false);
             firstTurnObj.SetActive(false);
             secondTurnObj.SetActive(false);
+=======
+            bool isPlayerFirstTurn = _gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
+
+            _playerAnimator.SetBool(_parameterName, isPlayerFirstTurn);
+            _opponentAnimator.SetBool(_parameterName, !isPlayerFirstTurn);
+        }
+
+        private void AnimationEventTriggeredEventHandler(string animationName)
+        {
+            switch (animationName)
+            {
+                case "StartRotate":
+                    _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
+                    break;
+                case "EndRotate":
+                    _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void AnimationEnded()
+        {
+            _uiManager.HidePopup<PlayerOrderPopup>();
+
+            if (_gameplayManager.CurrentPlayer != null)
+            {
+                _gameplayManager.GetController<PlayerController>().SetHand();
+                _gameplayManager.GetController<CardsController>().StartCardDistribution();
+            }
+>>>>>>> content-development
         }
     }
 }

@@ -123,6 +123,13 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
             GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
+
+#if DEVELOPMENT
+            foreach (Enumerators.CacheDataType dataType in _cacheDataFileNames.Keys)
+            {
+                await SaveCache(dataType);
+            }
+#endif
         }
 
         public void DeleteData()
@@ -149,6 +156,7 @@ namespace Loom.ZombieBattleground
 
         public Task SaveCache(Enumerators.CacheDataType type)
         {
+<<<<<<< HEAD
             Debug.Log("== Saving cache type " + type);
 
             switch (type)
@@ -160,6 +168,35 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
+=======
+            string dataPath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
+             string data = "";
+             switch (type)
+             {
+                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
+                     data = SerializePersistentObject(CachedUserLocalData);
+                     break;
+ #if DEVELOPMENT
+                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
+                     data = SerializePersistentObject(CachedCardsLibraryData);
+                     break;
+                 case Enumerators.CacheDataType.CREDITS_DATA:
+                     data = SerializePersistentObject(CachedCreditsData);
+                     break;
+                 case Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA:
+                     data = SerializePersistentObject(CachedBuffsTooltipData);
+                     break;
+#endif
+                  default:
+                      throw new ArgumentOutOfRangeException();
+              }
+              if (data.Length > 0)
+              {
+                  if (!File.Exists(dataPath)) File.Create(dataPath).Close();
+
+                  File.WriteAllText(dataPath, data);
+              }
+>>>>>>> content-development
             return Task.CompletedTask;
         }
 

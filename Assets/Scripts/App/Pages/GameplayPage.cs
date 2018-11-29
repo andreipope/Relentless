@@ -61,6 +61,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public GameObject Self
+        {
+            get
+            {
+                return _selfPage;
+            }
+        }
+
         private Vector3 _playerManaBarsPosition, _opponentManaBarsPosition;
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
@@ -243,8 +251,11 @@ namespace Loom.ZombieBattleground
                                 .Decks[Random.Range(0, _dataManager.CachedAiDecksData.Decks.Count)];
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
+<<<<<<< HEAD
+=======
+                        _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
+>>>>>>> content-development
                     }
-
                     break;
                 case Enumerators.MatchType.PVP:
                     foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
@@ -256,11 +267,10 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             opponentHeroId = (int) playerState.Deck.HeroId;
+                            _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
+                            _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
                         }
                     }
-
-                    // Deck ID doesn't make any sense for PvP
-                    _gameplayManager.OpponentDeckId = -1;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -307,7 +317,7 @@ namespace Loom.ZombieBattleground
 
             if (currentPlayerHero != null)
             {
-                SetHeroInfo(currentPlayerHero, Constants.Player, PlayerPrimarySkillHandler.gameObject,
+                SetHeroInfo(currentPlayerHero, _gameplayManager.CurrentPlayerDeck, Constants.Player, PlayerPrimarySkillHandler.gameObject,
                     PlayerSecondarySkillHandler.gameObject);
                 string playerNameText = currentPlayerHero.FullName;
                 if (_backendDataControlMediator.LoadUserDataModel())
@@ -320,7 +330,7 @@ namespace Loom.ZombieBattleground
 
             if (currentOpponentHero != null)
             {
-                SetHeroInfo(currentOpponentHero, Constants.Opponent, OpponentPrimarySkillHandler.gameObject,
+                SetHeroInfo(currentOpponentHero, null, Constants.Opponent, OpponentPrimarySkillHandler.gameObject,
                     OpponentSecondarySkillHandler.gameObject);
 
                 _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ? 
@@ -335,15 +345,32 @@ namespace Loom.ZombieBattleground
             _isPlayerInited = true;
         }
 
-        public void SetHeroInfo(Hero hero, string objectName, GameObject skillPrimary, GameObject skillSecondary)
+        public void SetHeroInfo(Hero hero, Data.Deck deck, string objectName, GameObject skillPrimary, GameObject skillSecondary)
         {
-            HeroSkill skillPrim = hero.Skills[hero.PrimarySkill];
-            HeroSkill skillSecond = hero.Skills[hero.SecondarySkill];
+            HeroSkill skillPrim, skillSecond;
 
-            skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skillPrim.IconPath);
-            skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skillSecond.IconPath);
+            if(deck != null)
+            {
+                skillPrim = hero.GetSkill(deck.PrimarySkill);
+                skillSecond = hero.GetSkill(deck.PrimarySkill);
+            }
+            else
+            {
+                skillPrim = hero.GetSkill(hero.PrimarySkill);
+                skillSecond = hero.GetSkill(hero.PrimarySkill);
+            }
+
+            if (skillPrim != null)
+            {
+                skillPrimary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
+                    _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skillPrim.IconPath);
+            }
+
+            if (skillSecond != null)
+            {
+                skillSecondary.transform.Find("Icon").GetComponent<SpriteRenderer>().sprite =
+                    _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skillSecond.IconPath);
+            }
 
             Texture2D heroTexture =
                 _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.HeroElement + "_EXP");

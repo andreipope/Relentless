@@ -592,6 +592,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < cardsList.Count; i++)
             {
                 BoardUnitView card = cardsList[i];
+                card.PositionOfBoard = newPositions[i];
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
@@ -646,6 +647,7 @@ namespace Loom.ZombieBattleground
                 if (card.Model.IsDead)
                     continue;
 
+                card.PositionOfBoard = newPositions[i];
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }
 
@@ -989,6 +991,14 @@ namespace Loom.ZombieBattleground
             boardUnit.Model.UseShieldFromBuff();
             boardUnit.Model.BuffsOnUnit.Clear();
             boardUnit.Model.AttackRestriction = Enumerators.AttackRestriction.NONE;
+<<<<<<< HEAD
+=======
+            boardUnit.Model.AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
+            {
+                Enumerators.SkillTargetType.OPPONENT,
+                Enumerators.SkillTargetType.OPPONENT_CARD
+            };
+>>>>>>> content-development
 
             List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit.Model);
 

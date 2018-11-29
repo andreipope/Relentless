@@ -40,7 +40,14 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("Type")]
         public Enumerators.CardType CardType { get; protected set; }
 
+<<<<<<< HEAD
         public List<AbilityData> Abilities { get; }
+=======
+        [JsonIgnore]
+        public List<AbilityData> InitialAbilities { get; }
+
+        public List<AbilityData> Abilities { get; private set; }
+>>>>>>> content-development
 
         [JsonProperty("card_view_info")]
         public CardViewInfo CardViewInfo { get; protected set; }
@@ -84,6 +91,10 @@ namespace Loom.ZombieBattleground.Data
             Abilities = abilities ?? new List<AbilityData>();
             CardViewInfo = cardViewInfo;
             UniqueAnimationType = uniqueAnimationType;
+<<<<<<< HEAD
+=======
+            InitialAbilities = Abilities;
+>>>>>>> content-development
         }
 
         public Card(IReadOnlyCard sourceCard)
@@ -107,11 +118,26 @@ namespace Loom.ZombieBattleground.Data
                     .ToList();
             CardViewInfo = new CardViewInfo(sourceCard.CardViewInfo);
             UniqueAnimationType = sourceCard.UniqueAnimationType;
+<<<<<<< HEAD
+=======
+            InitialAbilities = Abilities;
+>>>>>>> content-development
         }
 
         public override string ToString()
         {
             return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardSetType})";
+<<<<<<< HEAD
+=======
+        }
+
+        public void ForceUpdateAbilities(List<AbilityData> abilities)
+        {
+            if (abilities != null)
+            {
+                Abilities = abilities;
+            }
+>>>>>>> content-development
         }
     }
 
@@ -123,6 +149,7 @@ namespace Loom.ZombieBattleground.Data
         public CardViewInfo()
         {
         }
+<<<<<<< HEAD
 
         public CardViewInfo(FloatVector3 position, FloatVector3 scale)
         {
@@ -130,6 +157,15 @@ namespace Loom.ZombieBattleground.Data
             Scale = scale;
         }
 
+=======
+
+        public CardViewInfo(FloatVector3 position, FloatVector3 scale)
+        {
+            Position = position;
+            Scale = scale;
+        }
+
+>>>>>>> content-development
         public CardViewInfo(CardViewInfo source)
         {
             Position = source.Position;

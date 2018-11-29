@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -94,7 +95,11 @@ namespace Loom.ZombieBattleground
 
         private bool _crossfadingSequenceEnded = true;
 
+        private List<Enumerators.GameMechanicDescriptionType> _filteredEffectsToShow;
+
         public Action ArrivalEndCallback;
+
+        public Vector3 PositionOfBoard { get; set; }
 
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
@@ -229,6 +234,16 @@ namespace Loom.ZombieBattleground
             SetNormalGlowFromUnitType();
             SetAttackGlowFromUnitType();
             SetHighlightingEnabled(false);
+
+            if(card.Owner.IsLocalPlayer)
+            {
+                PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
+            }
+            else
+            {
+                PositionOfBoard = _battlegroundController.OpponentBoardObject.transform.position;
+            }
+
         }
         private void ModelOnUnitHpChanged()
         {
@@ -390,7 +405,17 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitGameMechanicDescriptionsOnUnitChanged()
         {
+<<<<<<< HEAD
             if (Model.GameMechanicDescriptionsOnUnit.Count == 0)
+=======
+            _filteredEffectsToShow = Model.GameMechanicDescriptionsOnUnit.FindAll(effect =>
+                                                                 effect == Enumerators.GameMechanicDescriptionType.Death ||
+                                                                 effect == Enumerators.GameMechanicDescriptionType.Freeze ||
+                                                                 effect == Enumerators.GameMechanicDescriptionType.Destroy ||
+                                                                 effect == Enumerators.GameMechanicDescriptionType.Reanimate);
+
+            if (_filteredEffectsToShow.Count == 0)
+>>>>>>> content-development
             {
                 if (_cardMechanicsPicture.sprite != null)
                 {
@@ -432,36 +457,42 @@ namespace Loom.ZombieBattleground
             _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
         }
 
-        public void PlayArrivalAnimation(bool firstAppear = true)
+        public void PlayArrivalAnimation(bool firstAppear = true, bool playUniqueAnimation = false)
         {
-            GameObject arrivalPrefab =
-          _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
-            _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
-            _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
-            _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
-            Transform spriteContainerTransform =
-                _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
-            Vector3 scale = spriteContainerTransform.transform.localScale;
-            scale.x *= -1;
-            spriteContainerTransform.transform.localScale = scale;
-            _pictureSprite.transform.SetParent(spriteContainerTransform, false);
-
-            if (firstAppear)
+            Action generalArrivalAnimationAction = () =>
             {
-                GameObject.transform.position += Vector3.back * 5f;
-            }
+                GameObject arrivalPrefab =
+              _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
+                _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+                _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
+                _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
+                Transform spriteContainerTransform =
+                    _battleframeObject.transform.Find("Main_Model/Root/FangMain/SpriteContainer");
+                Vector3 scale = spriteContainerTransform.transform.localScale;
+                scale.x *= -1;
+                spriteContainerTransform.transform.localScale = scale;
+                _pictureSprite.transform.SetParent(spriteContainerTransform, false);
 
+                if (firstAppear)
+                {
+                    GameObject.transform.position += Vector3.back * 5f;
+                }
+            };
+
+            if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
+            {
+                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction);
+            }
+            else
+            {
+                generalArrivalAnimationAction.Invoke();
+            }
         }
 
         public void ArrivalAnimationEventHandler()
         {
             if (_unitContentObject == null || !_unitContentObject)
                 return;
-
-            if (_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
-            {
-                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card);
-            }
 
             _unitContentObject.SetActive(true);
             if (Model.HasFeral || Model.NumTurnsOnBoard > 0 && !Model.CantAttackInThisTurnBlocker)
@@ -710,11 +741,7 @@ namespace Loom.ZombieBattleground
             if (Model.OwnerPlayer != null && Model.OwnerPlayer.IsLocalPlayer && _playerController.IsActive && Model.UnitCanBeUsable())
             {
                 _fightTargetingArrow = _boardArrowController.BeginTargetingArrowFrom<BattleBoardArrow>(Transform);
-                _fightTargetingArrow.TargetsType = new List<Enumerators.SkillTargetType>
-                {
-                    Enumerators.SkillTargetType.OPPONENT,
-                    Enumerators.SkillTargetType.OPPONENT_CARD
-                };
+                _fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
                 _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
                 _fightTargetingArrow.Owner = this;
 
@@ -887,7 +914,11 @@ namespace Loom.ZombieBattleground
 
         private void DrawCardMechanicIcons()
         {
+<<<<<<< HEAD
             if (Model.GameMechanicDescriptionsOnUnit.Count == 1)
+=======
+            if (_filteredEffectsToShow.Count == 1)
+>>>>>>> content-development
             {
                 _currentEffectIndexCrossfading = 0;
                 _crossfadingEffectsOnUnit = false;
@@ -900,6 +931,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+<<<<<<< HEAD
             ChangeCardMechanicIcon(Model.GameMechanicDescriptionsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
 
             if (Model.GameMechanicDescriptionsOnUnit.Count > 1)
@@ -907,6 +939,15 @@ namespace Loom.ZombieBattleground
                 _currentEffectIndexCrossfading++;
 
                 if (_currentEffectIndexCrossfading >= Model.GameMechanicDescriptionsOnUnit.Count)
+=======
+            ChangeCardMechanicIcon(_filteredEffectsToShow[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
+
+            if (_filteredEffectsToShow.Count > 1)
+            {
+                _currentEffectIndexCrossfading++;
+
+                if (_currentEffectIndexCrossfading >= _filteredEffectsToShow.Count)
+>>>>>>> content-development
                 {
                     _currentEffectIndexCrossfading = 0;
                 }

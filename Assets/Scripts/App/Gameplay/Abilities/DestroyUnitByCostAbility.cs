@@ -10,6 +10,10 @@ namespace Loom.ZombieBattleground
     {
         public int Cost { get; }
 
+        private BoardUnitModel _unit;
+
+        private bool _isRandom;
+
         public DestroyUnitByCostAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -25,7 +29,14 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
+<<<<<<< HEAD
                 DestroyUnit(GetRandomUnit());
+=======
+                _isRandom = true;
+                _unit = GetRandomUnit();
+                InvokeActionTriggered(_unit);
+                
+>>>>>>> content-development
             }
         }
 
@@ -35,6 +46,25 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+<<<<<<< HEAD
+=======
+                _isRandom = false;
+                _unit = TargetUnit;
+                InvokeActionTriggered(_unit);
+            }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            if(_isRandom)
+            {
+                DestroyUnit(_unit);
+            }
+            else
+            {
+>>>>>>> content-development
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
                 DestroyUnit(TargetUnit);
@@ -45,6 +75,7 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitModel GetRandomUnit()
         {
+<<<<<<< HEAD
             List<BoardUnitModel> units = null;
 
             if (PredefinedTargets != null)
@@ -56,6 +87,24 @@ namespace Loom.ZombieBattleground
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
                 {
                     units = GetOpponentOverlord().BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList();
+=======
+            List<BoardUnitModel> units = new List<BoardUnitModel>();
+
+            if (PredefinedTargets != null)
+            {
+                units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
+            }
+            else
+            {
+                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
+                {
+                    units.AddRange(GetOpponentOverlord().BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
+                }
+
+                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                {
+                    units.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
+>>>>>>> content-development
                 }
             }
 

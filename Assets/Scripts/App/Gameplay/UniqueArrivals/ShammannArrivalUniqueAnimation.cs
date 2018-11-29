@@ -8,8 +8,10 @@ namespace Loom.ZombieBattleground
 {
     public class ShammannArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
         {
+            startGeneralArrivalCallback?.Invoke();
+
             IsPlaying = true;
 
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
@@ -19,7 +21,7 @@ namespace Loom.ZombieBattleground
 
             const float yOffsetOfCard = -0.75f;
 
-            animationVFX.transform.position = unitView.Transform.position;
+            animationVFX.transform.position = unitView.PositionOfBoard;
             unitView.Transform.SetParent(animationVFX.transform.Find("Shaman/Main_Model/Root"));
             unitView.Transform.localPosition = new Vector3(0, yOffsetOfCard, 0);
 

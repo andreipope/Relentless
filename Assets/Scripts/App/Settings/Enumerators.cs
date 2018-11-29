@@ -59,7 +59,9 @@ namespace Loom.ZombieBattleground.Common
             OPPONENT_ALL_CARDS,
             ALL_CARDS,
             ALL,
-            ITSELF
+            ITSELF,
+
+            BLITZ
         }
 
         public enum AbilityType
@@ -148,7 +150,9 @@ namespace Loom.ZombieBattleground.Common
             SET_ATTACK_AVAILABILITY,
             CHOOSABLE_ABILITIES,
             COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
-            GAIN_GOO
+            GAIN_GOO,
+            BLITZ,
+            DRAW_CARD_BY_FACTION
         }
 
         public enum ActionType
@@ -293,7 +297,20 @@ namespace Loom.ZombieBattleground.Common
             KillUnit,
 
             [EnumMember(Value = "PERMANENT")]
+<<<<<<< HEAD
             Permanent
+=======
+            Permanent,
+
+            [EnumMember(Value = "CHAINSAW")]
+            Chainsaw,
+
+            [EnumMember(Value = "BLITZ")]
+            Blitz,
+
+            [EnumMember(Value = "RESTORE")]
+            Restore,
+>>>>>>> content-development
         }
 
         public enum BuffType
@@ -680,7 +697,32 @@ namespace Loom.ZombieBattleground.Common
         public enum UniqueAnimationType
         {
             None,
+<<<<<<< HEAD
             ShammannArrival
+=======
+            ShammannArrival,
+            ZVirusArrival
+        }
+
+        public enum CardNameOfAbility
+        {
+            None,
+            Bulldozer,
+            Lawnmover
+        }
+
+        public enum AbilityEffectInfoPositionType
+        {
+            Target,
+            Overlord
+        }
+
+        public enum ShakeType
+        {
+            Short,
+            Medium,
+            Long
+>>>>>>> content-development
         }
     }
 }
