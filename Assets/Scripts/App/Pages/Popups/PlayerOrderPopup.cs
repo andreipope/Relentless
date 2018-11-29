@@ -68,9 +68,9 @@ namespace Loom.ZombieBattleground
             _opponentAnimator = Self.transform.Find("Root/OpponentOrderCardFlip").GetComponent<Animator>();
 
 
-            _playerOverlordNameText = Self.transform.Find("UI_Root/UI/Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
+            _playerOverlordNameText = Self.transform.Find("UI_Root/UI_Over/Text_PlayerOverlordName").GetComponent<TextMeshProUGUI>();
             _opponentOverlordNameText =
-                Self.transform.Find("UI_Root/UI/Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
+                Self.transform.Find("UI_Root/UI_Over/Text_OpponentOverlordName").GetComponent<TextMeshProUGUI>();
 
             _playerOverlordPicture = Self.transform.Find("UI_Root/UI_Over/Image_PlayerOverlord").GetComponent<Image>();
             _opponentOverlordPicture = Self.transform.Find("UI_Root/UI/Image_Mask_OpponentOverlord/Image_OpponentOverlord").GetComponent<Image>();
