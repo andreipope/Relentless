@@ -548,6 +548,7 @@ GameObject:
   - component: {fileID: 4321241322922954}
   - component: {fileID: 95370247600742926}
   - component: {fileID: 210602698153587320}
+  - component: {fileID: 114285178329638972}
   m_Layer: 0
   m_Name: Pivot
   m_TagString: Untagged
@@ -1533,6 +1534,17 @@ MonoBehaviour:
   m_canvasRenderer: {fileID: 222527014238448800}
   m_TextComponent: {fileID: 114176733289575376}
   m_materialReferenceIndex: 1
+--- !u!114 &114285178329638972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1719130865875664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ae8dda4bad954a4e88964b273453034, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114320201961777322
 MonoBehaviour:
   m_ObjectHideFlags: 1

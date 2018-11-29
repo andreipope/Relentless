@@ -40,6 +40,10 @@ namespace Loom.ZombieBattleground
 
         private List<AbilityViewItem> _abilities;
 
+        private AbilityViewItem _newOpenAbility;
+
+        private Animator _backgroundAnimator, _containerAnimator;
+
         private Hero _selectedHero;
 
         public GameObject Self { get; private set; }
@@ -106,6 +110,11 @@ namespace Loom.ZombieBattleground
             _skillDescription = _rewardSkillObject.transform.Find("SkillDescription")
                 .GetComponent<TextMeshProUGUI>();
 
+            _backgroundAnimator = Self.transform.Find("Background").GetComponent<Animator>();
+            _containerAnimator = Self.transform.Find("Pivot").GetComponent<Animator>();
+
+            _backgroundAnimator.GetComponent<AnimationEventTriggering>().AnimationEventTriggered += AnimationEventTriggeredHandler;        
+
             Self.SetActive(true);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
@@ -140,9 +149,7 @@ namespace Loom.ZombieBattleground
 
                             FillRewardSkillInfo();
 
-                            AbilityViewItem newOpenAbility = _abilities.FindLast((x) => x.Skill != null);
-                            newOpenAbility.IsSelected = true;
-                            AbilityInstanceOnSelectionChanged(newOpenAbility);
+                            AbilityInstanceOnSelectionChanged(_newOpenAbility);
                         }
                         break;
                     case LevelReward.UnitRewardItem unitReward:
@@ -163,14 +170,34 @@ namespace Loom.ZombieBattleground
             _abilities.Clear();
 
             AbilityViewItem abilityInstance = null;
+            bool isDefault = false;
+            int index = _selectedHero.Skills.FindIndex((k) => k == _selectedHero.Skills.FindLast((x) => x.Unlocked));
+
             for (int i = 0; i < _abilityListSize; i++)
             {
                 abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
+
                 if (i < _selectedHero.Skills.Count && _selectedHero.Skills[i].Unlocked)
                 {
                     abilityInstance.Skill = _selectedHero.Skills[i];
+                    if (i < _selectedHero.Skills.Count && _selectedHero.Skills[i].Unlocked)
+                    {
+                        isDefault = index == i;
+                        abilityInstance.Skill = _selectedHero.Skills[i];
+                        abilityInstance.UpdateUIState(isDefault);
+                    }
                 }
                 _abilities.Add(abilityInstance);
+            }
+
+            _newOpenAbility = _abilities[index];
+        }
+
+        private void UpdateSkills()
+        {
+            for (int i = 0; i < _abilityListSize; i++)
+            {
+
             }
         }
 
@@ -182,6 +209,25 @@ namespace Loom.ZombieBattleground
         {
             _skillName.text = ability.Skill.Title;
             _skillDescription.text = ability.Skill.Description;
+        }
+
+        private void AnimationEventTriggeredHandler(string animationName)
+        {
+            switch (animationName)
+            {
+                case "SetGlow":
+                    {
+                        _newOpenAbility.IsSelected = true;
+                    }
+                    break;
+                case "SetSkill":
+                    {
+                        _newOpenAbility.UpdateUIState();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void OnClickOkButtonEventHandler()
@@ -219,8 +265,6 @@ namespace Loom.ZombieBattleground
 
                 _glowObj = SelfObject.transform.Find("Glow").gameObject;
                 _abilityIconImage = SelfObject.transform.Find("AbilityIcon").GetComponent<Image>();
-
-                UpdateUIState();
             }
 
 
@@ -243,7 +287,6 @@ namespace Loom.ZombieBattleground
                         return;
 
                     _skill = value;
-                    UpdateUIState();
                 }
             }
 
@@ -253,11 +296,11 @@ namespace Loom.ZombieBattleground
             }
 
 
-            private void UpdateUIState()
+            public void UpdateUIState(bool isDefault = false)
             {
                 _glowObj.SetActive(_isSelected);
 
-                if (Skill != null)
+                if (Skill != null && !isDefault)
                 {
                     _abilityIconImage.sprite =
                         _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
