@@ -367,7 +367,7 @@ namespace Loom.ZombieBattleground
         public bool HasSpecialUnitFactionOnMainBoard(WorkingCard workingCard, AbilityData ability)
         {
             if (workingCard.Owner.BoardCards.
-                FindAll(x => x.Model.Card.LibraryCard.CardSetType == ability.TargetSetType).Count > 0)
+                FindAll(x => x.Model.Card.LibraryCard.CardSetType == ability.TargetSetType && x.Model.Card != workingCard).Count > 0)
                 return true;
 
             return false;
@@ -386,7 +386,6 @@ namespace Loom.ZombieBattleground
             BoardObject target = null,
             HandBoardCard handCard = null)
         {
-
             actionInQueue.Action = (parameter, completeCallback) =>
                {
                    ResolveAllAbilitiesOnUnit(boardObject, false);
@@ -448,7 +447,6 @@ namespace Loom.ZombieBattleground
                                    activeAbility.Ability.ActivateSelectTarget(
                                        callback: () =>
                                        {
-                                           card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
                                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                                            GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
                                            handCard.GameObject.SetActive(true);
