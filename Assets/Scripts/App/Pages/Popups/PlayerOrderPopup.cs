@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private const string _parameterName = "IsPlayerTurn";
 
+        private const float _durationOfShow = 4f;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -79,6 +81,8 @@ namespace Loom.ZombieBattleground
 
             _animationEventTriggering = _playerAnimator.GetComponent<AnimationEventTriggering>();
             _animationEventTriggering.AnimationEventTriggered += AnimationEventTriggeredEventHandler;
+
+            InternalTools.DoActionDelayed(AnimationEnded, _durationOfShow);
         }
 
         public void Show(object data)
@@ -120,19 +124,10 @@ namespace Loom.ZombieBattleground
             switch (animationName)
             {
                 case "StartRotate":
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
-                    }
+                    _soundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.SfxSoundVolume, true);
                     break;
                 case "EndRotate":
-                    {
-                        _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
-                    }
-                    break;
-                case "End":
-                    {
-                        AnimationEnded();
-                    }
+                    _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
                     break;
                 default:
                     break;
