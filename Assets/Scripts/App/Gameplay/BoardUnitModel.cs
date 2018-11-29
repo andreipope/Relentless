@@ -42,6 +42,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ITutorialManager _tutorialManager;
 
+        private readonly IDataManager _dataManager;
+
         private readonly BattlegroundController _battlegroundController;
 
         private readonly BattleController _battleController;
@@ -62,6 +64,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _battleController = _gameplayManager.GetController<BattleController>();
@@ -257,7 +260,7 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.REANIMATE_UNIT,
                         this,
-                        Card.InstanceCard,
+                        _dataManager.CachedCardsLibraryData.GetCardFromName(Card.LibraryCard.Name),
                         OwnerPlayer
                         );
                     break;
@@ -265,7 +268,7 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.InstanceCard,
+                        _dataManager.CachedCardsLibraryData.GetCardFromName(Card.LibraryCard.Name),
                         OwnerPlayer
                         );
                     break;
