@@ -424,10 +424,13 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
                 return;
 
-            if (_skillsController.OpponentPrimarySkill.IsSkillReady)
+            if (_skillsController.OpponentPrimarySkill != null)
             {
-                DoBoardSkill(_skillsController.OpponentPrimarySkill);
-                wasAction = true;
+                if (_skillsController.OpponentPrimarySkill.IsSkillReady)
+                {
+                    DoBoardSkill(_skillsController.OpponentPrimarySkill);
+                    wasAction = true;
+                }
             }
 
             if (wasAction)
@@ -435,10 +438,13 @@ namespace Loom.ZombieBattleground
                 await LetsThink(cancellationToken);
             }
 
-            if (_skillsController.OpponentSecondarySkill.IsSkillReady)
+            if (_skillsController.OpponentSecondarySkill != null)
             {
-                DoBoardSkill(_skillsController.OpponentSecondarySkill);
-                wasAction = true;
+                if (_skillsController.OpponentSecondarySkill.IsSkillReady)
+                {
+                    DoBoardSkill(_skillsController.OpponentSecondarySkill);
+                    wasAction = true;
+                }
             }
 
             if (wasAction)
@@ -446,6 +452,7 @@ namespace Loom.ZombieBattleground
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
             }
+
         }
 
         // some thinking - delay between general actions

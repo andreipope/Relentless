@@ -251,8 +251,8 @@ namespace Loom.ZombieBattleground
                                 .Decks[Random.Range(0, _dataManager.CachedAiDecksData.Decks.Count)];
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
+                        _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
                     }
-
                     break;
                 case Enumerators.MatchType.PVP:
                     foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
@@ -264,11 +264,10 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             opponentHeroId = (int) playerState.Deck.HeroId;
+                            _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
+                            _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
                         }
                     }
-
-                    // Deck ID doesn't make any sense for PvP
-                    _gameplayManager.OpponentDeckId = -1;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
