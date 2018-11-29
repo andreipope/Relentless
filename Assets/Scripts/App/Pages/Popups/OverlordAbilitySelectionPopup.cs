@@ -111,6 +111,9 @@ namespace Loom.ZombieBattleground
             _abilitiesGroup = Self.transform.Find("Abilities").gameObject;
 
             _heroImage = _backLayerCanvas.transform.Find("HeroImage").GetComponent<Image>();
+
+            _skillName.text = "No Skills selected";
+            _skillDescription.text = string.Empty;
         }
 
         public void Show(object data)
@@ -148,30 +151,35 @@ namespace Loom.ZombieBattleground
 
                  if(ability == null)
                  {
-                    if(_isPrimarySkillSelected)
+                    if(_isPrimarySkillSelected && _selectedDeck.PrimarySkill != Enumerators.OverlordSkill.NONE)
                     {
                         ability = _overlordAbilities.Find(x => x.Skill.OverlordSkill != _selectedDeck.SecondarySkill);
                     }
-                    else
+                    else if (_selectedDeck.SecondarySkill != Enumerators.OverlordSkill.NONE)
                     {
                         ability = _overlordAbilities.Find(x => x.Skill.OverlordSkill != _selectedDeck.PrimarySkill);
                     }
                 }
 
-                OverlordAbilitySelkectedHandler(ability);
+                OverlordAbilitySelectedHandler(ability);
             }
             else
             {
                 if (_selectedSkills == null)
                 {
-                    _selectedSkills = _selectedHero.Skills.FindAll(x => x.Unlocked).GetRange(0, 2);
+                    _selectedSkills = _selectedHero.Skills.FindAll(x => x.Unlocked);
+
+                    if (_selectedSkills.Count > 1)
+                    {
+                        _selectedSkills = _selectedSkills.GetRange(0, 2);
+                    }
                 }
 
                 OverlordAbilityItem ability;
                 foreach (HeroSkill skill in _selectedSkills)
                 {
                     ability = _overlordAbilities.Find(x => x.Skill.OverlordSkill == skill.OverlordSkill);
-                    OverlordAbilitySelkectedHandler(ability);
+                    OverlordAbilitySelectedHandler(ability);
                 }
             }
         }
@@ -280,7 +288,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 abilityInstance = new OverlordAbilityItem(_abilitiesGroup.transform, ability, overrideLock);
-                abilityInstance.OverlordAbilitySelected += OverlordAbilitySelkectedHandler;
+                abilityInstance.OverlordAbilitySelected += OverlordAbilitySelectedHandler;
 
                 _overlordAbilities.Add(abilityInstance);
             }
@@ -303,8 +311,11 @@ namespace Loom.ZombieBattleground
             _heroImage.SetNativeSize();
         }
 
-        private void OverlordAbilitySelkectedHandler(OverlordAbilityItem ability)
+        private void OverlordAbilitySelectedHandler(OverlordAbilityItem ability)
         {
+            if (ability == null)
+                return;
+
             if (_singleSelectionMode)
             {
                 foreach (OverlordAbilityItem item in _overlordAbilities)
