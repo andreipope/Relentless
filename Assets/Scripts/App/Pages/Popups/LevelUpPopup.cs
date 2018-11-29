@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
     {
         private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
 
+        private const string _hideParameterName = "Hide";
+
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -43,6 +45,8 @@ namespace Loom.ZombieBattleground
         private AbilityViewItem _newOpenAbility;
 
         private Animator _backgroundAnimator, _containerAnimator;
+
+        private LevelReward _levelReward;
 
         private Hero _selectedHero;
 
@@ -126,6 +130,8 @@ namespace Loom.ZombieBattleground
 
             _currentLevel.text = _selectedHero.Level.ToString();
 
+            _newOpenAbility = null;
+
             FillInfo();
         }
 
@@ -136,11 +142,18 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo()
         {
-            LevelReward levelReward = GameClient.Get<IOverlordManager>().GetLevelReward(_selectedHero);
+            _levelReward = GameClient.Get<IOverlordManager>().GetLevelReward(_selectedHero);
 
-            if (levelReward != null)
+            _rewardDisabledObject.SetActive(false);
+            _rewardSkillObject.SetActive(true);
+
+            FillRewardSkillInfo();
+
+            AbilityInstanceOnSelectionChanged(_newOpenAbility);
+
+            if (_levelReward != null)
             {
-                switch (levelReward.Reward)
+                switch (_levelReward.Reward)
                 {
                     case LevelReward.OverlordSkillRewardItem skillReward:
                         {
@@ -172,7 +185,6 @@ namespace Loom.ZombieBattleground
             AbilityViewItem abilityInstance = null;
             bool isDefault = false;
             int index = _selectedHero.Skills.FindIndex((k) => k == _selectedHero.Skills.FindLast((x) => x.Unlocked));
-
             for (int i = 0; i < _abilityListSize; i++)
             {
                 abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
@@ -180,25 +192,13 @@ namespace Loom.ZombieBattleground
                 if (i < _selectedHero.Skills.Count && _selectedHero.Skills[i].Unlocked)
                 {
                     abilityInstance.Skill = _selectedHero.Skills[i];
-                    if (i < _selectedHero.Skills.Count && _selectedHero.Skills[i].Unlocked)
-                    {
-                        isDefault = index == i;
-                        abilityInstance.Skill = _selectedHero.Skills[i];
-                        abilityInstance.UpdateUIState(isDefault);
-                    }
                 }
+                isDefault = index == i;
+                abilityInstance.UpdateUIState(isDefault);
                 _abilities.Add(abilityInstance);
             }
 
             _newOpenAbility = _abilities[index];
-        }
-
-        private void UpdateSkills()
-        {
-            for (int i = 0; i < _abilityListSize; i++)
-            {
-
-            }
         }
 
         public void Update()
@@ -213,17 +213,21 @@ namespace Loom.ZombieBattleground
 
         private void AnimationEventTriggeredHandler(string animationName)
         {
+
             switch (animationName)
             {
                 case "SetGlow":
                     {
-                        _newOpenAbility.IsSelected = true;
+                        _newOpenAbility?.UpdateUIState();
                     }
                     break;
                 case "SetSkill":
                     {
-                        _newOpenAbility.UpdateUIState();
+                        _newOpenAbility?.UpdateUIState();
                     }
+                    break;
+                case "HideEnd":
+                    _uiManager.HidePopup<LevelUpPopup>();
                     break;
                 default:
                     break;
@@ -234,7 +238,8 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            _uiManager.HidePopup<LevelUpPopup>();
+            _backgroundAnimator.SetTrigger(_hideParameterName);
+            _containerAnimator.SetTrigger(_hideParameterName);
         }
 
         private class AbilityViewItem
@@ -302,6 +307,7 @@ namespace Loom.ZombieBattleground
 
                 if (Skill != null && !isDefault)
                 {
+                    Debug.LogError(Skill.IconPath);
                     _abilityIconImage.sprite =
                         _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
                 }
