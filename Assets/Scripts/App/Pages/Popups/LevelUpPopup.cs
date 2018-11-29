@@ -217,14 +217,10 @@ namespace Loom.ZombieBattleground
             switch (animationName)
             {
                 case "SetGlow":
-                    {
-                        _newOpenAbility?.UpdateUIState();
-                    }
+                    _newOpenAbility?.UpdateUIState();
                     break;
                 case "SetSkill":
-                    {
-                        _newOpenAbility?.UpdateUIState();
-                    }
+                    _newOpenAbility?.UpdateUIState();
                     break;
                 case "HideEnd":
                     _uiManager.HidePopup<LevelUpPopup>();
@@ -307,7 +303,6 @@ namespace Loom.ZombieBattleground
 
                 if (Skill != null && !isDefault)
                 {
-                    Debug.LogError(Skill.IconPath);
                     _abilityIconImage.sprite =
                         _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
                 }
