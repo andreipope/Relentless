@@ -68,10 +68,6 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> MulliganCards;
 
-        public GameAction<object> PlayCardAction;
-        public GameAction<object> RankBuffAction;
-        public GameAction<object> CallAbilityAction;
-
         private List<ChoosableCardForAbility> _currentListOfChoosableCards;
 
         public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
@@ -516,10 +512,9 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-
                 GameAction<object> waiterAction = _actionsQueueController.AddNewActionInToQueue(null);
-                CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
-                RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null);
+                GameAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
+                GameAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null);
 
                 switch (libraryCard.CardKind)
                 {
@@ -594,6 +589,8 @@ namespace Loom.ZombieBattleground
                                             }
                                             else
                                             {
+                                                RankBuffAction.ForceActionDone();
+
                                                 _battlegroundController.PlayerBoardCards.Remove(boardUnitView);
                                                 player.BoardCards.Remove(boardUnitView);
 

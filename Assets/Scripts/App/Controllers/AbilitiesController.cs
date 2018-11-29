@@ -386,7 +386,6 @@ namespace Loom.ZombieBattleground
             BoardObject target = null,
             HandBoardCard handCard = null)
         {
-
             actionInQueue.Action = (parameter, completeCallback) =>
                {
                    ResolveAllAbilitiesOnUnit(boardObject, false);
@@ -448,7 +447,6 @@ namespace Loom.ZombieBattleground
                                    activeAbility.Ability.ActivateSelectTarget(
                                        callback: () =>
                                        {
-                                           card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
                                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                                            GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
                                            handCard.GameObject.SetActive(true);
