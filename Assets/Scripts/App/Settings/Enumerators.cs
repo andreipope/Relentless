@@ -700,7 +700,8 @@ namespace Loom.ZombieBattleground.Common
         public enum CardNameOfAbility
         {
             None,
-            Bulldozer
+            Bulldozer,
+            Lawnmover
         }
 
         public enum AbilityEffectInfoPositionType

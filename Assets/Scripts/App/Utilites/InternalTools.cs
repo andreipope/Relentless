@@ -54,25 +54,14 @@ namespace Loom.ZombieBattleground.Helpers
         {
             int count = root.childCount;
 
-            float width = spacing * count - 1;
+            float width = spacing * (count - 1);
 
             Vector3 pivot = new Vector3(offset, 0, 0);
 
-            if (!isReverse)
+            for (int i = 0; i < count; i++)
             {
-                for (int i = 0; i < count; i++)
-                {
-                    root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, offsetY, offsetZ);
-                    pivot.x += width / count;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    root.GetChild(i).localPosition = new Vector3(pivot.x, offsetY, offsetZ);
-                    pivot.x += spacing;
-                }
+                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, offsetY, offsetZ);
+                pivot.x += width / (count-1);
             }
         }
 
