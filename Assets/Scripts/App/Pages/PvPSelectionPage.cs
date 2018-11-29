@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -29,6 +30,13 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _buttonTutorial;
 
+        private ILocalizationManager _localizationManager;
+        private TextMeshProUGUI _casualTextMesh;
+        private TextMeshProUGUI _customModeTextMesh;
+        private TextMeshProUGUI _rankedTextMesh;
+        private TextMeshProUGUI _friendlyTextMesh;
+        private TextMeshProUGUI _tutorialTextMesh;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -37,6 +45,9 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
 
         public void Update()
@@ -55,6 +66,12 @@ namespace Loom.ZombieBattleground
             _buttonCustomType = _selfPage.transform.Find("Button_CustomType").GetComponent<Button>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
 
+            _casualTextMesh = _buttonCasualType.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _customModeTextMesh = _buttonCustomType.transform.Find("Shifted/Text").GetComponent<TextMeshProUGUI>();
+            _rankedTextMesh = _buttonRankedType.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _friendlyTextMesh = _buttonFriendlyType.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _tutorialTextMesh = _buttonTutorial.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonCasualType.onClick.AddListener(CasualTypeButtonOnClickHandler);
             _buttonRankedType.onClick.AddListener(RankedTypeButtonOnClickHandler);
@@ -63,6 +80,8 @@ namespace Loom.ZombieBattleground
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
 
             _pvpManager.CustomGameModeAddress = null;
+
+            UpdateLocalization();
         }
 
         public void Hide()
@@ -77,6 +96,23 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (_selfPage == null)
+                return;
+
+            _casualTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.CasualText.ToString());
+            _customModeTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.CustomModeText.ToString());
+            _rankedTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.RankedText.ToString());
+            _friendlyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.FriendlyText.ToString());
+            _tutorialTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.TutorialText.ToString());
         }
 
         #region Buttons Handlers

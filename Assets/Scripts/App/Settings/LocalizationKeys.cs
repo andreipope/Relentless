@@ -2,6 +2,34 @@
 
 public enum LocalizationKeys
 {
-    Loading_Text,
-    Press_Any_Key_Text
+    LoadingText,
+    PressAnyKeyText,
+    PlayText,
+    ShopText,
+    OpenPacksText,
+    ArmyText,
+    SettingsText,
+    VideoText,
+    AudioText,
+    ResolutionText,
+    SfxVolumeText,
+    ScreenModeText,
+    FullScreenText,
+    MusicVolumeText,
+    QuitToDesktopText,
+    QuitToMainMenuText,
+    ZombieArmyText,
+    OpenText,
+    BuyText,
+    TutorialText,
+    SoloText,
+    VsText,
+    CustomModeText,
+    CasualText,
+    RankedText,
+    FriendlyText,
+    ChooseHordeText,
+    NewHordeText,
+    BattleText,
+    SaveText
 }

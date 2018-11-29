@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
+        private ILocalizationManager _localizationManager;
+
         private GameObject _selfPage;
 
         private MenuButtonNoGlow _buttonArmy;
@@ -30,6 +32,8 @@ namespace Loom.ZombieBattleground
         private ButtonShiftingContent _buttonBuy, _buttonOpen;
 
         private TextMeshProUGUI _packsCount;
+
+        private TextMeshProUGUI _armyTextMesh;
 
         private Animator _logoAnimator;
 
@@ -41,11 +45,14 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
 
         public void Update()
-        {  
-        } 
+        {
+        }
 
         public void Show()
         {
@@ -61,6 +68,7 @@ namespace Loom.ZombieBattleground
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
             _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
             _buttonSettings = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
+            _armyTextMesh = _buttonArmy.transform.Find("Button/ButtonText").GetComponent<TextMeshProUGUI>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
@@ -87,6 +95,8 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.DrawPopup<TermsPopup>();
             }
+
+            UpdateLocalization();
         }
 
         public void Hide()
@@ -101,6 +111,23 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (_selfPage == null)
+                return;
+
+            _armyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ArmyText.ToString());
+            // TODO : right now all text are images.
+            /*_playText.text = _localizationManager.GetUITranslation(LocalizationKeys.PlayText.ToString());
+            _shopText.text = _localizationManager.GetUITranslation(LocalizationKeys.ShopText.ToString());
+            _openPacksText.text = _localizationManager.GetUITranslation(LocalizationKeys.OpenPacksText.ToString());*/
         }
 
         private void OpenAlertDialog(string msg)

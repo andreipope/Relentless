@@ -48,12 +48,17 @@ namespace Loom.ZombieBattleground
 
         private CardHighlightingVFXItem _highlightingVFXItem;
 
+        private ILocalizationManager _localizationManager;
+        private TextMeshProUGUI _zombieArmyTextMesh;
+        private TextMeshProUGUI _buyTextMesh;
+        private TextMeshProUGUI _openTextMesh;
 
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -66,6 +71,8 @@ namespace Loom.ZombieBattleground
             CardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
 
             _createdBoardCards = new List<BoardCard>();
+
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
 
         public void Update()
@@ -126,6 +133,9 @@ namespace Loom.ZombieBattleground
             _itemsToggle = _selfPage.transform.Find("ElementsToggles/Items").GetComponent<Toggle>();
 
             _cardCounter = _selfPage.transform.Find("CardsCounter").GetChild(0).GetComponent<TextMeshProUGUI>();
+            _zombieArmyTextMesh = _selfPage.transform.Find("TitleBack/Text_Title").GetComponent<TextMeshProUGUI>();
+            _buyTextMesh = _buttonBuy.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _openTextMesh = _buttonOpen.transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
             _cardSetsIcons = _selfPage.transform.Find("ElementsToggles").gameObject;
 
@@ -199,6 +209,7 @@ namespace Loom.ZombieBattleground
 
             _selfPage.SetActive(true);
             InitObjects();
+            UpdateLocalization();
         }
 
         public void Hide()
@@ -330,6 +341,21 @@ namespace Loom.ZombieBattleground
             }
 
             HighlightCorrectIcon();
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (_selfPage == null)
+                return;
+
+            _zombieArmyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ZombieArmyText.ToString());
+            _buyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.BuyText.ToString());
+            _openTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.OpenText.ToString());
         }
 
         private void ResetBoardCards()

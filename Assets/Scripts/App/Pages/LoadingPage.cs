@@ -222,8 +222,8 @@ namespace Loom.ZombieBattleground
             if (_selfPage == null)
                 return;
 
-            _loadingText.text = _localizationManager.GetUITranslation(LocalizationKeys.Loading_Text.ToString());
-            _pressAnyText.text = _localizationManager.GetUITranslation(LocalizationKeys.Press_Any_Key_Text.ToString());
+            _loadingText.text = _localizationManager.GetUITranslation(LocalizationKeys.LoadingText.ToString());
+            _pressAnyText.text = _localizationManager.GetUITranslation(LocalizationKeys.PressAnyKeyText.ToString());
         }
 
         private async void OnSignupButtonPressed()

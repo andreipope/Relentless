@@ -65,6 +65,12 @@ namespace Loom.ZombieBattleground
 
         private IAnalyticsManager _analyticsManager;
 
+        private ILocalizationManager _localizationManager;
+        private TextMeshProUGUI _chooseHordeTextMesh;
+        private TextMeshProUGUI _zombieArmyTextMesh;
+        private TextMeshProUGUI _battleTextMesh;    // TODO : right now battle text is image
+        private TextMeshProUGUI _newHordeTextMesh;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -76,6 +82,9 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
 
         public void Update()
@@ -98,6 +107,11 @@ namespace Loom.ZombieBattleground
             _battleButtonWarning = _selfPage.transform.Find("Button_Battle_Warning").GetComponent<Button>();
             _leftArrowButton = _selfPage.transform.Find("Button_LeftArrow").GetComponent<Button>();
             _rightArrowButton = _selfPage.transform.Find("Button_RightArrow").GetComponent<Button>();
+
+            _chooseHordeTextMesh = _selfPage.transform.Find("Text_ChooseHorde").GetComponent<TextMeshProUGUI>();
+            _zombieArmyTextMesh = _buttonArmy.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            //_battleTextMesh = _selfPage.transform.Find("Button_Army").GetComponent<TextMeshProUGUI>();
+            _newHordeTextMesh = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde/Text_NewHorde").GetComponent<TextMeshProUGUI>();
 
             _editButton =
                 _selfPage.transform.Find("Panel_DecksContainer/SelectionMask/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Edit")
@@ -153,6 +167,7 @@ namespace Loom.ZombieBattleground
             _hordeSelection.gameObject.SetActive(false);
 
             LoadDeckObjects();
+            UpdateLocalization();
         }
 
         public void Hide()
@@ -167,6 +182,22 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (_selfPage == null)
+                return;
+
+            _chooseHordeTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ChooseHordeText.ToString());
+            _zombieArmyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ZombieArmyText.ToString());
+            //_battleTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.BattleText.ToString());
+            _newHordeTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.NewHordeText.ToString());
         }
 
         private void FillHordeDecks()
@@ -242,7 +273,7 @@ namespace Loom.ZombieBattleground
 			//TODO remove once we complete the ability selection process. For now, just hard coding values like everywhere else for overlord abilities.
             horde.SelfDeck.PrimarySkill = 0;
             horde.SelfDeck.SecondarySkill = 1;
-            
+
             _firstSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +
                  horde.SelfHero.Skills[horde.SelfDeck.PrimarySkill].IconPath);
             _secondSkill.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" +

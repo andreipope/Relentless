@@ -45,6 +45,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private ILocalizationManager _localizationManager;
+
         private IAnalyticsManager _analyticsManager;
 
         private IDataManager _dataManager;
@@ -101,6 +103,10 @@ namespace Loom.ZombieBattleground
 
         private CardHighlightingVFXItem _highlightingVFXItem;
 
+        private TextMeshProUGUI _saveTextMesh;
+        private TextMeshProUGUI _buyTextMesh;
+        private TextMeshProUGUI _zombieArmyTextMesh;
+
         private bool _isDragging;
 
         public int CurrentDeckId
@@ -121,6 +127,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -140,6 +147,8 @@ namespace Loom.ZombieBattleground
 
             _createdArmyCards = new List<BoardCard>();
             _createdHordeCards = new List<BoardCard>();
+
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
 
         public void Update()
@@ -184,6 +193,10 @@ namespace Loom.ZombieBattleground
             _buttonHordeArrowRight = _selfPage.transform.Find("Horde/ArrowRightButton").GetComponent<Button>();
             _hordeCardsContainer = _selfPage.transform.Find("Horde/Cards").GetComponent<RectTransform>();
             _hordeScrollNotifier = _selfPage.transform.Find("Horde/ScrollArea").GetComponent<SimpleScrollNotifier>();
+
+            _buyTextMesh = _buttonBuy.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _saveTextMesh = _buttonSave.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _zombieArmyTextMesh = _buttonArmy.transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
@@ -292,6 +305,8 @@ namespace Loom.ZombieBattleground
 
             _hordeAreaObject = _selfPage.transform.Find("Horde/ScrollArea").gameObject;
             _armyAreaObject = _selfPage.transform.Find("Army/ScrollArea").gameObject;
+
+            UpdateLocalization();
         }
 
         public void Hide()
@@ -841,6 +856,21 @@ namespace Loom.ZombieBattleground
             }
 
             _cardInfoPopupHandler.SelectCard(boardCard);
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (_selfPage == null)
+                return;
+
+            _buyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.BuyText.ToString());
+            _saveTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.SaveText.ToString());
+            _zombieArmyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ZombieArmyText.ToString());
         }
 
         private void FillCollectionData()
