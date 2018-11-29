@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground
 
         public Task SaveCache(Enumerators.CacheDataType type)
         {
-            Debug.LogError("== Saving cache type " + type);
+            Debug.Log("== Saving cache type " + type);
 
             switch (type)
             {
@@ -197,7 +197,13 @@ namespace Loom.ZombieBattleground
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
             LoadLocalCachedData();
-            _localizationManager.LoadLanguageData(CachedUserLocalData.AppLanguage);
+            // TODO : Fix when u delete all data
+            if(CachedUserLocalData.AppLanguage != Enumerators.Language.NONE)
+                _localizationManager.LoadLanguageData(CachedUserLocalData.AppLanguage);
+            else
+            {
+                _localizationManager.LoadLanguageData(Enumerators.Language.EN);
+            }
 
             GameClient.Get<ISoundManager>().ApplySoundData();
 
