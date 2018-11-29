@@ -95,8 +95,8 @@ namespace Loom.ZombieBattleground.Data
                 (int) hero.Level,
                 (Enumerators.SetType) hero.Element,
                 hero.Skills.Select(skill => skill.FromProtobuf()).ToList(),
-                (int)hero.PrimarySkill,
-                (int)hero.SecondarySkill
+                hero.PrimarySkill,
+                hero.SecondarySkill
             );
         }
 
@@ -133,8 +133,8 @@ namespace Loom.ZombieBattleground.Data
                 (int) deck.HeroId,
                 deck.Name,
                 deck.Cards.Select(skill => skill.FromProtobuf()).ToList(),
-                (int)deck.PrimarySkill,
-                (int)deck.SecondarySkill
+                deck.PrimarySkill,
+                deck.SecondarySkill
             );
         }
 

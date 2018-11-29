@@ -111,8 +111,8 @@ namespace Loom.ZombieBattleground.Tests
                         }
                     }
                 },
-                PrimarySkill = (OverlordSkillKind.Types.Enum)2,
-                SecondarySkill = (OverlordSkillKind.Types.Enum)3
+                PrimarySkill = 2,
+                SecondarySkill = 3
             };
 
             Hero client = new Hero(
