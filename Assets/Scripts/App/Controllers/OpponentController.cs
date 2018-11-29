@@ -256,12 +256,6 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-<<<<<<< HEAD
-                _gameplayManager.OpponentPlayer.RemoveCardFromDeck(card);
-                _gameplayManager.OpponentPlayer.AddCardToGraveyard(card);
-
-=======
->>>>>>> content-development
                 _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             });
         }
@@ -295,15 +289,9 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.IsGameEnded)
                 return;
-<<<<<<< HEAD
 
             BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.InstanceId);
 
-=======
-
-            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.InstanceId);
-
->>>>>>> content-development
             if (boardObjectCaller == null)
             {
                 // FIXME: why do we have recursion here??

@@ -405,9 +405,6 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitGameMechanicDescriptionsOnUnitChanged()
         {
-<<<<<<< HEAD
-            if (Model.GameMechanicDescriptionsOnUnit.Count == 0)
-=======
             _filteredEffectsToShow = Model.GameMechanicDescriptionsOnUnit.FindAll(effect =>
                                                                  effect == Enumerators.GameMechanicDescriptionType.Death ||
                                                                  effect == Enumerators.GameMechanicDescriptionType.Freeze ||
@@ -415,7 +412,6 @@ namespace Loom.ZombieBattleground
                                                                  effect == Enumerators.GameMechanicDescriptionType.Reanimate);
 
             if (_filteredEffectsToShow.Count == 0)
->>>>>>> content-development
             {
                 if (_cardMechanicsPicture.sprite != null)
                 {
@@ -914,11 +910,7 @@ namespace Loom.ZombieBattleground
 
         private void DrawCardMechanicIcons()
         {
-<<<<<<< HEAD
-            if (Model.GameMechanicDescriptionsOnUnit.Count == 1)
-=======
             if (_filteredEffectsToShow.Count == 1)
->>>>>>> content-development
             {
                 _currentEffectIndexCrossfading = 0;
                 _crossfadingEffectsOnUnit = false;
@@ -931,15 +923,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-<<<<<<< HEAD
-            ChangeCardMechanicIcon(Model.GameMechanicDescriptionsOnUnit[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
-
-            if (Model.GameMechanicDescriptionsOnUnit.Count > 1)
-            {
-                _currentEffectIndexCrossfading++;
-
-                if (_currentEffectIndexCrossfading >= Model.GameMechanicDescriptionsOnUnit.Count)
-=======
             ChangeCardMechanicIcon(_filteredEffectsToShow[_currentEffectIndexCrossfading].ToString().ToLowerInvariant());
 
             if (_filteredEffectsToShow.Count > 1)
@@ -947,7 +930,6 @@ namespace Loom.ZombieBattleground
                 _currentEffectIndexCrossfading++;
 
                 if (_currentEffectIndexCrossfading >= _filteredEffectsToShow.Count)
->>>>>>> content-development
                 {
                     _currentEffectIndexCrossfading = 0;
                 }

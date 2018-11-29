@@ -188,19 +188,19 @@ namespace Loom.ZombieBattleground.Data
             }
 
             public VisualEffectInfo(VisualEffectInfo source)
-            public Enumerators.VisualEffectType Type { get; private set; }
-            public string Path { get; private set; }
-
-            public VisualEffectInfo(Enumerators.VisualEffectType type, string path)
-            {
-                Type = type;
-                Path = path;
-            }
-
-            public VisualEffectInfo(VisualEffectInfo source)
             {
                 Type = source.Type;
                 Path = source.Path;
+            }
+
+            public void ForceSetPath(string path)
+            {
+                Path = path;
+            }
+
+            public void ForceSetType(Enumerators.VisualEffectType type)
+            {
+                Type = type;
             }
         }
 

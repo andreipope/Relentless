@@ -991,14 +991,12 @@ namespace Loom.ZombieBattleground
             boardUnit.Model.UseShieldFromBuff();
             boardUnit.Model.BuffsOnUnit.Clear();
             boardUnit.Model.AttackRestriction = Enumerators.AttackRestriction.NONE;
-<<<<<<< HEAD
-=======
+
             boardUnit.Model.AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
             {
                 Enumerators.SkillTargetType.OPPONENT,
                 Enumerators.SkillTargetType.OPPONENT_CARD
             };
->>>>>>> content-development
 
             List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit.Model);
 

@@ -55,10 +55,6 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitModel unit in units)
             {
-<<<<<<< HEAD
-              TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
-=======
                 BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit);
             }
 
@@ -71,7 +67,6 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             Action();
->>>>>>> content-development
         }
     }
 }

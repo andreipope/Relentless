@@ -54,11 +54,7 @@ namespace Loom.ZombieBattleground
             {
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
-<<<<<<< HEAD
-                Action();
-=======
                 InvokeActionTriggered();
->>>>>>> content-development
             }
         }
 

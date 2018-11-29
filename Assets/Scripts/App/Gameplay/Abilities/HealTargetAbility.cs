@@ -67,17 +67,11 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-<<<<<<< HEAD
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
-
-                InvokeActionTriggered();
-=======
 				AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
                 _targets.Add(TargetUnit);
                 InvokeActionTriggered(_targets);
                 _vfxAnimationEndedCallback = HealSelectedTarget;
->>>>>>> content-development
             }
         }
 
@@ -85,14 +79,10 @@ namespace Loom.ZombieBattleground
         {
             HealTarget(PlayerCallerOfAbility, Value);
 
-<<<<<<< HEAD
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
-=======
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 PlayerCallerOfAbility
             }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
->>>>>>> content-development
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -123,11 +113,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 boardObject
-<<<<<<< HEAD
-            }, AbilityData.AbilityType, (AffectObjectType.Types.Enum) AffectObjectType);
-=======
             }, AbilityData.AbilityType,  (Protobuf.AffectObjectType.Types.Enum) AffectObjectType);
->>>>>>> content-development
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -150,11 +136,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-<<<<<<< HEAD
-            HealSelectedTarget();
-=======
             _vfxAnimationEndedCallback?.Invoke();
->>>>>>> content-development
 
             AbilityProcessingAction?.ForceActionDone();
         }
@@ -163,11 +145,7 @@ namespace Loom.ZombieBattleground
         {
             if (PredefinedTargets != null)
             {
-<<<<<<< HEAD
-                allies = PredefinedTargets.Select(x => x.BoardObject).ToList();
-=======
                 _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
->>>>>>> content-development
             }
             else
             {
@@ -217,11 +195,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-<<<<<<< HEAD
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
-=======
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
->>>>>>> content-development
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

@@ -251,10 +251,7 @@ namespace Loom.ZombieBattleground
                                 .Decks[Random.Range(0, _dataManager.CachedAiDecksData.Decks.Count)];
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
-<<<<<<< HEAD
-=======
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
->>>>>>> content-development
                     }
                     break;
                 case Enumerators.MatchType.PVP:

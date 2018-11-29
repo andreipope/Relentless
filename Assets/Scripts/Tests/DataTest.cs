@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-﻿using System;
-=======
 using System;
->>>>>>> content-development
 using System.Collections.Generic;
 using DeepEqual.Syntax;
 using Loom.ZombieBattleground.Common;
@@ -31,13 +27,8 @@ namespace Loom.ZombieBattleground.Tests
                     new DeckCardData("card 1", 3),
                     new DeckCardData("card 2", 4)
                 },
-<<<<<<< HEAD
-                3,
-                4
-=======
                 Enumerators.OverlordSkill.HEALING_TOUCH,
                 Enumerators.OverlordSkill.MEND
->>>>>>> content-development
             );
 
             Deck deserialized = original.ToProtobuf().FromProtobuf();
@@ -120,13 +111,8 @@ namespace Loom.ZombieBattleground.Tests
                         }
                     }
                 },
-<<<<<<< HEAD
-                PrimarySkill = 2,
-                SecondarySkill = 3
-=======
                 PrimarySkill =  OverlordSkillKind.Types.Enum.HealingTouch,
                 SecondarySkill = OverlordSkillKind.Types.Enum.Mend
->>>>>>> content-development
             };
 
             Hero client = new Hero(
@@ -141,11 +127,7 @@ namespace Loom.ZombieBattleground.Tests
                 new List<HeroSkill>
                 {
                     new HeroSkill(
-<<<<<<< HEAD
-
-=======
                         0,
->>>>>>> content-development
                         "title",
                         "supericon",
                         "desc",
@@ -165,13 +147,6 @@ namespace Loom.ZombieBattleground.Tests
                         {
                             Enumerators.SetType.FIRE,
                             Enumerators.SetType.LIFE
-<<<<<<< HEAD
-                        }
-                    )
-                },
-                2,
-                3
-=======
                         },
                         true,
                         true
@@ -179,7 +154,6 @@ namespace Loom.ZombieBattleground.Tests
                 },
                 Enumerators.OverlordSkill.HEALING_TOUCH,
                 Enumerators.OverlordSkill.MEND
->>>>>>> content-development
             );
 
             client.ShouldDeepEqual(protobuf.FromProtobuf());

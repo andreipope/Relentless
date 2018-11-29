@@ -156,19 +156,6 @@ namespace Loom.ZombieBattleground
 
         public Task SaveCache(Enumerators.CacheDataType type)
         {
-<<<<<<< HEAD
-            Debug.Log("== Saving cache type " + type);
-
-            switch (type)
-            {
-                case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                    File.WriteAllText(GetPersistentDataItemPath(_cacheDataFileNames[type]), SerializePersistentObject(CachedUserLocalData));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-=======
             string dataPath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
              string data = "";
              switch (type)
@@ -196,7 +183,6 @@ namespace Loom.ZombieBattleground
 
                   File.WriteAllText(dataPath, data);
               }
->>>>>>> content-development
             return Task.CompletedTask;
         }
 

@@ -252,18 +252,12 @@ namespace Loom.ZombieBattleground
 
         private void FillOverlordAbilities()
         {
-<<<<<<< HEAD
-            _heroImage.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroData.HeroElement.ToString().ToLowerInvariant());
-            _heroImage.SetNativeSize();
-=======
             ResetOverlordAbilities();
 
             OverlordAbilityItem abilityInstance;
             HeroSkill ability = null;
 
             bool overrideLock; 
->>>>>>> content-development
 
             for (int i = 0; i < AbilityListSize; i++)
             {

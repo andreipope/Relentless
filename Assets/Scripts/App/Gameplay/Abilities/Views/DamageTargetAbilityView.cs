@@ -66,15 +66,6 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-<<<<<<< HEAD
-                if(VfxObject != null)
-                {
-                    Vector3 targetPosition = VfxObject.transform.position;
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData
-                        .GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-                    CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
-                }
-=======
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
                 _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
@@ -90,7 +81,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
->>>>>>> content-development
 
                 if (!string.IsNullOrEmpty(_abilityActionCompletedSound))
                 {

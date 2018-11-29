@@ -71,11 +71,7 @@ namespace Loom.ZombieBattleground
 
             if (PredefinedTargets != null)
             {
-<<<<<<< HEAD
-                units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
-=======
                 _units = PredefinedTargets.Cast<BoardUnitModel>().ToList();
->>>>>>> content-development
             }
             else
             {
@@ -93,9 +89,6 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-<<<<<<< HEAD
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
-=======
             foreach (BoardUnitModel unit in _units)
             {
                 if (unit == AbilityUnitOwner)
@@ -107,7 +100,6 @@ namespace Loom.ZombieBattleground
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
->>>>>>> content-development
         }
 
         private void DevourTargetZombie(BoardUnitModel unit)

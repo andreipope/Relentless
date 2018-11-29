@@ -27,11 +27,8 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
-<<<<<<< HEAD
-=======
 
             AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Restore);
->>>>>>> content-development
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;

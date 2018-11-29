@@ -276,11 +276,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentDeck = new Deck(
                     -1,
-<<<<<<< HEAD
-                    _currentHeroId,
-=======
                     _currentHero.HeroId,
->>>>>>> content-development
                     "HORDE " + _dataManager.CachedDecksData.Decks.Count,
                     new List<DeckCardData>(),
                     0,
@@ -577,11 +573,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-<<<<<<< HEAD
-            if (_against[_dataManager.CachedHeroesData.Heroes[_currentHeroId].HeroElement] == card.CardSetType)
-=======
             if (_against[_currentHero.HeroElement] == card.CardSetType)
->>>>>>> content-development
             {
                 OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");

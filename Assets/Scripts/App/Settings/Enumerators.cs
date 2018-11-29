@@ -297,9 +297,6 @@ namespace Loom.ZombieBattleground.Common
             KillUnit,
 
             [EnumMember(Value = "PERMANENT")]
-<<<<<<< HEAD
-            Permanent
-=======
             Permanent,
 
             [EnumMember(Value = "CHAINSAW")]
@@ -310,7 +307,6 @@ namespace Loom.ZombieBattleground.Common
 
             [EnumMember(Value = "RESTORE")]
             Restore,
->>>>>>> content-development
         }
 
         public enum BuffType
@@ -697,9 +693,6 @@ namespace Loom.ZombieBattleground.Common
         public enum UniqueAnimationType
         {
             None,
-<<<<<<< HEAD
-            ShammannArrival
-=======
             ShammannArrival,
             ZVirusArrival
         }
@@ -722,7 +715,6 @@ namespace Loom.ZombieBattleground.Common
             Short,
             Medium,
             Long
->>>>>>> content-development
         }
     }
 }
