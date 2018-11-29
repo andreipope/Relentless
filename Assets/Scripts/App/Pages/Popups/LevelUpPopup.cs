@@ -24,8 +24,6 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonOk;
 
-        private SpriteRenderer _selectHeroSpriteRenderer;
-
         private TextMeshProUGUI _currentLevel;
 
         private TextMeshProUGUI _skillName;
@@ -88,21 +86,18 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LevelUpPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroSpriteRenderer = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/SelectHero")
-                .GetComponent<SpriteRenderer>();
-
-            _buttonOk = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/Button_Continue").GetComponent<Button>();
+            _buttonOk = Self.transform.Find("Pivot/levelup_panel/UI/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
 
-            _rewardSkillObject = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/RewardSkill_Panel").gameObject;
+            _rewardSkillObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardSkill_Panel").gameObject;
 
-            _rewardDisabledObject = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/RewardDisabled_Panel").gameObject;
+            _rewardDisabledObject = Self.transform.Find("Pivot/levelup_panel/UI/RewardDisabled_Panel").gameObject;
 
             _abilitiesGroup = _rewardSkillObject.transform.Find("Abilities").GetComponent<HorizontalLayoutGroup>();
 
             _message = _rewardDisabledObject.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 
-            _currentLevel = Self.transform.Find("Pivot/LevelUpPopup/LevelUpPanel/UI/Text_Level")
+            _currentLevel = Self.transform.Find("Pivot/levelup_panel/UI/Text_Level")
                 .GetComponent<TextMeshProUGUI>();
 
             _skillName = _rewardSkillObject.transform.Find("SkillName")
@@ -119,10 +114,6 @@ namespace Loom.ZombieBattleground
             int heroId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
 
             _selectedHero = dataManager.CachedHeroesData.Heroes[heroId];
-
-            string heroName = _selectedHero.HeroElement.ToString().ToLowerInvariant();
-            _selectHeroSpriteRenderer.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
 
             _currentLevel.text = _selectedHero.Level.ToString();
 
