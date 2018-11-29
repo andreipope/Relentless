@@ -22272,7 +22272,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 649278719}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.9, z: 0}
+  m_LocalPosition: {x: 0, y: -0.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 984749278}
@@ -38856,6 +38856,8 @@ MonoBehaviour:
   - {fileID: 320142974}
   - {fileID: 1157499366}
   - {fileID: 2011449203}
+  _squareFactorCanvasMatch: 0.6
+  _squareFactorCameraSize: 9.6
 --- !u!1 &934523476
 GameObject:
   m_ObjectHideFlags: 0
@@ -79362,7 +79364,7 @@ GameObject:
   - component: {fileID: 1434076886}
   - component: {fileID: 1434076885}
   - component: {fileID: 1434076888}
-  m_Layer: 9
+  m_Layer: 21
   m_Name: DefenceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108940,7 +108942,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2062537013}
   - component: {fileID: 2062537014}
-  m_Layer: 9
+  m_Layer: 21
   m_Name: Deffence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108954,7 +108956,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2062537012}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.994, y: 1.431, z: -1.2}
+  m_LocalPosition: {x: 0.86, y: 1.3, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1434076884}
