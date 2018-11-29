@@ -111,8 +111,8 @@ namespace Loom.ZombieBattleground
                 SetPlayerSkills(rootPage, primary, secondary);
             }
 
-            primary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayer.SelfHero.PrimarySkill);
-            secondary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayer.SelfHero.SecondarySkill);
+            primary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayerDeck.PrimarySkill);
+            secondary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayerDeck.SecondarySkill);
 
             if (primary != null && secondary != null)
             {
