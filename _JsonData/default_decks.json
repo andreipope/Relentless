@@ -45,35 +45,37 @@
           "cardName": "Zeptic",
           "amount": 1
         },
-		{
+        {
           "cardName": "Ghoul",
           "amount": 1
         },
-		{
+        {
           "cardName": "Hazzard",
           "amount": 1
         },
-		{
+        {
           "cardName": "Ectoplasm",
           "amount": 1
         },
-		{
+        {
           "cardName": "Bouncer",
           "amount": 2
         },
-		{
+        {
           "cardName": "Stapler",
           "amount": 1
         },
-		{
+        {
           "cardName": "Goo Bottles",
           "amount": 1
         },
-		{
+        {
           "cardName": "Chainsaw",
           "amount": 2
         }
-      ]
+      ],
+      "PrimarySkill": "POISON_DART",
+      "SecondarySkill": "TOXIC_POWER"
     }
   ]
 }

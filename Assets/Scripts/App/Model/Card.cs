@@ -40,7 +40,10 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("Type")]
         public Enumerators.CardType CardType { get; protected set; }
 
-        public List<AbilityData> Abilities { get; }
+        [JsonIgnore]
+        public List<AbilityData> InitialAbilities { get; }
+
+        public List<AbilityData> Abilities { get; private set; }
 
         [JsonProperty("card_view_info")]
         public CardViewInfo CardViewInfo { get; protected set; }
@@ -84,6 +87,7 @@ namespace Loom.ZombieBattleground.Data
             Abilities = abilities ?? new List<AbilityData>();
             CardViewInfo = cardViewInfo;
             UniqueAnimationType = uniqueAnimationType;
+            InitialAbilities = Abilities;
         }
 
         public Card(IReadOnlyCard sourceCard)
@@ -107,11 +111,20 @@ namespace Loom.ZombieBattleground.Data
                     .ToList();
             CardViewInfo = new CardViewInfo(sourceCard.CardViewInfo);
             UniqueAnimationType = sourceCard.UniqueAnimationType;
+            InitialAbilities = Abilities;
         }
 
         public override string ToString()
         {
             return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardSetType})";
+        }
+
+        public void ForceUpdateAbilities(List<AbilityData> abilities)
+        {
+            if (abilities != null)
+            {
+                Abilities = abilities;
+            }
         }
     }
 

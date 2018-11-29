@@ -240,7 +240,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Enumerators.AbilityType abilityType,
                 CardKind.Types.Enum cardKind,
                 AffectObjectType.Types.Enum affectObjectType,
-                List<ParametrizedAbilityBoardObject> targets = null)
+                List<ParametrizedAbilityBoardObject> targets = null,
+                List<WorkingCard> cards = null)
             {
                 PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed()
                 {
@@ -296,6 +297,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
                                 }
                             };
                         }
+
+                        cardAbilityUsed.Targets.Add(targetUnit);
+                    }
+                }
+
+                if(cards != null)
+                {
+                    foreach (WorkingCard workingCard in cards)
+                    {
+                        targetUnit = new Protobuf.Unit
+                        {
+                            InstanceId = workingCard.InstanceId,
+                            AffectObjectType = AffectObjectType.Types.Enum.Card,
+                            Parameter = new Parameter() { }
+                        };
 
                         cardAbilityUsed.Targets.Add(targetUnit);
                     }

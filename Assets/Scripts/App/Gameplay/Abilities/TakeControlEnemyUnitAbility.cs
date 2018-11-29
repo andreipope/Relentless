@@ -1,19 +1,32 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
     public class TakeControlEnemyUnitAbility : AbilityBase
     {
+        private int Count { get; }
+
         public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            Count = ability.Count;
         }
 
         public override void Activate()
         {
             base.Activate();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+                return;
+
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            {
+                TakeControlEnemyUnit(GetRandomEnemyUnits());
+            }
         }
 
         protected override void InputEndedHandler()
@@ -22,7 +35,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered();
             }
         }
 
@@ -30,12 +43,30 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, TargetUnit);
+            TakeControlEnemyUnit(new List<BoardUnitModel>() { TargetUnit });
+        }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+        private List<BoardUnitModel> GetRandomEnemyUnits()
+        {
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, Count).Select(x => x.Model).ToList();
+        }
+
+        private void TakeControlEnemyUnit(List<BoardUnitModel> units)
+        {
+            foreach (BoardUnitModel unit in units)
             {
-              TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit);
+            }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
+                                                     Protobuf.AffectObjectType.Types.Enum.Character);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

@@ -95,14 +95,15 @@ namespace Loom.ZombieBattleground.Data
                 (int) hero.Level,
                 (Enumerators.SetType) hero.Element,
                 hero.Skills.Select(skill => skill.FromProtobuf()).ToList(),
-                hero.PrimarySkill,
-                hero.SecondarySkill
+                (Enumerators.OverlordSkill)hero.PrimarySkill,
+                (Enumerators.OverlordSkill)hero.SecondarySkill
             );
         }
 
         public static HeroSkill FromProtobuf(this Protobuf.Skill skill)
         {
             return new HeroSkill(
+                (int)skill.Id,
                 skill.Title,
                 skill.IconPath,
                 skill.Description,
@@ -114,7 +115,9 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.OverlordSkill) skill.Skill_,
                 skill.SkillTargets.Select(t => (Enumerators.SkillTargetType) t).ToList(),
                 (Enumerators.UnitStatusType) skill.TargetUnitSpecialStatus,
-                skill.ElementTargets.Select(t => (Enumerators.SetType) t).ToList()
+                skill.ElementTargets.Select(t => (Enumerators.SetType) t).ToList(),
+                skill.Unlocked,
+                skill.CanSelectTarget
             );
         }
 
@@ -133,8 +136,8 @@ namespace Loom.ZombieBattleground.Data
                 (int) deck.HeroId,
                 deck.Name,
                 deck.Cards.Select(skill => skill.FromProtobuf()).ToList(),
-                deck.PrimarySkill,
-                deck.SecondarySkill
+                (Enumerators.OverlordSkill)deck.PrimarySkill,
+                (Enumerators.OverlordSkill)deck.SecondarySkill
             );
         }
 
