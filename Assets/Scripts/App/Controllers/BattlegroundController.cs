@@ -212,14 +212,13 @@ namespace Loom.ZombieBattleground
             _timerManager.AddTimer(
                 x =>
                 {
-                  //  cardToDestroy.Transform.DOShakePosition(.7f, 0.25f, 10, 90, false, false);
-                    CreateDeadAnimation(cardToDestroy);
+                    CreateDeathAnimation(cardToDestroy);
 
                     string cardDeathSoundName =
-                        cardToDestroy.Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
+                        cardToDestroyModel.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
                     float soundLength = 0f;
 
-                    if (!cardToDestroy.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                    if (!cardToDestroyModel.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
                     {
                         _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName,
                             Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume,
@@ -234,9 +233,9 @@ namespace Loom.ZombieBattleground
                         {
                             cardToDestroy.Model.InvokeUnitDied();
 
-                            cardToDestroy.Model.OwnerPlayer.BoardCards.Remove(cardToDestroy);
-                            cardToDestroy.Model.OwnerPlayer.RemoveCardFromBoard(cardToDestroy.Model.Card);
-                            cardToDestroy.Model.OwnerPlayer.AddCardToGraveyard(cardToDestroy.Model.Card);
+                            cardToDestroyModel.OwnerPlayer.BoardCards.Remove(cardToDestroy);
+                            cardToDestroyModel.OwnerPlayer.RemoveCardFromBoard(cardToDestroyModel.Card);
+                            cardToDestroyModel.OwnerPlayer.AddCardToGraveyard(cardToDestroyModel.Card);
 
 
                             cardToDestroy.Transform.DOKill();
@@ -252,9 +251,9 @@ namespace Loom.ZombieBattleground
                 });
         }
     
-        private void CreateDeadAnimation(BoardUnitView cardToDestroy)
+        private void CreateDeathAnimation(BoardUnitView unitView)
         {
-            _vfxController.CreateDeathZombieAnimation(cardToDestroy);
+            _vfxController.CreateDeathZombieAnimation(unitView);
         }
 
         public void CheckGameDynamic()

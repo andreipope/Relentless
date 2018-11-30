@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         private GameObject _battlegroundTouchPrefab;
 
+        private List<UnitDeathAnimation> _unitDeathAnimations;
+
         public void Init()
         {
             _timerManager = GameClient.Get<ITimerManager>();
@@ -39,6 +41,8 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _battlegroundTouchPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/TouchingBattleground/ZB_ANM_touching_battleground");
+
+            _unitDeathAnimations = new List<UnitDeathAnimation>();
         }
 
         public void Dispose()
@@ -55,6 +59,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetAll()
         {
+            _unitDeathAnimations.Clear();
         }
 
         public void PlayAttackVfx(Enumerators.CardType type, Vector3 target, int damage)
@@ -70,91 +75,91 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CardType.FERAL:
-                {
-                    vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
-                    effect = Object.Instantiate(vfxPrefab);
-                    effect.transform.position = target;
-                    _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume,
-                        false, false, true);
-
-                    _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                    if (damage > 3 && damage < 7)
                     {
-                        _timerManager.AddTimer(
-                            a =>
-                            {
-                                effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target;
-                                effect.transform.localScale = new Vector3(-1, 1, 1);
-                                _particlesController.RegisterParticleSystem(effect, true, 5f);
-                            },
-                            null,
-                            0.5f);
+                        vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
+                        effect = Object.Instantiate(vfxPrefab);
+                        effect.transform.position = target;
+                        _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume,
+                            false, false, true);
+
+                        _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+                        if (damage > 3 && damage < 7)
+                        {
+                            _timerManager.AddTimer(
+                                a =>
+                                {
+                                    effect = Object.Instantiate(vfxPrefab);
+                                    effect.transform.position = target;
+                                    effect.transform.localScale = new Vector3(-1, 1, 1);
+                                    _particlesController.RegisterParticleSystem(effect, true, 5f);
+                                },
+                                null,
+                                0.5f);
+                        }
+
+                        if (damage > 6)
+                        {
+                            _timerManager.AddTimer(
+                                a =>
+                                {
+                                    effect = Object.Instantiate(vfxPrefab);
+                                    effect.transform.position = target - Vector3.right;
+                                    effect.transform.eulerAngles = Vector3.forward * 90;
+
+                                    _particlesController.RegisterParticleSystem(effect, true, 5f);
+                                });
+                        }
+
+                        break;
                     }
-
-                    if (damage > 6)
-                    {
-                        _timerManager.AddTimer(
-                            a =>
-                            {
-                                effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target - Vector3.right;
-                                effect.transform.eulerAngles = Vector3.forward * 90;
-
-                                _particlesController.RegisterParticleSystem(effect, true, 5f);
-                            });
-                    }
-
-                    break;
-                }
                 case Enumerators.CardType.HEAVY:
-                {
-                    Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
-                    string prefabName = "Prefabs/VFX/HeavyAttackVFX";
-                    if (damage > 4)
                     {
-                        prefabName = "Prefabs/VFX/HeavyAttack2VFX";
-                        soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
+                        Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
+                        string prefabName = "Prefabs/VFX/HeavyAttackVFX";
+                        if (damage > 4)
+                        {
+                            prefabName = "Prefabs/VFX/HeavyAttack2VFX";
+                            soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
+                        }
+
+                        vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
+                        effect = Object.Instantiate(vfxPrefab);
+                        effect.transform.position = target;
+
+                        _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+                        _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
+                        break;
                     }
-
-                    vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
-                    effect = Object.Instantiate(vfxPrefab);
-                    effect.transform.position = target;
-
-                    _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                    _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
-                    break;
-                }
                 default:
-                {
-                    vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
-                    effect = Object.Instantiate(vfxPrefab);
-                    effect.transform.position = target;
-
-                    _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                    _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK, Constants.CreatureAttackSoundVolume,
-                        false, false, true);
-
-                    if (damage > 4)
                     {
-                        _timerManager.AddTimer(
-                            a =>
-                            {
-                                effect = Object.Instantiate(vfxPrefab);
-                                effect.transform.position = target;
+                        vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
+                        effect = Object.Instantiate(vfxPrefab);
+                        effect.transform.position = target;
 
-                                effect.transform.localScale = new Vector3(-1, 1, 1);
-                                _particlesController.RegisterParticleSystem(effect, true, 5f);
-                            },
-                            null,
-                            0.5f);
+                        _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK, Constants.CreatureAttackSoundVolume,
+                            false, false, true);
+
+                        if (damage > 4)
+                        {
+                            _timerManager.AddTimer(
+                                a =>
+                                {
+                                    effect = Object.Instantiate(vfxPrefab);
+                                    effect.transform.position = target;
+
+                                    effect.transform.localScale = new Vector3(-1, 1, 1);
+                                    _particlesController.RegisterParticleSystem(effect, true, 5f);
+                                },
+                                null,
+                                0.5f);
+                        }
+
+                        break;
                     }
-
-                    break;
-                }
             }
         }
 
@@ -187,7 +192,7 @@ namespace Loom.ZombieBattleground
             }
 
             GameObject particle = Object.Instantiate(prefab);
-            if(isIgnoreCastVfx)
+            if (isIgnoreCastVfx)
             {
                 particle.transform.position = position;
             }
@@ -318,7 +323,7 @@ namespace Loom.ZombieBattleground
                     target = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
                     break;
                 case Player _:
-                    target = ((Player) onObject).AvatarObject.transform;
+                    target = ((Player)onObject).AvatarObject.transform;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(onObject), onObject, null);
@@ -332,22 +337,6 @@ namespace Loom.ZombieBattleground
             effect.transform.localPosition = Vector3.zero;
 
             Object.Destroy(effect, 2.5f);
-        }
-
-        public void CreateDeathZombieAnimation(BoardUnitView cardToDestroy)
-        {
-            if (cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
-                cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
-                cardToDestroy.Model.LastAttackingSetType == Enumerators.SetType.NONE)
-                return;
-
-            string type = cardToDestroy.Model.LastAttackingSetType.ToString();
-            type = type.First().ToString().ToUpperInvariant() + type.Substring(1).ToLowerInvariant();
-            var prefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ZB_ANM_" + type + "DeathAnimation");
-            GameObject effect = MonoBehaviour.Instantiate(prefab);
-            effect.transform.position = cardToDestroy.Transform.position;
-            cardToDestroy.Transform.SetParent(effect.transform, true);
-            _particlesController.RegisterParticleSystem(effect, true, 8f);
         }
 
         private void ChechTouchOnBattleground()
@@ -366,9 +355,9 @@ namespace Loom.ZombieBattleground
                     }
                 }
                 if (hits.Length > 0)
-				{
+                {
                     CreateBattlegroundTouchEffect(mousePos);
-				}
+                }
             }
         }
 
@@ -385,6 +374,88 @@ namespace Loom.ZombieBattleground
             Vector3 diference = target - from;
             float sign = (target.x < from.x) ? -1.0f : 1.0f;
             return Vector3.Angle(Vector3.forward, diference) * sign;
+        }
+
+        public void CreateDeathZombieAnimation(BoardUnitView unitView)
+        {
+            if (unitView.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
+                unitView.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
+                unitView.Model.LastAttackingSetType == Enumerators.SetType.NONE)
+                return;
+
+            _unitDeathAnimations.Add(new UnitDeathAnimation(unitView));
+        }
+    }
+
+    public class UnitDeathAnimation
+    {
+        public event Action<UnitDeathAnimation> AnimationEnded;
+
+        private ILoadObjectsManager _loadObjectsManager;
+
+        private GameObject SelfObject;
+        private AnimationEventTriggering AnimationEventTriggeringHandler;
+        private Animator EffectAnimator;
+        private ParticleSystem ParticleSystem;
+
+        private float _initialAnimationSpeed;
+
+        public BoardUnitView BoardUnitView;
+
+        public UnitDeathAnimation(BoardUnitView unitView)
+        {
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+
+            BoardUnitView = unitView;
+
+            SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_" +
+                                            InternalTools.FormatStringToPascaleCase(unitView.Model.LastAttackingSetType.ToString()) +
+                                            "DeathAnimation"));
+
+            SelfObject.transform.position = unitView.Transform.position;
+
+            BoardUnitView.Transform.SetParent(SelfObject.transform, false);
+
+            AnimationEventTriggeringHandler = SelfObject.GetComponent<AnimationEventTriggering>();
+            EffectAnimator = SelfObject.GetComponent<Animator>();
+
+            ParticleSystem = SelfObject.transform.Find("VFX_All").GetComponent<ParticleSystem>();
+
+            AnimationEventTriggeringHandler.AnimationEventTriggered = AnimationEventReceived;
+
+            _initialAnimationSpeed = EffectAnimator.speed;
+
+            GameClient.Get<IGameplayManager>().GetController<ParticlesController>().RegisterParticleSystem(SelfObject, true, 8f);
+        }
+
+        public void Dispose()
+        {
+            if (SelfObject != null)
+            {
+                Object.Destroy(SelfObject);
+            }
+        }
+
+        public void ContinuePlayAnimation()
+        {
+            ParticleSystem.Play(true);
+            EffectAnimator.speed = _initialAnimationSpeed;
+        }
+
+        private void AnimationEventReceived(string method)
+        {
+            switch (method)
+            {
+                case "Pause":
+                    ParticleSystem.Pause(true);
+                    EffectAnimator.speed = 0;
+                    break;
+                case "End":
+                    ParticleSystem.Stop();
+                    EffectAnimator.StopPlayback();
+                    AnimationEnded?.Invoke(this);
+                    break;
+            }
         }
     }
 }

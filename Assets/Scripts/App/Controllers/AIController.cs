@@ -377,6 +377,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
+                    if (unit.HasBuffRush)
+                        continue;
+
                     while (UnitCanBeUsable(unit))
                     {
                         unit.DoCombat(_gameplayManager.CurrentPlayer);
@@ -390,7 +393,7 @@ namespace Loom.ZombieBattleground
                 {
                     while (UnitCanBeUsable(unit))
                     {
-                        if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
+                        if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial && !unit.HasBuffRush)
                         {
                             unit.DoCombat(_gameplayManager.CurrentPlayer);
                             await LetsThink(cancellationToken);
@@ -406,6 +409,9 @@ namespace Loom.ZombieBattleground
                             }
                             else
                             {
+                                if (unit.HasBuffRush)
+                                    break;
+
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
                                 await LetsThink(cancellationToken);
                             }
