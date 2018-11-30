@@ -54,6 +54,8 @@ namespace Loom.ZombieBattleground
 
         private readonly IPvPManager _pvpManager;
 
+        private readonly ITutorialManager _tutorialManager;
+
         private readonly CardsController _cardsController;
 
         private readonly BattlegroundController _battlegroundController;
@@ -105,6 +107,7 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -180,7 +183,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    heroId = Constants.TutorialPlayerHeroId;
+                    heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
                 }
             }
             else
@@ -188,7 +191,14 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        heroId = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == _gameplayManager.OpponentDeckId).Deck.HeroId;
+                        if (_gameplayManager.IsTutorial)
+                        {
+                            heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
+                        }
+                        else
+                        {
+                            heroId = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == _gameplayManager.OpponentDeckId).Deck.HeroId;
+                        }
                         break;
                     case Enumerators.MatchType.PVP:
                         heroId = (int) PvPPlayerState.Deck.HeroId;
