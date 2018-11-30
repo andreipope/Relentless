@@ -66,13 +66,21 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                if(VfxObject != null)
+                Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
+                _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
+                Ability.TargetPlayer.AvatarObject.transform.position;
+
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
                 {
-                    Vector3 targetPosition = VfxObject.transform.position;
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData
-                        .GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-                    CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
+                    _delayAfterImpact = effectInfo.delayAfterEffect;
+                    _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
+                    _abilityActionCompletedSound = effectInfo.soundName;
                 }
+
+                CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
 
                 if (!string.IsNullOrEmpty(_abilityActionCompletedSound))
                 {

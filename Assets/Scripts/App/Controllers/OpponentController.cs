@@ -263,7 +263,7 @@ namespace Loom.ZombieBattleground
                             Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count),
                             boardUnitViewElement);
 
-                        boardUnitViewElement.PlayArrivalAnimation();
+                        boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
 
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
 
@@ -288,9 +288,6 @@ namespace Loom.ZombieBattleground
                         });
                         break;
                 }
-
-                _gameplayManager.OpponentPlayer.RemoveCardFromDeck(card);
-                _gameplayManager.OpponentPlayer.AddCardToGraveyard(card);
 
                 _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             });

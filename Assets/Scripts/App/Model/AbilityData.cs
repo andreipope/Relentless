@@ -54,6 +54,7 @@ namespace Loom.ZombieBattleground.Data
 
         public int Delay { get; private set; }
 
+        [JsonProperty("visual_effects_to_play")]
         public List<VisualEffectInfo> VisualEffectsToPlay { get; private set; }
 
         [JsonProperty("mechanic_description_type")]
@@ -173,9 +174,13 @@ namespace Loom.ZombieBattleground.Data
 
         public class VisualEffectInfo
         {
+            [JsonProperty("type")]
             public Enumerators.VisualEffectType Type { get; private set; }
+
+            [JsonProperty("path")]
             public string Path { get; private set; }
 
+            [JsonConstructor]
             public VisualEffectInfo(Enumerators.VisualEffectType type, string path)
             {
                 Type = type;
@@ -186,6 +191,16 @@ namespace Loom.ZombieBattleground.Data
             {
                 Type = source.Type;
                 Path = source.Path;
+            }
+
+            public void ForceSetPath(string path)
+            {
+                Path = path;
+            }
+
+            public void ForceSetType(Enumerators.VisualEffectType type)
+            {
+                Type = type;
             }
         }
 

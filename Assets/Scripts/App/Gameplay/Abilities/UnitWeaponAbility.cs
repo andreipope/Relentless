@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
         }
 
         public override void Action(object info = null)
@@ -40,8 +42,6 @@ namespace Loom.ZombieBattleground
 
             TargetUnit.CurrentHp += Health;
             TargetUnit.BuffedHp += Health;
-
-            InvokeActionTriggered();
         }
 
         protected override void InputEndedHandler()
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
             {
                 if (TargetUnit != null)
                 {
-                    Action();
+                    InvokeActionTriggered();
 
                     TargetUnit.UnitDied += TargetUnitDiedHandler;
 
@@ -62,6 +62,13 @@ namespace Loom.ZombieBattleground
                     }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                 }
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
 
         protected override void TurnEndedHandler()
@@ -83,6 +90,8 @@ namespace Loom.ZombieBattleground
                 BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
+
+                AbilityUnitOwner.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
             }
         }
 
