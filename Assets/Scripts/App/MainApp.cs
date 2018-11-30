@@ -1,8 +1,10 @@
 using System;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -15,6 +17,8 @@ namespace Loom.ZombieBattleground
         public event Action LateUpdateEvent;
 
         public event Action FixedUpdateEvent;
+
+        public event Action OnDrawGizmosCalled;
 
         public static MainApp Instance { get; private set; }
 
@@ -75,6 +79,16 @@ namespace Loom.ZombieBattleground
                 GameClient.Instance.Dispose();
             }
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (!GizmosGuiHelper.CanRenderGui() || (Camera.main != Camera.current && Camera.current.name != "SceneCamera"))
+                return;
+
+            OnDrawGizmosCalled?.Invoke();
+        }
+#endif
 
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
         {

@@ -22,7 +22,11 @@ namespace Loom.ZombieBattleground.Data
 
         public Card GetCardFromName(string name)
         {
-            return Cards.First(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            Card card = Cards.FirstOrDefault(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            if (card == null)
+                throw new Exception($"Card '{name}' not found");
+
+            return card;
         }
 
         private void InitData()

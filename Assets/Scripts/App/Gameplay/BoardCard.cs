@@ -9,6 +9,9 @@ using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -126,6 +129,10 @@ namespace Loom.ZombieBattleground
             BehaviourHandler.MouseUpTriggered += MouseUpTriggeredHandler;
 
             BehaviourHandler.Destroying += DestroyingHandler;
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
 
         public SpriteRenderer PictureSprite { get; protected set; }
@@ -777,6 +784,22 @@ namespace Loom.ZombieBattleground
                     return ability.Value;
             }
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (GameObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            if (WorkingCard == null)
+                return;
+
+            DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId, WorkingCard.LibraryCard.Name);
+        }
+#endif
 
         public class BuffTooltipInfo
         {
