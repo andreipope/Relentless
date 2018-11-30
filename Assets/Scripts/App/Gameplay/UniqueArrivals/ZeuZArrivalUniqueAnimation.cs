@@ -24,8 +24,6 @@ namespace Loom.ZombieBattleground
 
             unitView.GameObject.SetActive(false);
 
-
-
             InternalTools.DoActionDelayed(() =>
             {
                 GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
