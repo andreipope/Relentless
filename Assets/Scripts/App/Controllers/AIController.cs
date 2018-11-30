@@ -1180,7 +1180,6 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.OverlordSkill.HARDEN:
                 case Enumerators.OverlordSkill.DRAW:
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
                     target = _gameplayManager.OpponentPlayer;
                     break;
                 case Enumerators.OverlordSkill.STONE_SKIN:
