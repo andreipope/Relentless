@@ -83,6 +83,10 @@ namespace Loom.ZombieBattleground
 
         public void ResetAll()
         {
+            PlayerPrimarySkill = null;
+            PlayerSecondarySkill = null;
+            OpponentPrimarySkill = null;
+            OpponentSecondarySkill = null;
         }
 
         public void InitializeSkills()
@@ -108,6 +112,7 @@ namespace Loom.ZombieBattleground
 
             if (primary != null && secondary != null)
             {
+                rootPage.SetupSkills(primary, secondary, false);
                 SetPlayerSkills(rootPage, primary, secondary);
             }
 
@@ -116,6 +121,7 @@ namespace Loom.ZombieBattleground
 
             if (primary != null && secondary != null)
             {
+                rootPage.SetupSkills(primary, secondary, true);
                 SetOpponentSkills(rootPage, primary, secondary);
             }
 
@@ -1411,8 +1417,6 @@ namespace Loom.ZombieBattleground
             if (target is BoardUnitModel boardUnitModel)
             {
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target).Transform.position + Vector3.up * 0.34f;
-
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ShatterCardDestroyVFX"), position, delay: 5f);
 
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
                 _battlegroundController.DestroyBoardUnit(boardUnitModel);

@@ -569,6 +569,8 @@ namespace Loom.ZombieBattleground
                                 _isHoveringCardOfBoard = false;
                             }
 
+                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
+
                             boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
                                 _gameplayManager.CurrentPlayer.BoardCards,
@@ -582,13 +584,11 @@ namespace Loom.ZombieBattleground
                                             if (status)
                                             {
                                                 player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
-
-                                                _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
-
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
                                             }
                                             else
                                             {
+                                                RankBuffAction.Action = null;
                                                 RankBuffAction.ForceActionDone();
 
                                                 _battlegroundController.PlayerBoardCards.Remove(boardUnitView);
@@ -621,8 +621,13 @@ namespace Loom.ZombieBattleground
                             InternalTools.DoActionDelayed(() =>
                             {
                                 _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (x) =>
+                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (status) =>
                                     {
+                                        if(status)
+                                        {
+                                            player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
+                                        }
+
                                         RankBuffAction.ForceActionDone();
                                     }, CallAbilityAction, handCard: handCard);
 

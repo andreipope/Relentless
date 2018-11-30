@@ -196,15 +196,18 @@ namespace Loom.ZombieBattleground
             {
                 OverlordAbilityItem ability = _overlordAbilities.Find(x => x.IsSelected);
 
-                if (_isPrimarySkillSelected)
+                if (ability != null)
                 {
-                    _selectedHero.PrimarySkill = ability.Skill.OverlordSkill;
-                    _selectedHero.SecondarySkill = _selectedDeck.SecondarySkill;
-                }
-                else
-                {
-                    _selectedHero.PrimarySkill = _selectedDeck.PrimarySkill;
-                    _selectedHero.SecondarySkill = ability.Skill.OverlordSkill;
+                    if (_isPrimarySkillSelected)
+                    {
+                        _selectedHero.PrimarySkill = ability.Skill.OverlordSkill;
+                        _selectedHero.SecondarySkill = _selectedDeck.SecondarySkill;
+                    }
+                    else
+                    {
+                        _selectedHero.PrimarySkill = _selectedDeck.PrimarySkill;
+                        _selectedHero.SecondarySkill = ability.Skill.OverlordSkill;
+                    }
                 }
             }
             else
