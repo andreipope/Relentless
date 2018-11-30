@@ -11,6 +11,10 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
+        public event Action OnUpdateEvent;
+
+        private List<BoardObject> _targets;
+
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -31,6 +35,7 @@ namespace Loom.ZombieBattleground
 
         public override void Update()
         {
+            OnUpdateEvent?.Invoke();
         }
 
         public override void Dispose()
@@ -46,8 +51,20 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            for (int i = 0; i < _targets.Count; i++)
+            {
+                OneActionComleted(_targets[i]);
+            }
+        }
+
         public override void Action(object info = null)
         {
+            _targets = new List<BoardObject>();
+
             BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardSpell;
 
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
@@ -58,29 +75,39 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        foreach (BoardUnitView cardOpponent in opponent.BoardCards)
-                        {
-                            BattleController.AttackUnitByAbility(caller, AbilityData, cardOpponent.Model);
-                        }
+                        _targets.AddRange(opponent.BoardCards.Select(x => x.Model));
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        foreach (BoardUnitView cardPlayer in PlayerCallerOfAbility.BoardCards)
-                        {
-                            BattleController.AttackUnitByAbility(caller, AbilityData, cardPlayer.Model);
-                        }
+                        _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        BattleController.AttackPlayerByAbility(caller, AbilityData, opponent);
+                        _targets.Add(opponent);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        BattleController.AttackPlayerByAbility(caller, AbilityData, PlayerCallerOfAbility);
+                        _targets.Add(PlayerCallerOfAbility);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
 
-            InvokeActionTriggered();
+            InvokeActionTriggered(_targets);
+        }
+
+        public void OneActionComleted(BoardObject boardObject)
+        {
+            switch (boardObject)
+            {
+                case Player player:
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                    break;
+                case BoardUnitModel unit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
+            }
+            _targets.Remove(boardObject);
         }
     }
 }

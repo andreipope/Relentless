@@ -45,6 +45,9 @@ namespace Loom.ZombieBattleground
 
         public void ChangeExperience(Hero hero, int value)
         {
+            if (_gameplayManager.IsTutorial)
+                return;
+
             hero.Experience += value;
             CheckLevel(hero);
         }
@@ -75,8 +78,7 @@ namespace Loom.ZombieBattleground
 
             ApplyReward(hero);
 
-            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
-            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+            // TODO: ADD FUNCTIONALY TO SAVE DATA ON SERVER
         }
 
         private void ApplyReward(Hero hero)

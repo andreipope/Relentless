@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 
@@ -68,6 +67,7 @@ namespace Loom.ZombieBattleground
         public void ClearActions()
         {
             _actionsToDo.Clear();
+            _actionInProgress = null;
         }
 
         public void PostGameActionReport(PastActionsPopup.PastActionParam report)
@@ -124,8 +124,10 @@ namespace Loom.ZombieBattleground
             {
                 Action?.Invoke(Parameter, ActionDoneCallback);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                UnityEngine.Debug.LogError(ex.Message + "; " + ex.StackTrace);
+
                 if (!_actionDone)
                 {
                     ActionDoneCallback();
@@ -135,7 +137,7 @@ namespace Loom.ZombieBattleground
 
         public void ForceActionDone()
         {
-            ActionDoneCallback();
+            OnActionDoneEvent?.Invoke(this);
         }
 
         private void ActionDoneCallback()

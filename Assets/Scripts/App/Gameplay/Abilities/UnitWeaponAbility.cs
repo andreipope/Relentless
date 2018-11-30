@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
 
                     TargetUnit.UnitDied += TargetUnitDiedHandler;
 
+                    TargetUnit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
+
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                        TargetUnit

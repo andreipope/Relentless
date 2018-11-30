@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("SkillTargets")]
         public List<Enumerators.SkillTargetType> SkillTargetTypes { get; private set; }
 
-        [JsonProperty("UnitStatus")]
+        [JsonProperty("TargetUnitSpecialStatus")]
         public Enumerators.UnitStatusType TargetUnitStatusType { get; private set; }
 
         [JsonProperty("ElementTargets")]
