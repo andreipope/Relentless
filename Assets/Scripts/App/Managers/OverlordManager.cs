@@ -78,8 +78,7 @@ namespace Loom.ZombieBattleground
 
             ApplyReward(hero);
 
-            // TODO: ADD FUNCTIONALY TO SAVE HEROES DATA ON SERVER
-            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+            // TODO: ADD FUNCTIONALY TO SAVE DATA ON SERVER
         }
 
         private void ApplyReward(Hero hero)
