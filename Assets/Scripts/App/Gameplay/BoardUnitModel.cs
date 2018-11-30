@@ -132,6 +132,8 @@ namespace Loom.ZombieBattleground
 
         public event Action GameMechanicDescriptionsOnUnitChanged;
 
+        public event Action UnitStartedDying;
+
         public Enumerators.CardType InitialUnitType { get; private set; }
 
         public int MaxCurrentDamage => InitialDamage + BuffedDamage;
@@ -206,12 +208,15 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
-        public void Die(bool returnToHand = false)
+        public GameAction<object> WaiterAction;
+        public GameAction<object> ActionForDying;
+
+        public void Die(bool forceUnitDieEvent= false)
         {
             UnitDying?.Invoke();
 
             IsDead = true;
-            if (!returnToHand)
+            if (!forceUnitDieEvent)
             {
                 _battlegroundController.KillBoardCard(this);
             }
@@ -620,6 +625,9 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
+                            WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
@@ -720,6 +728,11 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
+        }
+
+        public void InvokeUnitStartedDying()
+        {
+            UnitStartedDying?.Invoke();
         }
 
         public void InvokeKilledUnit(BoardUnitModel boardUnit)

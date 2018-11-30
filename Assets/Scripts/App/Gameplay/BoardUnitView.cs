@@ -865,21 +865,21 @@ namespace Loom.ZombieBattleground
 
                     if (targetCardView.Model.CurrentHp <= 0)
                     {
-                        targetCardView.Model.UnitDied += () =>
-                        {
-                            completeCallback?.Invoke();
-                        };
+                        completeCallback?.Invoke();
+                        Model.WaiterAction?.ForceActionDone();
+                        targetCardView.Model.WaiterAction?.ForceActionDone();
                     }
                     else if (Model.CurrentHp <= 0)
                     {
-                        Model.UnitDied += () =>
-                        {
-                            completeCallback?.Invoke();
-                        };
+                        completeCallback?.Invoke();
+                        targetCardView.Model.WaiterAction?.ForceActionDone();
+                        Model.WaiterAction?.ForceActionDone();
                     }
                     else
                     {
                         completeCallback?.Invoke();
+                        Model.WaiterAction?.ForceActionDone();
+                        Model.ActionForDying?.ForceActionDone();
                     }
                 }
             );

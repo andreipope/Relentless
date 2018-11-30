@@ -376,22 +376,42 @@ namespace Loom.ZombieBattleground
             return Vector3.Angle(Vector3.forward, diference) * sign;
         }
 
-        public void CreateDeathZombieAnimation(BoardUnitView unitView)
+        public void CreateDeathZombieAnimation(BoardUnitView unitView, Action endOfDestroyAnimationCallback, Action completeCallback)
         {
+            bool withEffect = true;
+
             if (unitView.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
                 unitView.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
                 unitView.Model.LastAttackingSetType == Enumerators.SetType.NONE)
-                return;
+            {
+                withEffect = false;
+            }
 
-            _unitDeathAnimations.Add(new UnitDeathAnimation(unitView));
+            UnitDeathAnimation deathAnimation = new UnitDeathAnimation(unitView, withEffect);
+
+            deathAnimation.DestroyUnitTriggered += (x) =>
+            {
+                endOfDestroyAnimationCallback?.Invoke();
+            };
+            deathAnimation.AnimationEnded += (x) =>
+            {
+                completeCallback?.Invoke();
+            };
+
+            _unitDeathAnimations.Add(deathAnimation);
         }
     }
 
     public class UnitDeathAnimation
     {
         public event Action<UnitDeathAnimation> AnimationEnded;
+        public event Action<UnitDeathAnimation> DestroyUnitTriggered;
 
         private ILoadObjectsManager _loadObjectsManager;
+        private ISoundManager _soundManager;
+        private IGameplayManager _gameplayManager;
+
+        private BattlegroundController _battlegroundController;
 
         private GameObject SelfObject;
         private AnimationEventTriggering AnimationEventTriggeringHandler;
@@ -399,33 +419,54 @@ namespace Loom.ZombieBattleground
         private ParticleSystem ParticleSystem;
 
         private float _initialAnimationSpeed;
+        private float _deathSoundDuration;
+        private bool _isDeathSoundEnded;
+        private bool _readyForContinueDeathAnimation;
+        private bool _withEffect;
+        private float _defaultDeathAnimationLength = 0.7f;
 
         public BoardUnitView BoardUnitView;
 
-        public UnitDeathAnimation(BoardUnitView unitView)
+        public UnitDeathAnimation(BoardUnitView unitView, bool withEffect)
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             BoardUnitView = unitView;
 
-            SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_" +
-                                            InternalTools.FormatStringToPascaleCase(unitView.Model.LastAttackingSetType.ToString()) +
-                                            "DeathAnimation"));
+            _withEffect = withEffect;
 
-            SelfObject.transform.position = unitView.Transform.position;
+            if (_withEffect)
+            {
+                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_" +
+                                                InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
+                                                "DeathAnimation"));
 
-            BoardUnitView.Transform.SetParent(SelfObject.transform, false);
+                SelfObject.transform.position = BoardUnitView.Transform.position;
 
-            AnimationEventTriggeringHandler = SelfObject.GetComponent<AnimationEventTriggering>();
-            EffectAnimator = SelfObject.GetComponent<Animator>();
+                BoardUnitView.Transform.SetParent(SelfObject.transform, true);
 
-            ParticleSystem = SelfObject.transform.Find("VFX_All").GetComponent<ParticleSystem>();
+                AnimationEventTriggeringHandler = SelfObject.GetComponent<AnimationEventTriggering>();
+                EffectAnimator = SelfObject.GetComponent<Animator>();
 
-            AnimationEventTriggeringHandler.AnimationEventTriggered = AnimationEventReceived;
+                ParticleSystem = SelfObject.transform.Find("VFX_All").GetComponent<ParticleSystem>();
 
-            _initialAnimationSpeed = EffectAnimator.speed;
+                AnimationEventTriggeringHandler.AnimationEventTriggered = AnimationEventReceived;
 
-            GameClient.Get<IGameplayManager>().GetController<ParticlesController>().RegisterParticleSystem(SelfObject, true, 8f);
+                _initialAnimationSpeed = EffectAnimator.speed;
+            }
+            else
+            {
+                BoardUnitView.Transform.DOShakePosition(_defaultDeathAnimationLength, 0.25f, 10, 90, false, false);
+
+                InternalTools.DoActionDelayed(DefaultDeathAnimationEnded, _defaultDeathAnimationLength);
+            }
+
+            PlayEffectSound();
+            PlayDeathSound();
         }
 
         public void Dispose()
@@ -436,10 +477,40 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ContinuePlayAnimation()
+        private void PlayDeathSound()
         {
-            ParticleSystem.Play(true);
-            EffectAnimator.speed = _initialAnimationSpeed;
+            string cardDeathSoundName = BoardUnitView.Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
+
+            if (!BoardUnitView.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+            {
+                _deathSoundDuration = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
+
+                _soundManager.PlaySound(Enumerators.SoundType.CARDS, cardDeathSoundName,
+                    Constants.ZombieDeathVoDelayBeforeFadeout, Constants.ZombiesSoundVolume,
+                    Enumerators.CardSoundType.DEATH);
+
+                InternalTools.DoActionDelayed(EndOfDeathSoundEvent, _deathSoundDuration);
+            }
+            else
+            {
+                EndOfDeathSoundEvent();
+            }
+        }
+
+        private void PlayEffectSound()
+        {
+            // TODO: implement effect sounds!
+        }
+
+        public void EndDeathAnimation()
+        {
+            if (_withEffect)
+            {
+                ParticleSystem.Play(true);
+                EffectAnimator.speed = _initialAnimationSpeed;
+            }
+
+            DestroyUnitTriggered?.Invoke(this);
         }
 
         private void AnimationEventReceived(string method)
@@ -449,13 +520,52 @@ namespace Loom.ZombieBattleground
                 case "Pause":
                     ParticleSystem.Pause(true);
                     EffectAnimator.speed = 0;
+
+                    if (_isDeathSoundEnded)
+                    {
+                        EndDeathAnimation();
+                    }
+                    else
+                    {
+                        _readyForContinueDeathAnimation = true;
+                    }
                     break;
                 case "End":
                     ParticleSystem.Stop();
                     EffectAnimator.StopPlayback();
                     AnimationEnded?.Invoke(this);
+                    Dispose();
+                    UpdateBoard();
                     break;
             }
+        }
+
+        private void EndOfDeathSoundEvent()
+        {
+            if (_readyForContinueDeathAnimation)
+            {
+                EndDeathAnimation();
+            }
+
+            _isDeathSoundEnded = true;
+        }
+
+        private void DefaultDeathAnimationEnded()
+        {
+            if (_isDeathSoundEnded)
+            {
+                EndDeathAnimation();
+            }
+            else
+            {
+                _readyForContinueDeathAnimation = true;
+            }
+        }
+
+        private void UpdateBoard()
+        {
+            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
         }
     }
 }
