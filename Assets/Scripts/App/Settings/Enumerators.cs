@@ -695,6 +695,7 @@ namespace Loom.ZombieBattleground.Common
             None,
             ShammannArrival,
             ZVirusArrival,
+            CerberusArrival,
             TzunamyArrival,
             ChernoBillArrival
         }
