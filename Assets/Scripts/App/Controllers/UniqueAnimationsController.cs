@@ -46,6 +46,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.UniqueAnimationType.ZVirusArrival:
                     uniqueAnimation = new ZVirusArrivalUniqueAnimation();
                     break;
+                case Enumerators.UniqueAnimationType.TzunamyArrival:
+                    uniqueAnimation = new TzunamyArrivalUniqueAnimation();
+                    break;
                 case Enumerators.UniqueAnimationType.ChernoBillArrival:
                     uniqueAnimation = new ChernoBillArrivalUniqueAnimation();
                     break;
