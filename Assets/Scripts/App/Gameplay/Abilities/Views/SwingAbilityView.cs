@@ -18,9 +18,9 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _cardName = "";
             float delayAfter = 0;
-            float delayBeforeDestroy = 3f;
+            float delayBeforeDestroy = 5f;
+            Vector3 offset = Vector3.zero;
             string soundName = string.Empty;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
@@ -34,9 +34,9 @@ namespace Loom.ZombieBattleground
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)
                 {
-                    _cardName = effectInfo.cardName;
                     delayAfter = effectInfo.delayAfterEffect;
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    offset = effectInfo.offset;
                     soundName = effectInfo.soundName;
                 }
 
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            base.CreateVfx(pos, true, 5f);
+            base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
     }
 }

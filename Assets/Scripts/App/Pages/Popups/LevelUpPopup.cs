@@ -147,8 +147,6 @@ namespace Loom.ZombieBattleground
             _rewardDisabledObject.SetActive(false);
             _rewardSkillObject.SetActive(true);
 
-            FillRewardSkillInfo();
-
             AbilityInstanceOnSelectionChanged(_newOpenAbility);
 
             if (_levelReward != null)
@@ -160,7 +158,7 @@ namespace Loom.ZombieBattleground
                             _rewardDisabledObject.SetActive(false);
                             _rewardSkillObject.SetActive(true);
 
-                            FillRewardSkillInfo();
+                            FillRewardSkillInfo(skillReward.SkillIndex);
 
                             AbilityInstanceOnSelectionChanged(_newOpenAbility);
                         }
@@ -178,13 +176,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void FillRewardSkillInfo()
+        private void FillRewardSkillInfo(int skillIndex)
         {
             _abilities.Clear();
 
             AbilityViewItem abilityInstance = null;
             bool isDefault = false;
-            int index = _selectedHero.Skills.FindIndex((k) => k == _selectedHero.Skills.FindLast((x) => x.Unlocked));
             for (int i = 0; i < _abilityListSize; i++)
             {
                 abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
@@ -193,12 +190,12 @@ namespace Loom.ZombieBattleground
                 {
                     abilityInstance.Skill = _selectedHero.Skills[i];
                 }
-                isDefault = index == i;
+                isDefault = skillIndex == i;
                 abilityInstance.UpdateUIState(isDefault);
                 _abilities.Add(abilityInstance);
             }
 
-            _newOpenAbility = _abilities[index];
+            _newOpenAbility = _abilities[skillIndex];
         }
 
         public void Update()
