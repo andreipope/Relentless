@@ -1280,7 +1280,7 @@ public class TestHelper
         if (_testBroker.GetPlayer (_player).IsStunned)
             yield break;
 
-        if (_testBroker.GetPlayerPrimarySkill (_player).IsSkillReady)
+        if (_testBroker.GetPlayerPrimarySkill (_player) != null && _testBroker.GetPlayerPrimarySkill (_player).IsSkillReady)
         {
             DoBoardSkill (_testBroker.GetPlayerPrimarySkill (_player));
             wasAction = true;
@@ -1292,7 +1292,7 @@ public class TestHelper
         }
 
         wasAction = false;
-        if (_testBroker.GetPlayerSecondarySkill (_player).IsSkillReady)
+        if (_testBroker.GetPlayerSecondarySkill (_player) != null && _testBroker.GetPlayerSecondarySkill (_player).IsSkillReady)
         {
             DoBoardSkill (_testBroker.GetPlayerSecondarySkill (_player));
             wasAction = true;
@@ -1494,14 +1494,21 @@ public class TestHelper
                         {
                             Debug.LogWarning ("About to discard ability.");
 
-                            WaitStart (3);
+                            /* WaitStart (3);
                             yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
-                            _boardArrowController.ResetCurrentBoardArrow ();
+                            _boardArrowController.ResetCurrentBoardArrow (); */
 
                             WaitStart (3);
                             yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
                             _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
                             _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+
+                            yield return LetsThink ();
+
+                            if (GetAbilityBoardArrow () != null)
+                            {
+                                GameObject.Destroy (GetAbilityBoardArrow ().gameObject);
+                            }
 
                             /* WaitStart (3);
                             yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability != null || WaitTimeIsUp ());
@@ -1552,20 +1559,32 @@ public class TestHelper
                                             throw new ArgumentOutOfRangeException (nameof (target), target, null);
                                     }
 
-                                    _boardArrowController.ResetCurrentBoardArrow ();
+                                    //  _boardArrowController.ResetCurrentBoardArrow ();
 
                                     yield return LetsThink ();
+
+                                    if (GetAbilityBoardArrow () != null)
+                                    {
+                                        GameObject.Destroy (GetAbilityBoardArrow ().gameObject);
+                                    }
                                 }
                                 else
                                 {
-                                    WaitStart (3);
+                                    /* WaitStart (3);
                                     yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
-                                    _boardArrowController.ResetCurrentBoardArrow ();
+                                    _boardArrowController.ResetCurrentBoardArrow (); */
 
                                     WaitStart (3);
                                     yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
                                     _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
                                     _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+
+                                    yield return LetsThink ();
+
+                                    if (GetAbilityBoardArrow () != null)
+                                    {
+                                        GameObject.Destroy (GetAbilityBoardArrow ().gameObject);
+                                    }
                                 }
                             }
                         }
@@ -3029,7 +3048,10 @@ public class TestHelper
             Assert.Fail ("Index higher than number of abilities");
         }
 
-        abilitiesParent.transform.GetChild (index).gameObject.GetComponent<Toggle> ().isOn = true;
+        if (abilitiesParent.transform.GetChild (index).GetComponent<Button> ().IsInteractable ())
+        {
+            abilitiesParent.transform.GetChild (index).GetComponent<Button> ().onClick.Invoke ();
+        }
 
         yield return LetsThink ();
     }
@@ -3405,6 +3427,18 @@ public class TestHelper
     }
 
     #endregion
+
+    private AbilityBoardArrow GetAbilityBoardArrow ()
+    {
+        if (GameObject.FindObjectOfType<AbilityBoardArrow> () != null)
+        {
+            return GameObject.FindObjectOfType<AbilityBoardArrow> ();
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     private float _waitStartTime, _turnStartTime;
     private float _waitAmount, _turnWaitAmount;
