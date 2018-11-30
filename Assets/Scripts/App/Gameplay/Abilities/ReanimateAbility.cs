@@ -50,16 +50,22 @@ namespace Loom.ZombieBattleground
                 BattlegroundController.PlayerBoardCards.Add(unit);
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
+
+            InvokeActionTriggered(unit);
         }
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
+            Action();
+        }
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
 
             Action();
+
+            base.UnitDiedHandler();
         }
 
         private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)
