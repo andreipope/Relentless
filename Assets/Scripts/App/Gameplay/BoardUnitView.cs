@@ -101,6 +101,8 @@ namespace Loom.ZombieBattleground
 
         public Vector3 PositionOfBoard { get; set; }
 
+        public Animator battleframeAnimator { get; private set; }
+
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
@@ -460,6 +462,7 @@ namespace Loom.ZombieBattleground
                 GameObject arrivalPrefab =
               _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
+                battleframeAnimator = _battleframeObject.GetComponent<Animator>();
                 _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
                 _arrivaVfxObject = _battleframeObject.transform.Find("VFX_All").gameObject;
                 Transform spriteContainerTransform =

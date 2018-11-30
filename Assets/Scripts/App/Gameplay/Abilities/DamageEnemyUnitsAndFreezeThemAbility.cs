@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -9,10 +10,14 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        private List<BoardObject> _targets;
+
         public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
+
+            _targets = new List<BoardObject>();
         }
 
         public override void Activate()
@@ -35,30 +40,44 @@ namespace Loom.ZombieBattleground
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
 
+            _targets.Clear();
+
             foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
             {
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-
-                        foreach (BoardUnitView unit in opponent.BoardCards)
-                        {
-                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit.Model);
-                        }
-
-                        foreach (BoardUnitView unit in opponent.BoardCards)
-                        {
-                            unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
-                        }
-
+                        _targets.AddRange(opponent.BoardCards.Select((x) => x.Model).ToList());
                         break;
-
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, opponent);
-                        opponent.Stun(Enumerators.StunType.FREEZE, Value);
+                        _targets.Add(opponent);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                }
+            }
+
+            InvokeActionTriggered(_targets);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            foreach (BoardObject boardObject in _targets)
+            {
+                switch (boardObject)
+                {
+                    case Player player:
+                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                        player.Stun(Enumerators.StunType.FREEZE, Value);
+                        break;
+                    case BoardUnitModel unit:
+                        BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                        unit.Stun(Enumerators.StunType.FREEZE, Value);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
                 }
             }
         }
