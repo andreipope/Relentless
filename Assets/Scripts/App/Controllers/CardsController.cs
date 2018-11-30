@@ -574,6 +574,8 @@ namespace Loom.ZombieBattleground
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
                                 {
+                                    _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
+
                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
@@ -582,13 +584,11 @@ namespace Loom.ZombieBattleground
                                             if (status)
                                             {
                                                 player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
-
-                                                _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
-
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
                                             }
                                             else
                                             {
+                                                RankBuffAction.Action = null;
                                                 RankBuffAction.ForceActionDone();
 
                                                 _battlegroundController.PlayerBoardCards.Remove(boardUnitView);
