@@ -91,8 +91,6 @@ namespace Loom.ZombieBattleground
             {
                 Enumerators.SoundType type = Ability.CardKind == Enumerators.CardKind.CREATURE ? Enumerators.SoundType.CARDS : Enumerators.SoundType.SPELLS;
 
-                Debug.LogError(type);
-
                 Helpers.InternalTools.DoActionDelayed(() =>
                 {
                     SoundManager.PlaySound(type, clipTitle, Constants.SfxSoundVolume, isLoop: false);

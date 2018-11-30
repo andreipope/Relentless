@@ -72,10 +72,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (!string.IsNullOrEmpty(soundName))
-            {
-                PlaySound(soundName, delaySound);
-            }
+            PlaySound(soundName, delaySound);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }

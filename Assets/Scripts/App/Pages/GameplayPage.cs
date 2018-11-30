@@ -215,7 +215,7 @@ namespace Loom.ZombieBattleground
             StartGame();
             KeepButtonVisibility(false);
 
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume, isLoop:true);
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume / 2, isLoop:true);
         }
 
         public void SetEndTurnButtonStatus(bool status)

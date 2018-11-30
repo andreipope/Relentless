@@ -1543,8 +1543,6 @@ namespace Loom.ZombieBattleground
             {
                 unit.SetAsFeralUnit();
 
-                Debug.LogError(skill.OverlordSkill.ToString().ToLowerInvariant());
-
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"),
                     unit, delay: 14f, isIgnoreCastVfx: true);
@@ -1689,16 +1687,6 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void MeteorShowerImpact()
-        {
-            int random = UnityEngine.Random.Range(1, 4);
-
-            _soundManager.PlaySound(
-                Enumerators.SoundType.OVERLORD_ABILITIES,
-                "meteor_shower" + "_Impact_0" + random.ToString(),
-                Constants.OverlordAbilitySoundVolume,
-                Enumerators.CardSoundType.NONE);
-        }
         // EARTH
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)

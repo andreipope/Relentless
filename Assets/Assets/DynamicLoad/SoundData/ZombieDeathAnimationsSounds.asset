@@ -11,4 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e283d5ecf866417da771c031af0b616, type: 3}
   m_Name: ZombieDeathAnimationsSounds
   m_EditorClassIdentifier: 
-  soundList: []
+  soundList:
+  - ZB_AUD_AirZombieDeath_F1_EXP
+  - ZB_AUD_EarthZombieDeath_F1_EXP
+  - ZB_AUD_FireZombieDeath_F1_EXP
+  - ZB_AUD_LifeZombieDeath_F1_EXP
+  - ZB_AUD_ToxicZombieDeath_F1_EXP
+  - ZB_AUD_WaterZombieDeath_F1_EXP

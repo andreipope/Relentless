@@ -83,10 +83,7 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
 
-                if (!string.IsNullOrEmpty(_abilityActionCompletedSound))
-                {
-                    PlaySound(_abilityActionCompletedSound, soundDelay);
-                }
+                PlaySound(_abilityActionCompletedSound, soundDelay);
             }
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, _delayAfterImpact);
