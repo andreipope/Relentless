@@ -1418,8 +1418,6 @@ namespace Loom.ZombieBattleground
             {
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target).Transform.position + Vector3.up * 0.34f;
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ShatterCardDestroyVFX"), position, delay: 5f);
-
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
                 _battlegroundController.DestroyBoardUnit(boardUnitModel);
 
