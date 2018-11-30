@@ -1186,6 +1186,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.FORTIFY:
                 case Enumerators.OverlordSkill.WIND_SHIELD:
                 case Enumerators.OverlordSkill.INFECT:
+                case Enumerators.OverlordSkill.TOXIC_POWER:
                     {
                         List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.CardSetType ==
                                                                         _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
@@ -1282,7 +1283,6 @@ namespace Loom.ZombieBattleground
 
                     break;
                 case Enumerators.OverlordSkill.POISON_DART:
-                case Enumerators.OverlordSkill.TOXIC_POWER:
                 case Enumerators.OverlordSkill.ICE_BOLT:
                 case Enumerators.OverlordSkill.FREEZE:
                 case Enumerators.OverlordSkill.FIRE_BOLT:

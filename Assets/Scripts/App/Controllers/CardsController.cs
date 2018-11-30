@@ -570,13 +570,13 @@ namespace Loom.ZombieBattleground
                                 _isHoveringCardOfBoard = false;
                             }
 
+                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
+
                             boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
                                 {
-                                    _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
-
                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
@@ -622,8 +622,13 @@ namespace Loom.ZombieBattleground
                             InternalTools.DoActionDelayed(() =>
                             {
                                 _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (x) =>
+                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (status) =>
                                     {
+                                        if(status)
+                                        {
+                                            player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
+                                        }
+
                                         RankBuffAction.ForceActionDone();
                                     }, CallAbilityAction, handCard: handCard);
 
