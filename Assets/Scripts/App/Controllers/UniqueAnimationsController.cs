@@ -49,6 +49,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.UniqueAnimationType.CerberusArrival:
                     uniqueAnimation = new CerberusArrivalUniqueAnimation();
                     break;
+                case Enumerators.UniqueAnimationType.TzunamyArrival:
+                    uniqueAnimation = new TzunamyArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimationType.ChernoBillArrival:
+                    uniqueAnimation = new ChernoBillArrivalUniqueAnimation();
+                    break;
                 default:
                     throw new NotImplementedException(nameof(uniqueAnimationType) + " not implemented yet");
             }

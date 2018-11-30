@@ -827,6 +827,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DAMAGE_ENEMY_UNITS_AND_FREEZE_THEM:
                     ability = new DamageEnemyUnitsAndFreezeThemAbility(cardKind, abilityData);
+                    abilityView = new DamageEnemyUnitsAndFreezeThemAbilityView((DamageEnemyUnitsAndFreezeThemAbility)ability);
                     break;
                 case Enumerators.AbilityType.RETURN_UNITS_ON_BOARD_TO_OWNERS_DECKS:
                     ability = new ReturnUnitsOnBoardToOwnersDecksAbility(cardKind, abilityData);
