@@ -569,13 +569,13 @@ namespace Loom.ZombieBattleground
                                 _isHoveringCardOfBoard = false;
                             }
 
+                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
+
                             boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
                                 {
-                                    _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
-
                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
