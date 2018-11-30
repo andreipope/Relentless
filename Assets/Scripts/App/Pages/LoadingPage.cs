@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground
             // traffic.
             if (string.IsNullOrEmpty(usernameText))
             {
-                OpenAlertDialog("Please enter your username.");
+                OpenAlertDialog(_localizationManager.GetUITranslation(LocalizationKeys.EnterUserNameText.ToString()));
                 return;
             }
 
@@ -233,7 +233,7 @@ namespace Loom.ZombieBattleground
             string usernameText = _usernameInputField.text;
             if (string.IsNullOrEmpty(usernameText))
             {
-                OpenAlertDialog("Please enter your username.");
+                OpenAlertDialog(_localizationManager.GetUITranslation(LocalizationKeys.EnterUserNameText.ToString()));
                 return;
             }
 
@@ -250,7 +250,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception)
             {
-                OpenAlertDialog("Not Able to Create Account.");
+                OpenAlertDialog(_localizationManager.GetUITranslation(LocalizationKeys.CreateAccountErrorText.ToString()));
             }
         }
 

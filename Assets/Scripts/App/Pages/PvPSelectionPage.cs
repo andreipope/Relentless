@@ -139,15 +139,19 @@ namespace Loom.ZombieBattleground
         private void RankedTypeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.DrawPopup<WarningPopup>(
-                        $"Ranked Games are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+
+            string msg = _localizationManager.GetUITranslation(LocalizationKeys.RankedGamesDisableInVersionText.ToString());
+            msg = string.Format(msg, BuildMetaInfo.Instance.DisplayVersionName);
+            _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
         private void FriendlyTypeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.DrawPopup<WarningPopup>(
-                         $"Friendly Games are Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+
+            string msg = _localizationManager.GetUITranslation(LocalizationKeys.FriendlyGamesDisableInVersionText.ToString());
+            msg = string.Format(msg, BuildMetaInfo.Instance.DisplayVersionName);
+            _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
         private void CustomTypeButtonOnClickHandler()

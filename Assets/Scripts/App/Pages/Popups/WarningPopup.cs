@@ -11,10 +11,12 @@ namespace Loom.ZombieBattleground
         public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
+        private ILocalizationManager _localizationManager;
 
         private IUIManager _uiManager;
 
         private TextMeshProUGUI _text;
+        private TextMeshProUGUI _gotItButtonTextMesh;
 
         private ButtonShiftingContent _gotItButton;
 
@@ -23,6 +25,8 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
             _uiManager = GameClient.Get<IUIManager>();
         }
 
@@ -58,7 +62,11 @@ namespace Loom.ZombieBattleground
             _gotItButton = Self.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
             _gotItButton.onClick.AddListener(CloseButtonHandler);
 
+            _gotItButtonTextMesh = _gotItButton.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
+
+            UpdateLocalization();
         }
 
         public void Show(object data)
@@ -77,6 +85,19 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Hide();
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (Self == null)
+                return;
+
+            _gotItButtonTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.GotItText.ToString());
         }
     }
 }

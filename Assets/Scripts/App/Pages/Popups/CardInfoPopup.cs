@@ -18,9 +18,11 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private ILocalizationManager _localizationManager;
+
         private IUIManager _uiManager;
 
-        private TextMeshProUGUI _description, _amountAward;
+        private TextMeshProUGUI _description, _amountAward, _meltTextMesh;
 
         private Button _backButton;
 
@@ -33,7 +35,10 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
             _uiManager = GameClient.Get<IUIManager>();
+
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
 
         public void Dispose()
@@ -69,9 +74,12 @@ namespace Loom.ZombieBattleground
 
             _description = Self.transform.Find("MeltArea/Description").GetComponent<TextMeshProUGUI>();
             _amountAward = Self.transform.Find("MeltArea/GooAward/Value").GetComponent<TextMeshProUGUI>();
+            _meltTextMesh = _buttonMelt.transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
+
+            UpdateLocalization();
         }
 
         public void Show(object data)
@@ -101,6 +109,21 @@ namespace Loom.ZombieBattleground
             {
                 _buttonMelt.GetComponent<ButtonShiftingContent>().interactable = true;
             }
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (Self == null)
+                return;
+
+            _meltTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.MeltText.ToString());
+            //TODO : Later when do card flavor description
+            //_description.text = _localizationManager.GetUITranslation(LocalizationKeys.PressAnyKeyText.ToString());
         }
 
         private void ClosePopup()
@@ -133,8 +156,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.DrawPopup<WarningPopup>(
-                    $"Melting is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}.\n Thanks for helping us make this game Awesome\n-Loom Team");
+                string msg = _localizationManager.GetUITranslation(LocalizationKeys.MeltingDisableInVersionText.ToString());
+                msg = string.Format(msg, BuildMetaInfo.Instance.DisplayVersionName);
+                _uiManager.DrawPopup<WarningPopup>(msg);
             }
         }
     }

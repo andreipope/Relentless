@@ -31,5 +31,19 @@ public enum LocalizationKeys
     ChooseHordeText,
     NewHordeText,
     BattleText,
-    SaveText
+    SaveText,
+    MeltText,
+    GotItText,
+    EnterUserNameText,
+    CreateAccountErrorText,
+    MeltingDisableInVersionText,
+    ShopDisableInVersionText,
+    RankedGamesDisableInVersionText,
+    FriendlyGamesDisableInVersionText,
+    PackOpenerDisableInVersionText,
+    FindingMatchErrorText,
+    CancelingMatchErrorText,
+    OpponentNotFoundText,
+    DeleteDeckErrorText,
+    BattleButtonWarningText
 }

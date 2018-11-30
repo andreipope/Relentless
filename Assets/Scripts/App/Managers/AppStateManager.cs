@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private ILocalizationManager _localizationManager;
+
         private float _backButtonTimer;
 
         private int _backButtonClicksCount;
@@ -73,15 +75,17 @@ namespace Loom.ZombieBattleground
 
                     //_uiManager.SetPage<ShopPage>();
                     //break;
-                    _uiManager.DrawPopup<WarningPopup>(
-                        $"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                    string msg = _localizationManager.GetUITranslation(LocalizationKeys.ShopDisableInVersionText.ToString());
+                    msg = string.Format(msg, BuildMetaInfo.Instance.DisplayVersionName);
+                    _uiManager.DrawPopup<WarningPopup>(msg);
                     return;
                 case Enumerators.AppState.PACK_OPENER:
                 {
                     //_uiManager.SetPage<PackOpenerPage>();
                     //break;
-                    _uiManager.DrawPopup<WarningPopup>(
-                        $"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                    msg = _localizationManager.GetUITranslation(LocalizationKeys.PackOpenerDisableInVersionText.ToString());
+                    msg = string.Format(msg, BuildMetaInfo.Instance.DisplayVersionName);
+                    _uiManager.DrawPopup<WarningPopup>(msg);
                     return;
                 }
                 case Enumerators.AppState.GAMEPLAY:
@@ -138,6 +142,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();

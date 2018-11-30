@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private ILocalizationManager _localizationManager;
+
         private IPvPManager _pvpManager;
 
         private Enumerators.AppState _finishMatchAppState;
@@ -87,7 +89,9 @@ namespace Loom.ZombieBattleground
                             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
                             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
                             matchMakingPopup.Hide();
-                            _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
+                            string errorMsg = _localizationManager.GetUITranslation(LocalizationKeys.FindingMatchErrorText.ToString());
+                            errorMsg = string.Format(errorMsg, e.Message);
+                            _uiManager.DrawPopup<WarningPopup>(errorMsg);
                         }
                     }
                     break;
@@ -144,7 +148,10 @@ namespace Loom.ZombieBattleground
             {
                 Debug.LogError(e);
                 _uiManager.GetPopup<MatchMakingPopup>().Hide();
-                _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
+                string errorMsg =
+                    _localizationManager.GetUITranslation(LocalizationKeys.CancelingMatchErrorText.ToString());
+                errorMsg = string.Format(errorMsg, e.Message);
+                _uiManager.DrawPopup<WarningPopup>(errorMsg);
             }
         }
 
@@ -167,6 +174,7 @@ namespace Loom.ZombieBattleground
             _appStateManager = GameClient.Get<IAppStateManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
@@ -202,7 +210,7 @@ namespace Loom.ZombieBattleground
         private void OnPvPManagerMatchingFailed()
         {
             _uiManager.GetPopup<ConnectionPopup>().Hide();
-            _uiManager.DrawPopup<WarningPopup>("Couldn't find an opponent.");
+            _uiManager.DrawPopup<WarningPopup>(_localizationManager.GetUITranslation(LocalizationKeys.OpponentNotFoundText.ToString()));
         }
 
         private void StartLoadMatch()

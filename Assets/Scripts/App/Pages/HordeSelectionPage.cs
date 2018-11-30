@@ -253,7 +253,9 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Debug.Log("Result === " + e);
-                OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
+                string msg = _localizationManager.GetUITranslation(LocalizationKeys.DeleteDeckErrorText.ToString());
+                msg = string.Format(msg, deck.SelfDeck.Id);
+                OpenAlertDialog(msg + e.Message);
                 return;
             }
 
@@ -544,7 +546,11 @@ namespace Loom.ZombieBattleground
                 _selectedDeck.Id == -1 ||
                 _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() < Constants.MinDeckSize)
             {
-                _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
+                string msg =
+                    string.Format(
+                        _localizationManager.GetUITranslation(LocalizationKeys.BattleButtonWarningText.ToString()),
+                        Constants.MinDeckSize);
+                _uiManager.DrawPopup<WarningPopup>(msg);
             }
 #endif
         }

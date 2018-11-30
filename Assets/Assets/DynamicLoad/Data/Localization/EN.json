@@ -28,5 +28,19 @@
   "ChooseHordeText": "CHOOSE HORDE",
   "NewHordeText": "NEW\nHORDE",
   "BattleText": "BATTLE",
-  "SaveText": "SAVE"
+  "SaveText": "SAVE",
+  "MeltText": "MELT",
+  "GotItText": "GOT IT",
+  "EnterUserNameText": "Please enter your username.",
+  "CreateAccountErrorText": "Not Able to Create Account.",
+  "MeltingDisableInVersionText": "Melting is Disabled\nfor version {0}.\n Thanks for helping us make this game Awesome\n-Loom Team",
+  "ShopDisableInVersionText": "The Shop is Disabled\nfor version {0}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team",
+  "RankedGamesDisableInVersionText": "Ranked Games are Disabled\nfor version {0}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team",
+  "FriendlyGamesDisableInVersionText": "Friendly Games are Disabled\nfor version {0}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team",
+  "PackOpenerDisableInVersionText": "The Pack Opener is Disabled\nfor version {0}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team",
+  "FindingMatchErrorText": "Error while finding a match:\n{0}",
+  "CancelingMatchErrorText": "Error while canceling finding a match:\n{0}",
+  "OpponentNotFoundText": "Couldn't find an opponent.",
+  "DeleteDeckErrorText": "Not able to Delete Deck {0}:",
+  "BattleButtonWarningText": "g Select a valid horde with {0} cards."
 }
