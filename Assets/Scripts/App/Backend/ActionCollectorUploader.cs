@@ -115,7 +115,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     if (_skillsController.PlayerPrimarySkill != null)
                     {
                         _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
-
                     }
 
                     if (_skillsController.PlayerSecondarySkill != null)
