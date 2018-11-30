@@ -2905,9 +2905,9 @@ public class TestHelper
             Assert.Fail ("Index higher than number of abilities");
         }
 
-        if (abilitiesParent.transform.GetChild (index).GetComponent<Button> ().IsInteractable ())
+        if (abilitiesParent.transform.GetChild (index).GetComponent<Toggle> ().IsInteractable ())
         {
-            abilitiesParent.transform.GetChild (index).GetComponent<Button> ().onClick.Invoke ();
+            abilitiesParent.transform.GetChild (index).GetComponent<Toggle> ().onValueChanged.Invoke (true);
         }
 
         yield return LetsThink ();
