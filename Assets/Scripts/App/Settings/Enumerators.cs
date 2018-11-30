@@ -694,7 +694,8 @@ namespace Loom.ZombieBattleground.Common
         {
             None,
             ShammannArrival,
-            ZVirusArrival
+            ZVirusArrival,
+            ZeuzArrival
         }
 
         public enum CardNameOfAbility
