@@ -74,15 +74,19 @@ namespace Loom.ZombieBattleground
         {
             if (_skillsInitialized)
             {
-                PlayerPrimarySkill.Update();
-                PlayerSecondarySkill.Update();
-                OpponentPrimarySkill.Update();
-                OpponentSecondarySkill.Update();
+                PlayerPrimarySkill?.Update();
+                PlayerSecondarySkill?.Update();
+                OpponentPrimarySkill?.Update();
+                OpponentSecondarySkill?.Update();
             }
         }
 
         public void ResetAll()
         {
+            PlayerPrimarySkill = null;
+            PlayerSecondarySkill = null;
+            OpponentPrimarySkill = null;
+            OpponentSecondarySkill = null;
         }
 
         public void InitializeSkills()
@@ -103,26 +107,22 @@ namespace Loom.ZombieBattleground
             rootPage.OpponentSecondarySkillHandler.MouseUpTriggered +=
                 OpponentSecondarySkillHandlerMouseUpTriggeredHandler;
 
-            int primary = _gameplayManager.CurrentPlayer.SelfHero.PrimarySkill;
-            int secondary = _gameplayManager.CurrentPlayer.SelfHero.SecondarySkill;
+            HeroSkill primary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.PrimarySkill);
+            HeroSkill secondary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.SecondarySkill);
 
-            if (primary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count &&
-                secondary < _gameplayManager.CurrentPlayer.SelfHero.Skills.Count)
+            if (primary != null && secondary != null)
             {
-                SetPlayerSkills(rootPage,
-                    _gameplayManager.CurrentPlayer.SelfHero.Skills[primary],
-                    _gameplayManager.CurrentPlayer.SelfHero.Skills[secondary]);
+                rootPage.SetupSkills(primary, secondary, false);
+                SetPlayerSkills(rootPage, primary, secondary);
             }
 
-            primary = _gameplayManager.OpponentPlayer.SelfHero.PrimarySkill;
-            secondary = _gameplayManager.OpponentPlayer.SelfHero.SecondarySkill;
+            primary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayerDeck.PrimarySkill);
+            secondary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayerDeck.SecondarySkill);
 
-            if (primary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count &&
-                secondary < _gameplayManager.OpponentPlayer.SelfHero.Skills.Count)
+            if (primary != null && secondary != null)
             {
-                SetOpponentSkills(rootPage,
-                    _gameplayManager.OpponentPlayer.SelfHero.Skills[primary],
-                    _gameplayManager.OpponentPlayer.SelfHero.Skills[secondary]);
+                rootPage.SetupSkills(primary, secondary, true);
+                SetOpponentSkills(rootPage, primary, secondary);
             }
 
             _skillsInitialized = true;
@@ -132,13 +132,13 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                PlayerPrimarySkill.Hide();
-                PlayerSecondarySkill.Hide();
+                PlayerPrimarySkill?.Hide();
+                PlayerSecondarySkill?.Hide();
             }
             else
             {
-                OpponentPrimarySkill.Hide();
-                OpponentSecondarySkill.Hide();
+                OpponentPrimarySkill?.Hide();
+                OpponentSecondarySkill?.Hide();
             }
         }
 
@@ -146,13 +146,13 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                PlayerPrimarySkill.BlockSkill();
-                PlayerSecondarySkill.BlockSkill();
+                PlayerPrimarySkill?.BlockSkill();
+                PlayerSecondarySkill?.BlockSkill();
             }
             else
             {
-                OpponentPrimarySkill.BlockSkill();
-                OpponentSecondarySkill.BlockSkill();
+                OpponentPrimarySkill?.BlockSkill();
+                OpponentSecondarySkill?.BlockSkill();
             }
         }
 
@@ -160,13 +160,13 @@ namespace Loom.ZombieBattleground
         {
             if (player.IsLocalPlayer)
             {
-                PlayerPrimarySkill.UnBlockSkill();
-                PlayerSecondarySkill.UnBlockSkill();
+                PlayerPrimarySkill?.UnBlockSkill();
+                PlayerSecondarySkill?.UnBlockSkill();
             }
             else
             {
-                OpponentPrimarySkill.UnBlockSkill();
-                OpponentSecondarySkill.UnBlockSkill();
+                OpponentPrimarySkill?.UnBlockSkill();
+                OpponentSecondarySkill?.UnBlockSkill();
             }
         }
 

@@ -54,6 +54,8 @@ namespace Loom.ZombieBattleground
 
                     TargetUnit.UnitDied += TargetUnitDiedHandler;
 
+                    TargetUnit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
+
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                        TargetUnit
@@ -89,7 +91,7 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
 
-                AbilityUnitOwner.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
+                TargetUnit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
             }
         }
 

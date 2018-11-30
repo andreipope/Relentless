@@ -694,13 +694,17 @@ namespace Loom.ZombieBattleground.Common
         {
             None,
             ShammannArrival,
-            ZVirusArrival
+            ZVirusArrival,
+            CerberusArrival,
+            TzunamyArrival,
+            ChernoBillArrival
         }
 
         public enum CardNameOfAbility
         {
             None,
-            Bulldozer
+            Bulldozer,
+            Lawnmover
         }
 
         public enum AbilityEffectInfoPositionType

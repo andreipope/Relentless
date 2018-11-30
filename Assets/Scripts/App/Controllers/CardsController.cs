@@ -68,10 +68,6 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> MulliganCards;
 
-        public GameAction<object> PlayCardAction;
-        public GameAction<object> RankBuffAction;
-        public GameAction<object> CallAbilityAction;
-
         private List<ChoosableCardForAbility> _currentListOfChoosableCards;
 
         public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
@@ -511,14 +507,14 @@ namespace Loom.ZombieBattleground
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
+                card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
 
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-
                 GameAction<object> waiterAction = _actionsQueueController.AddNewActionInToQueue(null);
-                CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
-                RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null);
+                GameAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
+                GameAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null);
 
                 switch (libraryCard.CardKind)
                 {
@@ -578,6 +574,8 @@ namespace Loom.ZombieBattleground
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
                                 {
+                                    _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
+
                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
@@ -586,13 +584,13 @@ namespace Loom.ZombieBattleground
                                             if (status)
                                             {
                                                 player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
-
-                                                _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
-
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
                                             }
                                             else
                                             {
+                                                RankBuffAction.Action = null;
+                                                RankBuffAction.ForceActionDone();
+
                                                 _battlegroundController.PlayerBoardCards.Remove(boardUnitView);
                                                 player.BoardCards.Remove(boardUnitView);
 

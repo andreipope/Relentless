@@ -45,6 +45,9 @@ namespace Loom.ZombieBattleground
 
         public void ChangeExperience(Hero hero, int value)
         {
+            if (_gameplayManager.IsTutorial)
+                return;
+
             hero.Experience += value;
             CheckLevel(hero);
         }
@@ -74,6 +77,8 @@ namespace Loom.ZombieBattleground
             hero.Level++;
 
             ApplyReward(hero);
+
+            // TODO: ADD FUNCTIONALY TO SAVE DATA ON SERVER
         }
 
         private void ApplyReward(Hero hero)
@@ -105,10 +110,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case LevelReward.OverlordSkillRewardItem skillReward:
-                        {
-                            //TODO: commented now in perspective of lock funcitonality for release stage
-                            //hero.Skills[skillReward.SkillIndex].Unlocked = true;
-                        }
+                        hero.GetSkill(skillReward.SkillIndex).Unlocked = true;
                         break;
                     case LevelReward.ItemReward itemReward:
                         break;

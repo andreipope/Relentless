@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
             GameObject subObject = Object.Instantiate(_cardDissapearingPrefab);
             subObject.SetActive(true);
             subObject.transform.position = pos;
-            ParticlesController.RegisterParticleSystem(VfxObject, true, duration);
+            ParticlesController.RegisterParticleSystem(subObject, true, duration);
             string clipTitle = "Bulldozer_Collision_F1_V" + UnityEngine.Random.Range(1, 5).ToString();
             PlaySound(clipTitle, 0);
         }
