@@ -321,26 +321,57 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
+            /* string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
+            if (pvpTags == null)
+            {
+                pvpTags = new Google.Protobuf.Collections.RepeatedField<string> ();
+            } */
+
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
                 RandomSeed = (long)Time.time,
-                Tags = { },
+                Tags = { }, // pvpTags,
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId)
+        public async Task<FindMatchResponse> FindMatch(string userId, Google.Protobuf.Collections.RepeatedField<string> pvpTags = null)
         {
+            /* string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
+            if (pvpTags == null)
+            {
+                pvpTags = new Google.Protobuf.Collections.RepeatedField<string>();
+            } */
+
             FindMatchRequest request = new FindMatchRequest
             {
-                UserId = userId
+                UserId = userId /* ,
+                Tags = pvpTags */
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
