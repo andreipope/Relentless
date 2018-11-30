@@ -66,6 +66,10 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                 return;
 
+#if UNITY_EDITOR
+            _percentage = 100f;
+#endif
+
             if (!_isLoaded)
             {
                 _percentage += 1f;
@@ -79,8 +83,10 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+#if !UNITY_EDITOR
                 if (!Input.anyKey)
                     return;
+#endif
 
                 if (!_pressAnyText.gameObject.activeSelf)
                     return;
