@@ -241,20 +241,19 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    if (_gameplayManager.IsTutorial) {
+                    if (_gameplayManager.IsTutorial)
+                    {
                         heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
                         opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
-
-                        // HACK: Set to any valid opponent deck ID, it will get overwritten later anyway
-                        _gameplayManager.OpponentDeckId = (int)_dataManager.CachedAiDecksData.Decks[0].Deck.Id;
                     }
                     else
                     {
                         heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
-                        Data.AIDeck opponentDeck =
-                            _dataManager
-                                .CachedAiDecksData
-                                .Decks[Random.Range(0, _dataManager.CachedAiDecksData.Decks.Count)];
+
+                        List<Data.AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
+
+                        Data.AIDeck opponentDeck = decks[Random.Range(0, decks.Count)];
+
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;

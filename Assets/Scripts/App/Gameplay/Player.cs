@@ -553,6 +553,9 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < InitialCardsInHandCount; i++)
             {
+                if (i >= CardsInDeck.Count)
+                    break;
+
                 if (IsLocalPlayer && !_gameplayManager.IsTutorial)
                 {
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);

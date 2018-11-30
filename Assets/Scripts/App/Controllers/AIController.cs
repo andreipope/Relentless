@@ -102,9 +102,7 @@ namespace Loom.ZombieBattleground
             {
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
-                int deckId = _gameplayManager.OpponentDeckId;
-                Deck deck = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == deckId).Deck;
-                foreach (DeckCardData card in deck.Cards)
+                foreach (DeckCardData card in _gameplayManager.OpponentPlayerDeck.Cards)
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
