@@ -15,15 +15,16 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(0, 0.89f, 0f);
+            Vector3 offset = new Vector3(0, 1.3f, 0f);
 
             const float delayBeforeSpawn = 0.7f;
             const float delayBeforeDestroyVFX = 5f;
 
             BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
 
+            unitView.GameObject.SetActive(false);
 
-           
+
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -31,14 +32,10 @@ namespace Loom.ZombieBattleground
                                                             "Prefabs/VFX/UniqueArrivalAnimations/ZeuZ"));
 
                 animationVFX.transform.position = unitView.PositionOfBoard + offset;
+                unitView.GameObject.SetActive(true);
+                unitView.Transform.SetParent(animationVFX.transform.Find("Zeus_Card_PH"), false);
+                unitView.Transform.localScale = Vector3.one * 5.95f;
 
-                InternalTools.DoActionDelayed(() =>
-                {
-                    unitView.Transform.SetParent(animationVFX.transform.Find("Zeus_Card_PH"), true);
-                    unitView.Transform.localScale = Vector3.one * 5.65f;
-                }, Time.deltaTime);
-                //unitView.Transform.localScale = Vector3.one * 5.65f;
-                //unitView.Transform.localPosition = new Vector3(0, -2.54f, 0);
 
                 InternalTools.DoActionDelayed(() =>
                 {
