@@ -285,7 +285,7 @@ namespace Loom.ZombieBattleground
                 throw new Exception($"{nameof(opponentHeroId)} == -1");
 
             _playerHero = _dataManager.CachedHeroesData.Heroes[heroId];
-            _opponentHero= _dataManager.CachedHeroesData.Heroes[opponentHeroId];
+            _opponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _opponentDeckStatusTexture =
