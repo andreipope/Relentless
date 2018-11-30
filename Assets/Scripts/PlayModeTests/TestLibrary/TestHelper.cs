@@ -367,11 +367,23 @@ public class TestHelper
     /// <remarks>This currently doesn't work, as timeouts have been removed.</remarks>
     public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
     {
+        WaitStart (60);
+
         yield return CombinedCheck (
             CheckCurrentPageName, "GameplayPage", callback1,
-            CheckIfMatchmakingErrorOccured, "", callback2);
+            // CheckIfMatchmakingErrorOccured, "", callback2);
+            WaitTimeIsUp, "", callback2);
 
         yield return null;
+    }
+
+    public IEnumerator AssertMulliganPopupCameUp (IEnumerator callback1, IEnumerator callback2)
+    {
+        WaitStart (5);
+
+        yield return CombinedCheck (
+            CheckIfMulliganPopupCameUp, "", callback1,
+            WaitTimeIsUp, "", callback2);
     }
 
     /// <summary>
@@ -444,13 +456,6 @@ public class TestHelper
     /// <returns><c>true</c>, if if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
     private bool CheckIfMatchmakingErrorOccured (string dummyParameter)
     {
-        // Initially
-        // Canvas2 / ConnectionPopup(Clone)
-
-        // Then
-        // ConnectionPopup is removed, WarningPopup is added
-        // Canvas3 / WarningPopup(Clone)
-
         if (canvas3GameObject != null && canvas3GameObject.transform.childCount >= 2)
         {
             if (canvas3GameObject.transform.GetChild (1).name.Split ('(')[0] == "WarningPopup")
@@ -460,6 +465,14 @@ public class TestHelper
 
             return false;
         }
+
+        return false;
+    }
+
+    private bool CheckIfMulliganPopupCameUp (string dummyParameter)
+    {
+        if (GameObject.Find ("MulliganPopup(Clone)") != null)
+            return true;
 
         return false;
     }
@@ -508,6 +521,8 @@ public class TestHelper
         return false;
     }
 
+    private int pageTransitionWaitTime = 30;
+
     /// <summary>
     /// Checks current page’s name and confirms that it’s correct with what was expected.
     /// </summary>
@@ -523,8 +538,18 @@ public class TestHelper
         if (expectedPageName == lastCheckedPageName)
             yield break;
 
+        WaitStart (pageTransitionWaitTime);
+        bool transitionTimeout = false;
+
         GameObject errorTextObject = null;
         yield return new WaitUntil (() => {
+            if (WaitTimeIsUp ())
+            {
+                transitionTimeout = true;
+
+                return true;
+            }
+
             if (errorTextName.Length >= 1)
             {
                 errorTextObject = GameObject.Find (errorTextName);
@@ -549,6 +574,12 @@ public class TestHelper
 
             return false;
         });
+
+        if (transitionTimeout)
+        {
+            FailWithMessage ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
+        }
+
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
 
         Assert.AreEqual (expectedPageName, actualPageName);
@@ -805,7 +836,7 @@ public class TestHelper
         GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
         yield return CombinedCheck (
-            CheckIfLoginBoxAppeared, "", SubmitTesterKey (),
+            CheckIfLoginBoxAppeared, "", null,
             CheckCurrentPageName, "MainMenuPage", null);
 
         yield return null;
@@ -864,6 +895,8 @@ public class TestHelper
 
             return false;
         });
+
+        yield return LetsThink (0.5f);
 
         if (count >= 2)
         {
@@ -944,8 +977,7 @@ public class TestHelper
             return;
         }
 
-        _pvpManager.PvPTags = new Loom.Google.Protobuf.Collections.RepeatedField<string> ();
-
+        _pvpManager.PvPTags = new List<string> ();
         foreach (string tag in tags)
         {
             _pvpManager.PvPTags.Add (tag);
@@ -1248,7 +1280,7 @@ public class TestHelper
         if (_testBroker.GetPlayer (_player).IsStunned)
             yield break;
 
-        if (_testBroker.GetPlayerPrimarySkill (_player).IsSkillReady)
+        if (_testBroker.GetPlayerPrimarySkill (_player) != null && _testBroker.GetPlayerPrimarySkill (_player).IsSkillReady)
         {
             DoBoardSkill (_testBroker.GetPlayerPrimarySkill (_player));
             wasAction = true;
@@ -1260,7 +1292,7 @@ public class TestHelper
         }
 
         wasAction = false;
-        if (_testBroker.GetPlayerSecondarySkill (_player).IsSkillReady)
+        if (_testBroker.GetPlayerSecondarySkill (_player) != null && _testBroker.GetPlayerSecondarySkill (_player).IsSkillReady)
         {
             DoBoardSkill (_testBroker.GetPlayerSecondarySkill (_player));
             wasAction = true;
@@ -1333,14 +1365,14 @@ public class TestHelper
                     break;
                 if (CardCanBePlayable (card))
                 {
-                    PlayCardFromHandToBoard (card);
+                    yield return PlayCardFromHandToBoard (card);
                     wasAction = true;
                     yield return LetsThink ();
                     yield return LetsThink ();
                 }
             }
 
-            PlayCardFromHandToBoard (expensiveCard);
+            yield return PlayCardFromHandToBoard (expensiveCard);
 
             yield return LetsThink ();
             yield return LetsThink ();
@@ -1414,7 +1446,7 @@ public class TestHelper
         {
             BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
-            PlayCardFromHandToBoard (boardCard.WorkingCard);
+            yield return PlayCardFromHandToBoard (boardCard.WorkingCard);
 
             yield return LetsThink ();
             yield return LetsThink ();
@@ -1452,95 +1484,24 @@ public class TestHelper
                     _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
                         PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                         _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-                    });
+                    }, target);
 
                     yield return null;
 
-                    if (needTargetForAbility)
+                    if (target == null && needTargetForAbility)
                     {
-                        if (target == null)
-                        {
-                            Debug.LogWarning ("About to discard ability.");
-
-                            WaitStart (3);
-                            yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
-                            _boardArrowController.ResetCurrentBoardArrow ();
-
-                            WaitStart (3);
-                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
-                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-
-                            /* WaitStart (3);
-                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility.Ability != null || WaitTimeIsUp ());
-
-                            Debug.LogWarning ("About to discard ability: " + _abilitiesController.CurrentActiveAbility.Ability.AbilityData.Name);
-
-                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget (); */
-                        }
-                        else
-                        {
-                            Debug.LogWarning ("About to use ability.");
-
-                            WaitStart (3);
-                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility?.Ability?.TargettingArrow != null || WaitTimeIsUp ());
-
-                            if (_abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null)
-                            {
-                                Debug.LogWarning ("Used the TargettingArrow");
-
-                                if (target != null)
-                                {
-                                    switch (target)
-                                    {
-                                        case BoardUnitModel unit:
-                                            Debug.LogWarning ("BoardUnitModel");
-                                            
-                                            _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
-                                            // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnCardSelected (_battlegroundController.GetBoardUnitViewByModel (unit));
-
-                                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-                                            break;
-                                        case Loom.ZombieBattleground.Player player:
-                                            Debug.LogWarning ("Player");
-                                            
-                                            _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
-                                            // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnPlayerSelected (player);
-
-                                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-                                            break;
-                                        case null:
-                                            Debug.LogWarning ("Null");
-
-                                            break;
-                                        default:
-                                            throw new ArgumentOutOfRangeException (nameof (target), target, null);
-                                    }
-
-                                    _boardArrowController.ResetCurrentBoardArrow ();
-
-                                    yield return LetsThink ();
-                                }
-                                else
-                                {
-                                    WaitStart (3);
-                                    yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
-                                    _boardArrowController.ResetCurrentBoardArrow ();
-
-                                    WaitStart (3);
-                                    yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
-                                    _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                    _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-                                }
-                            }
-                        }
+                        WaitStart (3);
+                        yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
+                        _boardArrowController.ResetCurrentBoardArrow ();
 
                         yield return LetsThink ();
 
-                        yield return null;
+                        WaitStart (3);
+                        yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
+                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                        _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+
+                        yield return LetsThink ();
                     }
                 }
                 else
@@ -1569,77 +1530,24 @@ public class TestHelper
 
                             PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
                             _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-                        });
+                        }, target);
 
                         yield return null;
 
-                        if (needTargetForAbility)
+                        if (target == null && needTargetForAbility)
                         {
-                            if (target == null)
-                            {
-                                Debug.LogWarning ("About to discard ability.");
-
-                                WaitStart (3);
-                                yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
-                                _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-                            }
-                            else
-                            {
-                                Debug.LogWarning ("About to use ability.");
-
-                                WaitStart (3);
-                                yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility?.Ability?.TargettingArrow != null || WaitTimeIsUp ());
-
-                                if (_abilitiesController.CurrentActiveAbility.Ability.TargettingArrow != null)
-                                {
-                                    Debug.LogWarning ("Used the TargettingArrow");
-
-                                    if (target != null)
-                                    {
-                                        switch (target)
-                                        {
-                                            case BoardUnitModel unit:
-                                                Debug.LogWarning ("BoardUnitModel");
-
-                                                _abilitiesController.CurrentActiveAbility.Ability.TargetUnit = unit;
-                                                // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnCardSelected (_battlegroundController.GetBoardUnitViewByModel (unit));
-
-                                                _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                                _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-                                                break;
-                                            case Loom.ZombieBattleground.Player player:
-                                                Debug.LogWarning ("Player");
-
-                                                _abilitiesController.CurrentActiveAbility.Ability.TargetPlayer = player;
-                                                // _abilitiesController.CurrentActiveAbility.Ability.TargettingArrow.OnPlayerSelected (player);
-
-                                                _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                                _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-                                                break;
-                                            case null:
-                                                Debug.LogWarning ("Null");
-
-                                                break;
-                                            default:
-                                                throw new ArgumentOutOfRangeException (nameof (target), target, null);
-                                        }
-
-                                        yield return LetsThink ();
-                                    }
-                                    else
-                                    {
-                                        WaitStart (3);
-                                        yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
-                                        _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
-                                        _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
-                                    }
-                                }
-                            }
+                            WaitStart (3);
+                            yield return new WaitUntil (() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp ());
+                            _boardArrowController.ResetCurrentBoardArrow ();
 
                             yield return LetsThink ();
 
-                            yield return null;
+                            WaitStart (3);
+                            yield return new WaitUntil (() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp ());
+                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction ();
+                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget ();
+
+                            yield return LetsThink ();
                         }
                     }
                     else
@@ -2138,6 +2046,11 @@ public class TestHelper
             _testBroker.GetPlayer (_player).CardsInHand.FindAll (x =>
                  x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
+        /* foreach (WorkingCard workingCard in list)
+        {
+            Debug.Log ("+ " + workingCard.LibraryCard.MouldId + ": " + workingCard.LibraryCard.Name);
+        } */
+
         List<Loom.ZombieBattleground.Data.Card> cards = new List<Loom.ZombieBattleground.Data.Card> ();
 
         foreach (WorkingCard item in list)
@@ -2153,7 +2066,9 @@ public class TestHelper
 
         foreach (Loom.ZombieBattleground.Data.Card item in cards)
         {
-            sortedList.Add (list.Find (x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains (x)));
+            // Debug.Log ("- " + item.MouldId + ": " + item.Name);
+
+            sortedList.Add (list.Find (x => x.LibraryCard.Name == item.Name && !sortedList.Contains (x)));
         }
 
         list.Clear ();
@@ -2531,9 +2446,9 @@ public class TestHelper
     /// Waits for a specific amount of time.
     /// </summary>
     /// <remarks>to be in line with AI Brain, 1.1f was taken as value from AIController.</remarks>
-    public IEnumerator LetsThink ()
+    public IEnumerator LetsThink (float thinkTime = 1.1f)
     {
-        yield return new WaitForSeconds (1.1f);
+        yield return new WaitForSeconds (thinkTime);
     }
 
     /// <summary>
@@ -2606,18 +2521,34 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilOurFirstTurn ()
     {
+        if (IsGameEnded ())
+            yield break;
+
         if (_gameplayManager.CurrentTurnPlayer.Id == _gameplayManager.CurrentPlayer.Id)
         {
             yield return null;
         }
         else
         {
+            if (IsGameEnded ())
+                yield break;
+
             yield return WaitUntilOurTurnStarts ();
+
+            if (IsGameEnded ())
+                yield break;
 
             yield return WaitUntilInputIsUnblocked ();
         }
 
         yield return LetsThink ();
+    }
+
+    public IEnumerator WaitUntilWeHaveACardAtHand ()
+    {
+        yield return new WaitUntil (() => _battlegroundController.PlayerHandCards.Count >= 1);
+
+        yield return null;
     }
 
     /// <summary>
@@ -2708,27 +2639,34 @@ public class TestHelper
         // if it doesn't end in 100 moves, end the game anyway
         for (int turns = 1; turns <= maxTurns; turns++)
         {
+            Debug.Log ("a 0");
+
             yield return TurnStartedHandler ();
+
+            Debug.Log ("a 1");
 
             TurnEndedHandler ();
 
             if (IsGameEnded ())
                 yield break;
 
-            if (IsGameEnded ())
-                break;
-
             yield return EndTurn ();
+
+            Debug.Log ("a 2");
 
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilOurTurnStarts ();
 
+            Debug.Log ("a 3");
+
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilInputIsUnblocked ();
+
+            Debug.Log ("a 4");
 
             if (IsGameEnded ())
                 break;
@@ -2967,7 +2905,10 @@ public class TestHelper
             Assert.Fail ("Index higher than number of abilities");
         }
 
-        abilitiesParent.transform.GetChild (index).gameObject.GetComponent<Toggle> ().isOn = true;
+        if (abilitiesParent.transform.GetChild (index).GetComponent<Button> ().IsInteractable ())
+        {
+            abilitiesParent.transform.GetChild (index).GetComponent<Button> ().onClick.Invoke ();
+        }
 
         yield return LetsThink ();
     }
@@ -3234,8 +3175,10 @@ public class TestHelper
 
     private void RecordAValue (string value, RecordedValue recordedValue)
     {
-        if (value.Length <= 1)
-            return;
+        if (value == null || value.Length <= 1)
+        {
+            value = "";
+        }
 
         switch (recordedValue)
         {
@@ -3301,7 +3244,7 @@ public class TestHelper
     /// <summary>
     /// Plays a match and once the match finishes, presses on Continue button.
     /// </summary>
-    public IEnumerator PlayAMatch ()
+    public IEnumerator PlayAMatch (int maxTurns = 100)
     {
         yield return AssertCurrentPageName ("GameplayPage");
 
@@ -3309,15 +3252,23 @@ public class TestHelper
 
         yield return WaitUntilPlayerOrderIsDecided ();
 
-        yield return DecideWhichCardsToPick ();
+        yield return AssertMulliganPopupCameUp (
+            DecideWhichCardsToPick (),
+            null);
 
         yield return WaitUntilOurFirstTurn ();
 
-        yield return MakeMoves ();
+        yield return MakeMoves (maxTurns);
+
+        Debug.LogWarning ("0");
 
         yield return ClickGenericButton ("Button_Continue");
 
+        Debug.LogWarning ("1");
+
         yield return AssertCurrentPageName ("HordeSelectionPage");
+
+        Debug.LogWarning ("2");
     }
 
     /// <summary>
@@ -3332,8 +3283,22 @@ public class TestHelper
             yield return ClickGenericButton ("Button_GotIt");
     }
 
-    private float _waitStartTime;
-    private float _waitAmount;
+    #endregion
+
+    private AbilityBoardArrow GetAbilityBoardArrow ()
+    {
+        if (GameObject.FindObjectOfType<AbilityBoardArrow> () != null)
+        {
+            return GameObject.FindObjectOfType<AbilityBoardArrow> ();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private float _waitStartTime, _turnStartTime;
+    private float _waitAmount, _turnWaitAmount;
 
     /// <summary>
     /// Starts the waiting process.
@@ -3342,7 +3307,7 @@ public class TestHelper
     /// <param name="waitAmount">Wait amount.</param>
     private void WaitStart (int waitAmount)
     {
-        _waitStartTime = Time.unscaledTime;
+        _waitStartTime = Time.time;
 
         _waitAmount = waitAmount;
     }
@@ -3352,10 +3317,20 @@ public class TestHelper
     /// </summary>
     /// <remarks>Useful in case you have concern of getting a response for a request. To be coupled with WaitStart.</remarks>
     /// <returns><c>true</c>, if time is up, <c>false</c> otherwise.</returns>
-    private bool WaitTimeIsUp ()
+    private bool WaitTimeIsUp (string dummyParameter = "")
     {
-        return Time.unscaledTime > _waitStartTime + _waitAmount;
+        return Time.time > _waitStartTime + _waitAmount;
     }
 
-    #endregion
+    private void TurnWaitStart (int waitAmount)
+    {
+        _turnStartTime = Time.time;
+
+        _turnWaitAmount = waitAmount;
+    }
+
+    private bool TurnTimeIsUp ()
+    {
+        return Time.time > _turnStartTime + _turnWaitAmount;
+    }
 }
