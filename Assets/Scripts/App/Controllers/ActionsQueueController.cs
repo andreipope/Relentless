@@ -137,6 +137,10 @@ namespace Loom.ZombieBattleground
 
         public void ForceActionDone()
         {
+            if (_actionDone)
+                return;
+
+            _actionDone = true;
             OnActionDoneEvent?.Invoke(this);
         }
 
