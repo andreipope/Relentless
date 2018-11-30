@@ -559,6 +559,7 @@ namespace Loom.ZombieBattleground
                        }
                        else
                        {
+                           CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
                            onCompleteCallback?.Invoke(true);
                            CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
 
