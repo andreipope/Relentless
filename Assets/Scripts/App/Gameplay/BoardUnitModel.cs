@@ -265,7 +265,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.REANIMATE_UNIT,
                         this,
-                        Card.InstanceCard,
+                        Card.LibraryCard.CardKind,
+                        Card.LibraryCard,
                         OwnerPlayer
                         );
                     break;
@@ -273,7 +274,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.InstanceCard,
+                        Card.LibraryCard.CardKind,
+                        Card.LibraryCard,
                         OwnerPlayer
                         );
                     break;

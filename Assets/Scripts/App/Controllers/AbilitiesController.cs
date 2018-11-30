@@ -647,10 +647,10 @@ namespace Loom.ZombieBattleground
                                 affectObjectType, parametrizedAbilityBoardObjects, null);
         }
 
-        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
+        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)
         {
             ActiveAbility activeAbility =
-                CreateActiveAbility(GetAbilityDataByType(ability), card.CardKind, target, owner, card, null);
+                CreateActiveAbility(GetAbilityDataByType(ability), cardKind, target, owner, card, null);
             activeAbility.Ability.Activate();
         }
 
