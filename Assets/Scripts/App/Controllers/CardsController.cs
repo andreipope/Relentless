@@ -500,7 +500,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard)
+        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard, BoardObject target = null)
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
@@ -600,7 +600,7 @@ namespace Loom.ZombieBattleground
                                                 boardUnitView.Model.Die(true);
                                             }
 
-                                        }, CallAbilityAction, handCard: handCard);
+                                        }, CallAbilityAction, target, handCard: handCard);
 
                                     waiterAction.ForceActionDone();
                                 });
@@ -625,7 +625,7 @@ namespace Loom.ZombieBattleground
                                     Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (x) =>
                                     {
                                         RankBuffAction.ForceActionDone();
-                                    }, CallAbilityAction, handCard: handCard);
+                                    }, CallAbilityAction, target, handCard: handCard);
 
                                 waiterAction.ForceActionDone();                           
                             }, 0.75f);
