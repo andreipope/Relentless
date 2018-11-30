@@ -403,7 +403,7 @@ namespace Loom.ZombieBattleground
                        _activeAbility = null;
                        foreach (AbilityData item in libraryCard.Abilities)
                        {
-                           activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
+                           _activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
 
                            if (IsAbilityCanActivateTargetAtStart(item))
                            {
@@ -551,7 +551,7 @@ namespace Loom.ZombieBattleground
                            }
                            else
                            {
-                               CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+                               CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
                                onCompleteCallback?.Invoke(true);
 
                                ResolveAllAbilitiesOnUnit(boardObject);
@@ -561,7 +561,7 @@ namespace Loom.ZombieBattleground
                        }
                        else
                        {
-                           CallPermanentAbilityAction(isPlayer, action, card, target, activeAbility, kind);
+                           CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
                            onCompleteCallback?.Invoke(true);
 
                            ResolveAllAbilitiesOnUnit(boardObject);
