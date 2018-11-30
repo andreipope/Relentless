@@ -83,6 +83,10 @@ namespace Loom.ZombieBattleground
 
         public void ResetAll()
         {
+            PlayerPrimarySkill = null;
+            PlayerSecondarySkill = null;
+            OpponentPrimarySkill = null;
+            OpponentSecondarySkill = null;
         }
 
         public void InitializeSkills()
@@ -108,6 +112,7 @@ namespace Loom.ZombieBattleground
 
             if (primary != null && secondary != null)
             {
+                rootPage.SetupSkills(primary, secondary, false);
                 SetPlayerSkills(rootPage, primary, secondary);
             }
 
@@ -116,6 +121,7 @@ namespace Loom.ZombieBattleground
 
             if (primary != null && secondary != null)
             {
+                rootPage.SetupSkills(primary, secondary, true);
                 SetOpponentSkills(rootPage, primary, secondary);
             }
 

@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -46,28 +47,12 @@ namespace Loom.ZombieBattleground
 
             if (GameplayManager.CurrentTurnPlayer == PlayerCallerOfAbility)
             {
-                PlayerCallerOfAbility.CurrentGoo += Count;
+                PlayerCallerOfAbility.CurrentGoo = Mathf.Clamp(PlayerCallerOfAbility.CurrentGoo + Count, 0, Constants.MaximumPlayerGoo);
             }
             else
             {
                 PlayerCallerOfAbility.CurrentGooModificator += Count;
             }
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.Overflow,
-                            Target = PlayerCallerOfAbility,
-                            HasValue = true,
-                            Value = Count
-                        }
-                    }
-            });
         }
     }
 }

@@ -112,7 +112,10 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case BoardCard card:
-                    sprite = card.PictureSprite?.sprite;
+                    if (card.PictureSprite && card.PictureSprite != null)
+                    {
+                        sprite = card.PictureSprite.sprite;
+                    }
                     break;
                 case BoardSkill skill:
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);

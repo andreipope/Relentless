@@ -102,9 +102,7 @@ namespace Loom.ZombieBattleground
             {
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
-                int deckId = _gameplayManager.OpponentDeckId;
-                Deck deck = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == deckId).Deck;
-                foreach (DeckCardData card in deck.Cards)
+                foreach (DeckCardData card in _gameplayManager.OpponentPlayerDeck.Cards)
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
@@ -1182,10 +1180,12 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.OverlordSkill.HARDEN:
                 case Enumerators.OverlordSkill.DRAW:
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
                     target = _gameplayManager.OpponentPlayer;
                     break;
                 case Enumerators.OverlordSkill.STONE_SKIN:
+                case Enumerators.OverlordSkill.FORTIFY:
+                case Enumerators.OverlordSkill.WIND_SHIELD:
+                case Enumerators.OverlordSkill.INFECT:
                     {
                         List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.CardSetType ==
                                                                         _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
@@ -1211,56 +1211,74 @@ namespace Loom.ZombieBattleground
                             return;
                     }
                     break;
-                case Enumerators.OverlordSkill.MEND:
-                {
-                    target = _gameplayManager.OpponentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
-
-                    if (_gameplayManager.OpponentPlayer.Defense > 13)
+                case Enumerators.OverlordSkill.ICE_WALL:
+                case Enumerators.OverlordSkill.ENHANCE:
                     {
-                        if (skill.Skill.ElementTargetTypes.Count > 0)
-                        {
-                            _unitsToIgnoreThisTurn =
-                                _gameplayManager.OpponentPlayer.BoardCards
-                                .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
-                                .Select(x => x.Model)
-                                .ToList();
-                        }
-
-                        List<BoardUnitModel> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
+                        List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.CardSetType ==
+                                                                        _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
 
                         if (units.Count > 0)
                         {
                             target = units[0];
                             selectedObjectType = Enumerators.AffectObjectType.Character;
-                        } 
-                        else 
+                        }
+                        else
+                        {
+                            target = _gameplayManager.OpponentPlayer;
+                            selectedObjectType = Enumerators.AffectObjectType.Player;
+                        }
+                    }
+                    break;
+                case Enumerators.OverlordSkill.MEND:
+                    {
+                        target = _gameplayManager.OpponentPlayer;
+                        selectedObjectType = Enumerators.AffectObjectType.Player;
+
+                        if (_gameplayManager.OpponentPlayer.Defense > 13)
+                        {
+                            if (skill.Skill.ElementTargetTypes.Count > 0)
+                            {
+                                _unitsToIgnoreThisTurn =
+                                    _gameplayManager.OpponentPlayer.BoardCards
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
+                                    .Select(x => x.Model)
+                                    .ToList();
+                            }
+
+                            List<BoardUnitModel> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
+
+                            if (units.Count > 0)
+                            {
+                                target = units[0];
+                                selectedObjectType = Enumerators.AffectObjectType.Character;
+                            }
+                            else
+                                return;
+                        }
+                        else
                             return;
                     }
-                    else
-                        return;
-                }
 
                     break;
                 case Enumerators.OverlordSkill.RABIES:
-                {
-                    _unitsToIgnoreThisTurn =
-                        _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
-                        skill.Skill.ElementTargetTypes.Count > 0 &&
-                        !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) ||
-                        x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral)
-                            .Select(x => x.Model)
-                            .ToList();
-                    BoardUnitModel unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
-
-                    if (unit != null)
                     {
-                        target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
+                        _unitsToIgnoreThisTurn =
+                            _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
+                            skill.Skill.ElementTargetTypes.Count > 0 &&
+                            !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) ||
+                            x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral)
+                                .Select(x => x.Model)
+                                .ToList();
+                        BoardUnitModel unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
+
+                        if (unit != null)
+                        {
+                            target = unit;
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else
+                            return;
                     }
-                    else
-                        return;
-                }
 
                     break;
                 case Enumerators.OverlordSkill.POISON_DART:
@@ -1268,60 +1286,87 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.ICE_BOLT:
                 case Enumerators.OverlordSkill.FREEZE:
                 case Enumerators.OverlordSkill.FIRE_BOLT:
-                {
-                    target = _gameplayManager.CurrentPlayer;
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
+                case Enumerators.OverlordSkill.FIREBALL:
+                    {
+                        target = _gameplayManager.CurrentPlayer;
+                        selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                    BoardUnitModel unit = GetRandomOpponentUnit();
+                        BoardUnitModel unit = GetRandomOpponentUnit();
 
                         if (unit != null)
                         {
                             target = unit;
-                            selectedObjectType = Enumerators.AffectObjectType.Character;
-                        }
-                        else 
-                            return; 
-                }
-
-                    break;
-                case Enumerators.OverlordSkill.PUSH:
-                {
-                    if (skill.Skill.ElementTargetTypes.Count > 0)
-                    {
-                        _unitsToIgnoreThisTurn =
-                            _gameplayManager.OpponentPlayer.BoardCards
-                                .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
-                                .Select(x => x.Model)
-                                .ToList();
-                    }
-
-                    List<BoardUnitModel> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
-
-                    if (units.Count > 0)
-                    {
-                        target = units[0];
-
-                        _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
-
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
-                    }
-                    else
-                    {
-                        BoardUnitModel unit = GetRandomOpponentUnit(_unitsToIgnoreThisTurn);
-
-                        if (unit != null)
-                        {
-                            target = unit;
-
-                            _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
-
                             selectedObjectType = Enumerators.AffectObjectType.Character;
                         }
                         else
                             return;
                     }
-                }
 
+                    break;
+                case Enumerators.OverlordSkill.PUSH:
+                    {
+                        if (skill.Skill.ElementTargetTypes.Count > 0)
+                        {
+                            _unitsToIgnoreThisTurn =
+                                _gameplayManager.OpponentPlayer.BoardCards
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
+                                    .Select(x => x.Model)
+                                    .ToList();
+                        }
+
+                        List<BoardUnitModel> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
+
+                        if (units.Count > 0)
+                        {
+                            target = units[0];
+
+                            _unitsToIgnoreThisTurn.Add((BoardUnitModel)target);
+
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else
+                        {
+                            BoardUnitModel unit = GetRandomOpponentUnit(_unitsToIgnoreThisTurn);
+
+                            if (unit != null)
+                            {
+                                target = unit;
+
+                                _unitsToIgnoreThisTurn.Add((BoardUnitModel)target);
+
+                                selectedObjectType = Enumerators.AffectObjectType.Character;
+                            }
+                            else
+                                return;
+                        }
+                    }
+
+                    break;
+
+                case Enumerators.OverlordSkill.SHATTER:
+                    {
+                        List<BoardUnitModel> units = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.IsStun).Select(x => x.Model).ToList();
+
+                        if (units.Count > 0)
+                        {
+                            target = units[0];
+                            selectedObjectType = Enumerators.AffectObjectType.Character;
+                        }
+                        else
+                            return;
+                    }
+                    break;
+                case Enumerators.OverlordSkill.PHALANX:
+                case Enumerators.OverlordSkill.FORTRESS:
+                case Enumerators.OverlordSkill.MASS_RABIES:
+                case Enumerators.OverlordSkill.METEOR_SHOWER:
+                case Enumerators.OverlordSkill.BLIZZARD:
+                case Enumerators.OverlordSkill.LEVITATE:
+                case Enumerators.OverlordSkill.RETREAT:
+                case Enumerators.OverlordSkill.BREAKOUT:
+                case Enumerators.OverlordSkill.EPIDEMIC:
+                case Enumerators.OverlordSkill.RESSURECT:
+                case Enumerators.OverlordSkill.REANIMATE:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(skill.Skill.OverlordSkill), skill.Skill.OverlordSkill, null);
