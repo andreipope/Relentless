@@ -17,6 +17,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Destroy);
+
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 

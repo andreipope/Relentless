@@ -70,7 +70,7 @@ Material:
     - AnimatedTwistUV_AnimatedTwistUV_Speed_1: 0
     - DistortionUV_DistanceX_1: 0
     - DistortionUV_DistanceY_1: 0.556
-    - DistortionUV_Speed_1: 1.96
+    - DistortionUV_Speed_1: 2
     - DistortionUV_WaveX_1: 109
     - DistortionUV_WaveY_1: 14
     - _BumpScale: 1

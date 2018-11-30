@@ -31,10 +31,14 @@ namespace Loom.ZombieBattleground.Data
 
         Enumerators.CardType CardType { get; }
 
+        List<AbilityData> InitialAbilities { get; }
+
         List<AbilityData> Abilities { get; }
 
         CardViewInfo CardViewInfo { get; }
 
         Enumerators.UniqueAnimationType UniqueAnimationType { get; }
+
+        void ForceUpdateAbilities(List<AbilityData> abilities);
     }
 }

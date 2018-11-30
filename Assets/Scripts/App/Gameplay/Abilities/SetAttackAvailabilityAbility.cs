@@ -25,7 +25,28 @@ namespace Loom.ZombieBattleground
 
         private void SetAttackAvailability(BoardUnitModel boardUnit)
         {
-            boardUnit.CanAttackByDefault = false;
+            if (AbilityTargetTypes.Count > 0)
+            {
+                boardUnit.AttackTargetsAvailability.Clear();
+
+                foreach(Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                {
+                    switch(targetType)
+                    {
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTargetType.OPPONENT);
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                        case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTargetType.OPPONENT_CARD);
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                boardUnit.CanAttackByDefault = false;
+            }
         }
     }
 }

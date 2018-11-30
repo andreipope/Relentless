@@ -137,14 +137,14 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = false;
         }
 
-        public void StartDoSkill()
+        public void StartDoSkill(bool localPlayerOverride = false)
         {
             if (!IsSkillCanUsed())
                 return;
 
-            if (OwnerPlayer.IsLocalPlayer)
+            if (OwnerPlayer.IsLocalPlayer && !localPlayerOverride)
             {
-                if (Skill.SkillTargetTypes.Count > 0)
+                if (Skill.CanSelectTarget)
                 {
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
@@ -339,7 +339,7 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ActivateSelectTarget();
             }
 
-            if (Skill.SkillTargetTypes.Count == 0)
+            if (!Skill.CanSelectTarget)
             {
                 _skillsController.DoSkillAction(this, completeCallback, OwnerPlayer);
             }

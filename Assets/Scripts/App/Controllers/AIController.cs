@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
     {
         public BoardCard CurrentSpellCard;
 
+        public bool IsBrainWorking = false;
+
         private const int MinTurnForAttack = 0;
 
         private readonly Random _random = new Random();
@@ -133,6 +135,8 @@ namespace Loom.ZombieBattleground
             _aiBrainCancellationTokenSource = new CancellationTokenSource();
             Debug.Log("brain started");
 
+            IsBrainWorking = true;
+
             try
             {
                 switch (_aiBrainType)
@@ -156,6 +160,8 @@ namespace Loom.ZombieBattleground
             }
 
             Debug.Log("brain finished");
+
+            IsBrainWorking = false;
         }
 
         private void SetAiTypeByDeck()
@@ -424,10 +430,13 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
                 return;
 
-            if (_skillsController.OpponentPrimarySkill.IsSkillReady)
+            if (_skillsController.OpponentPrimarySkill != null)
             {
-                DoBoardSkill(_skillsController.OpponentPrimarySkill);
-                wasAction = true;
+                if (_skillsController.OpponentPrimarySkill.IsSkillReady)
+                {
+                    DoBoardSkill(_skillsController.OpponentPrimarySkill);
+                    wasAction = true;
+                }
             }
 
             if (wasAction)
@@ -435,10 +444,13 @@ namespace Loom.ZombieBattleground
                 await LetsThink(cancellationToken);
             }
 
-            if (_skillsController.OpponentSecondarySkill.IsSkillReady)
+            if (_skillsController.OpponentSecondarySkill != null)
             {
-                DoBoardSkill(_skillsController.OpponentSecondarySkill);
-                wasAction = true;
+                if (_skillsController.OpponentSecondarySkill.IsSkillReady)
+                {
+                    DoBoardSkill(_skillsController.OpponentSecondarySkill);
+                    wasAction = true;
+                }
             }
 
             if (wasAction)
@@ -446,6 +458,7 @@ namespace Loom.ZombieBattleground
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
             }
+
         }
 
         // some thinking - delay between general actions
@@ -666,6 +679,7 @@ namespace Loom.ZombieBattleground
             GameAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
 
             completeCallback?.Invoke();
+            _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
 
             switch (card.LibraryCard.CardKind)
             {
@@ -691,8 +705,6 @@ namespace Loom.ZombieBattleground
                             Caller = boardUnitViewElement.Model,
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
-
-                        boardUnitViewElement.PlayArrivalAnimation();
 
                         _gameplayManager.GetController<RanksController>().UpdateRanksByElements(card.Owner.BoardCards, card, ranksBuffAction);
 
@@ -729,6 +741,7 @@ namespace Loom.ZombieBattleground
                                     waiterAction.ForceActionDone();
                                 }
                             });
+                        boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                         break;
                     }
                 case Enumerators.CardKind.SPELL:
@@ -1342,7 +1355,14 @@ namespace Loom.ZombieBattleground
                 skill.EndDoSkill();
             };
 
-            skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+            if (skill.Skill.CanSelectTarget)
+            {
+                skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+            }
+            else
+            {
+                callback.Invoke();
+            }
         }
     }
 }
