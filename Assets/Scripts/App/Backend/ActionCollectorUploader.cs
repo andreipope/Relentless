@@ -163,8 +163,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Player.CardAttacked -= CardAttackedHandler;
                     Player.LeaveMatch -= LeaveMatchHandler;
 
-                    _skillsController.PlayerPrimarySkill.SkillUsed -= SkillUsedHandler;
-                    _skillsController.PlayerSecondarySkill.SkillUsed -= SkillUsedHandler;
+                    if (_skillsController.PlayerPrimarySkill != null)
+                    {
+                        _skillsController.PlayerPrimarySkill.SkillUsed -= SkillUsedHandler;
+                    }
+
+                    if (_skillsController.PlayerSecondarySkill != null)
+                    {
+                        _skillsController.PlayerSecondarySkill.SkillUsed -= SkillUsedHandler;
+                    }
 
                     _ranksController.RanksUpdated -= RanksUpdatedHandler;
                 }
