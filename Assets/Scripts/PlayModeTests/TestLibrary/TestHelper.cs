@@ -831,7 +831,6 @@ public class TestHelper
     {
         GameObject pressAnyText = null;
         yield return new WaitUntil (() => { pressAnyText = GameObject.Find ("PressAnyText"); return pressAnyText != null; });
-
         pressAnyText.SetActive (false);
         GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
