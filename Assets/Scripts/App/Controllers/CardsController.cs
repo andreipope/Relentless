@@ -621,8 +621,13 @@ namespace Loom.ZombieBattleground
                             InternalTools.DoActionDelayed(() =>
                             {
                                 _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (x) =>
+                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (status) =>
                                     {
+                                        if(status)
+                                        {
+                                            player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
+                                        }
+
                                         RankBuffAction.ForceActionDone();
                                     }, CallAbilityAction, handCard: handCard);
 
