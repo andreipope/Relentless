@@ -128,7 +128,9 @@ namespace Loom.ZombieBattleground
 
         private void OnPlayerActionOutcomeReceived(PlayerActionOutcome outcome)
         {
-#if ENABLE_BACKEND_ACTION_OUTCOMES
+            if (_gameplayManager.UseClientGameLogic)
+                return;
+
             switch (outcome.OutcomeCase)
             {
                 case PlayerActionOutcome.OutcomeOneofCase.None:
@@ -148,7 +150,6 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-#endif
         }
 
         private void OnPlayerLeftGameActionHandler()

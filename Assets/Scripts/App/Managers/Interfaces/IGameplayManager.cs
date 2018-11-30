@@ -67,6 +67,9 @@ namespace Loom.ZombieBattleground
         PlayerMoveAction PlayerMoves { get; set; }
 
         Deck CurrentPlayerDeck { get; set; }
-        Deck OpponentPlayerDeck { get; set; }        
+
+        Deck OpponentPlayerDeck { get; set; }
+
+        bool UseClientGameLogic { get; }
     }
 }

@@ -75,6 +75,8 @@ namespace Loom.ZombieBattleground
 
         public Deck OpponentPlayerDeck { get; set; }
 
+        public bool UseClientGameLogic => _pvpManager?.MatchMetadata?.UseClientGameLogic ?? false;
+
         public T GetController<T>()
             where T : IController
         {

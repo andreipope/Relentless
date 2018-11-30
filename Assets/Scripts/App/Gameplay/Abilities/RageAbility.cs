@@ -27,28 +27,29 @@ namespace Loom.ZombieBattleground
         {
             base.UnitHpChangedHandler();
 
-#if !ENABLE_BACKEND_ACTION_OUTCOMES
-            if (!_wasChanged)
+            if (GameplayManager.UseClientGameLogic)
             {
-                if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
+                if (!_wasChanged)
                 {
-                    _wasChanged = true;
-                    AbilityUnitOwner.BuffedDamage += Value;
-                    AbilityUnitOwner.CurrentDamage += Value;
-                    InvokeActionTriggered(true);
+                    if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
+                    {
+                        _wasChanged = true;
+                        AbilityUnitOwner.BuffedDamage += Value;
+                        AbilityUnitOwner.CurrentDamage += Value;
+                        InvokeActionTriggered(true);
+                    }
+                }
+                else
+                {
+                    if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
+                    {
+                        AbilityUnitOwner.BuffedDamage -= Value;
+                        AbilityUnitOwner.CurrentDamage -= Value;
+                        _wasChanged = false;
+                        InvokeActionTriggered(false);
+                    }
                 }
             }
-            else
-            {
-                if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
-                {
-                    AbilityUnitOwner.BuffedDamage -= Value;
-                    AbilityUnitOwner.CurrentDamage -= Value;
-                    _wasChanged = false;
-                    InvokeActionTriggered(false);
-                }
-            }
-#endif
         }
     }
 }

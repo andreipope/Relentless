@@ -276,19 +276,8 @@ namespace Loom.ZombieBattleground
         {
             Func<Task> taskFunc = async () =>
             {
-                PlayerActionEvent playerActionEvent;
-                try
-                {
-                    playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
-                }
-                catch (Exception)
-                {
-                    // FIXME: remove for release
-                    File.WriteAllBytes("badproto" + Random.Range(10, 99999) + ".bin", data);
-                    throw;
-                }
-
-                Debug.LogWarning("! " + playerActionEvent); // todo delete
+                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+                Debug.LogWarning(playerActionEvent); // todo delete
 
                 if (playerActionEvent.Block != null)
                 {
@@ -357,11 +346,11 @@ namespace Loom.ZombieBattleground
             GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
             Debug.LogWarning("Initial game state:\n" + InitialGameState);
+            Debug.LogWarning("Use backend logic: " + !MatchMetadata.UseClientGameLogic);
         }
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
         {
-            Debug.Log("!!! ability outcomes: " + playerActionEvent.PlayerAction.ActionOutcomes.Count);
             foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
             {
                 Debug.Log(playerActionOutcome.ToString());
