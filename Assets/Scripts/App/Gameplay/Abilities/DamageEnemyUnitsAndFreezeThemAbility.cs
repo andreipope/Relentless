@@ -69,16 +69,12 @@ namespace Loom.ZombieBattleground
                 switch (boardObject)
                 {
                     case Player player:
-                        {
-                            BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
-                            player.Stun(Enumerators.StunType.FREEZE, Value);
-                        }
+                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                        player.Stun(Enumerators.StunType.FREEZE, Value);
                         break;
                     case BoardUnitModel unit:
-                        {
-                            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
-                            unit.Stun(Enumerators.StunType.FREEZE, Value);
-                        }
+                        BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                        unit.Stun(Enumerators.StunType.FREEZE, Value);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

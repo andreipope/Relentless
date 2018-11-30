@@ -15,20 +15,17 @@ namespace Loom.ZombieBattleground
 
             IsPlaying = true;
 
-            Vector3 offset = Vector3.zero;// new Vector3(-5.2f, 0.26f, 0f);
+            Vector3 offset = Vector3.zero;
 
             const float delayBeforeSpawn = 0f;
             const float delayBeforeDestroyVFX = 5f;
 
             BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
 
-            //unitView.GameObject.SetActive(false);
-
             InternalTools.DoActionDelayed(() =>
             {
                 GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                             "Prefabs/VFX/UniqueArrivalAnimations/Tzunamy_Arrival"));
-
 
                 InternalTools.DoActionDelayed(() =>
                 {
