@@ -43,10 +43,7 @@ namespace Loom.ZombieBattleground
 
                 manaBarItem.SetViaGooPrefab(VfxObject);
 
-                if (!string.IsNullOrEmpty(soundName))
-                {
-                    SoundManager.PlaySound(Enumerators.SoundType.SPELLS, soundName, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }
+                PlaySound(soundName, 0);
             }
 
             Ability.InvokeVFXAnimationEnded();

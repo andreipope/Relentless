@@ -720,7 +720,7 @@ namespace Loom.ZombieBattleground
         {
             ability = null;
             abilityView = null;
-            Debug.LogError(abilityData.AbilityType);
+
             switch (abilityData.AbilityType)
             {
                 case Enumerators.AbilityType.HEAL:

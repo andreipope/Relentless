@@ -39,13 +39,8 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(targetPosition, true, delayBeforeDestroy, true);
             }
-            if (!string.IsNullOrEmpty(soundName))
-            {
-                InternalTools.DoActionDelayed(() =>
-                {
-                    SoundManager.PlaySound(Enumerators.SoundType.SPELLS, soundName, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }, delaySound);
-            }
+
+            PlaySound(soundName, 0);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }

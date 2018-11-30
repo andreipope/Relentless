@@ -6235,11 +6235,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: ZVirus
+  cardNameOfAbility: 0
   delayBeforeEffect: 8
   delayAfterEffect: 3
-  delayChangeState: 0
+  delayForChangeState: 0
   soundName: 
+  delayForSound: 0
   offset: {x: 0, y: 0, z: 0}
+  positionInfo:
+    type: 0
 --- !u!137 &137159502201027414
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

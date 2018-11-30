@@ -19,14 +19,17 @@ namespace Loom.ZombieBattleground
         {
             float delayAfter = 0f;
 
-            if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            soundClipTitle = string.Empty;
+            delayBeforeSound = 0f;
+
+            //if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 float beforeDelay = 3f;
                 float delayBeforeUnitActivate = 0f;
 
                 BoardUnitView unit = info as BoardUnitView;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ReanimateVFX");//(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
                 VfxObject = Object.Instantiate(VfxObject, unit.Transform, false);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
@@ -35,6 +38,8 @@ namespace Loom.ZombieBattleground
                     beforeDelay = effectInfo.delayBeforeEffect;
                     delayAfter = effectInfo.delayAfterEffect;
                     delayBeforeUnitActivate = effectInfo.delayForChangeState;
+                    soundClipTitle = effectInfo.soundName;
+                    delayBeforeSound = effectInfo.delayForSound;
                 }
 
                 VfxObject.transform.localPosition = Vector3.zero;
@@ -52,6 +57,8 @@ namespace Loom.ZombieBattleground
                     unit.ChangeModelVisibility(true);
                 }, delayBeforeUnitActivate);
             }
+
+            PlaySound(soundClipTitle, delayBeforeSound);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }

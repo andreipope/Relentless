@@ -47,10 +47,8 @@ namespace Loom.ZombieBattleground
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
                 }, _delayBeforeMove);
 
-                if (!string.IsNullOrEmpty(_abilityActionSound))
-                {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }
+
+                PlaySound(_abilityActionSound, 0);
             }
             else
             {

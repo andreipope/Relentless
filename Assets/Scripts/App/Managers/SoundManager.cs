@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
         private SoundsData _cardsSoundsFilename;
         private SoundsData _overlordAbilitiesSoundsFilename;
         private SoundsData _spellsSoundsFilename;
+        private SoundsData _uniqueArrivalsSoundsFilename;
+        private SoundsData _zombieDeathAnimationsSoundsFilename;
 
         public float SoundVolume => _soundVolume;
         public float MusicVolume => _musicVolume;
@@ -43,6 +45,8 @@ namespace Loom.ZombieBattleground
             _cardsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/CardsSounds");
             _overlordAbilitiesSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/OverlordAbilitiesSounds");
             _spellsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/SpellsSounds");
+            _uniqueArrivalsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/UniqueArrivalsSounds");
+            _zombieDeathAnimationsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/ZombieDeathAnimationsSounds");
 
             _soundsRoot = new GameObject("SoundContainers").transform;
             _soundsRoot.gameObject.AddComponent<AudioListener>();
@@ -555,6 +559,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.SoundType.SPELLS:
                     list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_spellsSoundsFilename.soundList).ToList();
+                    break;
+                case Enumerators.SoundType.UNIQUE_ARRIVALS:
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_uniqueArrivalsSoundsFilename.soundList).ToList();
+                    break;
+                case Enumerators.SoundType.ZOMBIE_DEATH_ANIMATIONS:
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_zombieDeathAnimationsSoundsFilename.soundList).ToList();
                     break;
                 default:
                     list = LoadObjectsManager.GetObjectsByPath<AudioClip>(new string[] { pathToSoundsLibrary + soundType.ToString() }).ToList();

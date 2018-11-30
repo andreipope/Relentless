@@ -45,10 +45,7 @@ namespace Loom.ZombieBattleground
                 ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
             }
 
-            if (!string.IsNullOrEmpty(soundName))
-            {
-                SoundManager.PlaySound(Enumerators.SoundType.CARDS, soundName, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-            }
+            PlaySound(soundName, 0);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }

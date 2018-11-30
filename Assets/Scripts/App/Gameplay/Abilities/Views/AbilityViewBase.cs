@@ -23,6 +23,10 @@ namespace Loom.ZombieBattleground
 
         protected List<ulong> ParticleIds;
 
+        protected string soundClipTitle;
+
+        protected float delayBeforeSound;
+
         public AbilityViewBase(AbilityBase ability)
         {
             Ability = ability;

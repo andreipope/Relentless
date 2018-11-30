@@ -141,6 +141,8 @@ namespace Loom.ZombieBattleground
             subObject.SetActive(true);
             subObject.transform.position = pos;
             ParticlesController.RegisterParticleSystem(subObject, true, duration);
+            string clipTitle = "Lawnmover_Mangled_F1_V" + UnityEngine.Random.Range(1, 5).ToString();
+            PlaySound(clipTitle, 0);
         }
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
