@@ -769,9 +769,10 @@ namespace Loom.ZombieBattleground
 
         private int GetValueOfAbilityByType(AbilityData ability)
         {
-            // FIXME: there is no BuffType "DELAYED". Is this still needed?
             switch (ability.GameMechanicDescriptionType)
             {
+                case Enumerators.GameMechanicDescriptionType.DelayedX:
+                    return ability.Delay;
                 default:
                     return ability.Value;
             }
