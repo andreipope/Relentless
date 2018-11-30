@@ -28,6 +28,12 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _buttonTutorial;
 
+        private ILocalizationManager _localizationManager;
+
+        private TextMeshProUGUI _soloTextMesh;
+        private TextMeshProUGUI _vsTextMesh;
+        private TextMeshProUGUI _tutorialTextMesh;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -35,6 +41,8 @@ namespace Loom.ZombieBattleground
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
+            _localizationManager.LanguageWasChangedEvent += LanguageWasChangedEventHandler;
         }
 
         public void Update()
@@ -51,6 +59,10 @@ namespace Loom.ZombieBattleground
             _buttonPvPMode = _selfPage.transform.Find("Button_PvPMode").GetComponent<Button>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
 
+            _soloTextMesh = _buttonSoloMode.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _vsTextMesh = _buttonPvPMode.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _tutorialTextMesh = _buttonTutorial.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonSoloMode.onClick.AddListener(SoloModeButtonOnClickHandler);
             _buttonPvPMode.onClick.AddListener(PvPModeButtonOnClickHandler);
@@ -61,6 +73,8 @@ namespace Loom.ZombieBattleground
 #if DISABLE_PVP
             _buttonPvPMode.interactable = false;
 #endif
+
+            UpdateLocalization();
         }
 
         public void Hide()
@@ -75,6 +89,21 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+        }
+
+        private void LanguageWasChangedEventHandler(Enumerators.Language obj)
+        {
+            UpdateLocalization();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (_selfPage == null)
+                return;
+
+            _soloTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.SoloText.ToString());
+            _vsTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.VsText.ToString());
+            _tutorialTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.TutorialText.ToString());
         }
 
         #region Buttons Handlers
