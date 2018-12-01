@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_Shammann"));
 
+            PlaySound("Shammann");
+
             BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
 
             const float yOffsetOfCard = -0.75f;

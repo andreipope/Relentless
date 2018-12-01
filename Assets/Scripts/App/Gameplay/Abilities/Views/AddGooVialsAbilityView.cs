@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private string _cardName;
+
         public AddGooVialsAbilityView(AddGooVialsAbility ability) : base(ability)
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
@@ -17,6 +19,11 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+            _cardName = "";
+            float delayAfter = 0;
+            float delayBeforeDestroy = 3f;
+            string soundName = string.Empty;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 PlayerManaBarItem manaBarItem = Ability.PlayerCallerOfAbility.IsLocalPlayer ?
@@ -25,7 +32,18 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    _cardName = effectInfo.cardName;
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    soundName = effectInfo.soundName;
+                }
+
                 manaBarItem.SetViaGooPrefab(VfxObject);
+
+                PlaySound(soundName, 0);
             }
 
             Ability.InvokeVFXAnimationEnded();

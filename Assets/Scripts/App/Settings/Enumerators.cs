@@ -536,7 +536,9 @@ namespace Loom.ZombieBattleground.Common
             PREPARING_FOR_BATTLE,
             PREPARING_FOR_BATTLE_LOOP,
             DISTRACT_LOOP,
-            RAGE_LOOP
+            RAGE_LOOP,
+            UNIQUE_ARRIVALS,
+            ZOMBIE_DEATH_ANIMATIONS
         }
 
         public enum StatType
