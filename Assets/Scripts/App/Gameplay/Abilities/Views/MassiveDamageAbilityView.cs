@@ -36,6 +36,7 @@ namespace Loom.ZombieBattleground
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
             Vector3 offset = Vector3.zero;
+            bool justPosition = false;
             Enumerators.CardNameOfAbility cardNameOfAbility = Enumerators.CardNameOfAbility.None;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
@@ -48,6 +49,7 @@ namespace Loom.ZombieBattleground
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
                     cardNameOfAbility = effectInfo.cardNameOfAbility;
                     offset = effectInfo.offset;
+                    justPosition = true;
                 }
 
                 Vector3 targetPosition = Vector3.zero;
@@ -61,7 +63,7 @@ namespace Loom.ZombieBattleground
                                 switch (target)
                                 {
                                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                                        CustomCreateVfx(offset, true);
+                                        CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
                                         break;
                                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
                                         foreach (BoardUnitView cardPlayer in Ability.PlayerCallerOfAbility.BoardCards)
@@ -106,7 +108,14 @@ namespace Loom.ZombieBattleground
         {
             int playerPos = Ability.PlayerCallerOfAbility.IsLocalPlayer ? 1 : -1;
 
-            pos = Utilites.CastVfxPosition(pos * playerPos);
+            if (!justPosition)
+            {
+                pos = Utilites.CastVfxPosition(pos * playerPos);
+            }
+            else
+            {
+                pos = pos * playerPos;
+            }
             ClearParticles();
 
             base.CreateVfx(pos, autoDestroy, duration, justPosition);
