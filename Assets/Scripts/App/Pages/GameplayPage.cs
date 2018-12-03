@@ -117,6 +117,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GameInitialized += GameInitializedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
 
+            _matchManager.MatchFinished += MatchFinishedHandler;
+
             _deckStatus = new List<CardZoneOnBoardStatus>();
             _deckStatus.Add(new CardZoneOnBoardStatus(null, 0));
             _deckStatus.Add(new CardZoneOnBoardStatus(
@@ -405,7 +407,10 @@ namespace Loom.ZombieBattleground
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             SetEndTurnButtonStatus(true);
+        }
 
+        private void MatchFinishedHandler()
+        {
             _reportGameActionsPanel?.Clear();
         }
 

@@ -347,7 +347,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try
                     {
-                        if (File.Exists(_cacheDataFileNames[type]))
+                        if (File.Exists(GetPersistentDataItemPath(_cacheDataFileNames[type])))
                         {
                             CachedHeroesData = DeserializeObjectFromAssets<HeroesData>(_cacheDataFileNames[type]);
                         }
@@ -366,7 +366,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
-                        if (File.Exists(_cacheDataFileNames[type]))
+                        if (File.Exists(GetPersistentDataItemPath(_cacheDataFileNames[type])))
                         {
                             CachedCollectionData = DeserializeObjectFromAssets<CollectionData>(_cacheDataFileNames[type]);
                         }

@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
         private void CheckLevel(Hero hero)
         {
             while (hero.Experience >= GetRequiredExperienceForNewLevel(hero) &&
-                   hero.Experience < _overlordXPInfo.MaxLevel)
+                   hero.Level < _overlordXPInfo.MaxLevel)
             {
                 LevelUp(hero);
             }
