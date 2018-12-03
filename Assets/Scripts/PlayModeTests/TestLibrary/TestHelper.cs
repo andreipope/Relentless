@@ -7,13 +7,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro; // Used this trick to add it: https://forum.unity.com/threads/namespace-tmpro-not-found-in-test-runner-test.541387/#post-3570214
+using TMPro;
+using UnityEngine.TestTools;
 
 public class TestHelper
 {
+    /// <summary>
+    /// To be in line with AI Brain, 1.1f was taken as value from AIController.
+    /// </summary>
+    private const float DefaultThinkTime = 0f;
+
+    /// <summary>
+    /// Delay between main menu transition clicks.
+    /// </summary>
+    private const float DefaultMainMenuTransitionDelay = 0f;
+
     private enum TesterType
     {
         Active,
@@ -143,6 +155,9 @@ public class TestHelper
     /// </summary>
     public IEnumerator SetUp ()
     {
+        // HACK: Unity sometimes log an harmless internal assert, but the testing framework trips on it
+        LogAssert.ignoreFailingMessages = true;
+
         _testStartTime = Time.unscaledTime;
 
         if (!_initialized)
@@ -162,8 +177,6 @@ public class TestHelper
             yield return SetCanvases ();
 
             #region Login
-
-            yield return AssertCurrentPageName ("LoadingPage");
 
             yield return HandleLogin ();
 
@@ -611,7 +624,7 @@ public class TestHelper
 
         if (transitionTimeout)
         {
-            FailWithMessage ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
+           yield return FailWithMessage ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
         }
 
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
@@ -863,6 +876,9 @@ public class TestHelper
     /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
+#if !(UNITY_EDITOR || DEVELOPMENT_BUILD)
+        yield return AssertCurrentPageName ("LoadingPage");
+
         GameObject pressAnyText = null;
         yield return new WaitUntil (() => { pressAnyText = GameObject.Find ("PressAnyText"); return pressAnyText != null; });
         pressAnyText.SetActive (false);
@@ -871,6 +887,7 @@ public class TestHelper
         yield return CombinedCheck (
             CheckIfLoginBoxAppeared, "", null,
             CheckCurrentPageName, "MainMenuPage", null);
+#endif
 
         yield return null;
     }
@@ -954,13 +971,21 @@ public class TestHelper
     /// </summary>
     /// <param name="transitionPath">Slash separated list of buttons</param>
     /// <param name="delay">(Optional) Delay between clicks</param>
-    public IEnumerator MainMenuTransition (string transitionPath, float delay = 2f)
+    public IEnumerator MainMenuTransition (string transitionPath, float delay = DefaultMainMenuTransitionDelay)
     {
         foreach (string buttonName in transitionPath.Split ('/'))
         {
             yield return ClickGenericButton (buttonName);
 
-            yield return new WaitForSeconds (delay);
+            if (delay <= 0f)
+            {
+                yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
+            }
+            else
+            {
+                yield return new WaitForSeconds (delay);
+            }
         }
     }
 
@@ -2468,10 +2493,17 @@ public class TestHelper
     /// <summary>
     /// Waits for a specific amount of time.
     /// </summary>
-    /// <remarks>to be in line with AI Brain, 1.1f was taken as value from AIController.</remarks>
-    public IEnumerator LetsThink (float thinkTime = 1.1f)
+    public IEnumerator LetsThink (float thinkTime = DefaultThinkTime)
     {
-        yield return new WaitForSeconds (thinkTime);
+        if (thinkTime <= 0f)
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+        }
+        else
+        {
+            yield return new WaitForSeconds (thinkTime);
+        }
     }
 
     /// <summary>
