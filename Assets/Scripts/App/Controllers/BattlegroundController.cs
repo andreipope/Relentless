@@ -984,7 +984,7 @@ namespace Loom.ZombieBattleground
             boardUnit.Model.SetAsWalkerUnit();
             boardUnit.Model.UseShieldFromBuff();
             boardUnit.Model.BuffsOnUnit.Clear();
-            boardUnit.Model.AttackRestriction = Enumerators.AttackRestriction.NONE;
+            boardUnit.Model.AttackRestriction = Enumerators.AttackRestriction.ANY;
             boardUnit.Model.AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
             {
                 Enumerators.SkillTargetType.OPPONENT,

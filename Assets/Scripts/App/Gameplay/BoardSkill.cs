@@ -188,7 +188,7 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
 
-            GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
 

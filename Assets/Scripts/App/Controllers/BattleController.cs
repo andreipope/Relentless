@@ -315,7 +315,7 @@ namespace Loom.ZombieBattleground
         {
             if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentHp == 0)
             {
-                GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillMinion);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillMinion);
             }
         }
 

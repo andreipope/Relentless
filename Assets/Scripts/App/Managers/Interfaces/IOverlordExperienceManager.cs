@@ -3,13 +3,16 @@ using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground
 {
-    public interface IOverlordManager
+    public interface IOverlordExperienceManager
     {
-        Hero HeroInStartGame { get; }
+        OverlordExperienceManager.ExperienceInfo MatchExperienceInfo { get; }
 
         void ChangeExperience(Hero hero, int value);
         int GetRequiredExperienceForNewLevel(Hero hero);
         void ReportExperienceAction(Hero hero, Enumerators.ExperienceActionType actionType);
-        OverlordManager.LevelReward GetLevelReward(Hero hero);
+        OverlordExperienceManager.LevelReward GetLevelReward(Hero hero);
+
+        void InitializeExperienceInfoInMatch(Hero hero);
+        void ApplyExperienceFromMatch(Hero hero);
     }
 }

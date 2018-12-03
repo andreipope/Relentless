@@ -448,7 +448,7 @@ namespace Loom.ZombieBattleground
                                        callback: () =>
                                        {
                                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-                                           GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
                                            handCard.GameObject.SetActive(true);
 
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
@@ -1019,7 +1019,7 @@ namespace Loom.ZombieBattleground
             if (isPlayer)
             {
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-                GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                 card.GameObject.SetActive(true);
                 card.RemoveCardParticle.Play(); // move it when card should call hide action

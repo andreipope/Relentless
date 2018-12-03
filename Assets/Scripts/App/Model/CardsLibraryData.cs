@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -78,6 +79,7 @@ namespace Loom.ZombieBattleground.Data
 
     public class CardList
     {
+        [JsonProperty("cards")]
         public List<Card> Cards;
     }
 }

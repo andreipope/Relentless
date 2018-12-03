@@ -117,6 +117,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GameInitialized += GameInitializedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
 
+            _matchManager.MatchFinished += MatchFinishedHandler;
+
             _deckStatus = new List<CardZoneOnBoardStatus>();
             _deckStatus.Add(new CardZoneOnBoardStatus(null, 0));
             _deckStatus.Add(new CardZoneOnBoardStatus(
@@ -256,7 +258,7 @@ namespace Loom.ZombieBattleground
 
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
-                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
+                        _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
 
                         _gameplayManager.OpponentIdCheat = -1;
                     }
@@ -405,7 +407,10 @@ namespace Loom.ZombieBattleground
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             SetEndTurnButtonStatus(true);
+        }
 
+        private void MatchFinishedHandler()
+        {
             _reportGameActionsPanel?.Clear();
         }
 
