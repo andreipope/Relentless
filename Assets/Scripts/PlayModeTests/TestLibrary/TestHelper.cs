@@ -90,7 +90,6 @@ public class TestHelper
 
     private List<WorkingCard> _normalUnitCardInHand, _normalSpellCardInHand;
 
-    private CollectionData _collectionData;
     private List<Loom.ZombieBattleground.Data.Card> _createdArmyCards;
 
     private List<string> _overlordNames = new List<string>() {
@@ -2857,8 +2856,6 @@ public class TestHelper
     /// </summary>
     public void SetupArmyCards ()
     {
-        FillCollectionData ();
-
         DeckBuilderCard[] deckBuilderCards = GameObject.FindObjectsOfType<DeckBuilderCard> ();
 
         if (deckBuilderCards == null || deckBuilderCards.Length == 0)
@@ -3144,23 +3141,6 @@ public class TestHelper
         }
 
         yield return null;
-    }
-
-    private void FillCollectionData ()
-    {
-        _collectionData = new CollectionData ();
-        _collectionData.Cards = new List<CollectionCardData> ();
-
-        _collectionData.Cards.Clear ();
-        CollectionCardData cardData;
-        foreach (CollectionCardData card in _dataManager.CachedCollectionData.Cards)
-        {
-            cardData = new CollectionCardData ();
-            cardData.Amount = card.Amount;
-            cardData.CardName = card.CardName;
-
-            _collectionData.Cards.Add (cardData);
-        }
     }
 
     #endregion
