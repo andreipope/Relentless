@@ -68,6 +68,9 @@ namespace Loom.ZombieBattleground
 
         Deck CurrentPlayerDeck { get; set; }
         Deck OpponentPlayerDeck { get; set; }
+
+        int OpponentIdCheat { get; set; }
+        bool AvoidGooCost { get; set; }
         bool UseInifiniteAbility { get; set; }
     }
 }
