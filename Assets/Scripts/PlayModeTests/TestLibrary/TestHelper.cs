@@ -3002,6 +3002,11 @@ public class TestHelper
         yield return AddCardToHorde2 (cardName, count);
     }
 
+    //The method that actually adds the cards is AddCardToHorde2
+    //AddCardToHorde is only used to check if in the current displayed element, there's the card we're looking for
+    //If it's not, the correct element is picked so that the card can be found
+    //Otherwise it can proceed directly to adding said cards
+
     private IEnumerator AddCardToHorde2 (string cardName, int count = 1)
     {
         int checkedPage;
