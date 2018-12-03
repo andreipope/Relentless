@@ -416,7 +416,7 @@ MonoBehaviour:
   delayBeforeEffect: 4
   delayAfterEffect: 1.5
   delayForChangeState: 0
-  soundName: 
+  soundName: CZB_AUD_Stapler_F1_EXP
   delayForSound: 0
   offset: {x: 0, y: 0.2, z: 0}
   positionInfo:

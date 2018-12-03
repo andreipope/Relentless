@@ -894,14 +894,10 @@
               "value": 1,
               "effectType": "TARGET_ROCK",
               "buffType": "ENTRY",
-			  "VisualEffectsToPlay": [
-                {
-                  "Type": "Moving",
-                  "Path": "Prefabs/VFX/Spells/SpellTargetFireAttack"
-                },
+			        "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                  "Path": "Prefabs/VFX/BolderrVFX"
                 }
               ]
             }
