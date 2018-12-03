@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground
 
         public bool AvoidGooCost { get; set; }
 
+        public bool UseInifiniteAbility { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -225,6 +227,7 @@ namespace Loom.ZombieBattleground
 
             OpponentIdCheat = -1;
             AvoidGooCost = false;
+            UseInifiniteAbility = false;
         }
 
         public void Update()

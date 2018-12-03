@@ -611,7 +611,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        private void PlayCardOnBoard(WorkingCard card)
+        public void PlayCardOnBoard(WorkingCard card)
         {
             _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
             {
