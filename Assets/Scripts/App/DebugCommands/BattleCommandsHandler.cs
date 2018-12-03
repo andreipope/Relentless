@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -11,6 +12,7 @@ static class BattleCommandsHandler
     private static SkillsController _skillController;
     private static BattlegroundController _battlegroundController;
     private static CardsController _cardsController;
+    private static IDataManager _dataManager;
 
     public static void Initialize()
     {
@@ -20,6 +22,7 @@ static class BattleCommandsHandler
         _skillController = _gameplayManager.GetController<SkillsController>();
         _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
+        _dataManager = GameClient.Get<IDataManager>();
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
@@ -61,14 +64,24 @@ static class BattleCommandsHandler
     }
 
 
+    [CommandHandler(Description = "Allow Player to Play Cards without costing any goo")]
+    private static void PlayerInfiniteGoo(bool useInfiniteGoo)
+    {
+        _gameplayManager.AvoidGooCost = useInfiniteGoo;
+    }
+
+
+
+
     [CommandHandler(Description = "Enemy Mode - DoNothing / Normal / DontAttack")]
     private static void EnemyMode(Enumerators.AiBrainType aiBrainType)
     {
         _gameplayManager.GetController<AIController>().SetAiBrainType(aiBrainType);
     }
 
+
     [CommandHandler(Description = "Player Draw Next - Draw next Card with Card Name")]
-    private static void PlayerDrawNext(string cardName)
+    private static void PlayerDrawNext([Autocomplete(typeof(BattleCommandsHandler), "CardsInDeck")] string cardName)
     {
         Player player = _gameplayManager.CurrentPlayer;
 
@@ -78,27 +91,33 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
+        WorkingCard workingCard = player.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
         if (workingCard != null)
         {
-            BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-            _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
+            _cardsController.AddCardToHand(player, workingCard);
         }
         else
         {
-            workingCard = player.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
-            if (workingCard != null)
-            {
-                _cardsController.AddCardToHand(player, workingCard);
-                workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
-                BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-                _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
-            }
-            else
-            {
-                Debug.LogError(cardName + " not Found.");
-            }
+            Debug.LogError(cardName + " not Found.");
         }
+    }
+
+    public static IEnumerable<string> CardsInDeck()
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        string[] deckNames = new string[player.CardsInDeck.Count];
+        for (var i = 0; i < player.CardsInDeck.Count; i++)
+        {
+            deckNames[i] = player.CardsInDeck[i].LibraryCard.Name;
+        }
+        return deckNames;
+    }
+
+    [CommandHandler(Description = "Player Draw - Draw Card from Library with Card Name")]
+    private static void PlayerDraw(string cardName)
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        _cardsController.CreateNewCardByNameAndAddToHand(player, cardName);
     }
 
     private static void PlayPlayerCardOnBoard(PlayCardOnBoard playCardOnBoard)
