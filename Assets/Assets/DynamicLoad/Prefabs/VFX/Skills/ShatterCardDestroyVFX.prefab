@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 4557658795030138}
   - component: {fileID: 198706407808295110}
   - component: {fileID: 199686947602038250}
+  - component: {fileID: 114187506470400004}
   m_Layer: 0
   m_Name: ShatterCardDestroyVFX
   m_TagString: Untagged
@@ -236,7 +237,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1148953488221590}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22.37, y: 0.11, z: -0.9}
+  m_LocalPosition: {x: -21.336025, y: -6.475732, z: -0.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4879980074679678}
@@ -289,6 +290,27 @@ Transform:
   m_Father: {fileID: 4557658795030138}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114187506470400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1148953488221590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: 
+  cardNameOfAbility: 0
+  delayBeforeEffect: 5
+  delayAfterEffect: 0
+  delayForChangeState: 0
+  soundName: ZB_AUD_shatterCard_F1_EXP
+  delayForSound: 0
+  offset: {x: 0, y: 0.34, z: 0}
+  positionInfo:
+    type: 0
 --- !u!198 &198208328518194704
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -41543,8 +41565,8 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: d52062b72189c4792b83dd8f01701c07, type: 2}
-  - {fileID: 2100000, guid: d52062b72189c4792b83dd8f01701c07, type: 2}
+  - {fileID: 2100000, guid: 37acf839943106a47850aa71000c752f, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

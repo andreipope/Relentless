@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using System;
 using UnityEngine;
 
+
 namespace Loom.ZombieBattleground
 {
     public class AbilityEffectInfoView : MonoBehaviour
@@ -19,8 +20,14 @@ namespace Loom.ZombieBattleground
 
         public string soundName;
 
+        [Range(0, 20)]
+        public float delayForSound;
+
         public Vector3 offset;
 
+        public Vector3 localOffset;
+
+        public bool isRotate = false;
 
         public AbilityInfoPositionBlock positionInfo;
     }

@@ -62,7 +62,10 @@ namespace Loom.ZombieBattleground
             float delayAfter = 0;
             float delayBeforeDestroy = 5f;
             Vector3 offset = Vector3.zero;
+
             string soundName = string.Empty;
+            float delaySound = 0;
+
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
@@ -79,6 +82,7 @@ namespace Loom.ZombieBattleground
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
                     offset = effectInfo.offset;
                     soundName = effectInfo.soundName;
+                    delaySound = effectInfo.delayForSound;
                 }
 
                 foreach (BoardObject boardObject in _targets)
@@ -98,6 +102,9 @@ namespace Loom.ZombieBattleground
 
                 GameClient.Get<ICameraManager>().ShakeGameplay(Enumerators.ShakeType.Short);
             }
+
+            PlaySound(soundName, delaySound);
+
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 

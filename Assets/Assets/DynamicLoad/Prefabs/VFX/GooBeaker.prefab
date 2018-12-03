@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 4917443237163546}
   - component: {fileID: 198313568422680422}
   - component: {fileID: 199053631407532158}
+  - component: {fileID: 114641956085251692}
   m_Layer: 9
   m_Name: GooBeaker
   m_TagString: Untagged
@@ -103,6 +104,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &114641956085251692
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1567852740625974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: Goo Beaker
+  delayBeforeEffect: 0
+  delayAfterEffect: 0
+  delayForChangeState: 0
+  soundName: CZB_AUD_Goo_Beaker_F1_EXP
+  offset: {x: 0, y: 0, z: 0}
 --- !u!198 &198232370218656298
 ParticleSystem:
   m_ObjectHideFlags: 1

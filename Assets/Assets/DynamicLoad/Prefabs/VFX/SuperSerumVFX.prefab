@@ -474,10 +474,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: SuperSerum
+  cardNameOfAbility: 0
   delayBeforeEffect: 5
   delayAfterEffect: 3.5
-  soundName: 
+  delayForChangeState: 0
   offset: {x: 0, y: 0.37, z: 0}
+  delayForSound: 0
+  soundName: CZB_AUD_Super_Serum_F1_EXP
+  positionInfo:
+    type: 0
 --- !u!198 &198153410069280080
 ParticleSystem:
   m_ObjectHideFlags: 1

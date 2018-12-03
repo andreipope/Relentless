@@ -32,7 +32,10 @@ namespace Loom.ZombieBattleground
             float delayAfter = 0;
             float delayBeforeDestroy = 5f;
             Vector3 offset = Vector3.zero;
+
             string soundName = string.Empty;
+            float soundDelay = 0;
+
             Enumerators.AbilityEffectInfoPositionType positionType = Enumerators.AbilityEffectInfoPositionType.Target;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
@@ -48,6 +51,7 @@ namespace Loom.ZombieBattleground
                     offset = effectInfo.offset;
                     soundName = effectInfo.soundName;
                     positionType = effectInfo.positionInfo.type;
+                    soundDelay = effectInfo.delayForSound;
                 }
 
                 Vector3 position = Vector3.zero;
@@ -77,6 +81,8 @@ namespace Loom.ZombieBattleground
                 }
 
             }
+
+            PlaySound(soundName, soundDelay);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }

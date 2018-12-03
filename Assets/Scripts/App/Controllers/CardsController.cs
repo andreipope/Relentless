@@ -137,10 +137,6 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
-            // FIX ME! THIS HACK ONLY FOR SOME RELEASE
-            EndCardDistribution();
-            return;
-
             if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
             {
                 EndCardDistribution();
@@ -176,10 +172,13 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP && !_gameplayManager.IsTutorial)
             {
                 _gameplayManager.CurrentPlayer.CardsInDeck =
-                _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
+                    _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
+                _battlegroundController.StartGameplayTurns();
             }
-
-            _battlegroundController.StartGameplayTurns();
+            else
+            {
+                _battlegroundController.StartGameplayTurns();
+            }
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -511,6 +510,7 @@ namespace Loom.ZombieBattleground
                 if(!_gameplayManager.AvoidGooCost)
                     card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
 
+
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
@@ -571,13 +571,13 @@ namespace Loom.ZombieBattleground
                                 _isHoveringCardOfBoard = false;
                             }
 
+                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
+
                             boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
                                 {
-                                    _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
-
                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
@@ -601,7 +601,7 @@ namespace Loom.ZombieBattleground
                                                 boardUnitView.Model.Die(true);
                                             }
 
-                                        }, CallAbilityAction, target, handCard: handCard);
+                                        }, CallAbilityAction, target, handCard);
 
                                     waiterAction.ForceActionDone();
                                 });
@@ -623,10 +623,15 @@ namespace Loom.ZombieBattleground
                             InternalTools.DoActionDelayed(() =>
                             {
                                 _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (x) =>
+                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (status) =>
                                     {
+                                        if(status)
+                                        {
+                                            player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
+                                        }
+
                                         RankBuffAction.ForceActionDone();
-                                    }, CallAbilityAction, target, handCard: handCard);
+                                    }, CallAbilityAction, target, handCard);
 
                                 waiterAction.ForceActionDone();                           
                             }, 0.75f);

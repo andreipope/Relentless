@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
                 GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                             "Prefabs/VFX/UniqueArrivalAnimations/Cerberus_Arrival"), unitView.Transform, false);
 
+                PlaySound("ZB_AUD_CerberusArrival_F1_EXP");
+
                 animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
                 unitView.GameObject.SetActive(true);
