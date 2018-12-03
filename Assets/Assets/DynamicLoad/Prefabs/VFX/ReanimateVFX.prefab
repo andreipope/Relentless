@@ -1666,9 +1666,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardName: 
+  cardNameOfAbility: 0
   delayBeforeEffect: 5
   delayAfterEffect: 0.75
   delayForChangeState: 2
+  soundName: ZB_AUD_ReAnimate_F1_EXP
+  delayForSound: 0
+  offset: {x: 0, y: 0, z: 0}
+  positionInfo:
+    type: 0
 --- !u!137 &137985918772201106
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

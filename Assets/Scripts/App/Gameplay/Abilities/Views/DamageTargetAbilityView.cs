@@ -47,10 +47,8 @@ namespace Loom.ZombieBattleground
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
                 }, _delayBeforeMove);
 
-                if (!string.IsNullOrEmpty(_abilityActionSound))
-                {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }
+
+                PlaySound(_abilityActionSound, 0);
             }
             else
             {
@@ -63,6 +61,8 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(ClearParticles, _delayBeforeDestroyMoved);
 
             _delayBeforeMove = 0f;
+
+            float soundDelay = 0f;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
@@ -78,14 +78,12 @@ namespace Loom.ZombieBattleground
                     _delayAfterImpact = effectInfo.delayAfterEffect;
                     _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
                     _abilityActionCompletedSound = effectInfo.soundName;
+                    soundDelay = effectInfo.delayForSound;
                 }
 
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
 
-                if (!string.IsNullOrEmpty(_abilityActionCompletedSound))
-                {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionCompletedSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }
+                PlaySound(_abilityActionCompletedSound, soundDelay);
             }
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, _delayAfterImpact);

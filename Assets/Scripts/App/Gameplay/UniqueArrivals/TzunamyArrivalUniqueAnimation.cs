@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
                 GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                             "Prefabs/VFX/UniqueArrivalAnimations/Tzunamy_Arrival"));
 
+                PlaySound("ZB_AUD_Tzunamy_F1_EXP");
+
                 InternalTools.DoActionDelayed(() =>
                 {
                     Object.Destroy(animationVFX);

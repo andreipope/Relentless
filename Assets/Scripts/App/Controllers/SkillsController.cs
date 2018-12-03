@@ -699,6 +699,12 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(particle, true, 6f);
             }
 
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skill.OverlordSkill.ToString().ToLowerInvariant(),
+                Constants.OverlordAbilitySoundVolume,
+                Enumerators.CardSoundType.NONE);
+
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
@@ -1418,12 +1424,14 @@ namespace Loom.ZombieBattleground
             {
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target).Transform.position + Vector3.up * 0.34f;
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ShatterCardDestroyVFX"), position, delay: 5f);
-
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
                 _battlegroundController.DestroyBoardUnit(boardUnitModel);
 
-                _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, "ZB_AUD_shatterCard_F1_EXP", Constants.OverlordAbilitySoundVolume, Enumerators.CardSoundType.NONE);
+                _soundManager.PlaySound(
+                    Enumerators.SoundType.OVERLORD_ABILITIES,
+                    skill.OverlordSkill.ToString().ToLowerInvariant() + "_Impact",
+                    Constants.OverlordAbilitySoundVolume,
+                    Enumerators.CardSoundType.NONE);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1648,6 +1656,8 @@ namespace Loom.ZombieBattleground
 
             units = unitsViews.Select((x) => x.Model).ToList();
 
+            GameObject vfxObject = null;
+
             foreach (BoardUnitModel unit in units)
             {
                 InternalTools.DoActionDelayed(() =>
@@ -1655,13 +1665,9 @@ namespace Loom.ZombieBattleground
                     AttackWithModifiers(owner, boardSkill, skill, unit, Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC);
                 }, 2.5f);
 
-                _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MeteorShowerVFX"), unit, delay: 8f, isIgnoreCastVfx: true); // meteor
-
-                _soundManager.PlaySound(
-                    Enumerators.SoundType.OVERLORD_ABILITIES,
-                    skill.Title.Trim().ToLowerInvariant(),
-                    Constants.OverlordAbilitySoundVolume,
-                    Enumerators.CardSoundType.NONE);
+                vfxObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MeteorShowerVFX"));
+                vfxObject.transform.position =  _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(vfxObject, true, 8);
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {

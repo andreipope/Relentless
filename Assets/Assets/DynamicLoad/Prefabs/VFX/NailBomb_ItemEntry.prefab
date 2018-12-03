@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4805967932055718}
+  - component: {fileID: 114611768805680044}
   m_Layer: 0
   m_Name: NailBomb_ItemEntry
   m_TagString: Untagged
@@ -287,6 +288,23 @@ Transform:
   m_Father: {fileID: 4327389003462114}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114611768805680044
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1152142301224672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: Nail Bomb
+  delayBeforeEffect: 5
+  delayAfterEffect: 0
+  delayForChangeState: 0
+  soundName: ZB_AUD_NailBomb_F1_EXP
+  offset: {x: 0, y: 0, z: 0}
 --- !u!198 &198136808909692548
 ParticleSystem:
   m_ObjectHideFlags: 1

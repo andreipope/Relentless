@@ -300,11 +300,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: 
+  cardNameOfAbility: 0
   delayBeforeEffect: 4
   delayAfterEffect: 2
   delayForChangeState: 0
-  soundName: 
   offset: {x: 0, y: 0, z: 0}
+  delayForSound: 0
+  soundName: CZB_AUD_Boomstick_Entry_F1_EXP
+  positionInfo:
+    type: 0
 --- !u!198 &198000915782378562
 ParticleSystem:
   m_ObjectHideFlags: 1
