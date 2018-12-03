@@ -396,12 +396,12 @@ namespace Loom.ZombieBattleground
             HasFeral = true;
             InitialUnitType = Enumerators.CardType.FERAL;
 
-            CardTypeChanged?.Invoke(InitialUnitType);
-
             if (!AttackedThisTurn && !IsPlayable)
             {
                 IsPlayable = true;
             }
+
+            CardTypeChanged?.Invoke(InitialUnitType);
         }
 
         public void SetInitialUnitType()
