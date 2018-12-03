@@ -585,7 +585,7 @@ namespace Loom.ZombieBattleground
 
                                             if (status)
                                             {
-                                                player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
+                                                player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
                                             }
                                             else
@@ -625,6 +625,7 @@ namespace Loom.ZombieBattleground
                                 _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                     Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (x) =>
                                     {
+                                        player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
                                         RankBuffAction.ForceActionDone();
                                     }, CallAbilityAction, target, handCard: handCard);
 
