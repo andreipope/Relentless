@@ -3221,7 +3221,7 @@ public class TestHelper
 
     private string UppercaseFirst (string s)
     {
-        return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase (s.ToLower ());
+        return System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase (s.ToLower ());
     }
 
     public enum RecordedValue
