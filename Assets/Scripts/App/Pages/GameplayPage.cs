@@ -252,11 +252,13 @@ namespace Loom.ZombieBattleground
 
                         List<Data.AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
 
-                        Data.AIDeck opponentDeck = decks[Random.Range(0, decks.Count)];
+                        Data.AIDeck opponentDeck = _gameplayManager.OpponentIdCheat == -1 ? decks[Random.Range(0, decks.Count)] : decks[_gameplayManager.OpponentIdCheat];
 
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
                         _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
+
+                        _gameplayManager.OpponentIdCheat = -1;
                     }
                     break;
                 case Enumerators.MatchType.PVP:
