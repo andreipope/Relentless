@@ -147,8 +147,6 @@ namespace Loom.ZombieBattleground
             _rewardDisabledObject.SetActive(false);
             _rewardSkillObject.SetActive(true);
 
-            AbilityInstanceOnSelectionChanged(_newOpenAbility);
-
             if (_levelReward != null)
             {
                 switch (_levelReward.Reward)
