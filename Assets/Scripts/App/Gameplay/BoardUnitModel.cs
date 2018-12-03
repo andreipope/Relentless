@@ -88,6 +88,8 @@ namespace Loom.ZombieBattleground
             IsAllAbilitiesResolvedAtStart = true;
 
             _gameplayManager.CanDoDragActions = false;
+
+            LastAttackingSetType = Enumerators.SetType.NONE;
         }
 
         public event Action TurnStarted;
@@ -627,6 +629,9 @@ namespace Loom.ZombieBattleground
 
                             WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
                             ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+
+                            targetCardModel.WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(

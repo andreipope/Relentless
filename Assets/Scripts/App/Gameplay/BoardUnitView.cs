@@ -863,23 +863,29 @@ namespace Loom.ZombieBattleground
                 {
                     attackCompleteCallback();
 
+                    completeCallback?.Invoke();
+
+                    Model.WaiterAction?.ForceActionDone();
+                    targetCardView.Model.WaiterAction?.ForceActionDone();
+
                     if (targetCardView.Model.CurrentHp <= 0)
                     {
-                        completeCallback?.Invoke();
-                        Model.WaiterAction?.ForceActionDone();
-                        targetCardView.Model.WaiterAction?.ForceActionDone();
+                        if (Model.CurrentHp > 0)
+                        {
+                            Model.ActionForDying?.ForceActionDone();
+                        }
                     }
                     else if (Model.CurrentHp <= 0)
                     {
-                        completeCallback?.Invoke();
-                        targetCardView.Model.WaiterAction?.ForceActionDone();
-                        Model.WaiterAction?.ForceActionDone();
+                        if (targetCardView.Model.CurrentHp > 0)
+                        {
+                            targetCardView.Model.ActionForDying?.ForceActionDone();
+                        }
                     }
                     else
                     {
-                        completeCallback?.Invoke();
-                        Model.WaiterAction?.ForceActionDone();
                         Model.ActionForDying?.ForceActionDone();
+                        targetCardView.Model.ActionForDying?.ForceActionDone();
                     }
                 }
             );
