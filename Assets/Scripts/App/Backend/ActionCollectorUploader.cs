@@ -252,14 +252,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private void AbilityUsedHandler(
                 WorkingCard card,
                 Enumerators.AbilityType abilityType,
-                CardKind.Types.Enum cardKind,
-                AffectObjectType.Types.Enum affectObjectType,
+                Enumerators.CardKind cardKind,
+                Enumerators.AffectObjectType affectObjectType,
                 List<ParametrizedAbilityBoardObject> targets = null,
                 List<WorkingCard> cards = null)
             {
                 PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed()
                 {
-                    CardKind = cardKind,
+                    CardKind = (CardKind.Types.Enum) cardKind,
                     AbilityType = abilityType.ToString(),
                     Card = card.ToProtobuf()
                 };

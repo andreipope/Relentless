@@ -734,7 +734,7 @@ namespace Loom.ZombieBattleground
             foreach (Deck deck in _dataManager.CachedDecksData.Decks)
             {
                 if (_currentDeckId != deck.Id &&
-                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.InvariantCultureIgnoreCase))
                 {
                     _buttonSave.interactable = true;
                     OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");

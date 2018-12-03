@@ -38,11 +38,10 @@ namespace Loom.ZombieBattleground
 
         GameState InitialGameState { get; }
 
+        List<string> PvPTags { get; set; }
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
-        
-        Task<bool> DebugFindMatch(Deck deck);
 
         Task CancelFindMatch();
         void MatchIsStarting(FindMatchResponse findMatchResponse);

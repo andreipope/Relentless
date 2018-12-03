@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
                                    allies[0]
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
                             }
                         }
                         else
@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
                                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                                 {
                                    allies[random]
-                                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
                             }
                         }
                     }
@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
-                            AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                            AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
@@ -158,7 +158,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
-                            AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                            AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
                     }
                     break;
             }

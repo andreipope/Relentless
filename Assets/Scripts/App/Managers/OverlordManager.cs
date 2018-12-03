@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
 
             ApplyReward(hero);
 
-            // TODO: ADD FUNCTIONALY TO SAVE DATA ON SERVER
+            // TODO: ADD FUNCTIONALY TO SAVE HEROES DATA ON SERVER
         }
 
         private void ApplyReward(Hero hero)

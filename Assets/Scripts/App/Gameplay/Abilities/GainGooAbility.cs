@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
                 MainWorkingCard,
                 new List<BoardObject>(),
                 AbilityData.AbilityType,
-                Protobuf.AffectObjectType.Types.Enum.Player);
+                Enumerators.AffectObjectType.Player);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;

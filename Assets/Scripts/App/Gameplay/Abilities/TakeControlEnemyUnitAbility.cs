@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
-                                                     Protobuf.AffectObjectType.Types.Enum.Character);
+                                                     Enumerators.AffectObjectType.Character);
         }
 
         protected override void VFXAnimationEndedHandler()

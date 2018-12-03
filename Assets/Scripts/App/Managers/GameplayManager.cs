@@ -75,6 +75,10 @@ namespace Loom.ZombieBattleground
 
         public Deck OpponentPlayerDeck { get; set; }
 
+        public int OpponentIdCheat { get; set; }
+
+        public bool AvoidGooCost { get; set; }
+
         public bool UseClientGameLogic => _pvpManager?.MatchMetadata?.UseClientGameLogic ?? false;
 
         public T GetController<T>()
@@ -166,6 +170,7 @@ namespace Loom.ZombieBattleground
             IsPreparingEnded = false;
 
             CanDoDragActions = false;
+            AvoidGooCost = false;
         }
 
         public bool IsLocalPlayerTurn()
@@ -222,6 +227,9 @@ namespace Loom.ZombieBattleground
                 Constants.ZombiesSoundVolume = 0.25f;
                 Constants.CreatureAttackSoundVolume *= 3;
             }
+
+            OpponentIdCheat = -1;
+            AvoidGooCost = false;
         }
 
         public void Update()

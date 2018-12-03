@@ -349,6 +349,9 @@ namespace Loom.ZombieBattleground
         public virtual bool CanBeBuyed(Player owner)
         {
 #if !DEV_MODE
+            if (GameplayManager.AvoidGooCost)
+                return true;
+
             return owner.CurrentGoo >= ManaCost;
 #else
             return true;
