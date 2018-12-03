@@ -61,8 +61,6 @@ namespace Loom.ZombieBattleground
 
         public List<string> PvPTags { get; set; }
 
-        private IUIManager _uiManager;
-        private IDataManager _dataManager;
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
@@ -81,8 +79,6 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-            _uiManager = GameClient.Get<IUIManager>();
-            _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
