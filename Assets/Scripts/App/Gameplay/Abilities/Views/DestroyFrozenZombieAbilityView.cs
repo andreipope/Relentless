@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -21,7 +22,7 @@ namespace Loom.ZombieBattleground
             {
                 _targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
 
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/IceBoltVFX");//(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
+                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
                 VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
@@ -38,15 +39,35 @@ namespace Loom.ZombieBattleground
         {
             ClearParticles();
 
+            float delayBeforeDestroy = 5f;
+            float delayAfter = 0;
+            Vector3 offset = Vector3.zero;
+
+            string soundName = string.Empty;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
-                _targetPosition.y += 0.34f;
+
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    offset = effectInfo.offset;
+                    soundClipTitle = effectInfo.soundName;
+                    delayBeforeSound = effectInfo.delayForSound;
+                }
+
+                _targetPosition += offset;
                 VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform, false);
+                ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
                 VfxObject.transform.position = _targetPosition;
             }
 
-            Ability.InvokeVFXAnimationEnded();
+            PlaySound(soundClipTitle, delayBeforeSound);
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
 
