@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         protected IGameplayManager GameplayManager;
 
+        protected ISoundManager SoundManager;
+
         protected ParticlesController ParticlesController;
 
         protected AbilityBase Ability;
@@ -21,11 +23,16 @@ namespace Loom.ZombieBattleground
 
         protected List<ulong> ParticleIds;
 
+        protected string soundClipTitle;
+
+        protected float delayBeforeSound;
+
         public AbilityViewBase(AbilityBase ability)
         {
             Ability = ability;
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             GameplayManager = GameClient.Get<IGameplayManager>();
+            SoundManager = GameClient.Get<ISoundManager>();
             ParticlesController = GameplayManager.GetController<ParticlesController>();
             ParticleIds = new List<ulong>();
 
@@ -75,6 +82,19 @@ namespace Loom.ZombieBattleground
             foreach (ulong id in ParticleIds)
             {
                 ParticlesController.DestroyParticle(id);
+            }
+        }
+
+        protected void PlaySound(string clipTitle, float delay)
+        {
+            if (!string.IsNullOrEmpty(clipTitle))
+            {
+                Enumerators.SoundType type = Ability.CardKind == Enumerators.CardKind.CREATURE ? Enumerators.SoundType.CARDS : Enumerators.SoundType.SPELLS;
+
+                Helpers.InternalTools.DoActionDelayed(() =>
+                {
+                    SoundManager.PlaySound(type, clipTitle, Constants.SfxSoundVolume, isLoop: false);
+                }, delay);
             }
         }
     }

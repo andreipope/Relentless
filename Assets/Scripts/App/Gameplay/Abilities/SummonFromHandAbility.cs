@@ -34,8 +34,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
+                return;
+
             List<BoardCard> cards = BattlegroundController.PlayerHandCards.FindAll(
-                x => x.WorkingCard.RealCost <= Value &&
+                x => x.WorkingCard.InstanceCard.Cost <= Value &&
                 x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
             if(SetType != Enumerators.SetType.NONE)
@@ -54,6 +57,9 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < cards.Count; i++)
             {
+                if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
+                    break;
+
                 CardsController.SummonUnitFromHand(PlayerCallerOfAbility, cards[i]);
 
                 targets.Add(cards[i].HandBoardCard);
@@ -65,7 +71,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

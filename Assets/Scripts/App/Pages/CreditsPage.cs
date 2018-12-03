@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
@@ -93,18 +94,14 @@ namespace Loom.ZombieBattleground
         {
             for (int i = 0; i < _dataManager.CachedCreditsData.CreditsInfo.Count; i++)
             {
-                if (i > 0)
-                {
-                    new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList,
-                        _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
-                }
-
+                new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList,
+                    _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
                 for (int j = 0; j < _dataManager.CachedCreditsData.CreditsInfo[i].Credits.Count; j++)
                 {
                     CreditView credit =
                         new CreditView(
                             _creditListItemPrefab,
-                            _panelCreditsList,
+                            _panelCreditsList, 
                             _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].FullName,
                             _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].Post
                         );

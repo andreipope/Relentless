@@ -4,7 +4,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using Object = UnityEngine.Object; 
 
 namespace Loom.ZombieBattleground
 {
@@ -19,25 +19,81 @@ namespace Loom.ZombieBattleground
             TargetUnitStatusType = ability.TargetUnitStatusType;
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+                return;
+
+            DealDamageToUnitOwner();
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
 
             if (IsAbilityResolved)
             {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
                 InvokeActionTriggered();
             }
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            DealDamageToUnitOwner();
+        }
+
+        private void DealDamageToUnitOwner()
+        {
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
+            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
+            {
+                if (GetCaller() == AbilityUnitOwner)
+                {
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
+
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    {
+                        ActionType = Enumerators.ActionType.CardAffectingCard,
+                        Caller = GetCaller(),
+                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        {
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                                Target = AbilityUnitOwner,
+                                HasValue = true,
+                                Value = -AbilityData.Value
+                            }
+                        }
+                    });
+                }
+            }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
 
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+            object caller = GetCaller();
 
             object target = null;
 
-            Enumerators.ActionType actionType = Enumerators.ActionType.None;
+            Enumerators.ActionType actionType;
 
             switch (AffectObjectType)
             {
@@ -46,7 +102,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetPlayer
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
                     target = TargetPlayer;
                     actionType = Enumerators.ActionType.CardAffectingOverlord;
@@ -56,7 +112,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetUnit
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
                     target = TargetUnit;
                     actionType = Enumerators.ActionType.CardAffectingCard;
@@ -64,6 +120,8 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
+
+            AbilityProcessingAction?.ForceActionDone();
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

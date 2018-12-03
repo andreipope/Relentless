@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel target = null;
             if (PredefinedTargets != null)
             {
-                allies = PredefinedTargets.Cast<BoardUnitModel>().ToList();
+                allies = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
 
                 if (allies.Count > 0)
                 {
@@ -75,10 +75,35 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
             }
 
+            Enumerators.ActionEffectType effectType = Enumerators.ActionEffectType.None;
+
+            if (UnitType == Enumerators.CardType.FERAL)
+            {
+                effectType = Enumerators.ActionEffectType.Feral;
+            }
+            else if (UnitType == Enumerators.CardType.HEAVY)
+            {
+                effectType = Enumerators.ActionEffectType.Heavy;
+            }
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = effectType,
+                        Target = unit
+                    }
+                }
+            });
+
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                unit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
     }
 }

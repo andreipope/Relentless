@@ -166,8 +166,11 @@ namespace Loom.ZombieBattleground
 
                 if (attackingUnitModel.OwnerPlayer == _gameplayManager.CurrentPlayer)
                 {
-                    _gameplayManager.PlayerMoves.AddPlayerMove(new PlayerMove(Enumerators.PlayerActionType.AttackOnUnit,
-                        new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking)));
+                    _gameplayManager.PlayerMoves.AddPlayerMove(
+                        new PlayerMove(
+                            Enumerators.PlayerActionType.AttackOnUnit,
+                            new AttackUnit(attackingUnitModel, attackedUnitModel, damageAttacked, damageAttacking))
+                        );
                 }
             }
         }
@@ -209,8 +212,7 @@ namespace Loom.ZombieBattleground
             if (healingPlayer != null)
             {
                 healedPlayer.Defense += skill.Skill.Value;
-
-                if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN ||
+                if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN &&
                     skill.Skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
                 {
                     if (healingPlayer.Defense > Constants.DefaultPlayerHp)

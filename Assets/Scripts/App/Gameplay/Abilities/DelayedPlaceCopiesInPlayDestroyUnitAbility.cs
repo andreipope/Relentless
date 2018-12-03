@@ -6,12 +6,14 @@ namespace Loom.ZombieBattleground
 {
     public class DelayedPlaceCopiesInPlayDestroyUnitAbility : DelayedAbilityBase
     {
-        public int Count;
+        private int Count { get; }
+        private string Name { get; }
 
         public DelayedPlaceCopiesInPlayDestroyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
+            Name = ability.Name;
         }
 
         public override void Action(object info = null)
@@ -25,7 +27,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnit;
             for (int i = 0; i < Count; i++)
             {
-                boardUnit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, AbilityUnitOwner.Card.LibraryCard.Name).Model;
+                boardUnit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name).Model;
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
@@ -50,7 +52,7 @@ namespace Loom.ZombieBattleground
                 TargetEffects = TargetEffects
             });
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
     }
 }

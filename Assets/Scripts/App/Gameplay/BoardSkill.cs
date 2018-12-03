@@ -113,6 +113,8 @@ namespace Loom.ZombieBattleground
             {
                 FightTargetingArrow.Dispose();
             }
+
+            FightTargetingArrow = null;
         }
 
         public void BlockSkill()
@@ -142,7 +144,7 @@ namespace Loom.ZombieBattleground
 
             if (OwnerPlayer.IsLocalPlayer)
             {
-                if (Skill.SkillTargetTypes.Count > 0)
+                if (Skill.CanSelectTarget)
                 {
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
@@ -174,14 +176,9 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     DoOnUpSkillAction();
-
-
-                     // improve it - good way to make this call after done all actions - this is the quick hack
-                     completeCallback?.Invoke();
+                     DoOnUpSkillAction(completeCallback);
+                     IsUsing = false;
                  });
-
-            IsUsing = false;
         }
 
         public void UseSkill(BoardObject target)
@@ -335,16 +332,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void DoOnUpSkillAction()
+        private void DoOnUpSkillAction(Action completeCallback)
         {
             if (OwnerPlayer.IsLocalPlayer && _tutorialManager.IsTutorial)
             {
                 _tutorialManager.ActivateSelectTarget();
             }
 
-            if (Skill.SkillTargetTypes.Count == 0)
+            if (!Skill.CanSelectTarget)
             {
-                _skillsController.DoSkillAction(this, OwnerPlayer);
+                _skillsController.DoSkillAction(this, completeCallback, OwnerPlayer);
             }
             else
             {
@@ -352,13 +349,17 @@ namespace Loom.ZombieBattleground
                 {
                     if (FightTargetingArrow != null)
                     {
-                        _skillsController.DoSkillAction(this);
+                        _skillsController.DoSkillAction(this, completeCallback);
                         _playerController.IsCardSelected = false;
+                    }
+                    else
+                    {
+                        completeCallback?.Invoke();
                     }
                 }
                 else
                 {
-                    _skillsController.DoSkillAction(this);
+                    _skillsController.DoSkillAction(this, completeCallback);
                 }
             }
         }

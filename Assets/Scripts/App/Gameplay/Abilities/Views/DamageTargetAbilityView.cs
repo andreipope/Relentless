@@ -7,9 +7,20 @@ namespace Loom.ZombieBattleground
 {
     public class DamageTargetAbilityView : AbilityViewBase<DamageTargetAbility>
     {
-        private BattlegroundController _battlegroundController;
+        private const float DELAY_BEFORE_MOVE_SHROOM = 0.5f;
+        private const float DELAY_BEFORE_DESTROY_MOVED_SHROOM = 2f;
+        private const float DELAY_AFTER_IMPACT_SHROOM = 4.5f;
+        private const float DELAY_BEFORE_DESTROY_IMPACT_SHROOM = 10f;
 
-        private Vector3 _targetPosition;
+        private float _delayBeforeMove;
+        private float _delayBeforeDestroyMoved;
+        private float _delayAfterImpact;
+        private float _delayBeforeDestroyImpact;
+
+        private string _abilityActionSound,
+                       _abilityActionCompletedSound;
+
+        private BattlegroundController _battlegroundController;
 
         public DamageTargetAbilityView(DamageTargetAbility ability) : base(ability)
         {
@@ -18,33 +29,26 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+            SetDelays();
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
-                _targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
+                Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
                 _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
-
-                float duration = 3f;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
-                if (Ability.AbilityEffectType == Enumerators.AbilityEffectType.TARGET_ROCK)
+                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
+                InternalTools.DoActionDelayed(() =>
                 {
-                    SetRotation();
-                    VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position - VfxObject.transform.up;
-                    _targetPosition -= VfxObject.transform.up * 2.5f;
-                    VfxObject.transform.DOMove(_targetPosition, 2.9f).OnComplete(ActionCompleted);
-                    duration = 6f;
-                }
-                else
-                {
-                    VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
-                    _targetPosition = Utilites.CastVfxPosition(_targetPosition);
-                    VfxObject.transform.DOMove(_targetPosition, 0.5f).OnComplete(ActionCompleted);
-                    
-                }
-                ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject, true, duration));
+                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                }, _delayBeforeMove);
+
+
+                PlaySound(_abilityActionSound, 0);
             }
             else
             {
@@ -54,40 +58,67 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            ClearParticles();
+            InternalTools.DoActionDelayed(ClearParticles, _delayBeforeDestroyMoved);
+
+            _delayBeforeMove = 0f;
+
+            float soundDelay = 0f;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                _targetPosition = VfxObject.transform.position;
-                
+                Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
+                _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
+                Ability.TargetPlayer.AvatarObject.transform.position;
+
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = _targetPosition;
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    _delayAfterImpact = effectInfo.delayAfterEffect;
+                    _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
+                    _abilityActionCompletedSound = effectInfo.soundName;
+                    soundDelay = effectInfo.delayForSound;
+                }
 
-                ParticlesController.RegisterParticleSystem(VfxObject, true);
+                CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
+
+                PlaySound(_abilityActionCompletedSound, soundDelay);
             }
 
-            Ability.InvokeVFXAnimationEnded();
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, _delayAfterImpact);
         }
 
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            base.CreateVfx(pos, true, 5f);
+            base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
 
-        private float AngleBetweenVector3(Vector3 from, Vector3 target)
+        private void SetDelays()
         {
-            Vector3 diference = target - from;
-            float sign = (target.x < from.x) ? 1.0f : -1.0f;
-            return Vector3.Angle(Vector3.up, diference) * sign;
-        }
+            _delayBeforeMove = 0;
+            _delayAfterImpact = 0;
+            _delayBeforeDestroyImpact = 0;
+            _delayBeforeDestroyMoved = 0;
 
-        private void SetRotation()
-        {
-            float angle = AngleBetweenVector3(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position, _targetPosition);
-            VfxObject.transform.eulerAngles = new Vector3(VfxObject.transform.eulerAngles.x, VfxObject.transform.eulerAngles.y, angle);
+            switch (Ability.AbilityEffectType)
+            {
+                case Enumerators.AbilityEffectType.TARGET_LIFE:
+                    _delayBeforeMove = DELAY_BEFORE_MOVE_SHROOM;
+                    _delayAfterImpact = DELAY_AFTER_IMPACT_SHROOM;
+                    _delayBeforeDestroyImpact = DELAY_BEFORE_DESTROY_IMPACT_SHROOM;
+                    _delayBeforeDestroyMoved = DELAY_BEFORE_DESTROY_MOVED_SHROOM;
+                    _abilityActionSound = "ZB_AUD_Shroom_Trail_F1_EXP";
+                    _abilityActionCompletedSound = "ZB_AUD_Shroom_explosion_F1_EXP";
+                    break;
+                case Enumerators.AbilityEffectType.TARGET_ROCK:
+                    _abilityActionSound = "ZB_AUD_Shroom_Trail_F1_EXP";
+                    _delayBeforeMove = 3.5f;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

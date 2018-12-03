@@ -33,12 +33,12 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            TargetUnit.Distract();
+            BattlegroundController.DistractUnit(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

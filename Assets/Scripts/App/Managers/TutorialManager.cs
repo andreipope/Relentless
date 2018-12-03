@@ -94,8 +94,24 @@ namespace Loom.ZombieBattleground
             _currentTutorialStepIndex = 0;
             _tutorialSteps = CurrentTutorial.TutorialDataSteps;
             CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+            FillTutorialDeck();
 
             IsTutorial = false;
+        }
+
+        private void FillTutorialDeck()
+        {
+           _gameplayManager.CurrentPlayerDeck =
+                        new Deck(0, CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId,
+                        "TutorialDeck", new List<DeckCardData>(),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordSkill, true),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.SecondaryOverlordSkill, true));
+
+            _gameplayManager.OpponentPlayerDeck =
+                        new Deck(0, CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId,
+                        "TutorialDeckOpponent", new List<DeckCardData>(),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordSkill, true),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordSkill, true)); 
         }
 
         public void StartTutorial()
@@ -169,7 +185,7 @@ namespace Loom.ZombieBattleground
             if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
             }
             GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
@@ -294,6 +310,9 @@ namespace Loom.ZombieBattleground
 
         private async void NextStepCommonEndActions()
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _currentTutorialStepIndex++;
 
             CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];

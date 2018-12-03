@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using System.Numerics;
 using Loom.Client;
-using Loom.ZombieBattleground.BackendCommunication;
+using System.Security.Cryptography;
+using System.Text;
+using Loom.Client;using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
@@ -99,6 +101,12 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.BetaKeyRequest);
             _betaKeyInputField.text = "";
             Self.SetActive(true);
+
+            GameObject betaText = Self.transform.Find("Beta_Group/Text_Beta").gameObject;
+            betaText.SetActive(false);
+            _betaKeyInputField.gameObject.SetActive(false);
+
+            PressedBetaHandler();
         }
 
         public void Show(object data)
@@ -116,63 +124,52 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private async void PressedBetaHandler()
+        private void PressedBetaHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            string betaKey = _betaKeyInputField.text.Trim();
-            bool isBetaKeyValid = betaKey.Length == 12;
+            LoginProcess();
+        }
+
+        private async void LoginProcess()
+        {
+            string betaKey =
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(SystemInfo.deviceUniqueIdentifier.ToLowerInvariant()))) +
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(Application.productName.ToLowerInvariant())));
+
+            // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
+            SetUIState(LoginState.BetaKeyValidateAndLogin);
+
+            GenerateKeysAndUserFromBetaKey(betaKey, out byte[] privateKey, out byte[] _, out string userId);
+
             try
             {
-                isBetaKeyValid &= CryptoUtils.HexStringToBytes(betaKey).Length == 6;
-            }
-            catch (Exception)
-            {
-                isBetaKeyValid = false;
-            }
-
-            if (isBetaKeyValid)
-            {
-                // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
-                SetUIState(LoginState.BetaKeyValidateAndLogin);
-
-                GenerateKeysAndUserFromBetaKey(betaKey, out byte[] privateKey, out byte[] _, out string userId);
-
-                try
+                UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
                 {
-                    isBetaKeyValid = await _backendFacade.CheckIfBetaKeyValid(betaKey);
-                    if (!isBetaKeyValid)
-                        throw new Exception("Tester key not registered");
+                    IsValid = false
+                };
+                _backendDataControlMediator.SetUserDataModel(userDataModel);
+                await _backendDataControlMediator.LoginAndLoadData();
 
-                    UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
-                    {
-                        IsValid = false
-                    };
-                    _backendDataControlMediator.SetUserDataModel(userDataModel);
-                    await _backendDataControlMediator.LoginAndLoadData();
+                userDataModel.IsValid = true;
+                _backendDataControlMediator.SetUserDataModel(userDataModel);
 
-                    userDataModel.IsValid = true;
-                    _backendDataControlMediator.SetUserDataModel(userDataModel);
+                SuccessfulLogin();
 
-                    SuccessfulLogin();
-
-                    _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
-                }
-                catch (GameVersionMismatchException e)
-                {
-                    SetUIState(LoginState.RemoteVersionMismatch);
-                    UpdateVersionMismatchText(e);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogWarning(e);
-                    SetUIState(LoginState.BetaKeyValidationFailed);
-                }
+                _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
             }
-            else
+            catch (GameVersionMismatchException e)
             {
-                _uiManager.DrawPopup<WarningPopup>("Input a valid Tester Key");
+                SetUIState(LoginState.RemoteVersionMismatch);
+                UpdateVersionMismatchText(e);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e);
+                SetUIState(LoginState.BetaKeyValidationFailed);
             }
         }
 
@@ -221,7 +218,6 @@ namespace Loom.ZombieBattleground
             betaKey = betaKey.ToLowerInvariant();
 
             byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
-            Array.Resize(ref betaKeySeed, 32);
 
             BigInteger userIdNumber = new BigInteger(betaKeySeed) + betaKeySeed.Sum(b => b * 2);
             userId = "ZombieSlayer_" + userIdNumber;

@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
@@ -25,12 +26,15 @@ namespace Loom.ZombieBattleground
             public int MaximumGoo;
             public int HeroId;
 
-            public Enumerators.AiType AiType;
+            public Enumerators.AIType AIType;
 
             public List<string> CardsInHand;
             public List<string> CardsInDeck;
             public List<UnitOnBoardInfo> CardsOnBoard;
             public List<string> CardsOnGraveyard;
+
+            public string PrimaryOverlordSkill;
+            public string SecondaryOverlordSkill;
 
             public SpecificBattlegroundOverlordInfo()
             {
@@ -39,7 +43,7 @@ namespace Loom.ZombieBattleground
                 CardsOnBoard = new List<UnitOnBoardInfo>();
                 CardsOnGraveyard = new List<string>();
 
-                AiType = Enumerators.AiType.BLITZ_AI;
+                AIType = Enumerators.AIType.BLITZ_AI;
 
                 MaximumHealth = Constants.DefaultPlayerHp;
                 Health = MaximumHealth;

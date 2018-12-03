@@ -407,7 +407,7 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": false,
-          "UnitsCanAttack": true,
+          "UnitsCanAttack": false,
           "SoundName": "czb_tutorial_20_overlord"
         },
         {
@@ -471,10 +471,9 @@
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": false,
           "requiredAction": "START_TURN",
-          "WaiterOfWhichTurn": "Player",
           "CanMoveToNextStepByClickInPaused": false,
           "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": false,
+          "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
           "IsShowNextButtonFocusing": false,
           "IsShowQuestion": false,
@@ -482,11 +481,29 @@
           "DelayToPlaySound": 6.0,
           "CanHandleInput": false,
           "CanClickEndTurn": true,
-          "IsLaunchAIBrain": true,
           "SoundName": "czb_tutorial_23_end_turn3"
         },
         {
           "id": 22,
+          "janePose": "NORMAL",
+          "janeText": "Let’s continue",
+          "IsFocusing": false,
+          "IsArrowEnabled": false,
+          "CanMoveToNextStepByClick": false,
+          "requiredAction": "START_TURN",
+          "CanMoveToNextStepByClickInPaused": false,
+          "ShouldStopTurn": false,
+          "CanProceedWithEndStepManually": false,
+          "HasDelayToPlaySound": false,
+          "IsShowNextButtonFocusing": false,
+          "IsShowQuestion": false,
+          "IsShowNextButton": false,
+          "CanHandleInput": false,
+          "CanClickEndTurn": false,
+           "IsLaunchAIBrain": true,
+        },
+        {
+          "id": 23,
           "janePose": "THINKING",
           "janeText": "Ahh, look - they’re using a <b><color=\"orange\"><u>Heavy</u></color></b> zombie to defend their troops!",
           "IsFocusing": false,
@@ -507,7 +524,7 @@
           "SoundName": "czb_tutorial_24_heavy"
         },
         {
-          "id": 23,
+          "id": 24,
           "janePose": "POINTING",
           "janeText": "We'll have to remove it in order \nto attack them again!",
           "IsFocusing": true,
@@ -539,7 +556,7 @@
           "SoundName": "czb_tutorial_25_remove_heavy"
         },
         {
-          "id": 24,
+          "id": 25,
           "janePose": "THINKING",
           "janeText": "Damn - you’re out of active zombies on the battleground...",
           "IsFocusing": false,
@@ -559,7 +576,7 @@
           "SoundName": "czb_tutorial_26_active_zombies"
         },
         {
-          "id": 25,
+          "id": 26,
           "janePose": "THINKING",
           "janeText": "Wait - you have some goo and a <b><color=\"orange\"><u>Feral</u></color></b> zombie at the ready in your hand!",
           "IsFocusing": false,
@@ -579,7 +596,7 @@
           "SoundName": "czb_tutorial_27_feral"
         },
         {
-          "id": 26,
+          "id": 27,
           "janePose": "POINTING",
           "janeText": "Feral zombies are a little weaker, but they are super fast - they can attack as soon as they land in the battleground!",
           "IsFocusing": false,
@@ -599,7 +616,7 @@
           "SoundName": "czb_tutorial_28_feral2"
         },
         {
-          "id": 27,
+          "id": 28,
           "janePose": "POINTING",
           "janeText": "Let's use one! Drag your feral zombie from your hand into the battleground",
           "IsFocusing": true,
@@ -630,7 +647,7 @@
           "SoundName": "czb_tutorial_29_drag_feral"
         },
         {
-          "id": 28,
+          "id": 29,
           "janePose": "POINTING",
           "janeText": "Now, you can attack your opponent's Overlord immediately!",
           "IsFocusing": true,
@@ -655,14 +672,14 @@
           "IsShowQuestion": false,
           "IsShowNextButton": true,
           "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
+          "CanHandleInput": false,
           "CanClickEndTurn": false,
           "BoardArrowCanUsableOnPlayer": true,
           "UnitsCanAttack": true,
           "SoundName": "czb_tutorial_30_immediatly"
         },
         {
-          "id": 29,
+          "id": 30,
           "janePose": "THUMBS_UP",
           "janeText": "Awesome! Now would be the perfect time to use your <b><color=\"orange\"><u>Overlord Ability</u></color></b>",
           "IsFocusing": false,
@@ -682,7 +699,7 @@
           "SoundName": "czb_tutorial_31_perfect"
         },
         {
-          "id": 30,
+          "id": 31,
           "janePose": "NORMAL",
           "janeText": "Overlord abilities don’t require Goo\n to use, but they take a few turns\n to get ready at the start of a match\n and after every use.",
           "IsFocusing": false,
@@ -702,7 +719,7 @@
           "SoundName": "czb_tutorial_32_goo_to_use"
         },
         {
-          "id": 31,
+          "id": 32,
           "janePose": "NORMAL",
           "janeText": "Your Overlord can have two abilities available during a match and can use both of them in a turn if necessary.",
           "IsFocusing": false,
@@ -722,7 +739,7 @@
           "SoundName": "czb_tutorial_33_goo_to_use"
         },
         {
-          "id": 32,
+          "id": 33,
           "janePose": "POINTING",
           "janeText": "Time to use one of your <b><color=\"orange\"><u>Overlord Abilities</u></color></b> to attack the enemy Overlord and finish him off!",
           "IsFocusing": true,
@@ -755,7 +772,7 @@
           "SoundName": "czb_tutorial_34_abilities"
         },
         {
-          "id": 33,
+          "id": 34,
           "janePose": "THUMBS_UP",
           "janeText": "NOICE!! \nYou won your first match!",
           "IsFocusing": false,
@@ -775,7 +792,7 @@
           "SoundName": "czb_tutorial_35_won1"
         },
         {
-          "id": 34,
+          "id": 35,
           "janePose": "THUMBS_UP",
           "janeText": "What did I tell you? \nA bonafide <b>Zombie Slayer</b>, Oh-Yeah!!",
           "IsFocusing": false,
@@ -795,7 +812,7 @@
           "SoundName": "czb_tutorial_36_slayer"
         },
         {
-          "id": 35,
+          "id": 36,
           "janePose": "NORMAL",
           "janeText": "Now you're ready to start \nyour grand adventure!",
           "IsFocusing": false,
@@ -815,7 +832,7 @@
           "SoundName": "czb_tutorial_37_adventure"
         },
         {
-          "id": 36,
+          "id": 37,
           "janePose": "KISS",
           "janeText": "Good luck - <b>Zombie Slayer</b>!!",
           "IsFocusing": false,
@@ -840,8 +857,8 @@
         "PlayerInfo": {
           "Health": 9,
           "MaximumHealth": 20,
-          "CurrentGoo": 7,
-          "MaximumGoo": 7,
+          "CurrentGoo": 9,
+          "MaximumGoo": 9,
           "HeroId": 4,
           "CardsInHand": [
           ],
@@ -855,10 +872,12 @@
           "CardsOnBoard": [
           ],
           "CardsOnGraveyard": [
-          ]
+          ],
+          "PrimaryOverlordSkill": "POISON_DART",
+          "SecondaryOverlordSkill": "TOXIC_POWER"
         },
         "OpponentInfo": {
-          "Health": 12,
+          "Health": 14,
           "MaximumHealth": 20,
           "CurrentGoo": 10,
           "MaximumGoo": 10,
@@ -876,11 +895,14 @@
           "CardsOnBoard": [
           ],
           "CardsOnGraveyard": [
-          ]
+          ],
+          "PrimaryOverlordSkill": "FIRE_BOLT",
+          "SecondaryOverlordSkill": "RABIES"
         }
       },
       "PlayerTurnFirst": true
     },
+	
     {
       "TutorialId": 1,
       "TutorialDataSteps": [
@@ -1017,7 +1039,7 @@
           "id": 7,
           "janePose": "POINTING",
           "janeText": "Goo-Carriers give you extra goo to spend for this turn only! \nThis effect is called <b><color=\"orange\"><u>Overflow</u></color></b>.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_16_overflow",
@@ -1026,16 +1048,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 8,
           "janePose": "POINTING",
           "janeText": "Remember, only Goo-Carriers of the same element as your Overlord will work.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_17_work",
@@ -1044,16 +1066,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 9,
           "janePose": "POINTING",
           "janeText": "Overflow is for this turn only, and comes with some setbacks. \nSo... it's a calculated risk!",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_18_setbacks",
@@ -1062,16 +1084,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 10,
           "janePose": "POINTING",
           "janeText": "Each goo-carrier has it's own drawback depending on \nit's elemental faction",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_19_drawback",
@@ -1080,16 +1102,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 11,
           "janePose": "THINKING",
           "janeText": "Toxic zombies specialize in dealing extra damage.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_19a_extra",
@@ -1098,16 +1120,16 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
           "id": 12,
           "janePose": "THINKING",
           "janeText": "For example, Toxic Goo-carriers deal damage to your own Overlord.",
-          "IsFocusing": false,
+          "IsFocusing": true,
           "IsArrowEnabled": false,
           "CanMoveToNextStepByClick": true,
           "SoundName": "czb_tutorial_B_19b_own",
@@ -1116,9 +1138,9 @@
           "ShouldStopTurn": false,
           "CanProceedWithEndStepManually": true,
           "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
+          "IsShowNextButtonFocusing": true,
           "IsShowQuestion": false,
-          "IsShowNextButton": true,
+          "IsShowNextButton": false,
           "DelayToPlaySound": 6.0
         },
         {
@@ -1553,7 +1575,9 @@
           ],
           "CardsOnGraveyard": [
 
-          ]
+          ],
+          "PrimaryOverlordSkill": "POISON_DART",
+          "SecondaryOverlordSkill": "TOXIC_POWER"
         },
         "OpponentInfo": {
           "Health": 6,
@@ -1572,11 +1596,13 @@
             {
               "Name": "Cerberus",
               "IsManuallyPlayable": true
-            },
+            }
           ],
           "CardsOnGraveyard": [
 
-          ]
+          ],
+          "PrimaryOverlordSkill": "FIRE_BOLT",
+          "SecondaryOverlordSkill": "RABIES"
         }
       },
       "PlayerTurnFirst": false

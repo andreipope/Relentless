@@ -18,24 +18,11 @@ namespace Loom.ZombieBattleground
             Value = ability.Value;
         }
 
-        public override void Activate()
+        protected override void VFXAnimationEndedHandler()
         {
-            switch (AbilityEffectType)
-            {
-                case Enumerators.AbilityEffectType.STUN_OR_DAMAGE_FREEZES:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-                    break;
-                default:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-                    break;
-            }
-        }
+            base.VFXAnimationEndedHandler();
 
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            BoardUnitModel creature = (BoardUnitModel) info;
+            BoardUnitModel creature = (BoardUnitModel)TargetUnit;
 
             CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
 
@@ -95,6 +82,14 @@ namespace Loom.ZombieBattleground
             {
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
             }
+
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                TargetUnit,
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
@@ -103,12 +98,9 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action(TargetUnit);
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
 
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                {
-                    TargetUnit,
-                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+                InvokeActionTriggered();
             }
         }
     }

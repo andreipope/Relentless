@@ -24,14 +24,15 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END)
+            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+         !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             CountDelay();
@@ -41,7 +42,8 @@ namespace Loom.ZombieBattleground
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN)
+            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
+            !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             CountDelay();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -68,6 +69,10 @@ namespace Loom.ZombieBattleground
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
+        public Deck CurrentPlayerDeck { get; set; }
+
+        public Deck OpponentPlayerDeck { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -78,8 +83,6 @@ namespace Loom.ZombieBattleground
         {
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer(CurrentPlayer.BoardCards);
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
@@ -242,7 +245,8 @@ namespace Loom.ZombieBattleground
                 new SkillsController(),
                 new RanksController(),
                 new InputController(),
-                new OpponentController()
+                new OpponentController(),
+                new UniqueAnimationsController()
             };
 
             foreach (IController controller in _controllers)
@@ -316,10 +320,10 @@ namespace Loom.ZombieBattleground
                         CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
                         List<WorkingCard> opponentCardsInHand =
                             OpponentPlayer.PvPPlayerState.CardsInHand
-                                .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, OpponentPlayer))
+                                .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
 
-                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand);
+                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);

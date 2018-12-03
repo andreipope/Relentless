@@ -149,7 +149,7 @@ namespace Loom.Client.Internal
             return tcs.Task;
         }
 
-        public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics = null)
+        public override Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics)
         {
             var isFirstSub = this.eventReceived == null;
             this.eventReceived += handler;
@@ -159,14 +159,14 @@ namespace Loom.Client.Internal
             }
             // TODO: once re-sub on reconnect is implemented this should only
             // be done on first sub
-            Dictionary<string, ICollection<string>> result = null;
-            if (topics != null)
+            Dictionary<string, ICollection<string>> args = null;
+            if (topics != null && topics.Count > 0)
             {
-                result = new Dictionary<string, ICollection<string>>();
-                result.Add("topics", topics);
+                args = new Dictionary<string, ICollection<string>>();
+                args.Add("topics", topics);
             }
 
-            return SendAsync<object, Dictionary<string, ICollection<string>>>("subevents", result);
+            return SendAsync<object, Dictionary<string, ICollection<string>>>("subevents", args);
         }
 
         public override Task UnsubscribeAsync(EventHandler<JsonRpcEventData> handler)

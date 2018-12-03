@@ -9,6 +9,10 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        private int _damage;
+
+        private bool _isAttacker;
+
         public GainNumberOfLifeForEachDamageThisDealsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -19,9 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         public override void Action(object info = null)
@@ -30,20 +32,35 @@ namespace Loom.ZombieBattleground
 
             int damageDeal = (int) info;
 
-            AbilityUnitOwner.BuffedHp += Value * damageDeal;
-            AbilityUnitOwner.CurrentHp += Value * damageDeal;
-
-            CreateVfx(GetAbilityUnitOwnerView().Transform.position, true);
+            AbilityUnitOwner.CurrentHp += Mathf.Clamp(Value * damageDeal, 0, AbilityUnitOwner.MaxCurrentHp);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            _isAttacker = isAttacker;
+
+            _damage = damage;
+        }
+
+        protected override void UnitAttackedEndedHandler()
+        {
+            base.UnitAttackedEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !_isAttacker)
                 return;
 
-            Action(damage);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+
+            InvokeActionTriggered();
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            Action(_damage);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

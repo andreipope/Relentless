@@ -40,11 +40,11 @@ namespace Loom.ZombieBattleground
 
                 if (target == SelectedPlayer)
                 {
-                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Player, -1);
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Types.Enum.Player, -1);
                 }
                 else
                 {
-                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Character, SelectedCard.Model.Card.Id);
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Types.Enum.Character, SelectedCard.Model.Card.InstanceId);
                 }
             }
             else

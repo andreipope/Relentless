@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -40,9 +40,14 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            // FIXME: why are we hardcoding card names??
             if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement ||
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
+                string clipTitle = CardOwnerOfAbility.Name.Replace(" ", "_");
+
+                SoundManager.PlaySound(Enumerators.SoundType.SPELLS, clipTitle, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+
                 PlayerCallerOfAbility.CurrentGoo += Value;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -55,6 +60,8 @@ namespace Loom.ZombieBattleground
                         {
                             ActionEffectType = Enumerators.ActionEffectType.Overflow,
                             Target = PlayerCallerOfAbility,
+                            HasValue = true,
+                            Value = Value
                         }
                     }
                 });

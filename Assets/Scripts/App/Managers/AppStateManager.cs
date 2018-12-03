@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using App.Utilites;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -118,13 +117,11 @@ namespace Loom.ZombieBattleground
             if (!mustPause) 
             {
                 IsAppPaused = false;
-                Time.timeScale = 1;
                 AudioListener.pause = false;
             } 
             else 
             {
                 IsAppPaused = true;
-                Time.timeScale = 0;
                 AudioListener.pause = true;
             }
         }

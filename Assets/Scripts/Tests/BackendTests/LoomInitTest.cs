@@ -23,8 +23,7 @@ public class LoomUnitTest
             async () =>
             {
                 Assert.IsNull(LoomTestContext.BackendFacade.Contract);
-                await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendDataControlMediator
-                    .UserDataModel.PrivateKey);
+                await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.UserDataModel.PrivateKey);
                 Assert.IsNotNull(LoomTestContext.BackendFacade.Contract);
             });
     }
@@ -39,8 +38,7 @@ public class LoomUnitTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendDataControlMediator
-                            .UserDataModel.PrivateKey);
+                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.UserDataModel.PrivateKey);
                     });
             });
     }
@@ -55,8 +53,7 @@ public class LoomUnitTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendDataControlMediator
-                            .UserDataModel.PrivateKey);
+                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.UserDataModel.PrivateKey);
                     });
             });
     }
@@ -71,8 +68,7 @@ public class LoomUnitTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendDataControlMediator
-                            .UserDataModel.PrivateKey);
+                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.UserDataModel.PrivateKey);
                     });
             });
     }
@@ -87,8 +83,7 @@ public class LoomUnitTest
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.BackendDataControlMediator
-                            .UserDataModel.PrivateKey);
+                        await LoomTestContext.BackendFacade.CreateContract(LoomTestContext.UserDataModel.PrivateKey);
                     });
             });
     }

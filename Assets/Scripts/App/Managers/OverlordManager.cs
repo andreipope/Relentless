@@ -3,6 +3,7 @@ using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         private OvelordExperienceInfo _ovelordXPInfo;
 
+        public Hero HeroInStartGame { get; private set; }
+
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
@@ -23,6 +26,8 @@ namespace Loom.ZombieBattleground
 
             _ovelordXPInfo = JsonConvert.DeserializeObject<OvelordExperienceInfo>(
                             _loadObjectsManager.GetObjectByPath<TextAsset>("Data/overlord_experience_data").text);
+
+            _gameplayManager.GameInitialized += OnGameInitializedHandler;
         }
 
         public void Dispose()
@@ -40,6 +45,9 @@ namespace Loom.ZombieBattleground
 
         public void ChangeExperience(Hero hero, int value)
         {
+            if (_gameplayManager.IsTutorial)
+                return;
+
             hero.Experience += value;
             CheckLevel(hero);
         }
@@ -49,6 +57,11 @@ namespace Loom.ZombieBattleground
             ExperienceAction action = _ovelordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
 
             ChangeExperience(hero, action.Experience);
+        }
+
+        public LevelReward GetLevelReward(Hero hero)
+        {
+            return _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
         }
 
         private void CheckLevel(Hero hero)
@@ -64,19 +77,22 @@ namespace Loom.ZombieBattleground
             hero.Level++;
 
             ApplyReward(hero);
+
+            // TODO: ADD FUNCTIONALY TO SAVE DATA ON SERVER
         }
 
         private void ApplyReward(Hero hero)
         {
-            LevelReward levelReward = _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
-
+            LevelReward levelReward = GetLevelReward(hero);
             if (levelReward != null)
             {
                 switch (levelReward.Reward)
                 {
                     case LevelReward.UnitRewardItem unitReward:
                         {
-                            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards.FindAll(x => x.CardRank == unitReward.Rank);
+                            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards
+                                .Where(x => x.CardRank == unitReward.Rank)
+                                .ToList();
                             Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
                             CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
                             if (foundCard != null)
@@ -94,10 +110,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case LevelReward.OverlordSkillRewardItem skillReward:
-                        {
-                            //TODO: commented now in perspective of lock funcitonality for release stage
-                            //hero.Skills[skillReward.SkillIndex].Unlocked = true;
-                        }
+                        hero.GetSkill(skillReward.SkillIndex).Unlocked = true;
                         break;
                     case LevelReward.ItemReward itemReward:
                         break;
@@ -107,6 +120,23 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(levelReward.Reward), levelReward.Reward, null);
                 }
             }
+        }
+
+        private void OnGameInitializedHandler()
+        {
+            Hero selfHero = _gameplayManager.CurrentPlayer.SelfHero;
+            HeroInStartGame = new Hero(
+                selfHero.HeroId,
+                selfHero.Icon,
+                selfHero.Name,
+                selfHero.ShortDescription,
+                selfHero.LongDescription,
+                selfHero.Experience,
+                selfHero.Level,
+                selfHero.HeroElement,
+                selfHero.Skills,
+                selfHero.PrimarySkill,
+                selfHero.SecondarySkill);
         }
 
         public class LevelReward
