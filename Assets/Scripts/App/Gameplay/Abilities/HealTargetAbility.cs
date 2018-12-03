@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -110,10 +108,14 @@ namespace Loom.ZombieBattleground
 
             HealTarget(boardObject, Value);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                boardObject
-            }, AbilityData.AbilityType,  (Protobuf.AffectObjectType.Types.Enum) AffectObjectType);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard,
+                new List<BoardObject>
+                {
+                    boardObject
+                },
+                AbilityData.AbilityType,
+                AffectObjectType
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

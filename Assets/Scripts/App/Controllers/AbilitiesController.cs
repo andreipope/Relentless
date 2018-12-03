@@ -633,11 +633,7 @@ namespace Loom.ZombieBattleground
             if (card == null || !card.Owner.IsLocalPlayer)
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
-                                    Protobuf.CardKind.Types.Enum.Spell :
-                                    Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, targets, null);
+            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, targets, null);
         }
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<WorkingCard> cards,
@@ -646,11 +642,7 @@ namespace Loom.ZombieBattleground
             if (card == null || !card.Owner.IsLocalPlayer)
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
-                                    Protobuf.CardKind.Types.Enum.Spell :
-                                    Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, null, cards);
+            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, null, cards);
         }
 
 
@@ -671,11 +663,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
-                                    Protobuf.CardKind.Types.Enum.Spell :
-                                    Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, parametrizedAbilityBoardObjects, null);
+            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, parametrizedAbilityBoardObjects, null);
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)

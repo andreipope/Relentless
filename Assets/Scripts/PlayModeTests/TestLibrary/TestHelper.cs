@@ -1177,7 +1177,7 @@ public class TestHelper
                         {
                             unit.OwnerPlayer.ThrowCardAttacked (
                                 unit.Card,
-                                AffectObjectType.Types.Enum.Character,
+                                Enumerators.AffectObjectType.Character,
                                 attackedUnit.Card.InstanceId);
 
                             /* if (target == SelectedPlayer)
@@ -1225,7 +1225,7 @@ public class TestHelper
 
                     unit.OwnerPlayer.ThrowCardAttacked (
                         unit.Card,
-                        AffectObjectType.Types.Enum.Player,
+                        Enumerators.AffectObjectType.Player,
                         -1);
 
                     yield return LetsThink ();
@@ -1248,7 +1248,7 @@ public class TestHelper
 
                         unit.OwnerPlayer.ThrowCardAttacked (
                             unit.Card,
-                            AffectObjectType.Types.Enum.Player,
+                            Enumerators.AffectObjectType.Player,
                             -1);
 
                         yield return LetsThink ();
@@ -1264,7 +1264,7 @@ public class TestHelper
 
                             unit.OwnerPlayer.ThrowCardAttacked (
                                 unit.Card,
-                                AffectObjectType.Types.Enum.Character,
+                                Enumerators.AffectObjectType.Character,
                                 attackedCreature.Card.InstanceId);
 
                             yield return LetsThink ();
@@ -1276,7 +1276,7 @@ public class TestHelper
 
                             unit.OwnerPlayer.ThrowCardAttacked (
                                 unit.Card,
-                                AffectObjectType.Types.Enum.Player,
+                                Enumerators.AffectObjectType.Player,
                                 -1);
 
                             yield return LetsThink ();

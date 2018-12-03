@@ -67,6 +67,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             private readonly BackendFacade _backendFacade;
 
+            private readonly IQueueManager _queueManager;
+
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
             private readonly BattlegroundController _battlegroundController;
@@ -82,6 +84,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
+                _queueManager = GameClient.Get<IQueueManager>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _pvpManager = GameClient.Get<IPvPManager>();
                 _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -198,7 +201,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
 
             private void TurnEndedHandler()
@@ -211,7 +214,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     EndTurn = new PlayerActionEndTurn()
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
 
             private void LeaveMatchHandler()
@@ -224,10 +227,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     LeaveMatch = new PlayerActionLeaveMatch()
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, AffectObjectType.Types.Enum type, int instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, int instanceId)
             {
                 string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -237,7 +240,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     CardAttack = new PlayerActionCardAttack
                     {
                         Attacker = attacker.ToProtobuf(),
-                        AffectObjectType = type,
+                        AffectObjectType = (Protobuf.AffectObjectType.Types.Enum) type,
                         Target = new Protobuf.Unit
                         {
                             InstanceId = instanceId,
@@ -246,7 +249,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
 
             private void AbilityUsedHandler(
@@ -342,7 +345,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                  UnityEngine.Debug.LogWarning("Action json send = " + Newtonsoft.Json.JsonConvert.SerializeObject(playerAction));
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
 
             private void MulliganHandler(List<WorkingCard> cards)
@@ -359,7 +362,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
 
 
@@ -402,7 +405,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
@@ -434,7 +437,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     RankBuff = rankBuff
                 };
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                _queueManager.AddAction(RequestFactory.CreateAction(_pvpManager.MatchMetadata.Id, playerAction));
             }
         }
     }

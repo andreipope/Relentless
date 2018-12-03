@@ -346,7 +346,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             FindMatchRequest request = new FindMatchRequest
             {
-                UserId = userId
+                UserId = userId,
+                Tags = { }
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
@@ -452,29 +453,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void EventHandler(object sender, JsonRpcEventData e)
         {
             PlayerActionDataReceived?.Invoke(e.Data);
-        }
-
-        public void AddAction(long matchId, PlayerAction playerAction)
-        {
-            PlayerActionRequest request = new PlayerActionRequest
-            {
-                MatchId = matchId,
-                PlayerAction = playerAction
-            };
-
-            GameClient.Get<IQueueManager>().AddAction(request);
-        }
-
-        public void EndMatch(string userId, int matchId, string winnerId)
-        {
-            EndMatchRequest request = new EndMatchRequest
-            {
-                UserId = userId,
-                MatchId = matchId,
-                WinnerId = winnerId
-            };
-
-            GameClient.Get<IQueueManager>().AddAction(request);
         }
 
         public async Task SendAction(IMessage request)

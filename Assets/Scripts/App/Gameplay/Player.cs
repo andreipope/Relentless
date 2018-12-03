@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         private readonly IDataManager _dataManager;
 
-        private readonly BackendFacade _backendFacade;
+        private readonly IQueueManager _queueManager;
 
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
+            _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -265,7 +265,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<WorkingCard, int> CardPlayed;
 
-        public event Action<WorkingCard, AffectObjectType.Types.Enum, int> CardAttacked;
+        public event Action<WorkingCard, Enumerators.AffectObjectType, int> CardAttacked;
 
         public event Action LeaveMatch;
 
@@ -654,9 +654,13 @@ namespace Loom.ZombieBattleground
 
                     _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
                     {
-                        _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
-                                                    (int)_pvpManager.MatchMetadata.Id,
-                                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
+                        _queueManager.AddAction(
+                            RequestFactory.EndMatch(
+                                _backendDataControlMediator.UserDataModel.UserId,
+                                (int) _pvpManager.MatchMetadata.Id,
+                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
+                            )
+                        );
 
                         completeCallback?.Invoke();
                     });
@@ -709,7 +713,7 @@ namespace Loom.ZombieBattleground
             CardPlayed?.Invoke(card, position);
         }
 
-        public void ThrowCardAttacked(WorkingCard card, AffectObjectType.Types.Enum type, int instanceId)
+        public void ThrowCardAttacked(WorkingCard card, Enumerators.AffectObjectType type, int instanceId)
         {
             CardAttacked?.Invoke(card, type, instanceId);
         }
