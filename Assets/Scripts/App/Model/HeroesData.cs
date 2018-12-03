@@ -76,10 +76,9 @@ namespace Loom.ZombieBattleground.Data
             return Skills.Find(x => x.OverlordSkill == skill);
         }
 
-
-        public HeroSkill GetSkill(int id)
+        public HeroSkill GetSkill(int index)
         {
-            return Skills.Find(x => x.Id == id);
+            return Skills[index];
         }
     }
 

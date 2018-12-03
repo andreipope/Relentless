@@ -9,7 +9,7 @@ using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Loom.ZombieBattleground.OverlordManager;
+using static Loom.ZombieBattleground.OverlordExperienceManager;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -45,8 +45,6 @@ namespace Loom.ZombieBattleground
         private AbilityViewItem _newOpenAbility;
 
         private Animator _backgroundAnimator, _containerAnimator;
-
-        private LevelReward _levelReward;
 
         private Hero _selectedHero;
 
@@ -142,49 +140,43 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo()
         {
-            _levelReward = GameClient.Get<IOverlordManager>().GetLevelReward(_selectedHero);
+            List<LevelReward> gotRewards = GameClient.Get<IOverlordExperienceManager>().MatchExperienceInfo.GotRewards;
 
             _rewardDisabledObject.SetActive(false);
             _rewardSkillObject.SetActive(true);
 
-            FillRewardSkillInfo();
-
-            AbilityInstanceOnSelectionChanged(_newOpenAbility);
-
-            if (_levelReward != null)
+            foreach (LevelReward levelReward in gotRewards)
             {
-                switch (_levelReward.Reward)
+                if (levelReward != null)
                 {
-                    case LevelReward.OverlordSkillRewardItem skillReward:
-                        {
-                            _rewardDisabledObject.SetActive(false);
-                            _rewardSkillObject.SetActive(true);
+                    if (levelReward.SkillReward != null)
+                    {
+                        _rewardDisabledObject.SetActive(false);
+                        _rewardSkillObject.SetActive(true);
 
-                            FillRewardSkillInfo();
+                        FillRewardSkillInfo(levelReward.SkillReward.SkillIndex);
 
-                            AbilityInstanceOnSelectionChanged(_newOpenAbility);
-                        }
-                        break;
-                    case LevelReward.UnitRewardItem unitReward:
-                    case LevelReward.ItemReward itemReward:
-                    default:
+                        AbilityInstanceOnSelectionChanged(_newOpenAbility);
+                    }
+                    else
+                    {
+                        if (gotRewards.FindAll(x => x.SkillReward != null).Count == 0)
                         {
                             _rewardDisabledObject.SetActive(true);
                             _rewardSkillObject.SetActive(false);
                             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
                         }
-                        break;
+                    }
                 }
             }
         }
 
-        private void FillRewardSkillInfo()
+        private void FillRewardSkillInfo(int skillIndex)
         {
             _abilities.Clear();
 
             AbilityViewItem abilityInstance = null;
             bool isDefault = false;
-            int index = _selectedHero.Skills.FindIndex((k) => k == _selectedHero.Skills.FindLast((x) => x.Unlocked));
             for (int i = 0; i < _abilityListSize; i++)
             {
                 abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
@@ -193,12 +185,12 @@ namespace Loom.ZombieBattleground
                 {
                     abilityInstance.Skill = _selectedHero.Skills[i];
                 }
-                isDefault = index == i;
+                isDefault = skillIndex == i;
                 abilityInstance.UpdateUIState(isDefault);
                 _abilities.Add(abilityInstance);
             }
 
-            _newOpenAbility = _abilities[index];
+            _newOpenAbility = _abilities[skillIndex];
         }
 
         public void Update()

@@ -19,7 +19,19 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
-        IOverlordManager _overlordManager;
+        private IOverlordExperienceManager _overlordManager;
+
+        private IDataManager _dataManager;
+
+        private ISoundManager _soundManager;
+
+        private IGameplayManager _gameplayManager;
+
+        private ITutorialManager _tutorialManager;
+
+        private IMatchManager _matchManager;
+
+        private ICameraManager _cameraManager;
 
         private Button _buttonOk;
 
@@ -35,8 +47,6 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
-        private Hero _heroInStartGame;
-
         private Hero _currentPlayerHero;
 
         private bool _isLevelUp;
@@ -45,7 +55,13 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
-            _overlordManager = GameClient.Get<IOverlordManager>();
+            _overlordManager = GameClient.Get<IOverlordExperienceManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _cameraManager = GameClient.Get<ICameraManager>();
         }
 
         public void Dispose()
@@ -54,7 +70,7 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
-            GameClient.Get<ICameraManager>().FadeOut(null, 1);
+            _cameraManager.FadeOut(null, 1);
 
             if (Self == null)
                 return;
@@ -92,50 +108,42 @@ namespace Loom.ZombieBattleground
 
             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
 
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SfxSoundVolume, false,
-                false, true);
-            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
+            _soundManager.PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SfxSoundVolume, false, false, true);
+
+            _cameraManager.FadeIn(0.8f, 1);
+
             Self.SetActive(true);
 
-            int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
-            IDataManager dataManager = GameClient.Get<IDataManager>();
+            int heroId = _gameplayManager.IsTutorial
+                ? _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId : _gameplayManager.CurrentPlayerDeck.HeroId;
 
-            int heroId = GameClient.Get<IGameplayManager>().IsTutorial
-                ? GameClient.Get<ITutorialManager>().CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId
-                : dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
-
-            _currentPlayerHero = dataManager.CachedHeroesData.Heroes[heroId];
+            _currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
             string heroName = _currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
 
             _selectHeroSpriteRenderer.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
 
-            _currentLevel.text = _currentPlayerHero.Level.ToString();
-            _nextLevel.text = (_currentPlayerHero.Level + 1).ToString();
+            _overlordManager.ApplyExperienceFromMatch(_currentPlayerHero);
 
-            _heroInStartGame = _overlordManager.HeroInStartGame;
+            _currentLevel.text = (_overlordManager.MatchExperienceInfo.LevelAtBegin).ToString();
+            _nextLevel.text = (_overlordManager.MatchExperienceInfo.LevelAtBegin + 1).ToString();
 
             _isLevelUp = false;
 
-            float currentExperiencePercentage = (float)_heroInStartGame.Experience / _overlordManager.GetRequiredExperienceForNewLevel(_heroInStartGame);
+            float currentExperiencePercentage = (float)_overlordManager.MatchExperienceInfo.ExperienceAtBegin /
+                                                _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerHero);
             _experienceBar.fillAmount = currentExperiencePercentage;
 
             FillingExperinceBar();
-
-            int index = dataManager.CachedHeroesData.Heroes.FindIndex(hero => hero.HeroId == heroId);
-            if (index != -1)
-            {
-                dataManager.CachedHeroesData.Heroes[index] = _currentPlayerHero;
-            }
         }
 
         private void FillingExperinceBar()
         {
-            if (_currentPlayerHero.Level > _heroInStartGame.Level)
+            if (_currentPlayerHero.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
             {
                 MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(_currentPlayerHero.Level));
             }
-            else if (_currentPlayerHero.Experience > _heroInStartGame.Experience)
+            else if (_currentPlayerHero.Experience > _overlordManager.MatchExperienceInfo.ExperienceAtBegin)
             {
                 float updatedExperiencePercetage = (float)_currentPlayerHero.Experience
                     / _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerHero);
@@ -165,7 +173,7 @@ namespace Loom.ZombieBattleground
             yield return _experienceFillWait;
             _buttonOk.gameObject.SetActive(true);
 
-            if(_isLevelUp)
+            if (_isLevelUp)
             {
                 _uiManager.DrawPopup<LevelUpPopup>();
             }
@@ -175,14 +183,14 @@ namespace Loom.ZombieBattleground
         {
             yield return _experienceFillWait;
             _experienceBar.DOFillAmount(1, 1f);
-            
+
             yield return _experienceFillWait;
 
-            _experienceBar.fillAmount = 0f;
-            _currentLevel.text = currentLevel.ToString();
-            _nextLevel.text = (currentLevel + 1).ToString();
+            _overlordManager.MatchExperienceInfo.LevelAtBegin++;
 
-            _heroInStartGame.Level++;
+            _experienceBar.fillAmount = 0f;
+            _currentLevel.text = _overlordManager.MatchExperienceInfo.LevelAtBegin.ToString();
+            _nextLevel.text = (_overlordManager.MatchExperienceInfo.LevelAtBegin + 1).ToString();
 
             _isLevelUp = true;
 
@@ -191,17 +199,17 @@ namespace Loom.ZombieBattleground
 
         private void OnClickOkButtonEventHandler()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.HidePopup<YouWonPopup>();
 
-            if (GameClient.Get<IGameplayManager>().IsTutorial)
+            if (_gameplayManager.IsTutorial)
             {
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
+                _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
             }
             else
             {
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+                _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
             }
         }
     }

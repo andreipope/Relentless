@@ -72,7 +72,7 @@ static class QuickPlayCommandsHandler
     }
 
     [CommandHandler(Description = "Set which player horde to fight with. Accepts deck name.")]
-    private static void SetPlayerHorde(string deckName)
+    private static void SetPlayerHorde([Autocomplete(typeof(QuickPlayCommandsHandler), "PlayerDecksName")] string deckName)
     {
         int index = _dataManager.CachedDecksData.Decks.FindIndex(deck => deck.Name == deckName);
         if (index == -1)
@@ -85,7 +85,7 @@ static class QuickPlayCommandsHandler
     }
 
     [CommandHandler(Description = "Set which enemy horde to fight with. Accepts deck name.")]
-    private static void SetEnemyHorde([Autocomplete(typeof(QuickPlayCommandsHandler), "AIDecksName")] string deckName)
+    private static void QuickPlaySetEnemyHorde([Autocomplete(typeof(QuickPlayCommandsHandler), "AIDecksName")] string deckName)
     {
         int index = _dataManager.CachedAiDecksData.Decks.FindIndex(aiDeck => aiDeck.Deck.Name == deckName);
         if (index == -1)
@@ -97,6 +97,16 @@ static class QuickPlayCommandsHandler
         _gameplayManager.OpponentIdCheat = (int)_dataManager.CachedAiDecksData.Decks[index].Deck.Id;
     }
 
+    public static IEnumerable<string> PlayerDecksName()
+    {
+        string[] deckNames = new string[_dataManager.CachedDecksData.Decks.Count];
+        for (var i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
+        {
+            deckNames[i] = _dataManager.CachedDecksData.Decks[i].Name;
+        }
+        return deckNames;
+    }
+
     public static IEnumerable<string> AIDecksName()
     {
         string[] deckNames = new string[_dataManager.CachedAiDecksData.Decks.Count];
@@ -106,6 +116,4 @@ static class QuickPlayCommandsHandler
         }
         return deckNames;
     }
-
-
 }

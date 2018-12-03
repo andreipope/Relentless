@@ -2,6 +2,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 using Random = System.Random;
@@ -155,6 +156,11 @@ namespace Loom.ZombieBattleground.Helpers
             Sequence sequence = DOTween.Sequence();
             sequence.PrependInterval(delay);
             sequence.OnComplete(action);
+        }
+
+        public static string FormatStringToPascaleCase(string root)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(root.ToLower().Replace("_", " ")).Replace(" ", string.Empty);
         }
     }
 }

@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4746427762953280}
+  - component: {fileID: 114509006609076606}
   m_Layer: 9
   m_Name: ShoppingCart
   m_TagString: Untagged
@@ -362,6 +363,28 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114509006609076606
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1009004596324752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: Shopping Cart
+  delayBeforeEffect: 6
+  delayAfterEffect: 0
+  delayForChangeState: 0
+  soundName: CZB_AUD_Shopping_Cart_F1_EXP
+  delayForSound: 0
+  offset: {x: 0, y: 0, z: 0}
+  rotationParameters:
+    replaceRotation: 0
+    isLocalPlayer: 0
+    rotation: {x: 0, y: 0, z: 0}
 --- !u!198 &198160682017558122
 ParticleSystem:
   m_ObjectHideFlags: 1

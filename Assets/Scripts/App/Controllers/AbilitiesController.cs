@@ -482,14 +482,12 @@ namespace Loom.ZombieBattleground
                                        callback: () =>
                                        {
                                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-                                           GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
                                            handCard.GameObject.SetActive(true);
 
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                            workingCard.Owner.AddCardToBoard(workingCard);
                                            workingCard.Owner.AddCardToGraveyard(workingCard);
-
-                                           card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
 
                                            InternalTools.DoActionDelayed(() =>
                                            {
@@ -755,6 +753,7 @@ namespace Loom.ZombieBattleground
         {
             ability = null;
             abilityView = null;
+
             switch (abilityData.AbilityType)
             {
                 case Enumerators.AbilityType.HEAL:
@@ -1054,9 +1053,8 @@ namespace Loom.ZombieBattleground
         {
             if (isPlayer)
             {
-
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
-                GameClient.Get<IOverlordManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                 card.GameObject.SetActive(true);
                 card.RemoveCardParticle.Play(); // move it when card should call hide action
@@ -1064,8 +1062,6 @@ namespace Loom.ZombieBattleground
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                 card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
                 card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
-
-                card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
 
                 GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                 {

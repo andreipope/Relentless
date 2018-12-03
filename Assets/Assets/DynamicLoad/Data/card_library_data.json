@@ -894,14 +894,10 @@
               "value": 1,
               "effectType": "TARGET_ROCK",
               "buffType": "ENTRY",
-			  "VisualEffectsToPlay": [
-                {
-                  "Type": "Moving",
-                  "Path": "Prefabs/VFX/Spells/SpellTargetFireAttack"
-                },
+			        "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/toxicDamageVFX"
+                  "Path": "Prefabs/VFX/BolderrVFX"
                 }
               ]
             }
@@ -2164,7 +2160,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/RestoreVFX"
+                  "Path": "Prefabs/VFX/ZedKitRestoreVFX"
                 }
               ]
             }
@@ -3112,7 +3108,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/Skills/StaplerVFX"
+                  "Path": "Prefabs/VFX/Skills/RestoreStaplerVFX"
                 }
               ]
             }
@@ -3188,7 +3184,7 @@
                     "VisualEffectsToPlay": [
                     {
                       "Type": "Impact",
-                      "Path": "Prefabs/VFX/RestoreVFX"
+                      "Path": "Prefabs/VFX/ShovelRestoreVFX"
                     }
                   }
                 }
@@ -3383,7 +3379,7 @@
               "VisualEffectsToPlay": [
                 {
                   "Type": "Impact",
-                  "Path": "Prefabs/VFX/GooBeaker"
+                  "Path": "Prefabs/VFX/GooBottles"
                 }
               ]
             }

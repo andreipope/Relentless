@@ -486,11 +486,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: 
+  cardNameOfAbility: 0
   delayBeforeEffect: 6
   delayAfterEffect: 3
   delayForChangeState: 2.5
-  soundName: Earthshaker
+  soundName: CZB_AUD_Earthshaker_F1_EXP
+  delayForSound: 2
   offset: {x: 0, y: 0, z: 0}
+  positionInfo:
+    type: 0
 --- !u!198 &198080471752463526
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
                 GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                             "Prefabs/VFX/UniqueArrivalAnimations/ZVirus"));
 
+                PlaySound("Z_Virus");
+
                 animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
                 unitView.Transform.SetParent(animationVFX.transform.Find("ZVirusCardPH"), true);

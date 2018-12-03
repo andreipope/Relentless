@@ -117,6 +117,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GameInitialized += GameInitializedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
 
+            _matchManager.MatchFinished += MatchFinishedHandler;
+
             _deckStatus = new List<CardZoneOnBoardStatus>();
             _deckStatus.Add(new CardZoneOnBoardStatus(null, 0));
             _deckStatus.Add(new CardZoneOnBoardStatus(
@@ -215,7 +217,7 @@ namespace Loom.ZombieBattleground
             StartGame();
             KeepButtonVisibility(false);
 
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume, isLoop:true);
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume / 2, isLoop:true);
         }
 
         public void SetEndTurnButtonStatus(bool status)
@@ -253,9 +255,10 @@ namespace Loom.ZombieBattleground
                         List<Data.AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
 
                         Data.AIDeck opponentDeck = _gameplayManager.OpponentIdCheat == -1 ? decks[Random.Range(0, decks.Count)] : decks[_gameplayManager.OpponentIdCheat];
+
                         opponentHeroId = opponentDeck.Deck.HeroId;
-                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
+                        _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
 
                         _gameplayManager.OpponentIdCheat = -1;
                     }
@@ -270,8 +273,8 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             opponentHeroId = (int) playerState.Deck.HeroId;
-                            _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
+                            _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
                         }
                     }
                     break;
@@ -404,7 +407,10 @@ namespace Loom.ZombieBattleground
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             SetEndTurnButtonStatus(true);
+        }
 
+        private void MatchFinishedHandler()
+        {
             _reportGameActionsPanel?.Clear();
         }
 
@@ -651,8 +657,6 @@ namespace Loom.ZombieBattleground
 
                 GameClient.Get<IAppStateManager>().SetPausingApp(false);
                 _uiManager.HidePopup<YourTurnPopup>();
-
-                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
 
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);

@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
             GameObject animationVFX = Object.Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>(
                                                         "Prefabs/VFX/UniqueArrivalAnimations/ChernoBillArrival"));
 
+            PlaySound("CZB_AUD_Cherno_Bill_Arrival_F1_EXP");
+
             animationVFX.transform.position = unitView.PositionOfBoard + offset;
 
             InternalTools.DoActionDelayed(() =>
