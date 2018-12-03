@@ -347,6 +347,10 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
+                    if (unit.AttackTargetsAvailability.Count == 0 ||
+                        !unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
+                        continue;
+
                     while (UnitCanBeUsable(unit))
                     {
                         BoardUnitModel attackedUnit = GetTargetOpponentUnit();
@@ -377,6 +381,12 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
+                    if (unit.HasBuffRush || unit.AttackTargetsAvailability.Count == 0)
+                        continue;
+
+                    if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
+                        continue;
+
                     while (UnitCanBeUsable(unit))
                     {
                         unit.DoCombat(_gameplayManager.CurrentPlayer);
@@ -388,10 +398,16 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
+                    if (unit.AttackTargetsAvailability.Count == 0)
+                        continue;
+
                     while (UnitCanBeUsable(unit))
                     {
-                        if (GetPlayerAttackingValue() > GetOpponentAttackingValue() && !_tutorialManager.IsTutorial)
-                        {
+                        if (GetPlayerAttackingValue() > GetOpponentAttackingValue() &&
+                            !_tutorialManager.IsTutorial &&
+                            !unit.HasBuffRush &&
+                            unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
+                        { 
                             unit.DoCombat(_gameplayManager.CurrentPlayer);
                             await LetsThink(cancellationToken);
                         }
@@ -399,13 +415,19 @@ namespace Loom.ZombieBattleground
                         {
                             BoardUnitModel attackedCreature = GetRandomOpponentUnit();
 
-                            if (attackedCreature != null)
+                            if (attackedCreature != null && unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
                             {
                                 unit.DoCombat(attackedCreature);
                                 await LetsThink(cancellationToken);
                             }
                             else
                             {
+                                if (unit.HasBuffRush)
+                                    break;
+
+                                if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
+                                    break;
+
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
                                 await LetsThink(cancellationToken);
                             }
