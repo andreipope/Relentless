@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
         ConfigData ConfigData { get; set; }
 
-        BetaConfig BetaConfig { get; set; }
+        UserInfo UserInfo { get; set; }
 
         Task LoadRemoteConfig();
 

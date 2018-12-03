@@ -39,6 +39,11 @@ namespace Loom.ZombieBattleground
 
         private Button _versionMismatchExitButton;
 
+        private Button _loginButton;
+
+        private InputField _emailField;
+        private InputField _passwordField;
+
 
         private LoginState _state;
 
@@ -83,11 +88,17 @@ namespace Loom.ZombieBattleground
 
             _backgroundGroup = Self.transform.Find("Background");
             _loginGroup = Self.transform.Find("Login_Group");
+            _loginButton = _loginGroup.transform.Find("Button_Login").GetComponent<Button>();
+            _emailField = _loginGroup.transform.Find("Email_InputField").GetComponent<InputField>();
+            _passwordField = _loginGroup.transform.Find("Password_InputField").GetComponent<InputField>();
+            _loginButton = _loginGroup.transform.Find("Button_Login").GetComponent<Button>();
             _waitingGroup = Self.transform.Find("Waiting_Group");
             _versionMismatchGroup = Self.transform.Find("VersionMismatch_Group");
             _versionMismatchText = _versionMismatchGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
             _versionMismatchExitButton = _versionMismatchGroup.Find("Button_Exit").GetComponent<Button>();
             _versionMismatchExitButton.onClick.AddListener(Application.Quit);
+
+            _loginButton.onClick.AddListener(PressedLoginHandler);
 
             _state = LoginState.InitiateLogin;
             SetUIState(LoginState.InitiateLogin);
@@ -114,23 +125,35 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            LoginProcess();
+            if (_emailField.text.Length > 0 && _passwordField.text.Length > 0)
+            {
+                _loginButton.enabled = false;
+                LoginProcess();
+            } 
+            else 
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+            }
         }
 
         private async void LoginProcess()
         {
-            /*
-            // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
-            SetUIState(LoginState.BetaKeyValidateAndLogin);
-
-            GenerateKeysAndUserFromBetaKey(betaKey, out byte[] privateKey, out byte[] _, out string userId);
-
+            SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
+                LoginData loginData =  await _backendFacade.InitiateLogin(_emailField.text, _passwordField.text);
+                Debug.Log(loginData.accessToken);
+
+                UserInfo userInfo = await _backendFacade.GetUserInfo(loginData.accessToken);
+
+                string userId = "ZombieSlayer_" + userInfo.UserId;
+                GenerateKeysAndUserFromBetaKey(userId, out byte[] privateKey, out byte[] publicKey);
+
+                UserDataModel userDataModel = new UserDataModel(userId, privateKey)
                 {
                     IsValid = false
                 };
+
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
                 await _backendDataControlMediator.LoginAndLoadData();
 
@@ -146,12 +169,13 @@ namespace Loom.ZombieBattleground
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
             }
-            catch (Exception e)
-            {
-                Debug.LogWarning(e);
-                SetUIState(LoginState.BetaKeyValidationFailed);
+            catch (Exception e) {
+                SetUIState(LoginState.InitiateLogin);
+                Debug.Log(e.ToString());
+                _uiManager.GetPopup<WarningPopup>().Show("Login could not be completed. Please ensure your details are correct and try again.");
             }
-            */
+
+            _loginButton.enabled = true;
         }
 
         private void SuccessfulLogin()
@@ -171,7 +195,7 @@ namespace Loom.ZombieBattleground
             {
                 case LoginState.InitiateLogin:
                     _backgroundGroup.gameObject.SetActive(false);
-                    _loginGroup.gameObject.SetActive(false);
+                    _loginGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.ValidateAndLogin:
                     _backgroundGroup.gameObject.SetActive(true);
@@ -197,16 +221,19 @@ namespace Loom.ZombieBattleground
         }
 
         private void GenerateKeysAndUserFromBetaKey(
-            string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId)
+            string userId, out byte[] privateKey, out byte[] publicKey)
         {
-            betaKey = betaKey.ToLowerInvariant();
+            userId = "ZombieSlayer_" + userId;
 
-            byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
+            string seedString =
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId))) +
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId)));
 
-            BigInteger userIdNumber = new BigInteger(betaKeySeed) + betaKeySeed.Sum(b => b * 2);
-            userId = "ZombieSlayer_" + userIdNumber;
+            byte[] seedByte = CryptoUtils.HexStringToBytes(seedString);
 
-            privateKey = CryptoUtils.GeneratePrivateKey(betaKeySeed);
+            privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
 
             publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         }

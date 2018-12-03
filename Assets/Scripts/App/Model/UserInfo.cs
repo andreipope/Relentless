@@ -3,16 +3,16 @@ using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
-    public class BetaConfig
+    public class UserInfo
     {
         [JsonProperty(PropertyName = "email")]
         public string Email;
 
-        [JsonProperty(PropertyName = "beta_key")]
-        public string BetaKey;
+        [JsonProperty(PropertyName = "user_id")]
+        public int UserId;
 
-        [JsonProperty(PropertyName = "save_turn_data")]
-        public bool SaveTurnData;
+        [JsonProperty(PropertyName = "username")]
+        public string Username;
 
         [JsonProperty(PropertyName = "latest_version")]
         public Version LatestVersion;
