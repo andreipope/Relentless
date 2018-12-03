@@ -157,13 +157,19 @@ namespace Loom.ZombieBattleground
         public Task SaveCache(Enumerators.CacheDataType type)
         {
             string dataPath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
-             string data = "";
-             switch (type)
-             {
-                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
-                     data = SerializePersistentObject(CachedUserLocalData);
-                     break;
- #if DEVELOPMENT
+            string data = "";
+            switch (type)
+            {
+                case Enumerators.CacheDataType.USER_LOCAL_DATA:
+                    data = SerializePersistentObject(CachedUserLocalData);
+                    break;
+                case Enumerators.CacheDataType.HEROES_DATA:
+                    data = SerializePersistentObject(CachedHeroesData);
+                    break;
+                case Enumerators.CacheDataType.COLLECTION_DATA:
+                    data = SerializePersistentObject(CachedCollectionData);
+                    break;
+#if DEVELOPMENT
                  case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
                      data = SerializePersistentObject(CachedCardsLibraryData);
                      break;
@@ -174,15 +180,15 @@ namespace Loom.ZombieBattleground
                      data = SerializePersistentObject(CachedBuffsTooltipData);
                      break;
 #endif
-                  default:
-                      throw new ArgumentOutOfRangeException();
-              }
-              if (data.Length > 0)
-              {
-                  if (!File.Exists(dataPath)) File.Create(dataPath).Close();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            if (data.Length > 0)
+            {
+                if (!File.Exists(dataPath)) File.Create(dataPath).Close();
 
-                  File.WriteAllText(dataPath, data);
-              }
+                File.WriteAllText(dataPath, data);
+            }
             return Task.CompletedTask;
         }
 
@@ -341,8 +347,15 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try
                     {
-                        ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedHeroesData = new HeroesData(heroesList.Heroes.Select(hero => hero.FromProtobuf()).ToList());
+                        if (File.Exists(_cacheDataFileNames[type]))
+                        {
+                            CachedHeroesData = DeserializeObjectFromAssets<HeroesData>(_cacheDataFileNames[type]);
+                        }
+                        else
+                        {
+                            ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
+                            CachedHeroesData = new HeroesData(heroesList.Heroes.Select(hero => hero.FromProtobuf()).ToList());
+                        }
                     }
                     catch (Exception)
                     {
@@ -353,8 +366,15 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
-                        GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedCollectionData = getCollectionResponse.FromProtobuf();
+                        if (File.Exists(_cacheDataFileNames[type]))
+                        {
+                            CachedCollectionData = DeserializeObjectFromAssets<CollectionData>(_cacheDataFileNames[type]);
+                        }
+                        else
+                        {
+                            GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
+                            CachedCollectionData = getCollectionResponse.FromProtobuf();
+                        }
                     }
                     catch (Exception)
                     {
@@ -427,6 +447,12 @@ namespace Loom.ZombieBattleground
                 },
                 {
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Constants.LocalBuffsTooltipDataFileName
+                },
+                {
+                    Enumerators.CacheDataType.HEROES_DATA, Constants.LocalHeroesDataFileName
+                },
+                {
+                    Enumerators.CacheDataType.COLLECTION_DATA, Constants.LocalCollectionDataFileName
                 }
             };
         }

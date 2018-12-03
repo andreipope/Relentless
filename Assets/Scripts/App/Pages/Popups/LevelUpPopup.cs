@@ -9,7 +9,7 @@ using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Loom.ZombieBattleground.OverlordManager;
+using static Loom.ZombieBattleground.OverlordExperienceManager;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo()
         {
-            _levelReward = GameClient.Get<IOverlordManager>().GetLevelReward(_selectedHero);
+            _levelReward = GameClient.Get<IOverlordExperienceManager>().GetLevelReward(_selectedHero);
 
             _rewardDisabledObject.SetActive(false);
             _rewardSkillObject.SetActive(true);

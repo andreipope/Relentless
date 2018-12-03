@@ -8,15 +8,15 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class OverlordManager : IService, IOverlordManager
+    public class OverlordExperienceManager : IService, IOverlordExperienceManager
     {
         private IDataManager _dataManager;
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
 
-        private OvelordExperienceInfo _ovelordXPInfo;
+        private OvelordExperienceInfo _overlordXPInfo;
 
-        public Hero HeroInStartGame { get; private set; }
+        public ExperienceInfo MatchExperienceInfo { get; private set; }
 
         public void Init()
         {
@@ -24,10 +24,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
 
-            _ovelordXPInfo = JsonConvert.DeserializeObject<OvelordExperienceInfo>(
+            _overlordXPInfo = JsonConvert.DeserializeObject<OvelordExperienceInfo>(
                             _loadObjectsManager.GetObjectByPath<TextAsset>("Data/overlord_experience_data").text);
-
-            _gameplayManager.GameInitialized += OnGameInitializedHandler;
         }
 
         public void Dispose()
@@ -38,9 +36,26 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public void InitializeExperienceInfoInMatch(Hero hero)
+        {
+            MatchExperienceInfo = new ExperienceInfo();
+            MatchExperienceInfo.LevelAtBegin = hero.Level;
+            MatchExperienceInfo.ExperienceAtBegin = hero.Experience;
+            MatchExperienceInfo.ExperienceReceived = 0;
+        }
+
+        public void ApplyExperienceFromMatch(Hero hero)
+        {
+            hero.Experience += MatchExperienceInfo.ExperienceReceived;
+            CheckLevel(hero);
+
+            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+        }
+
         public int GetRequiredExperienceForNewLevel(Hero hero)
         {
-            return _ovelordXPInfo.Fixed + _ovelordXPInfo.ExperienceStep * (hero.Level + 1);
+            return _overlordXPInfo.Fixed + _overlordXPInfo.ExperienceStep * (hero.Level + 1);
         }
 
         public void ChangeExperience(Hero hero, int value)
@@ -48,25 +63,25 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsTutorial)
                 return;
 
-            hero.Experience += value;
-            CheckLevel(hero);
+            MatchExperienceInfo.ExperienceReceived += value;
         }
 
         public void ReportExperienceAction(Hero hero, Enumerators.ExperienceActionType actionType)
         {
-            ExperienceAction action = _ovelordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
+            ExperienceAction action = _overlordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
 
             ChangeExperience(hero, action.Experience);
         }
 
         public LevelReward GetLevelReward(Hero hero)
         {
-            return _ovelordXPInfo.Rewards.Find(x => x.Level == hero.Level);
+            return _overlordXPInfo.Rewards.Find(x => x.Level == hero.Level);
         }
 
         private void CheckLevel(Hero hero)
         {
-            if (hero.Experience >= GetRequiredExperienceForNewLevel(hero))
+            while (hero.Experience >= GetRequiredExperienceForNewLevel(hero) &&
+                   hero.Experience < _overlordXPInfo.MaxLevel)
             {
                 LevelUp(hero);
             }
@@ -77,8 +92,6 @@ namespace Loom.ZombieBattleground
             hero.Level++;
 
             ApplyReward(hero);
-
-            // TODO: ADD FUNCTIONALY TO SAVE DATA ON SERVER
         }
 
         private void ApplyReward(Hero hero)
@@ -122,22 +135,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnGameInitializedHandler()
-        {
-            Hero selfHero = _gameplayManager.CurrentPlayer.SelfHero;
-            HeroInStartGame = new Hero(
-                selfHero.HeroId,
-                selfHero.Icon,
-                selfHero.Name,
-                selfHero.ShortDescription,
-                selfHero.LongDescription,
-                selfHero.Experience,
-                selfHero.Level,
-                selfHero.HeroElement,
-                selfHero.Skills,
-                selfHero.PrimarySkill,
-                selfHero.SecondarySkill);
-        }
 
         public class LevelReward
         {
@@ -166,6 +163,7 @@ namespace Loom.ZombieBattleground
             public Enumerators.ExperienceActionType Action;
             public int Experience;
         }
+
         public class OvelordExperienceInfo
         {
             public List<LevelReward> Rewards;
@@ -173,6 +171,15 @@ namespace Loom.ZombieBattleground
             public int Fixed;
             public int ExperienceStep;
             public int GooRewardStep;
+            public int MaxLevel;
+        }
+
+
+        public class ExperienceInfo
+        {
+            public int LevelAtBegin;
+            public long ExperienceAtBegin;
+            public long ExperienceReceived;
         }
     }
 }

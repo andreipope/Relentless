@@ -20,6 +20,10 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalConfigDataFileName = "config_data.json";
 
+        internal const string LocalHeroesDataFileName = "heroes_data.json";
+
+        internal const string LocalCollectionDataFileName = "collection_data.json";
+
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
 

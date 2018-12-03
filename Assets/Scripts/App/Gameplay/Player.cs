@@ -160,6 +160,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
+            if(!IsLocalPlayer)
+            Defense = 3;
+
             int heroId = -1;
 
             if (!isOpponent)
@@ -744,7 +747,7 @@ namespace Loom.ZombieBattleground
             {
                 if (!IsLocalPlayer)
                 {
-                    GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
+                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
                 }
 
                 PlayerDie();
