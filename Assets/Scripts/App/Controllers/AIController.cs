@@ -324,8 +324,6 @@ namespace Loom.ZombieBattleground
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
                 }
-
-
             }
 
             if (wasAction)
