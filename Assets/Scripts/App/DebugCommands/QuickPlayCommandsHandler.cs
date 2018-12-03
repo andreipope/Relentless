@@ -40,7 +40,7 @@ static class QuickPlayCommandsHandler
     }
 
     [CommandHandler(Description = "Starts the battle")]
-    private static void Start()
+    private static void QuickplayStart()
     {
         int index = _dataManager.CachedDecksData.Decks.FindIndex(
             deck => deck.Id == _uiManager.GetPage<GameplayPage>().CurrentDeckId);
@@ -48,6 +48,18 @@ static class QuickPlayCommandsHandler
         {
             int lastPlayerDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = lastPlayerDeckId;
+            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _dataManager.CachedDecksData.Decks[lastPlayerDeckId];
+        }
+        else
+        {
+            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _dataManager.CachedDecksData.Decks[index];
+        }
+
+        int opponentDeckId = _gameplayManager.OpponentIdCheat;
+        if (opponentDeckId == -1)
+        {
+            Debug.LogError("Select Opponent Deck ID");
+            return;
         }
 
         _matchManager.FindMatch(Enumerators.MatchType.LOCAL);
@@ -72,9 +84,8 @@ static class QuickPlayCommandsHandler
         _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_dataManager.CachedDecksData.Decks[index].Id;
     }
 
-    // TODO : Set Enemy Horde, right now no name exist
     [CommandHandler(Description = "Set which enemy horde to fight with. Accepts deck name.")]
-    private static void SetEnemyHorde(string deckName)
+    private static void QuickPlaySetEnemyHorde([Autocomplete(typeof(QuickPlayCommandsHandler), "AIDecksName")] string deckName)
     {
         int index = _dataManager.CachedAiDecksData.Decks.FindIndex(aiDeck => aiDeck.Deck.Name == deckName);
         if (index == -1)
@@ -83,6 +94,16 @@ static class QuickPlayCommandsHandler
             return;
         }
 
-        GameClient.Get<IGameplayManager>().OpponentDeckId = (int)_dataManager.CachedAiDecksData.Decks[index].Deck.Id;
+        _gameplayManager.OpponentIdCheat = (int)_dataManager.CachedAiDecksData.Decks[index].Deck.Id;
+    }
+
+    public static IEnumerable<string> AIDecksName()
+    {
+        string[] deckNames = new string[_dataManager.CachedAiDecksData.Decks.Count];
+        for (var i = 0; i < _dataManager.CachedAiDecksData.Decks.Count; i++)
+        {
+            deckNames[i] = _dataManager.CachedAiDecksData.Decks[i].Deck.Name;
+        }
+        return deckNames;
     }
 }
