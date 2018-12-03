@@ -489,8 +489,6 @@ namespace Loom.ZombieBattleground
                                            workingCard.Owner.AddCardToBoard(workingCard);
                                            workingCard.Owner.AddCardToGraveyard(workingCard);
 
-                                           card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
-
                                            InternalTools.DoActionDelayed(() =>
                                            {
                                                _cardsController.RemoveCard(new object[]{ card });
@@ -1064,8 +1062,6 @@ namespace Loom.ZombieBattleground
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                 card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
                 card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
-
-                card.WorkingCard.Owner.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
 
                 GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
                 {
