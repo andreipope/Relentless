@@ -27,13 +27,11 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private ButtonShiftingContent _betaButton;
+        private Transform _backgroundGroup;
 
-        private Transform _betaGroup;
+        private Transform _loginGroup;
 
         private Transform _waitingGroup;
-
-        private Transform _betaErrorText;
 
         private Transform _versionMismatchGroup;
 
@@ -41,7 +39,6 @@ namespace Loom.ZombieBattleground
 
         private Button _versionMismatchExitButton;
 
-        private InputField _betaKeyInputField;
 
         private LoginState _state;
 
@@ -84,29 +81,17 @@ namespace Loom.ZombieBattleground
             }
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _betaGroup = Self.transform.Find("Beta_Group");
-            _betaButton = _betaGroup.Find("Button_Beta").GetComponent<ButtonShiftingContent>();
-            _betaKeyInputField = Self.transform.Find("Beta_Group/InputField_Beta").GetComponent<InputField>();
-            _betaErrorText = _betaGroup.Find("Text_Error");
-
-            _betaButton.onClick.AddListener(PressedBetaHandler);
-
+            _backgroundGroup = Self.transform.Find("Background");
+            _loginGroup = Self.transform.Find("Login_Group");
             _waitingGroup = Self.transform.Find("Waiting_Group");
             _versionMismatchGroup = Self.transform.Find("VersionMismatch_Group");
             _versionMismatchText = _versionMismatchGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
             _versionMismatchExitButton = _versionMismatchGroup.Find("Button_Exit").GetComponent<Button>();
             _versionMismatchExitButton.onClick.AddListener(Application.Quit);
 
-            _state = LoginState.BetaKeyRequest;
-            SetUIState(LoginState.BetaKeyRequest);
-            _betaKeyInputField.text = "";
+            _state = LoginState.InitiateLogin;
+            SetUIState(LoginState.InitiateLogin);
             Self.SetActive(true);
-
-            GameObject betaText = Self.transform.Find("Beta_Group/Text_Beta").gameObject;
-            betaText.SetActive(false);
-            _betaKeyInputField.gameObject.SetActive(false);
-
-            PressedBetaHandler();
         }
 
         public void Show(object data)
@@ -124,7 +109,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private void PressedBetaHandler()
+        private void PressedLoginHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -134,12 +119,7 @@ namespace Loom.ZombieBattleground
 
         private async void LoginProcess()
         {
-            string betaKey =
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(SystemInfo.deviceUniqueIdentifier.ToLowerInvariant()))) +
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(Application.productName.ToLowerInvariant())));
-
+            /*
             // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
             SetUIState(LoginState.BetaKeyValidateAndLogin);
 
@@ -171,6 +151,7 @@ namespace Loom.ZombieBattleground
                 Debug.LogWarning(e);
                 SetUIState(LoginState.BetaKeyValidationFailed);
             }
+            */
         }
 
         private void SuccessfulLogin()
@@ -182,23 +163,26 @@ namespace Loom.ZombieBattleground
         private void SetUIState(LoginState state)
         {
             _state = state;
+            _backgroundGroup.gameObject.SetActive(false);
+            _loginGroup.gameObject.SetActive(false);
             _waitingGroup.gameObject.SetActive(false);
-            _betaGroup.gameObject.SetActive(false);
-            _betaErrorText.gameObject.SetActive(false);
             _versionMismatchGroup.gameObject.SetActive(false);
             switch (_state)
             {
-                case LoginState.BetaKeyRequest:
-                    _betaGroup.gameObject.SetActive(true);
+                case LoginState.InitiateLogin:
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _loginGroup.gameObject.SetActive(false);
                     break;
-                case LoginState.BetaKeyValidateAndLogin:
+                case LoginState.ValidateAndLogin:
+                    _backgroundGroup.gameObject.SetActive(true);
                     _waitingGroup.gameObject.SetActive(true);
                     break;
-                case LoginState.BetaKeyValidationFailed:
-                    _betaGroup.gameObject.SetActive(true);
-                    _betaErrorText.gameObject.SetActive(true);
+                case LoginState.ValidationFailed:
+                    SetUIState(LoginState.InitiateLogin);
+                    _uiManager.GetPopup<WarningPopup>().Show("The process could not be completed. Please try again.");
                     break;
                 case LoginState.RemoteVersionMismatch:
+                    _backgroundGroup.gameObject.SetActive(true);
                     _versionMismatchGroup.gameObject.SetActive(true);
                     break;
                 default:
@@ -229,9 +213,9 @@ namespace Loom.ZombieBattleground
 
         private enum LoginState
         {
-            BetaKeyRequest,
-            BetaKeyValidationFailed,
-            BetaKeyValidateAndLogin,
+            InitiateLogin,
+            ValidationFailed,
+            ValidateAndLogin,
             RemoteVersionMismatch
         }
     }

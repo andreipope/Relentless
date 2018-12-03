@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
 using Deck = Loom.ZombieBattleground.Protobuf.Deck;
+using System.Text;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -255,6 +256,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string AuthBetaConfigEndPoint = "/user/beta/config";
 
+        private const string loginEndPoint = "/auth/email/login";
+
         public async Task<bool> CheckIfBetaKeyValid(string betaKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
@@ -285,6 +288,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 // FIXME: backend should return valid version numbers at all times
                 new VersionConverterWithFallback(Version.Parse(Constants.CurrentVersionBase)));
             return betaConfig;
+        }
+
+        public async Task<LoginData> InitiateLogin(string email, string password)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + loginEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+            webrequestCreationInfo.Data = System.Text.Encoding.UTF8.GetBytes("{ \"email\":\"matt@loomx.io\",\"password\":\"putpassword\"}");
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+           // if (!httpResponseMessage.IsSuccessStatusCode)
+           //     throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
+
+            Debug.Log(httpResponseMessage.ReadToEnd());
+            LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
+                httpResponseMessage.ReadToEnd());
+            return loginData;
         }
 
         private struct BetaKeyValidationResponse
