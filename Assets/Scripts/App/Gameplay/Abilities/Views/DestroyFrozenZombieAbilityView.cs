@@ -43,8 +43,6 @@ namespace Loom.ZombieBattleground
             float delayAfter = 0;
             Vector3 offset = Vector3.zero;
 
-            string soundName = string.Empty;
-
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
