@@ -254,8 +254,8 @@ namespace Loom.ZombieBattleground
 
                         Data.AIDeck opponentDeck = _gameplayManager.OpponentIdCheat == -1 ? decks[Random.Range(0, decks.Count)] : decks[_gameplayManager.OpponentIdCheat];
                         opponentHeroId = opponentDeck.Deck.HeroId;
-                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
+                        _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
 
                         _gameplayManager.OpponentIdCheat = -1;
                     }
@@ -270,8 +270,8 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             opponentHeroId = (int) playerState.Deck.HeroId;
-                            _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
+                            _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
                         }
                     }
                     break;
