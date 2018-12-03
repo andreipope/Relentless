@@ -73,6 +73,43 @@ public class TestHelper
 
     private Loom.ZombieBattleground.Player _currentPlayer, _opponentPlayer;
 
+    private int pageTransitionWaitTime = 30;
+
+    private string _recordedExpectedValue, _recordedActualValue;
+
+    private float _waitStartTime, _turnStartTime;
+    private float _waitAmount, _turnWaitAmount;
+
+    private const int MinTurnForAttack = 0;
+    public BoardCard CurrentSpellCard;
+
+    private readonly System.Random _random = new System.Random();
+
+    private List<BoardUnitModel> _attackedUnitTargets;
+    private List<BoardUnitModel> _unitsToIgnoreThisTurn;
+
+    private List<WorkingCard> _normalUnitCardInHand, _normalSpellCardInHand;
+
+    private CollectionData _collectionData;
+    private List<Loom.ZombieBattleground.Data.Card> _createdArmyCards;
+
+    private List<string> _overlordNames = new List<string>() {
+        "Brakuus",
+        "Razu",
+        "Vash'Kala",
+        "Kalile",
+        "Mhalik",
+        "Valash"
+    };
+
+    private string _currentElementName = "";
+
+    public int SelectedHordeIndex
+    {
+        get;
+        private set;
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="T:TestHelper"/> class.
     /// </summary>
@@ -520,8 +557,6 @@ public class TestHelper
 
         return false;
     }
-
-    private int pageTransitionWaitTime = 30;
 
     /// <summary>
     /// Checks current page’s name and confirms that it’s correct with what was expected.
@@ -986,16 +1021,6 @@ public class TestHelper
     #endregion
 
     #region Adapted from AIController
-
-    private const int MinTurnForAttack = 0;
-    public BoardCard CurrentSpellCard;
-
-    private readonly System.Random _random = new System.Random ();
-
-    private List<BoardUnitModel> _attackedUnitTargets;
-    private List<BoardUnitModel> _unitsToIgnoreThisTurn;
-
-    private List<WorkingCard> _normalUnitCardInHand, _normalSpellCardInHand;
 
     /// <summary>
     /// Initalizes the player.
@@ -2701,18 +2726,6 @@ public class TestHelper
 
     #region Horde Creation / Editing
 
-    private CollectionData _collectionData;
-    private List<Loom.ZombieBattleground.Data.Card> _createdArmyCards;
-
-    private List<string> _overlordNames = new List<string> () {
-        "Brakuus",
-        "Razu",
-        "Vash'Kala",
-        "Kalile",
-        "Mhalik",
-        "Valash"
-    };
-
     /// <summary>
     /// Adds a Valash Deck and cards from Life group.
     /// </summary>
@@ -2938,8 +2951,6 @@ public class TestHelper
         yield return LetsThink ();
     }
 
-    private string _currentElementName = "";
-
     private IEnumerator PickElement (string elementName)
     {
         Transform elementsParent = GameObject.Find ("ElementsToggles").transform;
@@ -3041,12 +3052,6 @@ public class TestHelper
             return hordesParent.transform.childCount;
         else
             return -1;
-    }
-
-    public int SelectedHordeIndex
-    {
-        get;
-        private set;
     }
 
     /// <summary>
@@ -3169,8 +3174,6 @@ public class TestHelper
     {
         RecordAValue (null, "Text_PlayerOverlordName", RecordedValue.Actual);
     }
-
-    private string _recordedExpectedValue, _recordedActualValue;
 
     private void RecordAValue (string value, RecordedValue recordedValue)
     {
@@ -3295,9 +3298,6 @@ public class TestHelper
             return null;
         }
     }
-
-    private float _waitStartTime, _turnStartTime;
-    private float _waitAmount, _turnWaitAmount;
 
     /// <summary>
     /// Starts the waiting process.
