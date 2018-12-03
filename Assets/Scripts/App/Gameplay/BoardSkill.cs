@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
         private readonly GameObject _fightTargetingArrowPrefab;
 
-        private readonly int _initialCooldown;
+        private int _initialCooldown;
 
         private readonly Animator _shutterAnimator;
 
@@ -193,6 +193,12 @@ namespace Loom.ZombieBattleground
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
 
             SkillUsed?.Invoke(this, target);
+
+            if (_gameplayManager.UseInifiniteAbility)
+            {
+                _usedInThisTurn = false;
+                SetCoolDown(0);
+            }
         }
 
         public void Hide()

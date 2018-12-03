@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
 
         public Deck OpponentPlayerDeck { get; set; }
 
+        public bool UseInifiniteAbility { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -217,6 +219,8 @@ namespace Loom.ZombieBattleground
                 Constants.ZombiesSoundVolume = 0.25f;
                 Constants.CreatureAttackSoundVolume *= 3;
             }
+
+            UseInifiniteAbility = false;
         }
 
         public void Update()

@@ -67,6 +67,7 @@ namespace Loom.ZombieBattleground
         PlayerMoveAction PlayerMoves { get; set; }
 
         Deck CurrentPlayerDeck { get; set; }
-        Deck OpponentPlayerDeck { get; set; }        
+        Deck OpponentPlayerDeck { get; set; }
+        bool UseInifiniteAbility { get; set; }
     }
 }
