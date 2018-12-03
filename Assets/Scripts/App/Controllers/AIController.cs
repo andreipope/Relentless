@@ -312,8 +312,6 @@ namespace Loom.ZombieBattleground
                     wasAction = true;
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
-
-                    break;
                 }
             }
 
@@ -325,8 +323,6 @@ namespace Loom.ZombieBattleground
                     wasAction = true;
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
-
-                    break;
                 }
 
 
