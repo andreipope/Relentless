@@ -888,10 +888,9 @@ namespace Loom.ZombieBattleground
         private void SetNormalGlowFromUnitType()
         {
             string color = Model.HasBuffRush ? _orangeGlow : _greenGlow;
-            bool active = false;
+            bool active = Model.UnitCanBeUsable();
             if (_glowObj != null)
             {
-                active = Model.HasBuffRush ? true : _glowObj.activeInHierarchy;
                 Object.Destroy(_glowObj);
             }
             string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + Model.InitialUnitType + "_ActiveFrame_" + color;
