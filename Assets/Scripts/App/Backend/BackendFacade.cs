@@ -333,11 +333,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             Debug.LogWarning ("PvPTags: " + tags);
 
-            /* if (pvpTags == null)
-            {
-                pvpTags = new Google.Protobuf.Collections.RepeatedField<string> ();
-            } */
-
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
