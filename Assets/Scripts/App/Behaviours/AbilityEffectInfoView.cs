@@ -25,6 +25,10 @@ namespace Loom.ZombieBattleground
 
         public Vector3 offset;
 
+        public Vector3 localOffset;
+
+        public bool isRotate = false;
+
         public AbilityInfoPositionBlock positionInfo;
     }
 
