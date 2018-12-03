@@ -321,8 +321,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, List<string> pvpTags = null)
         {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
@@ -333,15 +343,46 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
+
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId)
+        public async Task<FindMatchResponse> FindMatch(string userId, List<string> pvpTags = null)
         {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
+            /* if (pvpTags == null)
+            {
+                pvpTags = new Google.Protobuf.Collections.RepeatedField<string>();
+            } */
+
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId
             };
+
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
         }

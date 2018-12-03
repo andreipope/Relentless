@@ -719,5 +719,11 @@ namespace Loom.ZombieBattleground.Common
             Medium,
             Long
         }
+
+        public enum MatchPlayer
+        {
+            CurrentPlayer,
+            OpponentPlayer
+        }
     }
 }
