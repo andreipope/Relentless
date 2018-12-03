@@ -99,62 +99,50 @@ namespace Loom.ZombieBattleground
             LevelReward levelReward = GetLevelReward(hero);
             if (levelReward != null)
             {
-                switch (levelReward.Reward)
+                if (levelReward.UnitReward != null)
                 {
-                    case LevelReward.UnitRewardItem unitReward:
+                    List<Card> cards = _dataManager.CachedCardsLibraryData.Cards
+                        .Where(x => x.CardRank.ToString() == levelReward.UnitReward.Rank)
+                        .ToList();
+                    Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
+                    CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
+                    if (foundCard != null)
+                    {
+                        foundCard.Amount += levelReward.UnitReward.Count;
+                    }
+                    else
+                    {
+                        _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
                         {
-                            List<Card> cards = _dataManager.CachedCardsLibraryData.Cards
-                                .Where(x => x.CardRank == unitReward.Rank)
-                                .ToList();
-                            Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
-                            CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
-                            if (foundCard != null)
-                            {
-                                foundCard.Amount += unitReward.Count;
-                            }
-                            else
-                            {
-                                _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
-                                {
-                                    Amount = unitReward.Count,
-                                    CardName = card.Name
-                                });
-                            }
-                        }
-                        break;
-                    case LevelReward.OverlordSkillRewardItem skillReward:
-                        hero.GetSkill(skillReward.SkillIndex).Unlocked = true;
-                        break;
-                    case LevelReward.ItemReward itemReward:
-                        break;
-                    case null:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(levelReward.Reward), levelReward.Reward, null);
+                            Amount = levelReward.UnitReward.Count,
+                            CardName = card.Name
+                        });
+                    }
                 }
+                else if (levelReward.SkillReward != null)
+                {
+                    hero.GetSkill(levelReward.SkillReward.SkillIndex).Unlocked = true;
+                }
+
+                MatchExperienceInfo.GotRewards.Add(levelReward);
             }
         }
-
-
+    
         public class LevelReward
         {
             public int Level;
-            public ItemReward Reward;
+            public OverlordSkillRewardItem SkillReward;
+            public UnitRewardItem UnitReward;
 
-            public class UnitRewardItem : ItemReward
+            public class UnitRewardItem 
             {
-                public Enumerators.CardRank Rank;
+                public string Rank;
                 public int Count;
             }
 
-            public class OverlordSkillRewardItem : ItemReward
+            public class OverlordSkillRewardItem
             {
                 public int SkillIndex;
-            }
-
-            public class ItemReward
-            {
-
             }
         }
 
@@ -180,6 +168,8 @@ namespace Loom.ZombieBattleground
             public int LevelAtBegin;
             public long ExperienceAtBegin;
             public long ExperienceReceived;
+
+            public List<LevelReward> GotRewards = new List<LevelReward>();
         }
     }
 }

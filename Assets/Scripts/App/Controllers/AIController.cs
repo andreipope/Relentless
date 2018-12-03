@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
 
-            SetAiBrainType(Enumerators.AiBrainType.DoNothing);
+            SetAiBrainType(Enumerators.AiBrainType.Normal);
 
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;

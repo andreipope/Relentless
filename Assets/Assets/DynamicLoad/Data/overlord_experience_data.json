@@ -6,7 +6,7 @@
     },
     {
       "Level": 2,
-      "Reward": {
+      "UnitReward": {
         "Rank": "MINION",
         "Count": 1
       }
@@ -17,7 +17,7 @@
     },
     {
       "Level": 4,
-      "Reward": {
+      "SkillReward": {
         "SkillIndex": 0
       }
     },
@@ -27,7 +27,7 @@
     },
     {
       "Level": 6,
-      "Reward": {
+      "UnitReward": {
         "Rank": "MINION",
         "Count": 2
       }
@@ -38,7 +38,7 @@
     },
     {
       "Level": 8,
-      "Reward": {
+      "SkillReward": {
         "SkillIndex": 1
       }
     },
@@ -48,7 +48,7 @@
     },
     {
       "Level": 10,
-      "Reward": {
+      "UnitReward": {
         "Rank": "OFFICER",
         "Count": 1
       }
@@ -59,7 +59,7 @@
     },
     {
       "Level": 12,
-      "Reward": {
+      "SkillReward": {
         "SkillIndex": 2
       }
     },
@@ -69,7 +69,7 @@
     },
     {
       "Level": 14,
-      "Reward": {
+      "UnitReward": {
         "Rank": "OFFICER",
         "Count": 2
       }
@@ -80,7 +80,7 @@
     },
     {
       "Level": 16,
-      "Reward": {
+      "SkillReward": {
         "SkillIndex": 3
       }
     },
@@ -90,7 +90,7 @@
     },
     {
       "Level": 18,
-      "Reward": {
+      "UnitReward": {
         "Rank": "COMMANDER",
         "Count": 1
       }
@@ -101,10 +101,8 @@
     },
     {
       "Level": 20,
-      "Reward": {
-        "ItemReward": {
-          "SkillIndex": 4
-        }
+      "SkillReward": {
+        "SkillIndex": 4
       }
     }
   ],

@@ -46,8 +46,6 @@ namespace Loom.ZombieBattleground
 
         private Animator _backgroundAnimator, _containerAnimator;
 
-        private LevelReward _levelReward;
-
         private Hero _selectedHero;
 
         public GameObject Self { get; private set; }
@@ -142,34 +140,33 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo()
         {
-            _levelReward = GameClient.Get<IOverlordExperienceManager>().GetLevelReward(_selectedHero);
+            List<LevelReward> gotRewards = GameClient.Get<IOverlordExperienceManager>().MatchExperienceInfo.GotRewards;
 
             _rewardDisabledObject.SetActive(false);
             _rewardSkillObject.SetActive(true);
 
-            if (_levelReward != null)
+            foreach (LevelReward levelReward in gotRewards)
             {
-                switch (_levelReward.Reward)
+                if (levelReward != null)
                 {
-                    case LevelReward.OverlordSkillRewardItem skillReward:
-                        {
-                            _rewardDisabledObject.SetActive(false);
-                            _rewardSkillObject.SetActive(true);
+                    if (levelReward.SkillReward != null)
+                    {
+                        _rewardDisabledObject.SetActive(false);
+                        _rewardSkillObject.SetActive(true);
 
-                            FillRewardSkillInfo(skillReward.SkillIndex);
+                        FillRewardSkillInfo(levelReward.SkillReward.SkillIndex);
 
-                            AbilityInstanceOnSelectionChanged(_newOpenAbility);
-                        }
-                        break;
-                    case LevelReward.UnitRewardItem unitReward:
-                    case LevelReward.ItemReward itemReward:
-                    default:
+                        AbilityInstanceOnSelectionChanged(_newOpenAbility);
+                    }
+                    else
+                    {
+                        if (gotRewards.FindAll(x => x.SkillReward != null).Count == 0)
                         {
                             _rewardDisabledObject.SetActive(true);
                             _rewardSkillObject.SetActive(false);
                             _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
                         }
-                        break;
+                    }
                 }
             }
         }

@@ -349,7 +349,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (File.Exists(GetPersistentDataItemPath(_cacheDataFileNames[type])))
                         {
-                            CachedHeroesData = DeserializeObjectFromAssets<HeroesData>(_cacheDataFileNames[type]);
+                            CachedHeroesData = DeserializeObjectFromPersistentData<HeroesData>(GetPersistentDataItemPath(_cacheDataFileNames[type]));
                         }
                         else
                         {
@@ -368,7 +368,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (File.Exists(GetPersistentDataItemPath(_cacheDataFileNames[type])))
                         {
-                            CachedCollectionData = DeserializeObjectFromAssets<CollectionData>(_cacheDataFileNames[type]);
+                            CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataItemPath(_cacheDataFileNames[type]));
                         }
                         else
                         {

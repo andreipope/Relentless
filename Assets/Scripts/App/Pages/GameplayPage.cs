@@ -258,7 +258,7 @@ namespace Loom.ZombieBattleground
 
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
-                        _gameplayManager.OpponentDeckId = (int)opponentDeck.Deck.Id;
+                        _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
 
                         _gameplayManager.OpponentIdCheat = -1;
                     }

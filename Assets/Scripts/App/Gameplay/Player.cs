@@ -160,9 +160,6 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if(!IsLocalPlayer)
-            Defense = 3;
-
             int heroId = -1;
 
             if (!isOpponent)
