@@ -3054,9 +3054,13 @@ public class TestHelper
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
         if (hordesParent != null)
+        {
             return hordesParent.transform.childCount;
+        }
         else
+        {
             return -1;
+        }
     }
 
     /// <summary>
