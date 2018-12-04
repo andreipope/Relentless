@@ -300,14 +300,14 @@ namespace Loom.ZombieBattleground.Common
             [EnumMember(Value = "PERMANENT")]
             Permanent,
 
-            [EnumMember(Value = "CHAINSAW")]
-            Chainsaw,
-
             [EnumMember(Value = "BLITZ")]
             Blitz,
 
             [EnumMember(Value = "RESTORE")]
             Restore,
+
+            [EnumMember(Value = "CHAINSAW")]
+            Chainsaw,
         }
 
         public enum BuffType
