@@ -168,11 +168,17 @@ public class TestHelper
 
             yield return HandleLogin ();
 
+            if (IsTestFinished)
+                yield break;
+
             yield return LetsThink ();
 
             yield return AssertLoggedInOrLoginFailed (
                 CloseTermsPopupIfRequired (),
                 FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
+
+            if (IsTestFinished)
+                yield break;
 
             #endregion
 
@@ -441,11 +447,6 @@ public class TestHelper
         _failMessage = message;
     }
 
-    public bool IsTestFinished
-    {
-        get { return _currentTestState != TestState.Running; }
-    }
-
     public void TestEndHandler ()
     {
         switch (CurrentTestState)
@@ -456,6 +457,10 @@ public class TestHelper
                 break;
             case TestHelper.TestState.Passed:
                 Assert.Pass (_failMessage);
+
+                break;
+            default:
+                Debug.LogWarning ($"Test finished with status {CurrentTestState}.");
 
                 break;
         }
@@ -2584,33 +2589,6 @@ public class TestHelper
     /// <remarks>todo: Doesn't work, after the latest changes done to the way this is handled.</remarks>
     public IEnumerator DecideWhichCardsToPick ()
     {
-        /* CardsController cardsController = _gameplayManager.GetController<CardsController> ();
-
-        int highCardCounter = 0;
-
-        Loom.ZombieBattleground.Player currentPlayer = _gameplayManager.CurrentPlayer;
-        for (int i = currentPlayer.CardsPreparingToHand.Count - 1; i >= 0; i--)
-        {
-            BoardCard boardCard = currentPlayer.CardsPreparingToHand[i];
-            WorkingCard workingCard = currentPlayer.CardsPreparingToHand[i];
-
-            if ((workingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL) ||
-                (highCardCounter >= 1 && workingCard.LibraryCard.Cost >= 4) ||
-                workingCard.LibraryCard.Cost >= 8)
-            {
-                currentPlayer.CardsPreparingToHand[i].CardShouldBeChanged = !boardCard.CardShouldBeChanged;
-
-                yield return LetsThink ();
-            }
-            else if (workingCard.LibraryCard.Cost >= 4)
-            {
-                highCardCounter++;
-
-                yield return LetsThink ();
-            }
-        }
-
-        yield return LetsThink (); */
         yield return LetsThink ();
 
         yield return ClickGenericButton ("Button_Keep");
@@ -2805,6 +2783,11 @@ public class TestHelper
         {
             return false;
         }
+    }
+
+    public bool IsTestFinished
+    {
+        get { return _currentTestState != TestState.Running; }
     }
 
     #region Horde Creation / Editing
@@ -3291,11 +3274,15 @@ public class TestHelper
     /// </summary>
     public void AssertOverlordName ()
     {
-        if (_recordedExpectedValue.Length <= 0 || _recordedActualValue.Length <= 0 || _recordedExpectedValue == "Default")
+        if (_recordedExpectedValue.Length <= 0 || _recordedActualValue.Length <= 0)
         {
-            Debug.Log ("One of the overlord names was null, so didn't check.");
+            Debug.LogWarning ("One of the overlord names was null, so didn't check.");
 
             return;
+        }
+        else if (_recordedExpectedValue == "Default")
+        {
+            _recordedExpectedValue = "Mhalik";
         }
 
         Debug.LogFormat ("{0} vs {1}", _recordedExpectedValue, _recordedActualValue);
@@ -3335,15 +3322,9 @@ public class TestHelper
 
         yield return MakeMoves (maxTurns);
 
-        Debug.LogWarning ("0");
-
         yield return ClickGenericButton ("Button_Continue");
 
-        Debug.LogWarning ("1");
-
         yield return AssertCurrentPageName ("HordeSelectionPage");
-
-        Debug.LogWarning ("2");
     }
 
     /// <summary>
