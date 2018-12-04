@@ -314,6 +314,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
         private const string AcceptMatchMethod = "AcceptMatch";
 
+        private bool _clientSideRuleOverride = false;
         public PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
         public async Task<AcceptMatchResponse> AcceptMatch(string userId, long matchId)
@@ -336,7 +337,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion,
                 RandomSeed = (long)Time.time,
                 Tags = { },
-                CustomGame = customGameModeAddress?.ToProtobufAddress()
+                CustomGame = customGameModeAddress?.ToProtobufAddress(),
+                ClientSideRuleOverride = _clientSideRuleOverride
             };
 
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
