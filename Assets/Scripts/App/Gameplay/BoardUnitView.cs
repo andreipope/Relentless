@@ -280,10 +280,15 @@ namespace Loom.ZombieBattleground
         private void BoardUnitDistractEffectStateChanged(bool status)
         {
             _distractObject.SetActive(status);
+
             if (status)
+            {
                 _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume);
+            }
             else
+            {
                 _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
+            }
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
