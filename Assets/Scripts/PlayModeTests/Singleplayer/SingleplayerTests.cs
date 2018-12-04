@@ -18,14 +18,7 @@ public class SingleplayerTests
     [UnityTearDown]
     public IEnumerator PerTestTearDown ()
     {
-        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
-        {
-            yield return _testHelper.TearDown_Cleanup ();
-        }
-        else
-        {
-            yield return _testHelper.TearDown_GoBackToMainScreen ();
-        }
+        yield return _testHelper.TearDown ();
 
         yield return _testHelper.ReportTestTime ();
     }
@@ -36,20 +29,24 @@ public class SingleplayerTests
     {
         _testHelper.InitalizePlayer ();
 
-        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
 
         if (assertOverlordName)
         {
             _testHelper.AssertOverlordName ();
         }
 
-        yield return _testHelper.AssertMulliganPopupCameUp (
-            _testHelper.DecideWhichCardsToPick (),
-            null);
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.AssertMulliganPopupCameUp (
+                _testHelper.DecideWhichCardsToPick (),
+                null);
 
-        yield return _testHelper.WaitUntilOurFirstTurn ();
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.WaitUntilOurFirstTurn ();
 
-        yield return _testHelper.MakeMoves ();
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.MakeMoves ();
 
         yield return null;
     }
@@ -62,32 +59,52 @@ public class SingleplayerTests
 
         #region Solo Gameplay
 
-        yield return _testHelper.MainMenuTransition ("Button_Play");
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.MainMenuTransition ("Button_Play");
 
-        yield return _testHelper.AssertIfWentDirectlyToTutorial (
-            _testHelper.GoBackToMainAndPressPlay ());
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.AssertIfWentDirectlyToTutorial (
+                _testHelper.GoBackToMainAndPressPlay ());
 
-        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
-        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.MainMenuTransition ("Button_SoloMode");
 
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         int selectedHordeIndex = 0;
 
-        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
+        if (!_testHelper.IsTestFinished)
+            _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
-        yield return _testHelper.MainMenuTransition ("Button_Battle");
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.MainMenuTransition ("Button_Battle");
 
-        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
-        yield return SoloGameplay ();
+        if (!_testHelper.IsTestFinished)
+            yield return SoloGameplay (true);
 
-        yield return _testHelper.ClickGenericButton ("Button_Continue");
+        Debug.LogWarning ("6");
 
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        Debug.LogWarning ("7");
+
+        if (!_testHelper.IsTestFinished)
+            yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        Debug.LogWarning ("8");
+
+        _testHelper.TestEndHandler ();
 
         #endregion
     }
@@ -729,8 +746,6 @@ public class HordeManipulationTests
         yield return _testHelper.DummyMethod (true);
 
         _testHelper.TestEndHandler ();
-
-        yield return new WaitForSeconds (200);
     }
 
     [UnityTest]
@@ -744,8 +759,6 @@ public class HordeManipulationTests
         yield return _testHelper.DummyMethod (false);
 
         _testHelper.TestEndHandler ();
-
-        yield return new WaitForSeconds (200);
     }
 
     [UnityTest]
