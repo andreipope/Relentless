@@ -41,6 +41,10 @@ namespace Loom.ZombieBattleground
             Vector3 offset = Vector3.zero;
             Enumerators.CardNameOfAbility cardNameOfAbility = Enumerators.CardNameOfAbility.None;
 
+            string soundName = string.Empty;
+            float delaySound = 0;
+
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
@@ -52,6 +56,8 @@ namespace Loom.ZombieBattleground
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
                     cardNameOfAbility = effectInfo.cardNameOfAbility;
                     offset = effectInfo.offset;
+                    soundName = effectInfo.soundName;
+                    delaySound = effectInfo.delayForSound;
                 }
 
                 Vector3 targetPosition = Vector3.zero;
@@ -78,6 +84,8 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+
+            PlaySound(soundName, delaySound);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
@@ -123,6 +131,8 @@ namespace Loom.ZombieBattleground
             subObject.SetActive(true);
             subObject.transform.position = pos;
             ParticlesController.RegisterParticleSystem(subObject, true, duration);
+            string clipTitle = "Bulldozer_Collision_F1_V" + UnityEngine.Random.Range(1, 5).ToString();
+            PlaySound(clipTitle, 0);
         }
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)

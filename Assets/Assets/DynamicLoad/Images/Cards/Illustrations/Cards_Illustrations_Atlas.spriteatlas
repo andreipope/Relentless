@@ -347,7 +347,7 @@ SpriteAtlas:
   - life_commander_zplitter
   - earth_officer_crater
   - water_commander_zplash
-  - fire_commander_zhampion
+  - fire_general_zhampion
   - air_minion_soothsayer
   - life_commander_blight
   - life_commander_rainz
@@ -384,7 +384,7 @@ SpriteAtlas:
   - earth_officer_tiny
   - toxic_minion_poizom
   - life_commander_vindrom
-  - life_minion_blightminion
+  - others_minion_blightling
   - life_minion_grower
   - item_minion_leash
   - air_officer_aura

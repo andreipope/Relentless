@@ -44,6 +44,10 @@ namespace Loom.ZombieBattleground
             if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement ||
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
+                string clipTitle = CardOwnerOfAbility.Name.Replace(" ", "_");
+
+                SoundManager.PlaySound(Enumerators.SoundType.SPELLS, clipTitle, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+
                 PlayerCallerOfAbility.CurrentGoo += Value;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()

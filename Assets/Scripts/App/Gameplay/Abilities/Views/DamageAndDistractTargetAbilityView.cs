@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
         protected override void OnAbilityAction(object info = null)
         {
             float delayAfter = 0;
+            float delaySound = 0;
+            string soundName = string.Empty;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
@@ -31,10 +33,15 @@ namespace Loom.ZombieBattleground
                 {
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
                     delayAfter = effectInfo.delayAfterEffect;
+                    soundName = effectInfo.soundName;
+                    delaySound = effectInfo.delayForSound;
                 }
 
                 CreateVfx(targetPosition, true, delayBeforeDestroy, true);
             }
+
+            PlaySound(soundName, 0);
+
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 

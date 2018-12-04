@@ -748,7 +748,7 @@ namespace Loom.ZombieBattleground
             {
                 if (!IsLocalPlayer)
                 {
-                    GameClient.Get<IOverlordManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
+                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
                 }
 
                 PlayerDie();

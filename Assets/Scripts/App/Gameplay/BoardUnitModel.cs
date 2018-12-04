@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardObject> AttackedBoardObjectsThisTurn;
 
-        public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.NONE;
+        public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.ANY;
 
         private readonly IGameplayManager _gameplayManager;
 
@@ -82,6 +82,8 @@ namespace Loom.ZombieBattleground
             IsAllAbilitiesResolvedAtStart = true;
 
             _gameplayManager.CanDoDragActions = false;
+
+            LastAttackingSetType = Enumerators.SetType.NONE;
         }
 
         public event Action TurnStarted;
@@ -200,12 +202,15 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
-        public void Die(bool returnToHand = false)
+        public GameAction<object> WaitAction;
+        public GameAction<object> ActionForDying;
+
+        public void Die(bool forceUnitDieEvent= false)
         {
             UnitDying?.Invoke();
 
             IsDead = true;
-            if (!returnToHand)
+            if (!forceUnitDieEvent)
             {
                 _battlegroundController.KillBoardCard(this);
             }
@@ -224,6 +229,11 @@ namespace Loom.ZombieBattleground
 
         public void AddBuff(Enumerators.BuffType type)
         {
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             BuffsOnUnit.Add(type);
         }
 
@@ -343,6 +353,11 @@ namespace Loom.ZombieBattleground
             if (HasHeavy)
                 return;
 
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Heavy);
 
@@ -377,6 +392,11 @@ namespace Loom.ZombieBattleground
             if (HasFeral)
                 return;
 
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Feral);
 
@@ -385,12 +405,12 @@ namespace Loom.ZombieBattleground
             HasFeral = true;
             InitialUnitType = Enumerators.CardType.FERAL;
 
-            CardTypeChanged?.Invoke(InitialUnitType);
-
             if (!AttackedThisTurn && !IsPlayable)
             {
                 IsPlayable = true;
             }
+
+            CardTypeChanged?.Invoke(InitialUnitType);
         }
 
         public void SetInitialUnitType()
@@ -544,6 +564,13 @@ namespace Loom.ZombieBattleground
             UnitDistracted?.Invoke();
         }
 
+        public void DisableDistract()
+        {
+            RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Distract);
+
+            UpdateVisualStateOfDistract(false);
+        }
+
         public void UpdateVisualStateOfDistract(bool status)
         {
             UnitDistractEffectStateChanged?.Invoke(status);
@@ -615,6 +642,12 @@ namespace Loom.ZombieBattleground
                                 completeCallback?.Invoke();
                                 return;
                             }
+
+                            WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+
+                            targetCardModel.WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(

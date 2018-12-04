@@ -286,10 +286,15 @@ namespace Loom.ZombieBattleground
         private void BoardUnitDistractEffectStateChanged(bool status)
         {
             _distractObject.SetActive(status);
+
             if (status)
-                _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume, isLoop: true);
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume);
+            }
             else
+            {
                 _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
+            }
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
@@ -869,23 +874,29 @@ namespace Loom.ZombieBattleground
                 {
                     attackCompleteCallback();
 
+                    completeCallback?.Invoke();
+
+                    Model.WaitAction?.ForceActionDone();
+                    targetCardView.Model.WaitAction?.ForceActionDone();
+
                     if (targetCardView.Model.CurrentHp <= 0)
                     {
-                        targetCardView.Model.UnitDied += () =>
+                        if (Model.CurrentHp > 0)
                         {
-                            completeCallback?.Invoke();
-                        };
+                            Model.ActionForDying?.ForceActionDone();
+                        }
                     }
                     else if (Model.CurrentHp <= 0)
                     {
-                        Model.UnitDied += () =>
+                        if (targetCardView.Model.CurrentHp > 0)
                         {
-                            completeCallback?.Invoke();
-                        };
+                            targetCardView.Model.ActionForDying?.ForceActionDone();
+                        }
                     }
                     else
                     {
-                        completeCallback?.Invoke();
+                        Model.ActionForDying?.ForceActionDone();
+                        targetCardView.Model.ActionForDying?.ForceActionDone();
                     }
                 }
             );
@@ -894,10 +905,9 @@ namespace Loom.ZombieBattleground
         private void SetNormalGlowFromUnitType()
         {
             string color = Model.HasBuffRush ? _orangeGlow : _greenGlow;
-            bool active = false;
+            bool active = Model.UnitCanBeUsable();
             if (_glowObj != null)
             {
-                active = Model.HasBuffRush ? true : _glowObj.activeInHierarchy;
                 Object.Destroy(_glowObj);
             }
             string direction = "Prefabs/Gameplay/ActiveFramesCards/ZB_ANM_" + Model.InitialUnitType + "_ActiveFrame_" + color;

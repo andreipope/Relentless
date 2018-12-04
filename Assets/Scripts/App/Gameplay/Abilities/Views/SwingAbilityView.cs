@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
+        private string _cardName;
+
         public SwingAbilityView(SwingAbility ability) : base(ability)
         {
             _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -30,7 +32,6 @@ namespace Loom.ZombieBattleground
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
-
                 if (effectInfo != null)
                 {
                     delayAfter = effectInfo.delayAfterEffect;
@@ -43,6 +44,8 @@ namespace Loom.ZombieBattleground
                 VfxObject.transform.position = targetPosition;
                 ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
             }
+
+            PlaySound(soundName, 0);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }

@@ -7,18 +7,10 @@ namespace Loom.ZombieBattleground
 {
     public class DamageTargetAbilityView : AbilityViewBase<DamageTargetAbility>
     {
-        private const float DELAY_BEFORE_MOVE_SHROOM = 0.5f;
-        private const float DELAY_BEFORE_DESTROY_MOVED_SHROOM = 2f;
-        private const float DELAY_AFTER_IMPACT_SHROOM = 4.5f;
-        private const float DELAY_BEFORE_DESTROY_IMPACT_SHROOM = 10f;
-
         private float _delayBeforeMove;
         private float _delayBeforeDestroyMoved;
         private float _delayAfterImpact;
         private float _delayBeforeDestroyImpact;
-
-        private string _abilityActionSound,
-                       _abilityActionCompletedSound;
 
         private BattlegroundController _battlegroundController;
 
@@ -31,6 +23,11 @@ namespace Loom.ZombieBattleground
         {
             SetDelays();
 
+            float durationOfMoving = 0.5f;
+            Vector3 offset = Vector3.zero;
+            Vector3 localOffset = Vector3.zero;
+            bool isRotate = false;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
@@ -39,18 +36,38 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    durationOfMoving = effectInfo.delayAfterEffect;
+                    _delayBeforeDestroyMoved = effectInfo.delayBeforeEffect;
+                    _delayBeforeMove = effectInfo.delayForChangeState;
+                    delayBeforeSound = effectInfo.delayForSound;
+                    offset = effectInfo.offset;
+                    localOffset = effectInfo.localOffset;
+                    soundClipTitle = effectInfo.soundName;
+                    delayBeforeSound = effectInfo.delayForSound;
+                    isRotate = effectInfo.isRotate;
+                }
+
+                if (isRotate)
+                {
+                    SetRotation(targetPosition);
+                }
+
+                targetPosition += VfxObject.transform.up * localOffset.y;
+                targetPosition += VfxObject.transform.right * localOffset.x;
+                targetPosition += VfxObject.transform.forward * localOffset.z;
+
                 VfxObject = Object.Instantiate(VfxObject);
                 VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
                 InternalTools.DoActionDelayed(() =>
                 {
-                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+                    VfxObject.transform.DOMove(targetPosition, durationOfMoving).OnComplete(ActionCompleted);
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
                 }, _delayBeforeMove);
 
-                if (!string.IsNullOrEmpty(_abilityActionSound))
-                {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }
+                PlaySound(soundClipTitle, 0);
             }
             else
             {
@@ -62,7 +79,7 @@ namespace Loom.ZombieBattleground
         {
             InternalTools.DoActionDelayed(ClearParticles, _delayBeforeDestroyMoved);
 
-            _delayBeforeMove = 0f;
+            soundClipTitle = string.Empty;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
@@ -77,15 +94,13 @@ namespace Loom.ZombieBattleground
                 {
                     _delayAfterImpact = effectInfo.delayAfterEffect;
                     _delayBeforeDestroyImpact = effectInfo.delayBeforeEffect;
-                    _abilityActionCompletedSound = effectInfo.soundName;
+                    soundClipTitle = effectInfo.soundName;
+                    delayBeforeSound = effectInfo.delayForSound;
                 }
 
                 CreateVfx(targetPosition, true, _delayBeforeDestroyImpact, true);
 
-                if (!string.IsNullOrEmpty(_abilityActionCompletedSound))
-                {
-                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, _abilityActionCompletedSound, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
-                }
+                PlaySound(soundClipTitle, delayBeforeSound);
             }
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, _delayAfterImpact);
@@ -103,24 +118,19 @@ namespace Loom.ZombieBattleground
             _delayAfterImpact = 0;
             _delayBeforeDestroyImpact = 0;
             _delayBeforeDestroyMoved = 0;
+        }
 
-            switch (Ability.AbilityEffectType)
-            {
-                case Enumerators.AbilityEffectType.TARGET_LIFE:
-                    _delayBeforeMove = DELAY_BEFORE_MOVE_SHROOM;
-                    _delayAfterImpact = DELAY_AFTER_IMPACT_SHROOM;
-                    _delayBeforeDestroyImpact = DELAY_BEFORE_DESTROY_IMPACT_SHROOM;
-                    _delayBeforeDestroyMoved = DELAY_BEFORE_DESTROY_MOVED_SHROOM;
-                    _abilityActionSound = "ZB_AUD_Shroom_Trail_F1_EXP";
-                    _abilityActionCompletedSound = "ZB_AUD_Shroom_explosion_F1_EXP";
-                    break;
-                case Enumerators.AbilityEffectType.TARGET_ROCK:
-                    _abilityActionSound = "ZB_AUD_Shroom_Trail_F1_EXP";
-                    _delayBeforeMove = 3.5f;
-                    break;
-                default:
-                    break;
-            }
+        private float AngleBetweenVector3(Vector3 from, Vector3 target)
+        {
+            Vector3 diference = target - from;
+            float sign = (target.x < from.x) ? 1.0f : -1.0f;
+            return Vector3.Angle(Vector3.up, diference) * sign;
+        }
+
+        private void SetRotation(Vector3 targetPosition)
+        {
+            float angle = AngleBetweenVector3(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position, targetPosition);
+            VfxObject.transform.eulerAngles = new Vector3(VfxObject.transform.eulerAngles.x, VfxObject.transform.eulerAngles.y, angle);
         }
     }
 }

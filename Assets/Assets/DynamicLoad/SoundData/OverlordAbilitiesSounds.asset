@@ -10,7 +10,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e283d5ecf866417da771c031af0b616, type: 3}
   m_Name: OverlordAbilitiesSounds
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   soundList:
   - CZB_AUD_Air_Overlord_Ability_draw_F1_EXP
   - CZB_AUD_Air_Overlord_Ability_push_F1_EXP
@@ -26,3 +26,13 @@ MonoBehaviour:
   - CZB_AUD_Water_Overlord_Ability_freeze_Impact_F1_EXP
   - CZB_AUD_Water_Overlord_Ability_ice_bolt_F2_EXP
   - CZB_AUD_Water_Overlord_Ability_ice_bolt_Impact_F1_EXP
+  - ZB_AUD_levitate_F1_EXP
+  - ZB_AUD_blizzard_F1_EXP
+  - ZB_AUD_meteor_shower_Impact_01_F2_EXP
+  - ZB_AUD_meteor_shower_Impact_02_F2_EXP
+  - ZB_AUD_meteor_shower_Impact_03_F2_EXP
+  - ZB_AUD_meteor_shower_Impact_04_F2_EXP
+  - ZB_AUD_meteor_shower_Moving_01_F2_EXP
+  - ZB_AUD_meteor_shower_Moving_02_F2_EXP
+  - ZB_AUD_meteor_shower_Moving_03_F2_EXP
+  - ZB_AUD_meteor_shower_Moving_04_F2_EXP

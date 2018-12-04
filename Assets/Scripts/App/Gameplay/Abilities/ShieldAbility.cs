@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
-                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                            ActionEffectType = Enumerators.ActionEffectType.Guard,
                             Target = AbilityUnitOwner,
                         }
                     }

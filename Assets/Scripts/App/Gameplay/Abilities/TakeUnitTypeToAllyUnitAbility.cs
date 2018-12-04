@@ -120,6 +120,12 @@ namespace Loom.ZombieBattleground
                         });
 
                         TakeTypeToUnit(AbilityUnitOwner);
+                        AbilitiesController.ThrowUseAbilityEvent(
+                            MainWorkingCard,
+                            new List<BoardObject>(),
+                            AbilityData.AbilityType,
+                            Enumerators.AffectObjectType.Character
+                        );
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:

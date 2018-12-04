@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
 {
     public class MatchManager : IService, IMatchManager
     {
+        public event Action MatchFinished;
+
         private IUIManager _uiManager;
 
         private IScenesManager _sceneManager;
@@ -29,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
+            MatchFinished?.Invoke();
+
             _tutorialManager.StopTutorial();
 
             if (_gameplayManager.IsTutorial &&

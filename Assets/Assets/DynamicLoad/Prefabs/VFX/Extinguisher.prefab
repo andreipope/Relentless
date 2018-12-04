@@ -319,11 +319,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: Extinguisher
+  cardNameOfAbility: 0
   delayBeforeEffect: 3
   delayAfterEffect: 2
   delayForChangeState: 0
-  soundName: 
   offset: {x: 0, y: 0, z: 0}
+  delayForSound: 0
+  soundName: CZB_AUD_Extinguisher_F1_EXP
   positionInfo:
     type: 1
 --- !u!198 &198049314005913726

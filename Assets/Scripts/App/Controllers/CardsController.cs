@@ -137,17 +137,20 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
-            // FIX ME! THIS HACK ONLY FOR SOME RELEASE
-            EndCardDistribution();
-            return;
-
-            if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
+            if (Constants.MulliganEnabled)
             {
-                EndCardDistribution();
+                if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
+                {
+                    EndCardDistribution();
+                }
+                else
+                {
+                    _uiManager.DrawPopup<MulliganPopup>();
+                }
             }
             else
             {
-                _uiManager.DrawPopup<MulliganPopup>();
+                EndCardDistribution();
             }
         }
 
@@ -511,6 +514,7 @@ namespace Loom.ZombieBattleground
                 if(!_gameplayManager.AvoidGooCost)
                     card.WorkingCard.Owner.CurrentGoo -= card.ManaCost;
 
+
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
@@ -551,9 +555,9 @@ namespace Loom.ZombieBattleground
                             _battlegroundController.PlayerBoardCards.Add(boardUnitView);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
-                            player.BoardCards.Insert(indexOfCard, boardUnitView);
+                            card.FuturePositionOnBoard = player.BoardCards.Count - indexOfCard;
 
-                            card.FuturePositionOnBoard = player.BoardCards.Count - 1 - indexOfCard;
+                            player.BoardCards.Insert(indexOfCard, boardUnitView);
 
                             InternalTools.DoActionDelayed(
                                      () =>
@@ -585,7 +589,7 @@ namespace Loom.ZombieBattleground
 
                                             if (status)
                                             {
-                                                player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
+                                                player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
                                             }
                                             else
@@ -601,7 +605,7 @@ namespace Loom.ZombieBattleground
                                                 boardUnitView.Model.Die(true);
                                             }
 
-                                        }, CallAbilityAction, target, handCard: handCard);
+                                        }, CallAbilityAction, target, handCard);
 
                                     waiterAction.ForceActionDone();
                                 });
@@ -631,7 +635,7 @@ namespace Loom.ZombieBattleground
                                         }
 
                                         RankBuffAction.ForceActionDone();
-                                    }, CallAbilityAction, target, handCard: handCard);
+                                    }, CallAbilityAction, target, handCard);
 
                                 waiterAction.ForceActionDone();                           
                             }, 0.75f);

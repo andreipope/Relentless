@@ -20,6 +20,10 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalConfigDataFileName = "config_data.json";
 
+        internal const string LocalHeroesDataFileName = "heroes_data.json";
+
+        internal const string LocalCollectionDataFileName = "collection_data.json";
+
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
 
@@ -143,7 +147,7 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
-        
 
+        internal const bool MulliganEnabled = false;
     }
 }

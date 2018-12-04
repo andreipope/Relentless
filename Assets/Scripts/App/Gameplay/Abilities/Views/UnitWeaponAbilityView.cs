@@ -50,9 +50,11 @@ namespace Loom.ZombieBattleground
             string soundName = string.Empty;
             _cardName = "";
             float delayBeforeDestroy = 3f;
+            float soundDelay = 0;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
+
                 Enumerators.VisualEffectType effectType = Enumerators.VisualEffectType.Impact;
 
                 switch (Ability.TargetUnit.InitialUnitType)
@@ -76,6 +78,7 @@ namespace Loom.ZombieBattleground
                 Vector3 offset = Vector3.zero;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
+
                 VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform, false);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
@@ -86,22 +89,12 @@ namespace Loom.ZombieBattleground
                     delayBeforeDestroy = effectInfo.delayBeforeEffect;
                     soundName = effectInfo.soundName;
                     offset = effectInfo.offset;
+                    soundDelay = effectInfo.delayForSound;
                 }
 
                 VfxObject.transform.localPosition = offset;
                 _id = ParticlesController.RegisterParticleSystem(VfxObject);
                 ParticleIds.Add(_id);
-
-                if (soundName != string.Empty)
-                {
-                    Enumerators.SoundType soundType = Ability.GetCaller() is BoardSpell ? Enumerators.SoundType.SPELLS : Enumerators.SoundType.CARDS;
-
-                    _soundManager.PlaySound(
-                        soundType,
-                        soundName,
-                        Constants.ZombiesSoundVolume / 2f,
-                        Enumerators.CardSoundType.NONE);
-                }
             }
 
             switch (_cardName)
@@ -116,6 +109,8 @@ namespace Loom.ZombieBattleground
                 default:
                     break;
             }
+
+            PlaySound(soundName, soundDelay);
 
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }

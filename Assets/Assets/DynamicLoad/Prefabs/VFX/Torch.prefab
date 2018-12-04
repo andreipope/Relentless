@@ -776,11 +776,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: 
+  cardNameOfAbility: 0
   delayBeforeEffect: 3.5
   delayAfterEffect: 2
   delayForChangeState: 1
-  soundName: 
   offset: {x: 0, y: 0, z: 0}
+  delayForSound: 0
+  soundName: ZB_AUD_Active_Torch_F1_EXP
+  positionInfo:
+    type: 0
 --- !u!198 &198028970614323412
 ParticleSystem:
   m_ObjectHideFlags: 1

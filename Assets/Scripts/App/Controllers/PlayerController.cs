@@ -101,6 +101,8 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer = player;
 
+            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfHero);
+
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
                 List<WorkingCard> workingDeck = new List<WorkingCard>();

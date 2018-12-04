@@ -547,28 +547,6 @@ namespace Loom.ZombieBattleground
             buffs.Clear();
 
             // right block info ------------------------------------
-
-            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
-            {
-                // FIXME: hack
-                continue;
-         
-                Enumerators.BuffType buffType =
-                    (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.AbilityData.GameMechanicDescriptionType.ToString(), true);
-                TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.AbilityData.GameMechanicDescriptionType);
-                if (gameMechanicInfo != null)
-                {
-                    buffs.Add(
-                        new BuffTooltipInfo
-                        {
-                            Title = gameMechanicInfo.Name,
-                            Description = gameMechanicInfo.Tooltip,
-                            TooltipObjectType = Enumerators.TooltipObjectType.BUFF,
-                            Value = -1
-                        });
-                }
-            }
-
             foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);

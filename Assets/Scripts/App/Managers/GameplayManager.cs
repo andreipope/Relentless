@@ -4,6 +4,7 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -79,6 +80,8 @@ namespace Loom.ZombieBattleground
 
         public bool AvoidGooCost { get; set; }
 
+        public bool UseInifiniteAbility { get; set; }
+
         public bool UseBackendGameLogic => _pvpManager?.MatchMetadata?.UseBackendGameLogic ?? false;
 
         public T GetController<T>()
@@ -104,25 +107,23 @@ namespace Loom.ZombieBattleground
 
             if (endGameType != Enumerators.EndGameType.CANCEL)
             {
-                _timerManager.AddTimer(
-                    x =>
-                    {
-                        switch (endGameType)
-                        {
-                            case Enumerators.EndGameType.WIN:
-                                _uiManager.DrawPopup<YouWonPopup>();
-                                break;
-                            case Enumerators.EndGameType.LOSE:
-                                _uiManager.DrawPopup<YouLosePopup>();
-                                break;
-                            case Enumerators.EndGameType.CANCEL:
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
-                        }
-                    },
-                    null,
-                    timer);
+                InternalTools.DoActionDelayed(() =>
+                     {
+                         switch (endGameType)
+                         {
+                             case Enumerators.EndGameType.WIN:
+                                 _uiManager.DrawPopup<YouWonPopup>();
+                                 break;
+                             case Enumerators.EndGameType.LOSE:
+                                 _uiManager.DrawPopup<YouLosePopup>();
+                                 break;
+                             case Enumerators.EndGameType.CANCEL:
+                                 break;
+                             default:
+                                 throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                         }
+                     },
+                     timer);
             }
 
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
@@ -230,6 +231,7 @@ namespace Loom.ZombieBattleground
 
             OpponentIdCheat = -1;
             AvoidGooCost = false;
+            UseInifiniteAbility = false;
         }
 
         public void Update()
