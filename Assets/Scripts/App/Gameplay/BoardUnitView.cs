@@ -280,10 +280,15 @@ namespace Loom.ZombieBattleground
         private void BoardUnitDistractEffectStateChanged(bool status)
         {
             _distractObject.SetActive(status);
+
             if (status)
-                _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume, isLoop: true);
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume);
+            }
             else
+            {
                 _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
+            }
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
@@ -865,8 +870,8 @@ namespace Loom.ZombieBattleground
 
                     completeCallback?.Invoke();
 
-                    Model.WaiterAction?.ForceActionDone();
-                    targetCardView.Model.WaiterAction?.ForceActionDone();
+                    Model.WaitAction?.ForceActionDone();
+                    targetCardView.Model.WaitAction?.ForceActionDone();
 
                     if (targetCardView.Model.CurrentHp <= 0)
                     {

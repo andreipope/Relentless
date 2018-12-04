@@ -210,12 +210,14 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            boardUnitView.Model.InvokeUnitStartedDying();
-
+            bool waitActionCreated = false;
 
             if (boardUnitView.Model.ActionForDying == null)
             {
+                boardUnitView.Model.WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
                 boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+
+                waitActionCreated = true;
             }
 
             boardUnitView.Model.ActionForDying.Action = (parameter, completeCallback) =>
@@ -240,6 +242,11 @@ namespace Loom.ZombieBattleground
                     CreateDeathAnimation(boardUnitView, endOfDestroyAnimationCallback, completeCallback);
                 }, Time.deltaTime * Application.targetFrameRate / 2f);
             };
+
+            if(waitActionCreated)
+            {
+                boardUnitView.Model.WaitAction.ForceActionDone();
+            }
         }
     
         private void CreateDeathAnimation(BoardUnitView unitView, Action endOfDestroyAnimationCallback, Action completeCallback)
