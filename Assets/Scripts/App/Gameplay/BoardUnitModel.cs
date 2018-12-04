@@ -208,7 +208,7 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
-        public GameAction<object> WaiterAction;
+        public GameAction<object> WaitAction;
         public GameAction<object> ActionForDying;
 
         public void Die(bool forceUnitDieEvent= false)
@@ -647,10 +647,10 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
-                            WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
                             ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
 
-                            targetCardModel.WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            targetCardModel.WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
                             targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);

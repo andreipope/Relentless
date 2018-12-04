@@ -870,8 +870,8 @@ namespace Loom.ZombieBattleground
 
                     completeCallback?.Invoke();
 
-                    Model.WaiterAction?.ForceActionDone();
-                    targetCardView.Model.WaiterAction?.ForceActionDone();
+                    Model.WaitAction?.ForceActionDone();
+                    targetCardView.Model.WaitAction?.ForceActionDone();
 
                     if (targetCardView.Model.CurrentHp <= 0)
                     {
