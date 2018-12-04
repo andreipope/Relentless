@@ -217,6 +217,8 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
             catch (Exception e)

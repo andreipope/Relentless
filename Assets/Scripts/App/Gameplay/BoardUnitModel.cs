@@ -211,6 +211,8 @@ namespace Loom.ZombieBattleground
         public GameAction<object> WaitAction;
         public GameAction<object> ActionForDying;
 
+        public bool WasDistracted { get; private set; }
+
         public void Die(bool forceUnitDieEvent= false)
         {
             UnitDying?.Invoke();
@@ -562,6 +564,8 @@ namespace Loom.ZombieBattleground
 
         public void Distract()
         {
+            WasDistracted = true;
+
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Distract);
 
             UpdateVisualStateOfDistract(true);

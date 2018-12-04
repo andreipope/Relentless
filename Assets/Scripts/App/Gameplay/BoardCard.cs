@@ -487,8 +487,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.LibraryCard.Abilities != null &&
-                !unit.Model.GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            if (unit.Model.Card.LibraryCard.Abilities != null && !unit.Model.WasDistracted)
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
@@ -543,6 +542,10 @@ namespace Loom.ZombieBattleground
             foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
+
+                if (BuffOnCardInfoObjects.Find(x => x.BuffTooltipInfo.Title == gameMechanicInfo.Name) != null)
+                    continue;
+
                 if (gameMechanicInfo != null)
                 {
                     buffs.Add(
