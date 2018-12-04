@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, _gameplayManager.OpponentPlayer));
+                        workingDeck.Add(_cardsController.GetWorkingCardFromCardName("MonZoon", _gameplayManager.OpponentPlayer));
                     }
                 }
 
@@ -530,8 +530,8 @@ namespace Loom.ZombieBattleground
             WorkingCard expensiveCard =
                 GetUnitCardsInHand()
                     .Find(
-                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
-                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
+                        x => x.InstanceCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
+                            x.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
             if (expensiveCard != null)
             {
                 bool wasAction = false;
@@ -585,7 +585,7 @@ namespace Loom.ZombieBattleground
         private bool CardCanBePlayable(WorkingCard card)
         {
 #if !DEV_MODE
-            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
+            return card.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
 #else
             return true;

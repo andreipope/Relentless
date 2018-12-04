@@ -900,7 +900,7 @@ namespace Loom.ZombieBattleground
                 card.LibraryCard = new Card(
                     card.LibraryCard.MouldId,
                     card.LibraryCard.Name,
-                    card.InstanceCard.Cost,
+                    card.LibraryCard.Cost,
                     card.LibraryCard.Description,
                     card.LibraryCard.FlavorText,
                     card.LibraryCard.Picture,
