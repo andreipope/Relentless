@@ -726,6 +726,36 @@ public class HordeManipulationTests
     }
 
     [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_Z1_Fail ()
+    {
+        _testHelper.SetTestName ("Fail test");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.DummyMethod (true);
+
+        _testHelper.TestEndHandler ();
+
+        yield return new WaitForSeconds (200);
+    }
+
+    [UnityTest]
+    [Timeout (500000)]
+    public IEnumerator Test_Z2_Pass ()
+    {
+        _testHelper.SetTestName ("Pass test");
+
+        yield return _testHelper.MainMenuTransition ("Button_Play");
+
+        yield return _testHelper.DummyMethod (false);
+
+        _testHelper.TestEndHandler ();
+
+        yield return new WaitForSeconds (200);
+    }
+
+    [UnityTest]
     public IEnumerator TestN_Cleanup ()
     {
         // Nothing, just to ascertain cleanup
