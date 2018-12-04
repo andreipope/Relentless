@@ -134,8 +134,6 @@ namespace Loom.ZombieBattleground
 
         public event Action GameMechanicDescriptionsOnUnitChanged;
 
-        public event Action UnitStartedDying;
-
         public Enumerators.CardType InitialUnitType { get; private set; }
 
         public int MaxCurrentDamage => InitialDamage + BuffedDamage;
@@ -210,7 +208,7 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
-        public GameAction<object> WaiterAction;
+        public GameAction<object> WaitAction;
         public GameAction<object> ActionForDying;
 
         public void Die(bool forceUnitDieEvent= false)
@@ -237,6 +235,11 @@ namespace Loom.ZombieBattleground
 
         public void AddBuff(Enumerators.BuffType type)
         {
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             BuffsOnUnit.Add(type);
         }
 
@@ -354,6 +357,11 @@ namespace Loom.ZombieBattleground
             if (HasHeavy)
                 return;
 
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Heavy);
 
@@ -387,6 +395,11 @@ namespace Loom.ZombieBattleground
         {
             if (HasFeral)
                 return;
+
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
 
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Feral);
@@ -555,6 +568,13 @@ namespace Loom.ZombieBattleground
             UnitDistracted?.Invoke();
         }
 
+        public void DisableDistract()
+        {
+            RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Distract);
+
+            UpdateVisualStateOfDistract(false);
+        }
+
         public void UpdateVisualStateOfDistract(bool status)
         {
             UnitDistractEffectStateChanged?.Invoke(status);
@@ -627,10 +647,10 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
-                            WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
                             ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
 
-                            targetCardModel.WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
+                            targetCardModel.WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
                             targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
@@ -733,11 +753,6 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
-        }
-
-        public void InvokeUnitStartedDying()
-        {
-            UnitStartedDying?.Invoke();
         }
 
         public void InvokeKilledUnit(BoardUnitModel boardUnit)
