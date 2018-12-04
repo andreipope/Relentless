@@ -14,7 +14,7 @@ public static class LoomTestContext
 
     public static void TestSetUp(string userId = "Loom")
     {
-        BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Local];
+        BackendEndpoint backendEndpoint = new BackendEndpoint(BackendEndpointsContainer.Endpoints[BackendPurpose.Local]);
         BackendFacade = new BackendFacade(backendEndpoint);
         UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
     }
@@ -49,7 +49,7 @@ public static class LoomTestContext
 
     public static string CreateUniqueUserId(string userId)
     {
-        return userId + new Random().NextDouble();
+        return userId + "_" + new Random().NextDouble();
     }
 
     private static IEnumerator AsyncTest(Func<Task> action, Action preAction)

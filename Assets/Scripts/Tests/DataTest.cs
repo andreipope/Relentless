@@ -108,7 +108,9 @@ namespace Loom.ZombieBattleground.Tests
                         {
                             CardSetType.Types.Enum.Fire,
                             CardSetType.Types.Enum.Life
-                        }
+                        },
+                        Unlocked = true,
+                        CanSelectTarget = true
                     }
                 },
                 PrimarySkill =  OverlordSkillKind.Types.Enum.HealingTouch,
