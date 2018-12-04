@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _packsCount;
 
-        private TextMeshProUGUI _armyTextMesh;
+        private TextMeshProUGUI _armyTextMesh, _armyHoverTextMesh, _armyDownTextMesh;
 
         private Animator _logoAnimator;
 
@@ -69,6 +69,8 @@ namespace Loom.ZombieBattleground
             _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
             _buttonSettings = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
             _armyTextMesh = _buttonArmy.transform.Find("Button/ButtonText").GetComponent<TextMeshProUGUI>();
+            _armyHoverTextMesh = _buttonArmy.transform.Find("Hover/HoverText").GetComponent<TextMeshProUGUI>();
+            _armyDownTextMesh = _buttonArmy.transform.Find("Down/DownText").GetComponent<TextMeshProUGUI>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
@@ -124,6 +126,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             _armyTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ArmyText.ToString());
+            _armyHoverTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ArmyText.ToString());
+            _armyDownTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.ArmyText.ToString());
             // TODO : right now all text are images.
             /*_playText.text = _localizationManager.GetUITranslation(LocalizationKeys.PlayText.ToString());
             _shopText.text = _localizationManager.GetUITranslation(LocalizationKeys.ShopText.ToString());

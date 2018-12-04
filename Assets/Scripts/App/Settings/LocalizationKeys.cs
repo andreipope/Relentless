@@ -131,5 +131,7 @@ public enum LocalizationKeys
     Tutorial_1_Step_29,
     Tutorial_1_Step_30,
     Tutorial_1_Step_31,
-    Tutorial_1_Step_32
+    Tutorial_1_Step_32,
+    NextButtonText,
+    SkipTutorialButtonText
 }

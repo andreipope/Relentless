@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private ILoadObjectsManager _loadObjectsManager;
 
+        private ILocalizationManager _localizationManager;
+
         private IUIManager _uiManager;
 
         private ITutorialManager _tutorialManager;
@@ -17,6 +19,10 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
 
         private TextMeshProUGUI _text;
+
+        private TextMeshProUGUI _nextButtonTextMesh;
+
+        private TextMeshProUGUI _skipTutorialTextMesh;
 
         private ButtonShiftingContent _nextButton, _playButton, _skipButton;
 
@@ -38,6 +44,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _janePoses = _loadObjectsManager.GetObjectsByPath<Sprite>(new string[] {
                 "Images/Tutorial/1BasicJane",
@@ -88,6 +95,8 @@ namespace Loom.ZombieBattleground
             _playButton = Self.transform.Find("Button_Play").GetComponent<ButtonShiftingContent>();
             _skipButton = Self.transform.Find("Button_Skip").GetComponent<ButtonShiftingContent>();
             _buttonBack = Self.transform.Find("Button_Back").GetComponent<Button>();
+            _nextButtonTextMesh = _nextButton.transform.Find("Button/Text").GetComponent<TextMeshProUGUI>();
+            _skipTutorialTextMesh = _skipButton.transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
             _janeImage = Self.transform.Find("NPC").GetComponent<Image>();
 
@@ -106,6 +115,8 @@ namespace Loom.ZombieBattleground
             _nextButton.gameObject.SetActive(false);
             _playButton.gameObject.SetActive(false);
             _skipButton.gameObject.SetActive(true);
+
+            UpdateLocalization();
         }
 
         public void Show(object data)
@@ -175,6 +186,15 @@ namespace Loom.ZombieBattleground
         private void BackButtonOnClickHandler()
         {
             _tutorialManager.SkipTutorial(Enumerators.AppState.MAIN_MENU);
+        }
+
+        private void UpdateLocalization()
+        {
+            if (Self == null)
+                return;
+
+            _nextButtonTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.NextButtonText.ToString());
+            _skipTutorialTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.SkipTutorialButtonText.ToString());
         }
     }
 }

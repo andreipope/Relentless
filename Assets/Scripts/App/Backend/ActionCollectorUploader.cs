@@ -147,6 +147,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             public void Dispose()
             {
+                IMatchManager matchManager = GameClient.Get<IMatchManager>();
+                if (matchManager.MatchType == Enumerators.MatchType.LOCAL ||
+                    matchManager.MatchType == Enumerators.MatchType.PVE ||
+                    _pvpManager.InitialGameState == null)
+                    return;
+
                 UnsubscribeFromPlayerEvents();
             }
 
