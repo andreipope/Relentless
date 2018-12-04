@@ -291,7 +291,7 @@ namespace Loom.ZombieBattleground
             GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
             Debug.LogWarning("Initial game state:\n" + InitialGameState);
-            Debug.LogWarning("Use backend game logic: " + !MatchMetadata.UseBackendGameLogic);
+            Debug.LogWarning("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
         }
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)

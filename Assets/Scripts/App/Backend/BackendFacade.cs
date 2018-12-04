@@ -327,9 +327,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, List<string> pvpTags = null)
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(
+            string userId,
+            long deckId,
+            Address? customGameModeAddress,
+            IList<string> pvpTags = null,
+            bool useBackendGameLogic = false)
         {
-            Debug.Log("PvPTags: " + String.Join(", ", (IEnumerable<string>) pvpTags ?? Array.Empty<string>()));
+            if (pvpTags != null && pvpTags.Count != 0)
+            {
+                Debug.Log("PvPTags: " + String.Join(", ", pvpTags));
+            }
 
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
@@ -339,24 +347,28 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 RandomSeed = (long) Time.time,
                 Tags =
                 {
-                    (IEnumerable<string>) pvpTags ?? Array.Empty<string>()
+                    pvpTags ?? Array.Empty<string>()
                 },
-                CustomGame = customGameModeAddress?.ToProtobufAddress()
+                CustomGame = customGameModeAddress?.ToProtobufAddress(),
+                UseBackendGameLogic = useBackendGameLogic
             };
 
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId, List<string> pvpTags = null)
+        public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags = null)
         {
-            Debug.Log ("PvPTags: " + String.Join(", ", (IEnumerable<string>) pvpTags ?? Array.Empty<string>()));
+            if (pvpTags != null && pvpTags.Count != 0)
+            {
+                Debug.Log("PvPTags: " + String.Join(", ", pvpTags));
+            }
 
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,
                 Tags =
                 {
-                    (IEnumerable<string>) pvpTags ?? Array.Empty<string>()
+                    pvpTags ?? Array.Empty<string>()
                 }
             };
 
