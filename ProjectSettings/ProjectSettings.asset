@@ -650,7 +650,7 @@ PlayerSettings:
   webGLCompressionFormat: 1
   webGLLinkerTarget: 1
   scriptingDefineSymbols:
-    1: DEV_MODE;ENABLE_BACKEND_ACTION_OUTCOMES
+    1: 
     7: 
   platformArchitecture: {}
   scriptingBackend: {}
