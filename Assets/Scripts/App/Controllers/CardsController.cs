@@ -137,17 +137,20 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
-            // FIX ME! THIS HACK ONLY FOR SOME RELEASE
-            EndCardDistribution();
-            return;
-
-            if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
+            if (Constants.MulliganEnabled)
             {
-                EndCardDistribution();
+                if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
+                {
+                    EndCardDistribution();
+                }
+                else
+                {
+                    _uiManager.DrawPopup<MulliganPopup>();
+                }
             }
             else
             {
-                _uiManager.DrawPopup<MulliganPopup>();
+                EndCardDistribution();
             }
         }
 
