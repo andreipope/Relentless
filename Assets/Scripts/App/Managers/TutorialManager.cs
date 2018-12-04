@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private ILocalizationManager _localizationManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -72,6 +74,7 @@ namespace Loom.ZombieBattleground
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
@@ -111,7 +114,7 @@ namespace Loom.ZombieBattleground
                         new Deck(0, CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId,
                         "TutorialDeckOpponent", new List<DeckCardData>(),
                         Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordSkill, true),
-                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordSkill, true)); 
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordSkill, true));
         }
 
         public void StartTutorial()
@@ -161,7 +164,8 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            string tutorialSkipQuestion = "Are you sure you want to go back to Main Menu?";
+            string tutorialSkipQuestion =
+                _localizationManager.GetUITranslation(LocalizationKeys.TutorialSkipQuestion.ToString());
             QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
             if (state == Enumerators.AppState.MAIN_MENU)
             {
@@ -169,9 +173,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                tutorialSkipQuestion = "Do you really want to skip \nBasic Tutorial?";
+                tutorialSkipQuestion = _localizationManager.GetUITranslation(LocalizationKeys.BasicTutorialSkipQuestion.ToString());;
                 if (_dataManager.CachedUserLocalData.CurrentTutorialId > 0)
-                    tutorialSkipQuestion = "Do you really want to skip \nAdvanced Tutorial?";
+                    tutorialSkipQuestion = _localizationManager.GetUITranslation(LocalizationKeys.AdvanceTutorialSkipQuestion.ToString());;
                 questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
             }
 

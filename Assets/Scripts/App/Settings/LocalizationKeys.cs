@@ -45,5 +45,20 @@ public enum LocalizationKeys
     CancelingMatchErrorText,
     OpponentNotFoundText,
     DeleteDeckErrorText,
-    BattleButtonWarningText
+    BattleButtonWarningText,
+    YesText,
+    NoText,
+    TutorialSkipQuestion,
+    BasicTutorialSkipQuestion,
+    AdvanceTutorialSkipQuestion,
+    SaveCurrentHordeConfirmation,
+    DeleteDeckConfirmation,
+    FactionAlert,
+    CardAmountAlert,
+    CardMaxCopiesAlert,
+    DeckMaxSizeAlert,
+    EmptyDeckNameAlert,
+    EditDeckNameFailAlert,
+    EditDeckFailureAlert,
+    AddDeckFailureAlert
 }

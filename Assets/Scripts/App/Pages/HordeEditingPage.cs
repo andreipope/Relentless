@@ -591,7 +591,7 @@ namespace Loom.ZombieBattleground
             if (_against[_currentHero.HeroElement] == card.CardSetType)
             {
                 OpenAlertDialog(
-                    "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
+                    _localizationManager.GetUITranslation(LocalizationKeys.FactionAlert.ToString()));
                 return;
             }
 
@@ -599,7 +599,7 @@ namespace Loom.ZombieBattleground
             if (collectionCardData.Amount == 0)
             {
                 OpenAlertDialog(
-                    "You don't have enough cards of this type. \n Buy or earn new packs to get more cards!");
+                    _localizationManager.GetUITranslation(LocalizationKeys.CardAmountAlert.ToString()));
                 return;
             }
 
@@ -609,14 +609,15 @@ namespace Loom.ZombieBattleground
 
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
-                OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.CardRank.ToString().ToLowerInvariant() + " card in your deck.");
+                string msg = _localizationManager.GetUITranslation(LocalizationKeys.CardMaxCopiesAlert.ToString());
+                OpenAlertDialog(string.Format(msg, maxCopies, card.CardRank.ToString().ToLowerInvariant()));
                 return;
             }
 
             if (_currentDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                OpenAlertDialog("You can not add more than " + Constants.DeckMaxSize + " Cards in a single Horde.");
+                string msg = _localizationManager.GetUITranslation(LocalizationKeys.DeckMaxSizeAlert.ToString());
+                OpenAlertDialog(string.Format(msg, Constants.DeckMaxSize));
                 return;
             }
 
@@ -742,7 +743,7 @@ namespace Loom.ZombieBattleground
             if (string.IsNullOrWhiteSpace(_currentDeck.Name))
             {
                 _buttonSave.interactable = true;
-                OpenAlertDialog("Saving Horde with an empty name is not allowed.");
+                OpenAlertDialog(_localizationManager.GetUITranslation(LocalizationKeys.EmptyDeckNameAlert.ToString()));
                 return;
             }
 
@@ -752,7 +753,7 @@ namespace Loom.ZombieBattleground
                     deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
                 {
                     _buttonSave.interactable = true;
-                    OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
+                    OpenAlertDialog(_localizationManager.GetUITranslation(LocalizationKeys.EditDeckNameFailAlert.ToString()));
                     return;
                 }
             }
@@ -777,7 +778,8 @@ namespace Loom.ZombieBattleground
                     Debug.Log("Result === " + e);
 
                     success = false;
-                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    string msg = _localizationManager.GetUITranslation(LocalizationKeys.AddDeckFailureAlert.ToString());
+                    OpenAlertDialog(string.Format(msg, e.Message));
                 }
             }
             else
@@ -812,7 +814,10 @@ namespace Loom.ZombieBattleground
                         message = description[description.Length - 1].TrimStart(' ');
                         message = char.ToUpper(message[0]) + message.Substring(1);
                     }
-                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
+
+                    string msg =
+                        _localizationManager.GetUITranslation(LocalizationKeys.EditDeckFailureAlert.ToString());
+                    OpenAlertDialog(string.Format(msg, message));
                 }
             }
 
@@ -1117,7 +1122,7 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmQuitReceivedHandler;
             _uiManager.DrawPopup<QuestionPopup>(new object[]
             {
-                "Would you like to save the current horde?", true
+                _localizationManager.GetUITranslation(LocalizationKeys.SaveCurrentHordeConfirmation.ToString()), true
             });
         }
 

@@ -620,7 +620,9 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
 
-                _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.SelfDeck.Name + "?");
+                string msg = _localizationManager.GetUITranslation(LocalizationKeys.DeleteDeckConfirmation.ToString());
+                msg = string.Format(msg, deck.SelfDeck.Name);
+                _uiManager.DrawPopup<QuestionPopup>(msg);
             }
         }
 

@@ -11,11 +11,17 @@ namespace Loom.ZombieBattleground
     {
         private ILoadObjectsManager _loadObjectsManager;
 
+        private ILocalizationManager _localizationManager;
+
         private IUIManager _uiManager;
 
         private Button _backButton;
 
         private TextMeshProUGUI _text;
+
+        private TextMeshProUGUI _buttonYesTextMesh;
+
+        private TextMeshProUGUI _buttonNoTextMesh;
 
         private ButtonShiftingContent _buttonYes, _buttonNo;
 
@@ -27,6 +33,7 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _localizationManager = GameClient.Get<ILocalizationManager>();
         }
 
         public void Dispose()
@@ -55,12 +62,16 @@ namespace Loom.ZombieBattleground
             _buttonYes = Self.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
             _buttonNo = Self.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
             _backButton = Self.transform.Find("Button_Back").GetComponent<Button>();
+            _buttonYesTextMesh = _buttonYesTextMesh.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _buttonNoTextMesh = _buttonNo.transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
             _buttonYes.onClick.AddListener(ConfirmationButtonHandler);
             _buttonNo.onClick.AddListener(NoButtonOnClickHandler);
             _backButton.onClick.AddListener(BackButtonHandler);
 
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
+
+            UpdateLocalization();
         }
 
         public void Show(object data)
@@ -92,6 +103,15 @@ namespace Loom.ZombieBattleground
             ConfirmationReceived?.Invoke(true);
 
             Hide();
+        }
+
+        private void UpdateLocalization()
+        {
+            if (Self == null)
+                return;
+
+            _buttonYesTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.YesText.ToString());
+            _buttonNoTextMesh.text = _localizationManager.GetUITranslation(LocalizationKeys.NoText.ToString());
         }
 
         private void NoButtonOnClickHandler()
