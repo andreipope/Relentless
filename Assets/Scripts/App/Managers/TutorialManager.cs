@@ -354,7 +354,7 @@ namespace Loom.ZombieBattleground
         {
             DestroySelectTarget();
 
-            _popup.Show(CurrentTutorialDataStep.JaneText);
+            _popup.Show(_localizationManager.GetUITranslation(CurrentTutorialDataStep.JaneText));
             _popup.UpdatePose(CurrentTutorialDataStep.JanePose);
 
             if (CurrentTutorialDataStep.IsFocusing)

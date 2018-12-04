@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
             _buttonYes = Self.transform.Find("Button_Yes").GetComponent<ButtonShiftingContent>();
             _buttonNo = Self.transform.Find("Button_No").GetComponent<ButtonShiftingContent>();
             _backButton = Self.transform.Find("Button_Back").GetComponent<Button>();
-            _buttonYesTextMesh = _buttonYesTextMesh.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _buttonYesTextMesh = _buttonYes.transform.Find("Text").GetComponent<TextMeshProUGUI>();
             _buttonNoTextMesh = _buttonNo.transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
             _buttonYes.onClick.AddListener(ConfirmationButtonHandler);
