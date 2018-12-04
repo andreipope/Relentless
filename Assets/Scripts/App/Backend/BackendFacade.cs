@@ -342,12 +342,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId)
+        public async Task<FindMatchResponse> FindMatch(string userId, IList<string> tags = null)
         {
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,
-                Tags = { }
+                Tags = { tags }
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
@@ -447,7 +447,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
             }
-            GameClient.Get<IQueueManager>().Clear();
         }
 
         public void EventHandler(object sender, JsonRpcEventData e)

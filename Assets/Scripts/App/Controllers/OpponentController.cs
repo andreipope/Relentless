@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
 
         private void OnPlayerActionOutcomeReceived(PlayerActionOutcome outcome)
         {
-            if (_gameplayManager.UseClientGameLogic)
+            if (!_gameplayManager.UseBackendGameLogic)
                 return;
 
             switch (outcome.OutcomeCase)
@@ -146,6 +146,9 @@ namespace Loom.ZombieBattleground
 
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
+                    break;
+                case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
+                    // TODO
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

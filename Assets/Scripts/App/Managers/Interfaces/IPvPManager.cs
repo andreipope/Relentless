@@ -39,11 +39,15 @@ namespace Loom.ZombieBattleground
         GameState InitialGameState { get; }
 
         List<string> PvPTags { get; set; }
+
+        MatchMakingFlowController MatchMakingFlowController { get; }
+
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
 
-        Task CancelFindMatch();
-        void MatchIsStarting(FindMatchResponse findMatchResponse);
+        Task StartMatchmaking(int deckId);
+
+        Task StopMatchmaking();
     }
 }

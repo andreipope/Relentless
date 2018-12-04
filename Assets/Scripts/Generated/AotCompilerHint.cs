@@ -176,7 +176,9 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilitySubTrigger.Types.Enum>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.CardChoosableAbility>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityRage>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityPriorityAttack>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityRageOutcome>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityPriorityAttackOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.OutcomeOneofCase>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityInstance>();

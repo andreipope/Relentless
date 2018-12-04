@@ -61,28 +61,24 @@ namespace Loom.ZombieBattleground
 
         public List<string> PvPTags { get; set; }
 
+        public MatchMakingFlowController MatchMakingFlowController => _matchMakingFlowController;
+
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
-        private IGameplayManager _gameplayManager;
-
-        private CancellationTokenSource _matchmakingCancellationTokenSource;
-        private bool _isMatchmakingInProgress;
-        private float _matchmakingTimeoutCounter;
 
         private bool _isWaitForTurnTimerStart;
         private float _waitForTurnTimer;
 
-        private bool _isInternetBroken = false;
-        private float _checkInternetInterval = 5f;
-        private float _elapsedInternetCheckTime;
+        private SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
+
+        private MatchMakingFlowController _matchMakingFlowController;
 
         public void Init()
         {
             _backendFacade = GameClient.Get<BackendFacade>();
             _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
 
             if (PvPTags == null)
@@ -105,19 +101,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (_gameplayManager.CurrentPlayer != null && !_isInternetBroken)
+            if (_matchMakingFlowController != null)
             {
-                _elapsedInternetCheckTime += Time.deltaTime;
-                if (_elapsedInternetCheckTime >= _checkInternetInterval)
-                {
-                    if (Application.internetReachability == NetworkReachability.NotReachable)
-                    {
-                        _isInternetBroken = true;
-                        _backendFacade.ShowConnectionPopup();
-
-                    }
-                    _elapsedInternetCheckTime = 0f;
-                }
+                await _matchMakingFlowController.Update();
             }
         }
 
@@ -150,45 +136,68 @@ namespace Loom.ZombieBattleground
             await _backendFacade.UnsubscribeEvent();
         }
 
-        public async Task CancelFindMatch()
+        public async Task StartMatchmaking(int deckId)
         {
-            await StopMatchmaking(MatchMetadata?.Id);
-        }
+            await _matchmakingBusySemaphore.WaitAsync();
 
-        private async Task StopMatchmaking(long? matchIdToCancel)
-        {
-            _queueManager.Active = false;
-            _isMatchmakingInProgress = false;
-            _matchmakingCancellationTokenSource?.Cancel();
-
-            await _backendFacade.UnsubscribeEvent();
-            if (matchIdToCancel != null)
+            try
             {
-                await _backendFacade.CancelFindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    matchIdToCancel.Value
-                );
-            }
+                if (_matchMakingFlowController != null)
+                {
+                    await _matchMakingFlowController.Stop();
+                }
 
-            _queueManager.Clear();
+                _matchMakingFlowController = new MatchMakingFlowController(
+                    _backendFacade,
+                    _backendDataControlMediator,
+                    this
+                );
+
+                _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
+                await _matchMakingFlowController.Start(deckId);
+            }
+            finally
+            {
+                _matchmakingBusySemaphore.Release();
+            }
         }
 
-        //TODO This method is a start to simplify and clean up
-        public async void MatchIsStarting (FindMatchResponse findMatchResponse) {
-            _matchmakingTimeoutCounter = 0;
+        public async Task StopMatchmaking()
+        {
+            await _matchmakingBusySemaphore.WaitAsync();
 
+            try
+            {
+                _queueManager.Active = false;
+                _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
+                await _matchMakingFlowController.Stop();
+                _matchMakingFlowController = null;
+
+                await _backendFacade.UnsubscribeEvent();
+                if (MatchMetadata?.Id != null)
+                {
+                    await _backendFacade.CancelFindMatch(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        MatchMetadata.Id
+                    );
+                }
+
+                _queueManager.Clear();
+            }
+            finally
+            {
+                _matchmakingBusySemaphore.Release();
+            }
+        }
+
+        private async void MatchMakingFlowControllerOnMatchConfirmed(MatchMetadata matchMetadata)
+        {
             _queueManager.Active = false;
             _queueManager.Clear();
 
             InitialGameState = null;
-            MatchMetadata = null;
 
-            MatchMetadata = new MatchMetadata(
-                findMatchResponse.Match.Id,
-                findMatchResponse.Match.Topics,
-                findMatchResponse.Match.Status,
-                findMatchResponse.Match.UseClientGameLogic
-            );
+            MatchMetadata = matchMetadata;
 
             // No need to reload if a match was found immediately
             if (InitialGameState == null)
@@ -279,11 +288,10 @@ namespace Loom.ZombieBattleground
 
         private async Task LoadInitialGameState()
         {
-            _isInternetBroken = false;
             GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
             Debug.LogWarning("Initial game state:\n" + InitialGameState);
-            Debug.LogWarning("Use backend logic: " + !MatchMetadata.UseClientGameLogic);
+            Debug.LogWarning("Use backend game logic: " + !MatchMetadata.UseBackendGameLogic);
         }
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)

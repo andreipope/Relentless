@@ -73,6 +73,6 @@ namespace Loom.ZombieBattleground
 
         bool AvoidGooCost { get; set; }
 
-        bool UseClientGameLogic { get; }
+        bool UseBackendGameLogic { get; }
     }
 }

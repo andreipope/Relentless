@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
@@ -9,34 +10,66 @@ namespace Loom.ZombieBattleground
 {
     public class MatchMakingFlowController
     {
+        public event Action<MatchMakingState> StateChanged;
+
+        public event Action<MatchMetadata> MatchConfirmed;
+
         private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
         private const int WaitingTime = 5;
 
         private readonly BackendFacade _backendFacade;
         private readonly BackendDataControlMediator _backendDataControlMediator;
         private readonly IPvPManager _pvpManager;
+        private readonly CancellationTokenSource _cancellationTokenSource;
 
         private MatchMakingState _state = MatchMakingState.WaitingPeriod;
 
         private float _currentWaitingTime;
         private long _deckId;
 
-        public event Action<MatchMakingState> StateChanged;
-
         public MatchMakingState State => _state;
 
-        public MatchMakingFlowController(BackendFacade backendFacade, BackendDataControlMediator backendDataControlMediator, IPvPManager pvpManager)
+        public bool IsMatchmakingInProcess
+        {
+            get
+            {
+                switch (_state)
+                {
+                    case MatchMakingState.NotStarted:
+                    case MatchMakingState.Canceled:
+                    case MatchMakingState.Confirmed:
+                        return false;
+                    case MatchMakingState.RegisteringToPool:
+                    case MatchMakingState.WaitingPeriod:
+                    case MatchMakingState.FindingMatch:
+                    case MatchMakingState.AcceptingMatch:
+                    case MatchMakingState.WaitingForOpponent:
+                    case MatchMakingState.ConfirmingWithOpponent:
+                        return true;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        public MatchMakingFlowController(
+            BackendFacade backendFacade,
+            BackendDataControlMediator backendDataControlMediator,
+            IPvPManager pvpManager
+            )
         {
             _backendFacade = backendFacade;
             _backendDataControlMediator = backendDataControlMediator;
             _pvpManager = pvpManager;
+
+            _cancellationTokenSource = new CancellationTokenSource();
         }
 
         public async Task Start(long deckId)
         {
             _deckId = deckId;
 
-            await SetStateAsync(MatchMakingState.RegisteringToPool);
+            await SetState(MatchMakingState.RegisteringToPool);
             try
             {
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
@@ -45,7 +78,7 @@ namespace Loom.ZombieBattleground
                     _pvpManager.CustomGameModeAddress
                 );
 
-                await SetStateAsync(MatchMakingState.WaitingPeriod);
+                await SetState(MatchMakingState.WaitingPeriod);
             }
             catch (Exception e)
             {
@@ -55,11 +88,15 @@ namespace Loom.ZombieBattleground
 
         public async Task Stop()
         {
-
+            _cancellationTokenSource.Cancel();
+            await SetState(MatchMakingState.Canceled);
         }
 
         public async Task Update()
         {
+            if (await CancelIfNeededAndSetCanceledState())
+                return;
+
             switch (_state)
             {
                 case MatchMakingState.WaitingPeriod:
@@ -67,7 +104,8 @@ namespace Loom.ZombieBattleground
                     _currentWaitingTime += Time.deltaTime;
                     if (_currentWaitingTime > WaitingTime)
                     {
-                        await SetStateAsync(MatchMakingState.FindingMatch);
+                        _currentWaitingTime = 0f;
+                        await SetState(MatchMakingState.FindingMatch);
                     }
 
                     break;
@@ -77,7 +115,8 @@ namespace Loom.ZombieBattleground
                     _currentWaitingTime += Time.deltaTime;
                     if (_currentWaitingTime > WaitingTime)
                     {
-                        await SetStateAsync(MatchMakingState.ConfirmingWithOpponent);
+                        _currentWaitingTime = 0f;
+                        await SetState(MatchMakingState.ConfirmingWithOpponent);
                     }
 
                     break;
@@ -95,13 +134,13 @@ namespace Loom.ZombieBattleground
 
                 Debug.LogWarning(result.ToString());
 
-                await SetStateAsync(MatchMakingState.WaitingForOpponent);
+                await SetState(MatchMakingState.WaitingForOpponent);
                 await _backendFacade.SubscribeEvent(result.Match.Topics.ToList());
             }
             catch (Exception e)
             {
                 ErrorHandler(e);
-                await SetStateAsync(MatchMakingState.WaitingPeriod);
+                await SetState(MatchMakingState.WaitingPeriod);
             }
         }
 
@@ -131,24 +170,24 @@ namespace Loom.ZombieBattleground
 
                         if (mustAccept)
                         {
-                            await SetStateAsync(MatchMakingState.AcceptingMatch);
+                            await SetState(MatchMakingState.AcceptingMatch);
                             await InitiateAcceptingMatch(result.Match.Id);
                         }
                         else
                         {
-                            await SetStateAsync(MatchMakingState.WaitingForOpponent);
+                            await SetState(MatchMakingState.WaitingForOpponent);
                         }
                     }
                 }
                 else
                 {
-                    await SetStateAsync(MatchMakingState.WaitingForOpponent);
+                    await SetState(MatchMakingState.WaitingForOpponent);
                 }
             }
             catch (Exception e)
             {
                 ErrorHandler(e);
-                await SetStateAsync(MatchMakingState.WaitingPeriod);
+                await SetState(MatchMakingState.WaitingPeriod);
             }
         }
 
@@ -187,7 +226,7 @@ namespace Loom.ZombieBattleground
 
                         if (mustAccept)
                         {
-                            await SetStateAsync(MatchMakingState.AcceptingMatch);
+                            await SetState(MatchMakingState.AcceptingMatch);
                             await InitiateAcceptingMatch(result.Match.Id);
                             return;
                         }
@@ -195,15 +234,15 @@ namespace Loom.ZombieBattleground
                         if (opponentHasAccepted && !mustAccept)
                         {
                             Debug.Log("The Match is Starting!");
-                            StartConfirmedMatch(result);
+                            await StartConfirmedMatch(result);
                         }
                         else
                         {
-                            SetStateAsync(MatchMakingState.WaitingForOpponent);
+                            await SetState(MatchMakingState.WaitingForOpponent);
                         }
                     }
                     else if (result.Match.Status == Match.Types.Status.Started) {
-                        StartConfirmedMatch(result);
+                        await StartConfirmedMatch(result);
                     }
                     else
                     {
@@ -213,19 +252,19 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    await SetStateAsync(MatchMakingState.WaitingForOpponent);
+                    await SetState(MatchMakingState.WaitingForOpponent);
                 }
             }
             catch (Exception e)
             {
                 ErrorHandler(e);
-                await SetStateAsync(MatchMakingState.WaitingPeriod);
+                await SetState(MatchMakingState.WaitingPeriod);
             }
         }
 
         private async void ErrorHandler (Exception exception) {
-            Debug.LogWarning(exception.Message);
-
+            // Just restart the entire process
+            // FIXME: why does this error still occur, though?
             if (exception.Message.Contains(PlayerIsAlreadyInAMatch))
             {
                 try
@@ -240,32 +279,25 @@ namespace Loom.ZombieBattleground
                 {
                     ErrorHandler(e);
                 }
+
+                return;
             }
+
+            Debug.LogWarning(exception.Message);
         }
 
-        private async Task SetStateAsync(MatchMakingState state)
+        private async Task SetState(MatchMakingState state)
         {
-            _state = state;
-            switch (_state)
-            {
-                case MatchMakingState.RegisteringToPool:
-                    break;
-                case MatchMakingState.WaitingPeriod:
-                    _currentWaitingTime = 0;
-                    break;
-                case MatchMakingState.FindingMatch:
-                    break;
-                case MatchMakingState.AcceptingMatch:
-                    break;
-                case MatchMakingState.WaitingForOpponent:
-                    _currentWaitingTime = 0;
-                    break;
-                case MatchMakingState.ConfirmingWithOpponent:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            if (await CancelIfNeededAndSetCanceledState())
+                return;
 
+            await SetStateUnchecked(state);
+        }
+
+        private async Task SetStateUnchecked(MatchMakingState state)
+        {
+            Debug.Log("Matchmaking state: " + state);
+            _state = state;
             StateChanged?.Invoke(state);
 
             switch (_state)
@@ -284,18 +316,49 @@ namespace Loom.ZombieBattleground
                 case MatchMakingState.ConfirmingWithOpponent:
                     await CheckIfOpponentIsReady();
                     break;
+                case MatchMakingState.Confirmed:
+                    break;
+                case MatchMakingState.NotStarted:
+                    break;
+                case MatchMakingState.Canceled:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private void StartConfirmedMatch(FindMatchResponse findMatchResponse)
+        private async Task StartConfirmedMatch(FindMatchResponse findMatchResponse)
         {
-            GameClient.Get<IPvPManager>().MatchIsStarting(findMatchResponse);
+            await SetState(MatchMakingState.Confirmed);
+            MatchMetadata matchMetadata = new MatchMetadata(
+                findMatchResponse.Match.Id,
+                findMatchResponse.Match.Topics,
+                findMatchResponse.Match.Status,
+                findMatchResponse.Match.UseBackendGameLogic
+            );
+
+            MatchConfirmed?.Invoke(matchMetadata);
+        }
+
+        private async Task<bool> CancelIfNeededAndSetCanceledState()
+        {
+            if (!_cancellationTokenSource.IsCancellationRequested)
+                return false;
+
+            if (_state == MatchMakingState.NotStarted ||
+                _state == MatchMakingState.Canceled)
+                return true;
+
+            await SetStateUnchecked(MatchMakingState.Canceled);
+            return true;
         }
 
         public enum MatchMakingState
         {
+            NotStarted,
+
+            Canceled,
+
             RegisteringToPool,
 
             WaitingPeriod,
@@ -306,7 +369,9 @@ namespace Loom.ZombieBattleground
 
             WaitingForOpponent,
 
-            ConfirmingWithOpponent
+            ConfirmingWithOpponent,
+
+            Confirmed
         }
     }
 }

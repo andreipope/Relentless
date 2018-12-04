@@ -25,8 +25,6 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _generalText;
 
-        private MatchMakingFlowController _matchMakingFlowController;
-
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -48,8 +46,6 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
-
-            _matchMakingFlowController = null;
         }
 
         public void SetMainPriority()
@@ -74,13 +70,9 @@ namespace Loom.ZombieBattleground
             Show();
         }
 
-        public async void Update()
+        public void Update()
         {
-            Task update = _matchMakingFlowController?.Update();
-            if (update != null)
-            {
-                await update;
-            }
+
         }
 
         private void PressedCancelMatchmakingHandler()
@@ -90,7 +82,6 @@ namespace Loom.ZombieBattleground
 
         public void SetUIState(MatchMakingFlowController.MatchMakingState state)
         {
-            Debug.Log(state);
             switch (state)
             {
                 case MatchMakingFlowController.MatchMakingState.RegisteringToPool:
@@ -111,22 +102,16 @@ namespace Loom.ZombieBattleground
                 case MatchMakingFlowController.MatchMakingState.ConfirmingWithOpponent:
                     _generalText.text = "Confirming opponent status...";
                     break;
+                case MatchMakingFlowController.MatchMakingState.Confirmed:
+                    break;
+                case MatchMakingFlowController.MatchMakingState.NotStarted:
+                    break;
+                case MatchMakingFlowController.MatchMakingState.Canceled:
+                    _generalText.text = "Canceling...";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-        public async Task InitiateRegisterPlayerToPool(int deckId)
-        {
-            _matchMakingFlowController = new MatchMakingFlowController(
-                GameClient.Get<BackendFacade>(),
-                GameClient.Get<BackendDataControlMediator>(),
-                GameClient.Get<IPvPManager>()
-            );
-
-            _matchMakingFlowController.StateChanged += SetUIState;
-            await _matchMakingFlowController.Start(deckId);
-        }
     }
-
 }

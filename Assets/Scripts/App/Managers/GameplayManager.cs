@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
 
         public bool AvoidGooCost { get; set; }
 
-        public bool UseClientGameLogic => _pvpManager?.MatchMetadata?.UseClientGameLogic ?? false;
+        public bool UseBackendGameLogic => _pvpManager?.MatchMetadata?.UseBackendGameLogic ?? false;
 
         public T GetController<T>()
             where T : IController
