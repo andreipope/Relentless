@@ -144,6 +144,7 @@ public class TestHelper
     public IEnumerator SetUp ()
     {
         _testStartTime = Time.unscaledTime;
+        _currentTestState = TestState.Running;
 
         if (!_initialized)
         {
@@ -171,7 +172,7 @@ public class TestHelper
 
             yield return AssertLoggedInOrLoginFailed (
                 CloseTermsPopupIfRequired (),
-                FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
+                FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
 
             #endregion
 
@@ -360,18 +361,82 @@ public class TestHelper
         yield return null;
     }
 
-    private IEnumerator FailWithMessage (string message)
+    private string _failMessage;
+    public string FailMessage
     {
-        Assert.Fail (message);
+        get { return _failMessage; }
+    }
+
+    private TestState _currentTestState;
+    public TestState CurrentTestState
+    {
+        get { return _currentTestState; }
+    }
+
+    public enum TestState
+    {
+        Running,
+        Failed,
+        Passed
+    }
+
+    public IEnumerator DummyMethod (bool fail = true)
+    {
+        if (fail)
+            FailWithMessage ("It failed");
+        else
+            PassWithMessage ("It passed");
+
+        if (IsTestFinished)
+            yield break;
+
+        yield return new WaitForSeconds (200);
+    }
+
+    public IEnumerator FailWithMessageCoroutine (string message)
+    {
+        FailWithMessage (message);
 
         yield return null;
     }
 
-    private IEnumerator PassWithMessage (string message)
+    private void FailWithMessage (string message)
     {
-        Assert.Pass (message);
+        _currentTestState = TestState.Failed;
+        _failMessage = message;
+    }
+
+    public IEnumerator PassWithMessageCoroutine (string message)
+    {
+        PassWithMessage (message);
 
         yield return null;
+    }
+
+    private void PassWithMessage (string message)
+    {
+        _currentTestState = TestState.Passed;
+        _failMessage = message;
+    }
+
+    public bool IsTestFinished
+    {
+        get { return _currentTestState != TestState.Running; }
+    }
+
+    public void TestEndHandler ()
+    {
+        switch (CurrentTestState)
+        {
+            case TestHelper.TestState.Failed:
+                Assert.Fail (_failMessage);
+
+                break;
+            case TestHelper.TestState.Passed:
+                Assert.Pass (_failMessage);
+
+                break;
+        }
     }
 
     /// <summary>
@@ -611,7 +676,7 @@ public class TestHelper
 
         if (transitionTimeout)
         {
-            FailWithMessage ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
+            yield return FailWithMessageCoroutine ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
         }
 
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
