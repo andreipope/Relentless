@@ -186,6 +186,20 @@ public class TestHelper
         yield return null;
     }
 
+    public IEnumerator TearDown ()
+    {
+        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup" || !_initialized)
+        {
+            yield return TearDown_Cleanup ();
+        }
+        else
+        {
+            yield return TearDown_GoBackToMainScreen ();
+        }
+
+        yield return null;
+    }
+
     /// <summary>
     /// TearDown method to be used to clear up everything after either a successful or unsuccessful test.
     /// </summary>
@@ -380,6 +394,14 @@ public class TestHelper
         Passed
     }
 
+    private void AssertAreEqual (string expectedValue, string actualValue)
+    {
+        if (expectedValue != actualValue)
+        {
+            FailWithMessage ($"Expected: {expectedValue}, Actual: {actualValue}");
+        }
+    }
+
     public IEnumerator DummyMethod (bool fail = true)
     {
         if (fail)
@@ -498,6 +520,9 @@ public class TestHelper
 
         while (outcomeDecided == false)
         {
+            if (IsTestFinished)
+                break;
+
             if (check1 (parameter1))
             {
                 outcomeDecided = true;
@@ -522,7 +547,7 @@ public class TestHelper
     /// <summary>
     /// Checks if login box appeared.
     /// </summary>
-    /// <returns><c>true</c>, if if login box appeared was checked, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if login box appeared was checked, <c>false</c> otherwise.</returns>
     private bool CheckIfLoginBoxAppeared (string dummyparameter)
     {
         GameObject loginBox = GameObject.Find ("InputField_Beta");
@@ -538,7 +563,7 @@ public class TestHelper
     /// <summary>
     /// Checks if login error occured.
     /// </summary>
-    /// <returns><c>true</c>, if if login error occured, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if login error occured, <c>false</c> otherwise.</returns>
     private bool CheckIfLoginErrorOccured (string dummyParameter)
     {
         GameObject errorTextObject = GameObject.Find ("Beta_Group/Text_Error");
@@ -554,7 +579,7 @@ public class TestHelper
     /// <summary>
     /// Checks if matchmaking error occured.
     /// </summary>
-    /// <returns><c>true</c>, if if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
     private bool CheckIfMatchmakingErrorOccured (string dummyParameter)
     {
         if (canvas3GameObject != null && canvas3GameObject.transform.childCount >= 2)
@@ -655,7 +680,7 @@ public class TestHelper
 
                 if (errorTextObject != null && errorTextObject.activeInHierarchy)
                 {
-                    Assert.Fail ("Wasn't able to login. Try using USE_STAGING_BACKEND");
+                    FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND");
 
                     return true;
                 }
@@ -681,7 +706,7 @@ public class TestHelper
 
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
 
-        Assert.AreEqual (expectedPageName, actualPageName);
+        AssertAreEqual (expectedPageName, actualPageName);
 
         lastCheckedPageName = actualPageName;
 
@@ -934,7 +959,7 @@ public class TestHelper
         GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
         yield return CombinedCheck (
-            CheckIfLoginBoxAppeared, "", null,
+            CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
             CheckCurrentPageName, "MainMenuPage", null);
 
         yield return null;
@@ -2727,11 +2752,7 @@ public class TestHelper
         // if it doesn't end in 100 moves, end the game anyway
         for (int turns = 1; turns <= maxTurns; turns++)
         {
-            Debug.Log ("a 0");
-
             yield return TurnStartedHandler ();
-
-            Debug.Log ("a 1");
 
             TurnEndedHandler ();
 
@@ -2740,21 +2761,15 @@ public class TestHelper
 
             yield return EndTurn ();
 
-            Debug.Log ("a 2");
-
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilOurTurnStarts ();
 
-            Debug.Log ("a 3");
-
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilInputIsUnblocked ();
-
-            Debug.Log ("a 4");
 
             if (IsGameEnded ())
                 break;
@@ -2766,7 +2781,11 @@ public class TestHelper
     /// </summary>
     public bool IsGameEnded ()
     {
-        if (_gameplayManager == null || _gameplayManager.IsGameEnded)
+        if (IsTestFinished)
+        {
+            return true;
+        }
+        else if (_gameplayManager == null || _gameplayManager.IsGameEnded)
         {
             return true;
         }
@@ -3281,7 +3300,7 @@ public class TestHelper
 
         Debug.LogFormat ("{0} vs {1}", _recordedExpectedValue, _recordedActualValue);
 
-        Assert.AreEqual (_recordedExpectedValue, _recordedActualValue);
+        AssertAreEqual (_recordedExpectedValue, _recordedActualValue);
     }
 
     private string UppercaseFirst (string s)

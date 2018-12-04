@@ -578,14 +578,7 @@ public class HordeManipulationTests
     [UnityTearDown]
     public IEnumerator PerTestTearDown ()
     {
-        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
-        {
-            yield return _testHelper.TearDown_Cleanup ();
-        }
-        else
-        {
-            yield return _testHelper.TearDown_GoBackToMainScreen ();
-        }
+        yield return _testHelper.TearDown ();
 
         yield return _testHelper.ReportTestTime ();
     }
