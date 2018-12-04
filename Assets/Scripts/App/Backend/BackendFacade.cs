@@ -327,27 +327,37 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, List<string> pvpTags = null)
         {
+            Debug.Log("PvPTags: " + String.Join(", ", (IEnumerable<string>) pvpTags ?? Array.Empty<string>()));
+
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
                 DeckId = deckId,
                 Version = BackendEndpoint.DataVersion,
-                RandomSeed = (long)Time.time,
-                Tags = { },
+                RandomSeed = (long) Time.time,
+                Tags =
+                {
+                    (IEnumerable<string>) pvpTags ?? Array.Empty<string>()
+                },
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId, IList<string> tags = null)
+        public async Task<FindMatchResponse> FindMatch(string userId, List<string> pvpTags = null)
         {
+            Debug.Log ("PvPTags: " + String.Join(", ", (IEnumerable<string>) pvpTags ?? Array.Empty<string>()));
+
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,
-                Tags = { tags }
+                Tags =
+                {
+                    (IEnumerable<string>) pvpTags ?? Array.Empty<string>()
+                }
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
