@@ -96,6 +96,31 @@
       "name": "Reanimate",
       "tooltip": "Resummon this zombie when it is Destroyed",
       "type": "REANIMATE"
+    },
+    {
+      "name": "Restore",
+      "tooltip": "n/a",
+      "type": "RESTORE"
+    },
+    {
+      "name": "Chainsaw",
+      "tooltip": "n/a",
+      "type": "CHAINSAW"
+    },
+    {
+      "name": "Blitz",
+      "tooltip": "Can attack zombies when this enters the battleground",
+      "type": "BLITZ"
+    },
+    {
+      "name": "Feral",
+      "tooltip": "Can attack when this zombie enters the battleground",
+      "type": "FERAL"
+    },
+    {
+      "name": "Heavy",
+      "tooltip": "Enemies must attack this zombie first",
+      "type": "HEAVY"
     }
   ],
   "ranks": [

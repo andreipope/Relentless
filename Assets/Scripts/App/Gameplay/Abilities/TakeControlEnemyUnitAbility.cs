@@ -25,7 +25,14 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                TakeControlEnemyUnit(GetRandomEnemyUnits());
+                if (PredefinedTargets != null)
+                {
+                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList());
+                }
+                else
+                {
+                    TakeControlEnemyUnit(GetRandomEnemyUnits());
+                }
             }
         }
 

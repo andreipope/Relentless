@@ -509,6 +509,10 @@ namespace Loom.ZombieBattleground
                 ParticleSystem.Play(true);
                 EffectAnimator.speed = _initialAnimationSpeed;
             }
+            else
+            {
+                AnimationEventReceived("End");
+            }
 
             DestroyUnitTriggered?.Invoke(this);
         }
@@ -531,8 +535,11 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case "End":
-                    ParticleSystem.Stop();
-                    EffectAnimator.StopPlayback();
+                    if (_withEffect)
+                    {
+                        ParticleSystem.Stop();
+                        EffectAnimator.StopPlayback();
+                    }
                     AnimationEnded?.Invoke(this);
                     Dispose();
                     UpdateBoard();

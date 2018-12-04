@@ -134,8 +134,6 @@ namespace Loom.ZombieBattleground
 
         public event Action GameMechanicDescriptionsOnUnitChanged;
 
-        public event Action UnitStartedDying;
-
         public Enumerators.CardType InitialUnitType { get; private set; }
 
         public int MaxCurrentDamage => InitialDamage + BuffedDamage;
@@ -237,6 +235,11 @@ namespace Loom.ZombieBattleground
 
         public void AddBuff(Enumerators.BuffType type)
         {
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             BuffsOnUnit.Add(type);
         }
 
@@ -354,6 +357,11 @@ namespace Loom.ZombieBattleground
             if (HasHeavy)
                 return;
 
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Heavy);
 
@@ -387,6 +395,11 @@ namespace Loom.ZombieBattleground
         {
             if (HasFeral)
                 return;
+
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
 
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Feral);
@@ -553,6 +566,13 @@ namespace Loom.ZombieBattleground
 
             UpdateVisualStateOfDistract(true);
             UnitDistracted?.Invoke();
+        }
+
+        public void DisableDistract()
+        {
+            RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Distract);
+
+            UpdateVisualStateOfDistract(false);
         }
 
         public void UpdateVisualStateOfDistract(bool status)
@@ -733,11 +753,6 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
-        }
-
-        public void InvokeUnitStartedDying()
-        {
-            UnitStartedDying?.Invoke();
         }
 
         public void InvokeKilledUnit(BoardUnitModel boardUnit)

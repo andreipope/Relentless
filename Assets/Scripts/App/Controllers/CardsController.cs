@@ -137,6 +137,10 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
+            // FIX ME! THIS HACK ONLY FOR SOME RELEASE
+            EndCardDistribution();
+            return;
+
             if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
             {
                 EndCardDistribution();
@@ -172,13 +176,10 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP && !_gameplayManager.IsTutorial)
             {
                 _gameplayManager.CurrentPlayer.CardsInDeck =
-                    _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
-                _battlegroundController.StartGameplayTurns();
+                _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
             }
-            else
-            {
-                _battlegroundController.StartGameplayTurns();
-            }
+
+            _battlegroundController.StartGameplayTurns();
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -551,9 +552,9 @@ namespace Loom.ZombieBattleground
                             _battlegroundController.PlayerBoardCards.Add(boardUnitView);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
-                            player.BoardCards.Insert(indexOfCard, boardUnitView);
+                            card.FuturePositionOnBoard = player.BoardCards.Count - indexOfCard;
 
-                            card.FuturePositionOnBoard = player.BoardCards.Count - 1 - indexOfCard;
+                            player.BoardCards.Insert(indexOfCard, boardUnitView);
 
                             InternalTools.DoActionDelayed(
                                      () =>
@@ -585,7 +586,7 @@ namespace Loom.ZombieBattleground
 
                                             if (status)
                                             {
-                                                player.ThrowPlayCardEvent(card.WorkingCard, player.BoardCards.Count - 1 - indexOfCard);
+                                                player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.ManaCost));
                                             }
                                             else
