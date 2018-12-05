@@ -264,7 +264,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.HEAVY:
                     HasBuffHeavy = true;
                     break;
-                case Enumerators.BuffType.RUSH:
+                case Enumerators.BuffType.BLITZ:
                     if (NumTurnsOnBoard == 0)
                     {
                         HasBuffRush = true;

@@ -317,7 +317,7 @@ namespace Loom.ZombieBattleground.Common
             DEFENCE,
             HEAVY,
             WEAPON,
-            RUSH,
+            BLITZ,
             ATTACK,
             FREEZE,
             DAMAGE,

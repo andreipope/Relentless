@@ -105,12 +105,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardRank.COMMANDER:
                     buffs.Add(Enumerators.BuffType.GUARD);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
                     buffs.Add(Enumerators.BuffType.GUARD);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
                 default:
@@ -131,12 +131,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardRank.COMMANDER:
                     buffs.Add(Enumerators.BuffType.HEAVY);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
                     buffs.Add(Enumerators.BuffType.HEAVY);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
                 default:
@@ -153,15 +153,15 @@ namespace Loom.ZombieBattleground
             switch (rank)
             {
                 case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.BLITZ);
                     break;
                 case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.BLITZ);
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.BLITZ);
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
@@ -183,12 +183,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardRank.COMMANDER:
                     buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
                     buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
                 default:
