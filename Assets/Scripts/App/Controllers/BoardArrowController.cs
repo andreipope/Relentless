@@ -67,8 +67,10 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(() =>
             {
                 arrow.Dispose();
-                if(arrow.gameObject != null)
+                if (arrow.gameObject != null)
+                {
                     UnityEngine.Object.Destroy(arrow.gameObject);
+                }
                 action?.Invoke();
             }, delayTillDestroyArrow);
 
