@@ -284,7 +284,7 @@ public class TestHelper
         });
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
 
-        yield return AssertCurrentPageName (actualPageName);
+        yield return AssertCurrentPageName (actualPageName, isGoingBack: true);
 
         yield return LetsThink ();
 
@@ -293,40 +293,40 @@ public class TestHelper
             case "GameplayPage":
                 if (GameObject.Find ("Button_Back") != null)
                 {
-                    yield return ClickGenericButton ("Button_Back");
+                    yield return ClickGenericButton ("Button_Back", isGoingBack: true);
 
                     yield return LetsThink ();
 
                     yield return RespondToYesNoOverlay (true);
 
-                    yield return AssertCurrentPageName ("MainMenuPage");
+                    yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
                 }
                 else if (GameObject.Find ("Button_Settings") != null)
                 {
-                    yield return ClickGenericButton ("Button_Settings");
+                    yield return ClickGenericButton ("Button_Settings", isGoingBack: true);
 
                     yield return LetsThink ();
 
-                    yield return ClickGenericButton ("Button_QuitToMainMenu");
+                    yield return ClickGenericButton ("Button_QuitToMainMenu", isGoingBack: true);
 
                     yield return LetsThink ();
 
                     yield return RespondToYesNoOverlay (true);
 
-                    yield return AssertCurrentPageName ("MainMenuPage");
+                    yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
                 }
 
                 break;
             case "HordeSelectionPage":
-                yield return MainMenuTransition ("Button_Back");
+                yield return MainMenuTransition ("Button_Back", isGoingBack: true);
 
-                yield return AssertCurrentPageName ("PlaySelectionPage");
+                yield return AssertCurrentPageName ("PlaySelectionPage", isGoingBack: true);
 
                 break;
             case "PlaySelectionPage":
-                yield return MainMenuTransition ("Button_Back");
+                yield return MainMenuTransition ("Button_Back", isGoingBack: true);
 
-                yield return AssertCurrentPageName ("MainMenuPage");
+                yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
 
                 break;
             case "MainMenuPage":
@@ -425,19 +425,6 @@ public class TestHelper
         }
     }
 
-    public IEnumerator DummyMethod (bool fail = true)
-    {
-        if (fail)
-            FailWithMessage ("It failed");
-        else
-            PassWithMessage ("It passed");
-
-        if (IsTestFinished)
-            yield break;
-
-        yield return new WaitForSeconds (200);
-    }
-
     public IEnumerator FailWithMessageCoroutine (string message)
     {
         FailWithMessage (message);
@@ -449,6 +436,8 @@ public class TestHelper
     {
         _currentTestState = TestState.Failed;
         _failMessage = message;
+
+        Debug.LogWarning ("Test is going to fail with message: " + message);
     }
 
     public IEnumerator PassWithMessageCoroutine (string message)
@@ -462,22 +451,22 @@ public class TestHelper
     {
         _currentTestState = TestState.Passed;
         _failMessage = message;
+
+        Debug.LogWarning ("Test is going to pass with message: " + message);
     }
 
     public void TestEndHandler ()
     {
+        Debug.LogWarning ($"Test finished with status {CurrentTestState}.");
+
         switch (CurrentTestState)
         {
-            case TestHelper.TestState.Failed:
+            case TestState.Failed:
                 Assert.Fail (_failMessage);
 
                 break;
-            case TestHelper.TestState.Passed:
+            case TestState.Passed:
                 Assert.Pass (_failMessage);
-
-                break;
-            default:
-                Debug.LogWarning ($"Test finished with status {CurrentTestState}.");
 
                 break;
         }
@@ -488,6 +477,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return CombinedCheck (
             CheckCurrentPageName, "MainMenuPage", callback1,
             CheckIfLoginErrorOccured, "", callback2);
@@ -500,6 +494,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator AssertIfWentDirectlyToTutorial (IEnumerator callback1, IEnumerator callback2 = null)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return CombinedCheck (
             CheckCurrentPageName, "GameplayPage", callback1,
             CheckCurrentPageName, "PlaySelectionPage", callback2);
@@ -512,6 +511,11 @@ public class TestHelper
     /// <remarks>This currently doesn't work, as timeouts have been removed.</remarks>
     public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         WaitStart (60);
 
         yield return CombinedCheck (
@@ -524,6 +528,11 @@ public class TestHelper
 
     public IEnumerator AssertMulliganPopupCameUp (IEnumerator callback1, IEnumerator callback2)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         WaitStart (5);
 
         yield return CombinedCheck (
@@ -679,8 +688,13 @@ public class TestHelper
     /// yield return AssertCurrentPageName ("MainMenuPage");
     /// </example>
     /// <param name="expectedPageName">Page name</param>
-    public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
+    public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "", bool isGoingBack = false)
     {
+        if (!isGoingBack && IsTestFinished)
+        {
+            yield break;
+        }
+
         if (expectedPageName == lastCheckedPageName)
             yield break;
 
@@ -1007,9 +1021,16 @@ public class TestHelper
     /// <param name="buttonName">Name of the button to click</param>
     /// <param name="parentGameObject">(Optional) Parent object to look under</param>
     /// <param name="count">(Optional) Number of times to click</param>
-    public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null, int count = 1)
+    public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null, int count = 1, bool isGoingBack = false)
     {
+        if (!isGoingBack && IsTestFinished)
+        {
+            yield break;
+        }
+
+        WaitStart (3);
         GameObject menuButtonGameObject = null;
+        bool clickTimeout = false;
 
         yield return new WaitUntil (() => {
             if (parentGameObject != null)
@@ -1021,7 +1042,13 @@ public class TestHelper
                 menuButtonGameObject = GameObject.Find (buttonName);
             }
 
-            if (menuButtonGameObject == null || !menuButtonGameObject.activeInHierarchy)
+            if (WaitTimeIsUp ())
+            {
+                clickTimeout = true;
+
+                return true;
+            }
+            else if (menuButtonGameObject == null || !menuButtonGameObject.activeInHierarchy)
             {
                 return false;
             }
@@ -1040,6 +1067,13 @@ public class TestHelper
 
             return false;
         });
+
+        if (clickTimeout)
+        {
+            FailWithMessage ("Couldn't find the button");
+
+            yield break;
+        }
 
         yield return LetsThink (0.5f);
 
@@ -1066,11 +1100,21 @@ public class TestHelper
     /// </summary>
     /// <param name="transitionPath">Slash separated list of buttons</param>
     /// <param name="delay">(Optional) Delay between clicks</param>
-    public IEnumerator MainMenuTransition (string transitionPath, float delay = 2f)
+    public IEnumerator MainMenuTransition (string transitionPath, float delay = 2f, bool isGoingBack = false)
     {
+        if (!isGoingBack && IsTestFinished)
+        {
+            yield break;
+        }
+
         foreach (string buttonName in transitionPath.Split ('/'))
         {
             yield return ClickGenericButton (buttonName);
+
+            if (!isGoingBack && IsTestFinished)
+            {
+                break;
+            }
 
             yield return new WaitForSeconds (delay);
         }
@@ -1080,8 +1124,13 @@ public class TestHelper
     /// Clicks on the overlay Yes/No button.
     /// </summary>
     /// <param name="isResponseYes">Is the response Yes?</param>
-    public IEnumerator RespondToYesNoOverlay (bool isResponseYes)
+    public IEnumerator RespondToYesNoOverlay (bool isResponseYes, bool isGoingBack = false)
     {
+        if (!isGoingBack && IsTestFinished)
+        {
+            yield break;
+        }
+
         string buttonName = isResponseYes ? "Button_Yes" : "Button_No";
 
         ButtonShiftingContent overlayButton = null;
@@ -1115,6 +1164,11 @@ public class TestHelper
     /// <param name="tags">Tags</param>
     public void SetPvPTags (string[] tags)
     {
+        if (IsTestFinished)
+        {
+            return;
+        }
+
         if (tags == null || tags.Length <= 0)
         {
             _pvpManager.PvPTags = null;
@@ -3183,6 +3237,11 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator SelectAHordeByIndex (int index)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         if (index + 1 >= GetNumberOfHordes ())
         {
             FailWithMessage ("Horde removal index is too high");
@@ -3231,6 +3290,11 @@ public class TestHelper
 
     public void RecordExpectedOverlordName (int index)
     {
+        if (IsTestFinished)
+        {
+            return;
+        }
+
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
         if (index >= hordesParent.transform.childCount || index == -1)
