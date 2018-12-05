@@ -3233,9 +3233,11 @@ public class TestHelper
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
-        if (index >= hordesParent.transform.childCount)
+        if (index >= hordesParent.transform.childCount || index == -1)
         {
             FailWithMessage ("Horde index is too high");
+
+            return;
         }
 
         Transform selectedHordeTransform = hordesParent.transform.GetChild (index);
