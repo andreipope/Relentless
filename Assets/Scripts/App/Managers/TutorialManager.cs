@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -50,6 +51,8 @@ namespace Loom.ZombieBattleground
         private List<TutorialDataStep> _tutorialSteps;
         private int _currentTutorialStepIndex;
 
+        private bool _isFirstTutorial;
+
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
@@ -82,10 +85,52 @@ namespace Loom.ZombieBattleground
                         .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
 
             _tutorialHelpBoardArrows = new List<TutorialBoardArrow>();
+
+            _isFirstTutorial = false;
         }
 
         public void Update()
         {
+        }
+
+        private bool CheckAvailableTutorial()
+        {
+            int id = _dataManager.CachedUserLocalData.CurrentTutorialId;
+            for (int i = id; i < _tutorials.Count; i++)
+            {
+                if (_tutorials[i].Included)
+                {
+                    if(id != i)
+                    {
+                        _dataManager.CachedUserLocalData.CurrentTutorialId = i;
+                        _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    }
+                    return true;
+                }
+            }
+            _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count - 1;
+            return false;
+        }
+
+        public void SetFirstAvailableTutorial()
+        {
+            if (CheckAvailableTutorial())
+            {
+                _isFirstTutorial = true;
+
+                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            }
+            else
+            {
+                _gameplayManager.IsTutorial = false;
+                _dataManager.CachedUserLocalData.Tutorial = false;
+                _gameplayManager.IsSpecificGameplayBattleground = false;
+
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);              
+            }
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
         public void SetupTutorialById(int id)
@@ -150,6 +195,12 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
+            if(!CheckAvailableTutorial())
+            {
+                _gameplayManager.IsTutorial = false;
+                _dataManager.CachedUserLocalData.Tutorial = false;
+                _gameplayManager.IsSpecificGameplayBattleground = false;
+            }
 
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
@@ -185,6 +236,7 @@ namespace Loom.ZombieBattleground
             if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
             }
             GameClient.Get<IAppStateManager>().SetPausingApp(false);

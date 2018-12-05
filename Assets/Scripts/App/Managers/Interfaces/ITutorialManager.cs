@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
         void StartTutorial();
         void SetupTutorialById(int id);
 
+        void SetFirstAvailableTutorial();
+
         void StopTutorial();
 
         void ReportAction(Enumerators.TutorialReportAction action);

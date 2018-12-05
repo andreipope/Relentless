@@ -116,7 +116,14 @@ namespace Loom.ZombieBattleground
 
                         if (success)
                         {
-                            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                            if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
+                            {
+                                GameClient.Get<ITutorialManager>().SetFirstAvailableTutorial();
+                            }
+                            else
+                            {
+                                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                            }
                         }
                     };
                     _uiManager.DrawPopup<ConnectionPopup>();
