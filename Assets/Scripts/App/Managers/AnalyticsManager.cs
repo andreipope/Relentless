@@ -126,8 +126,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName)
     {
         Value props = new Value();
-        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
-        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+        // FIXME
+        //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);

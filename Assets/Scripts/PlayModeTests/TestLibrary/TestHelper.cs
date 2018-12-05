@@ -17,7 +17,7 @@ public class TestHelper
     /// <summary>
     /// To be in line with AI Brain, 1.1f was taken as value from AIController.
     /// </summary>
-    private const float DefaultThinkTime = 1.1f;
+    private const float DefaultThinkTime = 0.1f;
 
     /// <summary>
     /// Delay between main menu transition clicks.

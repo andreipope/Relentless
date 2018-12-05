@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -18,16 +19,28 @@ namespace Loom.ZombieBattleground
         private const int WaitingTime = 5;
 
         private readonly BackendFacade _backendFacade;
-        private readonly BackendDataControlMediator _backendDataControlMediator;
-        private readonly IPvPManager _pvpManager;
-        private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly UserDataModel _userDataModel;
 
-        private MatchMakingState _state = MatchMakingState.WaitingPeriod;
+        private CancellationTokenSource _cancellationTokenSource;
+        private MatchMakingState _state = MatchMakingState.NotStarted;
+        private MatchMetadata _matchMetadata;
 
         private float _currentWaitingTime;
         private long _deckId;
+        private Address? _customGameModeAddress;
 
         public MatchMakingState State => _state;
+
+        public MatchMetadata MatchMetadata
+        {
+            get
+            {
+                if (_state != MatchMakingState.Confirmed)
+                    throw new Exception($"Must be in {nameof(MatchMakingState.Confirmed)} state");
+
+                return _matchMetadata;
+            }
+        }
 
         public bool IsMatchmakingInProcess
         {
@@ -54,28 +67,30 @@ namespace Loom.ZombieBattleground
 
         public MatchMakingFlowController(
             BackendFacade backendFacade,
-            BackendDataControlMediator backendDataControlMediator,
-            IPvPManager pvpManager
-            )
+            UserDataModel userDataModel)
         {
             _backendFacade = backendFacade;
-            _backendDataControlMediator = backendDataControlMediator;
-            _pvpManager = pvpManager;
+            _userDataModel = userDataModel;
 
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async Task Start(long deckId)
+        public async Task Start(long deckId, Address? customGameModeAddress)
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            _matchMetadata = null;
             _deckId = deckId;
+            _customGameModeAddress = customGameModeAddress;
 
             await SetState(MatchMakingState.RegisteringToPool);
             try
             {
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
-                    _backendDataControlMediator.UserDataModel.UserId,
+                    _userDataModel.UserId,
                     deckId,
-                    _pvpManager.CustomGameModeAddress
+                    customGameModeAddress
                 );
 
                 await SetState(MatchMakingState.WaitingPeriod);
@@ -128,7 +143,7 @@ namespace Loom.ZombieBattleground
             try
             {
                 AcceptMatchResponse result = await _backendFacade.AcceptMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
+                    _userDataModel.UserId,
                     matchId
                 );
 
@@ -149,7 +164,7 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId
+                    _userDataModel.UserId
                 );
 
                 if (result.Match != null)
@@ -159,7 +174,7 @@ namespace Loom.ZombieBattleground
                         bool mustAccept = false;
                         for (int i = 0; i < result.Match.PlayerStates.Count; i++)
                         {
-                            if (result.Match.PlayerStates[i].Id == _backendDataControlMediator.UserDataModel.UserId)
+                            if (result.Match.PlayerStates[i].Id == _userDataModel.UserId)
                             {
                                 if (!result.Match.PlayerStates[i].MatchAccepted)
                                 {
@@ -195,7 +210,7 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId
+                    _userDataModel.UserId
                 );
 
                 Debug.LogWarning(result.ToString());
@@ -208,7 +223,7 @@ namespace Loom.ZombieBattleground
                         bool opponentHasAccepted = false;
                         for (int i = 0; i < result.Match.PlayerStates.Count; i++)
                         {
-                            if (result.Match.PlayerStates[i].Id == _backendDataControlMediator.UserDataModel.UserId)
+                            if (result.Match.PlayerStates[i].Id == _userDataModel.UserId)
                             {
                                 if (!result.Match.PlayerStates[i].MatchAccepted)
                                 {
@@ -247,7 +262,7 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         await _backendFacade.UnsubscribeEvent();
-                        await Start(_deckId);
+                        await Start(_deckId, _customGameModeAddress);
                     }
                 }
                 else
@@ -270,10 +285,10 @@ namespace Loom.ZombieBattleground
                 try
                 {
                     CancelFindMatchResponse result = await _backendFacade.CancelFindMatchRelatedToUserId(
-                        _backendDataControlMediator.UserDataModel.UserId
+                        _userDataModel.UserId
                     );
 
-                    await Start(_deckId);
+                    await Start(_deckId, _customGameModeAddress);
                 }
                 catch (Exception e)
                 {
@@ -329,15 +344,16 @@ namespace Loom.ZombieBattleground
 
         private async Task StartConfirmedMatch(FindMatchResponse findMatchResponse)
         {
-            await SetState(MatchMakingState.Confirmed);
-            MatchMetadata matchMetadata = new MatchMetadata(
+            _matchMetadata = new MatchMetadata(
                 findMatchResponse.Match.Id,
                 findMatchResponse.Match.Topics,
                 findMatchResponse.Match.Status,
                 findMatchResponse.Match.UseBackendGameLogic
             );
 
-            MatchConfirmed?.Invoke(matchMetadata);
+            await SetState(MatchMakingState.Confirmed);
+
+            MatchConfirmed?.Invoke(_matchMetadata);
         }
 
         private async Task<bool> CancelIfNeededAndSetCanceledState()

@@ -1,37 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf;
-using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
-using Deck = Loom.ZombieBattleground.Protobuf.Deck;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
         private int _subscribeCount;
-
-        public int SubscribeCount
-        {
-            get { return _subscribeCount; }
-        }
+        private IRpcClient _reader;
 
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
         public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
-
-        public BackendFacade(BackendEndpoint backendEndpoint)
-        {
-            BackendEndpoint = backendEndpoint;
-        }
 
         public event ContractCreatedEventHandler ContractCreated;
 
@@ -43,7 +31,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
-        private IRpcClient reader;
+        public ILogger Logger { get; set; }
+#if DEBUG_RPC
+            = Debug.unityLogger;
+#endif
+
+        public BackendFacade(BackendEndpoint backendEndpoint)
+        {
+            BackendEndpoint = backendEndpoint;
+        }
 
         public void Init()
         {
@@ -52,8 +48,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
             Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
-
-        public string DAppChainWalletAddress = string.Empty;
 
         public void Update()
         {
@@ -68,11 +62,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-#if DEBUG_RPC
-            ILogger logger = Debug.unityLogger;
-#else
-            ILogger logger = NullLogger.Instance;
-#endif
+            ILogger logger = Logger ?? NullLogger.Instance;
 
             IRpcClient writer =
                 RpcClientFactory
@@ -81,14 +71,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     .WithWebSocket(BackendEndpoint.WriterHost)
                     .Create();
 
-            reader =
+            _reader =
                 RpcClientFactory
                     .Configure()
                     .WithLogger(logger)
                     .WithWebSocket(BackendEndpoint.ReaderHost)
                     .Create();
 
-            DAppChainClient client = new DAppChainClient(writer, reader)
+            DAppChainClient client = new DAppChainClient(writer, _reader)
             {
                 Logger = logger
             };
@@ -443,7 +433,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await UnsubscribeEvent();
             }
 
-            await reader.SubscribeAsync(EventHandler, topics);
+            await _reader.SubscribeAsync(EventHandler, topics);
             _subscribeCount++;
             Debug.Log("Final Subscriptions = " + _subscribeCount);
         }
@@ -456,7 +446,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Debug.Log("Unsubscribing from Event - Current Subscriptions = " + _subscribeCount);
                 try
                 {
-                    await reader.UnsubscribeAsync(EventHandler);
+                    await _reader.UnsubscribeAsync(EventHandler);
                     _subscribeCount--;
                 }
                 catch (Exception e)
@@ -471,77 +461,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
         }
 
-        public void EventHandler(object sender, JsonRpcEventData e)
+        public async Task SendPlayerAction(PlayerActionRequest request)
         {
-            PlayerActionDataReceived?.Invoke(e.Data);
+            await Contract.CallAsync(SendPlayerActionMethod, request);
         }
 
-        public async Task SendAction(IMessage request)
+        public async Task SendEndMatchRequest(EndMatchRequest request)
         {
-            switch (request)
-            {
-                case PlayerActionRequest playerActionMessage:
-                    try
-                    {
-                        await Contract.CallAsync(SendPlayerActionMethod, playerActionMessage);
-                    }
-                    catch (TimeoutException exception)
-                    {
-                        Debug.LogError(" Time out == " + exception);
-                        ShowConnectionPopup();
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.LogError(" other == " + exception);
-                        ShowConnectionPopup();
-                    }
-                    break;
-
-                case EndMatchRequest endMatchMessage:
-                    try
-                    {
-                        await Contract.CallAsync(EndMatchMethod, endMatchMessage);
-                    }
-                    catch (TimeoutException exception)
-                    {
-                        Debug.LogError(" Time out == " + exception);
-                        ShowConnectionPopup();
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.LogError(" other == " + exception);
-                        ShowConnectionPopup();
-                    }
-                    break;
-            }
-        }
-
-        public void ShowConnectionPopup()
-        {
-            IUIManager uiManager = GameClient.Get<IUIManager>();
-            IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-            ConnectionPopup connectionPopup = uiManager.GetPopup<ConnectionPopup>();
-
-            if (gameplayManager.CurrentPlayer == null)
-            {
-                return;
-            }
-
-            if (connectionPopup.Self == null)
-            {
-                Func<Task> connectFuncInGame = async () =>
-                {
-                    GameClient.Get<IQueueManager>().Clear();
-                    gameplayManager.CurrentPlayer.ThrowLeaveMatch();
-                    gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
-                    connectionPopup.Hide();
-                };
-
-                connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
-                connectionPopup.Show();
-                connectionPopup.ShowFailedInGamePlay();
-            }
+            await Contract.CallAsync(EndMatchMethod, request);
         }
 
         public async Task<CheckGameStatusResponse> CheckPlayerStatus(long matchId)
@@ -552,6 +479,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
+        }
+
+        private void EventHandler(object sender, JsonRpcEventData e)
+        {
+            PlayerActionDataReceived?.Invoke(e.Data);
         }
 
         #endregion

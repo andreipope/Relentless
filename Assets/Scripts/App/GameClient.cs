@@ -22,15 +22,7 @@ namespace Loom.ZombieBattleground
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
-            const BackendPurpose backend = BackendPurpose.Local;
-#elif USE_PRODUCTION_BACKEND
-            const BackendPurpose backend = BackendPurpose.Production;
-#else
-            const BackendPurpose backend = BackendPurpose.Staging;
-#endif
-
-            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
             string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
             ConfigData configData = new ConfigData();
@@ -68,6 +60,20 @@ namespace Loom.ZombieBattleground
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
+        }
+
+        public static BackendEndpoint GetDefaultBackendEndpoint()
+        {
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
+            const BackendPurpose backend = BackendPurpose.Local;
+#elif USE_PRODUCTION_BACKEND
+            const BackendPurpose backend = BackendPurpose.Production;
+#else
+            const BackendPurpose backend = BackendPurpose.Staging;
+#endif
+
+            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            return backendEndpoint;
         }
 
         public static GameClient Instance

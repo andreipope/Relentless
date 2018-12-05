@@ -149,12 +149,11 @@ namespace Loom.ZombieBattleground
 
                 _matchMakingFlowController = new MatchMakingFlowController(
                     _backendFacade,
-                    _backendDataControlMediator,
-                    this
+                    _backendDataControlMediator.UserDataModel
                 );
 
                 _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
-                await _matchMakingFlowController.Start(deckId);
+                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress);
             }
             finally
             {

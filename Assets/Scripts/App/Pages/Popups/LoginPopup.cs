@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
+                UserDataModel userDataModel = new UserDataModel(userId, privateKey)
                 {
                     IsValid = false
                 };

@@ -25,8 +25,6 @@ namespace Loom.ZombieBattleground
 
         BetaConfig BetaConfig { get; set; }
 
-        Task LoadRemoteConfig();
-
         Task StartLoadCache();
 
         Task SaveCache(Enumerators.CacheDataType type);

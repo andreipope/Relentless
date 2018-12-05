@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
     {
         bool Active { get; set; }
         void AddTask(Func<Task> taskFunc);
-        void AddAction(IMessage action);
+        void AddAction(IMessage request);
         void Clear();
     }
 }

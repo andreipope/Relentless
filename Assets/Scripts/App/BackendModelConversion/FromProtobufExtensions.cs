@@ -28,11 +28,11 @@ namespace Loom.ZombieBattleground.Data
 
         public static Unit FromProtobuf(this Protobuf.Unit unit)
         {
-            Unit.ParameterType Parameter = new Unit.ParameterType();
+            Unit.ParameterType parameter = new Unit.ParameterType();
 
             if (unit.Parameter != null)
             {
-                Parameter = new Unit.ParameterType
+                parameter = new Unit.ParameterType
                 (
                     unit.Parameter.Attack,
                     unit.Parameter.Defense,
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground.Data
             return new Unit(
                 unit.InstanceId,
                 (Enumerators.AffectObjectType) unit.AffectObjectType,
-                Parameter
+                parameter
             );
         }
 
@@ -204,13 +204,6 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardType) card.Type,
                 card.GooCost
             );
-        }
-
-        public static List<CardInstance> FromProtobuf(this RepeatedField<CardInstance> repeatedFieldCardInstance)
-        {
-            List<CardInstance> cardInstances = new List<CardInstance>();
-            cardInstances.AddRange(repeatedFieldCardInstance);
-            return cardInstances;
         }
 
         public static WorkingCard FromProtobuf(this CardInstance cardInstance, Player player)
