@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { unit }, AbilityData.AbilityType,
                                                      Protobuf.AffectObjectType.Types.Enum.Character);
 
-                BattlegroundController.DestroyBoardUnit(unit);
+                BattlegroundController.DestroyBoardUnit(unit, false);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

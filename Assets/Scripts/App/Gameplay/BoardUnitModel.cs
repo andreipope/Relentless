@@ -213,14 +213,14 @@ namespace Loom.ZombieBattleground
 
         public bool WasDistracted { get; private set; }
 
-        public void Die(bool forceUnitDieEvent= false)
+        public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true)
         {
             UnitDying?.Invoke();
 
             IsDead = true;
             if (!forceUnitDieEvent)
             {
-                _battlegroundController.KillBoardCard(this);
+                _battlegroundController.KillBoardCard(this, withDeathEffect);
             }
             else
             {

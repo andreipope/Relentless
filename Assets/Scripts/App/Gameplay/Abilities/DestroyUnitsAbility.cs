@@ -67,7 +67,10 @@ namespace Loom.ZombieBattleground
 
             OnUpdateEvent = null;
 
-            _units.ForEach(BattlegroundController.DestroyBoardUnit);
+            foreach(BoardUnitModel unit in _units)
+            {
+                BattlegroundController.DestroyBoardUnit(unit, false);
+            }
 
             if (_units.Count > 0)
             {

@@ -911,7 +911,7 @@ namespace Loom.ZombieBattleground
                     _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
                     target, delay: 6f, isIgnoreCastVfx: true);
-                    _battlegroundController.DestroyBoardUnit(unit);
+                    _battlegroundController.DestroyBoardUnit(unit, false);
 
                     List<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
 
@@ -1024,7 +1024,7 @@ namespace Loom.ZombieBattleground
                 _vfxController.CreateVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
                 unit, delay: 6f, isIgnoreCastVfx: true);
-                _battlegroundController.DestroyBoardUnit(unit.Model);
+                _battlegroundController.DestroyBoardUnit(unit.Model, false);
 
                 _vfxController.CreateSkillVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"),
@@ -1425,7 +1425,7 @@ namespace Loom.ZombieBattleground
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target).Transform.position + Vector3.up * 0.34f;
 
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
-                _battlegroundController.DestroyBoardUnit(boardUnitModel);
+                _battlegroundController.DestroyBoardUnit(boardUnitModel, false);
 
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,

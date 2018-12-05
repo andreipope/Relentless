@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
                 if (unit == AbilityUnitOwner)
                     continue;
 
-                BattlegroundController.DestroyBoardUnit(unit);
+                BattlegroundController.DestroyBoardUnit(unit, false);
             }
 
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();

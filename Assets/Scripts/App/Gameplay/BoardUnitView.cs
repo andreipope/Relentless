@@ -878,6 +878,7 @@ namespace Loom.ZombieBattleground
                         if (Model.CurrentHp > 0)
                         {
                             Model.ActionForDying?.ForceActionDone();
+                            Model.ActionForDying = null;
                         }
                     }
                     else if (Model.CurrentHp <= 0)
@@ -885,12 +886,15 @@ namespace Loom.ZombieBattleground
                         if (targetCardView.Model.CurrentHp > 0)
                         {
                             targetCardView.Model.ActionForDying?.ForceActionDone();
+                            targetCardView.Model.ActionForDying = null;
                         }
                     }
                     else
                     {
                         Model.ActionForDying?.ForceActionDone();
                         targetCardView.Model.ActionForDying?.ForceActionDone();
+                        Model.ActionForDying = null;
+                        targetCardView.Model.ActionForDying = null;
                     }
                 }
             );

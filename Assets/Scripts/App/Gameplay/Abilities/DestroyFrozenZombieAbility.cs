@@ -20,8 +20,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
-
                 InvokeActionTriggered();
             }
         }
@@ -30,8 +28,9 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            TargetUnit.LastAttackingSetType = Enumerators.SetType.NONE;
-            BattlegroundController.DestroyBoardUnit(TargetUnit);
+            object caller = GetCaller();
+        
+            BattlegroundController.DestroyBoardUnit(TargetUnit, false);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -51,9 +50,6 @@ namespace Loom.ZombieBattleground
             {
                TargetUnit
             }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
-
-            AbilityProcessingAction?.ForceActionDone();
-
         }
     }
 }
