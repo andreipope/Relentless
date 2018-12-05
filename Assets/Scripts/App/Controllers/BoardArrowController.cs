@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Helpers;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -63,12 +64,13 @@ namespace Loom.ZombieBattleground
             arrow.Begin(from.position);
             arrow.SetTarget(to);
 
-            _timerManager.AddTimer((x) =>
+            InternalTools.DoActionDelayed(() =>
             {
                 arrow.Dispose();
-                UnityEngine.Object.Destroy(arrow.gameObject);
+                if(arrow.gameObject != null)
+                    UnityEngine.Object.Destroy(arrow.gameObject);
                 action?.Invoke();
-            }, null, delayTillDestroyArrow);
+            }, delayTillDestroyArrow);
 
             return arrow;
         }
