@@ -566,8 +566,8 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _actionsQueueController.AddUpdateBoardAction((completeCallback) =>
-              {
+           // _actionsQueueController.AddUpdateBoardAction((completeCallback) =>
+           //   {
                   if (_rearrangingBottomRealTimeSequence != null)
                   {
                       _rearrangingBottomRealTimeSequence.Kill();
@@ -607,10 +607,10 @@ namespace Loom.ZombieBattleground
                   sequence.OnComplete(
                       () =>
                       {
-                          completeCallback?.Invoke();
+                     //     completeCallback?.Invoke();
                           onComplete?.Invoke();
                       });
-              });
+            //  });
         }
 
         public void UpdatePositionOfBoardUnitsOfOpponent(Action onComplete = null)
@@ -618,8 +618,8 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _actionsQueueController.AddUpdateBoardAction((completeCallback) =>
-            {
+         //   _actionsQueueController.AddUpdateBoardAction((completeCallback) =>
+        //    {
                 if (_rearrangingTopRealTimeSequence != null)
                 {
                     _rearrangingTopRealTimeSequence.Kill();
@@ -668,9 +668,9 @@ namespace Loom.ZombieBattleground
                     {
                         onComplete?.Invoke();
 
-                        completeCallback?.Invoke();
+                       // completeCallback?.Invoke();
                     });
-            });
+            //});
         }
 
         // rewrite
