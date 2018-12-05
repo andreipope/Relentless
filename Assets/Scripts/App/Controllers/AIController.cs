@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        workingDeck.Add(_cardsController.GetWorkingCardFromCardName("MonZoon", _gameplayManager.OpponentPlayer));
+                        workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, _gameplayManager.OpponentPlayer));
                     }
                 }
 
