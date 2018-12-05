@@ -27,6 +27,11 @@ public class SingleplayerTests
 
     private IEnumerator SoloGameplay (bool assertOverlordName = false)
     {
+        if (_testHelper.IsTestFinished)
+        {
+            yield break;
+        }
+
         _testHelper.InitalizePlayer ();
 
         if (!_testHelper.IsTestFinished)
@@ -59,48 +64,40 @@ public class SingleplayerTests
 
         #region Solo Gameplay
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.MainMenuTransition ("Button_Play");
+        yield return _testHelper.MainMenuTransition ("Button_Play");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertIfWentDirectlyToTutorial (
-                _testHelper.GoBackToMainAndPressPlay ());
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode2");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         int selectedHordeIndex = 0;
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
+        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
 
-        if (!_testHelper.IsTestFinished)
-            _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.MainMenuTransition ("Button_Battle");
+        yield return _testHelper.MainMenuTransition ("Button_Battle");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
-        if (!_testHelper.IsTestFinished)
-            yield return SoloGameplay (true);
+        yield return SoloGameplay (true);
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.ClickGenericButton ("Button_Continue");
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+
+        Debug.LogWarning ("0");
+
+        #endregion
 
         _testHelper.TestEndHandler ();
 
-        #endregion
+        yield return null;
     }
 
     [UnityTest]
@@ -139,7 +136,7 @@ public class SingleplayerTests
             yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
         if (!_testHelper.IsTestFinished)
-            yield return SoloGameplay ();
+            yield return SoloGameplay (true);
 
         if (!_testHelper.IsTestFinished)
             yield return _testHelper.ClickGenericButton ("Button_Continue");
@@ -148,6 +145,8 @@ public class SingleplayerTests
             yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
+
+        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
@@ -197,6 +196,8 @@ public class SingleplayerTests
             yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
+
+        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
@@ -245,6 +246,8 @@ public class SingleplayerTests
             yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
+
+        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
@@ -305,6 +308,8 @@ public class SingleplayerTests
             yield return _testHelper.LetsThink ();
             yield return _testHelper.LetsThink ();
         }
+
+        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
@@ -794,32 +799,6 @@ public class HordeManipulationTests
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         yield return null;
-    }
-
-    [UnityTest]
-    [Timeout (500000)]
-    public IEnumerator Test_Z1_Fail ()
-    {
-        _testHelper.SetTestName ("Fail test");
-
-        yield return _testHelper.MainMenuTransition ("Button_Play");
-
-        yield return _testHelper.DummyMethod (true);
-
-        _testHelper.TestEndHandler ();
-    }
-
-    [UnityTest]
-    [Timeout (500000)]
-    public IEnumerator Test_Z2_Pass ()
-    {
-        _testHelper.SetTestName ("Pass test");
-
-        yield return _testHelper.MainMenuTransition ("Button_Play");
-
-        yield return _testHelper.DummyMethod (false);
-
-        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
