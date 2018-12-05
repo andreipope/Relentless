@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object param = null)
         {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCESSING");
 
             base.Action(param);
             _units = new List<BoardUnitModel>();

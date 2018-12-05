@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCEESING");
 
             InvokeActionTriggered();
         }

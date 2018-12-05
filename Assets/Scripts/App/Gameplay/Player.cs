@@ -659,7 +659,7 @@ namespace Loom.ZombieBattleground
                                                     IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
 
                         completeCallback?.Invoke();
-                    });
+                    }, "end match PROCESSING");
                 }
             }
             else

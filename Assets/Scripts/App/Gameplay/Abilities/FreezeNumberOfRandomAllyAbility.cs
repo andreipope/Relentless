@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCEESING");
 
             _allies = new List<BoardObject>();
 

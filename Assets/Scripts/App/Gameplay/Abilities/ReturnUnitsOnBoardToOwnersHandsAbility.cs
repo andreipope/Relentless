@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCESSING");
 
             _units = new List<BoardUnitView>();
             _units.AddRange(GameplayManager.CurrentPlayer.BoardCards);

@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCESSING");
 
                 InvokeActionTriggered();
             }

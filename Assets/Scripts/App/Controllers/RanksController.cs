@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground
                      _ranksUpgradeCompleteAction = completeCallback;
 
                      DoRankUpgrades(units, card, false);
-                 });
+                 }, "rank buff PROCESSING");
         }
     }
 }

@@ -516,7 +516,6 @@ namespace Loom.ZombieBattleground
                                            ResolveAllAbilitiesOnUnit(boardObject);
 
                                            completeCallback?.Invoke();
-
                                        },
                                        failedCallback: () =>
                                        {

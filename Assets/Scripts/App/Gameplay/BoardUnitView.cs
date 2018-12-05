@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel Model { get; }
 
-        public Transform Transform => GameObject.transform;
+        public Transform Transform => GameObject?.transform;
 
         public GameObject GameObject { get; }
 
@@ -834,15 +834,6 @@ namespace Loom.ZombieBattleground
                     attackCompleteCallback();
 
                     completeCallback?.Invoke();
-
-                    if (Model.OwnerPlayer.IsLocalPlayer)
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(Model.OwnerPlayer.BoardCards);
-                    }
-                    else
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
                 }
                 );
         }
@@ -871,9 +862,9 @@ namespace Loom.ZombieBattleground
                     completeCallback?.Invoke();
 
                     Model.WaitAction?.ForceActionDone();
-                    targetCardView.Model.WaitAction?.ForceActionDone();
+                    targetCard.WaitAction?.ForceActionDone();
 
-                    if (targetCardView.Model.CurrentHp <= 0)
+                    if (targetCard.CurrentHp <= 0)
                     {
                         if (Model.CurrentHp > 0)
                         {
@@ -883,18 +874,15 @@ namespace Loom.ZombieBattleground
                     }
                     else if (Model.CurrentHp <= 0)
                     {
-                        if (targetCardView.Model.CurrentHp > 0)
-                        {
-                            targetCardView.Model.ActionForDying?.ForceActionDone();
-                            targetCardView.Model.ActionForDying = null;
-                        }
+                        targetCard.ActionForDying?.ForceActionDone();
+                        targetCard.ActionForDying = null;
                     }
                     else
                     {
                         Model.ActionForDying?.ForceActionDone();
-                        targetCardView.Model.ActionForDying?.ForceActionDone();
+                        targetCard.ActionForDying?.ForceActionDone();
                         Model.ActionForDying = null;
-                        targetCardView.Model.ActionForDying = null;
+                        targetCard.ActionForDying = null;
                     }
                 }
             );

@@ -633,7 +633,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                             );
-                        });
+                        }, "do combat player PROCEESING");
                     break;
                 case BoardUnitModel targetCardModel:
                     IsPlayable = false;
@@ -651,11 +651,11 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
-                            WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
-                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+                            WaitAction = _actionsQueueController.AddNewActionInToQueue(null, "wait for die PROCEESING");
+                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, "action for die PROCEESING");
 
-                            targetCardModel.WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
-                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+                            targetCardModel.WaitAction = _actionsQueueController.AddNewActionInToQueue(null, "wait for die target PROCEESING");
+                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, "action or die target PROCEESING");
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
@@ -694,7 +694,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                                 );
-                        });
+                        }, "do combat unit PROCEESING");
                     break;
                 default:
                     throw new NotSupportedException(target.GetType().ToString());
