@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
                 Target = AbilityUnitOwner,
             });
 
-            BattlegroundController.DestroyBoardUnit(AbilityUnitOwner);
+            BattlegroundController.DestroyBoardUnit(AbilityUnitOwner, false);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

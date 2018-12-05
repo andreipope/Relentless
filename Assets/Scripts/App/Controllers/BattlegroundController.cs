@@ -198,7 +198,7 @@ namespace Loom.ZombieBattleground
             ClearBattleground();
         }
 
-        public void KillBoardCard(BoardUnitModel boardUnitModel)
+        public void KillBoardCard(BoardUnitModel boardUnitModel, bool withDeathEffect = true)
         {
             BoardUnitView boardUnitView = GetBoardUnitViewByModel(boardUnitModel);
 
@@ -239,11 +239,21 @@ namespace Loom.ZombieBattleground
                             Object.Destroy(boardUnitView.GameObject);
                         };
 
-                    CreateDeathAnimation(boardUnitView, endOfDestroyAnimationCallback, completeCallback);
+                    if (withDeathEffect)
+                    {
+                        CreateDeathAnimation(boardUnitView, endOfDestroyAnimationCallback, completeCallback);
+                    }
+                    else
+                    {
+                        endOfDestroyAnimationCallback();
+
+                        completeCallback?.Invoke();
+                    }
+
                 }, Time.deltaTime * Application.targetFrameRate / 2f);
             };
 
-            if(waitActionCreated)
+            if (waitActionCreated)
             {
                 boardUnitView.Model.WaitAction.ForceActionDone();
             }
@@ -939,26 +949,42 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnitModel unit)
+        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true)
         {
             _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
 
-            unit?.Die();
+            unit?.Die(withDeathEffect: withDeathEffect);
         }
 
-        public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit)
+        public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit, bool revertPositioning = false)
         {
             BoardUnitView view = GetBoardUnitViewByModel(unit);
 
             if (unit.OwnerPlayer.IsLocalPlayer)
             {
                 PlayerBoardCards.Remove(view);
-                OpponentBoardCards.Add(view);
+
+                if (revertPositioning)
+                {
+                    OpponentBoardCards.Insert(0, view);
+                }
+                else
+                {
+                    OpponentBoardCards.Add(view);
+                }   
             }
             else
             {
                 OpponentBoardCards.Remove(view);
-                PlayerBoardCards.Add(view);
+
+                if (revertPositioning)
+                {
+                    PlayerBoardCards.Insert(0, view);
+                }
+                else
+                {
+                    PlayerBoardCards.Add(view);
+                }
             }
 
             unit.OwnerPlayer.BoardCards.Remove(view);
@@ -967,8 +993,16 @@ namespace Loom.ZombieBattleground
             unit.OwnerPlayer = newPlayerOwner;
             unit.Card.Owner = newPlayerOwner;
 
-            newPlayerOwner.CardsOnBoard.Add(unit.Card);
-            newPlayerOwner.BoardCards.Add(view);
+            if (revertPositioning)
+            {
+                newPlayerOwner.CardsOnBoard.Insert(0, unit.Card);
+                newPlayerOwner.BoardCards.Insert(0, view);
+            }
+            else
+            {
+                newPlayerOwner.CardsOnBoard.Add(unit.Card);
+                newPlayerOwner.BoardCards.Add(view);
+            }
 
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
 
