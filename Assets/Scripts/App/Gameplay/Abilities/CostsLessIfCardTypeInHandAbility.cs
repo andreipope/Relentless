@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
             CardsController.SetGooCostOfCardInHand(
                 PlayerCallerOfAbility,
                 MainWorkingCard,
-                MainWorkingCard.InstanceCard.Cost + gooCost,
+                MainWorkingCard.LibraryCard.Cost + gooCost,
                 BoardCard
                 );
         }
