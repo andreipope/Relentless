@@ -92,17 +92,11 @@ public class SingleplayerTests
         if (!_testHelper.IsTestFinished)
             yield return SoloGameplay (true);
 
-        Debug.LogWarning ("6");
-
         if (!_testHelper.IsTestFinished)
             yield return _testHelper.ClickGenericButton ("Button_Continue");
 
-        Debug.LogWarning ("7");
-
         if (!_testHelper.IsTestFinished)
             yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
-
-        Debug.LogWarning ("8");
 
         _testHelper.TestEndHandler ();
 

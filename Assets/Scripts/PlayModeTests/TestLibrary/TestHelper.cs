@@ -152,11 +152,12 @@ public class TestHelper
 
             _testScene = SceneManager.GetActiveScene ();
             _testerGameObject = _testScene.GetRootGameObjects ()[0];
-            _testerGameObject.AddComponent<TestScriptProtector> ();
+            if (_testerGameObject?.GetComponent<TestScriptProtector> () == null)
+            {
+                _testerGameObject.AddComponent<TestScriptProtector> ();
+            }
 
             yield return SceneManager.LoadSceneAsync ("APP_INIT", LoadSceneMode.Single);
-
-            // RemoveGoogleAnalyticsModule ();
 
             yield return AddVirtualInputModule ();
 
@@ -212,17 +213,30 @@ public class TestHelper
     /// <remarks>Generally is used only for the last test in the group.</remarks>
     public IEnumerator TearDown_Cleanup ()
     {
+        _initialized = false;
+
         Scene dontDestroyOnLoadScene = _testerGameObject.scene;
 
         _testScene = SceneManager.CreateScene ("testScene");
+
+        yield return null;
+
         GameObject.Destroy (_testerGameObject.GetComponent<TestScriptProtector> ());
+
+        yield return null;
+
         SceneManager.MoveGameObjectToScene (_testerGameObject, _testScene);
         Scene currentScene = SceneManager.GetActiveScene ();
+
+        yield return null;
 
         foreach (GameObject rootGameObject in currentScene.GetRootGameObjects ())
         {
             GameObject.Destroy (rootGameObject);
         }
+
+        yield return null;
+
         foreach (GameObject rootGameObject in dontDestroyOnLoadScene.GetRootGameObjects ())
         {
             GameObject.Destroy (rootGameObject);
@@ -231,6 +245,9 @@ public class TestHelper
         yield return LetsThink ();
 
         SceneManager.SetActiveScene (_testScene);
+
+        yield return null;
+
         yield return SceneManager.UnloadSceneAsync (currentScene);
     }
 
@@ -848,7 +865,7 @@ public class TestHelper
                     dummyButton.onClick = new Button.ButtonClickedEvent ();
                     dummyButton.onClick.RemoveAllListeners ();
 
-                    Assert.Fail ("Button is not clickable: " + buttonName);
+                    FailWithMessage ("Button is not clickable: " + buttonName);
                 }
                 else
                 {
@@ -889,7 +906,7 @@ public class TestHelper
                     dummyButton.Clicked = new Button.ButtonClickedEvent ();
                     dummyButton.Clicked.RemoveAllListeners ();
 
-                    Assert.Fail ("Button is not clickable: " + buttonName);
+                    FailWithMessage ("Button is not clickable: " + buttonName);
                 }
                 else
                 {
@@ -930,7 +947,7 @@ public class TestHelper
                     dummyButton.onClick = new Button.ButtonClickedEvent ();
                     dummyButton.onClick.RemoveAllListeners ();
 
-                    Assert.Fail ("Button is not clickable: " + buttonName);
+                    FailWithMessage ("Button is not clickable: " + buttonName);
                 }
                 else
                 {
@@ -946,7 +963,7 @@ public class TestHelper
         }
         else
         {
-            Assert.Fail ("Button wasn't found: " + buttonName);
+            FailWithMessage ("Button wasn't found: " + buttonName);
         }
 
         yield return null;
@@ -2978,7 +2995,7 @@ public class TestHelper
 
         if (index >= abilitiesParent.transform.childCount)
         {
-            Assert.Fail ("Index higher than number of abilities");
+            FailWithMessage ("Index higher than number of abilities");
         }
 
         if (abilitiesParent.transform.GetChild (index).GetComponent<Button> ().IsInteractable ())
@@ -2999,14 +3016,14 @@ public class TestHelper
 
         if (deckTitleInput == null)
         {
-            Assert.Fail ("DeckTitleInputText doesn't exist");
+            FailWithMessage ("DeckTitleInputText doesn't exist");
         }
 
         TMP_InputField deckTitleInputField = deckTitleInput.GetComponent<TMP_InputField> ();
 
         if (deckTitleInputField == null)
         {
-            Assert.Fail ("TextMeshPro InputField doesn't exist");
+            FailWithMessage ("TextMeshPro InputField doesn't exist");
         }
 
         deckTitleInputField.text = deckTitle; // for visibility during testing
@@ -3154,7 +3171,7 @@ public class TestHelper
 
         if (!hordeSelected)
         {
-            Assert.Fail ("Couldn't find Horde by that name");
+            FailWithMessage ("Couldn't find Horde by that name");
         }
 
         yield return null;
@@ -3168,7 +3185,7 @@ public class TestHelper
     {
         if (index + 1 >= GetNumberOfHordes ())
         {
-            Assert.Fail ("Horde removal index is too high");
+            FailWithMessage ("Horde removal index is too high");
         }
 
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
@@ -3218,7 +3235,7 @@ public class TestHelper
 
         if (index >= hordesParent.transform.childCount)
         {
-            Assert.Fail ("Horde index is too high");
+            FailWithMessage ("Horde index is too high");
         }
 
         Transform selectedHordeTransform = hordesParent.transform.GetChild (index);
