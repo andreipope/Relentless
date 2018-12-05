@@ -2,23 +2,30 @@ using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
-    public static class RequestFactory
+    public class MatchRequestFactory
     {
-        public static PlayerActionRequest CreateAction(long matchId, PlayerAction playerAction)
+        private readonly long _matchId;
+
+        public MatchRequestFactory(long matchId)
+        {
+            _matchId = matchId;
+        }
+
+        public PlayerActionRequest CreateAction(PlayerAction playerAction)
         {
             return new PlayerActionRequest
             {
-                MatchId = matchId,
+                MatchId = _matchId,
                 PlayerAction = playerAction
             };
         }
 
-        public static EndMatchRequest EndMatch(string userId, int matchId, string winnerId)
+        public EndMatchRequest EndMatch(string userId, string winnerId)
         {
             return new EndMatchRequest
             {
                 UserId = userId,
-                MatchId = matchId,
+                MatchId = _matchId,
                 WinnerId = winnerId
             };
         }

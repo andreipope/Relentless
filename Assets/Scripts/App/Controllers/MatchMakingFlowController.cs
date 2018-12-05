@@ -16,7 +16,6 @@ namespace Loom.ZombieBattleground
         public event Action<MatchMetadata> MatchConfirmed;
 
         private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
-        private const int WaitingTime = 5;
 
         private readonly BackendFacade _backendFacade;
         private readonly UserDataModel _userDataModel;
@@ -28,6 +27,8 @@ namespace Loom.ZombieBattleground
         private float _currentWaitingTime;
         private long _deckId;
         private Address? _customGameModeAddress;
+
+        public float ActionWaitingTime { get; set; } = 5;
 
         public MatchMakingState State => _state;
 
@@ -117,7 +118,7 @@ namespace Loom.ZombieBattleground
                 case MatchMakingState.WaitingPeriod:
                 {
                     _currentWaitingTime += Time.deltaTime;
-                    if (_currentWaitingTime > WaitingTime)
+                    if (_currentWaitingTime > ActionWaitingTime)
                     {
                         _currentWaitingTime = 0f;
                         await SetState(MatchMakingState.FindingMatch);
@@ -128,7 +129,7 @@ namespace Loom.ZombieBattleground
                 case MatchMakingState.WaitingForOpponent:
                 {
                     _currentWaitingTime += Time.deltaTime;
-                    if (_currentWaitingTime > WaitingTime)
+                    if (_currentWaitingTime > ActionWaitingTime)
                     {
                         _currentWaitingTime = 0f;
                         await SetState(MatchMakingState.ConfirmingWithOpponent);

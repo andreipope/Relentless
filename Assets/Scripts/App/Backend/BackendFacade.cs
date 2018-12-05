@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
         private const string AcceptMatchMethod = "AcceptMatch";
 
-        public PlayerActionDataReceivedHandler PlayerActionDataReceived;
+        public event PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
         public async Task<AcceptMatchResponse> AcceptMatch(string userId, long matchId)
         {
@@ -425,7 +425,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
         }
 
-        public async Task SubscribeEvent(List<string> topics)
+        public async Task SubscribeEvent(IList<string> topics)
          {
             //TODO Remove the logs once we fix the multiple subscription issue once and for all
             Debug.Log("Subscribing to Event - Current Subscriptions = " + _subscribeCount);

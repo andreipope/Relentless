@@ -655,9 +655,8 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
                     {
                         _queueManager.AddAction(
-                            RequestFactory.EndMatch(
+                            new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
                                 _backendDataControlMediator.UserDataModel.UserId,
-                                (int) _pvpManager.MatchMetadata.Id,
                                 IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
                             )
                         );
