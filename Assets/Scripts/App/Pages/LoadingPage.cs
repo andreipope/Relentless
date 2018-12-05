@@ -66,26 +66,16 @@ namespace Loom.ZombieBattleground
 
             if (!_isLoaded)
             {
-                _percentage += 2f;
+                _percentage += 1.4f;
                 _loaderBar.fillAmount = Mathf.Clamp(_percentage / 100f, 0.03f, 1f);
                 if (_percentage >= 100)
                 {
                     _isLoaded = true;
-                    _progressBar.gameObject.SetActive(false);
-                    //_pressAnyText.gameObject.SetActive(true);
                 }
             }
             if(!_dataLoading)
             {
                 _dataLoading = true;
-                /*if (!Input.anyKey)
-                    return;
-
-                if (!_pressAnyText.gameObject.activeSelf)
-                    return;
-
-                _pressAnyText.gameObject.SetActive(false);
-                */
 
                 if (_backendDataControlMediator.LoadUserDataModel() &&
                     _backendDataControlMediator.UserDataModel.IsValid)
@@ -119,9 +109,9 @@ namespace Loom.ZombieBattleground
                             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
                         }
                     };
-                    //_uiManager.DrawPopup<ConnectionPopup>();
+                    _uiManager.DrawPopup<ConnectionPopup>();
                     connectionPopup.ConnectFunc = connectFunc;
-                    await connectionPopup.ExecuteConnection();
+                    await connectionPopup.ExecuteConnection(ConnectionPopup.ConnectionState.FirstConnect);
                 }
                 else
                 {
@@ -139,29 +129,12 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _progressBar = _selfPage.transform.Find("ProgresBar");
-            //_progressBar.gameObject.SetActive(false);
 
             _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
             _loadingText = _progressBar.Find("Text").GetComponent<TextMeshProUGUI>();
-            _loadingText.text = "";
-            //_pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<TextMeshProUGUI>();
+            _loadingText.text = "LOADING...";
 
-            //_loaderBar.fillAmount = 0.03f;
-            /*
-            #if UNITY_IOS || UNITY_ANDROID
-                        _pressAnyText.text = "TAP TO CONTINUE";
-            #else
-                        _pressAnyText.text = "PRESS ANY KEY";
-            #endif
-                        _loadingText.text = "LOADING...";
-
-                        _pressAnyText.gameObject.SetActive(false);
-
-                        if (_isLoaded)
-                        {
-                            _pressAnyText.gameObject.SetActive(true);
-                        }
-                        */
+            _loaderBar.fillAmount = 0.03f;
         }
 
         public void Hide()

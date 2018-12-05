@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _betaButton;
 
+        private GameObject _background;
+
         private Transform _betaGroup;
 
         private Transform _waitingGroup;
@@ -40,8 +42,6 @@ namespace Loom.ZombieBattleground
         private TextMeshProUGUI _versionMismatchText;
 
         private Button _versionMismatchExitButton;
-
-        private InputField _betaKeyInputField;
 
         private LoginState _state;
 
@@ -84,9 +84,10 @@ namespace Loom.ZombieBattleground
             }
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
+            _background = Self.transform.Find("Background").gameObject;
+
             _betaGroup = Self.transform.Find("Beta_Group");
             _betaButton = _betaGroup.Find("Button_Beta").GetComponent<ButtonShiftingContent>();
-            _betaKeyInputField = Self.transform.Find("Beta_Group/InputField_Beta").GetComponent<InputField>();
             _betaErrorText = _betaGroup.Find("Text_Error");
 
             _betaButton.onClick.AddListener(PressedBetaHandler);
@@ -99,12 +100,8 @@ namespace Loom.ZombieBattleground
 
             _state = LoginState.BetaKeyRequest;
             SetUIState(LoginState.BetaKeyRequest);
-            _betaKeyInputField.text = "";
+            _background.SetActive(false);
             Self.SetActive(true);
-
-            GameObject betaText = Self.transform.Find("Beta_Group/Text_Beta").gameObject;
-            betaText.SetActive(false);
-            _betaKeyInputField.gameObject.SetActive(false);
 
             PressedBetaHandler();
         }
@@ -189,12 +186,10 @@ namespace Loom.ZombieBattleground
             switch (_state)
             {
                 case LoginState.BetaKeyRequest:
-                    _betaGroup.gameObject.SetActive(true);
-                    break;
                 case LoginState.BetaKeyValidateAndLogin:
-                    _waitingGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.BetaKeyValidationFailed:
+                    _background.SetActive(true);
                     _betaGroup.gameObject.SetActive(true);
                     _betaErrorText.gameObject.SetActive(true);
                     break;
