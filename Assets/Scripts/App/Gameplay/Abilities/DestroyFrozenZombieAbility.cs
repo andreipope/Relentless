@@ -27,8 +27,6 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-
-            object caller = GetCaller();
         
             BattlegroundController.DestroyBoardUnit(TargetUnit, false);
 
