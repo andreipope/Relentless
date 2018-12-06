@@ -558,51 +558,48 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-           // _actionsQueueController.AddUpdateBoardAction((completeCallback) =>
-           //   {
-                  if (_rearrangingBottomRealTimeSequence != null)
-                  {
-                      _rearrangingBottomRealTimeSequence.Kill();
-                      _rearrangingBottomRealTimeSequence = null;
-                  }
+            if (_rearrangingBottomRealTimeSequence != null)
+            {
+                _rearrangingBottomRealTimeSequence.Kill();
+                _rearrangingBottomRealTimeSequence = null;
+            }
 
-                  float boardWidth = 0.0f;
-                  float spacing = 0.2f;
-                  float cardWidth = 0.0f;
-                  for (int i = 0; i < cardsList.Count; i++)
-                  {
-                      cardWidth = 2.5f;
-                      boardWidth += cardWidth;
-                      boardWidth += spacing;
-                  }
+            float boardWidth = 0.0f;
+            float spacing = 0.2f;
+            float cardWidth = 0.0f;
+            for (int i = 0; i < cardsList.Count; i++)
+            {
+                cardWidth = 2.5f;
+                boardWidth += cardWidth;
+                boardWidth += spacing;
+            }
 
-                  boardWidth -= spacing;
+            boardWidth -= spacing;
 
-                  List<Vector2> newPositions = new List<Vector2>(cardsList.Count);
-                  Vector3 pivot = PlayerBoardObject.transform.position;
+            List<Vector2> newPositions = new List<Vector2>(cardsList.Count);
+            Vector3 pivot = PlayerBoardObject.transform.position;
 
-                  for (int i = 0; i < cardsList.Count; i++)
-                  {
-                      newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
-                      pivot.x += boardWidth / cardsList.Count;
-                  }
+            for (int i = 0; i < cardsList.Count; i++)
+            {
+                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
+                pivot.x += boardWidth / cardsList.Count;
+            }
 
-                  Sequence sequence = DOTween.Sequence();
-                  for (int i = 0; i < cardsList.Count; i++)
-                  {
-                      BoardUnitView card = cardsList[i];
-                      card.PositionOfBoard = newPositions[i];
-                      sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-                  }
+            Sequence sequence = DOTween.Sequence();
+            for (int i = 0; i < cardsList.Count; i++)
+            {
+                BoardUnitView card = cardsList[i];
+                card.PositionOfBoard = newPositions[i];
+                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
+            }
 
-                  _rearrangingBottomRealTimeSequence = sequence;
-                  sequence.OnComplete(
-                      () =>
-                      {
-                     //     completeCallback?.Invoke();
-                          onComplete?.Invoke();
-                      });
-            //  });
+            _rearrangingBottomRealTimeSequence = sequence;
+            sequence.OnComplete(
+                () =>
+                {
+                    onComplete?.Invoke();
+                });
+
         }
 
         public void UpdatePositionOfBoardUnitsOfOpponent(Action onComplete = null)
@@ -610,59 +607,54 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-         //   _actionsQueueController.AddUpdateBoardAction((completeCallback) =>
-        //    {
-                if (_rearrangingTopRealTimeSequence != null)
+            if (_rearrangingTopRealTimeSequence != null)
+            {
+                _rearrangingTopRealTimeSequence.Kill();
+                _rearrangingTopRealTimeSequence = null;
+            }
+
+            List<BoardUnitView> opponentBoardCards = OpponentBoardCards;
+
+            float boardWidth = 0.0f;
+            float spacing = 0.2f;
+            float cardWidth = 0.0f;
+
+            for (int i = 0; i < opponentBoardCards.Count; i++)
+            {
+                cardWidth = 2.5f;
+                boardWidth += cardWidth;
+                boardWidth += spacing;
+            }
+
+            boardWidth -= spacing;
+
+            List<Vector2> newPositions = new List<Vector2>(opponentBoardCards.Count);
+            Vector3 pivot = OpponentBoardObject.transform.position;
+
+            for (int i = 0; i < opponentBoardCards.Count; i++)
+            {
+                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
+                pivot.x += boardWidth / opponentBoardCards.Count;
+            }
+
+            Sequence sequence = DOTween.Sequence();
+            for (int i = 0; i < opponentBoardCards.Count; i++)
+            {
+                BoardUnitView card = opponentBoardCards[i];
+
+                if (card.Model.IsDead)
+                    continue;
+
+                card.PositionOfBoard = newPositions[i];
+                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
+            }
+
+            _rearrangingTopRealTimeSequence = sequence;
+            sequence.OnComplete(
+                () =>
                 {
-                    _rearrangingTopRealTimeSequence.Kill();
-                    _rearrangingTopRealTimeSequence = null;
-                }
-
-                List<BoardUnitView> opponentBoardCards = OpponentBoardCards;
-
-                float boardWidth = 0.0f;
-                float spacing = 0.2f;
-                float cardWidth = 0.0f;
-
-                for (int i = 0; i < opponentBoardCards.Count; i++)
-                {
-                    cardWidth = 2.5f;
-                    boardWidth += cardWidth;
-                    boardWidth += spacing;
-                }
-
-                boardWidth -= spacing;
-
-                List<Vector2> newPositions = new List<Vector2>(opponentBoardCards.Count);
-                Vector3 pivot = OpponentBoardObject.transform.position;
-
-                for (int i = 0; i < opponentBoardCards.Count; i++)
-                {
-                    newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
-                    pivot.x += boardWidth / opponentBoardCards.Count;
-                }
-
-                Sequence sequence = DOTween.Sequence();
-                for (int i = 0; i < opponentBoardCards.Count; i++)
-                {
-                    BoardUnitView card = opponentBoardCards[i];
-
-                    if (card.Model.IsDead)
-                        continue;
-
-                    card.PositionOfBoard = newPositions[i];
-                    sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-                }
-
-                _rearrangingTopRealTimeSequence = sequence;
-                sequence.OnComplete(
-                    () =>
-                    {
-                        onComplete?.Invoke();
-
-                       // completeCallback?.Invoke();
-                    });
-            //});
+                    onComplete?.Invoke();
+                });
         }
 
         // rewrite
