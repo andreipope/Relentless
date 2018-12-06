@@ -74,6 +74,7 @@ public class TestHelper
     private Loom.ZombieBattleground.Player _currentPlayer, _opponentPlayer;
 
     private int pageTransitionWaitTime = 30;
+    private int turnWaitTime = 300;
 
     private string _recordedExpectedValue, _recordedActualValue;
 
@@ -145,6 +146,7 @@ public class TestHelper
     {
         _testStartTime = Time.unscaledTime;
         _currentTestState = TestState.Running;
+        _turnWaitAmount = -1;
 
         if (!_initialized)
         {
@@ -297,9 +299,11 @@ public class TestHelper
 
                     yield return LetsThink ();
 
-                    yield return RespondToYesNoOverlay (true);
+                    yield return RespondToYesNoOverlay (true, isGoingBack: true);
 
                     yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
+
+                    yield return LetsThink ();
                 }
                 else if (GameObject.Find ("Button_Settings") != null)
                 {
@@ -311,20 +315,32 @@ public class TestHelper
 
                     yield return LetsThink ();
 
-                    yield return RespondToYesNoOverlay (true);
+                    yield return RespondToYesNoOverlay (true, isGoingBack: true);
 
                     yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
+
+                    yield return LetsThink ();
                 }
 
                 break;
             case "HordeSelectionPage":
-                yield return MainMenuTransition ("Button_Back", isGoingBack: true);
+                yield return ClickGenericButton ("Button_Back", isGoingBack: true);
 
                 yield return AssertCurrentPageName ("PlaySelectionPage", isGoingBack: true);
 
                 break;
+            case "HordeEditingPage":
+                yield return ClickGenericButton ("Button_Back", isGoingBack: true);
+
+                yield return LetsThink ();
+
+                yield return RespondToYesNoOverlay (false, isGoingBack: true);
+
+                yield return AssertCurrentPageName ("HordeSelectionPage", isGoingBack: true);
+
+                break;
             case "PlaySelectionPage":
-                yield return MainMenuTransition ("Button_Back", isGoingBack: true);
+                yield return ClickGenericButton ("Button_Back", isGoingBack: true);
 
                 yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
 
@@ -354,9 +370,10 @@ public class TestHelper
     public IEnumerator ReportTestTime ()
     {
         Debug.LogWarningFormat (
-           "\"{0}\" test successfully finished in {1} seconds.",
+           "\"{0}\" test successfully finished in {1} seconds, with status {2}.",
            _testName,
-           Time.unscaledTime - _testStartTime
+           Time.unscaledTime - _testStartTime,
+           CurrentTestState
        );
 
         yield return LetsThink ();
@@ -457,8 +474,6 @@ public class TestHelper
 
     public void TestEndHandler ()
     {
-        Debug.LogWarning ($"Test finished with status {CurrentTestState}.");
-
         switch (CurrentTestState)
         {
             case TestState.Failed:
@@ -1070,7 +1085,7 @@ public class TestHelper
 
         if (clickTimeout)
         {
-            FailWithMessage ("Couldn't find the button");
+            FailWithMessage ($"Couldn't find the button: {buttonName}");
 
             yield break;
         }
@@ -2727,9 +2742,14 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilOurTurnStarts ()
     {
-        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null);
+        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null || TurnTimeIsUp ());
 
-        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") == null);
+        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") == null || TurnTimeIsUp ());
+
+        if (TurnTimeIsUp ())
+        {
+            FailWithMessage ("AI move took too long.");
+        }
     }
 
     /// <summary>
@@ -2737,7 +2757,12 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilInputIsUnblocked ()
     {
-        yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn ());
+        yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn () || TurnTimeIsUp ());
+
+        if (TurnTimeIsUp ())
+        {
+            FailWithMessage ("AI move took too long.");
+        }
     }
 
     // todo: reconsider having this
@@ -2810,6 +2835,8 @@ public class TestHelper
 
             yield return EndTurn ();
 
+            TurnWaitStart (turnWaitTime);
+
             if (IsGameEnded ())
                 break;
 
@@ -2822,6 +2849,8 @@ public class TestHelper
 
             if (IsGameEnded ())
                 break;
+
+            TurnWaitStart (-1);
         }
     }
 
@@ -3467,6 +3496,6 @@ public class TestHelper
 
     private bool TurnTimeIsUp ()
     {
-        return Time.time > _turnStartTime + _turnWaitAmount;
+        return _turnWaitAmount > 0 && Time.time > _turnStartTime + _turnWaitAmount;
     }
 }

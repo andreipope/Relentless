@@ -71,7 +71,7 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
-        yield return _testHelper.MainMenuTransition ("Button_SoloMode2");
+        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
@@ -91,13 +91,9 @@ public class SingleplayerTests
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        Debug.LogWarning ("0");
-
         #endregion
 
         _testHelper.TestEndHandler ();
-
-        yield return null;
     }
 
     [UnityTest]
