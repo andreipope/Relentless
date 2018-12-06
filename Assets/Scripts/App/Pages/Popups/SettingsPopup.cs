@@ -112,6 +112,7 @@ namespace Loom.ZombieBattleground
             _appStateManager.SetPausingApp(true);
 
 #if UNITY_ANDROID || UNITY_IOS
+            _quitToDesktopButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = "QUIT";
             _panelVideoSettingsObject.SetActive(false);
 #endif
         }
