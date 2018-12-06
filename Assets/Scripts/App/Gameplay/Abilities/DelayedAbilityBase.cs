@@ -31,20 +31,12 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
-         !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
-                return;
-
             CountDelay();
         }
 
         protected override void TurnStartedHandler()
         {
             base.TurnStartedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
-            !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
-                return;
 
             CountDelay();
         }
