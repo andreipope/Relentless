@@ -210,14 +210,9 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            bool waitActionCreated = false;
-
             if (boardUnitView.Model.ActionForDying == null)
             {
-                boardUnitView.Model.WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
-                boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
-
-                waitActionCreated = true;
+                boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
             }
 
             boardUnitView.Model.ActionForDying.Action = (parameter, completeCallback) =>
@@ -253,10 +248,7 @@ namespace Loom.ZombieBattleground
                 }, Time.deltaTime * Application.targetFrameRate / 2f);
             };
 
-            if (waitActionCreated)
-            {
-                boardUnitView.Model.WaitAction.ForceActionDone();
-            }
+            _actionsQueueController.ForceContinueAction(boardUnitView.Model.ActionForDying);
         }
     
         private void CreateDeathAnimation(BoardUnitView unitView, Action endOfDestroyAnimationCallback, Action completeCallback)
@@ -499,7 +491,7 @@ namespace Loom.ZombieBattleground
                      }
 
                      completeCallback?.Invoke();
-                 });
+                 },  Enumerators.QueueActionType.StopTurn);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
@@ -543,8 +535,6 @@ namespace Loom.ZombieBattleground
                     boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                     Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
                 }
-
-                Debug.Log("Destroy = " + boardCard.Model.CurrentHp + "_" + boardCard.Model.Card.LibraryCard.Name);
             }
             else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.WorkingCard)
             {
@@ -609,6 +599,7 @@ namespace Loom.ZombieBattleground
                 {
                     onComplete?.Invoke();
                 });
+
         }
 
         public void UpdatePositionOfBoardUnitsOfOpponent(Action onComplete = null)

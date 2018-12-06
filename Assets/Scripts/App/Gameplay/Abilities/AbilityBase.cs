@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _opponenentAvatar;
 
-        protected GameAction<object> AbilityProcessingAction;
+        protected GameplayQueueAction<object> AbilityProcessingAction;
 
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {

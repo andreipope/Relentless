@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground.Data
                 {
                     card.Abilities.Select(a => a.ToProtobuf())
                 },
-                UniqueAnimation = (UniqueAnimationType.Types.Enum) card.UniqueAnimationType
+                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimationType
             };
 
             return protoCard;

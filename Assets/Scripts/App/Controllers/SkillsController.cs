@@ -1613,7 +1613,8 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            List<BoardUnitView> units = owner.BoardCards.FindAll((x) => x.Model.InitialUnitType != Enumerators.CardType.FERAL);
+            List<BoardUnitView> units = owner.BoardCards.FindAll((x) => !x.Model.HasFeral &&
+            x.Model.Card.LibraryCard.CardSetType == owner.SelfHero.HeroElement);
             units = InternalTools.GetRandomElementsFromList(units, skill.Value);
 
             foreach (BoardUnitView unit in units)
