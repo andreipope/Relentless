@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         private GameplayQueueAction<object> _actionInProgress;
 
-        private bool _isDebugMode = true;
+        private bool _isDebugMode = false;
 
         public List<PastActionsPopup.PastActionParam> ActionsReports { get; private set; }
 
@@ -115,20 +115,20 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                if (_isDebugMode)
+                {
+                    UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; action <color=orange>" +
+                    action.ActionType + " : " + action.Id + " force block disable and try run </color> from >>>> ");
+                }
+
+                action.BlockQueue = false;
+
                 if (_actionsToDo.Count > 0)
                 {
-                    if (_actionsToDo.GetRange(0, 1)[0] == action)
+                    if (_actionsToDo.GetRange(0, 1)[0] == action && _actionInProgress == null)
                     {
                         TryCallNewActionFromQueue(true);
                     }
-                    else
-                    {
-                        action.BlockQueue = false;
-                    }
-                }
-                else
-                {
-                    action.BlockQueue = false;
                 }
             }
         }
@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground
 
                 if (_isDebugMode)
                 {
-                    UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; <color=red> Dooooooo action " +
+                    UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; <color=white> Dooooooo action " +
                     _actionInProgress.ActionType + " : " + _actionInProgress.Id + ";  </color> from >>>> ");
                 }
 
@@ -229,7 +229,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"<color=cyan>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
+                UnityEngine.Debug.LogError($"<color=red>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
 
                 ActionDoneCallback();
             }
@@ -251,10 +251,7 @@ namespace Loom.ZombieBattleground
 
             _actionDone = true;
 
-            //  InternalTools.DoActionDelayed(() =>
-            //    {
             OnActionDoneEvent?.Invoke(this);
-            //   }, Constants.DelayBetweenGameplayActions);
         }
     }
 }
