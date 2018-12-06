@@ -208,8 +208,7 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
-        public GameAction<object> WaitAction;
-        public GameAction<object> ActionForDying;
+        public GameplayQueueAction<object> ActionForDying;
 
         public bool WasDistracted { get; private set; }
 
@@ -633,7 +632,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                             );
-                        }, "do combat player PROCEESING");
+                        }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 case BoardUnitModel targetCardModel:
                     IsPlayable = false;
@@ -651,11 +650,8 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
-                            WaitAction = _actionsQueueController.AddNewActionInToQueue(null, "wait for die PROCEESING");
-                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, "action for die PROCEESING");
-
-                            targetCardModel.WaitAction = _actionsQueueController.AddNewActionInToQueue(null, "wait for die target PROCEESING");
-                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, "action or die target PROCEESING");
+                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
@@ -694,7 +690,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                                 );
-                        }, "do combat unit PROCEESING");
+                        }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 default:
                     throw new NotSupportedException(target.GetType().ToString());

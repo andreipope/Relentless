@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCESSING");
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             base.Action(info);
 

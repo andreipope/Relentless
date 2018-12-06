@@ -518,9 +518,8 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-                GameAction<object> waitAction = _actionsQueueController.AddNewActionInToQueue(null, "wait PROCEESING");
-                GameAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, "call ability PROCEESING");
-                GameAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, "rank buff PROCEESING");
+                GameplayQueueAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
+                GameplayQueueAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
                 switch (libraryCard.CardKind)
                 {
@@ -607,7 +606,7 @@ namespace Loom.ZombieBattleground
 
                                         }, CallAbilityAction, target, handCard);
 
-                                    waitAction.ForceActionDone();
+                                    _actionsQueueController.ForceContinueAction(CallAbilityAction);
                                 });
                             break;
                         }
@@ -637,7 +636,7 @@ namespace Loom.ZombieBattleground
                                         RankBuffAction.ForceActionDone();
                                     }, CallAbilityAction, target, handCard);
 
-                                waitAction.ForceActionDone();                           
+                                _actionsQueueController.ForceContinueAction(CallAbilityAction);
                             }, 0.75f);
                             break;
                         }

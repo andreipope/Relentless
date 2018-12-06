@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCEESING");
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
                 InvokeActionTriggered();
             }
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
 
         private void DealDamageToUnitOwner()
         {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, "ABILITY PROCEESING");
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null,  Enumerators.QueueActionType.AbilityUsageBlocker);
 
             if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
             {

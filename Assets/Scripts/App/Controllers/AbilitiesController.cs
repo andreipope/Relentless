@@ -389,7 +389,7 @@ namespace Loom.ZombieBattleground
             Action<BoardCard> action,
             bool isPlayer,
             Action<bool> onCompleteCallback,
-            GameAction<object> actionInQueue,
+            GameplayQueueAction<object> actionInQueue,
             BoardObject target = null,
             HandBoardCard handCard = null)
         {

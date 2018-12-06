@@ -2,33 +2,29 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class ActionsQueueController : IController
     {
+        public event Action<PastActionsPopup.PastActionParam> GotNewActionReportEvent;
+
         private long _nextActionId = 0;
 
-        private Queue<GameAction<object>> _actionsToDo;
+        private List<GameplayQueueAction<object>> _actionsToDo;
 
-        private Queue<Action<Action>> _updateBoardActions;
+        private GameplayQueueAction<object> _actionInProgress;
 
-        private GameAction<object> _actionInProgress;
-
-        private Action<Action> _updateBoardActionInProgress;
-
-        public event Action<PastActionsPopup.PastActionParam> GotNewActionReportEvent;
+        private bool _isDebugMode = true;
 
         public List<PastActionsPopup.PastActionParam> ActionsReports { get; private set; }
 
         public int ActionsInQueue { get { return _actionsToDo.Count + (_actionInProgress == null ? 0 : 1); } }
 
-        private bool _isDebugMode = false;
-
         public void Init()
         {
-            _actionsToDo = new Queue<GameAction<object>>();
-            _updateBoardActions = new Queue<Action<Action>>();
+            _actionsToDo = new List<GameplayQueueAction<object>>();
             ActionsReports = new List<PastActionsPopup.PastActionParam>();
             _actionInProgress = null;
         }
@@ -50,25 +46,35 @@ namespace Loom.ZombieBattleground
             _nextActionId = 0;
         }
 
+        public void PostGameActionReport(PastActionsPopup.PastActionParam report)
+        {
+            if (report != null)
+            {
+                ActionsReports.Add(report);
+                GotNewActionReportEvent?.Invoke(report);
+            }
+        }
+
         /// <summary>
         ///     AddNewActionInToQueue
         /// </summary>
         /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
-        public GameAction<object> AddNewActionInToQueue(
-            Action<object, Action> actionToDo, string ACTION_NAME, object parameter = null)
+        public GameplayQueueAction<object> AddNewActionInToQueue(
+            Action<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
         {
             _nextActionId++;
 
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; add <color=yellow>new action " + ACTION_NAME + " : " + _nextActionId + "; </color> from >>>> ");
+                UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; add <color=yellow>new action " +
+                                            actionType + " : " + _nextActionId + "; </color> from >>>> ");
             }
 
-            GameAction<object> gameAction = new GameAction<object>(actionToDo, parameter, _nextActionId, ACTION_NAME);
+            GameplayQueueAction<object> gameAction = new GameplayQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
-            _actionsToDo.Enqueue(gameAction);
+            _actionsToDo.Add(gameAction);
 
             if (_actionInProgress == null && _actionsToDo.Count < 2)
             {
@@ -76,6 +82,18 @@ namespace Loom.ZombieBattleground
             }
 
             return gameAction;
+        }
+
+        public void InsertActionAfterAction(GameplayQueueAction<object> actionToInsert, GameplayQueueAction<object> actionInsertAfter)
+        {
+            if (_actionsToDo.Contains(actionToInsert))
+            {
+                _actionsToDo.Remove(actionToInsert);
+            }
+
+            int position = _actionsToDo.IndexOf(actionInsertAfter);
+
+            _actionsToDo.Insert(Mathf.Clamp(position, 0, _actionsToDo.Count), actionToInsert);
         }
 
         public void StopAllActions()
@@ -87,64 +105,75 @@ namespace Loom.ZombieBattleground
         {
             _actionsToDo.Clear();
             _actionInProgress = null;
-            _updateBoardActionInProgress = null;
-
-            _updateBoardActions.Clear();
         }
 
-        public void PostGameActionReport(PastActionsPopup.PastActionParam report)
+        public void ForceContinueAction(GameplayQueueAction<object> action)
         {
-            if (report != null)
+            if (action == null)
             {
-                ActionsReports.Add(report);
-                GotNewActionReportEvent?.Invoke(report);
+                TryCallNewActionFromQueue();
+            }
+            else
+            {
+                if (_actionsToDo.Count > 0)
+                {
+                    if (_actionsToDo.GetRange(0, 1)[0] == action)
+                    {
+                        TryCallNewActionFromQueue(true);
+                    }
+                    else
+                    {
+                        action.BlockQueue = false;
+                    }
+                }
+                else
+                {
+                    action.BlockQueue = false;
+                }
             }
         }
 
-        public void AddUpdateBoardAction(Action<Action> action)
-        {
-            _updateBoardActions.Enqueue(action);
-
-            if (_updateBoardActions.Count == 1 && _updateBoardActionInProgress == null)
-            {
-                StartUpdateBoardAction();
-            }
-        }
-
-        private void UpdateBoardActionEndCallback()
-        {
-            _updateBoardActionInProgress = null;
-            StartUpdateBoardAction();
-        }
-
-        private void StartUpdateBoardAction()
-        {
-            if (_updateBoardActions.Count > 0)
-            {
-                _updateBoardActionInProgress = _updateBoardActions.Dequeue();
-                _updateBoardActionInProgress.Invoke(UpdateBoardActionEndCallback);
-            }
-        }
-
-        private void OnActionDoneEvent(GameAction<object> previousAction)
+        private void OnActionDoneEvent(GameplayQueueAction<object> previousAction)
         {
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; action <color=cyan>" + previousAction.Name + " : " + previousAction.Id + " DONE </color> from >>>> ");
+                UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; action <color=cyan>" +
+                previousAction.ActionType + " : " + previousAction.Id + " DONE </color> from >>>> ");
             }
 
-            TryCallNewActionFromQueue();
+            if (_actionsToDo.Contains(previousAction))
+            {
+                if(_actionInProgress == previousAction)
+                {
+                    TryCallNewActionFromQueue();
+                }
+
+                _actionsToDo.Remove(previousAction);
+            }
+            else
+            {
+                TryCallNewActionFromQueue();
+            }
         }
 
-        private void TryCallNewActionFromQueue()
+        private void TryCallNewActionFromQueue(bool ignoreBlock = false)
         {
             if (_actionsToDo.Count > 0)
             {
-                _actionInProgress = _actionsToDo.Dequeue();
+                _actionInProgress = _actionsToDo.GetRange(0, 1)[0];
+
+                if (_actionInProgress.BlockQueue && !ignoreBlock)
+                {
+                    _actionInProgress = null;
+                    return;
+                }
+
+                _actionsToDo.Remove(_actionInProgress);
 
                 if (_isDebugMode)
                 {
-                    UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; <color=red> Dooooooo action " + _actionInProgress.Name + " : " + _actionInProgress.Id + ";  </color> from >>>> ");
+                    UnityEngine.Debug.LogError(_actionsToDo.Count + " was actions; <color=red> Dooooooo action " +
+                    _actionInProgress.ActionType + " : " + _actionInProgress.Id + ";  </color> from >>>> ");
                 }
 
                 _actionInProgress.DoAction();
@@ -156,47 +185,53 @@ namespace Loom.ZombieBattleground
         }
     }
 
-    public class GameAction<T>
+    public class GameplayQueueAction<T>
     {
-        public Action<T, Action> Action;
-
-        public T Parameter;
-
         private readonly ITimerManager _timerManager;
 
         private bool _actionDone;
 
-        public string Name;
+        public Action<T, Action> Action;
 
-        public long Id;
+        public T Parameter;
 
-        public GameAction(Action<T, Action> action, T parameter, long id, string name)
+        public Enumerators.QueueActionType ActionType { get; }
+
+        public long Id { get; }
+
+        public bool BlockQueue { get; set; }
+
+        public GameplayQueueAction(Action<T, Action> action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
         {
             _timerManager = GameClient.Get<ITimerManager>();
 
             Action = action;
             Parameter = parameter;
             Id = id;
-
-            Name = name;
+            ActionType = actionType;
+            BlockQueue = blockQueue;
         }
 
-        public event Action<GameAction<T>> OnActionDoneEvent;
+        public event Action<GameplayQueueAction<T>> OnActionDoneEvent;
 
         public void DoAction()
         {
             try
             {
-                Action?.Invoke(Parameter, ActionDoneCallback);
-            }
-            catch (Exception ex)
-            {
-                UnityEngine.Debug.LogError(ex.Message + "; " + ex.StackTrace);
-
-                if (!_actionDone)
+                if (Action == null)
                 {
                     ActionDoneCallback();
                 }
+                else
+                {
+                    Action?.Invoke(Parameter, ActionDoneCallback);
+                }
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogError($"<color=cyan>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
+
+                ActionDoneCallback();
             }
         }
 
@@ -216,10 +251,10 @@ namespace Loom.ZombieBattleground
 
             _actionDone = true;
 
-          //  InternalTools.DoActionDelayed(() =>
-        //    {
-                OnActionDoneEvent?.Invoke(this);
-         //   }, Constants.DelayBetweenGameplayActions);
+            //  InternalTools.DoActionDelayed(() =>
+            //    {
+            OnActionDoneEvent?.Invoke(this);
+            //   }, Constants.DelayBetweenGameplayActions);
         }
     }
 }

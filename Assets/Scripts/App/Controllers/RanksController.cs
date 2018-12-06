@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card, GameAction<object> actionInQueue)
+        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card, GameplayQueueAction<object> actionInQueue)
         {
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground
                      _ranksUpgradeCompleteAction = completeCallback;
 
                      DoRankUpgrades(units, card, false);
-                 }, "rank buff PROCESSING");
+                 }, Enumerators.QueueActionType.RankBuff);
         }
     }
 }

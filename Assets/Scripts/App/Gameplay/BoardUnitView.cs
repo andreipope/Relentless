@@ -41,6 +41,8 @@ namespace Loom.ZombieBattleground
 
         private readonly UniqueAnimationsController _uniqueAnimationsController;
 
+        private readonly ActionsQueueController _actionsQueueController;
+
         private readonly GameObject _fightTargetingArrowPrefab;
 
         private readonly SpriteRenderer _pictureSprite;
@@ -122,6 +124,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _uniqueAnimationsController = _gameplayManager.GetController<UniqueAnimationsController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             GameObject.transform.SetParent(parent, false);
@@ -861,26 +864,23 @@ namespace Loom.ZombieBattleground
 
                     completeCallback?.Invoke();
 
-                    Model.WaitAction?.ForceActionDone();
-                    targetCard.WaitAction?.ForceActionDone();
-
                     if (targetCard.CurrentHp <= 0)
                     {
                         if (Model.CurrentHp > 0)
                         {
-                            Model.ActionForDying?.ForceActionDone();
+                            _actionsQueueController.ForceContinueAction(Model.ActionForDying);
                             Model.ActionForDying = null;
                         }
                     }
                     else if (Model.CurrentHp <= 0)
                     {
-                        targetCard.ActionForDying?.ForceActionDone();
+                        _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);
                         targetCard.ActionForDying = null;
                     }
                     else
                     {
-                        Model.ActionForDying?.ForceActionDone();
-                        targetCard.ActionForDying?.ForceActionDone();
+                        _actionsQueueController.ForceContinueAction(Model.ActionForDying);
+                        _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);
                         Model.ActionForDying = null;
                         targetCard.ActionForDying = null;
                     }

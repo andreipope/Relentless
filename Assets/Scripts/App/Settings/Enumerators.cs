@@ -729,5 +729,21 @@ namespace Loom.ZombieBattleground.Common
             CurrentPlayer,
             OpponentPlayer
         }
+
+        public enum QueueActionType
+        {
+            CardPlay,
+            RankBuff,
+            AbilityUsage,
+            UnitDeath,
+            WholeBoardUpdate,
+            PlayerBoardUpdate,
+            OpponentBoardUpdate,
+            OverlordSkillUsage,
+            AbilityUsageBlocker,
+            StopTurn,
+            EndMatch,
+            UnitCombat
+        }
     }
 }

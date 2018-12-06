@@ -214,8 +214,7 @@ namespace Loom.ZombieBattleground
 
             if (boardUnitView.Model.ActionForDying == null)
             {
-                boardUnitView.Model.WaitAction = _actionsQueueController.AddNewActionInToQueue(null, "wait action for die PROCEESING");
-                boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, "action for die PROCEESING");
+                boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
                 waitActionCreated = true;
             }
@@ -255,7 +254,7 @@ namespace Loom.ZombieBattleground
 
             if (waitActionCreated)
             {
-                boardUnitView.Model.WaitAction.ForceActionDone();
+                _actionsQueueController.ForceContinueAction(boardUnitView.Model.ActionForDying);
             }
         }
     
@@ -499,7 +498,7 @@ namespace Loom.ZombieBattleground
                      }
 
                      completeCallback?.Invoke();
-                 }, "stop turn PROCEESING");
+                 },  Enumerators.QueueActionType.StopTurn);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
