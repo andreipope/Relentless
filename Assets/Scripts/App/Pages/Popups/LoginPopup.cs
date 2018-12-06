@@ -176,7 +176,6 @@ namespace Loom.ZombieBattleground
         private void SuccessfulLogin()
         {
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-
             Hide();
         }
 
