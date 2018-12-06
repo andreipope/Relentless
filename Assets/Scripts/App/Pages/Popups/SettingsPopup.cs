@@ -19,6 +19,8 @@ namespace Loom.ZombieBattleground
         private IAppStateManager _appStateManager;
         private IApplicationSettingsManager _applicationSettingsManager;
 
+        private static Vector3 positionCenterForQuitToDesktopButton = new Vector3(0, -2.3f, 0);
+
         private ButtonShiftingContent _quitToMenuButton,
                                       _quitToDesktopButton,
                                       _settingsButton,
@@ -121,7 +123,7 @@ namespace Loom.ZombieBattleground
             if (data is bool isFromMainMenu && isFromMainMenu)
             {
                 _fromMainMenu = isFromMainMenu;
-
+                _quitToDesktopButton.transform.position = positionCenterForQuitToDesktopButton;
                 _quitToMenuButton.gameObject.SetActive(false);
                 _settingsButton.gameObject.SetActive(false);
             }
