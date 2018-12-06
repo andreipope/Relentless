@@ -32,12 +32,12 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            {
+                InvokeActionTriggered();
+            }
+
             base.UnitDiedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
-
-            InvokeActionTriggered();
         }
 
         public override void Action(object info = null)
