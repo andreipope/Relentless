@@ -264,22 +264,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Debug.Log(httpResponseMessage.ReadToEnd());
-            Debug.Log(httpResponseMessage.IsSuccessStatusCode);
-            Debug.Log(httpResponseMessage.StatusCode);
+                
             Debug.Log(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
 
-            UserInfo betaConfig = JsonConvert.DeserializeObject<UserInfo>(
+            UserInfo userInfo = JsonConvert.DeserializeObject<UserInfo>(
                 httpResponseMessage.ReadToEnd(),
 
                 // FIXME: backend should return valid version numbers at all times
                 new VersionConverterWithFallback(Version.Parse(Constants.CurrentVersionBase)));
 
-            return betaConfig;
+            return userInfo;
         }
 
         public async Task<LoginData> InitiateLogin(string email, string password)
@@ -298,10 +295,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Debug.Log(httpResponseMessage.ReadToEnd());
-            Debug.Log(httpResponseMessage.IsSuccessStatusCode);
-            Debug.Log(httpResponseMessage.StatusCode);
+                
             Debug.Log(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)

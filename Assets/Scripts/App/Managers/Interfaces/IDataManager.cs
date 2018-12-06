@@ -25,8 +25,6 @@ namespace Loom.ZombieBattleground
 
         UserInfo UserInfo { get; set; }
 
-        Task LoadRemoteConfig();
-
         Task StartLoadCache();
 
         Task SaveCache(Enumerators.CacheDataType type);

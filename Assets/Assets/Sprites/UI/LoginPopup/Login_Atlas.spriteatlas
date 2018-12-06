@@ -30,11 +30,17 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 2800000, guid: e2cc18e78a799452a89f4ef5b75b4617, type: 3}
+    - {fileID: 2800000, guid: ce632dd070cb04b76a858736eb8a15c5, type: 3}
+    - {fileID: 2800000, guid: 83a3201a787f441e184067e06f524bf6, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: ce632dd070cb04b76a858736eb8a15c5, type: 3}
   - {fileID: 21300000, guid: e2cc18e78a799452a89f4ef5b75b4617, type: 3}
+  - {fileID: 21300000, guid: 83a3201a787f441e184067e06f524bf6, type: 3}
   m_PackedSpriteNamesToIndex:
+  - login_btn_google_off
   - login_panel
+  - login_btn_google_on
   m_Tag: Login_Atlas
   m_IsVariant: 0
