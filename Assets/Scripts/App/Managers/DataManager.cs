@@ -92,14 +92,7 @@ namespace Loom.ZombieBattleground
 
         public ConfigData ConfigData { get; set; }
 
-        public BetaConfig BetaConfig { get; set; }
-
-        public async Task LoadRemoteConfig()
-        {
-            BetaConfig = await _backendFacade.GetBetaConfig(_backendDataControlMediator.UserDataModel.BetaKey);
-            if (BetaConfig == null)
-                throw new Exception("BetaConfig == null");
-        }
+        public UserInfo UserInfo { get; set; }
 
         public async Task StartLoadCache()
         {
