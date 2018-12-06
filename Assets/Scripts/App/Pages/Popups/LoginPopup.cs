@@ -175,14 +175,7 @@ namespace Loom.ZombieBattleground
 
         private void SuccessfulLogin()
         {
-            if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
-            {
-                GameClient.Get<ITutorialManager>().SetFirstAvailableTutorial();
-            }
-            else
-            {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-            }
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
             Hide();
         }

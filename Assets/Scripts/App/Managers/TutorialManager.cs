@@ -51,8 +51,6 @@ namespace Loom.ZombieBattleground
         private List<TutorialDataStep> _tutorialSteps;
         private int _currentTutorialStepIndex;
 
-        private bool _isFirstTutorial;
-
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
@@ -85,8 +83,6 @@ namespace Loom.ZombieBattleground
                         .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
 
             _tutorialHelpBoardArrows = new List<TutorialBoardArrow>();
-
-            _isFirstTutorial = false;
         }
 
         public void Update()
@@ -96,50 +92,30 @@ namespace Loom.ZombieBattleground
         private bool CheckAvailableTutorial()
         {
             int id = _dataManager.CachedUserLocalData.CurrentTutorialId;
-            for (int i = id; i < _tutorials.Count; i++)
+
+            TutorialData tutorial = _tutorials.Find((x) => !x.Ignore &&
+                x.TutorialId >= _dataManager.CachedUserLocalData.CurrentTutorialId);
+
+            if(tutorial != null)
             {
-                if (_tutorials[i].Included)
-                {
-                    if(id != i)
-                    {
-                        _dataManager.CachedUserLocalData.CurrentTutorialId = i;
-                        _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                    }
-                    return true;
-                }
+                _dataManager.CachedUserLocalData.CurrentTutorialId = tutorial.TutorialId;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                return true;
             }
-            _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count - 1;
             return false;
-        }
-
-        public void SetFirstAvailableTutorial()
-        {
-            if (CheckAvailableTutorial())
-            {
-                _isFirstTutorial = true;
-
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
-
-                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
-            }
-            else
-            {
-                _gameplayManager.IsTutorial = false;
-                _dataManager.CachedUserLocalData.Tutorial = false;
-                _gameplayManager.IsSpecificGameplayBattleground = false;
-
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);              
-            }
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
         public void SetupTutorialById(int id)
         {
-            CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
-            _currentTutorialStepIndex = 0;
-            _tutorialSteps = CurrentTutorial.TutorialDataSteps;
-            CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
-            FillTutorialDeck();
+            if (CheckAvailableTutorial())
+            {
+                id = _dataManager.CachedUserLocalData.CurrentTutorialId;
+                CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
+                _currentTutorialStepIndex = 0;
+                _tutorialSteps = CurrentTutorial.TutorialDataSteps;
+                CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+                FillTutorialDeck();
+            }
 
             IsTutorial = false;
         }
