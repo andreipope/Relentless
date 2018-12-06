@@ -202,17 +202,18 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
-        public GameAction<object> WaitAction;
-        public GameAction<object> ActionForDying;
+        public GameplayQueueAction<object> ActionForDying;
 
-        public void Die(bool forceUnitDieEvent= false)
+        public bool WasDistracted { get; private set; }
+
+        public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true)
         {
             UnitDying?.Invoke();
 
             IsDead = true;
             if (!forceUnitDieEvent)
             {
-                _battlegroundController.KillBoardCard(this);
+                _battlegroundController.KillBoardCard(this, withDeathEffect);
             }
             else
             {
@@ -558,6 +559,8 @@ namespace Loom.ZombieBattleground
 
         public void Distract()
         {
+            WasDistracted = true;
+
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Distract);
 
             UpdateVisualStateOfDistract(true);
@@ -625,7 +628,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                             );
-                        });
+                        }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 case BoardUnitModel targetCardModel:
                     IsPlayable = false;
@@ -643,11 +646,8 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
-                            WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
-                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
-
-                            targetCardModel.WaitAction = _actionsQueueController.AddNewActionInToQueue(null);
-                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
@@ -686,7 +686,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                                 );
-                        });
+                        }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 default:
                     throw new NotSupportedException(target.GetType().ToString());

@@ -27,6 +27,9 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnit;
             for (int i = 0; i < Count; i++)
             {
+                if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
+                    break;
+
                 boardUnit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name).Model;
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -43,7 +46,7 @@ namespace Loom.ZombieBattleground
                 Target = AbilityUnitOwner,
             });
 
-            BattlegroundController.DestroyBoardUnit(AbilityUnitOwner);
+            BattlegroundController.DestroyBoardUnit(AbilityUnitOwner, false);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

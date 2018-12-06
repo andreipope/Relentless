@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         {
             EditorGUILayout.Space();
             Rect rect = EditorGUILayout.GetControlRect(false, 2);
-            rect.height = 2;
+            rect.height = 1;
             EditorGUI.DrawRect(rect, Color.black);
             EditorGUILayout.Space();
         }

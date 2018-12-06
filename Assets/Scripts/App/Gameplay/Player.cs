@@ -662,7 +662,7 @@ namespace Loom.ZombieBattleground
                         );
 
                         completeCallback?.Invoke();
-                    });
+                    }, Enumerators.QueueActionType.EndMatch);
                 }
             }
             else

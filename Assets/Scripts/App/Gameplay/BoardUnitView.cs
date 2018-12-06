@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
 
         private readonly UniqueAnimationsController _uniqueAnimationsController;
 
+        private readonly ActionsQueueController _actionsQueueController;
+
         private readonly GameObject _fightTargetingArrowPrefab;
 
         private readonly SpriteRenderer _pictureSprite;
@@ -124,6 +126,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _uniqueAnimationsController = _gameplayManager.GetController<UniqueAnimationsController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             GameObject.transform.SetParent(parent, false);
@@ -158,7 +161,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel Model { get; }
 
-        public Transform Transform => GameObject.transform;
+        public Transform Transform => GameObject?.transform;
 
         public GameObject GameObject { get; }
 
@@ -840,15 +843,6 @@ namespace Loom.ZombieBattleground
                     attackCompleteCallback();
 
                     completeCallback?.Invoke();
-
-                    if (Model.OwnerPlayer.IsLocalPlayer)
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(Model.OwnerPlayer.BoardCards);
-                    }
-                    else
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
                 }
                 );
         }
@@ -874,30 +868,19 @@ namespace Loom.ZombieBattleground
                 {
                     attackCompleteCallback();
 
+                    if (Model.CurrentHp > 0)
+                    {
+                        _actionsQueueController.ForceContinueAction(Model.ActionForDying);
+                        Model.ActionForDying = null;
+                    }
+
+                    if (targetCard.CurrentHp > 0)
+                    {
+                        _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);
+                        targetCard.ActionForDying = null;
+                    }
+
                     completeCallback?.Invoke();
-
-                    Model.WaitAction?.ForceActionDone();
-                    targetCardView.Model.WaitAction?.ForceActionDone();
-
-                    if (targetCardView.Model.CurrentHp <= 0)
-                    {
-                        if (Model.CurrentHp > 0)
-                        {
-                            Model.ActionForDying?.ForceActionDone();
-                        }
-                    }
-                    else if (Model.CurrentHp <= 0)
-                    {
-                        if (targetCardView.Model.CurrentHp > 0)
-                        {
-                            targetCardView.Model.ActionForDying?.ForceActionDone();
-                        }
-                    }
-                    else
-                    {
-                        Model.ActionForDying?.ForceActionDone();
-                        targetCardView.Model.ActionForDying?.ForceActionDone();
-                    }
                 }
             );
         }

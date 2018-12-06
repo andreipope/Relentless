@@ -300,14 +300,14 @@ namespace Loom.ZombieBattleground.Common
             [EnumMember(Value = "PERMANENT")]
             Permanent,
 
-            [EnumMember(Value = "CHAINSAW")]
-            Chainsaw,
-
             [EnumMember(Value = "BLITZ")]
             Blitz,
 
             [EnumMember(Value = "RESTORE")]
             Restore,
+
+            [EnumMember(Value = "CHAINSAW")]
+            Chainsaw,
         }
 
         public enum BuffType
@@ -728,6 +728,22 @@ namespace Loom.ZombieBattleground.Common
         {
             CurrentPlayer,
             OpponentPlayer
+        }
+
+        public enum QueueActionType
+        {
+            CardPlay,
+            RankBuff,
+            AbilityUsage,
+            UnitDeath,
+            WholeBoardUpdate,
+            PlayerBoardUpdate,
+            OpponentBoardUpdate,
+            OverlordSkillUsage,
+            AbilityUsageBlocker,
+            StopTurn,
+            EndMatch,
+            UnitCombat
         }
     }
 }

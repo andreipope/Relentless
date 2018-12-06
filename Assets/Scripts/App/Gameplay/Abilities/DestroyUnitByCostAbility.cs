@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                 DestroyUnit(TargetUnit);
 
@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { unit }, AbilityData.AbilityType,
                                                      Enumerators.AffectObjectType.Character);
 
-                BattlegroundController.DestroyBoardUnit(unit);
+                BattlegroundController.DestroyBoardUnit(unit, false);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

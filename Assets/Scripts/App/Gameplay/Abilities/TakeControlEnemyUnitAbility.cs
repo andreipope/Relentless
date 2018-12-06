@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitModel unit in units)
             {
-                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit);
+                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit, IsPVPAbility);
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
