@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
             Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
             string heroName = currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
             _selectHeroSpriteRenderer.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant() + "_bnw");
         }
 
         public void Show(object data)
