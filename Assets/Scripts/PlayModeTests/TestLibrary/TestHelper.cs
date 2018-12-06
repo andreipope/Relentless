@@ -1043,7 +1043,7 @@ public class TestHelper
             yield break;
         }
 
-        WaitStart (3);
+        WaitStart (5);
         GameObject menuButtonGameObject = null;
         bool clickTimeout = false;
 
@@ -1648,6 +1648,11 @@ public class TestHelper
     {
         foreach (int cardIndex in cardIndices)
         {
+            if (IsGameEnded ())
+            {
+                yield break;
+            }
+
             BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
             yield return PlayCardFromHandToBoard (boardCard.WorkingCard);
@@ -1783,9 +1788,21 @@ public class TestHelper
         int[] attackedCardIndices,
         bool opponentPlayer = false)
     {
+        if (IsGameEnded ())
+        {
+            yield break;
+        }
+
         for (int i = 0; i < attackerCardIndices.Length; i++)
         {
             int attackerCardIndex = attackerCardIndices[i];
+
+            if (_battlegroundController.PlayerBoardCards.Count <= i)
+            {
+                FailWithMessage ("Card isn't currently at hand.");
+
+                yield break;
+            }
 
             BoardUnitView attackerBoardUnitView = _battlegroundController.PlayerBoardCards[attackerCardIndex];
 
@@ -2685,6 +2702,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator EndTurn ()
     {
+        if (IsGameEnded ())
+        {
+            yield break;
+        }
+
         _battlegroundController.StopTurn ();
         GameObject.Find ("_1_btn_endturn").GetComponent<EndTurnButton> ().SetEnabled (false);
 
@@ -2772,6 +2794,11 @@ public class TestHelper
     /// <remarks>Was written specifically for tutorials.</remarks>
     public IEnumerator UseSkillToOpponentPlayer ()
     {
+        if (IsGameEnded ())
+        {
+            yield break;
+        }
+
         DoBoardSkill (_testBroker.GetPlayerPrimarySkill (_player), _testBroker.GetPlayer (_opponent), Enumerators.AffectObjectType.Player);
 
         yield return LetsThink ();

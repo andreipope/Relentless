@@ -376,6 +376,8 @@ public class SingleplayerTests
             });
 
         yield return _testHelper.LetsThink ();
+
+        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
@@ -402,14 +404,7 @@ public class TutorialTests
     [UnityTearDown]
     public IEnumerator PerTestTearDown ()
     {
-        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
-        {
-            yield return _testHelper.TearDown_Cleanup ();
-        }
-        else
-        {
-            yield return _testHelper.TearDown_GoBackToMainScreen ();
-        }
+        yield return _testHelper.TearDown ();
 
         yield return _testHelper.ReportTestTime ();
     }
@@ -431,6 +426,11 @@ public class TutorialTests
 
     private IEnumerator PlayTutorial_Part1 ()
     {
+        if (_testHelper.IsGameEnded ())
+        {
+            yield break;
+        }
+
         for (int i = 0; i < 3; i++)
         {
             yield return _testHelper.ClickGenericButton ("Button_Next");
@@ -541,6 +541,11 @@ public class TutorialTests
 
     private IEnumerator PlayTutorial_Part2 ()
     {
+        if (_testHelper.IsGameEnded ())
+        {
+            yield break;
+        }
+
         yield return _testHelper.ClickGenericButton ("Button_Next");
 
         yield return _testHelper.WaitUntilOurTurnStarts ();
@@ -607,6 +612,10 @@ public class TutorialTests
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
+
+        yield return _testHelper.LetsThink ();
+
+        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
@@ -631,6 +640,10 @@ public class TutorialTests
         yield return SkipTutorial ();
 
         #endregion
+
+        yield return _testHelper.LetsThink ();
+
+        _testHelper.TestEndHandler ();
     }
 
     [UnityTest]
