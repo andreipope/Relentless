@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                 DestroyUnit(TargetUnit);
 

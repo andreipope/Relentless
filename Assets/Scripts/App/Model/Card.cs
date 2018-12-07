@@ -136,7 +136,9 @@ namespace Loom.ZombieBattleground.Data
 
     public class CardViewInfo
     {
+        [JsonProperty("position")]
         public FloatVector3 Position { get; protected set; } = FloatVector3.Zero;
+        [JsonProperty("scale")]
         public FloatVector3 Scale { get; protected set; } = new FloatVector3(0.38f);
 
         public CardViewInfo()

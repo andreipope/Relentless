@@ -357,12 +357,15 @@ namespace Loom.ZombieBattleground
                         !unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
                         continue;
 
+                    await LetsWaitForQueue(cancellationToken);
+
                     while (UnitCanBeUsable(unit))
                     {
                         BoardUnitModel attackedUnit = GetTargetOpponentUnit();
                         if (attackedUnit != null)
                         {
                             unit.DoCombat(attackedUnit);
+
                             alreadyUsedUnits.Add(unit);
 
                             await LetsThink(cancellationToken);
@@ -393,6 +396,8 @@ namespace Loom.ZombieBattleground
                     if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
                         continue;
 
+                    await LetsWaitForQueue(cancellationToken);
+
                     while (UnitCanBeUsable(unit))
                     {
                         unit.DoCombat(_gameplayManager.CurrentPlayer);
@@ -406,6 +411,8 @@ namespace Loom.ZombieBattleground
                 {
                     if (unit.AttackTargetsAvailability.Count == 0)
                         continue;
+
+                    await LetsWaitForQueue(cancellationToken);
 
                     while (UnitCanBeUsable(unit))
                     {
@@ -481,6 +488,15 @@ namespace Loom.ZombieBattleground
 
         }
 
+        private async Task LetsWaitForQueue(CancellationToken cancellationToken, int delay = 100)
+        {
+            while (_actionsQueueController.ActionsInQueue > 0)
+            {
+                await Task.Delay(delay, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+        }
+
         // some thinking - delay between general actions
         private async Task LetsThink(CancellationToken cancellationToken)
         {
@@ -530,8 +546,8 @@ namespace Loom.ZombieBattleground
             WorkingCard expensiveCard =
                 GetUnitCardsInHand()
                     .Find(
-                        x => x.LibraryCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
-                            x.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
+                        x => x.InstanceCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
+                            x.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
             if (expensiveCard != null)
             {
                 bool wasAction = false;
@@ -585,7 +601,7 @@ namespace Loom.ZombieBattleground
         private bool CardCanBePlayable(WorkingCard card)
         {
 #if !DEV_MODE
-            return card.LibraryCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
+            return card.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
 #else
             return true;
@@ -662,7 +678,7 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.CardKind.SPELL:
                         {
-                            if (target != null && needTargetForAbility || !needTargetForAbility)
+                            if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
                                 _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
                                 _gameplayManager.OpponentPlayer.AddCardToBoard(card);
@@ -673,17 +689,24 @@ namespace Loom.ZombieBattleground
                                 });
                                 _cardsController.DrawCardInfo(card);
                             }
+                            else
+                            {
+                                completeCallback?.Invoke();
+                            }
 
                             break;
                         }
+                    default:
+                        completeCallback?.Invoke();
+                        break;
                 }
-
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
-            });
+            }, Enumerators.QueueActionType.CardPlay);
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target, Action completeCallback)
         {
+            completeCallback?.Invoke();
+
             WorkingCard workingCard = null;
 
             if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
@@ -694,11 +717,9 @@ namespace Loom.ZombieBattleground
             if (workingCard == null || card == null)
                 return;
 
-            GameAction<object> waiterAction = _actionsQueueController.AddNewActionInToQueue(null);
-            GameAction<object> ranksBuffAction = _actionsQueueController.AddNewActionInToQueue(null);
-            GameAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
+            GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
+            GameplayQueueAction<object> ranksBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
-            completeCallback?.Invoke();
             _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
 
             switch (card.LibraryCard.CardKind)
@@ -746,9 +767,18 @@ namespace Loom.ZombieBattleground
                                 {
                                     Action callback = () =>
                                     {
-                                        _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, callAbilityAction, target);
+                                        _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
+                                        null, false, (status) =>
+                                        {
+                                            if (!status)
+                                            {
+                                                ranksBuffAction.Action = null;
+                                                ranksBuffAction.ForceActionDone();
+                                            }
 
-                                        waiterAction.ForceActionDone();
+                                        }, callAbilityAction, target);
+
+                                        _actionsQueueController.ForceContinueAction(callAbilityAction);
                                     };
 
                                     _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
@@ -758,7 +788,7 @@ namespace Loom.ZombieBattleground
                                     _abilitiesController.CallAbility(card.LibraryCard, null, workingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, callAbilityAction);
 
-                                    waiterAction.ForceActionDone();
+                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
                                 }
                             });
                         boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
@@ -791,7 +821,7 @@ namespace Loom.ZombieBattleground
                             Action callback = () =>
                             {
                                 _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction, target);
-                                waiterAction.ForceActionDone();
+                                _actionsQueueController.ForceContinueAction(callAbilityAction);
                             };
 
                             _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
@@ -800,7 +830,7 @@ namespace Loom.ZombieBattleground
                         {
                             _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction);
 
-                            waiterAction.ForceActionDone();
+                            _actionsQueueController.ForceContinueAction(callAbilityAction);
                             ranksBuffAction.ForceActionDone();
                         }
 
@@ -876,11 +906,7 @@ namespace Loom.ZombieBattleground
                         CheckAndAddTargets(ability, ref target);
                         break;
                     case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
-                        if (!AddRandomTargetUnit(true, ref target))
-                        {
-                            target = _gameplayManager.CurrentPlayer;
-                        }
-
+                        AddRandomTargetUnit(true, ref target);
                         break;
                     case Enumerators.AbilityType.MASSIVE_DAMAGE:
                         AddRandomTargetUnit(true, ref target);

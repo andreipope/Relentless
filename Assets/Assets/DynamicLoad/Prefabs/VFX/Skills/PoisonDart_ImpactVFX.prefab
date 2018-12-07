@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4512674950564904}
   - component: {fileID: 198563351239370278}
   - component: {fileID: 199398564375499108}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: PoisonDart_ImpactVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4740174390411888}
   - component: {fileID: 198776166803236948}
   - component: {fileID: 199280540737843744}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4147743204965794}
   - component: {fileID: 198472851280599096}
   - component: {fileID: 199164129903664588}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: poison creek
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,15 +81,15 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1464038762724294}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -25.838505, y: 0.2266872, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4740174390411888}
   - {fileID: 4147743204965794}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4740174390411888
 Transform:
   m_ObjectHideFlags: 1

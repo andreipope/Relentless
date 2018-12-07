@@ -113,16 +113,8 @@ namespace Loom.ZombieBattleground
         private void OnClickPlay()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
-            {
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
 
-                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
-            }
-            else
-            {
-                _stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
-            }
+            _stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
         private void OnClickCollection()

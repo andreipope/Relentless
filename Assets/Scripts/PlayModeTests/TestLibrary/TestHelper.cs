@@ -69,7 +69,7 @@ public class TestHelper
     public GameObject Canvas2 { get { return canvas2GameObject; } }
     public GameObject Canvas3 { get { return canvas3GameObject; } }
 
-    GameAction<object> _callAbilityAction;
+    GameplayQueueAction<object> _callAbilityAction;
 
     private Loom.ZombieBattleground.Player _currentPlayer, _opponentPlayer;
 

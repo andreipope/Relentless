@@ -80,7 +80,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 40bdff5240df43140b1e7dd80c0ac032, type: 3}
   - {fileID: 21300000, guid: 143c07727fbc8cc42b8d81a3af6a51af, type: 3}
   - {fileID: 21300000, guid: a348877236afbaa46bd45e546b037b66, type: 3}
-  - {fileID: 21300000, guid: b8c43c726644c9948a49138afa6d1c09, type: 3}
   - {fileID: 21300000, guid: 7eca5992725060d4cb97b91ee81d7d51, type: 3}
   - {fileID: 21300000, guid: 375428a29e5f8dd4a8b177eae8cc58eb, type: 3}
   - {fileID: 21300000, guid: ed0118b239883544995ee766fafd5f19, type: 3}
@@ -204,6 +203,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3aa5328a4051c214589326971feaf10b, type: 3}
   - {fileID: 21300000, guid: c8e6ad8a526bca64e91318a8855ff441, type: 3}
   - {fileID: 21300000, guid: 342005aa0d12e14428bf67b568672ea6, type: 3}
+  - {fileID: 21300000, guid: 599355aa3c1fdd4479f171c6607c4e8e, type: 3}
   - {fileID: 21300000, guid: f5110aba35ac6e3468914b466031c5b2, type: 3}
   - {fileID: 21300000, guid: c1e02dba14b5442cca65e70f9bc899a6, type: 3}
   - {fileID: 21300000, guid: 0588fbda4587c6a45badff4b4c7bfb86, type: 3}
@@ -303,7 +303,6 @@ SpriteAtlas:
   - fire_minion_sparky
   - earth_commander_embryo
   - others_minion_zombie
-  - toxic_officer_zeeter
   - earth_minion_slab
   - item_minion_molotov
   - air_commander_ztormshield
@@ -348,7 +347,7 @@ SpriteAtlas:
   - life_commander_zplitter
   - earth_officer_crater
   - water_commander_zplash
-  - fire_commander_zhampion
+  - fire_general_zhampion
   - air_minion_soothsayer
   - life_commander_blight
   - life_commander_rainz
@@ -385,7 +384,7 @@ SpriteAtlas:
   - earth_officer_tiny
   - toxic_minion_poizom
   - life_commander_vindrom
-  - life_minion_blightminion
+  - others_minion_blightling
   - life_minion_grower
   - item_minion_leash
   - air_officer_aura
@@ -427,6 +426,7 @@ SpriteAtlas:
   - air_commander_monzoon
   - water_commander_blizzard
   - air_officer_bouncer
+  - toxic_officer_zeeter
   - toxic_minion_zeptic
   - item_minion_stapler
   - air_commander_draft
