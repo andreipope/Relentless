@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -432,6 +434,11 @@ namespace Loom.ZombieBattleground
         protected BoardUnitView GetAbilityUnitOwnerView()
         {
             return BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
+        }
+
+        protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
+        {
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count).Select(x => x.Model).ToList();
         }
 
         protected void InvokeActionTriggered(object info = null)

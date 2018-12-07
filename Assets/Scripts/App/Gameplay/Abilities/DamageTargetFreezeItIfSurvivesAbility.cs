@@ -19,6 +19,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
+
+            HandleSubtriggers();
         }
 
         protected override void InputEndedHandler()
@@ -28,6 +30,18 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 DamageTarget(AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit);
+            }
+        }
+
+        private void HandleSubtriggers()
+        {
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            {
+                List<BoardUnitModel> units = GetRandomEnemyUnits(1);
+                if (units.Count > 0)
+                {
+                    DamageTarget(units[0]);
+                }
             }
         }
 
