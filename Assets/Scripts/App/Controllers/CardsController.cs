@@ -518,9 +518,8 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-                GameAction<object> waiterAction = _actionsQueueController.AddNewActionInToQueue(null);
-                GameAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null);
-                GameAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null);
+                GameplayQueueAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
+                GameplayQueueAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
                 switch (libraryCard.CardKind)
                 {
@@ -607,7 +606,7 @@ namespace Loom.ZombieBattleground
 
                                         }, CallAbilityAction, target, handCard);
 
-                                    waiterAction.ForceActionDone();
+                                    _actionsQueueController.ForceContinueAction(CallAbilityAction);
                                 });
                             break;
                         }
@@ -637,7 +636,7 @@ namespace Loom.ZombieBattleground
                                         RankBuffAction.ForceActionDone();
                                     }, CallAbilityAction, target, handCard);
 
-                                waiterAction.ForceActionDone();                           
+                                _actionsQueueController.ForceContinueAction(CallAbilityAction);
                             }, 0.75f);
                             break;
                         }
@@ -904,7 +903,7 @@ namespace Loom.ZombieBattleground
                 card.LibraryCard = new Card(
                     card.LibraryCard.MouldId,
                     card.LibraryCard.Name,
-                    card.InstanceCard.Cost,
+                    card.LibraryCard.Cost,
                     card.LibraryCard.Description,
                     card.LibraryCard.FlavorText,
                     card.LibraryCard.Picture,

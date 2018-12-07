@@ -900,7 +900,8 @@
           "SecondaryOverlordSkill": "RABIES"
         }
       },
-      "PlayerTurnFirst": true
+      "PlayerTurnFirst": true,
+      "Ignore": false
     },
 	
     {
@@ -1605,7 +1606,8 @@
           "SecondaryOverlordSkill": "RABIES"
         }
       },
-      "PlayerTurnFirst": false
+      "PlayerTurnFirst": false,
+      "Ignore": true
     }
   ]
 }
