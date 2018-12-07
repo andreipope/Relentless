@@ -286,6 +286,13 @@ namespace Loom.ZombieBattleground
             else
             {
                 _currentDeck = _dataManager.CachedDecksData.Decks.First(d => d.Id == _currentDeckId).Clone();
+                _currentDeck.Cards.Sort(
+                    (DeckCardData _card_A, DeckCardData _card_B) =>            
+                    {
+                        return _dataManager.CachedCardsLibraryData.GetCardFromName(_card_A.CardName).Cost -
+                            _dataManager.CachedCardsLibraryData.GetCardFromName(_card_B.CardName).Cost;
+                    }
+               );
             }
 
             LoadDeckInfo(_currentDeck);
@@ -371,6 +378,13 @@ namespace Loom.ZombieBattleground
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
             List<Card> cards = set.Cards;
+            cards.Sort( 
+                (Card _card_A, Card _card_B) =>
+                {
+                    return _card_A.Cost - _card_B.Cost;
+                } 
+            );
+            
             int startIndex = page * CardsPerPage;
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
 
