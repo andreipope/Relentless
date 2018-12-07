@@ -8,6 +8,7 @@ using Object = UnityEngine.Object;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using System.Linq;
+using mixpanel;
 
 namespace Loom.ZombieBattleground
 {
@@ -54,6 +55,8 @@ namespace Loom.ZombieBattleground
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
+        public AnalyticsTimer TutorialDuration { get; set; }
+
         public int TutorialsCount
         {
             get { return _tutorials.Count; }
@@ -83,6 +86,8 @@ namespace Loom.ZombieBattleground
                         .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
 
             _tutorialHelpBoardArrows = new List<TutorialBoardArrow>();
+
+            TutorialDuration = new AnalyticsTimer();
         }
 
         public void Update()
@@ -148,6 +153,7 @@ namespace Loom.ZombieBattleground
 
             IsTutorial = true;
 
+            TutorialDuration.StartTimer();
             _analyticsManager.SetEvent( AnalyticsManager.EventStartedTutorial);
         }
 
@@ -181,7 +187,10 @@ namespace Loom.ZombieBattleground
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
-            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial);
+            TutorialDuration.FinishTimer();
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTutorialTimeToComplete] = TutorialDuration.GetTimeDiffrence();
+            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial, props);
         }
 
         public void SkipTutorial(Enumerators.AppState state)

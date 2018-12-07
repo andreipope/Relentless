@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using mixpanel;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class ActionCollectorUploader : IService
     {
         private IGameplayManager _gameplayManager;
+
+        private IMatchManager _matchManager;
 
         private IAnalyticsManager _analyticsManager;
 
@@ -24,6 +27,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -48,7 +52,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener?.Dispose();
 
             _analyticsManager.NotifyFinishedMatch(obj);
-            _analyticsManager.SetEvent(AnalyticsManager.EventEndedMatch);
+
+            Value props = new Value();
+            props[AnalyticsManager.PropertyMatchDuration] = _gameplayManager.MatchDuration.GetTimeDiffrence();
+            props[AnalyticsManager.PropertyMatchType] = _matchManager.MatchType.ToString();
+            if (obj == Enumerators.EndGameType.CANCEL)
+            {
+                _analyticsManager.SetEvent(AnalyticsManager.EventQuitMatch, props);
+            }
+            else
+            {
+                props[AnalyticsManager.PropertyMatchResult] = obj.ToString();
+                _analyticsManager.SetEvent(AnalyticsManager.EventEndedMatch, props);
+            }
         }
 
         private void GameplayManagerGameInitialized()
@@ -60,7 +76,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener = new PlayerEventListener(_gameplayManager.OpponentPlayer, true);
 
             _analyticsManager.NotifyStartedMatch();
-            _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch);
+
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTimeToFindOpponent] = _matchManager.MatchType == Enumerators.MatchType.PVP ? _matchManager.FindOpponentTime.GetTimeDiffrence() : "0";
+            props[AnalyticsManager.PropertyMatchType] = _matchManager.MatchType.ToString();
+            _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch, props);
         }
 
         private class PlayerEventListener : IDisposable
