@@ -971,11 +971,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0.01
+      value: 0.014
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.053
+      value: -0.103
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.z
@@ -7910,7 +7910,7 @@ MonoBehaviour:
   m_fontSizeMin: 2
   m_fontSizeMax: 3
   m_fontStyle: 1
-  m_textAlignment: 514
+  m_textAlignment: 4098
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: -3.64
   m_wordSpacing: 0
@@ -7941,7 +7941,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -0.0001741171, y: 0.004068475, z: -0.0054321494, w: 0.003829294}
+  m_margin: {x: -0.0001741171, y: -0.025835413, z: -0.0054321494, w: 0.12402278}
   m_textInfo:
     textComponent: {fileID: 241013019}
     characterCount: 19
@@ -13959,11 +13959,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0.008
+      value: 0.023
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.053
+      value: -0.102
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.z
@@ -17084,7 +17084,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 514
+  m_textAlignment: 4098
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: 3.56
   m_wordSpacing: 0
@@ -17115,7 +17115,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -0.19034271, y: -0.20243253, z: -0.20090236, w: -0.22054006}
+  m_margin: {x: -0.22252445, y: -0.24902524, z: -0.19808711, w: -0.17916156}
   m_textInfo:
     textComponent: {fileID: 593871308}
     characterCount: 2
@@ -79286,11 +79286,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.015
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.104
+      value: -0.155
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.z
@@ -102255,7 +102255,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4291427566
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -102280,7 +102280,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_textAlignment: 514
+  m_textAlignment: 4098
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: -3.64
   m_wordSpacing: 0
@@ -102311,7 +102311,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -0.01375103, y: 0.026825905, z: -0.003873825, w: 0.017924309}
+  m_margin: {x: -0.01375103, y: 0.04373598, z: -0.003873825, w: 0.057706118}
   m_textInfo:
     textComponent: {fileID: 1869908080}
     characterCount: 0
@@ -102934,11 +102934,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0.008
+      value: 0.022
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.1
+      value: -0.154
       objectReference: {fileID: 0}
     - target: {fileID: 4360004738846968, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_LocalPosition.z
@@ -102991,6 +102991,10 @@ Prefab:
     - target: {fileID: 1332887661807314, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
       propertyPath: m_Name
       value: OverlordAbilitySelection
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870819825487510, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 66fe4b896c9cde14d81f4fd330ede654, type: 2}
@@ -114278,7 +114282,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 514
+  m_textAlignment: 4098
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: 3.56
   m_wordSpacing: 0
@@ -114309,7 +114313,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -0.19034271, y: -0.20243253, z: -0.20090236, w: -0.22054006}
+  m_margin: {x: -0.21869735, y: -0.28160703, z: -0.23618545, w: -0.15187646}
   m_textInfo:
     textComponent: {fileID: 2125985920}
     characterCount: 2

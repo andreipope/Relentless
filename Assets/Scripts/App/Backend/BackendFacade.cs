@@ -9,6 +9,7 @@ using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
+using System.Text;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -247,40 +248,61 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Auth
 
-        private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
+        private const string UserInfoEndPoint = "/user/info";
 
-        private const string AuthBetaConfigEndPoint = "/user/beta/config";
+        private const string loginEndPoint = "/auth/email/login";
 
-        public async Task<bool> CheckIfBetaKeyValid(string betaKey)
+        public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + UserInfoEndPoint;
+            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + accessToken);
+
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+                
             if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception(
-                    $"{nameof(CheckIfBetaKeyValid)} failed with error code {httpResponseMessage.StatusCode}");
+                throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
 
-            BetaKeyValidationResponse betaKeyValidationResponse =
-                httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
-            return betaKeyValidationResponse.IsValid;
-        }
-
-        public async Task<BetaConfig> GetBetaConfig(string betaKey)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
-
-            BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(
+            UserInfo userInfo = JsonConvert.DeserializeObject<UserInfo>(
                 httpResponseMessage.ReadToEnd(),
 
                 // FIXME: backend should return valid version numbers at all times
-                new VersionConverterWithFallback(Version.Parse(Constants.CurrentVersionBase)));
-            return betaConfig;
+                new VersionConverterWithFallback(Version.Parse(Constants.CurrentVersionBase))
+            );
+
+            return userInfo;
+        }
+
+        public async Task<LoginData> InitiateLogin(string email, string password)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + loginEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.email = email;
+            loginRequest.password = password;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(loginRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+                
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+                
+            LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
+                httpResponseMessage.ReadToEnd());
+            return loginData;
+        }
+
+        private struct LoginRequest 
+        {
+            public string email;
+            public string password;
         }
 
         private struct BetaKeyValidationResponse

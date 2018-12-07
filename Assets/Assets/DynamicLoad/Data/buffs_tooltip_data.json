@@ -99,12 +99,12 @@
     },
     {
       "name": "Restore",
-      "tooltip": "n/a",
+      "tooltip": "Add Def to wounded zombie up to its max Def",
       "type": "RESTORE"
     },
     {
       "name": "Chainsaw",
-      "tooltip": "n/a",
+      "tooltip": "Add 4 Atk to a zombie; End: -4 Def",
       "type": "CHAINSAW"
     },
     {

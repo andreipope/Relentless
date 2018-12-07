@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
 
         public ConfigData ConfigData { get; set; }
 
-        public BetaConfig BetaConfig { get; set; }
+        public UserInfo UserInfo { get; set; }
 
         public async Task StartLoadCache()
         {

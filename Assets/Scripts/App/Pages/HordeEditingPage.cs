@@ -1146,11 +1146,7 @@ namespace Loom.ZombieBattleground
 
         private void MoveHordeToLeft()
         {
-            _currentHordePage--;
-            if (_currentHordePage < 0)
-            {
-                _currentHordePage = _numHordePages - 1;
-            }
+            _currentHordePage = Mathf.Clamp(_currentHordePage - 1, 0, _numHordePages - 1);
 
             CalculateVisibility();
         }
@@ -1164,12 +1160,7 @@ namespace Loom.ZombieBattleground
 
         private void MoveHordeToRight()
         {
-            _currentHordePage++;
-
-            if (_currentHordePage >= _numHordePages)
-            {
-                _currentHordePage = 0;
-            }
+            _currentHordePage = Mathf.Clamp(_currentHordePage + 1, 0, _numHordePages - 1);
 
             CalculateVisibility();
         }

@@ -700,8 +700,6 @@ namespace Loom.ZombieBattleground
                         completeCallback?.Invoke();
                         break;
                 }
-
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             }, Enumerators.QueueActionType.CardPlay);
         }
 

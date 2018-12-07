@@ -126,6 +126,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName)
     {
         Value props = new Value();
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
         // FIXME
         //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
 
