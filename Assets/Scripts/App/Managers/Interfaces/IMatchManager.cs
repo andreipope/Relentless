@@ -15,5 +15,7 @@ namespace Loom.ZombieBattleground
         void FindMatch();
         void FindMatch(Enumerators.MatchType matchType);
         void DebugFindPvPMatch(Deck deck);
+
+        AnalyticsTimer FindOpponentTime { get; set; }
     }
 }
