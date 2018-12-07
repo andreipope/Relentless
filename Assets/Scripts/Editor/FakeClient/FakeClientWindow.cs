@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private MatchRequestFactory _matchRequestFactory;
         private PlayerActionFactory _playerActionFactory;
         private Vector2 _scrollPosition;
+        private bool _useBackendLogic;
+        private GameState _initialGameState;
 
         [MenuItem("Window/ZombieBattleground/Open new FakeClient")]
         private static void OpenWindow()
@@ -95,7 +97,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         QueueAsyncTask(async () =>
                         {
-                            _playerActionLogView = new PlayerActionLogView();
+                            await ResetClient();
 
                             _userDataModel = new UserDataModel(
                                 "TestFakeUser_" + Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
@@ -120,11 +122,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                             _matchMakingFlowController = new MatchMakingFlowController(_backendFacade, _userDataModel);
                             _matchMakingFlowController.ActionWaitingTime = 0.3f;
-                            _matchMakingFlowController.MatchConfirmed += metadata =>
-                            {
-                                _matchRequestFactory = new MatchRequestFactory(metadata.Id);
-                                _playerActionFactory = new PlayerActionFactory(_userDataModel.UserId);
-                            };
+                            _matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;
                         });
                     }
                 }
@@ -144,11 +142,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         QueueAsyncTask(async () =>
                         {
-                            _backendFacade.PlayerActionDataReceived -= OnPlayerActionDataReceived;
-                            _backendFacade.Contract.Client.Dispose();
-                            _backendFacade = null;
-                            await _matchMakingFlowController.Stop();
-                            _matchMakingFlowController = null;
+                            await ResetClient();
                         });
                     }
                 }
@@ -170,6 +164,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                 await _matchMakingFlowController.Start(1, null);
                             });
                         }
+
+                        GUI.enabled = _matchMakingFlowController.State != MatchMakingFlowController.MatchMakingState.Confirmed;
+                        _useBackendLogic = EditorGUILayout.ToggleLeft("Use Backend Logic", _useBackendLogic);
+                        GUI.enabled = true;
                     }
                     else
                     {
@@ -232,6 +230,40 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     _playerActionLogView.Draw();
                 }
             }
+        }
+
+        private async Task ResetClient()
+        {
+            _playerActionLogView = new PlayerActionLogView();
+
+            if (_backendFacade != null)
+            {
+                _backendFacade.PlayerActionDataReceived -= OnPlayerActionDataReceived;
+                _backendFacade.Contract?.Client.Dispose();
+
+                _backendFacade = null;
+
+                await _matchMakingFlowController.Stop();
+                _matchMakingFlowController = null;
+            }
+        }
+
+        private async void OnMatchConfirmed(MatchMetadata metadata)
+        {
+            _matchRequestFactory = new MatchRequestFactory(metadata.Id);
+            _playerActionFactory = new PlayerActionFactory(_userDataModel.UserId);
+            GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(metadata.Id);
+
+            _playerActionLogView.Add(
+                new PlayerActionLogView.PlayerActionEventViewModel(
+                    _playerActionLogView.PlayerActions.Count,
+                    "",
+                    "Initial State",
+                    getGameStateResponse.GameState.ToString(),
+                    null
+                    )
+                );
+            _initialGameState = getGameStateResponse.GameState;
         }
 
         private static void DrawSeparator()
@@ -318,9 +350,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                     Rect matchRect = _header.GetCellRect(MatchColumnIndex, rowRect);
                     PostprocessCellRect(ref matchRect);
-                    if (GUI.Button(matchRect, playerAction.Match, Styles.BoxLeftAlign))
+                    if (GUI.Button(matchRect, playerAction.MatchPreview, Styles.BoxLeftAlign))
                     {
-                        OpenInDataPreviewWindow(playerAction.Match.text);
+                        OpenInDataPreviewWindow(playerAction.Match);
                     }
 
                     Rect actionTypeRect = _header.GetCellRect(ActionTypeColumnIndex, rowRect);
@@ -337,9 +369,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                     Rect actionRect = _header.GetCellRect(ActionColumnIndex, rowRect);
                     PostprocessCellRect(ref actionRect);
-                    if (GUI.Button(actionRect, playerAction.Action, Styles.BoxLeftAlign))
+                    if (GUI.Button(actionRect, playerAction.ActionPreview, Styles.BoxLeftAlign))
                     {
-                        OpenInDataPreviewWindow(playerAction.Action.text);
+                        OpenInDataPreviewWindow(playerAction.Action);
                     }
                 }
             }
@@ -356,12 +388,17 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 }
 
                 FakeClientDataPreviewWindow dataPreviewWindow = GetWindow<FakeClientDataPreviewWindow>(GetType());
-                dataPreviewWindow.Text = json;
+                dataPreviewWindow.SetText(json);
             }
 
             public void Add(PlayerActionEvent actionEvent, bool? isLocalPlayer)
             {
-                _playerActions.Add(new PlayerActionEventViewModel(actionEvent, _playerActions.Count, isLocalPlayer));
+                Add(new PlayerActionEventViewModel(actionEvent, _playerActions.Count, isLocalPlayer));
+            }
+
+            public void Add(PlayerActionEventViewModel playerActionEventViewModel)
+            {
+                _playerActions.Add(playerActionEventViewModel);
             }
 
             private void InitIfNeeded()
@@ -418,7 +455,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                             },
                             new MultiColumnHeaderState.Column
                             {
-                                headerContent = new GUIContent("Action"),
+                                headerContent = new GUIContent("Value"),
                                 headerTextAlignment = TextAlignment.Left,
                                 width = 300,
                                 minWidth = 300,
@@ -444,26 +481,39 @@ namespace Loom.ZombieBattleground.Editor.Tools
             [Serializable]
             internal class PlayerActionEventViewModel
             {
+                private const int MaxPreviewTextLength = 256;
+
                 public GUIContent Id;
                 public GUIContent ActionType;
-                public GUIContent Match;
-                public GUIContent Action;
+                public string Match;
+                public string Action;
+                public GUIContent MatchPreview;
+                public GUIContent ActionPreview;
                 public bool HasLocalPlayer;
                 public bool IsLocalPlayer;
 
-                public PlayerActionEventViewModel(PlayerActionEvent playerAction, int id, bool? isLocalPlayer)
+                public PlayerActionEventViewModel(PlayerActionEvent playerAction, long id, bool? isLocalPlayer)
+                    : this(
+                        id,
+                        playerAction.Match.ToString(),
+                        playerAction.PlayerAction != null ? playerAction.PlayerAction.ActionType.ToString() : "Matchmaking",
+                        playerAction.PlayerAction != null ? playerAction.PlayerAction.ToString() : "Match Status: " + playerAction.Match.Status,
+                        isLocalPlayer
+                        )
                 {
-                    string matchString = playerAction.Match.ToString();
-                    string actionTypeString =
-                        playerAction.PlayerAction != null ? playerAction.PlayerAction.ActionType.ToString() : "Matchmaking";
-                    string actionString = playerAction.PlayerAction != null ?
-                        playerAction.PlayerAction.ToString() :
-                        "Match Status: " + playerAction.Match.Status;
+                }
 
+                public PlayerActionEventViewModel(long id, string match, string actionType, string action, bool? isLocalPlayer)
+                {
+                    Action = action;
+                    Match = match;
                     Id = new GUIContent(id.ToString());
-                    Match = new GUIContent(matchString, matchString);
-                    ActionType = new GUIContent(actionTypeString);
-                    Action = new GUIContent(actionString, actionString);
+
+                    string matchPreview = Utilites.LimitStringLength(match, MaxPreviewTextLength);
+                    string actionPreview = Utilites.LimitStringLength(action, MaxPreviewTextLength);
+                    MatchPreview = new GUIContent(matchPreview, matchPreview);
+                    ActionType = new GUIContent(actionType);
+                    ActionPreview = new GUIContent(actionPreview, actionPreview);
                     HasLocalPlayer = isLocalPlayer.HasValue;
                     IsLocalPlayer = isLocalPlayer ?? false;
                 }

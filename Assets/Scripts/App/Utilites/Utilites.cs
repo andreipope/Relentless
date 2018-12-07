@@ -71,6 +71,14 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
+        public static string LimitStringLength(string str, int maxLength)
+        {
+            if (str.Length < maxLength)
+                return str;
+
+            return str.Substring(0, maxLength);
+        }
+
         // FIXME: this has only drawbacks compared to using PlayerPrefs directly, what's the purpose of it?
         public static int GetIntValueFromPlayerPrefs(string key)
         {

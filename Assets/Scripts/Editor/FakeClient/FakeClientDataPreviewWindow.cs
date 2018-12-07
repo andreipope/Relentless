@@ -1,13 +1,17 @@
+using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Editor.Tools
 {
-    public class FakeClientDataPreviewWindow : EditorWindow
+    public class FakeClientDataPreviewWindow : EditorWindow, IHasCustomMenu
     {
-        private Vector2 _scrollPosition;
+        private const int MaxTextLength = 16382;
 
-        public string Text;
+        private Vector2 _scrollPosition;
+        private List<string> _textChunks;
+        private string _text;
 
         private void OnEnable()
         {
@@ -26,10 +30,42 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 _scrollPosition = scrollView.scrollPosition;
                 EditorGUILayout.BeginVertical();
                 {
-                    EditorGUILayout.TextArea(Text, guiStyle, GUILayout.ExpandHeight(true));
+                    foreach (string textChunk in _textChunks)
+                    {
+                        EditorGUILayout.TextArea(textChunk, guiStyle, GUILayout.ExpandHeight(true));
+                    }
                 }
                 EditorGUILayout.EndVertical();
             }
+        }
+
+        public void SetText(string text)
+        {
+            _text = text;
+            _textChunks = SplitIntoChunks(text, MaxTextLength);
+        }
+
+        private static List<string> SplitIntoChunks(string str, int chunkSize)
+        {
+            List<string> splitString = new List<string>();
+
+            for (int index = 0; index < str.Length; index += chunkSize)
+            {
+                splitString.Add(str.Substring(index, Math.Min(chunkSize, str.Length - index)));
+            }
+
+            return splitString;
+        }
+
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent("Copy to Clipboard"),
+                false,
+                () =>
+                {
+                    EditorGUIUtility.systemCopyBuffer = _text;
+                }
+            );
         }
     }
 }
