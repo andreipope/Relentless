@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, int instanceId)
             {
-                AddAction(_playerActionFactory.CardAttack(attacker, type, instanceId));
+                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId));
             }
 
             private void AbilityUsedHandler(

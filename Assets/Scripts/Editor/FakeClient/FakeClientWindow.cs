@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,7 +34,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private PlayerActionFactory _playerActionFactory;
         private Vector2 _scrollPosition;
         private bool _useBackendLogic;
-        private GameState _initialGameState;
+        private GameStateWrapper _initialGameState;
+        private GameStateWrapper _currentGameState;
+
+        private GameActionsState _gameActionsState = new GameActionsState();
 
         [MenuItem("Window/ZombieBattleground/Open new FakeClient")]
         private static void OpenWindow()
@@ -75,6 +82,18 @@ namespace Loom.ZombieBattleground.Editor.Tools
         }
 
         private void OnGUI()
+        {
+            try
+            {
+                DrawGui();
+            }
+            catch (ArgumentException e) when (e.Message.Contains("Getting control"))
+            {
+                // Ignore. Related to the async hacks, it's fine for this debug UI
+            }
+        }
+
+        private void DrawGui()
         {
             using (EditorGUILayout.ScrollViewScope scrollView = new EditorGUILayout.ScrollViewScope(_scrollPosition, false, false))
             {
@@ -154,7 +173,12 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 GUILayout.Label("<b>Matchmaking</b>", Styles.RichLabel);
                 {
+                    GUI.enabled = _matchMakingFlowController.State != MatchMakingFlowController.MatchMakingState.Confirmed;
+                    _useBackendLogic = EditorGUILayout.ToggleLeft("Use Backend Logic", _useBackendLogic);
+                    GUI.enabled = true;
+
                     GUILayout.Label("State: " + _matchMakingFlowController.State);
+
                     if (!_matchMakingFlowController.IsMatchmakingInProcess)
                     {
                         if (GUILayout.Button("Start matchmaking"))
@@ -164,10 +188,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                 await _matchMakingFlowController.Start(1, null);
                             });
                         }
-
-                        GUI.enabled = _matchMakingFlowController.State != MatchMakingFlowController.MatchMakingState.Confirmed;
-                        _useBackendLogic = EditorGUILayout.ToggleLeft("Use Backend Logic", _useBackendLogic);
-                        GUI.enabled = true;
                     }
                     else
                     {
@@ -191,38 +211,46 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     }
                 }
 
-                if (_matchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed)
+                if (_matchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed &&
+                    _currentGameState != null)
                 {
                     DrawSeparator();
 
                     GUILayout.Label("<b>Game Actions</b>", Styles.RichLabel);
                     {
-                        if (GUILayout.Button("End Turn"))
-                        {
-                            QueueAsyncTask(async () =>
-                            {
-                                await _backendFacade.SendPlayerAction(
-                                    _matchRequestFactory.CreateAction(_playerActionFactory.EndTurn())
-                                );
-                            });
-                        }
-
-                        if (GUILayout.Button("Leave Match"))
-                        {
-                            QueueAsyncTask(async () =>
-                            {
-                                await _backendFacade.SendPlayerAction(
-                                    _matchRequestFactory.CreateAction(_playerActionFactory.LeaveMatch())
-                                );
-                            });
-                        }
+                        DrawGameActions();
                     }
                 }
             }
 
-            if ((_matchMakingFlowController != null && _matchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed) ||
+
+            if (_initialGameState != null && _initialGameState.HasValue)
+            {
+                DrawSeparator();
+                bool isExpanded = _initialGameState.IsExpanded;
+                DrawGameState(_initialGameState.GameState, "Initial Game State", ref isExpanded);
+                _initialGameState.IsExpanded = isExpanded;
+            }
+
+            if (_matchMakingFlowController != null && _matchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed ||
                 _playerActionLogView.PlayerActions.Count > 0)
             {
+                DrawSeparator();
+                if (GUILayout.Button("Get Game State"))
+                {
+                    QueueAsyncTask(async () =>
+                    {
+                        await UpdateCurrentGameState();
+                    });
+                }
+
+                if (_currentGameState != null && _currentGameState.HasValue)
+                {
+                    bool isExpanded = _currentGameState.IsExpanded;
+                    DrawGameState(_currentGameState.GameState, "Current Game State", ref isExpanded);
+                    _currentGameState.IsExpanded = isExpanded;
+                }
+
                 DrawSeparator();
 
                 GUILayout.Label("<b>Action Log</b>", Styles.RichLabel);
@@ -232,9 +260,245 @@ namespace Loom.ZombieBattleground.Editor.Tools
             }
         }
 
+        private async Task UpdateCurrentGameState()
+        {
+            GetGameStateResponse getGameStateResponse =
+                await _backendFacade.GetGameState(_matchMakingFlowController.MatchMetadata.Id);
+            bool isExpanded = _currentGameState.IsExpanded;
+            _currentGameState = new GameStateWrapper(getGameStateResponse.GameState);
+            _currentGameState.IsExpanded = isExpanded;
+        }
+
+        private void DrawGameState(GameState gameState, string name, ref bool isExpanded)
+        {
+            isExpanded = EditorGUILayout.Foldout(isExpanded, name);
+            if (!isExpanded)
+                return;
+
+            string FormatCardInstances(IList<CardInstance> cardInstances)
+            {
+                if (cardInstances.Count == 0)
+                    return "<i>None</i>";
+
+                return String.Join("\n", cardInstances.Select(FormatCardInstance));
+            }
+
+            string FormatCardInstance(CardInstance cardInstance)
+            {
+                return
+                    $"<b>IId</b>: {cardInstance.InstanceId.InstanceId_}, " +
+                    $"<b>Name</b>: {cardInstance.Prototype.Name}, " +
+                    $"<b>Atk</b>: {cardInstance.Instance.Attack}, " +
+                    $"<b>Def</b>: {cardInstance.Instance.Defense}, " +
+                    $"<b>Cost</b>: {cardInstance.Instance.GooCost}";
+            }
+
+            void DrawPlayer(PlayerState playerState, bool hasCurrentTurn)
+            {
+                string playerId = playerState.Id;
+                if (playerId == _userDataModel?.UserId)
+                {
+                    playerId = "(Me) " + playerId;
+                }
+
+                if (hasCurrentTurn)
+                {
+                    playerId = playerId + " (Current Turn)";
+                }
+
+                GUILayout.Label(playerId);
+
+                EditorGUILayout.Space();
+                GUILayout.Label("<b>Stats</b>", Styles.RichLabel);
+
+                GUILayout.Label("Defense: " + playerState.Defense);
+                GUILayout.Label("GooVials: " + playerState.CurrentGoo);
+                GUILayout.Label("CurrentGoo: " + playerState.GooVials);
+
+                EditorGUILayout.Space();
+                GUILayout.Label("<b>Status</b>", Styles.RichLabel);
+
+                GUILayout.Label("CurrentAction: " + playerState.CurrentAction);
+                GUILayout.Label("HasDrawnCard: " + playerState.HasDrawnCard);
+
+                EditorGUILayout.Space();
+                GUILayout.Label("<b>Meta Info</b>", Styles.RichLabel);
+
+                GUILayout.Label("MaxGooVials: " + playerState.MaxGooVials);
+                GUILayout.Label("MaxCardsInHand: " + playerState.MaxCardsInHand);
+                GUILayout.Label("MaxCardsInPlay: " + playerState.MaxCardsInPlay);
+                GUILayout.Label("InitialCardsInHandCount: " + playerState.InitialCardsInHandCount);
+
+                EditorGUILayout.Space();
+                GUILayout.Label("<b>Cards In Play</b>", Styles.RichLabel);
+
+                GUILayout.Label(FormatCardInstances(playerState.CardsInPlay), Styles.RichLabel);
+
+                EditorGUILayout.Space();
+                GUILayout.Label("<b>Cards In Hand</b>", Styles.RichLabel);
+
+                GUILayout.Label(FormatCardInstances(playerState.CardsInHand), Styles.RichLabel);
+
+                EditorGUILayout.Space();
+                GUILayout.Label("<b>Cards In Deck</b>", Styles.RichLabel);
+
+                GUILayout.Label(FormatCardInstances(playerState.CardsInDeck), Styles.RichLabel);
+
+                EditorGUILayout.Space();
+                GUILayout.Label("<b>Cards In Graveyard</b>", Styles.RichLabel);
+
+                GUILayout.Label(FormatCardInstances(playerState.CardsInGraveyard), Styles.RichLabel);
+            }
+
+            GUILayout.Label("RandomSeed: " + gameState.RandomSeed);
+            GUILayout.Label("CurrentPlayerIndex: " + gameState.CurrentPlayerIndex);
+            GUILayout.Label("Winner: " + gameState.Winner);
+            GUILayout.Label("IsEnded: " + gameState.IsEnded);
+
+            EditorGUILayout.BeginHorizontal();
+            {
+                for (int i = 0; i < gameState.PlayerStates.Count; i++)
+                {
+                    PlayerState playerState = gameState.PlayerStates[i];
+                    EditorGUILayout.BeginVertical(GUI.skin.box);
+                    {
+                        DrawPlayer(playerState, i == gameState.CurrentPlayerIndex);
+                    }
+                    EditorGUILayout.EndVertical();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawGameActions()
+        {
+            PlayerState currentPlayerState = GetCurrentPlayerState(_currentGameState.GameState);
+            PlayerState opponentPlayerState = GetOpponentPlayerState(_currentGameState.GameState);
+
+            GUILayout.BeginHorizontal();
+            {
+                if (GUILayout.Button("End Turn"))
+                {
+                    QueueAsyncTask(async () =>
+                    {
+                        await _backendFacade.SendPlayerAction(
+                            _matchRequestFactory.CreateAction(_playerActionFactory.EndTurn())
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
+
+                if (GUILayout.Button("Leave Match"))
+                {
+                    QueueAsyncTask(async () =>
+                    {
+                        await _backendFacade.SendPlayerAction(
+                            _matchRequestFactory.CreateAction(_playerActionFactory.LeaveMatch())
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            // Card Play
+            GUILayout.BeginHorizontal();
+            {
+                IList<CardInstance> cardsInHand = GetCurrentPlayerState(_currentGameState.GameState).CardsInHand;
+
+                GUILayout.Label("<i>Card To Play</i>", Styles.RichLabel, GUILayout.ExpandWidth(false));
+                _gameActionsState.CardPlayCardIndex =
+                    EditorGUILayout.Popup(
+                        _gameActionsState.CardPlayCardIndex,
+                        cardsInHand.Select(SimpleFormatCardInstance).ToArray()
+                    );
+
+                if (GUILayout.Button("Card Play"))
+                {
+                    QueueAsyncTask(async () =>
+                    {
+                        await _backendFacade.SendPlayerAction(
+                            _matchRequestFactory.CreateAction(
+                                _playerActionFactory.CardPlay(cardsInHand[_gameActionsState.CardPlayCardIndex], 0)
+                            )
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            // Card Attack
+            GUILayout.BeginHorizontal();
+            {
+                IList<CardInstance> ownCards =
+                    currentPlayerState.CardsInHand
+                        .Concat(currentPlayerState.CardsInPlay)
+                        .Concat(currentPlayerState.CardsInDeck)
+                        .ToList();
+                IList<CardInstance> opponentCards =
+                    opponentPlayerState.CardsInHand
+                        .Concat(opponentPlayerState.CardsInPlay)
+                        .Concat(opponentPlayerState.CardsInDeck)
+                        .ToList();
+
+                GUILayout.Label("<i>Card Attack: </i>", Styles.RichLabel, GUILayout.ExpandWidth(false));
+
+                DrawMinWidthLabel("Attacker");
+                _gameActionsState.CardAttackAttackerIndex =
+                    EditorGUILayout.Popup(
+                        _gameActionsState.CardAttackAttackerIndex,
+                        ownCards.Select(SimpleFormatCardInstance).ToArray()
+                    );
+
+                DrawMinWidthLabel("Affect Object Type");
+                _gameActionsState.CardAttackAffectObjectType =
+                    (Enumerators.AffectObjectType) EditorGUILayout.EnumPopup(
+                        _gameActionsState.CardAttackAffectObjectType
+                    );
+
+                DrawMinWidthLabel("Target");
+                _gameActionsState.CardAttackTargetIndex =
+                    EditorGUILayout.Popup(
+                        _gameActionsState.CardAttackTargetIndex,
+                        opponentCards.Select(SimpleFormatCardInstance).ToArray()
+                    );
+
+                if (GUILayout.Button("Card Attack"))
+                {
+                    QueueAsyncTask(async () =>
+                    {
+                        await _backendFacade.SendPlayerAction(
+                            _matchRequestFactory.CreateAction(
+                                _playerActionFactory.CardAttack(
+                                    ownCards[_gameActionsState.CardAttackAttackerIndex].InstanceId.InstanceId_,
+                                    _gameActionsState.CardAttackAffectObjectType,
+                                    opponentCards[_gameActionsState.CardAttackTargetIndex].InstanceId.InstanceId_
+                                )
+                            )
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        private static void DrawMinWidthLabel(string text)
+        {
+            GUIContent guiContent = new GUIContent(text);
+            GUILayout.Label(guiContent, GUILayout.Width(GUI.skin.label.CalcSize(guiContent).x));
+        }
+
         private async Task ResetClient()
         {
             _playerActionLogView = new PlayerActionLogView();
+            _initialGameState = null;
+            _currentGameState = null;
 
             if (_backendFacade != null)
             {
@@ -261,9 +525,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     "Initial State",
                     getGameStateResponse.GameState.ToString(),
                     null
-                    )
-                );
-            _initialGameState = getGameStateResponse.GameState;
+                )
+            );
+            _initialGameState = new GameStateWrapper(getGameStateResponse.GameState);
+            _currentGameState = new GameStateWrapper(getGameStateResponse.GameState);
         }
 
         private static void DrawSeparator()
@@ -291,6 +556,26 @@ namespace Loom.ZombieBattleground.Editor.Tools
             _asyncTaskQueue.Enqueue(task);
         }
 
+        private PlayerState GetCurrentPlayerState(GameState gameState)
+        {
+            return gameState.PlayerStates.First(state => state.Id == _userDataModel.UserId);
+        }
+
+        private PlayerState GetOpponentPlayerState(GameState gameState)
+        {
+            return gameState.PlayerStates.First(state => state.Id != _userDataModel.UserId);
+        }
+
+        private static string SimpleFormatCardInstance(CardInstance cardInstance)
+        {
+            return
+                $"IId: {cardInstance.InstanceId.InstanceId_}, " +
+                $"Name: {cardInstance.Prototype.Name}, " +
+                $"Atk: {cardInstance.Instance.Attack}, " +
+                $"Def: {cardInstance.Instance.Defense}, " +
+                $"Cost: {cardInstance.Instance.GooCost}";
+        }
+
         private static class Styles
         {
             public static GUIStyle RichLabel;
@@ -304,6 +589,49 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 BoxLeftAlign = new GUIStyle(GUI.skin.box);
                 BoxLeftAlign.alignment = TextAnchor.UpperLeft;
+            }
+        }
+
+        [Serializable]
+        private class GameActionsState
+        {
+            public int CardPlayCardIndex;
+
+            public int CardAttackAttackerIndex;
+            public int CardAttackTargetIndex;
+            public Enumerators.AffectObjectType CardAttackAffectObjectType;
+        }
+
+        [Serializable]
+        private class GameStateWrapper : ISerializationCallbackReceiver
+        {
+            [SerializeField]
+            private string _gameStateJson;
+
+            private GameState _gameState;
+
+            public bool IsExpanded;
+
+            public GameState GameState => _gameState;
+
+            public bool HasValue => !String.IsNullOrEmpty(_gameStateJson) || _gameState != null;
+
+            public GameStateWrapper(GameState gameState)
+            {
+                _gameState = gameState;
+            }
+
+            public void OnBeforeSerialize()
+            {
+                _gameStateJson = GameState.ToString();
+            }
+
+            public void OnAfterDeserialize()
+            {
+                if (String.IsNullOrEmpty(_gameStateJson))
+                    return;
+
+                _gameState = (GameState) GameState.Descriptor.Parser.ParseJson(_gameStateJson);
             }
         }
 
@@ -499,7 +827,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         playerAction.PlayerAction != null ? playerAction.PlayerAction.ActionType.ToString() : "Matchmaking",
                         playerAction.PlayerAction != null ? playerAction.PlayerAction.ToString() : "Match Status: " + playerAction.Match.Status,
                         isLocalPlayer
-                        )
+                    )
                 {
                 }
 

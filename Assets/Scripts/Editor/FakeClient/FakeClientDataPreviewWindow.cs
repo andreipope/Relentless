@@ -45,6 +45,17 @@ namespace Loom.ZombieBattleground.Editor.Tools
             _textChunks = SplitIntoChunks(text, MaxTextLength);
         }
 
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent("Copy to Clipboard"),
+                false,
+                () =>
+                {
+                    EditorGUIUtility.systemCopyBuffer = _text;
+                }
+            );
+        }
+
         private static List<string> SplitIntoChunks(string str, int chunkSize)
         {
             List<string> splitString = new List<string>();
@@ -55,17 +66,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
             }
 
             return splitString;
-        }
-
-        public void AddItemsToMenu(GenericMenu menu)
-        {
-            menu.AddItem(new GUIContent("Copy to Clipboard"),
-                false,
-                () =>
-                {
-                    EditorGUIUtility.systemCopyBuffer = _text;
-                }
-            );
         }
     }
 }

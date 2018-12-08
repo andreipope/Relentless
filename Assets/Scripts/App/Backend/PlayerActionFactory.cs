@@ -45,7 +45,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     MulliganedCards =
                     {
-                        cards.Select(card => card.ToProtobuf())
+                        cards.Select(card => new InstanceId
+                        {
+                            InstanceId_ = card.InstanceId
+                        })
                     }
                 }
             };
@@ -53,13 +56,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public PlayerAction CardPlay(WorkingCard card, int position)
         {
+            return CardPlay(card.ToProtobuf(), position);
+        }
+
+        public PlayerAction CardPlay(CardInstance card, int position)
+        {
             return new PlayerAction
             {
                 ActionType = PlayerActionType.Types.Enum.CardPlay,
                 PlayerId = _playerId,
                 CardPlay = new PlayerActionCardPlay
                 {
-                    Card = card.ToProtobuf(),
+                    Card = card,
                     Position = position
                 }
             };
@@ -76,7 +84,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 Protobuf.Unit unit = new Protobuf.Unit
                 {
-                    InstanceId = unitInstanceId,
+                    InstanceId = new InstanceId
+                    {
+                        InstanceId_ = unitInstanceId
+                    },
                     AffectObjectType = AffectObjectType.Types.Enum.Character,
                     Parameter = new Parameter()
                 };
@@ -104,7 +115,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed
             {
                 CardKind = (CardKind.Types.Enum) cardKind,
-                AbilityType = abilityType.ToString(),
+                AbilityType = (CardAbilityType.Types.Enum) abilityType,
                 Card = card.ToProtobuf()
             };
 
@@ -122,7 +133,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     {
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = model.Card.InstanceId,
+                            InstanceId = new InstanceId
+                            {
+                                InstanceId_ = model.Card.InstanceId
+                            },
                             AffectObjectType = AffectObjectType.Types.Enum.Character,
                             Parameter = new Parameter
                             {
@@ -136,7 +150,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     {
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = player.Id == 0 ? 1 : 0,
+                            InstanceId = new InstanceId
+                            {
+                                InstanceId_ = player.Id == 0 ? 1 : 0
+                            },
                             AffectObjectType = AffectObjectType.Types.Enum.Player,
                             Parameter = new Parameter()
                         };
@@ -145,7 +162,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     {
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = handCard.CardView.WorkingCard.InstanceId,
+                            InstanceId = new InstanceId
+                            {
+                                InstanceId_ = handCard.CardView.WorkingCard.InstanceId
+                            },
                             AffectObjectType = AffectObjectType.Types.Enum.Card,
                             Parameter = new Parameter
                             {
@@ -166,7 +186,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     targetUnit = new Protobuf.Unit
                     {
-                        InstanceId = workingCard.InstanceId,
+                        InstanceId = new InstanceId
+                        {
+                            InstanceId_ = workingCard.InstanceId
+                        },
                         AffectObjectType = AffectObjectType.Types.Enum.Card,
                         Parameter = new Parameter()
                     };
@@ -192,17 +215,20 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 OverlordSkillUsed = new PlayerActionOverlordSkillUsed
                 {
                     SkillId = skillId,
-                    AffectObjectType = (AffectObjectType.Types.Enum) affectObjectType,
                     Target = new Protobuf.Unit
                     {
-                        InstanceId = targetInstanceId,
+                        InstanceId = new InstanceId
+                        {
+                            InstanceId_ = targetInstanceId
+                        },
+                        AffectObjectType = (AffectObjectType.Types.Enum) affectObjectType,
                         Parameter = new Parameter()
                     }
                 }
             };
         }
 
-        public PlayerAction CardAttack(WorkingCard attacker, Enumerators.AffectObjectType type, int instanceId)
+        public PlayerAction CardAttack(int attackerInstanceId, Enumerators.AffectObjectType type, int targetInstanceId)
         {
             return new PlayerAction
             {
@@ -210,11 +236,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 PlayerId = _playerId,
                 CardAttack = new PlayerActionCardAttack
                 {
-                    Attacker = attacker.ToProtobuf(),
-                    AffectObjectType = (Protobuf.AffectObjectType.Types.Enum) type,
+                    Attacker = new InstanceId
+                    {
+                        InstanceId_ = attackerInstanceId
+                    },
                     Target = new Protobuf.Unit
                     {
-                        InstanceId = instanceId,
+                        InstanceId = new InstanceId
+                        {
+                            InstanceId_ = targetInstanceId
+                        },
+                        AffectObjectType = (Protobuf.AffectObjectType.Types.Enum) type,
                         Parameter = new Parameter()
                     }
                 }

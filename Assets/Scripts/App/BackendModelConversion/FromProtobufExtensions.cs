@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground.Data
             }
 
             return new Unit(
-                unit.InstanceId,
+                unit.InstanceId.InstanceId_,
                 (Enumerators.AffectObjectType) unit.AffectObjectType,
                 parameter
             );
@@ -213,7 +213,7 @@ namespace Loom.ZombieBattleground.Data
                     cardInstance.Prototype.FromProtobuf(),
                     cardInstance.Instance.FromProtobuf(),
                     player,
-                    cardInstance.InstanceId
+                    cardInstance.InstanceId.InstanceId_
                 );
         }
     }

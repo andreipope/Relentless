@@ -90,7 +90,10 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Protobuf.Unit
             {
-                InstanceId = unit.InstanceId,
+                InstanceId = new InstanceId
+                {
+                    InstanceId_ = unit.InstanceId
+                },
                 AffectObjectType = (AffectObjectType.Types.Enum) unit.AffectObjectType,
             };
         }
@@ -115,7 +118,10 @@ namespace Loom.ZombieBattleground.Data
         {
             CardInstance cardInstance = new CardInstance
             {
-                InstanceId = workingCard.InstanceId,
+                InstanceId = new InstanceId
+                {
+                    InstanceId_ = workingCard.InstanceId
+                },
                 Prototype = workingCard.LibraryCard.ToProtobuf(),
                 Instance = workingCard.InstanceCard.ToProtobuf()
             };

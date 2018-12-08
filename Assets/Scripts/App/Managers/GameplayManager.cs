@@ -340,7 +340,12 @@ namespace Loom.ZombieBattleground
 
                         Debug.Log(
                             $"Player ID {OpponentPlayer.Id}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
-                            String.Join("\n", opponentCardsInHand.Cast<object>().ToArray())
+                            String.Join(
+                                "\n",
+                                (IList<WorkingCard>) opponentCardsInHand
+                                    .OrderBy(card => card.InstanceId)
+                                    .ToArray()
+                            )
                         );
 
                         OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);

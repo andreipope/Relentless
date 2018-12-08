@@ -82,7 +82,12 @@ namespace Loom.ZombieBattleground
 
                         Debug.Log(
                             $"Player ID {playerId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
-                            String.Join("\n", deck.Cast<object>().ToArray())
+                            String.Join(
+                                "\n",
+                                (IList<WorkingCard>) deck
+                                    .OrderBy(card => card.InstanceId)
+                                    .ToArray()
+                                )
                         );
 
                         isMainTurnSecond = GameClient.Get<IPvPManager>().IsCurrentPlayer();
@@ -138,8 +143,8 @@ namespace Loom.ZombieBattleground
                 case PlayerActionOutcome.OutcomeOneofCase.Rage:
                     PlayerActionOutcome.Types.CardAbilityRageOutcome rageOutcome = outcome.Rage;
                     BoardUnitModel boardUnit =
-                        _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, rageOutcome.InstanceId) ??
-                        _battlegroundController.GetBoardUnitById(_gameplayManager.CurrentPlayer, rageOutcome.InstanceId);
+                        _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, rageOutcome.InstanceId.InstanceId_) ??
+                        _battlegroundController.GetBoardUnitById(_gameplayManager.CurrentPlayer, rageOutcome.InstanceId.InstanceId_);
 
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
@@ -175,11 +180,11 @@ namespace Loom.ZombieBattleground
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
         {
-            GotActionCardAttack(new CardAttackModel()
+            GotActionCardAttack(new CardAttackModel
             {
-                AffectObjectType = Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(actionCardAttack.AffectObjectType.ToString(), true),
-                CardId = actionCardAttack.Attacker.InstanceId,
-                TargetId = actionCardAttack.Target.InstanceId
+                AffectObjectType = (Enumerators.AffectObjectType) actionCardAttack.Target.AffectObjectType,
+                CardId = actionCardAttack.Attacker.InstanceId_,
+                TargetId = actionCardAttack.Target.InstanceId.InstanceId_
             });
         }
 
@@ -190,22 +195,22 @@ namespace Loom.ZombieBattleground
 
         private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
         {           
-            GotActionUseCardAbility(new UseCardAbilityModel()
+            GotActionUseCardAbility(new UseCardAbilityModel
             {
-                CardKind = Utilites.CastStringTuEnum<Enumerators.CardKind>(actionUseCardAbility.CardKind.ToString()),
+                CardKind = (Enumerators.CardKind) actionUseCardAbility.CardKind,
                 Card = actionUseCardAbility.Card.FromProtobuf(_gameplayManager.OpponentPlayer),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
-                AbilityType = Utilites.CastStringTuEnum<Enumerators.AbilityType>(actionUseCardAbility.AbilityType)
+                AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType
             });
         }
 
         private void OnOverlordSkillUsedHandler(PlayerActionOverlordSkillUsed actionUseOverlordSkill)
         {
-            GotActionUseOverlordSkill(new UseOverlordSkillModel()
+            GotActionUseOverlordSkill(new UseOverlordSkillModel
             {
-                SkillId = (int)actionUseOverlordSkill.SkillId,
-                TargetId = actionUseOverlordSkill.Target.InstanceId,
-                AffectObjectType = Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(actionUseOverlordSkill.AffectObjectType.ToString(), true)
+                SkillId = (int) actionUseOverlordSkill.SkillId,
+                TargetId = actionUseOverlordSkill.Target.InstanceId.InstanceId_,
+                AffectObjectType = (Enumerators.AffectObjectType) actionUseOverlordSkill.Target.AffectObjectType
             });
         }
 
