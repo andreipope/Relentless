@@ -167,7 +167,7 @@ public class TestHelper
 
             #region Login
 
-            yield return AssertCurrentPageName ("LoadingPage");
+            yield return AssertCurrentPageName ("LoadingPageOptimized");
 
             yield return HandleLogin ();
 
@@ -206,6 +206,8 @@ public class TestHelper
         {
             yield return TearDown_GoBackToMainScreen ();
         }
+
+        yield return LetsThink ();
 
         yield return null;
     }
@@ -491,17 +493,20 @@ public class TestHelper
     /// <summary>
     /// Asserts if we've logged in or login failed, so that the test doesn't get stuck in the login screen in the case of issue and instead reports the issue.
     /// </summary>
-    public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2, IEnumerator callback3)
+    public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2, IEnumerator callback3, IEnumerator callback4)
     {
         if (IsTestFinished)
         {
             yield break;
         }
 
+        Debug.LogWarning ("a0");
+
         yield return CombinedCheck (
             CheckCurrentPageName, "MainMenuPage", callback1,
             CheckIfLoginErrorOccured, "", callback2,
-            CheckIfLoginBoxAppeared, "", callback3);
+            CheckIfLoginBoxAppeared, "", callback3,
+            CheckCurrentPageName, "GameplayPage", callback4);
 
         yield return null;
     }
@@ -563,7 +568,8 @@ public class TestHelper
     private IEnumerator CombinedCheck (
         Func<string, bool> check1, string parameter1, IEnumerator callback1,
         Func<string, bool> check2, string parameter2, IEnumerator callback2,
-        Func<string, bool> check3 = null, string parameter3 = "", IEnumerator callback3 = null)
+        Func<string, bool> check3 = null, string parameter3 = "", IEnumerator callback3 = null,
+        Func<string, bool> check4 = null, string parameter4 = "", IEnumerator callback4 = null)
     {
         bool outcomeDecided = false;
 
@@ -574,8 +580,6 @@ public class TestHelper
 
             if (check1 (parameter1))
             {
-                Debug.Log ("1");
-
                 outcomeDecided = true;
 
                 if (callback1 != null)
@@ -583,8 +587,6 @@ public class TestHelper
             }
             else if (check2 (parameter2))
             {
-                Debug.Log ("2");
-
                 outcomeDecided = true;
 
                 if (callback2 != null)
@@ -592,12 +594,17 @@ public class TestHelper
             }
             else if (check3 != null && check3 (parameter3))
             {
-                Debug.Log ("3");
-
                 outcomeDecided = true;
 
                 if (callback3 != null)
                     yield return callback3;
+            }
+            else if (check4 != null && check4 (parameter4))
+            {
+                outcomeDecided = true;
+
+                if (callback4 != null)
+                    yield return callback4;
             }
 
             yield return null;
@@ -1023,15 +1030,30 @@ public class TestHelper
     /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
+        WaitStart (5);
         GameObject pressAnyText = null;
-        yield return new WaitUntil (() => { pressAnyText = GameObject.Find ("PressAnyText"); return pressAnyText != null; });
-        pressAnyText.SetActive (false);
-        GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
+        yield return new WaitUntil (() =>
+        {
+            pressAnyText = GameObject.Find ("PressAnyText");
 
-        yield return AssertLoggedInOrLoginFailed (
-            CloseTermsPopupIfRequired (),
-            FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-            SubmitEmailPassword ("some@email.here", "somePassHere"));
+            return pressAnyText != null || WaitTimeIsUp ();
+        });
+
+        if (pressAnyText != null)
+        {
+            pressAnyText.SetActive (false);
+            GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
+
+            yield return AssertLoggedInOrLoginFailed (
+                CloseTermsPopupIfRequired (),
+                FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
+                SubmitEmailPassword ("wecib@cliptik.net", "somePassHere"),
+                GoOnePageHigher ());
+        }
+        else if (!CheckCurrentPageName ("MainMenuPage"))
+        {
+            FailWithMessage ("PressAnyText didn't appear and it didn't go to MainMenuPage. This sequence is not implemented.");
+        }
 
         /* yield return CombinedCheck (
             CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
