@@ -176,9 +176,10 @@ public class TestHelper
 
             yield return LetsThink ();
 
-            yield return AssertLoggedInOrLoginFailed (
+            /* yield return AssertLoggedInOrLoginFailed (
                 CloseTermsPopupIfRequired (),
-                FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
+                FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
+                SubmitEmailPassword ("some@email.here", "somePassHere")); */
 
             if (IsTestFinished)
                 yield break;
@@ -490,7 +491,7 @@ public class TestHelper
     /// <summary>
     /// Asserts if we've logged in or login failed, so that the test doesn't get stuck in the login screen in the case of issue and instead reports the issue.
     /// </summary>
-    public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2)
+    public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2, IEnumerator callback3)
     {
         if (IsTestFinished)
         {
@@ -499,7 +500,8 @@ public class TestHelper
 
         yield return CombinedCheck (
             CheckCurrentPageName, "MainMenuPage", callback1,
-            CheckIfLoginErrorOccured, "", callback2);
+            CheckIfLoginErrorOccured, "", callback2,
+            CheckIfLoginBoxAppeared, "", callback3);
 
         yield return null;
     }
@@ -560,7 +562,8 @@ public class TestHelper
     /// </summary>
     private IEnumerator CombinedCheck (
         Func<string, bool> check1, string parameter1, IEnumerator callback1,
-        Func<string, bool> check2, string parameter2, IEnumerator callback2)
+        Func<string, bool> check2, string parameter2, IEnumerator callback2,
+        Func<string, bool> check3 = null, string parameter3 = "", IEnumerator callback3 = null)
     {
         bool outcomeDecided = false;
 
@@ -571,6 +574,8 @@ public class TestHelper
 
             if (check1 (parameter1))
             {
+                Debug.Log ("1");
+
                 outcomeDecided = true;
 
                 if (callback1 != null)
@@ -578,10 +583,21 @@ public class TestHelper
             }
             else if (check2 (parameter2))
             {
+                Debug.Log ("2");
+
                 outcomeDecided = true;
 
                 if (callback2 != null)
                     yield return callback2;
+            }
+            else if (check3 != null && check3 (parameter3))
+            {
+                Debug.Log ("3");
+
+                outcomeDecided = true;
+
+                if (callback3 != null)
+                    yield return callback3;
             }
 
             yield return null;
@@ -596,11 +612,14 @@ public class TestHelper
     /// <returns><c>true</c>, if login box appeared was checked, <c>false</c> otherwise.</returns>
     private bool CheckIfLoginBoxAppeared (string dummyparameter)
     {
-        GameObject loginBox = GameObject.Find ("InputField_Beta");
-
-        if (loginBox != null && loginBox.activeInHierarchy)
+        if (canvas2GameObject != null && canvas2GameObject.transform.childCount >= 2)
         {
-            return true;
+            if (canvas2GameObject.transform.GetChild (1).name.Split ('(')[0] == "LoginPopup")
+            {
+                return true;
+            }
+
+            return false;
         }
 
         return false;
@@ -1009,9 +1028,14 @@ public class TestHelper
         pressAnyText.SetActive (false);
         GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
-        yield return CombinedCheck (
+        yield return AssertLoggedInOrLoginFailed (
+            CloseTermsPopupIfRequired (),
+            FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
+            SubmitEmailPassword ("some@email.here", "somePassHere"));
+
+        /* yield return CombinedCheck (
             CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-            CheckCurrentPageName, "MainMenuPage", null);
+            CheckCurrentPageName, "MainMenuPage", null); */
 
         yield return null;
     }
@@ -1026,6 +1050,25 @@ public class TestHelper
 
         testerKeyField.text = _testerKey;
         GameObject.Find ("Button_Beta").GetComponent<ButtonShiftingContent> ().onClick.Invoke ();
+
+        yield return null;
+    }
+
+    private IEnumerator SubmitEmailPassword (string email, string password)
+    {
+        yield return LetsThink ();
+
+        Transform loginGroup = GameObject.Find ("Login_Group").transform;
+        Button loginButton = loginGroup.transform.Find ("Button_Login").GetComponent<Button> ();
+        InputField emailField = loginGroup.transform.Find ("Email_InputField").GetComponent<InputField> ();
+        InputField passwordField = loginGroup.transform.Find ("Password_InputField").GetComponent<InputField> ();
+
+        emailField.text = email;
+        passwordField.text = password;
+
+        yield return LetsThink ();
+
+        loginButton.onClick.Invoke ();
 
         yield return null;
     }
