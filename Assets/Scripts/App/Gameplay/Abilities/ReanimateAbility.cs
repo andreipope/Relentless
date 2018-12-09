@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -11,6 +12,18 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            if (!AbilityUnitOwner.IsReanimated)
+            {
+                AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+            }
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -19,10 +32,9 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            Card libraryCard = AbilityUnitOwner.Card.LibraryCard.Clone();
-            WorkingCard card = new WorkingCard(libraryCard, owner);
-            BoardUnit unit = CreateBoardUnit(card, owner);
-            unit.IsReanimated = true;
+            Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
+            BoardUnitView unit = CreateBoardUnit(card, owner);
             AbilityUnitOwner.IsReanimated = true;
 
             owner.AddCardToBoard(card);
@@ -39,47 +51,46 @@ namespace Loom.ZombieBattleground
                 BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
             }
 
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.REANIMATE_UNIT_BY_ABILITY, new object[]
-                {
-                    owner, unit
-                }));
+            InvokeActionTriggered(unit);
         }
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
-
             Action();
         }
 
-        private BoardUnit CreateBoardUnit(WorkingCard card, Player owner)
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
+
+            base.UnitDiedHandler();
+        }
+
+        private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ?
                 BattlegroundController.PlayerBoardObject :
                 BattlegroundController.OpponentBoardObject;
 
-            BoardUnit boardUnit = new BoardUnit(playerBoard.transform);
-            boardUnit.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
-            boardUnit.Transform.parent = playerBoard.transform;
-            boardUnit.Transform.position =
-                new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnit.OwnerPlayer = owner;
-            boardUnit.SetObjectInfo(card);
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.parent = playerBoard.transform;
+            boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
+            boardUnitView.Model.OwnerPlayer = owner;
+            boardUnitView.SetObjectInfo(card);
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {
-                boardUnit.IsPlayable = true;
+                boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnit.PlayArrivalAnimation();
+            boardUnitView.PlayArrivalAnimation();
 
             GameplayManager.CanDoDragActions = true;
 
-            return boardUnit;
+            return boardUnitView;
         }
     }
 }

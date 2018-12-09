@@ -5,6 +5,10 @@ using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Newtonsoft.Json;
 using Object = UnityEngine.Object;
+using DG.Tweening;
+using Loom.ZombieBattleground.BackendCommunication;
+using System.Linq;
+using mixpanel;
 
 namespace Loom.ZombieBattleground
 {
@@ -18,6 +22,10 @@ namespace Loom.ZombieBattleground
 
         private ILoadObjectsManager _loadObjectsManager;
 
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private IDataManager _dataManager;
 
         private IGameplayManager _gameplayManager;
@@ -30,6 +38,12 @@ namespace Loom.ZombieBattleground
 
         private GameObject _targettingArrowPrefab;
 
+        private Sequence _helpArrowsDelay;
+
+        private List<TutorialBoardArrow> _tutorialHelpBoardArrows;
+
+        private IAnalyticsManager _analyticsManager;
+
         public bool IsTutorial { get; private set; }
 
         public bool IsBubbleShow { get; set; }
@@ -40,6 +54,8 @@ namespace Loom.ZombieBattleground
 
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialDataStep CurrentTutorialDataStep { get; private set; }
+
+        public AnalyticsTimer TutorialDuration { get; set; }
 
         public int TutorialsCount
         {
@@ -57,6 +73,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
@@ -65,20 +84,60 @@ namespace Loom.ZombieBattleground
 
             _tutorials = JsonConvert.DeserializeObject<TutorialContentData>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
+
+            _tutorialHelpBoardArrows = new List<TutorialBoardArrow>();
+
+            TutorialDuration = new AnalyticsTimer();
         }
 
         public void Update()
         {
         }
 
+        private bool CheckAvailableTutorial()
+        {
+            int id = _dataManager.CachedUserLocalData.CurrentTutorialId;
+
+            TutorialData tutorial = _tutorials.Find((x) => !x.Ignore &&
+                x.TutorialId >= _dataManager.CachedUserLocalData.CurrentTutorialId);
+
+            if(tutorial != null)
+            {
+                _dataManager.CachedUserLocalData.CurrentTutorialId = tutorial.TutorialId;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                return true;
+            }
+            return false;
+        }
+
         public void SetupTutorialById(int id)
         {
-            CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
-            _currentTutorialStepIndex = 0;
-            _tutorialSteps = CurrentTutorial.TutorialDataSteps;
-            CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+            if (CheckAvailableTutorial())
+            {
+                id = _dataManager.CachedUserLocalData.CurrentTutorialId;
+                CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
+                _currentTutorialStepIndex = 0;
+                _tutorialSteps = CurrentTutorial.TutorialDataSteps;
+                CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+                FillTutorialDeck();
+            }
 
             IsTutorial = false;
+        }
+
+        private void FillTutorialDeck()
+        {
+           _gameplayManager.CurrentPlayerDeck =
+                        new Deck(0, CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId,
+                        "TutorialDeck", new List<DeckCardData>(),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordSkill, true),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.SecondaryOverlordSkill, true));
+
+            _gameplayManager.OpponentPlayerDeck =
+                        new Deck(0, CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId,
+                        "TutorialDeckOpponent", new List<DeckCardData>(),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordSkill, true),
+                        Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordSkill, true)); 
         }
 
         public void StartTutorial()
@@ -89,9 +148,13 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<TutorialPopup>();
             _popup = _uiManager.GetPopup<TutorialPopup>();
             UpdateTutorialVisual();
-            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume, false);
+            _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume, false);
+
 
             IsTutorial = true;
+
+            TutorialDuration.StartTimer();
+            _analyticsManager.SetEvent( AnalyticsManager.EventStartedTutorial);
         }
 
         public void StopTutorial()
@@ -114,9 +177,20 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
+            if(!CheckAvailableTutorial())
+            {
+                _gameplayManager.IsTutorial = false;
+                _dataManager.CachedUserLocalData.Tutorial = false;
+                _gameplayManager.IsSpecificGameplayBattleground = false;
+            }
 
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            TutorialDuration.FinishTimer();
+            Value props = new Value();
+            props[AnalyticsManager.PropertyTutorialTimeToComplete] = TutorialDuration.GetTimeDiffrence();
+            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial, props);
         }
 
         public void SkipTutorial(Enumerators.AppState state)
@@ -147,7 +221,8 @@ namespace Loom.ZombieBattleground
             if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
             }
             GameClient.Get<IAppStateManager>().SetPausingApp(false);
         }
@@ -157,6 +232,8 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmQuitReceivedHandler;
             if (status)
             {
+                _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
             }
@@ -184,11 +261,34 @@ namespace Loom.ZombieBattleground
         {
             if (IsTutorial)
             {
-                if(CurrentTutorialDataStep != null)
+                if (CurrentTutorialDataStep != null)
+                {
                     if (CurrentTutorialDataStep.RequiredAction == action)
                     {
-                        NextStep();
+                        if(action == Enumerators.TutorialReportAction.START_TURN &&
+                          !string.IsNullOrEmpty(CurrentTutorialDataStep.WaiterOfWhichTurn))
+                        {
+                            if ((_gameplayManager.IsLocalPlayerTurn() &&
+                                 CurrentTutorialDataStep.WaiterOfWhichTurn == Constants.Player) ||
+                               (!_gameplayManager.IsLocalPlayerTurn() &&
+                                CurrentTutorialDataStep.WaiterOfWhichTurn == Constants.Opponent))
+                            {
+                                NextStep();
+                            }
+                        }
+                        else
+                        {
+                            NextStep();
+                        }
                     }
+
+                    if(action == Enumerators.TutorialReportAction.USE_ABILITY)
+                    {
+                        DestroySelectTarget();
+                    }
+
+                    ResetHelpArrows();
+                }
             }
         }
 
@@ -247,6 +347,9 @@ namespace Loom.ZombieBattleground
 
         private async void NextStepCommonEndActions()
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             _currentTutorialStepIndex++;
 
             CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
@@ -255,19 +358,25 @@ namespace Loom.ZombieBattleground
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             if (CurrentTutorialDataStep.HasDelayToPlaySound)
             {
-                GameClient.Get<ITimerManager>().AddTimer(
+                if (!string.IsNullOrEmpty(CurrentTutorialDataStep.SoundName))
+                {
+                    GameClient.Get<ITimerManager>().AddTimer(
                     x =>
                     {
-                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName,
+                        _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, CurrentTutorialDataStep.SoundName,
                             Constants.TutorialSoundVolume, false);
                     },
                     null,
                     CurrentTutorialDataStep.DelayToPlaySound);
+                }
             }
             else
             {
-                _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume,
-                    false);
+                if (!string.IsNullOrEmpty(CurrentTutorialDataStep.SoundName))
+                {
+                    _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume,
+                        false);
+                }
             }
 
             if (CurrentTutorialDataStep.IsLaunchAIBrain)
@@ -308,6 +417,43 @@ namespace Loom.ZombieBattleground
                     _popup.ShowNextButton();
                 }
             }
+
+            ResetHelpArrows();
+
+            if (CurrentTutorialDataStep.HasHelpArrowsAfterDelay)
+            {
+                _helpArrowsDelay = DOTween.Sequence();
+                _helpArrowsDelay.PrependInterval(CurrentTutorialDataStep.DelayToShowHelpArrows);
+                _helpArrowsDelay.OnComplete(ShowHelpArrowsDelay);
+            }
+        }
+
+        private void ShowHelpArrowsDelay()
+        {
+           List<BoardUnitView> availableUnits = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.UnitCanBeUsable());
+
+            TutorialBoardArrow tutorialBoardArrow;
+            foreach (BoardUnitView unit in availableUnits)
+            {
+                tutorialBoardArrow = Object.Instantiate(_targettingArrowPrefab).AddComponent<TutorialBoardArrow>();
+                tutorialBoardArrow.Begin(unit.Transform.position);
+                tutorialBoardArrow.UpdateTargetPosition((Vector3)CurrentTutorialDataStep.ArrowEndPosition);
+                _tutorialHelpBoardArrows.Add(tutorialBoardArrow);
+            }
+        }
+
+        private void ResetHelpArrows()
+        {
+            if (_helpArrowsDelay != null)
+            {
+                _helpArrowsDelay.Kill();
+            }
+
+            foreach (TutorialBoardArrow arrow in _tutorialHelpBoardArrows)
+            {
+                arrow.Dispose();
+            }
+            _tutorialHelpBoardArrows.Clear();
         }
 
         private void CreateSelectTarget()

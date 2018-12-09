@@ -1,6 +1,6 @@
 ﻿using Loom.Google.Protobuf;
 using System.Threading.Tasks;
-using Loom.Client.Internal.Protobuf;
+using Loom.Client.Protobuf;
 
 namespace Loom.Client
 {
@@ -23,7 +23,7 @@ namespace Loom.Client
             this.PrivateKey = privateKey;
         }
 
-        public Task<byte[]> Handle(byte[] txData)
+        public virtual Task<byte[]> Handle(byte[] txData)
         {
             var sig = CryptoUtils.Sign(txData, this.PrivateKey);
 

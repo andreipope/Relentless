@@ -163,8 +163,9 @@ namespace Loom.Client.Samples {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(MapEntry other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Key.Length != 0) {
         Key = other.Key;
       }
@@ -298,8 +299,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(HelloRequest other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.In.Length != 0) {
         In = other.In;
       }
@@ -426,8 +428,9 @@ return;
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(HelloResponse other) {
-      if (other == null) 
-return;
+      if (other == null) {
+        return;
+      }
       if (other.Out.Length != 0) {
         Out = other.Out;
       }

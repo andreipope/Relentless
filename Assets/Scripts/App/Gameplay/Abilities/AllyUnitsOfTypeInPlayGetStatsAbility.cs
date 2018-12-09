@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -23,6 +24,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -33,15 +36,15 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            foreach (BoardUnit unit in PlayerCallerOfAbility.BoardCards)
+            foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
             {
-                if (unit.Card.LibraryCard.CardSetType.Equals(SetType) && unit != AbilityUnitOwner)
+                if (unit.Model.Card.LibraryCard.CardSetType.Equals(SetType) && unit.Model != AbilityUnitOwner)
                 {
-                    unit.BuffedDamage += Damage;
-                    unit.CurrentDamage += Damage;
+                    unit.Model.BuffedDamage += Damage;
+                    unit.Model.CurrentDamage += Damage;
 
-                    unit.BuffedHp += Health;
-                    unit.CurrentHp += Health;
+                    unit.Model.BuffedHp += Health;
+                    unit.Model.CurrentHp += Health;
                 }
             }
         }

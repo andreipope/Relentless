@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using JetBrains.Annotations;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
@@ -6,142 +9,147 @@ namespace Loom.ZombieBattleground.Data
 {
     public class HeroesData
     {
-        public List<Hero> Heroes;
+        public List<Hero> Heroes { get; private set; }
 
-        [JsonIgnore]
-        private bool _casted;
-
-        [JsonIgnore]
-        public List<Hero> HeroesParsed
+        public HeroesData(List<Hero> heroes)
         {
-            get
-            {
-                if (!_casted)
-                {
-                    CastData();
-                }
-
-                return Heroes;
-            }
-        }
-
-        public void CastData()
-        {
-            foreach (Hero item in Heroes)
-            {
-                item.HeroElement = Utilites.CastStringTuEnum<Enumerators.SetType>(item.Element);
-                item.CastSkills();
-                item.ValidateSkillLocking();
-            }
-
-            _casted = true;
+            Heroes = heroes ?? throw new ArgumentNullException(nameof(heroes));
         }
     }
 
     public class Hero
     {
-        public int HeroId;
+        public int HeroId { get; private set; }
 
-        public string Icon;
+        public string Icon { get; private set; }
 
-        public string Name;
+        public string Name { get; private set; }
 
-        public string ShortDescription;
+        public string ShortDescription { get; private set; }
 
-        public string LongDescription;
+        public string LongDescription { get; private set; }
 
-        public string Element;
+        public long Experience { get; set; }
 
-        public int Experience;
+        public int Level { get; set; }
 
-        public int Level;
+        [JsonProperty("Element")]
+        public Enumerators.SetType HeroElement { get; private set; }
 
-        [JsonIgnore]
-        public Enumerators.SetType HeroElement;
+        public List<HeroSkill> Skills { get; private set; }
 
-        public List<HeroSkill> Skills;
+        public Enumerators.OverlordSkill PrimarySkill;
 
-        public int PrimarySkill;
-
-        public int SecondarySkill;
+        public Enumerators.OverlordSkill  SecondarySkill;
 
         public string FullName => $"{Name}, {ShortDescription}";
 
-        public void ValidateSkillLocking()
+        public Hero(
+            int heroId,
+            string icon,
+            string name,
+            string shortDescription,
+            string longDescription,
+            long experience,
+            int level,
+            Enumerators.SetType heroElement,
+            List<HeroSkill> skills,
+
+            Enumerators.OverlordSkill primaryAbility,
+            Enumerators.OverlordSkill secondaryAbility)
         {
-            int skillId = Level % 4;
-            for (int i = 0; i < skillId; i++)
-            {
-                Skills[i].Unlocked = true;
-            }
+            HeroId = heroId;
+            Icon = icon;
+            Name = name;
+            ShortDescription = shortDescription;
+            LongDescription = longDescription;
+            Experience = experience;
+            Level = level;
+            HeroElement = heroElement;
+            Skills = skills ?? new List<HeroSkill>();
+            PrimarySkill = primaryAbility;
+            SecondarySkill = secondaryAbility;
         }
 
-        public void CastSkills()
+        public HeroSkill GetSkill(Enumerators.OverlordSkill skill)
         {
-            foreach (HeroSkill skill in Skills)
-            {
-                skill.CastData();
-            }
+            return Skills.Find(x => x.OverlordSkill == skill);
+        }
+
+        public HeroSkill GetSkill(int index)
+        {
+            return Skills[index];
         }
     }
 
     public class HeroSkill
     {
-        public string Title;
+        public int Id { get; private set; }
 
-        public string Skill;
+        public string Title { get; private set; }
 
-        public string IconPath;
+        public string IconPath { get; private set; }
 
-        public string Description;
+        public string Description { get; private set; }
 
-        public string SkillTargets;
+        public int Cooldown { get; private set; }
 
-        public string ElementTargets;
+        public int InitialCooldown { get; private set; }
 
-        public int Cooldown;
+        public int Value { get; private set; }
 
-        public int InitialCooldown;
+        public int Attack { get; private set; }
 
-        public int Value;
+        public int Count { get; private set; }
 
-        public int Attack;
+        [JsonProperty("Skill")]
+        public Enumerators.OverlordSkill OverlordSkill { get; private set; }
 
-        [JsonIgnore]
-        public Enumerators.OverlordSkill OverlordSkill;
+        [JsonProperty("SkillTargets")]
+        public List<Enumerators.SkillTargetType> SkillTargetTypes { get; private set; }
 
-        [JsonIgnore]
-        public List<Enumerators.SkillTargetType> SkillTargetTypes;
+        [JsonProperty("TargetUnitSpecialStatus")]
+        public Enumerators.UnitStatusType TargetUnitStatusType { get; private set; }
 
-        [JsonIgnore]
-        public bool Unlocked;
+        [JsonProperty("ElementTargets")]
+        public List<Enumerators.SetType> ElementTargetTypes { get; private set; }
 
-        public List<Enumerators.SetType> ElementTargetTypes;
+        public bool Unlocked { get; set; }
 
-        public void CastData()
+        public bool CanSelectTarget { get; private set; }
+
+        public HeroSkill(
+            int id,
+            string title,
+            string iconPath,
+            string description,
+            int cooldown,
+            int initialCooldown,
+            int value,
+            int attack,
+            int count,
+            Enumerators.OverlordSkill overlordSkill,
+            List<Enumerators.SkillTargetType> skillTargetTypes,
+            Enumerators.UnitStatusType targetUnitStatusType,
+            List<Enumerators.SetType> elementTargetTypes,
+            bool unlocked,
+            bool canSelectTarget)
         {
-            if (!string.IsNullOrEmpty(Skill))
-            {
-                OverlordSkill = Utilites.CastStringTuEnum<Enumerators.OverlordSkill>(Skill);
-            }
-
-            if (!string.IsNullOrEmpty(SkillTargets))
-            {
-                SkillTargetTypes = Utilites.CastList<Enumerators.SkillTargetType>(SkillTargets);
-            }
-            else
-            {
-                SkillTargetTypes = new List<Enumerators.SkillTargetType>();
-            }
-
-            if (!string.IsNullOrEmpty(ElementTargets))
-            {
-                ElementTargetTypes = Utilites.CastList<Enumerators.SetType>(ElementTargets);
-            }
-            else
-            {
-                ElementTargetTypes = new List<Enumerators.SetType>();
-            }
+            Id = id;
+            Title = title;
+            IconPath = iconPath;
+            Description = description;
+            Cooldown = cooldown;
+            InitialCooldown = initialCooldown;
+            Value = value;
+            Attack = attack;
+            Count = count;
+            OverlordSkill = overlordSkill;
+            SkillTargetTypes = skillTargetTypes ?? new List<Enumerators.SkillTargetType>();
+            TargetUnitStatusType = targetUnitStatusType;
+            ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.SetType>();
+            CanSelectTarget = canSelectTarget;
+            Unlocked = unlocked;
         }
     }
 }

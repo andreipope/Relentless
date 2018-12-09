@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Loom.Client.Internal;
-using Loom.Client.Internal.Protobuf;
+using Loom.Client.Protobuf;
 using Loom.Google.Protobuf;
 using Loom.Newtonsoft.Json;
 
@@ -17,9 +17,9 @@ namespace Loom.Client
         /// Constructor.
         /// </summary>
         /// <param name="client">Client to use to communicate with the contract.</param>
-        /// <param name="contractAddr">Address of a contract on the Loom DAppChain.</param>
-        /// <param name="callerAddr">Address of the caller, generated from the public key of the transaction signer.</param>
-        public Contract(DAppChainClient client, Address contractAddr, Address callerAddr) : base(client, contractAddr, callerAddr) {
+        /// <param name="contractAddress">Address of a contract on the Loom DAppChain.</param>
+        /// <param name="callerAddress">Address of the caller, generated from the public key of the transaction signer.</param>
+        public Contract(DAppChainClient client, Address contractAddress, Address callerAddress) : base(client, contractAddress, callerAddress) {
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Loom.Client
         /// <returns>Nothing.</returns>
         public async Task CallAsync(string method, IMessage args)
         {
-            var tx = this.CreateContractMethodCallTx(method, args);
+            Transaction tx = this.CreateContractMethodCallTx(method, args);
             await CallAsync(tx);
         }
 
@@ -130,7 +130,7 @@ namespace Loom.Client
             return CreateContractMethodCallTx(requestBytes, VMType.Plugin);
         }
 
-        private class JsonRpcEvent
+        private struct JsonRpcEvent
         {
             [JsonProperty("Data")]
             public string Data;

@@ -48,7 +48,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             string modelJson = File.ReadAllText(UserDataFilePath);
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
+            if (_dataManager.ConfigData.EncryptData)
+            {
+                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(_dataManager.DecryptData(modelJson));
+            } else {
+                UserDataModel = JsonConvert.DeserializeObject<UserDataModel>(modelJson);
+            }
             return true;
         }
 
@@ -59,7 +64,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             string modelJson = JsonConvert.SerializeObject(userDataModel);
 
-            File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
+            if (_dataManager.ConfigData.EncryptData)
+            {
+                File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
+            }
+            else 
+            {
+                File.WriteAllText(UserDataFilePath, modelJson);
+            }
             UserDataModel = userDataModel;
             return true;
         }
@@ -69,24 +81,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
             LoadUserDataModel();
             Debug.Log("User Id: " + UserDataModel.UserId);
 
+            /** Remove because of autogeneration betakey
+             * 
             await _dataManager.LoadRemoteConfig();
             Debug.Log(
                 $"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
 #if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !USE_LOCAL_BACKEND && !FORCE_DISABLE_VERSION_CHECK
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion)) 
-                throw new GameVersionMismatchException(BuildMetaInfo.Instance.Version.ToString(), _dataManager.BetaConfig.LatestVersion.ToString());
+                throw new GameVersionMismatchException(
+                    BuildMetaInfo.Instance.Version.ToString(),
+                    _dataManager.BetaConfig.LatestVersion.ToString()
+                 );
+#elif UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion))
+            {
+                Debug.LogWarning("Remote and local versions mismatch!");
+            }
 #endif
-
-            try
-            {
-                await _backendFacade.CreateContract(UserDataModel.PrivateKey);
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning(e);
-
-                // HACK: ignore to allow offline mode
-            }
+*/
+            await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
             try
             {
@@ -95,12 +108,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
                 // Ignore
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning(e);
-
-                // HACK: ignore to allow offline mode
             }
 
             await _dataManager.StartLoadCache();

@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
     public class InputController : IController
     {
-        public Action<BoardUnit> UnitSelectedEvent;
+        public Action<BoardUnitView> UnitSelectedEvent;
 
-        public Action<BoardUnit> UnitDeselectedEvent;
+        public Action<BoardUnitView> UnitDeselectedEvent;
 
-        public Action<BoardUnit> UnitSelectingEvent;
+        public Action<BoardUnitView> UnitSelectingEvent;
 
         public Action<Player> PlayerSelectedEvent;
 
@@ -23,7 +24,7 @@ namespace Loom.ZombieBattleground
 
         private Camera _raysCamera;
 
-        private List<BoardUnit> _selectedUnitsList;
+        private List<BoardUnitView> _selectedUnitsList;
 
         public void Dispose()
         {
@@ -33,7 +34,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
 
-            _selectedUnitsList = new List<BoardUnit>();
+            _selectedUnitsList = new List<BoardUnitView>();
         }
 
         public void Update()
@@ -66,7 +67,7 @@ namespace Loom.ZombieBattleground
                             break;
                         case TouchPhase.Canceled:
                         case TouchPhase.Ended:
-                            foreach (BoardUnit unit in _selectedUnitsList)
+                            foreach (BoardUnitView unit in _selectedUnitsList)
                             {
                                 UnitDeselectedEvent?.Invoke(unit);
                             }
@@ -88,12 +89,20 @@ namespace Loom.ZombieBattleground
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
-                    foreach (BoardUnit unit in _selectedUnitsList)
+                    foreach (BoardUnitView unit in _selectedUnitsList)
                     {
                         UnitDeselectedEvent?.Invoke(unit);
                     }
 
                     _selectedUnitsList.Clear();
+                }
+
+                if (_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
+                {
+                    if (_gameplayManager.GetController<BoardArrowController>().CurrentBoardArrow is AbilityBoardArrow)
+                    {
+                        CastRay(Input.mousePosition, SRLayerMask.Battleground, true);
+                    }
                 }
             }
         }
@@ -105,6 +114,7 @@ namespace Loom.ZombieBattleground
             Vector3 point = _raysCamera.ScreenToWorldPoint(origin);
 
             RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, layerMask);
+            hits = hits.Where(hit => !hit.collider.name.Equals(Constants.BattlegroundTouchZone)).ToArray();
 
             if (hits.Length > 0)
             {
@@ -121,7 +131,8 @@ namespace Loom.ZombieBattleground
 
         private void CheckColliders(Collider2D collider, bool permanent = false)
         {
-            if (collider.name.Equals(Constants.PlayerBoard) || collider.name.Equals(Constants.OpponentBoard))
+            if (collider.name.Equals(Constants.PlayerBoard) ||
+                collider.name.Equals(Constants.OpponentBoard))
             {
                 NoObjectsSelectedEvent?.Invoke();
                 return;
@@ -130,7 +141,7 @@ namespace Loom.ZombieBattleground
             // check on units
             bool hasTarget = false;
 
-            foreach (BoardUnit unit in _gameplayManager.CurrentPlayer.BoardCards)
+            foreach (BoardUnitView unit in _gameplayManager.CurrentPlayer.BoardCards)
             {
                 if (unit.GameObject == collider.gameObject)
                 {
@@ -154,7 +165,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            foreach (BoardUnit unit in _gameplayManager.OpponentPlayer.BoardCards)
+            foreach (BoardUnitView unit in _gameplayManager.OpponentPlayer.BoardCards)
             {
                 if (unit.GameObject == collider.gameObject)
                 {

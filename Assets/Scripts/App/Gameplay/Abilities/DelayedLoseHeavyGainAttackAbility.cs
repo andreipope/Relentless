@@ -1,5 +1,6 @@
-﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,8 +18,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityUnitOwner.CurrentDamage += Value;
             AbilityUnitOwner.BuffedDamage += Value;
+            AbilityUnitOwner.CurrentDamage += Value;
 
             AbilityUnitOwner.SetAsWalkerUnit();
         }

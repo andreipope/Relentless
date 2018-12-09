@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using Loom.Client.Internal;
 using Loom.Nethereum.ABI.Model;
@@ -8,8 +9,6 @@ using Loom.Nethereum.RPC.Eth.DTOs;
 
 namespace Loom.Client
 {
-    using Protobuf = Internal.Protobuf;
-
     /// <summary>
     /// The EvmContract class streamlines interaction with a smart contract that was deployed on a EVM-based Loom DAppChain.
     /// Each instance of this class is bound to a specific smart contract, and provides a simple way of calling
@@ -24,17 +23,51 @@ namespace Loom.Client
         /// Constructor.
         /// </summary>
         /// <param name="client">Client to use to communicate with the contract.</param>
-        /// <param name="contractAddr">Address of a contract on the Loom DAppChain.</param>
-        /// <param name="callerAddr">Address of the caller, generated from the public key of the transaction signer.</param>
+        /// <param name="contractAddress">Address of a contract on the Loom DAppChain.</param>
+        /// <param name="callerAddress">Address of the caller, generated from the public key of the transaction signer.</param>
         /// <param name="abi">Contract Application Binary Interface as JSON object string.</param>
-        public EvmContract(DAppChainClient client, Address contractAddr, Address callerAddr, string abi) : base(client, contractAddr, callerAddr)
+        public EvmContract(DAppChainClient client, Address contractAddress, Address callerAddress, string abi) : base(client, contractAddress, callerAddress)
         {
-            this.contractBuilder = new ContractBuilder(abi, contractAddr.LocalAddress);
+            this.contractBuilder = new ContractBuilder(abi, contractAddress.LocalAddress);
             this.topicToEventName = new Dictionary<string, string>();
             foreach (EventABI eventAbi in this.contractBuilder.ContractABI.Events)
             {
                 this.topicToEventName.Add("0x" + eventAbi.Sha33Signature, eventAbi.Name);
             }
+        }
+
+        /// <summary>
+        /// Gets an instance of <see cref="EvmEvent"/> set up for working with Solidity event named <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">Solidity event name.</param>
+        public EvmEvent GetEvent(string name)
+        {
+            return new EvmEvent(this, this.contractBuilder.GetEventBuilder(name));
+        }
+
+        /// <summary>
+        /// Gets an instance of <see cref="EvmEvent{T}"/> set up for working with Solidity event named <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">Solidity event name.</param>
+        /// <typeparam name="T">Event DTO type.</typeparam>
+        /// <see href="https://nethereum.readthedocs.io/en/latest/contracts/calling-transactions-events/"/>
+        public EvmEvent<T> GetEvent<T>(string name) where T : new()
+        {
+            return new EvmEvent<T>(this, this.contractBuilder.GetEventBuilder(name));
+        }
+
+        /// <summary>
+        /// Retrieves the current block height.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<BigInteger> GetBlockHeight()
+        {
+            return await this.Client.CallExecutor.StaticCall(
+                async () =>
+                {
+                    string heightString = await this.Client.ReadClient.SendAsync<string, object>("getblockheight", null);
+                    return BigInteger.Parse(heightString);
+                });
         }
 
         #region CallAsync methods
@@ -401,7 +434,7 @@ namespace Loom.Client
 
         private async Task<byte[]> StaticCallAsyncByteArray(string callInput)
         {
-            return await this.Client.QueryAsync<byte[]>(this.Address, CryptoUtils.HexStringToBytes(callInput), this.Caller, Protobuf::VMType.Evm);
+            return await this.Client.QueryAsync<byte[]>(this.Address, CryptoUtils.HexStringToBytes(callInput), this.Caller, Protobuf.VMType.Evm);
         }
 
         private async Task StaticCallAsync(string callInput)
@@ -417,20 +450,20 @@ namespace Loom.Client
             return validResult ? decodeFunc(functionBuilder, CryptoUtils.BytesToHexString(result)) : default(TReturn);
         }
 
-        private async Task<BroadcastTxResult> CallAsyncBrodcastTxResult(string callInput)
+        private async Task<BroadcastTxResult> CallAsyncBroadcastTxResult(string callInput)
         {
-            var tx = this.CreateContractMethodCallTx(callInput, Protobuf::VMType.Evm);
+            var tx = this.CreateContractMethodCallTx(callInput, Protobuf.VMType.Evm);
             return await this.Client.CommitTxAsync(tx);
         }
 
         private async Task CallAsync(string callInput)
         {
-            await this.CallAsyncBrodcastTxResult(callInput);
+            await this.CallAsyncBroadcastTxResult(callInput);
         }
 
         private async Task<TReturn> CallAsync<TReturn>(string callInput, FunctionBuilderBase functionBuilder, Func<FunctionBuilderBase, string, TReturn> decodeFunc)
         {
-            var tx = this.CreateContractMethodCallTx(callInput, Protobuf::VMType.Evm);
+            var tx = this.CreateContractMethodCallTx(callInput, Protobuf.VMType.Evm);
             var result = await this.Client.CommitTxAsync(tx);
             var validResult = result?.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0;
             return validResult ? decodeFunc(functionBuilder, CryptoUtils.BytesToHexString(result.DeliverTx.Data)) : default(TReturn);
@@ -450,18 +483,18 @@ namespace Loom.Client
             return callInput.Data;
         }
 
-        private Protobuf::Transaction CreateContractMethodCallTx(string method, object[] functionInput, out FunctionBuilder functionBuilder)
+        private Protobuf.Transaction CreateContractMethodCallTx(string method, object[] functionInput, out FunctionBuilder functionBuilder)
         {
             functionBuilder = this.contractBuilder.GetFunctionBuilder(method);
             CallInput callInput = functionBuilder.CreateCallInput(functionInput);
-            return this.CreateContractMethodCallTx(callInput.Data, Protobuf::VMType.Evm);
+            return this.CreateContractMethodCallTx(callInput.Data, Protobuf.VMType.Evm);
         }
 
-        private Protobuf::Transaction CreateContractMethodCallTx<TInput>(TInput functionInput, out FunctionBuilder<TInput> functionBuilder)
+        private Protobuf.Transaction CreateContractMethodCallTx<TInput>(TInput functionInput, out FunctionBuilder<TInput> functionBuilder)
         {
             functionBuilder = this.contractBuilder.GetFunctionBuilder<TInput>();
             CallInput callInput = functionBuilder.CreateCallInput(functionInput);
-            return this.CreateContractMethodCallTx(callInput.Data, Protobuf::VMType.Evm);
+            return this.CreateContractMethodCallTx(callInput.Data, Protobuf.VMType.Evm);
         }
 
         #endregion

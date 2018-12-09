@@ -4,15 +4,13 @@ using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class HandBoardCard
+public class HandBoardCard : OwnableBoardObject
 {
-    public Player OwnerPlayer;
-
     public GameObject BoardZone;
 
     public bool Enabled = true;
 
-    protected BoardCard CardView;
+    public BoardCard CardView { get; protected set; }
 
     protected bool StartedDrag;
 
@@ -131,6 +129,9 @@ public class HandBoardCard
         if (!StartedDrag)
             return;
 
+        if (_gameplayManager.IsGameEnded)
+            return;
+
         _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 
         _alreadySelected = false;
@@ -140,14 +141,22 @@ public class HandBoardCard
         bool playable = !_canceledPlay &&
             CardView.CanBeBuyed(OwnerPlayer) &&
             (CardView.WorkingCard.LibraryCard.CardKind != Enumerators.CardKind.CREATURE ||
-                OwnerPlayer.BoardCards.Count < Constants.MaxBoardUnits);
+                OwnerPlayer.BoardCards.Count < OwnerPlayer.MaxCardsInPlay);
 
         if (playable)
         {
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this);
+                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this, PlayCardOnBoard =>
+                {
+                    if (OwnerPlayer == _gameplayManager.CurrentPlayer)
+                    {
+                        PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                        _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+                    }
+                });
+
                 CardView.SetHighlightingEnabled(false);
             }
             else

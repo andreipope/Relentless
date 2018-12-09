@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -17,33 +18,20 @@ namespace Loom.ZombieBattleground
             Value = ability.Value;
         }
 
-        public override void Activate()
+        protected override void VFXAnimationEndedHandler()
         {
-            switch (AbilityEffectType)
-            {
-                case Enumerators.AbilityEffectType.STUN_OR_DAMAGE_FREEZES:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-                    break;
-                default:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-                    break;
-            }
-        }
+            base.VFXAnimationEndedHandler();
 
-        public override void Action(object info = null)
-        {
-            base.Action(info);
+            BoardUnitModel creature = (BoardUnitModel)TargetUnit;
 
-            BoardUnit creature = info as BoardUnit;
+            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(creature).Transform.position);
 
-            CreateVfx(creature.Transform.position);
-
-            BoardUnit leftAdjustment = null, rightAdjastment = null;
+            BoardUnitView leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
             for (int i = 0; i < creature.OwnerPlayer.BoardCards.Count; i++)
             {
-                if (creature.OwnerPlayer.BoardCards[i] == creature)
+                if (creature.OwnerPlayer.BoardCards[i].Model == creature)
                 {
                     targetIndex = i;
                 }
@@ -64,25 +52,25 @@ namespace Loom.ZombieBattleground
 
             if (leftAdjustment != null)
             {
-                if (leftAdjustment.IsStun)
+                if (leftAdjustment.Model.IsStun)
                 {
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, leftAdjustment.Model);
                 }
                 else
                 {
-                    leftAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
+                    leftAdjustment.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
             }
 
             if (rightAdjastment != null)
             {
-                if (rightAdjastment.IsStun)
+                if (rightAdjastment.Model.IsStun)
                 {
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment.Model);
                 }
                 else
                 {
-                    rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
+                    rightAdjastment.Model.Stun(Enumerators.StunType.FREEZE, 1);
                 }
             }
 
@@ -94,6 +82,14 @@ namespace Loom.ZombieBattleground
             {
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
             }
+
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+            {
+                TargetUnit,
+            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
@@ -102,7 +98,9 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action(TargetUnit);
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+                InvokeActionTriggered();
             }
         }
     }

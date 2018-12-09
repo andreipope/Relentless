@@ -1,100 +1,139 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
     public class BattleBoardArrow : BoardArrow
     {
-        public List<object> IgnoreBoardObjectsList;
+        public List<BoardObject> IgnoreBoardObjectsList;
 
-        public List<BoardUnit> BoardCards;
+        public List<BoardUnitView> BoardCards;
 
-        public BoardUnit Owner;
+        public BoardUnitView Owner;
 
         public bool IgnoreHeavy;
 
-        public void End(BoardUnit creature)
+        public Enumerators.UnitStatusType TargetUnitStatusType;
+
+        public void End(BoardUnitView creature)
         {
             if (!StartedDrag)
                 return;
 
             StartedDrag = false;
 
-            creature.DoCombat(SelectedCard ?? (object) SelectedPlayer);
+            BoardObject target = null;
+
+            if (SelectedCard != null)
+            {
+                target = SelectedCard.Model;
+            }
+            else if (SelectedPlayer != null)
+            {
+                target = SelectedPlayer;
+            }
+
+            if (target != null)
+            {
+                creature.Model.DoCombat(target);
+
+                if (target == SelectedPlayer)
+                {
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Types.Enum.Player, -1);
+                }
+                else
+                {
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, AffectObjectType.Types.Enum.Character, SelectedCard.Model.Card.InstanceId);
+                }
+            }
+            else
+            {
+                if (TutorialManager.IsTutorial)
+                {
+                    TutorialManager.ActivateSelectTarget();
+                }
+            }
+
             Dispose();
         }
 
-        public override void OnCardSelected(BoardUnit unit)
+        public override void OnCardSelected(BoardUnitView unit)
         {
-            if (TutorialManager.IsTutorial && TutorialManager.CurrentTutorialDataStep.BoardArrowCantUsableOnUnit)
+            SelectedPlayer = null;
+            SelectedPlayer?.SetGlowStatus(false);
+
+            if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnUnits)
                 return;
 
-            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit))
+            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
                 return;
 
-            if (unit.CurrentHp <= 0)
+            if (unit.Model.CurrentHp <= 0)
                 return;
 
-            if (ElementType.Count > 0 && !ElementType.Contains(unit.Card.LibraryCard.CardSetType))
+            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.LibraryCard.CardSetType))
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) ||
                 TargetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) &&
-                unit.Transform.CompareTag("PlayerOwned") ||
+                unit.Transform.CompareTag(SRTags.PlayerOwned) ||
                 TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) &&
-                unit.Transform.CompareTag("OpponentOwned"))
+                unit.Transform.CompareTag(SRTags.OpponentOwned))
             {
-                bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || opponentHasProvoke && unit.IsHeavyUnit() || IgnoreHeavy)
+                bool opponentHasProvoke = OpponentHasHeavyUnits();
+                if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
-                    SelectedCard?.SetSelectedUnit(false);
+                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
+                        unit.Model.UnitStatus == TargetUnitStatusType)
+                    {
+                        SelectedCard?.SetSelectedUnit(false);
 
-                    SelectedCard = unit;
-                    SelectedPlayer?.SetGlowStatus(false);
-
-                    SelectedPlayer = null;
-                    SelectedCard.SetSelectedUnit(true);
+                        SelectedCard = unit;
+                        SelectedCard.SetSelectedUnit(true);
+                    }
                 }
             }
         }
 
-        public override void OnCardUnselected(BoardUnit creature)
+        public override void OnCardUnselected(BoardUnitView creature)
         {
             if (SelectedCard == creature)
             {
                 SelectedCard.SetSelectedUnit(false);
                 SelectedCard = null;
             }
+
+            SelectedPlayer?.SetGlowStatus(false);
+            SelectedPlayer = null;
         }
 
         public override void OnPlayerSelected(Player player)
         {
+            SelectedCard?.SetSelectedUnit(false);
+            SelectedCard = null;
+
             if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnPlayer)
                 return;
 
-            if (player.Health <= 0)
+            if (player.Defense <= 0)
                 return;
 
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(player))
                 return;
 
-            if (Owner != null && !Owner.HasFeral && Owner.HasBuffRush)
+            if (Owner != null && !Owner.Model.HasFeral && Owner.Model.HasBuffRush)
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT) &&
-                player.AvatarObject.CompareTag("OpponentOwned") ||
+                player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
                 TargetsType.Contains(Enumerators.SkillTargetType.PLAYER) &&
-                player.AvatarObject.CompareTag("PlayerOwned"))
+                player.AvatarObject.CompareTag(SRTags.PlayerOwned))
             {
-                bool opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-                if (!opponentHasProvoke || IgnoreHeavy)
+                if (!OpponentHasHeavyUnits() || IgnoreHeavy)
                 {
                     SelectedPlayer = player;
-
                     SelectedPlayer.SetGlowStatus(true);
-                    SelectedCard?.SetSelectedUnit(false);
-
-                    SelectedCard = null;
                 }
             }
         }
@@ -103,17 +142,17 @@ namespace Loom.ZombieBattleground
         {
             if (SelectedPlayer == player)
             {
-                SelectedCard?.SetSelectedUnit(false);
-                SelectedCard = null;
                 SelectedPlayer.SetGlowStatus(false);
                 SelectedPlayer = null;
             }
+
+            SelectedCard?.SetSelectedUnit(false);
+            SelectedCard = null;
         }
 
-        protected bool OpponentBoardContainsProvokingCreatures()
+        protected bool OpponentHasHeavyUnits()
         {
-            List<BoardUnit> provokeCards = BoardCards.FindAll(x => x.IsHeavyUnit());
-            return provokeCards.Count > 0;
+            return BoardCards?.FindAll(x => x.Model.IsHeavyUnit && x.Model.CurrentHp > 0).Count > 0;
         }
 
         private void Awake()

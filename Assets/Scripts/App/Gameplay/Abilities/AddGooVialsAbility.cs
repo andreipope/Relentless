@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -21,22 +22,36 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-            Action();
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+
+            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+                return;
+
+            InvokeActionTriggered();
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            {
+                InvokeActionTriggered();
+            }
+
+            base.UnitDiedHandler();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo)
+            if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials)
             {
                 for (int i = 0; i < Count; i++)
                 {
                     CardsController.AddCardToHand(PlayerCallerOfAbility);
                 }
             }
-            else if (PlayerCallerOfAbility.GooOnCurrentTurn == Constants.MaximumPlayerGoo - 1)
+            else if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials - 1)
             {
                 for (int i = 0; i < Count - 1; i++)
                 {
@@ -44,7 +59,14 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            PlayerCallerOfAbility.GooOnCurrentTurn += Value;
+            PlayerCallerOfAbility.GooVials += Value;
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

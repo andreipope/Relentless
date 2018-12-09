@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class PlayerManaBarItem
     {
-        private const int MeterArrowStep = 12;
+        private const int MeterArrowStep = 18;       
 
         private readonly GameObject _selfObject;
 
@@ -24,24 +25,33 @@ namespace Loom.ZombieBattleground
 
         private readonly string _overflowPrefabPath;
 
+        private IGameplayManager _gameplayManager;
+
         private GameObject _overflowObject;
 
+        private GameObject _vialGooPrefab;
+
         private TextMeshPro _overflowGooAmountText;
+        
+		private TextMeshPro _nameText;
 
         private Transform _overflowBottleContainer;
+        private Transform _overflowYellowBottleContainer;
 
         private int _maxValue, _currentValue;
 
-        private bool _isInOverflow;
+        private string _name;
 
-        public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos)
+        private bool _isInOverflow, _isAfterOverflow;
+
+        public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos, string name, string objectName)
         {
             _overflowPrefabPath = "Prefabs/" + overflowPrefabName;
             _overflowPos = overflowPos;
             _selfObject = gameObject;
-            _gooMeterObject = _selfObject.transform.Find("GooMeter").gameObject;
+            _gooMeterObject = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Gauge/CZB_3D_Overlord_gauge_LOD0").gameObject;
             _gooAmountText = _gooMeterObject.transform.Find("Text").GetComponent<TextMeshPro>();
-            _arrowObject = _gooMeterObject.transform.Find("ArrowCenter").gameObject;
+            _arrowObject = _gooMeterObject.transform.Find("gauge_indicator_LOD0").gameObject;
             _gooBottles = new List<GooBottleItem>();
             for (int i = 0; i < _selfObject.transform.childCount; i++)
             {
@@ -53,56 +63,99 @@ namespace Loom.ZombieBattleground
             }
 
             _isInOverflow = false;
+            _isAfterOverflow = false;
+            _name = name;
+            _arrowObject.transform.localEulerAngles = new Vector3(_arrowObject.transform.localEulerAngles.x,
+                                                                  _arrowObject.transform.localEulerAngles.y,
+                                                                  -90);
 
-            _arrowObject.transform.localEulerAngles = Vector3.forward * 90;
+            _gameplayManager = GameClient.Get<IGameplayManager>();
 
-            GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
+            _gameplayManager.GameEnded += GameEndedHandler;
         }
 
         public void SetGoo(int gooValue)
         {
-            _currentValue = gooValue;
-            _gooAmountText.text = _currentValue + "/" + _maxValue;
-
-            UpdateGooOVerflow();
-
-            for (int i = 0; i < _gooBottles.Count; i++)
+            InternalTools.DoActionDelayed(() =>
             {
-                if (i < _currentValue)
-                {
-                    Active(_gooBottles[i]);
-                }
-                else
-                {
-                    Disactive(_gooBottles[i]);
-                }
-            }
+                _currentValue = gooValue;
+                _gooAmountText.text = _currentValue + "/" + _maxValue;
 
-            UpdateGooMeter();
+                UpdateGooOVerflow();
+
+                for (int i = 0; i < _gooBottles.Count; i++)
+                {
+                    if (i < _currentValue)
+                    {
+                        Active(_gooBottles[i]);
+                    }
+                    else
+                    {
+                        Disactive(_gooBottles[i]);
+                    }
+                }
+                _isAfterOverflow = false;
+                UpdateGooMeter();
+
+            }, 0.1f);
+        }
+
+        public void SetViaGooPrefab(GameObject gooPrefab)
+        {
+            _vialGooPrefab = gooPrefab;
         }
 
         public void SetVialGoo(int maxValue)
         {
+            int oldMaxValue = _maxValue;
             _maxValue = maxValue;
             _gooAmountText.text = _currentValue + "/" + _maxValue;
             for (int i = 0; i < _gooBottles.Count; i++)
             {
                 _gooBottles[i].Self.SetActive(i < _maxValue ? true : false);
+                if(i >= oldMaxValue && i < _maxValue)
+                {
+                    CreateVialGooVfx(_gooBottles[i]);
+                }
             }
 
             UpdateGooOVerflow();
         }
 
+        private void CreateVialGooVfx(GooBottleItem bootle)
+        {
+            if (_vialGooPrefab == null)
+                return;
+
+            bootle.Self.SetActive(false);
+            GameObject VfxObject = Object.Instantiate(_vialGooPrefab);
+            VfxObject.transform.position = bootle.Self.transform.position;
+            _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(VfxObject, true, 4.5f);
+            InternalTools.DoActionDelayed(() =>
+            {
+                bootle.Self.SetActive(true);
+            }, 2f);
+        }
+
         public void Active(GooBottleItem item)
         {
-            item.FullBoottle.DOFade(1.0f, 0.5f);
-            item.GlowBottle.DOFade(1.0f, 0.5f);
+            if (item.Self.activeInHierarchy)
+            {
+                item.selfAnimator.SetBool("IsFull", true);
+                if (_isAfterOverflow)
+                {
+                    item.selfAnimator.Play("gooFilling", 0, 1);
+                }
+            }
+
+            item.glow.Play();
         }
 
         public void Disactive(GooBottleItem item)
         {
-            item.FullBoottle.DOFade(0.0f, 0.5f);
-            item.GlowBottle.DOFade(0.0f, 0.5f);
+            if (item.selfAnimator.gameObject.activeInHierarchy) {
+			    item.selfAnimator.SetBool("IsFull", false);
+            }
         }
 
         private void UpdateGooOVerflow()
@@ -112,11 +165,13 @@ namespace Loom.ZombieBattleground
                 CreateOverflow();
 
                 _isInOverflow = true;
+
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CARDS, "CZB_AUD_Overflow_Card_Mechanic_F1_EXP", Constants.SfxSoundVolume, false, true);
             }
             else if (_currentValue <= _maxValue && _isInOverflow)
             {
                 DestroyOverflow();
-
+                _isAfterOverflow = true;
                 _isInOverflow = false;
             }
 
@@ -125,20 +180,25 @@ namespace Loom.ZombieBattleground
                 _overflowGooAmountText.text = _currentValue + "/" + _maxValue;
                 for (int i = 0; i < _overflowBottleContainer.childCount; i++)
                 {
-                    _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false);
+                    _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _maxValue ? true : false);
+                }
+                for (int i = 0; i < _overflowYellowBottleContainer.childCount; i++)
+                {
+                    _overflowYellowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue && i >= _maxValue ? true : false);
                 }
             }
         }
 
         private void UpdateGooMeter()
         {
-            int targetRotation = 90 - MeterArrowStep * _currentValue;
-            if (targetRotation < -90)
+            int targetRotation = -90 + MeterArrowStep * _currentValue;
+            if (targetRotation > 90)
             {
-                targetRotation = -90;
+                targetRotation = 90;
             }
-
-            _arrowObject.transform.DORotate(Vector3.forward * targetRotation, 1f);
+            Vector3 rotation = _arrowObject.transform.eulerAngles;
+            rotation.z = targetRotation;
+            _arrowObject.transform.DORotate(rotation, 1f);
         }
 
         private void CreateOverflow()
@@ -148,9 +208,16 @@ namespace Loom.ZombieBattleground
             _overflowObject.transform.localPosition = _overflowPos;
             _overflowGooAmountText = _overflowObject.transform.Find("clock/Text").GetComponent<TextMeshPro>();
             _overflowBottleContainer = _overflowObject.transform.Find("Bottles").transform;
+            _overflowYellowBottleContainer = _overflowObject.transform.Find("Bottle_Overflow").transform;
+            _nameText = _overflowObject.transform.Find("NameText").GetComponent<TextMeshPro>();
+            _nameText.text = _name;
             for (int i = 0; i < _overflowBottleContainer.childCount; i++)
             {
-                _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue ? true : false);
+                _overflowBottleContainer.GetChild(i).gameObject.SetActive(i < _maxValue ? true : false);
+            }
+            for (int i = 0; i < _overflowYellowBottleContainer.childCount; i++)
+            {
+                _overflowYellowBottleContainer.GetChild(i).gameObject.SetActive(i < _currentValue && i >= _maxValue ? true : false);
             }
 
             _selfObject.SetActive(false);
@@ -173,6 +240,7 @@ namespace Loom.ZombieBattleground
             Object.Destroy(_overflowObject);
             _overflowObject = null;
             _overflowBottleContainer = null;
+            _overflowYellowBottleContainer = null;
             _overflowGooAmountText = null;
             _selfObject.SetActive(true);
 
@@ -198,20 +266,22 @@ namespace Loom.ZombieBattleground
 
             _isInOverflow = false;
 
-            GameClient.Get<IGameplayManager>().GameEnded -= GameEndedHandler;
+            _gameplayManager.GameEnded -= GameEndedHandler;
         }
 
         public struct GooBottleItem
         {
-            public SpriteRenderer FullBoottle, GlowBottle;
-
             public GameObject Self;
+                
+			public Animator selfAnimator;
+
+            public ParticleSystem glow;
 
             public GooBottleItem(GameObject gameObject)
             {
                 Self = gameObject;
-                FullBoottle = Self.transform.Find("Goo").GetComponent<SpriteRenderer>();
-                GlowBottle = Self.transform.Find("BottleGlow").GetComponent<SpriteRenderer>();
+                selfAnimator = Self.GetComponent<Animator>();
+                glow = Self.transform.Find("GlowBottle").GetComponent<ParticleSystem>();
             }
         }
     }

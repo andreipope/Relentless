@@ -34,14 +34,18 @@ namespace Loom.ZombieBattleground
             Pages = new List<IUIElement>();
             Pages.Add(new LoadingPage());
             Pages.Add(new MainMenuPage());
-            Pages.Add(new HeroSelectionPage());
+            Pages.Add(new OverlordSelectionPage());
             Pages.Add(new HordeSelectionPage());
-            Pages.Add(new CollectionPage());
-            Pages.Add(new DeckEditingPage());
+            Pages.Add(new ArmyPage());
+            Pages.Add(new HordeEditingPage());
             Pages.Add(new ShopPage());
             Pages.Add(new GameplayPage());
             Pages.Add(new PackOpenerPage());
             Pages.Add(new CreditsPage());
+            Pages.Add(new PlaySelectionPage());
+            Pages.Add(new PvPSelectionPage());
+            Pages.Add(new CustomGameModeListPage());
+            Pages.Add(new CustomGameModeCustomUiPage());
 
             foreach (IUIElement page in Pages)
             {
@@ -57,15 +61,22 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new PreparingForBattlePopup());
             _uiPopups.Add(new YouLosePopup());
             _uiPopups.Add(new YouWonPopup());
+            _uiPopups.Add(new LevelUpPopup());
             _uiPopups.Add(new YourTurnPopup());
             _uiPopups.Add(new ConfirmationPopup());
             _uiPopups.Add(new LoadingGameplayPopup());
             _uiPopups.Add(new PlayerOrderPopup());
             _uiPopups.Add(new TermsPopup());
             _uiPopups.Add(new LoginPopup());
+            _uiPopups.Add(new MatchMakingPopup());
             _uiPopups.Add(new ConnectionPopup());
             _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
+            _uiPopups.Add(new PastActionsPopup());
+            _uiPopups.Add(new SettingsPopup());
+            _uiPopups.Add(new UpdatePopup());
+            _uiPopups.Add(new MulliganPopup());
+            _uiPopups.Add(new LoadDataMessagePopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
@@ -101,6 +112,14 @@ namespace Loom.ZombieBattleground
             foreach (IUIElement page in Pages)
             {
                 page.Hide();
+            }
+        }
+
+        public void HideAllPopups()
+        {
+            foreach (IUIPopup popup in _uiPopups)
+            {
+                popup.Hide();
             }
         }
 

@@ -8,7 +8,7 @@ using System;
 #endif
 #endif
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Editor
 {
     public class UpdatePlayerSettingsVersions : IPreprocessBuildWithReport
     {

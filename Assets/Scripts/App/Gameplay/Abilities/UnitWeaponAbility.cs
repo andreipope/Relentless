@@ -1,5 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -8,33 +10,36 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
+        public int Health;
+
         public int Damage;
+
+        public event Action TurnEndedEvent;
 
         public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Damage = ability.Damage;
+            Health = ability.Health;
         }
 
         public override void Activate()
         {
             base.Activate();
-
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (TargetUnit != null)
-            {
-                TargetUnit.CurrentDamage += Value;
-                TargetUnit.BuffedDamage += Value;
+            TargetUnit.CurrentDamage += Value;
+            TargetUnit.BuffedDamage += Value;
 
-                CreateVfx(TargetUnit.Transform.position, true, 5f);
-            }
+            TargetUnit.CurrentHp += Health;
+            TargetUnit.BuffedHp += Health;
+
+            TargetUnit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
         }
 
         protected override void InputEndedHandler()
@@ -43,13 +48,25 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
-
                 if (TargetUnit != null)
                 {
+                    InvokeActionTriggered();
+
                     TargetUnit.UnitDied += TargetUnitDiedHandler;
+
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                    {
+                       TargetUnit
+                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
                 }
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
 
         protected override void TurnEndedHandler()
@@ -58,6 +75,8 @@ namespace Loom.ZombieBattleground
 
             if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
+
+            TurnEndedEvent?.Invoke();
 
             ActionEnd();
         }
@@ -68,7 +87,9 @@ namespace Loom.ZombieBattleground
             {
                 BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
-                CreateVfx(TargetUnit.Transform.position, true, 5f);
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
+
+                TargetUnit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿using Loom.Google.Protobuf;
 using System.Threading.Tasks;
-using Loom.Client.Internal.Protobuf;
+using Loom.Client.Protobuf;
 
 namespace Loom.Client
 {
@@ -33,9 +33,9 @@ namespace Loom.Client
             this.publicKeyHex = CryptoUtils.BytesToHexString(this.PublicKey);
         }
 
-        public async Task<byte[]> Handle(byte[] txData)
+        public virtual async Task<byte[]> Handle(byte[] txData)
         {
-            var nonce = await this.Client.GetNonceAsync(this.publicKeyHex);
+            var nonce = await this.Client.GetNonceAsyncNonBlocking(this.publicKeyHex);
             var tx = new NonceTx
             {
                 Inner = ByteString.CopyFrom(txData),

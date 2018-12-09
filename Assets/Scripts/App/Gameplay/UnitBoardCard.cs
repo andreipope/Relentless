@@ -7,8 +7,6 @@ namespace Loom.ZombieBattleground
 {
     public class UnitBoardCard : BoardCard
     {
-        public int InitialHealth, InitialDamage;
-
         protected TextMeshPro AttackText;
 
         protected SpriteRenderer TypeSprite;
@@ -55,17 +53,14 @@ namespace Loom.ZombieBattleground
         {
             base.Init(card);
 
-            Damage = card.LibraryCard.Damage;
-            InitialDamage = card.LibraryCard.Damage;
-
-            Health = card.LibraryCard.Health;
-            InitialHealth = card.LibraryCard.Health;
+            Damage = card.InstanceCard.Damage;
+            Health = card.InstanceCard.Health;
 
             AttackText.text = Damage.ToString();
             DefenseText.text = Health.ToString();
 
             TypeSprite.sprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", card.InstanceCard.CardType + "_icon"));
 
             DamageChangedEvent += (oldValue, newValue) =>
             {
@@ -77,7 +72,7 @@ namespace Loom.ZombieBattleground
             };
         }
 
-        public override void Init(Card card, int amount = 0)
+        public override void Init(IReadOnlyCard card, int amount = 0)
         {
             base.Init(card, amount);
 
@@ -85,7 +80,7 @@ namespace Loom.ZombieBattleground
             DefenseText.text = card.Health.ToString();
 
             TypeSprite.sprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.CardType + "_icon"));
         }
     }
 }

@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -14,6 +15,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -27,7 +31,7 @@ namespace Loom.ZombieBattleground
             int targetIndex = -1;
             for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards[i] == AbilityUnitOwner)
+                if (PlayerCallerOfAbility.BoardCards[i].Model == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
@@ -48,9 +52,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static void TakeHeavyToUnit(BoardUnit unit)
+        private static void TakeHeavyToUnit(BoardUnitView unit)
         {
-            unit?.SetAsHeavyUnit();
+            unit?.Model.SetAsHeavyUnit();
         }
     }
 }

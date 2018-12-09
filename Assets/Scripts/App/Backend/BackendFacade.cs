@@ -1,37 +1,42 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.Google.Protobuf;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
+using Deck = Loom.ZombieBattleground.Protobuf.Deck;
+using System.Text;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
+        private int _subscribeCount;
+
+        public int SubscribeCount
+        {
+            get { return _subscribeCount; }
+        }
+
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
-        public BackendFacade(string authBackendHost, string readerHost, string writerHost)
-        {
-            AuthBackendHost = authBackendHost;
-            ReaderHost = readerHost;
-            WriterHost = writerHost;
+        public delegate void PlayerActionDataReceivedHandler(byte[] bytes);
 
-            Debug.Log($"Using auth backend {AuthBackendHost}");
-            Debug.Log($"Using writer host {WriterHost}, reader host {ReaderHost}");
+        public BackendFacade(BackendEndpoint backendEndpoint)
+        {
+            BackendEndpoint = backendEndpoint;
         }
 
         public event ContractCreatedEventHandler ContractCreated;
 
-        public string ReaderHost { get; set; }
-
-        public string WriterHost { get; set; }
-
-        public string AuthBackendHost { get; set; }
+        public BackendEndpoint BackendEndpoint { get; set; }
 
         public Contract Contract { get; private set; }
 
@@ -39,9 +44,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
+        private IRpcClient reader;
+
         public void Init()
         {
+            Debug.Log("Auth Host: " + BackendEndpoint.AuthHost);
+            Debug.Log("Reader Host: " + BackendEndpoint.ReaderHost);
+            Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
+            Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
+
+        public string DAppChainWalletAddress = string.Empty;
 
         public void Update()
         {
@@ -56,11 +69,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            IRpcClient writer = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(WriterHost)
-                .Create();
+            IRpcClient writer =
+                RpcClientFactory
+                    .Configure()
+                    .WithLogger(Debug.unityLogger)
+                    .WithWebSocket(BackendEndpoint.WriterHost)
+                    .Create();
 
-            IRpcClient reader = RpcClientFactory.Configure().WithLogger(Debug.unityLogger).WithWebSocket(ReaderHost)
-                .Create();
+            reader =
+                RpcClientFactory
+                    .Configure()
+                    .WithLogger(Debug.unityLogger)
+                    .WithWebSocket(BackendEndpoint.ReaderHost)
+                    .Create();
 
             DAppChainClient client = new DAppChainClient(writer, reader)
             {
@@ -72,7 +93,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 new NonceTxMiddleware(publicKey, client), new SignedTxMiddleware(privateKey)
             });
 
-            client.AutoReconnect = false;
+            client.Configuration.AutoReconnect = false;
 
             await client.ReadClient.ConnectAsync();
             await client.WriteClient.ConnectAsync();
@@ -104,7 +125,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<ListCardLibraryResponse> GetCardLibrary()
         {
-            ListCardLibraryRequest request = new ListCardLibraryRequest();
+            ListCardLibraryRequest request = new ListCardLibraryRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
 
             return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
         }
@@ -112,6 +136,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #endregion
 
         #region Deck Management
+
+        private const string GetAiDecksDataMethod = "GetAIDecks";
 
         private const string GetDeckDataMethod = "ListDecks";
 
@@ -131,90 +157,50 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
         }
 
-        public async Task DeleteDeck(string userId, long deckId, long lastModificationTimestamp)
+        public async Task<GetAIDecksResponse> GetAiDecks()
+        {
+            GetAIDecksRequest request = new GetAIDecksRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAiDecksDataMethod, request);
+        }
+
+        public async Task DeleteDeck(string userId, long deckId)
         {
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId,
-                LastModificationTimestamp = lastModificationTimestamp
+                DeckId = deckId
             };
 
             await Contract.CallAsync(DeleteDeckMethod, request);
         }
 
-        public async Task EditDeck(string userId, Data.Deck deck, long lastModificationTimestamp)
+        public async Task EditDeck(string userId, Data.Deck deck)
         {
-            EditDeckRequest request = EditDeckRequest(userId, deck, lastModificationTimestamp);
+            EditDeckRequest request = new EditDeckRequest
+            {
+                UserId = userId,
+                Deck = deck.ToProtobuf(),
+                Version = BackendEndpoint.DataVersion
+            };
 
             await Contract.CallAsync(EditDeckMethod, request);
         }
 
-        public async Task<long> AddDeck(string userId, Data.Deck deck, long lastModificationTimestamp)
+        public async Task<long> AddDeck(string userId, Data.Deck deck)
         {
-            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
-
-            for (int i = 0; i < deck.Cards.Count; i++)
-            {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.Cards[i].CardName,
-                    Amount = deck.Cards[i].Amount
-                };
-                Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
-                cards.Add(cardInCollection);
-            }
-
             CreateDeckRequest request = new CreateDeckRequest
             {
                 UserId = userId,
-                Deck = new Deck
-                {
-                    Name = deck.Name,
-                    HeroId = deck.HeroId,
-                    Cards =
-                    {
-                        cards
-                    }
-                },
-                LastModificationTimestamp = lastModificationTimestamp
+                Deck = deck.ToProtobuf(),
+                Version = BackendEndpoint.DataVersion
             };
 
             CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
-        }
-
-        private static EditDeckRequest EditDeckRequest(string userId, Data.Deck deck, long lastModificationTimestamp)
-        {
-            RepeatedField<CardCollection> cards = new RepeatedField<CardCollection>();
-
-            for (int i = 0; i < deck.Cards.Count; i++)
-            {
-                CardCollection cardInCollection = new CardCollection
-                {
-                    CardName = deck.Cards[i].CardName,
-                    Amount = deck.Cards[i].Amount
-                };
-                Debug.Log("Card in collection = " + cardInCollection.CardName + " , " + cardInCollection.Amount);
-                cards.Add(cardInCollection);
-            }
-
-            EditDeckRequest request = new EditDeckRequest
-            {
-                UserId = userId,
-                Deck = new Deck
-                {
-                    Id = deck.Id,
-                    Name = deck.Name,
-                    HeroId = deck.HeroId,
-                    Cards =
-                    {
-                        cards
-                    }
-                },
-                LastModificationTimestamp = lastModificationTimestamp
-            };
-            return request;
         }
 
         #endregion
@@ -233,6 +219,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
         }
 
+        private const string GlobalHeroesList = "ListHeroLibrary";
+
+        public async Task<ListHeroLibraryResponse> GetGlobalHeroesList()
+        {
+            ListHeroLibraryRequest request = new ListHeroLibraryRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.StaticCallAsync<ListHeroLibraryResponse>(GlobalHeroesList, request);
+        }
+
         #endregion
 
         #region Login
@@ -243,6 +241,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             UpsertAccountRequest req = new UpsertAccountRequest
             {
+                Version = BackendEndpoint.DataVersion,
                 UserId = userId
             };
 
@@ -251,60 +250,66 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
-        #region Turn Logs
-
-        private const string UploadActionLogMethod = "UploadHistory"; // just a random method for now
-
-        public async Task UploadActionLog(string userId, ActionLogModel actionLogModel)
-        {
-            string actionLogModelJson = JsonConvert.SerializeObject(actionLogModel, Formatting.Indented);
-            Dictionary<string, object> actionLogModelJsonDictionary =
-                JsonConvert.DeserializeObject<Dictionary<string, object>>(actionLogModelJson);
-            actionLogModelJson =
-                JsonConvert.SerializeObject(actionLogModelJsonDictionary[nameof(ActionLogModel.LogData)],
-                    Formatting.Indented);
-            Debug.Log("Logging action: \n" + actionLogModelJson);
-            await Task.Delay(1000);
-        }
-
-        #endregion
-
         #region Auth
 
-        private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
+        private const string UserInfoEndPoint = "/user/info";
 
-        private const string AuthBetaConfigEndPoint = "/user/beta/config";
+        private const string loginEndPoint = "/auth/email/login";
 
-        public async Task<bool> CheckIfBetaKeyValid(string betaKey)
+        public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + UserInfoEndPoint;
+            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + accessToken);
+
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+                
+            Debug.Log(httpResponseMessage.ToString());
+
             if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception(
-                    $"{nameof(CheckIfBetaKeyValid)} failed with error code {httpResponseMessage.StatusCode}");
+                throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
 
-            BetaKeyValidationResponse betaKeyValidationResponse =
-                httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
-            return betaKeyValidationResponse.IsValid;
-        }
-
-        public async Task<BetaConfig> GetBetaConfig(string betaKey)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = AuthBackendHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
-
-            BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(
+            UserInfo userInfo = JsonConvert.DeserializeObject<UserInfo>(
                 httpResponseMessage.ReadToEnd(),
 
                 // FIXME: backend should return valid version numbers at all times
                 new VersionConverterWithFallback(Version.Parse(Constants.CurrentVersionBase)));
-            return betaConfig;
+
+            return userInfo;
+        }
+
+        public async Task<LoginData> InitiateLogin(string email, string password)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + loginEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.email = email;
+            loginRequest.password = password;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(loginRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+                
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+                
+            LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
+                httpResponseMessage.ReadToEnd());
+            return loginData;
+        }
+
+        private struct LoginRequest 
+        {
+            public string email;
+            public string password;
         }
 
         private struct BetaKeyValidationResponse
@@ -315,5 +320,336 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
+        #region PVP
+
+        private const string FindMatchMethod = "FindMatch";
+        private const string DebugFindMatchMethod = "DebugFindMatch";
+        private const string CancelFindMatchMethod = "CancelFindMatch";
+        private const string EndMatchMethod = "EndMatch";
+        private const string SendPlayerActionMethod = "SendPlayerAction";
+        private const string GetGameStateMethod = "GetGameState";
+        private const string GetMatchMethod = "GetMatch";
+        private const string CheckGameStatusMethod = "CheckGameStatus";
+        private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
+        private const string AcceptMatchMethod = "AcceptMatch";
+
+        public PlayerActionDataReceivedHandler PlayerActionDataReceived;
+
+        public async Task<AcceptMatchResponse> AcceptMatch(string userId, long matchId)
+        {
+            AcceptMatchRequest request = new AcceptMatchRequest
+            {
+                UserId = userId,
+                MatchId = matchId
+            };
+
+            return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
+        }
+
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, List<string> pvpTags = null)
+        {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
+            RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
+            {
+                UserId = userId,
+                DeckId = deckId,
+                Version = BackendEndpoint.DataVersion,
+                RandomSeed = (long)Time.time,
+                Tags = { },
+                CustomGame = customGameModeAddress?.ToProtobufAddress()
+            };
+
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
+
+            return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
+        }
+
+        public async Task<FindMatchResponse> FindMatch(string userId, List<string> pvpTags = null)
+        {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
+            /* if (pvpTags == null)
+            {
+                pvpTags = new Google.Protobuf.Collections.RepeatedField<string>();
+            } */
+
+            FindMatchRequest request = new FindMatchRequest
+            {
+                UserId = userId
+            };
+
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
+
+            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+        }
+
+        public async Task<FindMatchResponse> DebugFindMatch(string userId, Loom.ZombieBattleground.Data.Deck deck, Address? customGameModeAddress)
+        {
+            Client.Protobuf.Address requestCustomGameAddress = null;
+            if (customGameModeAddress != null)
+            {
+                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
+            }
+
+            DebugFindMatchRequest request = new DebugFindMatchRequest
+            {
+                UserId = userId,
+                Deck = deck.GetDeck(),
+                CustomGame = requestCustomGameAddress,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await Contract.CallAsync<FindMatchResponse>(DebugFindMatchMethod, request);
+        }
+
+        public async Task<CancelFindMatchResponse> CancelFindMatch(string userId, long matchId)
+        {
+            CancelFindMatchRequest request = new CancelFindMatchRequest
+            {
+                UserId = userId,
+                MatchId = matchId
+            };
+
+            return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
+        }
+
+        public async Task<CancelFindMatchResponse> CancelFindMatchRelatedToUserId(string userId)
+        {
+            CancelFindMatchRequest request = new CancelFindMatchRequest
+            {
+                UserId = userId
+            };
+
+            return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
+        }
+
+        public async Task<GetGameStateResponse> GetGameState(long matchId)
+        {
+            GetGameStateRequest request = new GetGameStateRequest
+            {
+                MatchId = matchId
+            };
+
+            return await Contract.StaticCallAsync<GetGameStateResponse>(GetGameStateMethod, request);
+        }
+
+        public async Task<GetMatchResponse> GetMatch(long matchId)
+        {
+            GetMatchRequest request = new GetMatchRequest
+            {
+                MatchId = matchId
+            };
+
+            return await Contract.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
+        }
+
+        public async Task SubscribeEvent(List<string> topics)
+         {
+            //TODO Remove the logs once we fix the multiple subscription issue once and for all
+            Debug.Log("Subscribing to Event - Current Subscriptions = " + _subscribeCount);
+            for (int i = _subscribeCount; i > 0; i--) {
+                await UnsubscribeEvent();
+            }
+
+            await reader.SubscribeAsync(EventHandler, topics);
+            _subscribeCount++;
+            Debug.Log("Final Subscriptions = " + _subscribeCount);
+        }
+
+         public async Task UnsubscribeEvent()
+         {
+            //TODO Remove the logs once we fix the multiple subscription issue once and for all
+            if (_subscribeCount > 0)
+            {
+                Debug.Log("Unsubscribing from Event - Current Subscriptions = " + _subscribeCount);
+                try
+                {
+                    await reader.UnsubscribeAsync(EventHandler);
+                    _subscribeCount--;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("Unsubscribe Error " + e);
+                }
+
+            }
+            else
+            {
+                Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
+            }
+            GameClient.Get<IQueueManager>().Clear();
+        }
+
+        public void EventHandler(object sender, JsonRpcEventData e)
+        {
+            PlayerActionDataReceived?.Invoke(e.Data);
+        }
+
+        public void AddAction(long matchId, PlayerAction playerAction)
+        {
+            PlayerActionRequest request = new PlayerActionRequest
+            {
+                MatchId = matchId,
+                PlayerAction = playerAction
+            };
+
+            GameClient.Get<IQueueManager>().AddAction(request);
+        }
+
+        public void EndMatch(string userId, int matchId, string winnerId)
+        {
+            EndMatchRequest request = new EndMatchRequest
+            {
+                UserId = userId,
+                MatchId = matchId,
+                WinnerId = winnerId
+            };
+
+            GameClient.Get<IQueueManager>().AddAction(request);
+        }
+
+        public async Task SendAction(IMessage request)
+        {
+            switch (request)
+            {
+                case PlayerActionRequest playerActionMessage:
+                    try
+                    {
+                        await Contract.CallAsync(SendPlayerActionMethod, playerActionMessage);
+                    }
+                    catch (TimeoutException exception)
+                    {
+                        Debug.LogError(" Time out == " + exception);
+                        ShowConnectionPopup();
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.LogError(" other == " + exception);
+                        ShowConnectionPopup();
+                    }
+                    break;
+
+                case EndMatchRequest endMatchMessage:
+                    try
+                    {
+                        await Contract.CallAsync(EndMatchMethod, endMatchMessage);
+                    }
+                    catch (TimeoutException exception)
+                    {
+                        Debug.LogError(" Time out == " + exception);
+                        ShowConnectionPopup();
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.LogError(" other == " + exception);
+                        ShowConnectionPopup();
+                    }
+                    break;
+            }
+        }
+
+        public void ShowConnectionPopup()
+        {
+            IUIManager uiManager = GameClient.Get<IUIManager>();
+            IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+            ConnectionPopup connectionPopup = uiManager.GetPopup<ConnectionPopup>();
+
+            if (gameplayManager.CurrentPlayer == null)
+            {
+                return;
+            }
+
+            if (connectionPopup.Self == null)
+            {
+                Func<Task> connectFuncInGame = async () =>
+                {
+                    GameClient.Get<IQueueManager>().Clear();
+                    gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+                    gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                    connectionPopup.Hide();
+                };
+
+                connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
+                connectionPopup.Show();
+                connectionPopup.ShowFailedInGamePlay();
+            }
+        }
+
+        public async Task<CheckGameStatusResponse> CheckPlayerStatus(long matchId)
+        {
+            CheckGameStatusRequest request = new CheckGameStatusRequest
+            {
+                MatchId = matchId
+            };
+
+            return await Contract.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
+        }
+
+        #endregion
+
+        #region Custom Game Modes
+
+        private const string ListGameModesMethod = "ListGameModes";
+        private const string CallCustomGameModeFunctionMethod = "CallCustomGameModeFunction";
+        private const string GetGameModeCustomUiMethod = "GetGameModeCustomUi";
+
+        public async Task<GameModeList> GetCustomGameModeList()
+        {
+            ListGameModesRequest request = new ListGameModesRequest();
+            return await Contract.StaticCallAsync<GameModeList>(ListGameModesMethod, request);
+        }
+
+        public async Task<GetCustomGameModeCustomUiResponse> GetGameModeCustomUi(Address address)
+        {
+            GetCustomGameModeCustomUiRequest request = new GetCustomGameModeCustomUiRequest
+            {
+                Address = address.ToProtobufAddress()
+            };
+
+            return await Contract.StaticCallAsync<GetCustomGameModeCustomUiResponse>(GetGameModeCustomUiMethod, request);
+        }
+
+        public async Task CallCustomGameModeFunction(Address address, byte[] callData)
+        {
+            CallCustomGameModeFunctionRequest request = new CallCustomGameModeFunctionRequest
+            {
+                Address = address.ToProtobufAddress(),
+                CallData = ByteString.CopyFrom(callData)
+            };
+
+            await Contract.CallAsync(CallCustomGameModeFunctionMethod, request);
+        }
+
+        #endregion
     }
 }

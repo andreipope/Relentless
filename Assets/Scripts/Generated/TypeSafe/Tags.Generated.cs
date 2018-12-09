@@ -42,6 +42,8 @@ namespace Loom.ZombieBattleground {
         
         public const string Cameras = "Cameras";
         
+        public const string BattlegroundTouchingArea = "BattlegroundTouchingArea";
+        
         private static global::System.Collections.Generic.IList<string> @__all = new global::System.Collections.ObjectModel.ReadOnlyCollection<string>(new string[] {
                     "Untagged",
                     "Respawn",
@@ -52,7 +54,8 @@ namespace Loom.ZombieBattleground {
                     "GameController",
                     "PlayerOwned",
                     "OpponentOwned",
-                    "Cameras"});
+                    "Cameras",
+                    "BattlegroundTouchingArea"});
         
         public static global::System.Collections.Generic.IList<string> All {
             get {

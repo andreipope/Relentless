@@ -1,28 +1,34 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
     public class RestoreDefRandomlySplitAbility : AbilityBase
     {
-        private List<object> _targets;
+        private List<BoardObject> _targets;
 
-        public int Value;
+        public int Count;
         public List<Enumerators.AbilityTargetType> TargetTypes;
 
         public RestoreDefRandomlySplitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Count = ability.Count;
             TargetTypes = ability.AbilityTargetTypes;
 
-            _targets = new List<object>();
+            _targets = new List<BoardObject>();
         }
 
         public override void Activate()
         {
             base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Restore);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -36,14 +42,21 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             FillRandomTargets();
+            InvokeActionTriggered(_targets);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
             SplitDefense();
         }
 
         private void FillRandomTargets()
         {
-            foreach(Enumerators.AbilityTargetType targetType in TargetTypes)
+            foreach (Enumerators.AbilityTargetType targetType in TargetTypes)
             {
-                switch(targetType)
+                switch (targetType)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
                         _targets.Add(GameplayManager.OpponentPlayer);
@@ -52,12 +65,13 @@ namespace Loom.ZombieBattleground
                         _targets.Add(GameplayManager.CurrentPlayer);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _targets.AddRange(GameplayManager.CurrentPlayer.BoardCards);
+                        _targets.AddRange(GameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model));
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _targets.AddRange(GameplayManager.OpponentPlayer.BoardCards);
+                        _targets.AddRange(GameplayManager.OpponentPlayer.BoardCards.Select(x => x.Model));
                         break;
-                    default: break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);
                 }
             }
         }
@@ -67,30 +81,48 @@ namespace Loom.ZombieBattleground
             if (_targets.Count == 0)
                 return;
 
-            int maxCount = Value;
+            List<ParametrizedAbilityBoardObject> abilityTargets = new List<ParametrizedAbilityBoardObject>();    
+
+            int maxCount = Count;
             int defenseValue = 0;
             int blocksCount = _targets.Count;
-            object currentTarget = null;
+            BoardObject currentTarget = null;
 
             while (maxCount > 0)
             {
-                defenseValue = UnityEngine.Random.Range(1, blocksCount > Value ? Value + 1 : _targets.Count);
+                defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, blocksCount > Count ? maxCount : _targets.Count + 1);
+
                 currentTarget = _targets[UnityEngine.Random.Range(0, _targets.Count)];
-                RestoreDefenseOfTarget(currentTarget, defenseValue);
                 maxCount -= defenseValue;
+
+                RestoreDefenseOfTarget(currentTarget, defenseValue);
                 _targets.Remove(currentTarget);
+
+                abilityTargets.Add(new ParametrizedAbilityBoardObject()
+                {
+                    BoardObject = currentTarget,
+                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                    {
+                        Defense = defenseValue
+                    }
+                });
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, abilityTargets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)
         {
-            if(target is BoardUnit unit)
+            switch (target)
             {
-                BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, defenseValue);
-            }
-            else if(target is Player player)
-            {
-                BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
+                case BoardUnitModel unit:
+                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, defenseValue);
+                    break;
+                case Player player:
+                    BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
         }
     }

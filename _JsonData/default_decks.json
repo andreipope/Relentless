@@ -1,0 +1,81 @@
+{
+  "decks": [
+    {
+      "id": 0,
+      "heroId": 4,
+      "name": "Default",
+      "cards": [
+        {
+          "cardName": "Poizom",
+          "amount": 4
+        },
+        {
+          "cardName": "Hazmaz",
+          "amount": 2
+        },
+        {
+          "cardName": "Zeeter",
+          "amount": 1
+        },
+        {
+          "cardName": "Zhatterer",
+          "amount": 4
+        },
+        {
+          "cardName": "Zludge",
+          "amount": 2
+        },
+        {
+          "cardName": "Znowman",
+          "amount": 4
+        },
+        {
+          "cardName": "Z-Virus",
+          "amount": 1
+        },
+        {
+          "cardName": "Gaea",
+          "amount": 1
+        },
+        {
+          "cardName": "Earthshaker",
+          "amount": 1
+        },
+        {
+          "cardName": "Zeptic",
+          "amount": 1
+        },
+        {
+          "cardName": "Ghoul",
+          "amount": 1
+        },
+        {
+          "cardName": "Hazzard",
+          "amount": 1
+        },
+        {
+          "cardName": "Ectoplasm",
+          "amount": 1
+        },
+        {
+          "cardName": "Bouncer",
+          "amount": 2
+        },
+        {
+          "cardName": "Stapler",
+          "amount": 1
+        },
+        {
+          "cardName": "Goo Bottles",
+          "amount": 1
+        },
+        {
+          "cardName": "Chainsaw",
+          "amount": 2
+        }
+      ],
+      "PrimarySkill": "POISON_DART",
+      "SecondarySkill": "TOXIC_POWER"
+    }
+  ]
+}

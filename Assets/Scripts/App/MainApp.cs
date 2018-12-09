@@ -1,5 +1,6 @@
 using System;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -34,12 +35,6 @@ namespace Loom.ZombieBattleground
             if (Instance == this)
             {
                 GameClient.Instance.InitServices();
-
-#if DEV_MODE
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true, false, true);
-                GameClient.Get<IDataManager>().StartLoadCache();
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.DECK_SELECTION);
-#endif
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 

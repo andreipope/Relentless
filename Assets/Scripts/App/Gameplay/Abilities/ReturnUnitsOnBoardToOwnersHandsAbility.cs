@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -6,14 +7,21 @@ namespace Loom.ZombieBattleground
 {
     public class ReturnUnitsOnBoardToOwnersHandsAbility : AbilityBase
     {
+        public int Value { get; }
+
+        private List<BoardUnitView> _units;
+
         public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            Value = ability.Value;
         }
 
         public override void Activate()
         {
             base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -25,29 +33,39 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnit> units = new List<BoardUnit>();
-            units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
-            units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            foreach (BoardUnit unit in units)
+            _units = new List<BoardUnitView>();
+            _units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
+            _units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
+            _units =
+                _units
+                    .Where(x => x.Model != AbilityUnitOwner)
+                    .ToList();
+
+            if (Value > 0)
+            {
+                _units = _units.Where(x => x.Model.Card.InstanceCard.Cost <= Value).ToList();
+            }
+
+            InvokeActionTriggered(_units);
+        }
+
+        private void ReturnBoardUnitToHand(BoardUnitView unit)
+        {
+            CardsController.ReturnCardToHand(unit);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            foreach (BoardUnitView unit in _units)
             {
                 ReturnBoardUnitToHand(unit);
             }
 
-            units.Clear();
-        }
-
-        private void ReturnBoardUnitToHand(BoardUnit unit)
-        {
-            CreateVfx(unit.Transform.position, true, 3f, true);
-
-            CardsController.ReturnCardToHand(unit);
-
-            ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                Enumerators.ActionType.RETURN_TO_HAND_CARD_ABILITY, new object[]
-                {
-                    PlayerCallerOfAbility, AbilityData, unit
-                }));
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -21,6 +22,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+
             switch (AbilityEffectType)
             {
                 case Enumerators.AbilityEffectType.STUN_FREEZES:
@@ -30,26 +34,69 @@ namespace Loom.ZombieBattleground
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS))
+            {
+                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+                foreach (BoardUnitView unit in GetOpponentOverlord().BoardCards)
+                {
+                    StunUnit(unit.Model);
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                        Target = unit.Model,
+                    });
+                }
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
+            }
+        }
+
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnit)
+            if (info is BoardUnitModel unit)
             {
-                BoardUnit creature = info as BoardUnit;
-                creature.Stun(Enumerators.StunType.FREEZE, Value);
-                CreateVfx(creature.Transform.position);
+                StunUnit(unit);
 
-                ActionsQueueController.PostGameActionReport(ActionsQueueController.FormatGameActionReport(
-                    Enumerators.ActionType.STUN_CREATURE_BY_ABILITY, new object[]
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
-                        AbilityUnitOwner, creature
-                    }));
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                            Target = unit,
+                        }
+                    }
+                });
             }
+        }
+
+        private void StunUnit(BoardUnitModel unit)
+        {
+            unit.Stun(Enumerators.StunType.FREEZE, 1);
+
+            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position);
         }
     }
 }

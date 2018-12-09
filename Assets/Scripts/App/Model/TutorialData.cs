@@ -10,6 +10,7 @@ namespace Loom.ZombieBattleground
         public List<TutorialDataStep> TutorialDataSteps;
         public SpecificBattlegroundInfo SpecificBattlegroundInfo;
         public bool PlayerTurnFirst;
+        public bool Ignore;
     }
 
     public class TutorialDataStep
@@ -24,6 +25,7 @@ namespace Loom.ZombieBattleground
         public string SoundName;
         public string EmotionDescription;
         public string AvailableCard;
+        public string WaiterOfWhichTurn; 
 
         public bool IsFocusing;
         public bool IsArrowEnabled;
@@ -43,10 +45,12 @@ namespace Loom.ZombieBattleground
         public bool IsLaunchAIBrain;
         public bool AvailableCardUsableInHand;
         public bool UnitsCanAttack;
-        public bool BoardArrowCantUsableOnUnit;
+        public bool BoardArrowCanUsableOnUnits;
         public bool BoardArrowCanUsableOnPlayer;
+        public bool HasHelpArrowsAfterDelay;
 
         public float DelayToPlaySound;
+        public float DelayToShowHelpArrows;
 
         public TutorialDataStep()
         {
@@ -57,8 +61,10 @@ namespace Loom.ZombieBattleground
             SoundName = string.Empty;
             EmotionDescription = string.Empty;
             AvailableCard = string.Empty;
+            WaiterOfWhichTurn = string.Empty;
 
             DelayToPlaySound = 0f;
+            DelayToShowHelpArrows = 0f;
 
             IsFocusing = false;
             IsArrowEnabled = false;
@@ -77,8 +83,9 @@ namespace Loom.ZombieBattleground
             CanHandleInput = false;
             IsLaunchAIBrain = false;
             UnitsCanAttack = false;
-            BoardArrowCantUsableOnUnit = false;
+            BoardArrowCanUsableOnUnits = false;
             BoardArrowCanUsableOnPlayer = false;
+            HasHelpArrowsAfterDelay = false;
         }
     }
 }

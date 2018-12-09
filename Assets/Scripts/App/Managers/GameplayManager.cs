@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
@@ -20,9 +24,13 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IPvPManager _pvpManager;
+
         private List<IController> _controllers;
 
-        private ActionLogCollectorUploader ActionLogCollectorUploader { get; } = new ActionLogCollectorUploader();
+        private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
+
+        public Enumerators.StartingTurn StartingTurn { get; set; }
 
         public event Action GameStarted;
 
@@ -58,6 +66,22 @@ namespace Loom.ZombieBattleground
 
         public bool CanDoDragActions { get; set; }
 
+        public bool IsGameplayInputBlocked { get; set; }
+
+        public PlayerMoveAction PlayerMoves { get; set; }
+
+        public Deck CurrentPlayerDeck { get; set; }
+
+        public Deck OpponentPlayerDeck { get; set; }
+
+        public int OpponentIdCheat { get; set; }
+
+        public bool AvoidGooCost { get; set; }
+
+        public bool UseInifiniteAbility { get; set; }
+
+        public AnalyticsTimer MatchDuration { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -68,8 +92,6 @@ namespace Loom.ZombieBattleground
         {
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer(CurrentPlayer.BoardCards);
             GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInPlayerHand();
-            GetController<BattlegroundController>().UpdatePositionOfCardsInOpponentHand();
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
@@ -79,24 +101,29 @@ namespace Loom.ZombieBattleground
 
             IsGameEnded = true;
 
+            MatchDuration.FinishTimer();
+
             _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true);
 
             if (endGameType != Enumerators.EndGameType.CANCEL)
             {
-                _timerManager.AddTimer(
-                    x =>
-                    {
-                        if (endGameType == Enumerators.EndGameType.WIN)
-                        {
-                            _uiManager.DrawPopup<YouWonPopup>();
-                        }
-                        else if (endGameType == Enumerators.EndGameType.LOSE)
-                        {
-                            _uiManager.DrawPopup<YouLosePopup>();
-                        }
-                    },
-                    null,
-                    timer);
+                InternalTools.DoActionDelayed(() =>
+                     {
+                         switch (endGameType)
+                         {
+                             case Enumerators.EndGameType.WIN:
+                                 _uiManager.DrawPopup<YouWonPopup>();
+                                 break;
+                             case Enumerators.EndGameType.LOSE:
+                                 _uiManager.DrawPopup<YouLosePopup>();
+                                 break;
+                             case Enumerators.EndGameType.CANCEL:
+                                 break;
+                             default:
+                                 throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                         }
+                     },
+                     timer);
             }
 
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
@@ -106,6 +133,10 @@ namespace Loom.ZombieBattleground
             CurrentTurnPlayer = null;
             CurrentPlayer = null;
             OpponentPlayer = null;
+            StartingTurn = Enumerators.StartingTurn.UnDecided;
+            PlayerMoves = null;
+
+            //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
         }
@@ -113,6 +144,8 @@ namespace Loom.ZombieBattleground
         public void StartGameplay()
         {
             _uiManager.DrawPopup<PreparingForBattlePopup>();
+
+            MatchDuration.StartTimer();
 
             _timerManager.AddTimer(
                 x =>
@@ -140,11 +173,22 @@ namespace Loom.ZombieBattleground
             IsPreparingEnded = false;
 
             CanDoDragActions = false;
+            AvoidGooCost = false;
         }
 
         public bool IsLocalPlayerTurn()
         {
             return CurrentTurnPlayer.Equals(CurrentPlayer);
+        }
+
+        public Player GetOpponentByPlayer(Player player)
+        {
+            return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
+        }
+
+        public Player GetPlayerById(int id)
+        {
+            return CurrentPlayer.Id == id ? CurrentPlayer : OpponentPlayer;
         }
 
         public void ResetWholeGameplayScene()
@@ -176,6 +220,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             InitControllers();
 
@@ -184,6 +229,11 @@ namespace Loom.ZombieBattleground
                 Constants.ZombiesSoundVolume = 0.25f;
                 Constants.CreatureAttackSoundVolume *= 3;
             }
+
+            OpponentIdCheat = -1;
+            AvoidGooCost = false;
+            UseInifiniteAbility = false;
+            MatchDuration = new AnalyticsTimer();
         }
 
         public void Update()
@@ -211,7 +261,9 @@ namespace Loom.ZombieBattleground
                 new BoardArrowController(),
                 new SkillsController(),
                 new RanksController(),
-                new InputController()
+                new InputController(),
+                new OpponentController(),
+                new UniqueAnimationsController()
             };
 
             foreach (IController controller in _controllers)
@@ -220,22 +272,36 @@ namespace Loom.ZombieBattleground
             }
         }
 
-		private void StartInitializeGame()
+        private void StartInitializeGame()
         {
-            GetController<PlayerController>().InitializePlayer();
-
-            if (_matchManager.MatchType == Enumerators.MatchType.LOCAL)
+            if (IsTutorial)
             {
-                GetController<AIController>().InitializePlayer();
+                IsSpecificGameplayBattleground = true;
+            }
+
+            GetController<PlayerController>().InitializePlayer(0);
+
+            PlayerMoves = new PlayerMoveAction();
+
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.LOCAL:
+                    GetController<AIController>().InitializePlayer(1);
+                    break;
+                case Enumerators.MatchType.PVP:
+                    GetController<OpponentController>().InitializePlayer(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
             }
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
 
-            if(IsTutorial)
-            {
-                IsSpecificGameplayBattleground = true;
+            UnityEngine.Debug.Log(IsTutorial + " IsTutorial");
 
+            if (IsTutorial)
+            {
                 CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 
                 GetController<PlayerController>().SetHand();
@@ -245,9 +311,40 @@ namespace Loom.ZombieBattleground
             {
                 IsSpecificGameplayBattleground = false;
 
-                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                switch (_matchManager.MatchType)
+                {
+                    case Enumerators.MatchType.LOCAL:
+                        switch (StartingTurn)
+                        {
+                            case Enumerators.StartingTurn.UnDecided:
+                                CurrentTurnPlayer = Random.Range(0, 100) > 50 ? CurrentPlayer : OpponentPlayer;
+                                StartingTurn = CurrentTurnPlayer == CurrentPlayer ?
+                                    Enumerators.StartingTurn.Player : Enumerators.StartingTurn.Enemy;
+                                break;
+                            case Enumerators.StartingTurn.Player:
+                                CurrentTurnPlayer = CurrentPlayer;
+                                break;
+                            case Enumerators.StartingTurn.Enemy:
+                                CurrentTurnPlayer = OpponentPlayer;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
 
-                OpponentPlayer.SetFirstHand(false);
+                        OpponentPlayer.SetFirstHandForLocalMatch(false);
+                        break;
+                    case Enumerators.MatchType.PVP:
+                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
+                        List<WorkingCard> opponentCardsInHand =
+                            OpponentPlayer.PvPPlayerState.CardsInHand
+                                .Select(instance => instance.FromProtobuf(OpponentPlayer))
+                                .ToList();
+
+                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
+                }
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {

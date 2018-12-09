@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -21,26 +22,28 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.Goo == 0)
+            if (PlayerCallerOfAbility.CurrentGoo == 0)
                 return;
 
             int increaseOn;
 
-            increaseOn = PlayerCallerOfAbility.Goo * Value;
+            increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
             AbilityUnitOwner.BuffedHp += increaseOn;
             AbilityUnitOwner.CurrentHp += increaseOn;
 
-            increaseOn = PlayerCallerOfAbility.Goo * Value;
+            increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
             AbilityUnitOwner.BuffedDamage += increaseOn;
             AbilityUnitOwner.CurrentDamage += increaseOn;
 
-            PlayerCallerOfAbility.Goo = 0;
+            PlayerCallerOfAbility.CurrentGoo = 0;
         }
     }
 }

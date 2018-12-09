@@ -10,14 +10,14 @@ public class LoomQuickStartSample : MonoBehaviour {
     {
         var writer = RpcClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithHTTP("http://127.0.0.1:46658/rpc")
-            //.WithWebSocket("ws://127.0.0.1:46657/websocket")
+            .WithHttp("http://127.0.0.1:46658/rpc")
+            //.WithWebSocket("ws://127.0.0.1:46658/websocket")
             .Create();
 
         var reader = RpcClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithHTTP("http://127.0.0.1:46658/query")
-            //.WithWebSocket("ws://127.0.0.1:9999/queryws")
+            .WithHttp("http://127.0.0.1:46658/query")
+            //.WithWebSocket("ws://127.0.0.1:46658/queryws")
             .Create();
 
         var client = new DAppChainClient(writer, reader)

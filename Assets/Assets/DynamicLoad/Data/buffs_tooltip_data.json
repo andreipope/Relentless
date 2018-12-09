@@ -1,5 +1,5 @@
 {
-  "buffs": [
+  "cardTypes": [
     {
       "name": "Feral",
       "tooltip": "Can attack when this zombie enters the battleground",
@@ -9,7 +9,9 @@
       "name": "Heavy",
       "tooltip": "Enemies must attack this zombie first",
       "type": "HEAVY"
-    },
+    }
+  ],
+  "mechanics": [
     {
       "name": "Entry",
       "tooltip": "Ability activates when this zombie enters the battleground",
@@ -94,6 +96,31 @@
       "name": "Reanimate",
       "tooltip": "Resummon this zombie when it is Destroyed",
       "type": "REANIMATE"
+    },
+    {
+      "name": "Restore",
+      "tooltip": "Add Def to wounded zombie up to its max Def",
+      "type": "RESTORE"
+    },
+    {
+      "name": "Chainsaw",
+      "tooltip": "Add 4 Atk to a zombie; End: -4 Def",
+      "type": "CHAINSAW"
+    },
+    {
+      "name": "Blitz",
+      "tooltip": "Can attack zombies when this enters the battleground",
+      "type": "BLITZ"
+    },
+    {
+      "name": "Feral",
+      "tooltip": "Can attack when this zombie enters the battleground",
+      "type": "FERAL"
+    },
+    {
+      "name": "Heavy",
+      "tooltip": "Enemies must attack this zombie first",
+      "type": "HEAVY"
     }
   ],
   "ranks": [

@@ -1,5 +1,6 @@
 ﻿using System;
 using Loom.Client.Internal;
+using Loom.Google.Protobuf;
 using Loom.Nethereum.Util;
 using Loom.Newtonsoft.Json;
 
@@ -8,7 +9,9 @@ namespace Loom.Client
     [JsonConverter(typeof(AddressJsonConverter))]
     public struct Address : IEquatable<Address>
     {
-        public const string kDefaultChainId = "default";
+        public const string DefaultChainId = "default";
+        private const int AddressLengthBytes = 20;
+
         private static readonly AddressUtil addressUtil = new AddressUtil();
 
         public string ChainId { get; }
@@ -34,7 +37,7 @@ namespace Loom.Client
         /// </summary>
         /// <param name="localAddress">Hex encoded string, may start with "0x".</param>
         /// <param name="chainId">Identifier of a DAppChain.</param>
-        public Address(string localAddress, string chainId = kDefaultChainId) {
+        public Address(string localAddress, string chainId = DefaultChainId) {
             if (String.IsNullOrWhiteSpace(localAddress))
                 throw new ArgumentException("Non-empty string expected", nameof(localAddress));
 
@@ -53,8 +56,30 @@ namespace Loom.Client
         /// </summary>
         /// <param name="publicKey">32-byte public key.</param>
         /// <param name="chainId">Identifier of a DAppChain.</param>
-        private Address(byte[] publicKey, string chainId = kDefaultChainId)
+        private Address(byte[] publicKey, string chainId = DefaultChainId)
             : this(AddressStringFromPublicKey(publicKey), chainId) {
+        }
+
+        /// <summary>
+        /// Returns binary 20-byte array representation of the address.
+        /// </summary>
+        /// <returns>20-byte array containing the address.</returns>
+        public byte[] ToByteArray()
+        {
+            return CryptoUtils.HexStringToBytes(LocalAddress.Substring(2));
+        }
+
+        /// <summary>
+        /// Creates an <see cref="Protobuf.Address"/> instance from an address.
+        /// </summary>
+        /// <param name="address">An address.</param>
+        /// <returns>A <see cref="Protobuf.Address"/> instance</returns>
+        public Protobuf.Address ToProtobufAddress() {
+            return new Protobuf.Address
+            {
+                ChainId = ChainId,
+                Local = ByteString.CopyFrom(ToByteArray())
+            };
         }
 
         /// <summary>
@@ -77,6 +102,41 @@ namespace Loom.Client
         }
 
         /// <summary>
+        /// Creates an Address instance from a Protobuf representation of an address.
+        /// </summary>
+        /// <param name="protobufAddress"><see cref="Protobuf.Address"/> instance.</param>
+        /// <returns>An address</returns>
+        public static Address FromProtobufAddress(Protobuf.Address protobufAddress)
+        {
+            if (protobufAddress == null)
+                throw new ArgumentNullException(nameof(protobufAddress));
+
+            return FromBytes(
+                protobufAddress.Local.ToByteArray(),
+                String.IsNullOrWhiteSpace(protobufAddress.ChainId) ? DefaultChainId : protobufAddress.ChainId);
+        }
+
+        /// <summary>
+        /// Creates an Address instance from a byte array.
+        /// </summary>
+        /// <param name="address">binary 20-byte array representation of the address</param>
+        /// <param name="chainId">Identifier of a DAppChain.</param>
+        /// <returns>An address</returns>
+        public static Address FromBytes(byte[] address, string chainId = DefaultChainId)
+        {
+            if (address == null)
+                throw new ArgumentNullException(nameof(address));
+
+            if (address.Length != AddressLengthBytes)
+                throw new ArgumentException("Local address must have a length of 20 bytes", nameof(address));
+
+            return new Address(
+                CryptoUtils.BytesToHexString(address),
+                chainId
+            );
+        }
+
+        /// <summary>
         /// Creates an Address instance from a hex string representing an address.
         /// </summary>
         /// <param name="localAddress">Hex encoded string, may start with "0x".</param>
@@ -92,7 +152,7 @@ namespace Loom.Client
         /// <param name="publicKey">32-byte public key.</param>
         /// <param name="chainId">Identifier of a DAppChain.</param>
         /// <returns>An address</returns>
-        public static Address FromPublicKey(byte[] publicKey, string chainId = kDefaultChainId) {
+        public static Address FromPublicKey(byte[] publicKey, string chainId = DefaultChainId) {
             return new Address(publicKey, chainId);
         }
 
@@ -103,7 +163,7 @@ namespace Loom.Client
         /// <param name="chainId">Identifier of a DAppChain.</param>
         /// <returns>An address</returns>
         [Obsolete("Use FromString or the constructor")]
-        public static Address FromHexString(string localAddress, string chainId = kDefaultChainId) {
+        public static Address FromHexString(string localAddress, string chainId = DefaultChainId) {
             return new Address(localAddress, chainId);
         }
 
@@ -118,7 +178,7 @@ namespace Loom.Client
 
         /// <returns>Checksum-encoded local part of the address as a hex string, in the format "0x...".</returns>
         public override string ToString() {
-            return this.ChainId == kDefaultChainId ? this.LocalAddress : this.QualifiedAddress;
+            return this.ChainId == DefaultChainId ? this.LocalAddress : this.QualifiedAddress;
         }
 
         #region Cast operators

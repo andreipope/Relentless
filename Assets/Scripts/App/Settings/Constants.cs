@@ -4,29 +4,25 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.4";
+        internal const string CurrentVersionBase = "0.1.7";
 
         internal const string CurrentVersionDevelopmentStage = "Alpha";
 
         internal const string VersionFileResolution = ".ver";
 
-        internal const string LocalUserDataFilePath = "0412DD0.dat";
+        internal const string LocalUserDataFileName = "0412DD0.dat";
 
-        internal const string LocalCardsLibraryDataFilePath = "card_library_data.json";
+        internal const string LocalCardsLibraryDataFileName = "card_library.json";
 
-        internal const string LocalCollectionDataFilePath = "collection_data.json";
+        internal const string LocalCreditsDataFileName = "credits_data.json";
 
-        internal const string LocalHeroesDataFilePath = "heroes_data.json";
+        internal const string LocalBuffsTooltipDataFileName = "buffs_tooltip_data.json";
 
-        internal const string LocalDecksDataFilePath = "decks_data.json";
+        internal const string LocalConfigDataFileName = "config_data.json";
 
-        internal const string LocalOpponentDecksDataFilePath = "opponent_decks_data.json";
+        internal const string LocalHeroesDataFileName = "heroes_data.json";
 
-        internal const string LocalCreditsDataFilePath = "credits_data.json";
-
-        internal const string LocalBuffsTooltipDataFilePath = "buffs_tooltip_data.json";
-
-        internal const string LocalTutorialDataFilePath = "tutorial_data.json";
+        internal const string LocalCollectionDataFileName = "collection_data.json";
 
         // ReSharper disable once UnusedMember.Global
         internal const string PrivateEncryptionKeyForApp = "sagatdsgsg7687sdg587a8gs89";
@@ -34,6 +30,8 @@ namespace Loom.ZombieBattleground.Common
         internal const string PlayerBoard = "PlayerBoard";
 
         internal const string OpponentBoard = "OpponentBoard";
+
+        internal const string BattlegroundTouchZone = "BattlegroundTouchZona";
 
         internal const string ContentFolderName = "SpreadsheetsData/";
 
@@ -85,10 +83,15 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int DefaultCardsInHandAtStartGame = 3;
 
-        internal const float DelayBetweenGameplayActions = 0.01f;
+        internal const float DelayBetweenGameplayActions = 0.1f;
 
         internal const int DelayBetweenAiActions = 1100;
 
+        internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
+
+        internal static Vector3 VfxOffset = Vector3.zero;
+
+        // SOUNDS VOLUME'S
         internal const float TutorialSoundVolume = 1f;
 
         internal const float ArrivalSoundVolume = 0.1f;
@@ -109,12 +112,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float BattlegroundEffectsSoundVolume = 0.25f;
 
-        internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
-
-        internal static Vector3 VfxOffset = Vector3.zero;
-
-        // SOUNDS VOLUME'S
-
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;
         internal static float CreatureAttackSoundVolume = 0.05f;
@@ -122,5 +119,35 @@ namespace Loom.ZombieBattleground.Common
         internal const string AssetBundleMain = "main";
 
         internal const string AssetBundleLoadingScreen = "loadingscreen";
+
+        internal const string Space = " ";
+
+        internal const string OverlordRegularNeckR = "OverlordRegularNeckR";
+
+        internal const string OverlordRegularNeckL = "OverlordRegularNeckL";
+
+        internal const string Player = "Player";
+
+        internal const string Opponent = "Opponent";
+
+        internal const float MatchmakingTimeOut = 120;
+
+        internal const float TurnTime = 120;
+
+        internal const float PvPWaitForTurnMaxTime = 150;
+
+        internal const float TimeForStartEndTurnAnimation = 15;
+
+        internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;
+
+        internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
+        internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
+
+        internal const string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
+        internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
+        internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
+        internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
+
+        internal const bool MulliganEnabled = false;
     }
 }

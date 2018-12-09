@@ -4,6 +4,9 @@ using Loom.Client.Internal;
 
 namespace Loom.Client
 {
+    /// <summary>
+    /// Builds an instance of <see cref="IRpcClient"/>.
+    /// </summary>
     public class RpcClientFactory
     {
         private ILogger logger = NullLogger.Instance;
@@ -27,10 +30,16 @@ namespace Loom.Client
             return this;
         }
 
-        public RpcClientFactory WithHTTP(string url)
+        public RpcClientFactory WithHttp(string url)
         {
             this.httpUrl = url;
             return this;
+        }
+
+        [Obsolete("Use WithHttp")]
+        public RpcClientFactory WithHTTP(string url)
+        {
+            return WithHttp(url);
         }
 
         public IRpcClient Create()

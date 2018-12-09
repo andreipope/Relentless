@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -22,26 +23,36 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END)
-                return;
-
-            CountDelay();
+            if (GetCaller() != null)
+            {
+                CountDelay();
+            }
+            else
+            {
+                AbilitiesController.DeactivateAbility(ActivityId);
+            }
         }
 
         protected override void TurnStartedHandler()
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN)
-                return;
-
-            CountDelay();
+            if (GetCaller() != null)
+            {
+                CountDelay();
+            }
+            else
+            {
+                AbilitiesController.DeactivateAbility(ActivityId);
+            }
         }
 
         private void CountDelay()

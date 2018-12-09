@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -16,6 +17,20 @@ namespace Loom.ZombieBattleground.Data
 
         public int CurrentTutorialId = 0;
 
+        public float MusicVolume = 1;
+
+        public float SoundVolume = 1;
+
+        public bool MusicMuted = false;
+
+        public bool SoundMuted = false;
+
+        public Enumerators.ScreenMode AppScreenMode;
+
+#if !UNITY_ANDROID && !UNITY_IOS
+        public Vector2Int AppResolution;
+#endif
+
         public UserLocalData()
         {
             Reset();
@@ -27,6 +42,16 @@ namespace Loom.ZombieBattleground.Data
             LastSelectedDeckId = -1;
             OpenedFirstPack = false;
             CurrentTutorialId = 0;
+            MusicVolume = 1;
+            SoundVolume = 1;
+            MusicMuted = false;
+            SoundMuted = false;
+#if !UNITY_ANDROID && !UNITY_IOS
+            AppScreenMode = Enumerators.ScreenMode.FullScreen;
+
+            Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
+            AppResolution = new Vector2Int(resolution.width, resolution.height);
+#endif
         }
     }
 }

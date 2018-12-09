@@ -68,10 +68,10 @@ namespace Loom.ZombieBattleground
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
             int heroId = GameClient.Get<IDataManager>().CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
-            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.HeroesParsed[heroId];
-            string heroName = currentPlayerHero.Element.ToLower();
+            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
+            string heroName = currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
             _selectHeroSpriteRenderer.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLower());
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant() + "_bnw");
         }
 
         public void Show(object data)
@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.DECK_SELECTION);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
 
             _uiManager.HidePopup<YouLosePopup>();
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -9,11 +10,15 @@ namespace Loom.ZombieBattleground
     {
         public List<Enumerators.AbilityTargetType> PossibleTargets = new List<Enumerators.AbilityTargetType>();
 
-        public BoardUnit SelfBoardCreature;
+        public BoardUnitView SelfBoardCreature;
 
         public Enumerators.CardType TargetUnitType;
 
         public Enumerators.UnitStatusType TargetUnitStatusType;
+
+        public int UnitDefense = 0;
+
+        public int UnitCost = 0;
 
         private IInputManager _inputManager;
 
@@ -23,9 +28,9 @@ namespace Loom.ZombieBattleground
 
         private int _onEscapeInputIndex;
 
-        public event Action<BoardUnit> CardSelected;
+        public event Action<BoardUnitView> CardSelected;
 
-        public event Action<BoardUnit> CardUnselected;
+        public event Action<BoardUnitView> CardUnselected;
 
         public event Action<Player> PlayerSelected;
 
@@ -35,9 +40,9 @@ namespace Loom.ZombieBattleground
 
         public event Action InputCanceled;
 
-        public override void OnCardSelected(BoardUnit unit)
+        public override void OnCardSelected(BoardUnitView unit)
         {
-            if (unit.CurrentHp <= 0)
+            if (unit.Model.CurrentHp <= 0)
                 return;
 
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) &&
@@ -46,29 +51,35 @@ namespace Loom.ZombieBattleground
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
                 PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if (TargetUnitType == Enumerators.CardType.NONE || unit.InitialUnitType == TargetUnitType)
+                if (TargetUnitType == Enumerators.CardType.NONE || unit.Model.InitialUnitType == TargetUnitType)
                 {
                     if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
-                        unit.UnitStatus == TargetUnitStatusType)
+                        unit.Model.UnitStatus == TargetUnitStatusType)
                     {
-                        if (SelfBoardCreature != unit)
+                        if ((UnitDefense > 0 && unit.Model.CurrentHp <= UnitDefense) || UnitDefense == 0)
                         {
-                            SelectedCard?.SetSelectedUnit(false);
+                            if (unit.Model.Card.InstanceCard.Cost <= UnitCost || UnitCost == 0)
+                            {
+                                if (SelfBoardCreature != unit)
+                                {
+                                    SelectedCard?.SetSelectedUnit(false);
 
-                            SelectedCard = unit;
-                            SelectedPlayer?.SetGlowStatus(false);
+                                    SelectedCard = unit;
+                                    SelectedPlayer?.SetGlowStatus(false);
 
-                            SelectedPlayer = null;
-                            SelectedCard.SetSelectedUnit(true);
+                                    SelectedPlayer = null;
+                                    SelectedCard.SetSelectedUnit(true);
 
-                            CardSelected?.Invoke(unit);
+                                    CardSelected?.Invoke(unit);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        public override void OnCardUnselected(BoardUnit creature)
+        public override void OnCardUnselected(BoardUnitView creature)
         {
             if (SelectedCard == creature)
             {
@@ -81,7 +92,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnPlayerSelected(Player player)
         {
-            if (player.Health <= 0)
+            if (player.Defense <= 0)
                 return;
 
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) &&
@@ -119,18 +130,15 @@ namespace Loom.ZombieBattleground
 
             Init();
 
-            GameClient.Get<ITimerManager>().AddTimer(
-                x =>
-                {
-                    _onMouseDownInputIndex =
-                        _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler);
-                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1,
-                        OnRightMouseButtonUpHandler);
-                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
-                        (int) KeyCode.Escape, null, OnRightMouseButtonUpHandler);
-                },
-                null,
-                0.75f);
+            InternalTools.DoActionDelayed(() =>
+            {
+                _onMouseDownInputIndex =
+                    _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler);
+                _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1,
+                    OnRightMouseButtonUpHandler);
+                _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
+                    (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler);
+            }, 0.75f);
         }
 
         protected override void OnDestroy()

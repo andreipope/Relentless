@@ -1,0 +1,11 @@
+{
+  "EncryptData": false,
+  "SkipBackendCardData": false,
+  "EnablePvP": false,
+  "Backend": {
+    "AuthHost": "http://stage-auth.loom.games",
+    "ReaderHost": "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
+    "WriterHost": "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
+    "DataVersion": "v2"
+  }
+}

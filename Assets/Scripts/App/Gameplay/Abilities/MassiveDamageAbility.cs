@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -8,6 +11,10 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
+        public event Action OnUpdateEvent;
+
+        private List<BoardObject> _targets;
+
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -17,6 +24,9 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -25,6 +35,7 @@ namespace Loom.ZombieBattleground
 
         public override void Update()
         {
+            OnUpdateEvent?.Invoke();
         }
 
         public override void Dispose()
@@ -37,44 +48,24 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
-            Debug.Log("CreatureOnDieEventHandler");
             Action();
         }
 
-        protected override void CreateVfx(
-            Vector3 pos, bool autoDestroy = false, float duration = 3f, bool justPosition = false)
+        protected override void VFXAnimationEndedHandler()
         {
-            int playerPos = PlayerCallerOfAbility.IsLocalPlayer ? 1 : -1;
+            base.VFXAnimationEndedHandler();
 
-            switch (AbilityEffectType)
+            for (int i = 0; i < _targets.Count; i++)
             {
-                case Enumerators.AbilityEffectType.MASSIVE_WATER_WAVE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
-                    break;
-                case Enumerators.AbilityEffectType.MASSIVE_FIRE:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(
-                        "Prefabs/VFX/Spells/SpellMassiveFireVFX");
-                    break;
-                case Enumerators.AbilityEffectType.MASSIVE_LIGHTNING:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/LightningVFX");
-                    pos = Vector3.up * 0.5f;
-                    break;
-                case Enumerators.AbilityEffectType.MASSIVE_TOXIC_ALL:
-                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Spells/ToxicMassiveAllVFX");
-                    pos = Vector3.zero;
-                    break;
+                OneActionComleted(_targets[i]);
             }
-
-            pos = Utilites.CastVfxPosition(pos * playerPos);
-
-            ClearParticles();
-
-            base.CreateVfx(pos, true, 5f);
         }
 
-        private void Action()
+        public override void Action(object info = null)
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object) BoardSpell;
+            _targets = new List<BoardObject>();
+
+            BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardSpell;
 
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
@@ -84,29 +75,39 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        foreach (BoardUnit cardOpponent in opponent.BoardCards)
-                        {
-                            BattleController.AttackUnitByAbility(caller, AbilityData, cardOpponent);
-                        }
-
-                        CreateVfx(Vector3.up * 1.5f);
+                        _targets.AddRange(opponent.BoardCards.Select(x => x.Model));
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        foreach (BoardUnit cardPlayer in PlayerCallerOfAbility.BoardCards)
-                        {
-                            BattleController.AttackUnitByAbility(caller, AbilityData, cardPlayer);
-                            CreateVfx(cardPlayer.Transform.position);
-                        }
-
+                        _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        BattleController.AttackPlayerByAbility(caller, AbilityData, opponent);
+                        _targets.Add(opponent);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        BattleController.AttackPlayerByAbility(caller, AbilityData, PlayerCallerOfAbility);
+                        _targets.Add(PlayerCallerOfAbility);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
             }
+
+            InvokeActionTriggered(_targets);
+        }
+
+        public void OneActionComleted(BoardObject boardObject)
+        {
+            switch (boardObject)
+            {
+                case Player player:
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                    break;
+                case BoardUnitModel unit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
+            }
+            _targets.Remove(boardObject);
         }
     }
 }

@@ -1,5 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,19 +22,18 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+
             if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
 
             PlayerCallerOfAbility.HandChanged += HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
-            TimerManager.AddTimer(
-                x =>
-                {
-                    Action();
-                },
-                null,
-                0.5f);
+            InternalTools.DoActionDelayed(() =>
+            {
+                Action();
+            }, 0.5f);
         }
 
         public override void Action(object info = null)
@@ -43,11 +44,15 @@ namespace Loom.ZombieBattleground
 
             int gooCost = PlayerCallerOfAbility.CardsInHand
                 .FindAll(x => x.LibraryCard.CardSetType == SetType && x != MainWorkingCard).Count * Value;
-            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
-                MainWorkingCard.RealCost + gooCost, BoardCard);
+            CardsController.SetGooCostOfCardInHand(
+                PlayerCallerOfAbility,
+                MainWorkingCard,
+                MainWorkingCard.LibraryCard.Cost + gooCost,
+                BoardCard
+                );
         }
 
-        private void CardPlayedHandler(WorkingCard card)
+        private void CardPlayedHandler(WorkingCard card, int position)
         {
             if (!card.Equals(MainWorkingCard))
                 return;

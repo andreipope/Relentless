@@ -1,11 +1,12 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
     public class AttackNumberOfTimesPerTurnAbility : AbilityBase
     {
-        public Enumerators.AttackInfoType AttackInfo { get; }
+        public Enumerators.AttackRestriction AttackInfo { get; }
 
         public int Value { get; }
 
@@ -15,17 +16,33 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            AttackInfo = ability.AttackInfoType;
+            AttackInfo = ability.AttackRestriction;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            AbilityUnitOwner.AttackInfoType = AttackInfo;
+            AbilityUnitOwner.AttackRestriction = AttackInfo;
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Blitz,
+                            Target = AbilityUnitOwner,
+                        }
+                    }
+            });
         }
 
-        protected override void UnitAttackedHandler(object info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 

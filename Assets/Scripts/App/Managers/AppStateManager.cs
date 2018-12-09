@@ -1,5 +1,10 @@
 using System;
+using System.Threading.Tasks;
+using Loom.Client;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Unity.Cloud.BugReporting;
+using Unity.Cloud.BugReporting.Plugin;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -18,6 +23,10 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.AppState _previousState;
 
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         public bool IsAppPaused { get; private set; }
 
         public Enumerators.AppState AppState { get; set; }
@@ -33,6 +42,7 @@ namespace Loom.ZombieBattleground
             switch (stateTo)
             {
                 case Enumerators.AppState.APP_INIT:
+                    GameClient.Get<ITimerManager>().Dispose();
                     _uiManager.SetPage<LoadingPage>();
                     GameClient.Get<ISoundManager>().PlaySound(
                         Enumerators.SoundType.BACKGROUND,
@@ -48,16 +58,16 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<MainMenuPage>();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
-                    _uiManager.SetPage<HeroSelectionPage>();
+                    _uiManager.SetPage<OverlordSelectionPage>();
                     break;
-                case Enumerators.AppState.DECK_SELECTION:
+                case Enumerators.AppState.HordeSelection:
                     _uiManager.SetPage<HordeSelectionPage>();
                     break;
-                case Enumerators.AppState.COLLECTION:
-                    _uiManager.SetPage<CollectionPage>();
+                case Enumerators.AppState.ARMY:
+                    _uiManager.SetPage<ArmyPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
-                    _uiManager.SetPage<DeckEditingPage>();
+                    _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
 
@@ -80,26 +90,38 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.CREDITS:
                     _uiManager.SetPage<CreditsPage>();
                     break;
+                case Enumerators.AppState.PlaySelection:
+                    _uiManager.SetPage<PlaySelectionPage>();
+                    break;
+                case Enumerators.AppState.PvPSelection:
+                    _uiManager.SetPage<PvPSelectionPage>();
+                    break;
+                case Enumerators.AppState.CustomGameModeList:
+                    _uiManager.SetPage<CustomGameModeListPage>();
+                    break;
+                case Enumerators.AppState.CustomGameModeCustomUi:
+                    _uiManager.SetPage<CustomGameModeCustomUiPage>();
+                    break;
                 default:
-                    throw new NotImplementedException("Not Implemented " + stateTo + " state!");
+                    throw new ArgumentOutOfRangeException(nameof(stateTo), stateTo, null);
             }
 
             _previousState = AppState != Enumerators.AppState.SHOP ? AppState : Enumerators.AppState.MAIN_MENU;
 
             AppState = stateTo;
+
+            UnityBugReporting.CurrentClient.LogEvent(BugReportEventLevel.Info, "App state: " + AppState);
         }
 
         public void SetPausingApp(bool mustPause) {
             if (!mustPause) 
             {
                 IsAppPaused = false;
-                Time.timeScale = 1;
                 AudioListener.pause = false;
             } 
             else 
             {
                 IsAppPaused = true;
-                Time.timeScale = 0;
                 AudioListener.pause = true;
             }
         }
@@ -116,11 +138,61 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
+
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _backendFacade.ContractCreated += LoomManagerOnContractCreated;
         }
 
         public void Update()
         {
             CheckBackButton();
+        }
+
+        public void QuitApplication()
+        {
+            GameClient.Get<ITimerManager>().Dispose();
+            Application.Quit();
+        }
+        
+        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
+        {
+            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStatus(), null);
+        }
+
+        private void UpdateConnectionStatus()
+        {
+            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+            if (!_backendFacade.IsConnected)
+            {
+                if (connectionPopup.Self == null)
+                {
+                    Func<Task> connectFunc = async () =>
+                    {
+                        await _backendDataControlMediator.LoginAndLoadData();
+                        connectionPopup.Hide();
+                    };
+
+                    connectionPopup.ConnectFunc = connectFunc;
+                    connectionPopup.Show();
+                    connectionPopup.ShowFailedInGame();
+                }
+            }
+        }
+
+        private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)
+        {
+            if (oldContract != null)
+            {
+                oldContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                oldContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
+
+            newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+            newContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+
+            UpdateConnectionStatus();
         }
 
         private void CheckBackButton()

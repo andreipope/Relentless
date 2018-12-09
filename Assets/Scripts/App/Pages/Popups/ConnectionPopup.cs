@@ -9,7 +9,10 @@ namespace Loom.ZombieBattleground
 {
     public class ConnectionPopup : IUIPopup
     {
+        public event Action CancelMatchmakingClicked;
+
         public Func<Task> ConnectFunc;
+        public Func<Task> ConnectFuncInGameplay;
 
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -17,11 +20,21 @@ namespace Loom.ZombieBattleground
 
         private Button _reconnectButton;
 
+        private Button _quitButton;
+
         private Button _closeButton;
+
+        private Button _cancelMatchmakingButton;
 
         private Transform _failedGroup;
 
         private Transform _connectingGroup;
+
+        private Transform _matchMakingGroup;
+
+        private GameObject _background;
+
+        private Image _fadeImage;
 
         private ConnectionState _state;
 
@@ -40,6 +53,7 @@ namespace Loom.ZombieBattleground
         public void Hide()
         {
             ConnectFunc = null;
+            ConnectFuncInGameplay = null;
 
             if (Self == null)
                 return;
@@ -55,17 +69,23 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
-            Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+            Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
+            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
+            _background = Self.transform.Find("Background").gameObject;
+            _fadeImage = Self.GetComponent<Image>();
             _failedGroup = Self.transform.Find("Failed_Group");
             _connectingGroup = Self.transform.Find("Connecting_Group");
+            _matchMakingGroup = Self.transform.Find("Matchmaking_Group");
             _reconnectButton = _failedGroup.Find("Button_Reconnect").GetComponent<Button>();
+            _quitButton = _failedGroup.Find("Button_Quit").GetComponent<Button>();
             _closeButton = _failedGroup.Find("Button_Close").GetComponent<Button>();
+            _cancelMatchmakingButton = _matchMakingGroup.Find("Button_Cancel").GetComponent<Button>();
 
             _reconnectButton.onClick.AddListener(PressedReconnectHandler);
+            _quitButton.onClick.AddListener(PressedQuitHandler);
             _closeButton.onClick.AddListener(PressedCloseHandler);
+            _cancelMatchmakingButton.onClick.AddListener(PressedCancelMatchmakingHandler);
 
             _state = ConnectionState.Connecting;
             SetUIState(ConnectionState.Connecting);
@@ -80,21 +100,21 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public async Task ExecuteConnection()
+        public async Task ExecuteConnection(ConnectionState state = ConnectionState.Connecting)
         {
             Task task = ConnectFunc?.Invoke();
             if (task != null)
             {
                 try
                 {
-                    SetUIState(ConnectionState.Connecting);
+                    SetUIState(state);
                     await task;
                 }
                 catch (Exception)
                 {
-                    if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.MAIN_MENU)
+                    if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                     {
-                        SetUIState(ConnectionState.ConnectionFailedOnMenu);
+                        SetUIState(ConnectionState.ConnectionFailedInGame);
                     }
                     else
                     {
@@ -104,9 +124,30 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ShowFailedOnMenu()
+        public async Task ExecuteConnectionFailedInGamePlay()
         {
-            SetUIState(ConnectionState.ConnectionFailedOnMenu);
+            Task task = ConnectFuncInGameplay?.Invoke();
+
+        }
+
+        public void ShowFailedInGame()
+        {
+            SetUIState(ConnectionState.ConnectionFailedInGame);
+        }
+
+        public void ShowFailedInGamePlay()
+        {
+            SetUIState(ConnectionState.ConnectionFailedInGameplay);
+        }
+
+        public void ShowLookingForMatch()
+        {
+            SetUIState(ConnectionState.LookingForMatch);
+        }
+
+        private void PressedQuitHandler()
+        {
+            Application.Quit();
         }
 
         private async void PressedReconnectHandler()
@@ -114,9 +155,21 @@ namespace Loom.ZombieBattleground
             await ExecuteConnection();
         }
 
-        private void PressedCloseHandler()
+        private async void PressedCloseHandler()
         {
-            Hide();
+            if (ConnectFuncInGameplay != null)
+            {
+                await ExecuteConnectionFailedInGamePlay();
+            }
+            else
+            {
+                Hide();
+            }
+        }
+
+        private void PressedCancelMatchmakingHandler()
+        {
+            CancelMatchmakingClicked?.Invoke();
         }
 
         private void SetUIState(ConnectionState state)
@@ -124,33 +177,70 @@ namespace Loom.ZombieBattleground
             _state = state;
             _connectingGroup.gameObject.SetActive(false);
             _failedGroup.gameObject.SetActive(false);
+            _background.SetActive(true);
+            _fadeImage.enabled = true;
             switch (_state)
             {
+                case ConnectionState.FirstConnect:
+                    _background.SetActive(false);
+                    _fadeImage.enabled = false;
+                    _connectingGroup.gameObject.SetActive(false);
+                    _failedGroup.gameObject.SetActive(false);
+                    _matchMakingGroup.gameObject.SetActive(false);
+                    break;
+
                 case ConnectionState.Connecting:
                     _connectingGroup.gameObject.SetActive(true);
+                    _failedGroup.gameObject.SetActive(false);
+                    _matchMakingGroup.gameObject.SetActive(false);
                     break;
                 case ConnectionState.ConnectionFailed:
+                    _connectingGroup.gameObject.SetActive(false);
                     _failedGroup.gameObject.SetActive(true);
-                    _closeButton.gameObject.SetActive(false);
-                    _reconnectButton.gameObject.SetActive(true);
-                    break;
-                case ConnectionState.ConnectionFailedOnMenu:
-                    _failedGroup.gameObject.SetActive(true);
+                    _matchMakingGroup.gameObject.SetActive(false);
                     _closeButton.gameObject.SetActive(true);
                     _reconnectButton.gameObject.SetActive(false);
+                    _quitButton.gameObject.SetActive(false);
+                    break;
+                case ConnectionState.ConnectionFailedInGame:
+                    _connectingGroup.gameObject.SetActive(false);
+                    _failedGroup.gameObject.SetActive(true);
+                    _matchMakingGroup.gameObject.SetActive(false);
+                    _closeButton.gameObject.SetActive(false);
+                    _reconnectButton.gameObject.SetActive(true);
+                    _quitButton.gameObject.SetActive(true);
+                    break;
+                case ConnectionState.LookingForMatch:
+                    _connectingGroup.gameObject.SetActive(false);
+                    _failedGroup.gameObject.SetActive(false);
+                    _matchMakingGroup.gameObject.SetActive(true);
+                    break;
+                case ConnectionState.ConnectionFailedInGameplay:
+                    _connectingGroup.gameObject.SetActive(false);
+                    _failedGroup.gameObject.SetActive(true);
+                    _matchMakingGroup.gameObject.SetActive(false);
+                    _closeButton.gameObject.SetActive(true);
+                    _reconnectButton.gameObject.SetActive(false);
+                    _quitButton.gameObject.SetActive(false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private enum ConnectionState
+        public enum ConnectionState
         {
+            FirstConnect,
+
             Connecting,
 
             ConnectionFailed,
 
-            ConnectionFailedOnMenu
+            ConnectionFailedInGame,
+
+            LookingForMatch,
+
+            ConnectionFailedInGameplay
         }
     }
 }

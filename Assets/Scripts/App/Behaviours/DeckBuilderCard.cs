@@ -6,9 +6,9 @@ namespace Loom.ZombieBattleground
 {
     public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
-        public DeckEditingPage Scene;
+        public HordeEditingPage Scene;
 
-        public Card Card;
+        public IReadOnlyCard Card;
 
         public bool IsHordeItem;
 

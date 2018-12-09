@@ -1,4 +1,8 @@
+using DG.Tweening;
+using Loom.ZombieBattleground.Common;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 using Random = System.Random;
@@ -47,18 +51,18 @@ namespace Loom.ZombieBattleground.Helpers
             return list.OrderBy(item => rnd.Next()).ToList();
         }
 
-        public static void GroupHorizontalObjects(Transform root, float offset, float spacing)
+        public static void GroupHorizontalObjects(Transform root, float offset, float spacing, float offsetY, bool isReverse = false, float offsetZ = 0f)
         {
             int count = root.childCount;
 
-            float width = spacing * count - 1;
+            float width = spacing * (count - 1);
 
             Vector3 pivot = new Vector3(offset, 0, 0);
 
             for (int i = 0; i < count; i++)
             {
-                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, 0, 0);
-                pivot.x += width / count;
+                root.GetChild(i).localPosition = new Vector3(pivot.x - width / 2f, offsetY, offsetZ);
+                pivot.x += width / (count-1);
             }
         }
 
@@ -81,7 +85,7 @@ namespace Loom.ZombieBattleground.Helpers
         {
             List<T> list = new List<T>();
 
-            if (root.Count < count)
+            if (root.Count <= count)
             {
                 list.AddRange(root);
             }
@@ -120,6 +124,43 @@ namespace Loom.ZombieBattleground.Helpers
 #else
             return DeviceDiagonalSizeInInches() > 6.5f;
 #endif
+        }
+
+        public static string ProccesEnumToString(string origin)
+        {
+            if (string.IsNullOrEmpty(origin))
+                return origin;
+
+            char[] chars = origin.Replace("_", Constants.Space).ToCharArray();
+
+            string newValue = chars[0].ToString().ToUpperInvariant();
+
+            for(int i = 1; i < chars.Length; i++)
+            {
+                if (char.IsUpper(chars[i]))
+                {
+                    newValue += Constants.Space;
+                }
+
+                newValue += chars[i].ToString().ToLowerInvariant();
+            }
+          
+            return newValue;
+        }
+
+        public static void DoActionDelayed(TweenCallback action, float delay = 0f)
+        {
+            if (action == null)
+                return;
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.PrependInterval(delay);
+            sequence.OnComplete(action);
+        }
+
+        public static string FormatStringToPascaleCase(string root)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(root.ToLower().Replace("_", " ")).Replace(" ", string.Empty);
         }
     }
 }

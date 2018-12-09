@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,7 +18,19 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+                return;
+
+            Action();
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
             Action();
@@ -27,10 +40,31 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            // FIXME: why are we hardcoding card names??
             if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement ||
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
-                PlayerCallerOfAbility.Goo += Value;
+                string clipTitle = CardOwnerOfAbility.Name.Replace(" ", "_");
+
+                SoundManager.PlaySound(Enumerators.SoundType.SPELLS, clipTitle, Constants.SfxSoundVolume, Enumerators.CardSoundType.NONE);
+
+                PlayerCallerOfAbility.CurrentGoo += Value;
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingOverlord,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Overflow,
+                            Target = PlayerCallerOfAbility,
+                            HasValue = true,
+                            Value = Value
+                        }
+                    }
+                });
             }
         }
     }

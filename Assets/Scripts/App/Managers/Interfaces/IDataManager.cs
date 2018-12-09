@@ -17,28 +17,32 @@ namespace Loom.ZombieBattleground
 
         DecksData CachedDecksData { get; set; }
 
-        OpponentDecksData CachedOpponentDecksData { get; set; }
+        AIDecksData CachedAiDecksData { get; set; }
 
         CreditsData CachedCreditsData { get; set; }
 
-        long CachedDecksLastModificationTimestamp { get; set; }
+        ConfigData ConfigData { get; set; }
 
-        BetaConfig BetaConfig { get; set; }
-
-        Task LoadRemoteConfig();
+        UserInfo UserInfo { get; set; }
 
         Task StartLoadCache();
 
         Task SaveCache(Enumerators.CacheDataType type);
 
-        TooltipContentData.BuffInfo GetBuffInfoByType(string type);
+        TooltipContentData.CardTypeInfo GetCardTypeInfo(Enumerators.CardType cardType);
 
-        TooltipContentData.RankInfo GetRankInfoByType(string type);
+        TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescriptionType gameMechanic);
+
+        TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank);
 
         void DeleteData();
 
         string DecryptData(string data);
 
         string EncryptData(string data);
+
+        string SerializeToJson(object obj, bool indented = false);
+
+        T DeserializeFromJson<T>(string json);
     }
 }

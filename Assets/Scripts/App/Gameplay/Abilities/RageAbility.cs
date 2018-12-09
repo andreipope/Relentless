@@ -1,5 +1,6 @@
-﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -15,6 +16,13 @@ namespace Loom.ZombieBattleground
             Value = ability.Value;
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+        }
+
         protected override void UnitHpChangedHandler()
         {
             base.UnitHpChangedHandler();
@@ -26,6 +34,7 @@ namespace Loom.ZombieBattleground
                     _wasChanged = true;
                     AbilityUnitOwner.BuffedDamage += Value;
                     AbilityUnitOwner.CurrentDamage += Value;
+                    InvokeActionTriggered(true);
                 }
             }
             else
@@ -35,6 +44,7 @@ namespace Loom.ZombieBattleground
                     AbilityUnitOwner.BuffedDamage -= Value;
                     AbilityUnitOwner.CurrentDamage -= Value;
                     _wasChanged = false;
+                    InvokeActionTriggered(false);
                 }
             }
         }

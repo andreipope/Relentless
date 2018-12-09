@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground
 {
@@ -37,6 +39,10 @@ namespace Loom.ZombieBattleground
 
         bool CanDoDragActions { get; set; }
 
+        bool IsGameplayInputBlocked { get; set; }
+
+        Enumerators.StartingTurn StartingTurn { get; set; }
+
         T GetController<T>()
             where T : IController;
 
@@ -44,14 +50,29 @@ namespace Loom.ZombieBattleground
 
         bool IsLocalPlayerTurn();
 
+        Player GetOpponentByPlayer(Player player);
+
         void StartGameplay();
 
         void StopGameplay();
+
+        AnalyticsTimer MatchDuration { get; set; }
 
         void EndGame(Enumerators.EndGameType endGameType, float timer = 4f);
 
         void ResetWholeGameplayScene();
 
         bool IsGameplayReady();
+
+        Player GetPlayerById(int id);
+
+        PlayerMoveAction PlayerMoves { get; set; }
+
+        Deck CurrentPlayerDeck { get; set; }
+        Deck OpponentPlayerDeck { get; set; }
+
+        int OpponentIdCheat { get; set; }
+        bool AvoidGooCost { get; set; }
+        bool UseInifiniteAbility { get; set; }
     }
 }
