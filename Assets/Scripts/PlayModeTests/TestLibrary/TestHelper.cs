@@ -500,8 +500,6 @@ public class TestHelper
             yield break;
         }
 
-        Debug.LogWarning ("a0");
-
         yield return CombinedCheck (
             CheckCurrentPageName, "MainMenuPage", callback1,
             CheckIfLoginErrorOccured, "", callback2,
