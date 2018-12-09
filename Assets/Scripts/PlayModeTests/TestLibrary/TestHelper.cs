@@ -192,6 +192,15 @@ public class TestHelper
 
             yield return LetsThink ();
         }
+        else if (GetCurrentPageName () != "")
+        {
+            while (GetCurrentPageName() != "MainMenuPage")
+            {
+                yield return GoOnePageHigher ();
+
+                yield return null;
+            }
+        }
 
         yield return null;
     }
