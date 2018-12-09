@@ -1050,7 +1050,7 @@ public class TestHelper
                 SubmitEmailPassword ("wecib@cliptik.net", "somePassHere"),
                 GoOnePageHigher ());
         }
-        else if (!CheckCurrentPageName ("MainMenuPage"))
+        else if (!CheckCurrentPageName ("MainMenuPage") && !CheckCurrentPageName ("GameplayPage"))
         {
             FailWithMessage ("PressAnyText didn't appear and it didn't go to MainMenuPage. This sequence is not implemented.");
         }
