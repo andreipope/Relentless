@@ -411,15 +411,18 @@ public class TutorialTests
 
     #endregion
 
-    private IEnumerator SkipTutorial ()
+    private IEnumerator SkipTutorial (bool twoSteps = true)
     {
         yield return _testHelper.ClickGenericButton ("Button_Skip");
 
         yield return _testHelper.RespondToYesNoOverlay (true);
 
-        yield return _testHelper.ClickGenericButton ("Button_Skip");
+        if (twoSteps)
+        {
+            yield return _testHelper.ClickGenericButton ("Button_Skip");
 
-        yield return _testHelper.RespondToYesNoOverlay (true);
+            yield return _testHelper.RespondToYesNoOverlay (true);
+        }
 
         yield return null;
     }
@@ -431,17 +434,11 @@ public class TutorialTests
             yield break;
         }
 
-        for (int i = 0; i < 3; i++)
-        {
-            yield return _testHelper.ClickGenericButton ("Button_Next");
-        }
+        yield return _testHelper.ClickGenericButton ("Button_Next", count: 3);
 
         yield return _testHelper.ClickGenericButton ("Button_Play");
 
-        for (int i = 0; i < 4; i++)
-        {
-            yield return _testHelper.ClickGenericButton ("Button_Next");
-        }
+        yield return _testHelper.ClickGenericButton ("Button_Next", count: 4);
 
         yield return _testHelper.WaitUntilWeHaveACardAtHand ();
 
@@ -637,7 +634,7 @@ public class TutorialTests
 
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
-        yield return SkipTutorial ();
+        yield return SkipTutorial (false);
 
         #endregion
 

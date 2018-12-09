@@ -717,6 +717,40 @@ public class TestHelper
         return false;
     }
 
+    private string GetCurrentPageName (int canvasGameObjectIndex = 1)
+    {
+        GameObject parentGameObject = null;
+        switch (canvasGameObjectIndex)
+        {
+            case 1:
+                parentGameObject = canvas1GameObject;
+
+                break;
+            case 2:
+                parentGameObject = canvas2GameObject;
+
+                break;
+            case 3:
+                parentGameObject = canvas3GameObject;
+
+                break;
+            default:
+                throw new IndexOutOfRangeException ("Canvas index is out of range, can be only 1-3.");
+        }
+
+        if (parentGameObject != null)
+        {
+            if (parentGameObject != null && parentGameObject.transform.childCount >= 2)
+            {
+                return parentGameObject.transform.GetChild (1).name.Split ('(')[0];
+            }
+            else
+                return "";
+        }
+
+        return "";
+    }
+
     /// <summary>
     /// Checks current page’s name and confirms that it’s correct with what was expected.
     /// </summary>
@@ -1028,13 +1062,13 @@ public class TestHelper
     /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
-        WaitStart (5);
+        WaitStart (10);
         GameObject pressAnyText = null;
         yield return new WaitUntil (() =>
         {
             pressAnyText = GameObject.Find ("PressAnyText");
 
-            return pressAnyText != null || WaitTimeIsUp ();
+            return pressAnyText != null || CheckCurrentPageName ("MainMenuPage") || CheckCurrentPageName ("GameplayPage") || WaitTimeIsUp ();
         });
 
         if (pressAnyText != null)
@@ -1050,7 +1084,7 @@ public class TestHelper
         }
         else if (!CheckCurrentPageName ("MainMenuPage") && !CheckCurrentPageName ("GameplayPage"))
         {
-            FailWithMessage ("PressAnyText didn't appear and it didn't go to MainMenuPage. This sequence is not implemented.");
+            FailWithMessage ($"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName ()}). This sequence is not implemented.");
         }
 
         /* yield return CombinedCheck (
