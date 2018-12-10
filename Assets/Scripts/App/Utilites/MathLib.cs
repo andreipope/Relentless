@@ -1,11 +1,17 @@
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Helpers
 {
     public struct IntVector2
     {
-        public int X, Y;
+        [JsonProperty("x")]
+        public int X;
 
+        [JsonProperty("y")]
+        public int Y;
+
+        [JsonConstructor]
         public IntVector2(int x, int y)
         {
             X = x;
@@ -24,8 +30,16 @@ namespace Loom.ZombieBattleground.Helpers
 
         public static FloatVector3 Zero = new FloatVector3(0, 0, 0);
 
-        public float X, Y, Z;
+        [JsonProperty("x")]
+        public float X;
 
+        [JsonProperty("y")]
+        public float Y;
+
+        [JsonProperty("z")]
+        public float Z;
+
+        [JsonConstructor]
         public FloatVector3(float x, float y, float z)
         {
             X = x;
