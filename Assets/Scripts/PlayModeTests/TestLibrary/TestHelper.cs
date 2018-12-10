@@ -6,6 +6,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Loom.Client;
+using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -65,6 +68,8 @@ public class TestHelper
     private IUIManager _uiManager;
     private IDataManager _dataManager;
     private IPvPManager _pvpManager;
+    private BackendFacade _backendFacade;
+    private BackendDataControlMediator _backendDataControlMediator;
 
     private BattlegroundController _battlegroundController;
     private SkillsController _skillsController;
@@ -174,6 +179,8 @@ public class TestHelper
 
             yield return SetCanvases ();
 
+            SetGameplayManagers ();
+
             #region Login
 
             yield return HandleLogin ();
@@ -185,8 +192,6 @@ public class TestHelper
                 FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
 
             #endregion
-
-            SetGameplayManagers ();
 
             _initialized = true;
 
@@ -345,6 +350,8 @@ public class TestHelper
         _uiManager = GameClient.Get<IUIManager> ();
         _dataManager = GameClient.Get<IDataManager> ();
         _pvpManager = GameClient.Get<IPvPManager> ();
+        _backendFacade = GameClient.Get<BackendFacade> ();
+        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator> ();
 
         _battlegroundController = _gameplayManager.GetController<BattlegroundController> ();
         _skillsController = _gameplayManager.GetController<SkillsController> ();
@@ -874,18 +881,27 @@ public class TestHelper
     /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
-#if !(UNITY_EDITOR || DEVELOPMENT_BUILD)
-        yield return AssertCurrentPageName ("LoadingPage");
+        UserDataModel userDataModel = new UserDataModel(
+            "TestFakeUser_" + UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+            CryptoUtils.GeneratePrivateKey()
+        );
 
-        GameObject pressAnyText = null;
+        _backendDataControlMediator.SetUserDataModel(userDataModel);
+        yield return TaskAsIEnumerator(_backendDataControlMediator.LoginAndLoadData());
+        GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
+
+        CheckCurrentPageName("LoginPage");
+        GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+        CheckCurrentPageName("MainMenuPage");
+
+        /*GameObject pressAnyText = null;
         yield return new WaitUntil (() => { pressAnyText = GameObject.Find ("PressAnyText"); return pressAnyText != null; });
         pressAnyText.SetActive (false);
         GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
         yield return CombinedCheck (
             CheckIfLoginBoxAppeared, "", null,
-            CheckCurrentPageName, "MainMenuPage", null);
-#endif
+            CheckCurrentPageName, "MainMenuPage", null);*/
 
         yield return null;
     }
@@ -3350,5 +3366,19 @@ public class TestHelper
     private bool TurnTimeIsUp ()
     {
         return Time.time > _turnStartTime + _turnWaitAmount;
+    }
+
+    private static IEnumerator TaskAsIEnumerator(Task task)
+    {
+        while (!task.IsCompleted)
+        {
+            yield return null;
+        }
+
+        if (task.IsFaulted)
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            throw task.Exception;
+        }
     }
 }
