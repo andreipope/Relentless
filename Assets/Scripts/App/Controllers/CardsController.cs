@@ -313,24 +313,24 @@ namespace Loom.ZombieBattleground
             return boardCard.GameObject;
         }
 
-        public GameObject AddCardToOpponentHand(WorkingCard card, bool silent = false)
+        public OpponentHandCard AddCardToOpponentHand(WorkingCard card, bool silent = false)
         {
-            GameObject go = CreateOpponentBoardCard();
+            OpponentHandCard opponentHandCard = CreateOpponentHandCard(card);
 
-            _battlegroundController.OpponentHandCards.Add(go);
-
+            _battlegroundController.OpponentHandCards.Add(opponentHandCard);
             _abilitiesController.CallAbilitiesInHand(null, card);
 
-            return go;
+            return opponentHandCard;
         }
 
-        public GameObject CreateOpponentBoardCard()
+        public OpponentHandCard CreateOpponentHandCard(WorkingCard card)
         {
             Player opponent = _gameplayManager.OpponentPlayer;
             GameObject go = Object.Instantiate(OpponentCardPrefab);
             go.GetComponent<SortingGroup>().sortingOrder = opponent.CardsInHand.Count;
+            OpponentHandCard opponentHandCard = new OpponentHandCard(go, card);
 
-            return go;
+            return opponentHandCard;
         }
 
         public void RemoveCard(object[] param)
@@ -404,37 +404,37 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CARD_BATTLEGROUND_TO_TRASH, Constants.CardsMoveSoundVolume);
 
-            GameObject go = (GameObject) param[0];
-            SortingGroup sortingGroup = go.GetComponent<SortingGroup>();
+            OpponentHandCard opponentHandCard = (OpponentHandCard) param[0];
+            SortingGroup sortingGroup = opponentHandCard.GameObject.GetComponent<SortingGroup>();
 
             Sequence animationSequence3 = DOTween.Sequence();
 
-            animationSequence3.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, -30f), .4f));
-            go.transform.DOScale(new Vector3(1, 1, 1), .2f);
+            animationSequence3.Append(opponentHandCard.Transform.DORotate(new Vector3(opponentHandCard.Transform.eulerAngles.x, 0, -30f), .4f));
+            opponentHandCard.Transform.DOScale(new Vector3(1, 1, 1), .2f);
 
             Sequence animationSequence2 = DOTween.Sequence();
-            animationSequence2.Append(go.transform.DOMove(new Vector3(7.7f, 14f, 0), .6f));
+            animationSequence2.Append(opponentHandCard.Transform.DOMove(new Vector3(7.7f, 14f, 0), .6f));
 
             animationSequence2.OnComplete(
                 () =>
                 {
-                    go.layer = 0;
-                    for (int i = 0; i < go.transform.childCount; i++)
+                    opponentHandCard.GameObject.layer = SRLayers.Default;
+                    for (int i = 0; i < opponentHandCard.Transform.childCount; i++)
                     {
-                        go.transform.GetChild(i).gameObject.layer = 0;
+                        opponentHandCard.Transform.GetChild(i).gameObject.layer = SRLayers.Default;
                     }
 
                     sortingGroup.sortingOrder = 7; // Foreground layer
 
                     Sequence animationSequence4 = DOTween.Sequence();
-                    animationSequence4.Append(go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0f, 0f), .2f));
+                    animationSequence4.Append(opponentHandCard.Transform.DORotate(new Vector3(opponentHandCard.Transform.eulerAngles.x, 0f, 0f), .2f));
 
                     Sequence animationSequence5 = DOTween.Sequence();
-                    animationSequence5.Append(go.transform.DOMove(new Vector3(7.7f, 6.306f, 0), .5f));
+                    animationSequence5.Append(opponentHandCard.Transform.DOMove(new Vector3(7.7f, 6.306f, 0), .5f));
                     animationSequence5.OnComplete(
                         () =>
                         {
-                            Object.Destroy(go);
+                            opponentHandCard.Dispose();
                         });
                 });
         }
@@ -754,43 +754,40 @@ namespace Loom.ZombieBattleground
         public void PlayOpponentCard(
             Player player, WorkingCard card, BoardObject target, Action<WorkingCard, BoardObject> completePlayCardCallback)
         {
-            GameObject randomCard;
-
-            if (_battlegroundController.OpponentHandCards.Count > 0)
+            OpponentHandCard opponentHandCard;
+            if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                randomCard = _battlegroundController.OpponentHandCards[
-                    Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
-
-                _battlegroundController.OpponentHandCards.Remove(randomCard);
+                opponentHandCard =
+                    _battlegroundController.OpponentHandCards
+                        .First(x => x.WorkingCard.InstanceId == card.InstanceId);
             }
             else
             {
-			    #warning hot fix - visual bug will appear! temp solution!
-                if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                {
-                    randomCard = CreateOpponentBoardCard();
+                if (_battlegroundController.OpponentHandCards.Count <= 0)
+                    return;
 
-                    _battlegroundController.UpdatePositionOfCardsInOpponentHand();
-                }
-                else return;
+                opponentHandCard = _battlegroundController.OpponentHandCards[
+                    Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
             }
+
+            _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
 
-            randomCard.transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(
+            opponentHandCard.Transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(
                 () =>
                 {
-                    randomCard.transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>().Play();
+                    opponentHandCard.Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>().Play();
 
-                    randomCard.transform.DOScale(Vector3.one * 1.2f, 0.6f).OnComplete(
+                    opponentHandCard.Transform.DOScale(Vector3.one * 1.2f, 0.6f).OnComplete(
                         () =>
                         {
                             RemoveOpponentCard(new object[]
                             {
-                                randomCard
+                                opponentHandCard
                             });
 
                             _timerManager.AddTimer(
@@ -809,7 +806,7 @@ namespace Loom.ZombieBattleground
                         });
                 });
 
-            randomCard.transform.DORotate(Vector3.zero, 0.5f);
+            opponentHandCard.Transform.DORotate(Vector3.zero, 0.5f);
 
             _battlegroundController.UpdatePositionOfCardsInOpponentHand(true);
         }
@@ -964,11 +961,11 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                GameObject boardCard = AddCardToOpponentHand(workingCard);
-                boardCard.transform.position = Vector3.zero;
-                boardCard.transform.localScale = Vector3.zero;
+                OpponentHandCard handCard = AddCardToOpponentHand(workingCard);
+                handCard.Transform.position = Vector3.zero;
+                handCard.Transform.localScale = Vector3.zero;
 
-                boardCard.transform.DOScale(Vector3.one, animationDuration);
+                handCard.Transform.DOScale(Vector3.one, animationDuration);
 
                 _timerManager.AddTimer(
                     x =>
@@ -988,9 +985,9 @@ namespace Loom.ZombieBattleground
             return CreateBoardCard(card);
         }
 
-        public GameObject GetOpponentBoardCard(WorkingCard card)
+        public OpponentHandCard GetOpponentBoardCard(WorkingCard card)
         {
-            return CreateOpponentBoardCard();
+            return CreateOpponentHandCard(card);
         }
 
         public void ReturnCardToHand(BoardUnitView unit)

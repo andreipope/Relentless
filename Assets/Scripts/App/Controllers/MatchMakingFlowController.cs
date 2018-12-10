@@ -299,7 +299,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            Debug.LogWarning(exception.Message);
+            Debug.LogWarning(exception);
         }
 
         private async Task SetState(MatchMakingState state)

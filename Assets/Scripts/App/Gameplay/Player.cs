@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                cardObject = _cardsController.AddCardToOpponentHand(card, silent);
+                cardObject = _cardsController.AddCardToOpponentHand(card, silent).GameObject;
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
@@ -430,13 +430,18 @@ namespace Loom.ZombieBattleground
 
             if (IsLocalPlayer)
             {
-                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this,
+                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(
+                    opponent,
+                    this,
                     _cardsController.GetBoardCard(card));
             }
             else
             {
-                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this,
-                    _cardsController.GetOpponentBoardCard(card));
+                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(
+                    opponent,
+                    this,
+                    _cardsController.GetOpponentBoardCard(card)
+                    );
             }
 
             HandChanged?.Invoke(CardsInHand.Count);
@@ -579,7 +584,8 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    _cardsController.AddCardToHand(this, CardsInDeck[0], removeCardsFromDeck);
+                    //_cardsController.AddCardToHand(this, CardsInDeck[0], removeCardsFromDeck);
+                    _cardsController.AddCardToHand(this, workingCard, removeCardsFromDeck);
                 }
             }
 

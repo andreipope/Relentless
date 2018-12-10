@@ -169,8 +169,7 @@ namespace Loom.ZombieBattleground
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
-            GotActionPlayCard(cardPlay.Card.FromProtobuf(_gameplayManager.OpponentPlayer),
-                              cardPlay.Position);
+            GotActionPlayCard(cardPlay.Card.FromProtobuf(_gameplayManager.OpponentPlayer), cardPlay.Position);
         }
 
         private void OnLeaveMatchHandler()

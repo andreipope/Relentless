@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardUnitView> OpponentGraveyardCards = new List<BoardUnitView>();
 
-        public List<GameObject> OpponentHandCards = new List<GameObject>();
+        public List<OpponentHandCard> OpponentHandCards = new List<OpponentHandCard>();
 
         public List<BoardUnitView> PlayerBoardCards = new List<BoardUnitView>();
 
@@ -875,7 +875,7 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < OpponentHandCards.Count; i++)
             {
-                GameObject card = OpponentHandCards[i];
+                OpponentHandCard card = OpponentHandCards[i];
                 float twist = startTwist - i * twistPerCard;
 
                 Vector3 movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
@@ -885,22 +885,22 @@ namespace Loom.ZombieBattleground
                 {
                     if (i == OpponentHandCards.Count - 1 && isNewCard)
                     {
-                        card.transform.position = new Vector3(-8.2f, 5.7f, 0);
-                        card.transform.eulerAngles = Vector3.forward * 90f;
+                        card.Transform.position = new Vector3(-8.2f, 5.7f, 0);
+                        card.Transform.eulerAngles = Vector3.forward * 90f;
                     }
 
-                    card.transform.DOMove(movePosition, 0.5f);
-                    card.transform.DORotate(rotatePosition, 0.5f);
+                    card.Transform.DOMove(movePosition, 0.5f);
+                    card.Transform.DORotate(rotatePosition, 0.5f);
                 }
                 else
                 {
-                    card.transform.position = movePosition;
-                    card.transform.rotation = Quaternion.Euler(rotatePosition);
+                    card.Transform.position = movePosition;
+                    card.Transform.rotation = Quaternion.Euler(rotatePosition);
                 }
 
                 pivot.x += handWidth / OpponentHandCards.Count;
 
-                card.GetComponent<SortingGroup>().sortingOrder = i;
+                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
             }
         }
 

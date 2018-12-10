@@ -59,7 +59,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 Repaint();
                 await Task.Delay((int) (Time.deltaTime * 1000));
                 await AsyncUpdate();
-                Repaint();
             }
             finally
             {
@@ -139,7 +138,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                 // Ignore
                             }
 
-                            MatchMakingFlowController matchMakingFlowController = new MatchMakingFlowController(_backendFacade, _userDataModel);
+                            MatchMakingFlowController matchMakingFlowController = new MatchMakingFlowController(backendFacade, _userDataModel);
                             matchMakingFlowController.ActionWaitingTime = 0.3f;
                             matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;
 
