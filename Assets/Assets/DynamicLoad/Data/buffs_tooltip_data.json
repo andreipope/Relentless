@@ -129,11 +129,11 @@
       "type": "COMMANDER",
       "info": [
         {
-          "tooltip": "Bestows +1 Def and Guard to 2 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Guard to 2 random lower ranked allies",
           "element": "AIR"
         },
         {
-          "tooltip": "Bestows +1 Def and Heavy to 2 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Heavy to 2 random lower ranked allies",
           "element": "EARTH"
         },
         {
@@ -141,7 +141,7 @@
           "element": "TOXIC"
         },
         {
-          "tooltip": "Bestows +1 Def and Reanimate to 2 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Reanimate to 2 random lower ranked allies",
           "element": "LIFE"
         },
         {
@@ -190,11 +190,11 @@
       "type": "GENERAL",
       "info": [
         {
-          "tooltip": "Bestows +1 Def and Guard to 3 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Guard to 3 random lower ranked allies",
           "element": "AIR"
         },
         {
-          "tooltip": "Bestows +1 Def and Heavy to 3 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Heavy to 3 random lower ranked allies",
           "element": "EARTH"
         },
         {
@@ -202,7 +202,7 @@
           "element": "TOXIC"
         },
         {
-          "tooltip": "Bestows +1 Def and Reanimate to 3 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Reanimate to 3 random lower ranked allies",
           "element": "LIFE"
         },
         {

@@ -547,6 +547,7 @@ namespace Loom.ZombieBattleground
 
         public void OnEndTurn()
         {
+            IsPlayable = false;
             HasBuffRush = false;
             CantAttackInThisTurnBlocker = false;
             TurnEnded?.Invoke();

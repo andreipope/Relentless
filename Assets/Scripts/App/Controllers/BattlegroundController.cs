@@ -1172,7 +1172,7 @@ namespace Loom.ZombieBattleground
 
             int targetView = boardCards.IndexOf(GetBoardUnitViewByModel(targetUnit));
 
-            return boardCards.Where(unit =>
+            return boardCards.Where(unit => unit.Model != targetUnit && 
             ((boardCards.IndexOf(unit) == Mathf.Clamp(targetView - 1, 0, boardCards.Count - 1)) ||
             (boardCards.IndexOf(unit) == Mathf.Clamp(targetView + 1, 0, boardCards.Count - 1)) &&
             boardCards.IndexOf(unit) != targetView)

@@ -119,8 +119,6 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
 
-            AbilityProcessingAction?.ForceActionDone();
-
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,

@@ -137,8 +137,6 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             _vfxAnimationEndedCallback?.Invoke();
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         private void HealRandomCountOfAllies()

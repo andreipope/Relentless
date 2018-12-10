@@ -88,8 +88,6 @@ namespace Loom.ZombieBattleground
             {
                 TargetUnit,
             }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
