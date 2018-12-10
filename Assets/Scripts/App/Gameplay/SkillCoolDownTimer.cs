@@ -29,7 +29,7 @@ public class SkillCoolDownTimer
         int current = _coolDown - turn;
         float angle = current != 0 ? _angleSegment * current : 0;
         angle = angle < HalfCircleAngle ? angle + _angleSegmentOffset : angle;
-        SelfObject.transform.eulerAngles = new Vector3(0, 0, angle);        
+        SelfObject.transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
     private void Reset(int coolDown)
