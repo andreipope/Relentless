@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<PlayerActionRankBuff> RankBuffActionReceived;
 
-        public event Action LeaveMatchReceived;
+        public event Action<PlayerActionLeaveMatch> LeaveMatchReceived;
 
         public MatchMetadata MatchMetadata { get; set; }
 
@@ -102,6 +102,7 @@ namespace Loom.ZombieBattleground
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
+                    Debug.LogError("send keep alive status");
                     await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
                 }
             }
@@ -226,6 +227,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
+                Debug.LogError("Match status = " + playerActionEvent.Match.Status);
                 switch (playerActionEvent.Match.Status)
                 {
                     case Match.Types.Status.Created:
@@ -250,6 +252,7 @@ namespace Loom.ZombieBattleground
                         //Should not handle this anymore through events for now
                         break;
                     case Match.Types.Status.Playing:
+                        Debug.LogError("Match status = " + playerActionEvent.PlayerAction.ActionType);
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
                             return;
@@ -315,7 +318,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.Types.Enum.LeaveMatch:
                     ResetCheckPlayerStatus();
-                    LeaveMatchReceived?.Invoke();
+                    LeaveMatchReceived?.Invoke(playerActionEvent.PlayerAction.LeaveMatch);
                     break;
                 case PlayerActionType.Types.Enum.RankBuff:
                     RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
