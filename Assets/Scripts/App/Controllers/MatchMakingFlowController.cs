@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
         private long _deckId;
         private Address? _customGameModeAddress;
         private IList<string> _tags;
-        private bool _useBackendLogic;
+        private bool _useBackendGameLogic;
 
         public float ActionWaitingTime { get; set; } = 5;
 
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             long deckId,
             Address? customGameModeAddress,
             IList<string> tags,
-            bool useBackendLogic
+            bool useBackendGameLogic
             )
         {
             _cancellationTokenSource?.Cancel();
@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
             _deckId = deckId;
             _customGameModeAddress = customGameModeAddress;
             _tags = tags;
-            _useBackendLogic = useBackendLogic;
+            _useBackendGameLogic = useBackendGameLogic;
 
             await SetState(MatchMakingState.RegisteringToPool);
             try
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                     deckId,
                     customGameModeAddress,
                     _tags,
-                    _useBackendLogic
+                    _useBackendGameLogic
                 );
 
                 await SetState(MatchMakingState.WaitingPeriod);
@@ -387,7 +387,7 @@ namespace Loom.ZombieBattleground
 
         private Task Restart()
         {
-            return Start(_deckId, _customGameModeAddress, _tags, _useBackendLogic);
+            return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic);
         }
 
         public enum MatchMakingState

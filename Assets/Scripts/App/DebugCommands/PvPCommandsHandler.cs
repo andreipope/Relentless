@@ -13,10 +13,10 @@ namespace Loom.ZombieBattleground
             _pvpManager = GameClient.Get<IPvPManager>();
         }
 
-        [CommandHandler(Description = "Whether to use backend-based logic, or trust the clients")]
-        private static void SetUseBackendLogic(bool useBackendLogic)
+        [CommandHandler(Description = "Whether to use backend-based game logic, or trust the clients")]
+        private static void UseBackendGameLogic(bool useBackendGameLogic)
         {
-            _pvpManager.UseBackendLogic = useBackendLogic;
+            _pvpManager.UseBackendGameLogic = useBackendGameLogic;
         }
     }
 }

@@ -50,6 +50,6 @@ namespace Loom.ZombieBattleground
 
         Task StopMatchmaking();
 
-        bool UseBackendLogic { get; set; }
+        bool UseBackendGameLogic { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private MatchRequestFactory _matchRequestFactory;
         private PlayerActionFactory _playerActionFactory;
         private Vector2 _scrollPosition;
-        private bool _useBackendLogic = true;
+        private bool _useBackendGameLogic = true;
         private GameStateWrapper _initialGameState;
         private GameStateWrapper _currentGameState;
 
@@ -75,8 +75,15 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             while (_asyncTaskQueue.Count > 0)
             {
-                Func<Task> taskFunc = _asyncTaskQueue.Dequeue();
-                await taskFunc();
+                try
+                {
+                    Func<Task> taskFunc = _asyncTaskQueue.Peek();
+                    await taskFunc();
+                }
+                finally
+                {
+                    _asyncTaskQueue.Dequeue();
+                }
             }
         }
 
@@ -84,7 +91,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
         {
             try
             {
+                EditorGUI.BeginDisabledGroup(_asyncTaskQueue.Count != 0);
                 DrawGui();
+                EditorGUI.EndDisabledGroup();
             }
             catch (ArgumentException e) when (e.Message.Contains("Getting control"))
             {
@@ -113,12 +122,12 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 {
                     if (GUILayout.Button("Create client"))
                     {
-                        QueueAsyncTask(async () =>
+                        EnqueueAsyncTask(async () =>
                         {
                             await ResetClient();
 
                             _userDataModel = new UserDataModel(
-                                "TestFakeUser_" + Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+                                "TestFakeUser_" + Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0") + Time.frameCount,
                                 CryptoUtils.GeneratePrivateKey()
                             );
 
@@ -161,7 +170,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                     if (GUILayout.Button("Kill client"))
                     {
-                        QueueAsyncTask(async () =>
+                        EnqueueAsyncTask(async () =>
                         {
                             await ResetClient();
                         });
@@ -175,9 +184,11 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 GUILayout.Label("<b>Matchmaking</b>", Styles.RichLabel);
                 {
-                    GUI.enabled = _matchMakingFlowController.State != MatchMakingFlowController.MatchMakingState.Confirmed;
-                    _useBackendLogic = EditorGUILayout.ToggleLeft("Use Backend Logic", _useBackendLogic);
-                    GUI.enabled = true;
+                    EditorGUI.BeginDisabledGroup(_matchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed);
+                    {
+                        _useBackendGameLogic = EditorGUILayout.ToggleLeft("Use Backend Game Logic", _useBackendGameLogic);
+                    }
+                    EditorGUI.EndDisabledGroup();
 
                     GUILayout.Label("State: " + _matchMakingFlowController.State);
 
@@ -185,9 +196,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         if (GUILayout.Button("Start matchmaking"))
                         {
-                            QueueAsyncTask(async () =>
+                            EnqueueAsyncTask(async () =>
                             {
-                                await _matchMakingFlowController.Start(1, null, null, _useBackendLogic);
+                                await _matchMakingFlowController.Start(1, null, null, _useBackendGameLogic);
                             });
                         }
                     }
@@ -195,7 +206,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         if (GUILayout.Button("Stop matchmaking"))
                         {
-                            QueueAsyncTask(async () =>
+                            EnqueueAsyncTask(async () =>
                             {
                                 await _matchMakingFlowController.Stop();
                             });
@@ -240,7 +251,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 DrawSeparator();
                 if (GUILayout.Button("Get Game State"))
                 {
-                    QueueAsyncTask(async () =>
+                    EnqueueAsyncTask(async () =>
                     {
                         await UpdateCurrentGameState();
                     });
@@ -381,7 +392,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             {
                 if (GUILayout.Button("End Turn"))
                 {
-                    QueueAsyncTask(async () =>
+                    EnqueueAsyncTask(async () =>
                     {
                         await _backendFacade.SendPlayerAction(
                             _matchRequestFactory.CreateAction(_playerActionFactory.EndTurn())
@@ -393,7 +404,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 if (GUILayout.Button("Leave Match"))
                 {
-                    QueueAsyncTask(async () =>
+                    EnqueueAsyncTask(async () =>
                     {
                         await _backendFacade.SendPlayerAction(
                             _matchRequestFactory.CreateAction(_playerActionFactory.LeaveMatch())
@@ -404,6 +415,22 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 }
             }
             GUILayout.EndHorizontal();
+
+            /*
+            // Draw Card
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Draw Card"))
+            {
+                EnqueueAsyncTask(async () =>
+                {
+                    await _backendFacade.SendPlayerAction(
+                        _matchRequestFactory.CreateAction(_playerActionFactory.())
+                    );
+
+                    await UpdateCurrentGameState();
+                });
+            }
+            GUILayout.EndHorizontal();*/
 
             // Card Play
             GUILayout.BeginHorizontal();
@@ -417,9 +444,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         cardsInHand.Select(SimpleFormatCardInstance).ToArray()
                     );
 
+                EditorGUI.BeginDisabledGroup(cardsInHand.Count == 0);
                 if (GUILayout.Button("Card Play"))
                 {
-                    QueueAsyncTask(async () =>
+                    EnqueueAsyncTask(async () =>
                     {
                         await _backendFacade.SendPlayerAction(
                             _matchRequestFactory.CreateAction(
@@ -430,6 +458,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await UpdateCurrentGameState();
                     });
                 }
+                EditorGUI.EndDisabledGroup();
             }
             GUILayout.EndHorizontal();
 
@@ -469,9 +498,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         opponentCards.Select(SimpleFormatCardInstance).ToArray()
                     );
 
+                EditorGUI.BeginDisabledGroup(ownCards.Count == 0);
                 if (GUILayout.Button("Card Attack"))
                 {
-                    QueueAsyncTask(async () =>
+                    EnqueueAsyncTask(async () =>
                     {
                         await _backendFacade.SendPlayerAction(
                             _matchRequestFactory.CreateAction(
@@ -486,6 +516,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await UpdateCurrentGameState();
                     });
                 }
+                EditorGUI.EndDisabledGroup();
             }
             GUILayout.EndHorizontal();
         }
@@ -551,11 +582,20 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     (bool?) null;
 
             _playerActionLogView.Add(playerActionEvent, isLocalPlayer);
+
+            if (isLocalPlayer != null && !isLocalPlayer.Value)
+            {
+                EnqueueAsyncTask(async () =>
+                {
+                    await UpdateCurrentGameState();
+                });
+            }
         }
 
-        private void QueueAsyncTask(Func<Task> task)
+        private void EnqueueAsyncTask(Func<Task> task)
         {
             _asyncTaskQueue.Enqueue(task);
+            Repaint();
         }
 
         private PlayerState GetCurrentPlayerState(GameState gameState)
