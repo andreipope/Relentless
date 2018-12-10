@@ -69,8 +69,8 @@ namespace Loom.ZombieBattleground
         private bool _isMatchmakingInProgress;
         private float _matchmakingTimeoutCounter;
 
-        private bool _isWaitForTurnTimerStart;
-        private float _waitForTurnTimer;
+        private bool _isCheckPlayerAvailableTimerStart;
+        private float _checkPlayerTimer;
 
         private bool _isInternetBroken = false;
         private float _checkInternetInterval = 5f;
@@ -96,13 +96,13 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isWaitForTurnTimerStart)
+            if (_isCheckPlayerAvailableTimerStart)
             {
-                _waitForTurnTimer += Time.deltaTime;
-                if (_waitForTurnTimer > Constants.PvPWaitForTurnMaxTime)
+                _checkPlayerTimer += Time.deltaTime;
+                if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
-                    ResetWaitForTurnTimer();
-                    await _backendFacade.CheckPlayerStatus(MatchMetadata.Id);
+                    _checkPlayerTimer = 0f;
+                    await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
                 }
             }
 
@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground
 
         private async void GameEndedHandler(Enumerators.EndGameType obj)
         {
-            _isWaitForTurnTimerStart = false;
+            ResetCheckPlayerStatus();
             await _backendFacade.UnsubscribeEvent();
         }
 
@@ -200,11 +200,7 @@ namespace Loom.ZombieBattleground
 
             GameStartedActionReceived?.Invoke();
 
-            // if its not player turn, start timer to check later if other player left the game or not
-            if (!IsCurrentPlayer())
-            {
-                _isWaitForTurnTimerStart = true;
-            }
+            _isCheckPlayerAvailableTimerStart = true;
 
             _queueManager.Active = true;
         }
@@ -256,10 +252,6 @@ namespace Loom.ZombieBattleground
                     case Match.Types.Status.Playing:
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
-                            {
-                                _isWaitForTurnTimerStart = true;
-                            }
                             return;
                         }
 
@@ -301,7 +293,6 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.Types.Enum.None:
                     break;
                 case PlayerActionType.Types.Enum.EndTurn:
-                    ResetWaitForTurnTimer();
                     EndTurnActionReceived?.Invoke();
                     break;
                 case PlayerActionType.Types.Enum.Mulligan:
@@ -323,6 +314,7 @@ namespace Loom.ZombieBattleground
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
                 case PlayerActionType.Types.Enum.LeaveMatch:
+                    ResetCheckPlayerStatus();
                     LeaveMatchReceived?.Invoke();
                     break;
                 case PlayerActionType.Types.Enum.RankBuff:
@@ -336,10 +328,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ResetWaitForTurnTimer()
+        private void ResetCheckPlayerStatus()
         {
-            _isWaitForTurnTimerStart = false;
-            _waitForTurnTimer = 0f;
+            _isCheckPlayerAvailableTimerStart = false;
+            _checkPlayerTimer = 0f;
         }
     }
 }
