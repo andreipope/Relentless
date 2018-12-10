@@ -42,8 +42,6 @@ namespace Loom.ZombieBattleground
                         }
                     }
             });
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
