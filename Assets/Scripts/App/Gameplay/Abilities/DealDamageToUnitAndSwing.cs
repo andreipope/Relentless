@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             Action();
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         public override void Action(object param = null)

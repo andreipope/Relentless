@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
 
         private void TakeBlitzToUnit(BoardUnitModel unit)
         {
-            unit.ApplyBuff(Enumerators.BuffType.RUSH);
+            unit.ApplyBuff(Enumerators.BuffType.BLITZ);
             unit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
         }
     }

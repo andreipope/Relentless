@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
 
         void StopGameplay();
 
+        AnalyticsTimer MatchDuration { get; set; }
+
         void EndGame(Enumerators.EndGameType endGameType, float timer = 4f);
 
         void ResetWholeGameplayScene();

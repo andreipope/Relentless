@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.MatchType MatchType { get; set; }
 
+        public AnalyticsTimer FindOpponentTime { get; set; }
+
         public void FinishMatch(Enumerators.AppState appStateAfterMatch)
         {
             MatchFinished?.Invoke();
@@ -65,6 +67,7 @@ namespace Loom.ZombieBattleground
                     {
                         try
                         {
+                            FindOpponentTime.StartTimer();
                             GameClient.Get<IQueueManager>().Clear();
 
                             if (_onPvPManagerGameStartedActionHandlerCounter < 0) {
@@ -185,6 +188,8 @@ namespace Loom.ZombieBattleground
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
             _pvpManager.MatchingFailed += OnPvPManagerMatchingFailed;
+
+            FindOpponentTime = new AnalyticsTimer();
         }
 
         public void Update()
@@ -211,6 +216,9 @@ namespace Loom.ZombieBattleground
 
         private void HandleEndMatchmaking(MatchMakingPopup matchMakingPopup, MatchMakingFlowController matchMakingFlowController)
         {
+            FindOpponentTime.FinishTimer();
+            Debug.LogError(FindOpponentTime.GetTimeDiffrence());
+
             matchMakingFlowController.StateChanged -= MatchMakingFlowControllerOnStateChanged;
             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
             matchMakingPopup.Hide();

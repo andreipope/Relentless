@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private const int MaxTextLength = 16382;
 
         private Vector2 _scrollPosition;
-        private List<string> _textChunks;
+        private List<string> _textChunks = new List<string>();
         private string _text;
 
         private void OnEnable()

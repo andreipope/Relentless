@@ -82,6 +82,8 @@ namespace Loom.ZombieBattleground
 
         public bool UseInifiniteAbility { get; set; }
 
+        public AnalyticsTimer MatchDuration { get; set; }
+
         public bool UseBackendGameLogic => _pvpManager?.MatchMetadata?.UseBackendGameLogic ?? false;
 
         public T GetController<T>()
@@ -102,6 +104,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             IsGameEnded = true;
+
+            MatchDuration.FinishTimer();
 
             _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true);
 
@@ -144,6 +148,8 @@ namespace Loom.ZombieBattleground
         public void StartGameplay()
         {
             _uiManager.DrawPopup<PreparingForBattlePopup>();
+
+            MatchDuration.StartTimer();
 
             _timerManager.AddTimer(
                 x =>
@@ -232,6 +238,7 @@ namespace Loom.ZombieBattleground
             OpponentIdCheat = -1;
             AvoidGooCost = false;
             UseInifiniteAbility = false;
+            MatchDuration = new AnalyticsTimer();
         }
 
         public void Update()

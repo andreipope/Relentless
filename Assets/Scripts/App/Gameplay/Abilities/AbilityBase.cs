@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -166,6 +168,8 @@ namespace Loom.ZombieBattleground
             TargettingArrow.PlayerUnselected += PlayerUnselectedHandler;
             TargettingArrow.InputEnded += InputEndedHandler;
             TargettingArrow.InputCanceled += InputCanceledHandler;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
         }
 
         public void DeactivateSelectTarget()
@@ -182,6 +186,8 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         public virtual void Activate()
@@ -432,6 +438,11 @@ namespace Loom.ZombieBattleground
         protected BoardUnitView GetAbilityUnitOwnerView()
         {
             return BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
+        }
+
+        protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
+        {
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count).Select(x => x.Model).ToList();
         }
 
         protected void InvokeActionTriggered(object info = null)

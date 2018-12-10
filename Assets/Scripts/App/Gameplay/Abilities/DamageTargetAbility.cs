@@ -35,8 +35,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
-
                 InvokeActionTriggered();
             }
         }
@@ -54,12 +52,12 @@ namespace Loom.ZombieBattleground
 
         private void DealDamageToUnitOwner()
         {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null,  Enumerators.QueueActionType.AbilityUsageBlocker);
-
             if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
             {
                 if (GetCaller() == AbilityUnitOwner)
                 {
+                    AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
 
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
@@ -79,10 +77,10 @@ namespace Loom.ZombieBattleground
                             }
                         }
                     });
-                }
-            }
 
-            AbilityProcessingAction?.ForceActionDone();
+                    AbilityProcessingAction?.ForceActionDone();
+                } 
+            }
         }
 
         protected override void VFXAnimationEndedHandler()

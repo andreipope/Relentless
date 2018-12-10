@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private MatchRequestFactory _matchRequestFactory;
         private PlayerActionFactory _playerActionFactory;
         private Vector2 _scrollPosition;
-        private bool _useBackendLogic;
+        private bool _useBackendLogic = true;
         private GameStateWrapper _initialGameState;
         private GameStateWrapper _currentGameState;
 
@@ -123,25 +123,28 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                 CryptoUtils.GeneratePrivateKey()
                             );
 
-                            _backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint())
+                            BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint())
                             {
                                 Logger = Debug.unityLogger
                             };
-                            _backendFacade.Init();
-                            _backendFacade.PlayerActionDataReceived += OnPlayerActionDataReceived;
-                            await _backendFacade.CreateContract(_userDataModel.PrivateKey);
+                            backendFacade.Init();
+                            backendFacade.PlayerActionDataReceived += OnPlayerActionDataReceived;
+                            await backendFacade.CreateContract(_userDataModel.PrivateKey);
                             try
                             {
-                                await _backendFacade.SignUp(_userDataModel.UserId);
+                                await backendFacade.SignUp(_userDataModel.UserId);
                             }
                             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
                             {
                                 // Ignore
                             }
 
-                            _matchMakingFlowController = new MatchMakingFlowController(_backendFacade, _userDataModel);
-                            _matchMakingFlowController.ActionWaitingTime = 0.3f;
-                            _matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;
+                            MatchMakingFlowController matchMakingFlowController = new MatchMakingFlowController(_backendFacade, _userDataModel);
+                            matchMakingFlowController.ActionWaitingTime = 0.3f;
+                            matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;
+
+                            _backendFacade = backendFacade;
+                            _matchMakingFlowController = matchMakingFlowController;
                         });
                     }
                 }
@@ -623,7 +626,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             public void OnBeforeSerialize()
             {
-                _gameStateJson = GameState.ToString();
+                _gameStateJson = GameState?.ToString();
             }
 
             public void OnAfterDeserialize()

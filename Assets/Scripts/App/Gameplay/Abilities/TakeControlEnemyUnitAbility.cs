@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    TakeControlEnemyUnit(GetRandomEnemyUnits());
+                    TakeControlEnemyUnit(GetRandomEnemyUnits(Count));
                 }
             }
         }
@@ -51,11 +51,6 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             TakeControlEnemyUnit(new List<BoardUnitModel>() { TargetUnit });
-        }
-
-        private List<BoardUnitModel> GetRandomEnemyUnits()
-        {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, Count).Select(x => x.Model).ToList();
         }
 
         private void TakeControlEnemyUnit(List<BoardUnitModel> units)
