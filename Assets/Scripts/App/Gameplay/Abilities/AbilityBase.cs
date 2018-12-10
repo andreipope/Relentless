@@ -168,6 +168,8 @@ namespace Loom.ZombieBattleground
             TargettingArrow.PlayerUnselected += PlayerUnselectedHandler;
             TargettingArrow.InputEnded += InputEndedHandler;
             TargettingArrow.InputCanceled += InputCanceledHandler;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
         }
 
         public void DeactivateSelectTarget()
@@ -184,6 +186,8 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         public virtual void Activate()
