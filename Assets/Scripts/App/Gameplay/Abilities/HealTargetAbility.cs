@@ -67,8 +67,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-				AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
                 _targets.Add(TargetUnit);
                 InvokeActionTriggered(_targets);
                 _vfxAnimationEndedCallback = HealSelectedTarget;

@@ -210,14 +210,15 @@ namespace Loom.ZombieBattleground
         {
             try
             {
-                await _backendFacade.DeleteDeck(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    deck.SelfDeck.Id
-                );
                 _dataManager.CachedDecksData.Decks.Remove(deck.SelfDeck);
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+
+                await _backendFacade.DeleteDeck(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    deck.SelfDeck.Id
+                );
 
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }

@@ -153,12 +153,12 @@ namespace Loom.ZombieBattleground
 
             if (_actionsToDo.Contains(previousAction))
             {
-                if(ActionInProgress == previousAction)
+                _actionsToDo.Remove(previousAction);
+
+                if (ActionInProgress == previousAction)
                 {
                     TryCallNewActionFromQueue();
                 }
-
-                _actionsToDo.Remove(previousAction);
             }
             else
             {
