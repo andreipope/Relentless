@@ -16,9 +16,21 @@ namespace Loom.ZombieBattleground.Data
     {
         public string SubsectionType;
 
-        public List<CreditItem> Credits;
+        public List<PostItem> Posts;
 
         public CreditsInfo()
+        {
+            Posts = new List<PostItem>();
+        }
+    }
+
+    public class PostItem
+    {
+        public string Post;
+
+        public List<CreditItem> Credits;
+
+        public PostItem()
         {
             Credits = new List<CreditItem>();
         }
