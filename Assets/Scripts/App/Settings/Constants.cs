@@ -47,7 +47,12 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float PointerMinDragDeltaMobile = 35f;
 
-        internal const float LoadingTimeBetweenGameplayAndAppInit = 2f;
+        internal const float LoadingTimeBetweenGameplayAndAppInit =
+#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
+            0f;
+#else
+            2f;
+#endif
 
         internal const int TutorialPlayerHeroId = 4;
 
