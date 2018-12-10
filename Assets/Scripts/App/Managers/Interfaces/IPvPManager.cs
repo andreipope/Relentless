@@ -49,5 +49,7 @@ namespace Loom.ZombieBattleground
         Task StartMatchmaking(int deckId);
 
         Task StopMatchmaking();
+
+        bool UseBackendLogic { get; set; }
     }
 }

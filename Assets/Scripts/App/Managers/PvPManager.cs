@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         public MatchMakingFlowController MatchMakingFlowController => _matchMakingFlowController;
 
+        public bool UseBackendLogic { get; set; }
+
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
@@ -153,7 +155,7 @@ namespace Loom.ZombieBattleground
                 );
 
                 _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
-                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress);
+                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, null, UseBackendLogic);
             }
             finally
             {

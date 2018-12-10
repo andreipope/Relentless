@@ -187,7 +187,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         {
                             QueueAsyncTask(async () =>
                             {
-                                await _matchMakingFlowController.Start(1, null);
+                                await _matchMakingFlowController.Start(1, null, null, _useBackendLogic);
                             });
                         }
                     }

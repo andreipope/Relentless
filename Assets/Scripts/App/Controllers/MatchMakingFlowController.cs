@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
+using TMPro;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -27,6 +29,8 @@ namespace Loom.ZombieBattleground
         private float _currentWaitingTime;
         private long _deckId;
         private Address? _customGameModeAddress;
+        private IList<string> _tags;
+        private bool _useBackendLogic;
 
         public float ActionWaitingTime { get; set; } = 5;
 
@@ -76,7 +80,12 @@ namespace Loom.ZombieBattleground
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async Task Start(long deckId, Address? customGameModeAddress)
+        public async Task Start(
+            long deckId,
+            Address? customGameModeAddress,
+            IList<string> tags,
+            bool useBackendLogic
+            )
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -84,6 +93,8 @@ namespace Loom.ZombieBattleground
             _matchMetadata = null;
             _deckId = deckId;
             _customGameModeAddress = customGameModeAddress;
+            _tags = tags;
+            _useBackendLogic = useBackendLogic;
 
             await SetState(MatchMakingState.RegisteringToPool);
             try
@@ -91,7 +102,9 @@ namespace Loom.ZombieBattleground
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
                     _userDataModel.UserId,
                     deckId,
-                    customGameModeAddress
+                    customGameModeAddress,
+                    _tags,
+                    _useBackendLogic
                 );
 
                 await SetState(MatchMakingState.WaitingPeriod);
@@ -165,7 +178,8 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _userDataModel.UserId
+                    _userDataModel.UserId,
+                    _tags
                 );
 
                 if (result.Match != null)
@@ -211,7 +225,8 @@ namespace Loom.ZombieBattleground
             try
             {
                 FindMatchResponse result = await _backendFacade.FindMatch(
-                    _userDataModel.UserId
+                    _userDataModel.UserId,
+                    _tags
                 );
 
                 Debug.LogWarning(result.ToString());
@@ -263,7 +278,7 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         await _backendFacade.UnsubscribeEvent();
-                        await Start(_deckId, _customGameModeAddress);
+                        await Restart();
                     }
                 }
                 else
@@ -289,7 +304,7 @@ namespace Loom.ZombieBattleground
                         _userDataModel.UserId
                     );
 
-                    await Start(_deckId, _customGameModeAddress);
+                    await Restart();
                 }
                 catch (Exception e)
                 {
@@ -368,6 +383,11 @@ namespace Loom.ZombieBattleground
 
             await SetStateUnchecked(MatchMakingState.Canceled);
             return true;
+        }
+
+        private Task Restart()
+        {
+            return Start(_deckId, _customGameModeAddress, _tags, _useBackendLogic);
         }
 
         public enum MatchMakingState

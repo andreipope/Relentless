@@ -343,8 +343,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             string userId,
             long deckId,
             Address? customGameModeAddress,
-            IList<string> pvpTags = null,
-            bool useBackendGameLogic = false)
+            IList<string> pvpTags,
+            bool useBackendGameLogic)
         {
             if (pvpTags != null && pvpTags.Count != 0)
             {
@@ -368,7 +368,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags = null)
+        public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags)
         {
             if (pvpTags != null && pvpTags.Count != 0)
             {
