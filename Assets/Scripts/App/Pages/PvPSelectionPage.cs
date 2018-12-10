@@ -24,8 +24,7 @@ namespace Loom.ZombieBattleground
         private Button _backButton,
                        _buttonCasualType,
                        _buttonRankedType,
-                       _buttonFriendlyType,
-                       _buttonCustomType;
+                       _buttonFriendlyType;
 
         private ButtonShiftingContent _buttonTutorial;
 
@@ -52,14 +51,12 @@ namespace Loom.ZombieBattleground
             _buttonCasualType = _selfPage.transform.Find("Button_CasualType").GetComponent<Button>();
             _buttonRankedType = _selfPage.transform.Find("Button_RankedType").GetComponent<Button>();
             _buttonFriendlyType = _selfPage.transform.Find("Button_FriendlyType").GetComponent<Button>();
-            _buttonCustomType = _selfPage.transform.Find("Button_CustomType").GetComponent<Button>();
             _backButton = _selfPage.transform.Find("Button_Back").GetComponent<Button>();
 
             _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
             _buttonCasualType.onClick.AddListener(CasualTypeButtonOnClickHandler);
             _buttonRankedType.onClick.AddListener(RankedTypeButtonOnClickHandler);
             _buttonFriendlyType.onClick.AddListener(FriendlyTypeButtonOnClickHandler);
-            _buttonCustomType.onClick.AddListener(CustomTypeButtonOnClickHandler);
             _backButton.onClick.AddListener(BackButtonOnClickHandler);
 
             _pvpManager.CustomGameModeAddress = null;
