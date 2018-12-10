@@ -87,8 +87,7 @@ namespace Loom.ZombieBattleground
                 _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
 
-            InvokeActionTriggered(_targets);
-            
+            InvokeActionTriggered(_targets);      
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
@@ -119,6 +118,11 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = TargetEffects
             });
+
+            if (IsPVPAbility)
+            {
+                AbilitiesController.DeactivateAbility(ActivityId);
+            }
         }
 
         private void ActionCompleted(object target, out int damageWas)

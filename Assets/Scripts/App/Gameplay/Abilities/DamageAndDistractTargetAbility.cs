@@ -69,8 +69,6 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             Action();
-
-            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }
