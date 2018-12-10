@@ -39,7 +39,5 @@ namespace Loom.ZombieBattleground.Data
     public class CreditItem
     {
         public string FullName;
-
-        public string Post;
     }
 }

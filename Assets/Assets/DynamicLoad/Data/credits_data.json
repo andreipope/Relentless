@@ -3,7 +3,7 @@
     {
       "subsectionType": "Main",
       "posts": [
-        {         
+        {
           "Post": "Executive Producer",
           "credits": [
             {
@@ -17,7 +17,7 @@
             },
           ]
         },
-        {         
+        {
           "Post": "Game Director",
           "credits": [
             {
@@ -30,7 +30,7 @@
     {
       "subsectionType": "Production",
       "posts": [
-        {         
+        {
           "Post": "Lead Producer",
           "credits": [
             {
@@ -38,7 +38,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Producer",
           "credits": [
             {
@@ -51,7 +51,7 @@
     {
       "subsectionType": "Game Design",
       "posts": [
-        {         
+        {
           "Post": "Game Designer",
           "credits": [
             {
@@ -67,7 +67,7 @@
     {
       "subsectionType": "Tech Team",
       "posts": [
-        {         
+        {
           "Post": "Head of Tech",
           "credits": [
             {
@@ -75,7 +75,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Tech Producer",
           "credits": [
             {
@@ -83,7 +83,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Lead Programmer",
           "credits": [
             {
@@ -91,7 +91,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Senior Programmer",
           "credits": [
             {
@@ -102,7 +102,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Programmer",
           "credits": [
             {
@@ -113,7 +113,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Senior Serverside Programmer",
           "credits": [
             {
@@ -124,7 +124,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Serverside Programmer",
           "credits": [
             {
@@ -132,7 +132,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Junior Serverside Programmer",
           "credits": [
             {
@@ -140,7 +140,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Test Automation Engineer",
           "credits": [
             {
@@ -148,7 +148,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Senior Software Developer",
           "credits": [
             {
@@ -156,7 +156,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Blockchain Developer",
           "credits": [
             {
@@ -170,7 +170,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Software Developer",
           "credits": [
             {
@@ -183,7 +183,7 @@
     {
       "subsectionType": "QA",
       "posts": [
-        {         
+        {
           "Post": "Head of QA",
           "credits": [
             {
@@ -191,7 +191,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Quality Assurance",
           "credits": [
             {
@@ -207,7 +207,7 @@
     {
       "subsectionType": "Art",
       "posts": [
-        {         
+        {
           "Post": "Lead Artist",
           "credits": [
             {
@@ -215,7 +215,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Senior 2D and 3D Artist",
           "credits": [
             {
@@ -223,7 +223,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Senior 2D Artist",
           "credits": [
             {
@@ -252,7 +252,7 @@
             },
           ]
         },
-        {         
+        {
           "Post": "Junior 2D Artist",
           "credits": [
             {
@@ -265,7 +265,7 @@
     {
       "subsectionType": "3D and Animations",
       "posts": [
-        {         
+        {
           "Post": "3D Artist",
           "credits": [
             {
@@ -273,7 +273,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Animator and VFX Artist",
           "credits": [
             {
@@ -292,7 +292,7 @@
     {
       "subsectionType": "Music and Sound \n W.O.W Sound",
       "posts": [
-        {         
+        {
           "Post": "Sound Designer and Composer",
           "credits": [
             {
@@ -308,7 +308,7 @@
     {
       "subsectionType": "Voice Acting",
       "posts": [
-        {         
+        {
           "Post": "Jane Voice Actress",
           "credits": [
             {
@@ -316,7 +316,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Zombies Voice Actor",
           "credits": [
             {
@@ -329,7 +329,7 @@
     {
       "subsectionType": "Marketing",
       "posts": [
-        {         
+        {
           "Post": "Head of Marketing",
           "credits": [
             {
@@ -337,7 +337,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Growth Hacker",
           "credits": [
             {
@@ -345,7 +345,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Game Marketing Manager",
           "credits": [
             {
@@ -353,7 +353,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Marketing Manager",
           "credits": [
             {
@@ -361,7 +361,7 @@
             }
           ]
         },
-        {         
+        {
           "Post": "Korean Marketing Manager",
           "credits": [
             {
@@ -373,79 +373,105 @@
           ]
         },
         {
-          "FullName": "Mami Mordovets",
-          "Post": "Japanese Marketing Manager"
+          "Post": "Japanese Marketing Manager",
+          "credits": [
+            {
+              "FullName": "Mami Mordovets"
+            }
+          ]
         },
         {
-          "FullName": "Tina Tang",
-          "Post": "Chinese Marketing Manager"
+          "Post": "Chinese Marketing Manager",
+          "credits": [
+            {
+              "FullName": "Tina Tang"
+            }
+          ]
         },
         {
-          "FullName": "Robert Hacala",
-          "Post": "Content & Community Manager"
+          "Post": "Content & Community Manager",
+          "credits": [
+            {
+              "FullName": "Robert Hacala"
+            }
+          ]
         },
         {
-          "FullName": "Juan Hernandez",
-          "Post": "Community Manager"
+          "Post": "Community Manager",
+          "credits": [
+            {
+              "FullName": "Juan Hernandez"
+            }
+          ]
         },
         {
-          "FullName": "Peter Savkovich",
-          "Post": "Content Creator"
+          "Post": "Content Creator",
+          "credits": [
+            {
+              "FullName": "Peter Savkovich"
+            }
+          ]
         }
       ]
     },
     {
       "subsectionType": "Web Design",
-      "credits": [
+      "posts": [
         {
-          "FullName": "Misha Yurchenkov",
-          "Post": "UI/UX"
+          "Post": "UI/UX",
+          "credits": [
+            {
+              "FullName": "Misha Yurchenkov"
+            }
+          ]
         },
         {
-          "FullName": "Hank Xiao",
-          "Post": "Front-end Development"
-        },
-        {
-          "FullName": "Mingjin Jang ",
-          "Post": "Front-end Development"
+          "Post": "Front-end Development",
+          "credits": [
+            {
+              "FullName": "Hank Xiao"
+            },
+            {
+              "FullName": "Mingjin Jang "
+            }
+          ]
         }
       ]
     },
     {
       "subsectionType": "Human Resources",
-      "credits": [
+      "posts": [
         {
-          "FullName": "Molly Thamrongvorapon",
-          "Post": "Operations Manager"
+          "Post": "Operations Manager",
+          "credits": [
+            {
+              "FullName": "Molly Thamrongvorapon"
+            }
+          ]
         },
         {
-          "FullName": "Macy Wanteh",
-          "Post": "IT Office Manager"
-        },
-        {
-          "FullName": "Nammy Salita",
-          "Post": "IT Office Manager"
+          "Post": "IT Office Manager",
+          "credits": [
+            {
+              "FullName": "Macy Wanteh"
+            },
+            {
+              "FullName": "Nammy Salita"
+            }
+          ]
         }
       ]
     },
     {
       "subsectionType": "Special Thanks",
-      "credits": [
+      "posts": [
         {
-          "FullName": "Melo the Cat",
-          "Post": "SFX and smell"
-        },
-        {
-          "FullName": " ",
-          "Post": " "
-        },
-        {
-          "FullName": " ",
-          "Post": " "
-        },
-        {
-          "FullName": " ",
-          "Post": " "
+          "Post": "SFX and smell",
+          "credits": [
+            {
+              "FullName": "Melo the Cat"
+            }
+          ]
         }
       ]
     }
