@@ -637,6 +637,12 @@ namespace Loom.ZombieBattleground
         {
             _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
             {
+                if(!CardCanBePlayable(card))
+                {
+                    completeCallback?.Invoke();
+                    return;
+                }
+
                 bool needTargetForAbility = false;
 
                 if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
