@@ -407,10 +407,7 @@ namespace Loom.ZombieBattleground
         private void BoardUnitOnTurnEnded()
         {
             CancelTargetingArrows();
-            if (Model.HasBuffRush && Model.InitialUnitType != Enumerators.CardType.FERAL)
-            {
-                SetNormalGlowFromUnitType();
-            }
+            SetNormalGlowFromUnitType();
         }
 
         private void BoardUnitGameMechanicDescriptionsOnUnitChanged()
