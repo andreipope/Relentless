@@ -102,15 +102,15 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float CardsMoveSoundVolume = 0.025f;
 
-        internal const float BackgroundSoundVolume = 0.05f;
+        internal const float BackgroundSoundVolume = 0.1f;
 
         internal const float SfxSoundVolume = 0.15f;
 
-        internal const float OverlordAbilitySoundVolume = 0.1f;
+        internal const float OverlordAbilitySoundVolume = 0.15f;
 
         internal const float SpellAbilitySoundVolume = 0.1f;
 
-        internal const float BattlegroundEffectsSoundVolume = 0.25f;
+        internal const float BattlegroundEffectsSoundVolume = 0.20f;
 
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;
