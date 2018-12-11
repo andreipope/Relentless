@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                AbilitiesController.DeactivateAbility(ActivityId);
+                Deactivate();
             }
         }
 
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                AbilitiesController.DeactivateAbility(ActivityId);
+                Deactivate();
             }
         }
 
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
             {
                 Action();
 
-                AbilitiesController.DeactivateAbility(ActivityId);
+                Deactivate();
             }
 
             _delayedTurnsLeft--;
