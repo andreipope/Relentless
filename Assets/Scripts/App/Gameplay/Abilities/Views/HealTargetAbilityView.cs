@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -9,6 +10,10 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
+        private string _cardName;
+
+        private List<BoardObject> _targets;
+
         public HealTargetAbilityView(HealTargetAbility ability) : base(ability)
         {
             _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -16,17 +21,32 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+            _targets = info as List<BoardObject>;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+                Vector3 targetPosition = Vector3.zero;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
-                targetPosition = Utilites.CastVfxPosition(targetPosition);
-                VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
-                ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                foreach (BoardObject boardObject in _targets)
+                {
+                    switch (boardObject)
+                    {
+                        case BoardUnitModel unit:
+                            targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                            break;
+                        case Player player:
+                            targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;
+                            break;
+                    }
+
+                    VfxObject = Object.Instantiate(VfxObject);
+                    VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
+                    targetPosition = Utilites.CastVfxPosition(targetPosition);
+                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
+                }
             }
             else
             {
@@ -38,25 +58,72 @@ namespace Loom.ZombieBattleground
         {
             ClearParticles();
 
-            AbilityImpactEffectInfo impactEffectInfo = new AbilityImpactEffectInfo();
+            _cardName = "";
+            float delayAfter = 0;
+            float delayBeforeDestroy = 5f;
+            Vector3 offset = Vector3.zero;
+            string soundName = string.Empty;
+            float delaySound = 0;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
-                _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
-                Ability.TargetPlayer.AvatarObject.transform.position;
+                Vector3 targetPosition = Vector3.zero;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                if(VfxObject.GetComponent<AbilityImpactEffectInfo>() != null)
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+
+                if (effectInfo != null)
                 {
-                    impactEffectInfo = VfxObject.GetComponent<AbilityImpactEffectInfo>();
+                    _cardName = effectInfo.cardName;
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    offset = effectInfo.offset;
+                    soundName = effectInfo.soundName;
+                    delaySound = effectInfo.delayForSound;
                 }
 
-                CreateVfx(targetPosition, true, impactEffectInfo.delayBeforeDestroyImpactVFX, true);
+                bool isUnit = false;
+                BoardUnitModel unitModel = null;
+
+                foreach (BoardObject boardObject in _targets)
+                {
+                    switch (boardObject)
+                    {
+                        case BoardUnitModel unit:
+                            targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                            isUnit = true;
+                            break;
+                        case Player player:
+                            targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;
+                            isUnit = false;
+                            break;
+                    }
+
+                    CreateVfx(targetPosition + offset, true, delayBeforeDestroy);
+
+                    if (isUnit)
+                    {
+                        unitModel = boardObject as BoardUnitModel;
+
+                        string objectName = "WalkerMask";
+                        switch (unitModel.InitialUnitType)
+                        {
+                            case Enumerators.CardType.FERAL:
+                                objectName = "FeralMask";
+                                break;
+                            case Enumerators.CardType.HEAVY:
+                                objectName = "HeavyMask";
+                                break;
+                        }
+                        VfxObject.transform.Find(objectName).gameObject.SetActive(true);
+                    }
+                }
             }
 
-            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, impactEffectInfo.delayAfterImpactVFX);
+            PlaySound(soundName, delaySound);
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
 

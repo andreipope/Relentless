@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -129,18 +130,15 @@ namespace Loom.ZombieBattleground
 
             Init();
 
-            GameClient.Get<ITimerManager>().AddTimer(
-                x =>
-                {
-                    _onMouseDownInputIndex =
-                        _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler);
-                    _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1,
-                        OnRightMouseButtonUpHandler);
-                    _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
-                        (int) KeyCode.Escape, null, OnRightMouseButtonUpHandler);
-                },
-                null,
-                0.75f);
+            InternalTools.DoActionDelayed(() =>
+            {
+                _onMouseDownInputIndex =
+                    _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 0, OnMouseButtonUpHandler);
+                _onRightMouseDownInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.MOUSE, 1,
+                    OnRightMouseButtonUpHandler);
+                _onEscapeInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
+                    (int)KeyCode.Escape, null, OnRightMouseButtonUpHandler);
+            }, 0.75f);
         }
 
         protected override void OnDestroy()

@@ -4,16 +4,13 @@
     {
         public string UserId;
 
-        public string BetaKey;
-
         public byte[] PrivateKey;
 
         public bool IsValid;
 
-        public UserDataModel(string userId, string betaKey, byte[] privateKey)
+        public UserDataModel(string userId, byte[] privateKey)
         {
             UserId = userId;
-            BetaKey = betaKey;
             PrivateKey = privateKey;
         }
     }

@@ -28,10 +28,10 @@ namespace Loom.ZombieBattleground
             return card.LibraryCard.UniqueAnimationType != Enumerators.UniqueAnimationType.None;
         }
 
-        public void PlayUniqueArrivalAnimation(BoardObject boardObject, WorkingCard card)
+        public void PlayUniqueArrivalAnimation(BoardObject boardObject, WorkingCard card, Action startGeneralArrivalCallback)
         {
             UniqueAnimation animation = GetUniqueAnimationByType(card.LibraryCard.UniqueAnimationType);
-            animation.Play(boardObject);
+            animation.Play(boardObject, startGeneralArrivalCallback);
         }
 
         private UniqueAnimation GetUniqueAnimationByType(Enumerators.UniqueAnimationType uniqueAnimationType)
@@ -42,6 +42,21 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.UniqueAnimationType.ShammannArrival:
                     uniqueAnimation = new ShammannArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimationType.ZVirusArrival:
+                    uniqueAnimation = new ZVirusArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimationType.ZeuzArrival:
+                    uniqueAnimation = new ZeuZArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimationType.CerberusArrival:
+                    uniqueAnimation = new CerberusArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimationType.TzunamyArrival:
+                    uniqueAnimation = new TzunamyArrivalUniqueAnimation();
+                    break;
+                case Enumerators.UniqueAnimationType.ChernoBillArrival:
+                    uniqueAnimation = new ChernoBillArrivalUniqueAnimation();
                     break;
                 default:
                     throw new NotImplementedException(nameof(uniqueAnimationType) + " not implemented yet");

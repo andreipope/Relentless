@@ -342,6 +342,9 @@ namespace Loom.ZombieBattleground
         public virtual bool CanBeBuyed(Player owner)
         {
 #if !DEV_MODE
+            if (GameplayManager.AvoidGooCost)
+                return true;
+
             return owner.CurrentGoo >= ManaCost;
 #else
             return true;
@@ -420,32 +423,17 @@ namespace Loom.ZombieBattleground
                 ElementSlotsOfCards[i].SetStatus(i < amount);
             }
 
-            float offset = 0.5f;
-            float spacing = 2f;
+            float offset = 0;
+            float spacing = 1.5f;
             float offsetY = 0f;
-
-            if (maxCopies > 3)
-            {
-                offset = 0.8f;
-            }
-            else if (maxCopies > 2)
-            {
-                offset = 0.5f;
-            }
-            else if (maxCopies > 1)
-            {
-                offset = 0.7f;
-            }
-
 
             if (isArmy)
             {
-                spacing = 1.4f;
-                offset = -0.55f;
-                offsetY = -0.5f;
+                offset = 1.1f;
+                offsetY = -0.3f;
                 AmountTextForArmy.text = amount.ToString();
             }
-            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY, isArmy);
+            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
         }
 
         public void DrawTooltipInfoOfUnit(BoardUnitView unit)
@@ -499,8 +487,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.LibraryCard.Abilities != null &&
-                !unit.Model.GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            if (unit.Model.Card.LibraryCard.Abilities != null && !unit.Model.WasDistracted)
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
@@ -552,31 +539,13 @@ namespace Loom.ZombieBattleground
             buffs.Clear();
 
             // right block info ------------------------------------
-
-            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
-            {
-                // FIXME: hack
-                continue;
-         
-                Enumerators.BuffType buffType =
-                    (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.AbilityData.GameMechanicDescriptionType.ToString(), true);
-                TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.AbilityData.GameMechanicDescriptionType);
-                if (gameMechanicInfo != null)
-                {
-                    buffs.Add(
-                        new BuffTooltipInfo
-                        {
-                            Title = gameMechanicInfo.Name,
-                            Description = gameMechanicInfo.Tooltip,
-                            TooltipObjectType = Enumerators.TooltipObjectType.BUFF,
-                            Value = -1
-                        });
-                }
-            }
-
             foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
+
+                if (BuffOnCardInfoObjects.Find(x => x.BuffTooltipInfo.Title == gameMechanicInfo.Name) != null)
+                    continue;
+
                 if (gameMechanicInfo != null)
                 {
                     buffs.Add(
@@ -784,9 +753,10 @@ namespace Loom.ZombieBattleground
 
         private int GetValueOfAbilityByType(AbilityData ability)
         {
-            // FIXME: there is no BuffType "DELAYED". Is this still needed?
             switch (ability.GameMechanicDescriptionType)
             {
+                case Enumerators.GameMechanicDescriptionType.DelayedX:
+                    return ability.Delay;
                 default:
                     return ability.Value;
             }

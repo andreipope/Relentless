@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card, GameAction<object> actionInQueue)
+        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card, GameplayQueueAction<object> actionInQueue)
         {
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
                        {
                            DoRankUpgrades(filter, card);
 
-                           GameClient.Get<IOverlordManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero,
+                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero,
                             Common.Enumerators.ExperienceActionType.ActivateRankAbility);
 
                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_OF_RANK_UPGRADE);
@@ -105,12 +105,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardRank.COMMANDER:
                     buffs.Add(Enumerators.BuffType.GUARD);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
                     buffs.Add(Enumerators.BuffType.GUARD);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
                 default:
@@ -131,12 +131,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardRank.COMMANDER:
                     buffs.Add(Enumerators.BuffType.HEAVY);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
                     buffs.Add(Enumerators.BuffType.HEAVY);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
                 default:
@@ -153,15 +153,15 @@ namespace Loom.ZombieBattleground
             switch (rank)
             {
                 case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.BLITZ);
                     break;
                 case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.BLITZ);
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.RUSH);
+                    buffs.Add(Enumerators.BuffType.BLITZ);
                     buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
@@ -183,12 +183,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardRank.COMMANDER:
                     buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 2;
                     break;
                 case Enumerators.CardRank.GENERAL:
                     buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.DEFENCE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
                     count = 3;
                     break;
                 default:
@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground
                      _ranksUpgradeCompleteAction = completeCallback;
 
                      DoRankUpgrades(units, card, false);
-                 });
+                 }, Enumerators.QueueActionType.RankBuff);
         }
     }
 }

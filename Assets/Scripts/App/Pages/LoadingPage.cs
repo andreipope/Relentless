@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
         private IAnalyticsManager _analyticsManager;
 
-        private GameObject _selfPage, _loginForm;
+        private GameObject _selfPage;
 
         private Transform _progressBar;
 
@@ -37,11 +37,9 @@ namespace Loom.ZombieBattleground
 
         private bool _isLoaded;
 
-        private TMP_InputField _usernameInputField;
-
-        private Button _signUpButton, _loginButton;
-
         private IDataManager _dataManager;
+
+        private bool _dataLoading = false;
 
         public void Init()
         {
@@ -68,24 +66,16 @@ namespace Loom.ZombieBattleground
 
             if (!_isLoaded)
             {
-                _percentage += 1f;
+                _percentage += 1.4f;
                 _loaderBar.fillAmount = Mathf.Clamp(_percentage / 100f, 0.03f, 1f);
                 if (_percentage >= 100)
                 {
                     _isLoaded = true;
-                    _progressBar.gameObject.SetActive(false);
-                    _pressAnyText.gameObject.SetActive(true);
                 }
             }
-            else
+            if(!_dataLoading)
             {
-                if (!Input.anyKey)
-                    return;
-
-                if (!_pressAnyText.gameObject.activeSelf)
-                    return;
-
-                _pressAnyText.gameObject.SetActive(false);
+                _dataLoading = true;
 
                 if (_backendDataControlMediator.LoadUserDataModel() &&
                     _backendDataControlMediator.UserDataModel.IsValid)
@@ -116,12 +106,21 @@ namespace Loom.ZombieBattleground
 
                         if (success)
                         {
-                            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                            if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
+                            {
+                                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+
+                                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                            }
+                            else
+                            {
+                                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                            }
                         }
                     };
                     _uiManager.DrawPopup<ConnectionPopup>();
                     connectionPopup.ConnectFunc = connectFunc;
-                    await connectionPopup.ExecuteConnection();
+                    await connectionPopup.ExecuteConnection(ConnectionPopup.ConnectionState.FirstConnect);
                 }
                 else
                 {
@@ -135,41 +134,16 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SfxSoundVolume, false, false, true);
 
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPageOptimized"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _progressBar = _selfPage.transform.Find("ProgresBar");
 
             _loaderBar = _progressBar.Find("Fill").GetComponent<Image>();
             _loadingText = _progressBar.Find("Text").GetComponent<TextMeshProUGUI>();
-
-            _pressAnyText = _selfPage.transform.Find("PressAnyText").GetComponent<TextMeshProUGUI>();
-
-            _loginForm = _selfPage.transform.Find("LoginForm").gameObject;
-
-            _usernameInputField = _loginForm.transform.Find("UsernameInputField").GetComponent<TMP_InputField>();
-            _signUpButton = _loginForm.transform.Find("SignUpButton").GetComponent<Button>();
-            _loginButton = _loginForm.transform.Find("LogInButton").GetComponent<Button>();
-
-            _signUpButton.onClick.AddListener(OnSignupButtonPressed);
-            _loginButton.onClick.AddListener(OnLoginButtonPressed);
-
-            _loaderBar.fillAmount = 0.03f;
-
-#if UNITY_IOS || UNITY_ANDROID
-            _pressAnyText.text = "TAP TO CONTINUE";
-#else
-            _pressAnyText.text = "PRESS ANY KEY";
-#endif
             _loadingText.text = "LOADING...";
 
-            _pressAnyText.gameObject.SetActive(false);
-            _loginForm.SetActive(false);
-
-            if (_isLoaded)
-            {
-                _pressAnyText.gameObject.SetActive(true);
-            }
+            _loaderBar.fillAmount = 0.03f;
         }
 
         public void Hide()
@@ -187,27 +161,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-        }
 
-        public async void OnLoginButtonPressed()
-        {
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            string usernameText = _usernameInputField.text;
-
-            // Perform some basic validation of the user input locally prior to calling the
-            // remote login method. This is a good way to avoid some unnecessary network
-            // traffic.
-            if (string.IsNullOrEmpty(usernameText))
-            {
-                OpenAlertDialog("Please enter your username.");
-                return;
-            }
-
-            _backendDataControlMediator.UserDataModel.UserId = usernameText;
-            IDataManager dataManager = GameClient.Get<IDataManager>();
-            await dataManager.StartLoadCache();
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
 
         private void LanguageWasChangedEventHandler(Enumerators.Language obj)
@@ -217,34 +171,6 @@ namespace Loom.ZombieBattleground
 
         private void UpdateLocalization()
         {
-        }
-
-        private async void OnSignupButtonPressed()
-        {
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            string usernameText = _usernameInputField.text;
-            if (string.IsNullOrEmpty(usernameText))
-            {
-                OpenAlertDialog("Please enter your username.");
-                return;
-            }
-
-            try
-            {
-                await _backendFacade.SignUp(usernameText);
-                Debug.Log(" ====== Account Created Successfully ==== ");
-                _backendDataControlMediator.UserDataModel.UserId = usernameText;
-
-                // TODO : Removed code loading data manager
-                IDataManager dataManager = GameClient.Get<IDataManager>();
-                await dataManager.StartLoadCache();
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-            }
-            catch (Exception)
-            {
-                OpenAlertDialog("Not Able to Create Account.");
-            }
         }
 
         private void OpenAlertDialog(string msg)

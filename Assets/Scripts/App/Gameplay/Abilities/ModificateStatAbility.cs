@@ -45,7 +45,9 @@ namespace Loom.ZombieBattleground
                 {
                     List<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
 
-                    foreach(BoardUnitView unit in units)
+                    units = InternalTools.GetRandomElementsFromList(units, Count);
+
+                    foreach (BoardUnitView unit in units)
                     {
                         ModificateStats(unit.Model);
                     }

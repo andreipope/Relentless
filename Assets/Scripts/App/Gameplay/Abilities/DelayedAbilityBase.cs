@@ -31,22 +31,28 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
-         !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
-                return;
-
-            CountDelay();
+            if (GetCaller() != null)
+            {
+                CountDelay();
+            }
+            else
+            {
+                Deactivate();
+            }
         }
 
         protected override void TurnStartedHandler()
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
-            !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
-                return;
-
-            CountDelay();
+            if (GetCaller() != null)
+            {
+                CountDelay();
+            }
+            else
+            {
+                Deactivate();
+            }
         }
 
         private void CountDelay()
@@ -55,7 +61,7 @@ namespace Loom.ZombieBattleground
             {
                 Action();
 
-                AbilitiesController.DeactivateAbility(ActivityId);
+                Deactivate();
             }
 
             _delayedTurnsLeft--;

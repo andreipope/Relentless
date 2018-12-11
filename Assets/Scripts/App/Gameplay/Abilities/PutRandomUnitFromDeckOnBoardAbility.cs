@@ -42,14 +42,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in targets)
                 {
-                    if (target != null)
-                    {
-                        PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards);
-                    }
-                    else
-                    {
-                        Debug.LogError("TARGET CARD FROM DECK IS INCORRECT!! TRYING TO PUT CARD ON BOARD FROM DECK - NULL");
-                    }
+                    PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards);
                 }
             }
             else
@@ -101,7 +94,6 @@ namespace Loom.ZombieBattleground
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
                                             ref List<HandBoardCard> cards)
         {
-            owner.RemoveCardFromDeck(boardCard.WorkingCard);
             CardsController.SummonUnitFromHand(owner, boardCard);
 
             cards.Add(boardCard.HandBoardCard);

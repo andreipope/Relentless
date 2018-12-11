@@ -59,7 +59,9 @@ namespace Loom.ZombieBattleground.Common
             OPPONENT_ALL_CARDS,
             ALL_CARDS,
             ALL,
-            ITSELF
+            ITSELF,
+
+            BLITZ
         }
 
         public enum AbilityType
@@ -148,7 +150,9 @@ namespace Loom.ZombieBattleground.Common
             SET_ATTACK_AVAILABILITY,
             CHOOSABLE_ABILITIES,
             COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
-            GAIN_GOO
+            GAIN_GOO,
+            BLITZ,
+            DRAW_CARD_BY_FACTION
         }
 
         public enum ActionType
@@ -213,8 +217,8 @@ namespace Loom.ZombieBattleground.Common
         }
 
         public enum AttackRestriction
-        {
-            NONE,
+        { 
+            ANY,
             ONLY_DIFFERENT
         }
 
@@ -293,7 +297,16 @@ namespace Loom.ZombieBattleground.Common
             KillUnit,
 
             [EnumMember(Value = "PERMANENT")]
-            Permanent
+            Permanent,
+
+            [EnumMember(Value = "BLITZ")]
+            Blitz,
+
+            [EnumMember(Value = "RESTORE")]
+            Restore,
+
+            [EnumMember(Value = "CHAINSAW")]
+            Chainsaw,
         }
 
         public enum BuffType
@@ -303,7 +316,7 @@ namespace Loom.ZombieBattleground.Common
             DEFENCE,
             HEAVY,
             WEAPON,
-            RUSH,
+            BLITZ,
             ATTACK,
             FREEZE,
             DAMAGE,
@@ -523,7 +536,9 @@ namespace Loom.ZombieBattleground.Common
             PREPARING_FOR_BATTLE,
             PREPARING_FOR_BATTLE_LOOP,
             DISTRACT_LOOP,
-            RAGE_LOOP
+            RAGE_LOOP,
+            UNIQUE_ARRIVALS,
+            ZOMBIE_DEATH_ANIMATIONS
         }
 
         public enum StatType
@@ -680,7 +695,54 @@ namespace Loom.ZombieBattleground.Common
         public enum UniqueAnimationType
         {
             None,
-            ShammannArrival
+            ShammannArrival,
+            ZVirusArrival,
+            ZeuzArrival,
+            CerberusArrival,
+            TzunamyArrival,
+            ChernoBillArrival
+        }
+
+        public enum CardNameOfAbility
+        {
+            None,
+            Bulldozer,
+            Lawnmover
+        }
+
+        public enum AbilityEffectInfoPositionType
+        {
+            Target,
+            Overlord
+        }
+
+        public enum ShakeType
+        {
+            Short,
+            Medium,
+            Long
+        }
+
+        public enum MatchPlayer
+        {
+            CurrentPlayer,
+            OpponentPlayer
+        }
+
+        public enum QueueActionType
+        {
+            CardPlay,
+            RankBuff,
+            AbilityUsage,
+            UnitDeath,
+            WholeBoardUpdate,
+            PlayerBoardUpdate,
+            OpponentBoardUpdate,
+            OverlordSkillUsage,
+            AbilityUsageBlocker,
+            StopTurn,
+            EndMatch,
+            UnitCombat
         }
     }
 }

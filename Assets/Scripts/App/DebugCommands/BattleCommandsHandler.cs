@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -11,6 +12,7 @@ static class BattleCommandsHandler
     private static SkillsController _skillController;
     private static BattlegroundController _battlegroundController;
     private static CardsController _cardsController;
+    private static AIController _aiController;
 
     public static void Initialize()
     {
@@ -20,6 +22,7 @@ static class BattleCommandsHandler
         _skillController = _gameplayManager.GetController<SkillsController>();
         _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
+        _aiController = _gameplayManager.GetController<AIController>();
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
@@ -39,11 +42,25 @@ static class BattleCommandsHandler
     {
         if (abilitySlot == 0)
         {
-            _skillController.PlayerPrimarySkill.SetCoolDown(coolDownTimer);
+            if (_skillController.PlayerPrimarySkill == null)
+            {
+                Debug.LogError("Primary Skill is Not set");
+            }
+            else
+            {
+                _skillController.PlayerPrimarySkill.SetCoolDown(coolDownTimer);
+            }
         }
         else if (abilitySlot == 1)
         {
-            _skillController.PlayerSecondarySkill.SetCoolDown(coolDownTimer);
+            if (_skillController.PlayerSecondarySkill == null)
+            {
+                Debug.LogError("Secondary Skill is Not set");
+            }
+            else
+            {
+                _skillController.PlayerSecondarySkill.SetCoolDown(coolDownTimer);
+            }
         }
     }
 
@@ -60,6 +77,12 @@ static class BattleCommandsHandler
         }
     }
 
+    [CommandHandler(Description = "Allow Player to Play Cards without costing any goo")]
+    private static void PlayerInfiniteGoo(bool useInfiniteGoo)
+    {
+        _gameplayManager.AvoidGooCost = useInfiniteGoo;
+    }
+
 
     [CommandHandler(Description = "Enemy Mode - DoNothing / Normal / DontAttack")]
     private static void EnemyMode(Enumerators.AiBrainType aiBrainType)
@@ -68,7 +91,7 @@ static class BattleCommandsHandler
     }
 
     [CommandHandler(Description = "Player Draw Next - Draw next Card with Card Name")]
-    private static void PlayerDrawNext(string cardName)
+    private static void PlayerDrawNext([Autocomplete(typeof(BattleCommandsHandler), "CardsInDeck")] string cardName)
     {
         Player player = _gameplayManager.CurrentPlayer;
 
@@ -78,28 +101,110 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
+        WorkingCard workingCard = player.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
         if (workingCard != null)
         {
-            BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-            _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
+            _cardsController.AddCardToHand(player, workingCard);
         }
         else
         {
-            workingCard = player.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
-            if (workingCard != null)
-            {
-                _cardsController.AddCardToHand(player, workingCard);
-                workingCard = player.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
-                BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
-                _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, PlayPlayerCardOnBoard);
-            }
-            else
-            {
-                Debug.LogError(cardName + " not Found.");
-            }
+            Debug.LogError(cardName + " not Found.");
         }
     }
+
+    public static IEnumerable<string> CardsInDeck()
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        string[] deckNames = new string[player.CardsInDeck.Count];
+        for (var i = 0; i < player.CardsInDeck.Count; i++)
+        {
+            deckNames[i] = player.CardsInDeck[i].LibraryCard.Name;
+        }
+        return deckNames;
+    }
+
+    [CommandHandler(Description = "Player Draw - Draw Card from Library with Card Name")]
+    private static void PlayerDraw(string cardName)
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
+        {
+            Debug.LogError("Please Wait For Your Turn");
+            return;
+        }
+        _cardsController.CreateNewCardByNameAndAddToHand(player, cardName);
+    }
+
+    [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
+    private static void PlayerInfiniteAbility(bool useInfiniteAbility)
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
+        {
+            Debug.LogError("Please Wait For Your Turn");
+            return;
+        }
+
+        if (_skillController.PlayerPrimarySkill == null)
+        {
+            Debug.LogError("Primary Skill is Not set");
+        }
+        else
+        {
+            _gameplayManager.UseInifiniteAbility = useInfiniteAbility;
+            if(useInfiniteAbility)
+                _skillController.PlayerPrimarySkill.SetCoolDown(0);
+        }
+
+        if (_skillController.PlayerSecondarySkill == null)
+        {
+            Debug.LogError("Secondary Skill is Not set");
+        }
+        else
+        {
+            _gameplayManager.UseInifiniteAbility = useInfiniteAbility;
+            if(useInfiniteAbility)
+                _skillController.PlayerSecondarySkill.SetCoolDown(0);
+        }
+    }
+
+
+    [CommandHandler(Description = "Enemy Draw - Puts a card into play for the side of the AI/enemy from the library")]
+    private static void EnemyOverlordPlayAnyCard(string cardName)
+    {
+        Player opponentPlayer = _gameplayManager.OpponentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
+        {
+            Debug.LogError("Please Wait For Opponent Turn");
+            return;
+        }
+        WorkingCard workingCard = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
+        _aiController.PlayCardOnBoard(workingCard);
+    }
+
+    [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
+    private static void EnemyOverlordPlayCard(string cardName)
+    {
+        Player opponentPlayer = _gameplayManager.OpponentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
+        {
+            Debug.LogError("Please Wait For Opponent Turn");
+            return;
+        }
+
+        WorkingCard workingCard = opponentPlayer.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
+        if (workingCard != null)
+        {
+            _cardsController.AddCardToHand(opponentPlayer, workingCard);
+            workingCard = opponentPlayer.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
+            _aiController.PlayCardOnBoard(workingCard);
+        }
+        else
+        {
+            Debug.LogError(cardName + " not Found.");
+        }
+    }
+
 
     private static void PlayPlayerCardOnBoard(PlayCardOnBoard playCardOnBoard)
     {
@@ -457,5 +562,16 @@ static class BattleCommandsHandler
             return;
 
         unitModel.CurrentHp -= boardSkill.Skill.Value;
+    }
+
+    [CommandHandler(Description = "Unlocks current overlord abilities")]
+    private static void UnlockAllCurrentOverlordAbilities()
+    {
+        foreach (var skill in _gameplayManager.CurrentPlayer.SelfHero.Skills)
+        {
+            skill.Unlocked = true;
+        }
+
+        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
     }
 }

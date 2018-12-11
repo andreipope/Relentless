@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -27,19 +28,63 @@ namespace Loom.ZombieBattleground
         private void ActionCompleted()
         {
             ClearParticles();
+
+            float delayAfter = 0;
+            float delayBeforeDestroy = 5f;
+            Vector3 offset = Vector3.zero;
+
+            string soundName = string.Empty;
+            float soundDelay = 0;
+
+            Enumerators.AbilityEffectInfoPositionType positionType = Enumerators.AbilityEffectInfoPositionType.Target;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                Vector3 position = Vector3.zero;
-                foreach (BoardUnitView unit in _opponent.BoardCards)
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+
+                if (effectInfo != null)
                 {
-                    position = Utilites.CastVfxPosition(unit.Transform.position);
-                    CreateVfx(position, true, 5f, true);
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    offset = effectInfo.offset;
+                    soundName = effectInfo.soundName;
+                    positionType = effectInfo.positionInfo.type;
+                    soundDelay = effectInfo.delayForSound;
                 }
+
+                Vector3 position = Vector3.zero;
+                switch (positionType)
+                {
+                    case Enumerators.AbilityEffectInfoPositionType.Target:
+                        {
+                            foreach (BoardUnitView unit in _opponent.BoardCards)
+                            {
+                                position = unit.Transform.position;
+                                CreateVfx(position, true, delayBeforeDestroy, true);
+                            }
+                        }
+                        break;
+                    case Enumerators.AbilityEffectInfoPositionType.Overlord:
+                        {
+                            position = Ability.PlayerCallerOfAbility.AvatarObject.transform.position;
+                            CreateVfx(position, true, delayBeforeDestroy, true);
+                            if(!Ability.PlayerCallerOfAbility.IsLocalPlayer)
+                            {
+                                VfxObject.transform.eulerAngles = new Vector3(VfxObject.transform.eulerAngles.x, VfxObject.transform.eulerAngles.y, 180);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
             }
 
-            Ability.InvokeVFXAnimationEnded();
+            PlaySound(soundName, soundDelay);
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
 
