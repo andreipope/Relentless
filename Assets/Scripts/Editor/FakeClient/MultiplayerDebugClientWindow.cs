@@ -19,7 +19,7 @@ using Rect = UnityEngine.Rect;
 
 namespace Loom.ZombieBattleground.Editor.Tools
 {
-    public class FakeClientWindow : EditorWindow
+    public class MultiplayerDebugClientWindow : EditorWindow
     {
         [SerializeField]
         private PlayerActionLogView _playerActionLogView = new PlayerActionLogView();
@@ -39,16 +39,16 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         private GameActionsState _gameActionsState = new GameActionsState();
 
-        [MenuItem("Window/ZombieBattleground/Open new FakeClient")]
+        [MenuItem("Window/ZombieBattleground/Open New Multiplayer Debug Client")]
         private static void OpenWindow()
         {
-            FakeClientWindow window = CreateInstance<FakeClientWindow>();
+            MultiplayerDebugClientWindow window = CreateInstance<MultiplayerDebugClientWindow>();
             window.Show();
         }
 
         private void Awake()
         {
-            titleContent = new GUIContent("Fake Client");
+            titleContent = new GUIContent("MP Debug Client");
         }
 
         private async void Update()
@@ -762,7 +762,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     // Ignore
                 }
 
-                FakeClientDataPreviewWindow dataPreviewWindow = GetWindow<FakeClientDataPreviewWindow>(GetType());
+                MultiplayerDebugClientDataPreviewWindow dataPreviewWindow = GetWindow<MultiplayerDebugClientDataPreviewWindow>(GetType());
                 dataPreviewWindow.SetText(json);
             }
 

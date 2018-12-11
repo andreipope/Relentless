@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground.Editor.Tools
 {
-    public class FakeClientDataPreviewWindow : EditorWindow, IHasCustomMenu
+    public class MultiplayerDebugClientDataPreviewWindow : EditorWindow, IHasCustomMenu
     {
         private const int MaxTextLength = 16382;
 
