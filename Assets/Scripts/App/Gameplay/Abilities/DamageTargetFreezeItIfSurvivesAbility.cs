@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
 
         private void DamageTarget(BoardObject boardObject)
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+            object caller = GetCaller();
 
             BoardObject target = null;
 
@@ -55,32 +55,32 @@ namespace Loom.ZombieBattleground
 
             bool isFreezed = false;
 
-            switch (AffectObjectType)
+            switch (boardObject)
             {
-                case Enumerators.AffectObjectType.Player:
-                    BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
-                    target = TargetPlayer;
+                case Player player:
+                    BattleController.AttackPlayerByAbility(caller, AbilityData, player);
+                    target = player;
                     actionType = Enumerators.ActionType.CardAffectingOverlord;
 
-                    if (TargetPlayer.Defense > 0)
+                    if (player.Defense > 0)
                     {
-                        TargetPlayer.Stun(Enumerators.StunType.FREEZE, 1);
+                        player.Stun(Enumerators.StunType.FREEZE, 1);
                         isFreezed = true;
                     }
                     break;
-                case Enumerators.AffectObjectType.Character:
-                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
-                    target = TargetUnit;
+                case BoardUnitModel unit:
+                    BattleController.AttackUnitByAbility(caller, AbilityData, unit);
+                    target = unit;
                     actionType = Enumerators.ActionType.CardAffectingCard;
 
-                    if (TargetUnit.CurrentHp > 0)
+                    if (unit.CurrentHp > 0)
                     {
-                        TargetUnit.Stun(Enumerators.StunType.FREEZE, 1);
+                        unit.Stun(Enumerators.StunType.FREEZE, 1);
                         isFreezed = true;
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
+                    throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
             }
 
 

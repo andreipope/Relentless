@@ -15,16 +15,19 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
-
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
 
             SetAttackAvailability(AbilityUnitOwner);
         }
 
         private void SetAttackAvailability(BoardUnitModel boardUnit)
         {
+            if (boardUnit == null)
+                return;
+
             if (AbilityTargetTypes.Count > 0)
             {
                 boardUnit.AttackTargetsAvailability.Clear();

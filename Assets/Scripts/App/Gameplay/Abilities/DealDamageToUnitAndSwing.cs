@@ -29,8 +29,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
-
                 InvokeActionTriggered();
             }
         }
@@ -40,8 +38,6 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             Action();
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         public override void Action(object param = null)

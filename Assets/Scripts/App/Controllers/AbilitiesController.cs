@@ -6,6 +6,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Newtonsoft.Json;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -484,28 +485,35 @@ namespace Loom.ZombieBattleground
                                        {
                                            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
-                                           handCard.GameObject.SetActive(true);
-
+  
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                            workingCard.Owner.AddCardToBoard(workingCard);
                                            workingCard.Owner.AddCardToGraveyard(workingCard);
 
-                                           InternalTools.DoActionDelayed(() =>
+                                           if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
                                            {
-                                               _cardsController.RemoveCard(new object[]{ card });
-                                           }, 0.5f);
+                                               InternalTools.DoActionDelayed(() =>
+                                               {
+                                                   Object.Destroy(card.GameObject);
+                                               }, 0.5f);
 
-                                           InternalTools.DoActionDelayed(() =>
+                                               ProceedWithCardToGraveyard(card);
+                                           }
+                                           else
                                            {
-                                               workingCard.Owner.GraveyardCardsCount++;
+                                               handCard.GameObject.SetActive(true);
 
-                                                   _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                                                   {
-                                                       ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                                       Caller = card,
-                                                       TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                                                   });
-                                           }, 1.5f);
+                                               InternalTools.DoActionDelayed(() =>
+                                               {
+                                                   _cardsController.RemoveCard(new object[] { card });
+                                               }, 0.5f);
+
+                                               InternalTools.DoActionDelayed(() =>
+                                               {
+                                                   ProceedWithCardToGraveyard(card);
+                                               }, 1.5f);
+                                           }
+
 
                                            BlockEndTurnButton = false;
 
@@ -1056,32 +1064,33 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
-                card.GameObject.SetActive(true);
-                card.RemoveCardParticle.Play(); // move it when card should call hide action
-
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                 card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
                 card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
 
-                GameClient.Get<ITimerManager>().AddTimer(_cardsController.RemoveCard, new object[]
+                if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
                 {
-                        card
-                }, 0.5f);
-
-                GameClient.Get<ITimerManager>().AddTimer(
-                    create =>
+                    InternalTools.DoActionDelayed(() =>
                     {
-                        card.WorkingCard.Owner.GraveyardCardsCount++;
+                        Object.Destroy(card.GameObject);
+                    }, 0.5f);
 
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                        {
-                            ActionType = Enumerators.ActionType.PlayCardFromHand,
-                            Caller = card,
-                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                        });
-                    },
-                    null,
-                    1.5f);
+                    ProceedWithCardToGraveyard(card);
+                }
+                else
+                {
+                    card.GameObject.SetActive(true);
+
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        _cardsController.RemoveCard(new object[] { card });
+                    }, 0.5f);
+
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        ProceedWithCardToGraveyard(card);
+                    }, 1.5f);
+                }
 
                 action?.Invoke(card);
             }
@@ -1109,6 +1118,18 @@ namespace Loom.ZombieBattleground
 
             _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
             _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+        }
+
+        private void ProceedWithCardToGraveyard(BoardCard card)
+        {
+            card.WorkingCard.Owner.GraveyardCardsCount++;
+
+            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.PlayCardFromHand,
+                Caller = card,
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+            });
         }
 
         private AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
