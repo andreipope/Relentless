@@ -473,8 +473,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6a5d78699b9d274f9c0d7400d281d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardName: Bat
   delayBeforeEffect: 4
   delayAfterEffect: 3
+  delayForChangeState: 0
+  soundName: CZB_AUD_Bat_F1_EXP
+  delayForSound: 0.5
+  offset: {x: 0, y: 0, z: 0}
+  rotationParameters:
+    isOnlyForLocalPlayer: 0
+    rotation: {x: 0, y: 0, z: 0}
 --- !u!198 &198073456856959114
 ParticleSystem:
   m_ObjectHideFlags: 1

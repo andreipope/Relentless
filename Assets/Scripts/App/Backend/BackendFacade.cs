@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
 using Deck = Loom.ZombieBattleground.Protobuf.Deck;
+using System.Text;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -251,40 +252,64 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Auth
 
-        private const string AuthBetaKeyValidationEndPoint = "/user/beta/validKey";
+        private const string UserInfoEndPoint = "/user/info";
 
-        private const string AuthBetaConfigEndPoint = "/user/beta/config";
+        private const string loginEndPoint = "/auth/email/login";
 
-        public async Task<bool> CheckIfBetaKeyValid(string betaKey)
+        public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaKeyValidationEndPoint + "?beta_key=" + betaKey;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + UserInfoEndPoint;
+            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + accessToken);
+
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+                
+            Debug.Log(httpResponseMessage.ToString());
+
             if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception(
-                    $"{nameof(CheckIfBetaKeyValid)} failed with error code {httpResponseMessage.StatusCode}");
+                throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
 
-            BetaKeyValidationResponse betaKeyValidationResponse =
-                httpResponseMessage.DeserializeAsJson<BetaKeyValidationResponse>();
-            return betaKeyValidationResponse.IsValid;
-        }
-
-        public async Task<BetaConfig> GetBetaConfig(string betaKey)
-        {
-            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + AuthBetaConfigEndPoint + "?beta_key=" + betaKey;
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetBetaConfig)} failed with error code {httpResponseMessage.StatusCode}");
-
-            BetaConfig betaConfig = JsonConvert.DeserializeObject<BetaConfig>(
+            UserInfo userInfo = JsonConvert.DeserializeObject<UserInfo>(
                 httpResponseMessage.ReadToEnd(),
 
                 // FIXME: backend should return valid version numbers at all times
                 new VersionConverterWithFallback(Version.Parse(Constants.CurrentVersionBase)));
-            return betaConfig;
+
+            return userInfo;
+        }
+
+        public async Task<LoginData> InitiateLogin(string email, string password)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + loginEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.email = email;
+            loginRequest.password = password;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(loginRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+                
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+                
+            LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
+                httpResponseMessage.ReadToEnd());
+            return loginData;
+        }
+
+        private struct LoginRequest 
+        {
+            public string email;
+            public string password;
         }
 
         private struct BetaKeyValidationResponse
@@ -307,6 +332,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string CheckGameStatusMethod = "CheckGameStatus";
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
         private const string AcceptMatchMethod = "AcceptMatch";
+        private const string KeepAliveStatusMethod = "KeepAlive";
 
         public PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
@@ -321,8 +347,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
-        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress)
+        public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(string userId, long deckId, Address? customGameModeAddress, List<string> pvpTags = null)
         {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 UserId = userId,
@@ -333,15 +369,46 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CustomGame = customGameModeAddress?.ToProtobufAddress()
             };
 
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
+
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
-        public async Task<FindMatchResponse> FindMatch(string userId)
+        public async Task<FindMatchResponse> FindMatch(string userId, List<string> pvpTags = null)
         {
+            string tags = "";
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    tags += tag.ToString ();
+                }
+            }
+            Debug.LogWarning ("PvPTags: " + tags);
+
+            /* if (pvpTags == null)
+            {
+                pvpTags = new Google.Protobuf.Collections.RepeatedField<string>();
+            } */
+
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId
             };
+
+            if (pvpTags != null)
+            {
+                foreach (string tag in pvpTags)
+                {
+                    request.Tags.Add (tag);
+                }
+            }
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
         }
@@ -547,6 +614,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
+        }
+
+        public async Task<KeepAliveResponse> KeepAliveStatus(string userId, long matchId)
+        {
+            KeepAliveRequest request = new KeepAliveRequest
+            {
+                MatchId = matchId,
+                UserId = userId
+            };
+
+            return await Contract.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
         }
 
         #endregion

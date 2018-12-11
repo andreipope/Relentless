@@ -16,7 +16,7 @@ public static class LoomTestContext
     {
         BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Local];
         BackendFacade = new BackendFacade(backendEndpoint);
-        UserDataModel = new UserDataModel(userId, "", CryptoUtils.GeneratePrivateKey());
+        UserDataModel = new UserDataModel(userId, CryptoUtils.GeneratePrivateKey());
     }
 
     public static void TestTearDown()

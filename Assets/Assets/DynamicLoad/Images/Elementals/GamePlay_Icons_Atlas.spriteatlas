@@ -91,6 +91,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: db2a60abb37e4b945a3f06e17a741fc7, type: 3}
   - {fileID: 21300000, guid: 532e9abb2235740f2a9fb7bbb39078b1, type: 3}
   - {fileID: 21300000, guid: a011fefbf43c52f46b0f3922a8e2c037, type: 3}
+  - {fileID: 21300000, guid: 64e2811c4dc089b418a417bdbf58f246, type: 3}
+  - {fileID: 21300000, guid: fbe6663cf451a2e46b76200876e84a57, type: 3}
   - {fileID: 21300000, guid: 02d2fb7c3ba63dd43b00d764978f1461, type: 3}
   - {fileID: 21300000, guid: b76496ddc12866a46948b0fa14d45988, type: 3}
   - {fileID: 21300000, guid: 7aaa19dd44ea5704788b37e22f0a5287, type: 3}
@@ -98,6 +100,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5ee585aea3cbd514c87d1da9161247cf, type: 3}
   - {fileID: 21300000, guid: 1a5570ee60b8ecb499dc569b7aedd03e, type: 3}
   - {fileID: 21300000, guid: e62b68fe05d786b42899b62cf895875e, type: 3}
+  - {fileID: 21300000, guid: f199031faa37c1c49a3737868390c638, type: 3}
   m_PackedSpriteNamesToIndex:
   - battleground_mechanic_icon_destroy_large
   - tab_toxic
@@ -130,6 +133,8 @@ SpriteAtlas:
   - icon_element_life_noborder
   - tab_life
   - battleground_mechanic_icon_heavy_large
+  - battleground_mechanic_icon_restore_large
+  - battleground_mechanic_icon_blitz_large
   - battleground_mechanic_icon_blank_large
   - battleground_rank_icon_officer_large
   - Icon_element_water_noborder
@@ -137,5 +142,6 @@ SpriteAtlas:
   - battleground_mechanic_icon_attack_large
   - battleground_mechanic_icon_freeze_large
   - battleground_mechanic_icon_overflowx_large
+  - battleground_mechanic_icon_chainsaw_large
   m_Tag: GamePlay_Icons_Atlas
   m_IsVariant: 0

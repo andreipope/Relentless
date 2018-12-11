@@ -54,6 +54,8 @@ GameObject:
   - component: {fileID: 33075496887721936}
   - component: {fileID: 64896923632833656}
   - component: {fileID: 23381240069085834}
+  - component: {fileID: 54146497126179632}
+  - component: {fileID: 114355886270549204}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -138,7 +140,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4001379788836420}
   - component: {fileID: 198977470687236906}
+  - component: {fileID: 54819269883872196}
   - component: {fileID: 199639632589353270}
+  - component: {fileID: 114114582547591566}
   m_Layer: 0
   m_Name: MeteorShowerVFX
   m_TagString: Untagged
@@ -208,7 +212,7 @@ GameObject:
   - component: {fileID: 198929326548980678}
   - component: {fileID: 199774846284235540}
   m_Layer: 0
-  m_Name: Particle System (1)
+  m_Name: ParticleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -263,7 +267,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1069391195328658}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.06, y: -2, z: -0.82}
+  m_LocalPosition: {x: -28.84, y: 0.13, z: -0.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4274737407091448}
@@ -423,6 +427,36 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1277486961111316}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!54 &54146497126179632
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1277486961111316}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!54 &54819269883872196
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1692332560824276}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!64 &64896923632833656
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -437,6 +471,28 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114114582547591566
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1692332560824276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2cac97ac8039e46914f4fc13871886, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114355886270549204
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1277486961111316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2cac97ac8039e46914f4fc13871886, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &198044543890713666
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -42187,7 +42243,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -46048,8 +46104,8 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 94b90f6833597404cbdf2ac224c85dc8, type: 2}
-  - {fileID: 2100000, guid: 94b90f6833597404cbdf2ac224c85dc8, type: 2}
+  - {fileID: 2100000, guid: 63d85ae1a693d414bae9090c7d6274b5, type: 2}
+  - {fileID: 2100000, guid: 63d85ae1a693d414bae9090c7d6274b5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -46105,8 +46161,8 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 8112d9a685a6e434bbf9558bdfd71d72, type: 2}
-  - {fileID: 2100000, guid: 8112d9a685a6e434bbf9558bdfd71d72, type: 2}
+  - {fileID: 2100000, guid: 361cf2b6833605f4b9f3115941a1eebe, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -46219,8 +46275,8 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: fefcab302b0260e4dabf263c56a2e8b8, type: 2}
-  - {fileID: 2100000, guid: fefcab302b0260e4dabf263c56a2e8b8, type: 2}
+  - {fileID: 2100000, guid: 1edec91cc5044744887688f5ebb26ee2, type: 2}
+  - {fileID: 2100000, guid: 1edec91cc5044744887688f5ebb26ee2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -46333,8 +46389,8 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 594979a3ac32ca045909f1c2588118d4, type: 2}
-  - {fileID: 2100000, guid: 594979a3ac32ca045909f1c2588118d4, type: 2}
+  - {fileID: 2100000, guid: 62c8e26bc63146e408f47656b3bb0c05, type: 2}
+  - {fileID: 2100000, guid: 62c8e26bc63146e408f47656b3bb0c05, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -46369,7 +46425,7 @@ ParticleSystemRenderer:
   m_EnableGPUInstancing: 0
   m_ApplyActiveColorSpace: 0
   m_VertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: 02be8e572c72e5d418a351c039ce2399, type: 3}
+  m_Mesh: {fileID: 4300000, guid: f679d38d1d6cb964bbe5d58e335232d4, type: 3}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -46447,8 +46503,8 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: b788068c2c0834563b20c3af93fc8e2e, type: 2}
-  - {fileID: 2100000, guid: b788068c2c0834563b20c3af93fc8e2e, type: 2}
+  - {fileID: 2100000, guid: b54f6c4793798394a85a1925af8a561c, type: 2}
+  - {fileID: 2100000, guid: b54f6c4793798394a85a1925af8a561c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

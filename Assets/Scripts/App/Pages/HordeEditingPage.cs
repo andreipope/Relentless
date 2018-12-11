@@ -79,7 +79,8 @@ namespace Loom.ZombieBattleground
 
         private CollectionData _collectionData;
 
-        private int _currentDeckId, _currentHeroId;
+        private int _currentDeckId;
+        private Hero _currentHero;
 
         private List<BoardCard> _createdArmyCards, _createdHordeCards;
 
@@ -108,9 +109,9 @@ namespace Loom.ZombieBattleground
             set => _currentDeckId = value;
         }
 
-        public int CurrentHeroId
+        public Hero CurrentHero
         {
-            set => _currentHeroId = value;
+            set => _currentHero = value;
         }
 
         public void Init()
@@ -275,7 +276,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentDeck = new Deck(
                     -1,
-                    _currentHeroId,
+                    _currentHero.HeroId,
                     "HORDE " + _dataManager.CachedDecksData.Decks.Count,
                     new List<DeckCardData>(),
                     0,
@@ -285,6 +286,13 @@ namespace Loom.ZombieBattleground
             else
             {
                 _currentDeck = _dataManager.CachedDecksData.Decks.First(d => d.Id == _currentDeckId).Clone();
+                _currentDeck.Cards.Sort(
+                    (DeckCardData card_A, DeckCardData card_B) =>            
+                    {
+                        return _dataManager.CachedCardsLibraryData.GetCardFromName(card_A.CardName).Cost -
+                            _dataManager.CachedCardsLibraryData.GetCardFromName(card_B.CardName).Cost;
+                    }
+               );
             }
 
             LoadDeckInfo(_currentDeck);
@@ -370,6 +378,13 @@ namespace Loom.ZombieBattleground
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
             List<Card> cards = set.Cards;
+            cards.Sort( 
+                (Card card_A, Card card_B) =>
+                {
+                    return card_A.Cost - card_B.Cost;
+                } 
+            );
+            
             int startIndex = page * CardsPerPage;
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
 
@@ -572,7 +587,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (_against[_dataManager.CachedHeroesData.Heroes[_currentHeroId].HeroElement] == card.CardSetType)
+            if (_against[_currentHero.HeroElement] == card.CardSetType)
             {
                 OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -733,7 +748,7 @@ namespace Loom.ZombieBattleground
             foreach (Deck deck in _dataManager.CachedDecksData.Decks)
             {
                 if (_currentDeckId != deck.Id &&
-                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.InvariantCultureIgnoreCase))
                 {
                     _buttonSave.interactable = true;
                     OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
@@ -744,7 +759,9 @@ namespace Loom.ZombieBattleground
             bool success = true;
             if (_currentDeckId == -1)
             {
-                _currentDeck.HeroId = _currentHeroId;
+                _currentDeck.HeroId = _currentHero.HeroId;
+                _currentDeck.PrimarySkill = _currentHero.PrimarySkill;
+                _currentDeck.SecondarySkill = _currentHero.SecondarySkill;
 
                 try
                 {
@@ -1143,11 +1160,7 @@ namespace Loom.ZombieBattleground
 
         private void MoveHordeToLeft()
         {
-            _currentHordePage--;
-            if (_currentHordePage < 0)
-            {
-                _currentHordePage = _numHordePages - 1;
-            }
+            _currentHordePage = Mathf.Clamp(_currentHordePage - 1, 0, _numHordePages - 1);
 
             CalculateVisibility();
         }
@@ -1161,12 +1174,7 @@ namespace Loom.ZombieBattleground
 
         private void MoveHordeToRight()
         {
-            _currentHordePage++;
-
-            if (_currentHordePage >= _numHordePages)
-            {
-                _currentHordePage = 0;
-            }
+            _currentHordePage = Mathf.Clamp(_currentHordePage + 1, 0, _numHordePages - 1);
 
             CalculateVisibility();
         }

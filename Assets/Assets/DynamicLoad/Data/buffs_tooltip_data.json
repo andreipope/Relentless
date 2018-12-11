@@ -96,6 +96,31 @@
       "name": "Reanimate",
       "tooltip": "Resummon this zombie when it is Destroyed",
       "type": "REANIMATE"
+    },
+    {
+      "name": "Restore",
+      "tooltip": "Add Def to wounded zombie up to its max Def",
+      "type": "RESTORE"
+    },
+    {
+      "name": "Chainsaw",
+      "tooltip": "Add 4 Atk to a zombie; End: -4 Def",
+      "type": "CHAINSAW"
+    },
+    {
+      "name": "Blitz",
+      "tooltip": "Can attack zombies when this enters the battleground",
+      "type": "BLITZ"
+    },
+    {
+      "name": "Feral",
+      "tooltip": "Can attack when this zombie enters the battleground",
+      "type": "FERAL"
+    },
+    {
+      "name": "Heavy",
+      "tooltip": "Enemies must attack this zombie first",
+      "type": "HEAVY"
     }
   ],
   "ranks": [
@@ -104,11 +129,11 @@
       "type": "COMMANDER",
       "info": [
         {
-          "tooltip": "Bestows +1 Def and Guard to 2 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Guard to 2 random lower ranked allies",
           "element": "AIR"
         },
         {
-          "tooltip": "Bestows +1 Def and Heavy to 2 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Heavy to 2 random lower ranked allies",
           "element": "EARTH"
         },
         {
@@ -116,7 +141,7 @@
           "element": "TOXIC"
         },
         {
-          "tooltip": "Bestows +1 Def and Reanimate to 2 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Reanimate to 2 random lower ranked allies",
           "element": "LIFE"
         },
         {
@@ -165,11 +190,11 @@
       "type": "GENERAL",
       "info": [
         {
-          "tooltip": "Bestows +1 Def and Guard to 3 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Guard to 3 random lower ranked allies",
           "element": "AIR"
         },
         {
-          "tooltip": "Bestows +1 Def and Heavy to 3 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Heavy to 3 random lower ranked allies",
           "element": "EARTH"
         },
         {
@@ -177,7 +202,7 @@
           "element": "TOXIC"
         },
         {
-          "tooltip": "Bestows +1 Def and Reanimate to 3 random lower ranked allies",
+          "tooltip": "Bestows +1 Atk and Reanimate to 3 random lower ranked allies",
           "element": "LIFE"
         },
         {

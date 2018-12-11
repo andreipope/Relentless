@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
         private ParticlesController _particlesController;
 
         private List<BoardUnitView> _targetUnits;
+
+        private string _cardName;
 
         public DamageTargetAdjustmentsAbilityView(DamageTargetAdjustmentsAbility ability) : base(ability)
         {
@@ -51,42 +54,51 @@ namespace Loom.ZombieBattleground
                     ParticleIds.Add(id);
 
                     isLastUnit = i == _targetUnits.Count - 1;
-
-                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => ActionCompleted(unit.Transform.position, isLastUnit, id));
-
+                    if(isLastUnit)
+                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => ActionCompleted());
                 }
             }
             else
             {
+                ActionCompleted();
                 for (int i = 0; i < _targetUnits.Count; i++)
                 {
                     unit = _targetUnits[i];
                     isLastUnit = i == _targetUnits.Count - 1;
-                    ActionCompleted(unit.Transform.position, isLastUnit);
                 }
             }
         }
 
-        private void ActionCompleted(Vector3 position, bool isLastUnit, ulong id = ulong.MaxValue)
+        private void ActionCompleted()
         {
-            if (id != ulong.MaxValue)
-            {
-                _particlesController.DestroyParticle(id);
-            }
+            _cardName = "";
+            float delayAfter = 0;
+            float delayBeforeDestroy = 3f;
+            string soundName = string.Empty;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                Vector3 targetPosition = position;
-
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                CreateVfx(targetPosition, true, 5f);
-            }
+                for (int i = 0; i < _targetUnits.Count; i++)
+                {
+                    AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                    if (effectInfo != null)
+                    {
+                        _cardName = effectInfo.cardName;
+                        delayAfter = effectInfo.delayAfterEffect;
+                        delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                        soundName = effectInfo.soundName;
+                    }
 
-            if (isLastUnit)
-            {
-                Ability.InvokeVFXAnimationEnded();
+                    Vector3 targetPosition = _targetUnits[i].Transform.position;
+                  
+                    CreateVfx(targetPosition, true, delayBeforeDestroy);
+                }
             }
+            PlaySound(soundName, 0);
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
 

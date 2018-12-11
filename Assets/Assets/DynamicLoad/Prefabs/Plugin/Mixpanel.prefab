@@ -51,8 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 882752fe4382f41c593a64591e77ee24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  token: CucZl0fAn9peLmdoURE6JCQ4BQ5neunc
-  debugToken: CucZl0fAn9peLmdoURE6JCQ4BQ5neunc
+  token: 609343ab4cfd24db2e55c89ddd834dfc
+  debugToken: 609343ab4cfd24db2e55c89ddd834dfc
   trackInEditor: 1
   minLogLevel: 4
   flushInterval: 10

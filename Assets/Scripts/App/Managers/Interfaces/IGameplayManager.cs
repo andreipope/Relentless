@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground
 {
@@ -55,6 +56,8 @@ namespace Loom.ZombieBattleground
 
         void StopGameplay();
 
+        AnalyticsTimer MatchDuration { get; set; }
+
         void EndGame(Enumerators.EndGameType endGameType, float timer = 4f);
 
         void ResetWholeGameplayScene();
@@ -64,5 +67,12 @@ namespace Loom.ZombieBattleground
         Player GetPlayerById(int id);
 
         PlayerMoveAction PlayerMoves { get; set; }
+
+        Deck CurrentPlayerDeck { get; set; }
+        Deck OpponentPlayerDeck { get; set; }
+
+        int OpponentIdCheat { get; set; }
+        bool AvoidGooCost { get; set; }
+        bool UseInifiniteAbility { get; set; }
     }
 }

@@ -42,8 +42,8 @@ namespace Loom.ZombieBattleground.Data
                 {
                     deck.Cards.Select(card => card.ToProtobuf())
                 },
-                PrimarySkill = deck.PrimarySkill,
-                SecondarySkill = deck.SecondarySkill
+                PrimarySkill = (OverlordSkillKind.Types.Enum)deck.PrimarySkill,
+                SecondarySkill = (OverlordSkillKind.Types.Enum)deck.SecondarySkill
             };
         }
 
@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground.Data
                 {
                     card.Abilities.Select(a => a.ToProtobuf())
                 },
-                UniqueAnimation = (UniqueAnimationType.Types.Enum) card.UniqueAnimationType
+                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimationType
             };
 
             return protoCard;
