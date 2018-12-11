@@ -20,7 +20,7 @@ public class TestHelper
     /// <summary>
     /// To be in line with AI Brain, 1.1f was taken as value from AIController.
     /// </summary>
-    private const float DefaultThinkTime = 0.1f;
+    private const float DefaultThinkTime = 0f;
 
     /// <summary>
     /// Delay between main menu transition clicks.
@@ -881,6 +881,8 @@ public class TestHelper
     /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
+        GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
+
         UserDataModel userDataModel = new UserDataModel(
             "TestFakeUser_" + UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
             CryptoUtils.GeneratePrivateKey()
@@ -888,7 +890,6 @@ public class TestHelper
 
         _backendDataControlMediator.SetUserDataModel(userDataModel);
         yield return TaskAsIEnumerator(_backendDataControlMediator.LoginAndLoadData());
-        GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
 
         CheckCurrentPageName("LoginPage");
         GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
@@ -1265,7 +1266,7 @@ public class TestHelper
                     unit.OwnerPlayer.ThrowCardAttacked (
                         unit.Card,
                         Enumerators.AffectObjectType.Player,
-                        -1);
+                        null);
 
                     yield return LetsThink ();
                 }
@@ -1288,7 +1289,7 @@ public class TestHelper
                         unit.OwnerPlayer.ThrowCardAttacked (
                             unit.Card,
                             Enumerators.AffectObjectType.Player,
-                            -1);
+                            null);
 
                         yield return LetsThink ();
                     }
@@ -1316,7 +1317,7 @@ public class TestHelper
                             unit.OwnerPlayer.ThrowCardAttacked (
                                 unit.Card,
                                 Enumerators.AffectObjectType.Player,
-                                -1);
+                                null);
 
                             yield return LetsThink ();
                         }
@@ -1534,7 +1535,7 @@ public class TestHelper
             target = GetAbilityTarget (card);
         }
 
-        Debug.LogWarning ("Target: " + ((target != null) ? target.Id.ToString () : "Null") + ", Need target: " + needTargetForAbility);
+        Debug.LogWarning ("Target: " + (target?.ToString() ?? "Null") + ", Need target: " + needTargetForAbility);
 
         switch (card.LibraryCard.CardKind)
         {
@@ -2593,7 +2594,7 @@ public class TestHelper
         if (IsGameEnded ())
             yield break;
 
-        if (_gameplayManager.CurrentTurnPlayer.Id == _gameplayManager.CurrentPlayer.Id)
+        if (_gameplayManager.CurrentTurnPlayer.InstanceId == _gameplayManager.CurrentPlayer.InstanceId)
         {
             yield return null;
         }
