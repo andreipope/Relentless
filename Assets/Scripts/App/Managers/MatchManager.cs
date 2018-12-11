@@ -217,7 +217,6 @@ namespace Loom.ZombieBattleground
         private void HandleEndMatchmaking(MatchMakingPopup matchMakingPopup, MatchMakingFlowController matchMakingFlowController)
         {
             FindOpponentTime.FinishTimer();
-            Debug.LogError(FindOpponentTime.GetTimeDiffrence());
 
             matchMakingFlowController.StateChanged -= MatchMakingFlowControllerOnStateChanged;
             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;

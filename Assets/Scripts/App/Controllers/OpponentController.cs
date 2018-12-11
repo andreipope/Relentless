@@ -115,6 +115,17 @@ namespace Loom.ZombieBattleground
             _pvpManager.PlayerActionOutcomeReceived += OnPlayerActionOutcomeReceived;
         }
 
+        private void OnPlayerLeftGameActionHandler(PlayerActionLeaveMatch leaveMatchAction)
+        {
+            if (leaveMatchAction.Winner == _backendDataControlMediator.UserDataModel.UserId)
+            {
+                _gameplayManager.OpponentPlayer.PlayerDie();
+            }
+            else
+            {
+                _gameplayManager.CurrentPlayer.PlayerDie();
+            }
+        }
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             _pvpManager.CardPlayedActionReceived -= OnCardPlayedHandler;

@@ -192,6 +192,8 @@ namespace Loom.ZombieBattleground
 
         public virtual void Activate()
         {
+            GameplayManager.GameEnded += GameEndedHandler;
+
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
 
@@ -230,6 +232,8 @@ namespace Loom.ZombieBattleground
 
         public virtual void Dispose()
         {
+            GameplayManager.GameEnded -= GameEndedHandler;
+
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
 
@@ -255,6 +259,11 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);
+        }
+
+        private void GameEndedHandler(Enumerators.EndGameType endGameType)
+        {
+            Deactivate();
         }
 
         public virtual void SelectedTargetAction(bool callInputEndBefore = false)

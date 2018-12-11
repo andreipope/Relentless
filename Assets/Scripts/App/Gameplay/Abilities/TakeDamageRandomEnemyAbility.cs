@@ -121,7 +121,7 @@ namespace Loom.ZombieBattleground
 
             if (IsPVPAbility)
             {
-                AbilitiesController.DeactivateAbility(ActivityId);
+                Deactivate();
             }
         }
 
