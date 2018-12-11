@@ -573,6 +573,21 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private Dictionary<T, int> GetRandomTargetsByAmount<T>(List<T> root, int count)
+        {
+            Dictionary<T, int> targets = InternalTools.GetRandomElementsFromList(root, count).ToDictionary(x => x, с => 1);
+
+            if (targets.Count < count)
+            {
+                int delta = count - targets.Count;
+                for (int i = 0; i < delta; i++)
+                {
+                    targets[InternalTools.GetRandomElementsFromList(root, 1)[0]]++;
+                }
+            }
+            return targets;
+        }
+
         // AIR
 
         private void PushAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
@@ -854,12 +869,15 @@ namespace Loom.ZombieBattleground
 
             targets.AddRange(boardCradsModels);
 
-            targets = InternalTools.GetRandomElementsFromList(targets, skill.Count);
+             Dictionary<object, int> sortedTargets = GetRandomTargetsByAmount(targets, skill.Count);
 
             GameObject prefabMovedVfx = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
             GameObject prefabImpactVfx = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX");
 
-            foreach (object targetObject in targets)
+            int basicValue = skill.Value;
+            int value = 0;
+
+            foreach (object targetObject in sortedTargets.Keys)
             {
                 _vfxController.CreateSkillVfx(
                 prefabMovedVfx,
@@ -867,7 +885,19 @@ namespace Loom.ZombieBattleground
                 targetObject,
                 (x) =>
                 {
-                    AttackWithModifiers(owner, boardSkill, skill, targetObject, Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE);
+                    value = basicValue * sortedTargets[targetObject];
+
+                    switch (targetObject)
+                    {
+                        case Player player:
+                            _battleController.AttackPlayerBySkill(owner, boardSkill, player, value);
+                            break;
+                        case BoardUnitModel unit:
+                            _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0, value);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(targetObject), targetObject, null);
+                    }
 
                     _vfxController.CreateVfx(
                         prefabImpactVfx,
