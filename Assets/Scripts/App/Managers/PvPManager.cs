@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         public event Action MatchingStartedActionReceived;
 
-        public event Action PlayerLeftGameActionReceived;
+        public event Action<PlayerActionLeaveMatch> PlayerLeftGameActionReceived;
 
         public event Action MatchingFailed;
 
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<PlayerActionRankBuff> RankBuffActionReceived;
 
-        public event Action<PlayerActionLeaveMatch> LeaveMatchReceived;
+        public event Action LeaveMatchReceived;
 
         public MatchMetadata MatchMetadata { get; set; }
 
@@ -257,11 +257,10 @@ namespace Loom.ZombieBattleground
                         {
                             return;
                         }
-
                         OnReceivePlayerActionType(playerActionEvent);
                         break;
                     case Match.Types.Status.PlayerLeft:
-                        PlayerLeftGameActionReceived?.Invoke();
+                        OnReceivePlayerLeftAction(playerActionEvent);
                         break;
                     case Match.Types.Status.Ended:
                         GameEndedActionReceived?.Invoke();
@@ -279,6 +278,16 @@ namespace Loom.ZombieBattleground
             };
 
             GameClient.Get<IQueueManager>().AddTask(taskFunc);
+        }
+
+        private void OnReceivePlayerLeftAction(PlayerActionEvent playerActionEvent)
+        {
+            switch (playerActionEvent.PlayerAction.ActionType)
+            {
+                case PlayerActionType.Types.Enum.LeaveMatch:
+                    PlayerLeftGameActionReceived?.Invoke(playerActionEvent.PlayerAction.LeaveMatch);
+                    break;
+            }
         }
 
         private async Task LoadInitialGameState()
@@ -318,7 +327,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.Types.Enum.LeaveMatch:
                     ResetCheckPlayerStatus();
-                    LeaveMatchReceived?.Invoke(playerActionEvent.PlayerAction.LeaveMatch);
+                    LeaveMatchReceived?.Invoke();
                     break;
                 case PlayerActionType.Types.Enum.RankBuff:
                     RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);

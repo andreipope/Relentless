@@ -104,9 +104,12 @@ namespace Loom.ZombieBattleground
             _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
         }
 
-        private void OnPlayerLeftGameActionHandler()
+        private void OnPlayerLeftGameActionHandler(PlayerActionLeaveMatch leaveMatchAction)
         {
-            _gameplayManager.OpponentPlayer.PlayerDie();
+            if(leaveMatchAction.Winner == _backendDataControlMediator.UserDataModel.UserId)
+               _gameplayManager.OpponentPlayer.PlayerDie();
+            else
+                _gameplayManager.CurrentPlayer.PlayerDie();
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -131,16 +134,9 @@ namespace Loom.ZombieBattleground
                               cardPlay.Position);
         }
 
-        private void OnLeaveMatchHandler(PlayerActionLeaveMatch leaveMatch)
+        private void OnLeaveMatchHandler()
         {
-            Debug.LogError(leaveMatch.Winner);
-            if(leaveMatch.Winner == _backendDataControlMediator.UserDataModel.UserId)
-                _gameplayManager.OpponentPlayer.PlayerDie();
-            else
-            {
-                Debug.LogError("I am died because i leave the match");
-                _gameplayManager.CurrentPlayer.PlayerDie();
-            }
+            _gameplayManager.OpponentPlayer.PlayerDie();
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
