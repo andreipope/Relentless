@@ -179,7 +179,7 @@ namespace Loom.ZombieBattleground
         {
             if (attackedUnitModel != null)
             {
-                int damage = damageOverride != -1 ? damageOverride : skill.Skill.Value + modifier; ;
+                int damage = damageOverride != -1 ? damageOverride : skill.Skill.Value + modifier;
 
                 if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
