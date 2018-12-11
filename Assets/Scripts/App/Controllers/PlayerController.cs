@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
 {
@@ -95,9 +96,9 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(SetStatusZoomingFalse);
         }
 
-        public void InitializePlayer(int playerId)
+        public void InitializePlayer(Data.InstanceId instanceId)
         {
-            Player player = new Player(playerId, GameObject.Find("Player"), false);
+            Player player = new Player(instanceId, GameObject.Find("Player"), false);
 
             _gameplayManager.CurrentPlayer = player;
 
@@ -136,7 +137,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         Debug.Log(
-                            $"Player ID {playerId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
+                            $"Player ID {instanceId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
                             String.Join("\n", workingDeck.Cast<object>().ToArray())
                         );
 
@@ -168,7 +169,7 @@ namespace Loom.ZombieBattleground
                         .ToList();
 
                     Debug.Log(
-                        $"Player ID {player.Id}, local: {player.IsLocalPlayer}, added CardsInHand:\n" +
+                        $"Player ID {player.InstanceId}, local: {player.IsLocalPlayer}, added CardsInHand:\n" +
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
@@ -398,7 +399,7 @@ namespace Loom.ZombieBattleground
             _topmostBoardCard = null;
             _selectedBoardUnitView = null;
 
-            _battlegroundController.CurrentPreviewedCardId = -1;
+            _battlegroundController.CurrentPreviewedCardId = InstanceId.Invalid;
         }
 
         private void CheckCardPreviewShow()

@@ -979,7 +979,10 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            DebugCardInfoDrawer.Draw(GameObject.transform.position, Model.Card.InstanceId, Model.Card.LibraryCard.Name);
+            if (Model.Card == null)
+                return;
+
+            DebugCardInfoDrawer.Draw(GameObject.transform.position, Model.Card.InstanceId.Id, Model.Card.LibraryCard.Name);
         }
 #endif
     }

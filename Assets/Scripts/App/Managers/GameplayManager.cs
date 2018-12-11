@@ -192,7 +192,7 @@ namespace Loom.ZombieBattleground
 
         public Player GetPlayerById(int id)
         {
-            return CurrentPlayer.Id == id ? CurrentPlayer : OpponentPlayer;
+            return CurrentPlayer.InstanceId.Id == id ? CurrentPlayer : OpponentPlayer;
         }
 
         public void ResetWholeGameplayScene()
@@ -289,14 +289,14 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    GetController<PlayerController>().InitializePlayer(0);
-                    GetController<AIController>().InitializePlayer(1);
+                    GetController<PlayerController>().InitializePlayer(new InstanceId(0));
+                    GetController<AIController>().InitializePlayer(new InstanceId(1));
                     break;
                 case Enumerators.MatchType.PVP:
                     bool localPlayerHasZeroIndex =
                         _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId;
-                    GetController<PlayerController>().InitializePlayer(localPlayerHasZeroIndex ? 0 : 1);
-                    GetController<OpponentController>().InitializePlayer(!localPlayerHasZeroIndex ? 0 : 1);
+                    GetController<PlayerController>().InitializePlayer(new InstanceId(localPlayerHasZeroIndex ? 0 : 1));
+                    GetController<OpponentController>().InitializePlayer(new InstanceId(!localPlayerHasZeroIndex ? 0 : 1));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
@@ -346,7 +346,7 @@ namespace Loom.ZombieBattleground
                                 .ToList();
 
                         Debug.Log(
-                            $"Player ID {OpponentPlayer.Id}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
+                            $"Player ID {OpponentPlayer.InstanceId}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
                             String.Join(
                                 "\n",
                                 (IList<WorkingCard>) opponentCardsInHand

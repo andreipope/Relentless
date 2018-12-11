@@ -116,14 +116,14 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public int GetNewCardInstanceId()
+        public InstanceId GetNewCardInstanceId()
         {
-            return _cardInstanceId++;
+            return new InstanceId(_cardInstanceId++);
         }
 
-        public int GetCardInstanceId()
+        public InstanceId GetCardInstanceId()
         {
-            return _cardInstanceId;
+            return new InstanceId(_cardInstanceId);
         }
 
         public void SetNewCardInstanceId(int id)

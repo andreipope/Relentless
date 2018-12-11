@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
             if (WorkingCard == null)
                 return;
 
-            DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId, WorkingCard.LibraryCard.Name);
+            DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId.Id, WorkingCard.LibraryCard.Name);
         }
 #endif
         public void Dispose()

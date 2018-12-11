@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
 {
@@ -62,9 +61,9 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void InitializePlayer(int playerId)
+        public void InitializePlayer(InstanceId instanceId)
         {
-            Player player = new Player(playerId, GameObject.Find("Opponent"), true);
+            Player player = new Player(instanceId, GameObject.Find("Opponent"), true);
             _gameplayManager.OpponentPlayer = player;
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
@@ -81,7 +80,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         Debug.Log(
-                            $"Player ID {playerId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
+                            $"Player ID {instanceId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
                             String.Join(
                                 "\n",
                                 (IList<WorkingCard>) deck
@@ -143,8 +142,8 @@ namespace Loom.ZombieBattleground
                 case PlayerActionOutcome.OutcomeOneofCase.Rage:
                     PlayerActionOutcome.Types.CardAbilityRageOutcome rageOutcome = outcome.Rage;
                     BoardUnitModel boardUnit =
-                        _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, rageOutcome.InstanceId.InstanceId_) ??
-                        _battlegroundController.GetBoardUnitById(_gameplayManager.CurrentPlayer, rageOutcome.InstanceId.InstanceId_);
+                        _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, rageOutcome.InstanceId.FromProtobuf()) ??
+                        _battlegroundController.GetBoardUnitById(_gameplayManager.CurrentPlayer, rageOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
@@ -182,8 +181,8 @@ namespace Loom.ZombieBattleground
             GotActionCardAttack(new CardAttackModel
             {
                 AffectObjectType = (Enumerators.AffectObjectType) actionCardAttack.Target.AffectObjectType,
-                CardId = actionCardAttack.Attacker.InstanceId_,
-                TargetId = actionCardAttack.Target.InstanceId.InstanceId_
+                CardId = actionCardAttack.Attacker.FromProtobuf(),
+                TargetId = actionCardAttack.Target.InstanceId.FromProtobuf()
             });
         }
 
@@ -207,8 +206,8 @@ namespace Loom.ZombieBattleground
         {
             GotActionUseOverlordSkill(new UseOverlordSkillModel
             {
-                SkillId = (int) actionUseOverlordSkill.SkillId,
-                TargetId = actionUseOverlordSkill.Target.InstanceId.InstanceId_,
+                SkillId = new SkillId(actionUseOverlordSkill.SkillId),
+                TargetId = actionUseOverlordSkill.Target.InstanceId.FromProtobuf(),
                 AffectObjectType = (Enumerators.AffectObjectType) actionUseOverlordSkill.Target.AffectObjectType
             });
         }
@@ -423,29 +422,29 @@ namespace Loom.ZombieBattleground
     #region models
     public class EndTurnModel
     {
-        public int CallerId;
+        public InstanceId CallerId;
     }
 
     public class MulliganModel
     {
-        public int CallerId;
-        public List<int> CardsIds;
+        public InstanceId CallerId;
+        public List<InstanceId> CardsIds;
     }
 
     public class DrawCardModel
     {
         public string CardName;
-        public int CallerId;
-        public int FromDeckOfPlayerId;
-        public int TargetId;
+        public InstanceId CallerId;
+        public InstanceId FromDeckOfPlayerId;
+        public InstanceId TargetId;
         public Enumerators.AffectObjectType AffectObjectType;
     }
 
 
     public class UseOverlordSkillModel
     {
-        public int SkillId;
-        public int TargetId;
+        public SkillId SkillId;
+        public InstanceId TargetId;
         public Enumerators.AffectObjectType AffectObjectType;
     }
 
@@ -459,14 +458,14 @@ namespace Loom.ZombieBattleground
 
     public class CardAttackModel
     {
-        public int CardId;
-        public int TargetId;
+        public InstanceId CardId;
+        public InstanceId TargetId;
         public Enumerators.AffectObjectType AffectObjectType;
     }
 
     public class TargetUnitModel
     {
-        public int Target;
+        public InstanceId Target;
         public Enumerators.AffectObjectType AffectObjectType;
     }
 

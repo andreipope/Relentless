@@ -90,10 +90,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Protobuf.Unit
             {
-                InstanceId = new InstanceId
-                {
-                    InstanceId_ = unit.InstanceId
-                },
+                InstanceId = unit.InstanceId.ToProtobuf(),
                 AffectObjectType = (AffectObjectType.Types.Enum) unit.AffectObjectType,
             };
         }
@@ -118,10 +115,7 @@ namespace Loom.ZombieBattleground.Data
         {
             CardInstance cardInstance = new CardInstance
             {
-                InstanceId = new InstanceId
-                {
-                    InstanceId_ = workingCard.InstanceId
-                },
+                InstanceId = workingCard.InstanceId.ToProtobuf(),
                 Prototype = workingCard.LibraryCard.ToProtobuf(),
                 Instance = workingCard.InstanceCard.ToProtobuf()
             };
@@ -190,6 +184,14 @@ namespace Loom.ZombieBattleground.Data
             {
                 Position = cardViewInfo.Position.ToProtobuf(),
                 Scale = cardViewInfo.Scale.ToProtobuf()
+            };
+        }
+
+        public static Protobuf.InstanceId ToProtobuf(this InstanceId instanceId)
+        {
+            return new Protobuf.InstanceId
+            {
+                InstanceId_ = instanceId.Id
             };
         }
     }

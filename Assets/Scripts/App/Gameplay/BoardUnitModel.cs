@@ -8,7 +8,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitModel : OwnableBoardObject
+    public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
     {
         public bool AttackedThisTurn;
 
@@ -51,6 +51,8 @@ namespace Loom.ZombieBattleground
         private int _stunTurns;
 
         public bool IsDead { get; private set; }
+
+        public InstanceId InstanceId { get; }
 
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 

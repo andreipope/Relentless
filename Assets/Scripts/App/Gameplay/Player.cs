@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using DG.Tweening;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using ZombieBattleground.Editor.Runtime;
 using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
 
 namespace Loom.ZombieBattleground
 {
-    public class Player : BoardObject, IView
+    public class Player : BoardObject, IView, IInstanceIdOwner
     {
         public int Turn { get; set; }
 
@@ -37,6 +38,8 @@ namespace Loom.ZombieBattleground
         public uint TurnTime { get; private set; }
 
         public PlayerState PvPPlayerState { get; }
+
+        public Data.InstanceId InstanceId { get; }
 
         private readonly GameObject _freezedHighlightObject;
 
@@ -96,9 +99,9 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-        public Player(int id, GameObject playerObject, bool isOpponent)
+        public Player(Data.InstanceId instanceId, GameObject playerObject, bool isOpponent)
         {
-            Id = id;
+            InstanceId = instanceId;
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
 
@@ -241,7 +244,24 @@ namespace Loom.ZombieBattleground
             PlayerDefenseChanged += PlayerDefenseChangedHandler;
 
             DamageByNoMoreCardsInDeck = 0;
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (_avatarObject == null || AvatarObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfHero.Name);
+        }
+#endif
 
         public event Action TurnStarted;
 
@@ -265,7 +285,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<WorkingCard, int> CardPlayed;
 
-        public event Action<WorkingCard, Enumerators.AffectObjectType, int> CardAttacked;
+        public event Action<WorkingCard, Enumerators.AffectObjectType, Data.InstanceId?> CardAttacked;
 
         public event Action LeaveMatch;
 
@@ -718,7 +738,7 @@ namespace Loom.ZombieBattleground
             CardPlayed?.Invoke(card, position);
         }
 
-        public void ThrowCardAttacked(WorkingCard card, Enumerators.AffectObjectType type, int instanceId)
+        public void ThrowCardAttacked(WorkingCard card, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
         {
             CardAttacked?.Invoke(card, type, instanceId);
         }
@@ -763,6 +783,5 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-
     }
 }

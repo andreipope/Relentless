@@ -506,9 +506,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await _backendFacade.SendPlayerAction(
                             _matchRequestFactory.CreateAction(
                                 _playerActionFactory.CardAttack(
-                                    ownCards[_gameActionsState.CardAttackAttackerIndex].InstanceId.InstanceId_,
+                                    new Data.InstanceId(ownCards[_gameActionsState.CardAttackAttackerIndex].InstanceId.InstanceId_),
                                     _gameActionsState.CardAttackAffectObjectType,
-                                    opponentCards[_gameActionsState.CardAttackTargetIndex].InstanceId.InstanceId_
+                                    new Data.InstanceId(opponentCards[_gameActionsState.CardAttackTargetIndex].InstanceId.InstanceId_)
                                 )
                             )
                         );
