@@ -106,10 +106,14 @@ namespace Loom.ZombieBattleground
 
         private void OnPlayerLeftGameActionHandler(PlayerActionLeaveMatch leaveMatchAction)
         {
-            if(leaveMatchAction.Winner == _backendDataControlMediator.UserDataModel.UserId)
-               _gameplayManager.OpponentPlayer.PlayerDie();
+            if (leaveMatchAction.Winner == _backendDataControlMediator.UserDataModel.UserId)
+            {
+                _gameplayManager.OpponentPlayer.PlayerDie();
+            }
             else
+            {
                 _gameplayManager.CurrentPlayer.PlayerDie();
+            }
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
