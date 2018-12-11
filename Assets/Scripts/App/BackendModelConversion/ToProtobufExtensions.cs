@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Protobuf.InstanceId
             {
-                InstanceId_ = instanceId.Id
+                Id = instanceId.Id
             };
         }
     }

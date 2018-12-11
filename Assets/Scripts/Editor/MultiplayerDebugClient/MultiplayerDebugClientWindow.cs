@@ -385,9 +385,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await _backendFacade.SendPlayerAction(
                             _matchRequestFactory.CreateAction(
                                 _playerActionFactory.CardAttack(
-                                    new Data.InstanceId(ownCards[_gameActionsState.CardAttackAttackerIndex].InstanceId.InstanceId_),
+                                    new Data.InstanceId(ownCards[_gameActionsState.CardAttackAttackerIndex].InstanceId.Id),
                                     _gameActionsState.CardAttackAffectObjectType,
-                                    new Data.InstanceId(opponentCards[_gameActionsState.CardAttackTargetIndex].InstanceId.InstanceId_)
+                                    new Data.InstanceId(opponentCards[_gameActionsState.CardAttackTargetIndex].InstanceId.Id)
                                 )
                             )
                         );
@@ -450,7 +450,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             string FormatCardInstance(CardInstance cardInstance)
             {
                 return
-                    $"<b>IId</b>: {cardInstance.InstanceId.InstanceId_}, " +
+                    $"<b>IId</b>: {cardInstance.InstanceId.Id}, " +
                     $"<b>Name</b>: {cardInstance.Prototype.Name}, " +
                     $"<b>Atk</b>: {cardInstance.Instance.Attack}, " +
                     $"<b>Def</b>: {cardInstance.Instance.Defense}, " +
@@ -585,7 +585,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private static string SimpleFormatCardInstance(CardInstance cardInstance)
         {
             return
-                $"IId: {cardInstance.InstanceId.InstanceId_}, " +
+                $"IId: {cardInstance.InstanceId.Id}, " +
                 $"Name: {cardInstance.Prototype.Name}, " +
                 $"Atk: {cardInstance.Instance.Attack}, " +
                 $"Def: {cardInstance.Instance.Defense}, " +

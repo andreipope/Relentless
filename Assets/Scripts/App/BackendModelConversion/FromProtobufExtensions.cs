@@ -219,7 +219,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static InstanceId FromProtobuf(this Protobuf.InstanceId cardInstance)
         {
-            return new InstanceId(cardInstance.InstanceId_);
+            return new InstanceId(cardInstance.Id);
         }
     }
 }
