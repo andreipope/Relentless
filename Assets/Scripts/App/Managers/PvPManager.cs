@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
-using Loom.Newtonsoft.Json;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
-using Card = Loom.ZombieBattleground.Data.Card;
-using Deck = Loom.ZombieBattleground.Data.Deck;
 using SystemText = System.Text;
 
 namespace Loom.ZombieBattleground
@@ -102,7 +98,6 @@ namespace Loom.ZombieBattleground
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
-                    Debug.LogError("send keep alive status");
                     await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
                 }
             }
@@ -227,7 +222,6 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                Debug.LogError("Match status = " + playerActionEvent.Match.Status);
                 switch (playerActionEvent.Match.Status)
                 {
                     case Match.Types.Status.Created:
@@ -252,7 +246,6 @@ namespace Loom.ZombieBattleground
                         //Should not handle this anymore through events for now
                         break;
                     case Match.Types.Status.Playing:
-                        Debug.LogError("Match status = " + playerActionEvent.PlayerAction.ActionType);
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
                             return;
@@ -285,6 +278,7 @@ namespace Loom.ZombieBattleground
             switch (playerActionEvent.PlayerAction.ActionType)
             {
                 case PlayerActionType.Types.Enum.LeaveMatch:
+                    ResetCheckPlayerStatus();
                     PlayerLeftGameActionReceived?.Invoke(playerActionEvent.PlayerAction.LeaveMatch);
                     break;
             }
