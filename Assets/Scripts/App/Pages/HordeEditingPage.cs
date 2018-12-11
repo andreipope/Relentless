@@ -287,10 +287,10 @@ namespace Loom.ZombieBattleground
             {
                 _currentDeck = _dataManager.CachedDecksData.Decks.First(d => d.Id == _currentDeckId).Clone();
                 _currentDeck.Cards.Sort(
-                    (DeckCardData _card_A, DeckCardData _card_B) =>            
+                    (DeckCardData card_A, DeckCardData card_B) =>            
                     {
-                        return _dataManager.CachedCardsLibraryData.GetCardFromName(_card_A.CardName).Cost -
-                            _dataManager.CachedCardsLibraryData.GetCardFromName(_card_B.CardName).Cost;
+                        return _dataManager.CachedCardsLibraryData.GetCardFromName(card_A.CardName).Cost -
+                            _dataManager.CachedCardsLibraryData.GetCardFromName(card_B.CardName).Cost;
                     }
                );
             }
@@ -379,9 +379,9 @@ namespace Loom.ZombieBattleground
 
             List<Card> cards = set.Cards;
             cards.Sort( 
-                (Card _card_A, Card _card_B) =>
+                (Card card_A, Card card_B) =>
                 {
-                    return _card_A.Cost - _card_B.Cost;
+                    return card_A.Cost - card_B.Cost;
                 } 
             );
             
