@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
             SceneLoadingProgress = 0;
 
             SceneForAppStateWasLoadedEvent?.Invoke(CurrentAppStateScene);
+
+            GameClient.Get<IAnalyticsManager>().Reset();
         }
 
         private IEnumerator LoadLevelAsync(string levelName)

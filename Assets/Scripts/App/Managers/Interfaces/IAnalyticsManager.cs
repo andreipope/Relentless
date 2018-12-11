@@ -15,6 +15,8 @@ public interface IAnalyticsManager
 
     void Dispose();
 
+    void Reset();
+
     void SetEvent(string propertyName);
     void SetEvent(string propertyName, Value props);
 
