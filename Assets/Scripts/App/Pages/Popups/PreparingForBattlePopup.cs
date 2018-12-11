@@ -64,8 +64,8 @@ namespace Loom.ZombieBattleground
 
             ShowRandomFlavorText();
 
-            _soundManager.PlaySound(Enumerators.SoundType.PREPARING_FOR_BATTLE, Constants.SfxSoundVolume, false, false, true);
-            _soundManager.PlaySound(Enumerators.SoundType.PREPARING_FOR_BATTLE_LOOP, Constants.SfxSoundVolume, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.PREPARING_FOR_BATTLE, Constants.SfxSoundVolume / 4, false, false, true);
+            _soundManager.PlaySound(Enumerators.SoundType.PREPARING_FOR_BATTLE_LOOP, Constants.SfxSoundVolume / 4, false, false, true);
         }
 
         public void Show(object data)
