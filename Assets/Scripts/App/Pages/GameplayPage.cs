@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
         public OnBehaviourHandler OpponentPrimarySkillHandler, OpponentSecondarySkillHandler;
 
+        private const float TubeLoopSoundVolumeKoef = 0.2f;
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -217,7 +219,7 @@ namespace Loom.ZombieBattleground
             StartGame();
             KeepButtonVisibility(false);
 
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume / 5, isLoop:true);
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume * TubeLoopSoundVolumeKoef, isLoop:true);
         }
 
         public void SetEndTurnButtonStatus(bool status)
