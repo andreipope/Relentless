@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
-        [CommandHandler(Description = "Logs with a fake random user")]
+        [CommandHandler(Description = "Logs in into the game with a fake random user")]
         private static async void FakeLogin()
         {
             UserDataModel userDataModel = new UserDataModel(

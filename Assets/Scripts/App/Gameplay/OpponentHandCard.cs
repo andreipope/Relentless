@@ -25,6 +25,11 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
+        public void Dispose()
+        {
+            Object.Destroy(GameObject);
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -40,9 +45,5 @@ namespace Loom.ZombieBattleground
             DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId.Id, WorkingCard.LibraryCard.Name);
         }
 #endif
-        public void Dispose()
-        {
-            Object.Destroy(GameObject);
-        }
     }
 }

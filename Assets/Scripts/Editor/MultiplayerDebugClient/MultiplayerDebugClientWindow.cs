@@ -311,22 +311,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
             }
             GUILayout.EndHorizontal();
 
-            /*
-            // Draw Card
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Draw Card"))
-            {
-                EnqueueAsyncTask(async () =>
-                {
-                    await _backendFacade.SendPlayerAction(
-                        _matchRequestFactory.CreateAction(_playerActionFactory.())
-                    );
-
-                    await UpdateCurrentGameState();
-                });
-            }
-            GUILayout.EndHorizontal();*/
-
             // Card Play
             GUILayout.BeginHorizontal();
             {

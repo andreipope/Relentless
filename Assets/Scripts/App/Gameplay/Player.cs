@@ -253,19 +253,6 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-#if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            if (_avatarObject == null || AvatarObject == null)
-            {
-                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
-                return;
-            }
-
-            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfHero.Name);
-        }
-#endif
-
         public event Action TurnStarted;
 
         public event Action TurnEnded;
@@ -607,24 +594,11 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    //_cardsController.AddCardToHand(this, CardsInDeck[0], removeCardsFromDeck);
                     _cardsController.AddCardToHand(this, workingCard, removeCardsFromDeck);
                 }
             }
 
             ThrowMulliganCardsEvent(_cardsController.MulliganCards);
-        }
-
-        public void DistributeCard()
-        {
-            if (IsLocalPlayer)
-            {
-                _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution());
-            }
-            else
-            {
-                _cardsController.AddCardToHand(this, CardsInDeck[Random.Range(0, CardsInDeck.Count)]);
-            }
         }
 
         public void PlayerDie()
@@ -767,6 +741,19 @@ namespace Loom.ZombieBattleground
 
             return cards[0];
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (_avatarObject == null || AvatarObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfHero.Name);
+        }
+#endif
 
         #region handlers
 
