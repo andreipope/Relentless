@@ -1,6 +1,9 @@
 using Loom.ZombieBattleground.View;
 using UnityEngine;
+
+#if UNITY_EDITOR
 using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {

@@ -9,9 +9,12 @@ using Loom.ZombieBattleground.View;
 using DG.Tweening;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using ZombieBattleground.Editor.Runtime;
 using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
+
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
