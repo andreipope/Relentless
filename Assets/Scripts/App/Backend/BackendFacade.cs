@@ -345,7 +345,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             long deckId,
             Address? customGameModeAddress,
             IList<string> pvpTags,
-            bool useBackendGameLogic)
+            bool useBackendGameLogic,
+            DebugCheatsConfiguration debugCheats = null)
         {
             if (pvpTags != null && pvpTags.Count != 0)
             {
@@ -354,16 +355,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
-                UserId = userId,
-                DeckId = deckId,
-                Version = BackendEndpoint.DataVersion,
-                RandomSeed = (long) Time.time,
-                Tags =
+                RegistrationData = new PlayerProfileRegistrationData
                 {
-                    pvpTags ?? Array.Empty<string>()
-                },
-                CustomGame = customGameModeAddress?.ToProtobufAddress(),
-                UseBackendGameLogic = useBackendGameLogic
+                    UserId = userId,
+                    DeckId = deckId,
+                    Version = BackendEndpoint.DataVersion,
+                    Tags =
+                    {
+                        pvpTags ?? Array.Empty<string>()
+                    },
+                    CustomGame = customGameModeAddress?.ToProtobufAddress(),
+                    UseBackendGameLogic = useBackendGameLogic,
+                    DebugCheats = debugCheats.ToProtobuf()
+                }
             };
 
             return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
@@ -386,25 +390,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
-        }
-
-        public async Task<FindMatchResponse> DebugFindMatch(string userId, Loom.ZombieBattleground.Data.Deck deck, Address? customGameModeAddress)
-        {
-            Client.Protobuf.Address requestCustomGameAddress = null;
-            if (customGameModeAddress != null)
-            {
-                requestCustomGameAddress = customGameModeAddress.Value.ToProtobufAddress();
-            }
-
-            DebugFindMatchRequest request = new DebugFindMatchRequest
-            {
-                UserId = userId,
-                Deck = deck.GetDeck(),
-                CustomGame = requestCustomGameAddress,
-                Version = BackendEndpoint.DataVersion
-            };
-
-            return await Contract.CallAsync<FindMatchResponse>(DebugFindMatchMethod, request);
         }
 
         public async Task<CancelFindMatchResponse> CancelFindMatch(string userId, long matchId)

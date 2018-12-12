@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground.Data
                 deck.Id,
                 (int) deck.HeroId,
                 deck.Name,
-                deck.Cards.Select(skill => skill.FromProtobuf()).ToList(),
+                deck.Cards.Select(card => card.FromProtobuf()).ToList(),
                 (Enumerators.OverlordSkill)deck.PrimarySkill,
                 (Enumerators.OverlordSkill)deck.SecondarySkill
             );
@@ -220,6 +220,16 @@ namespace Loom.ZombieBattleground.Data
         public static InstanceId FromProtobuf(this Protobuf.InstanceId cardInstance)
         {
             return new InstanceId(cardInstance.Id);
+        }
+
+        public static BackendCommunication.DebugCheatsConfiguration FromProtobuf(this Protobuf.DebugCheatsConfiguration debugCheatsConfiguration)
+        {
+            return new BackendCommunication.DebugCheatsConfiguration
+            {
+                Enabled = debugCheatsConfiguration.Enabled,
+                CustomDeck = debugCheatsConfiguration.UseCustomDeck ? debugCheatsConfiguration.CustomDeck.FromProtobuf() : null,
+                CustomRandom = debugCheatsConfiguration.UseCustomRandomSeed ? debugCheatsConfiguration.CustomRandomSeed : (long?) null
+            };
         }
     }
 }

@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using Random = UnityEngine.Random;
 using Rect = UnityEngine.Rect;
 
@@ -27,13 +28,15 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private readonly Queue<Func<Task>> _asyncTaskQueue = new Queue<Func<Task>>();
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
+        private Vector2 _scrollPosition;
+        private bool _useBackendGameLogic = true;
+        private DebugCheatsConfiguration _debugCheats = new DebugCheatsConfiguration();
+
         private BackendFacade _backendFacade;
         private UserDataModel _userDataModel;
         private MatchMakingFlowController _matchMakingFlowController;
         private MatchRequestFactory _matchRequestFactory;
         private PlayerActionFactory _playerActionFactory;
-        private Vector2 _scrollPosition;
-        private bool _useBackendGameLogic = true;
         private GameStateWrapper _initialGameState;
         private GameStateWrapper _currentGameState;
 
@@ -138,7 +141,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         {
                             EnqueueAsyncTask(async () =>
                             {
-                                await _matchMakingFlowController.Start(1, null, null, _useBackendGameLogic);
+                                await _matchMakingFlowController.Start(1, null, null, _useBackendGameLogic, _debugCheats);
                             });
                         }
                     }

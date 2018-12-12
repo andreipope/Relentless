@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 
 namespace Loom.ZombieBattleground
 {
@@ -31,6 +32,7 @@ namespace Loom.ZombieBattleground
         private Address? _customGameModeAddress;
         private IList<string> _tags;
         private bool _useBackendGameLogic;
+        private DebugCheatsConfiguration _debugCheats;
 
         public float ActionWaitingTime { get; set; } = 5;
 
@@ -84,7 +86,8 @@ namespace Loom.ZombieBattleground
             long deckId,
             Address? customGameModeAddress,
             IList<string> tags,
-            bool useBackendGameLogic
+            bool useBackendGameLogic,
+            DebugCheatsConfiguration debugCheats
             )
         {
             _cancellationTokenSource?.Cancel();
@@ -95,6 +98,7 @@ namespace Loom.ZombieBattleground
             _customGameModeAddress = customGameModeAddress;
             _tags = tags;
             _useBackendGameLogic = useBackendGameLogic;
+            _debugCheats = debugCheats;
 
             await SetState(MatchMakingState.RegisteringToPool);
             try
@@ -104,7 +108,8 @@ namespace Loom.ZombieBattleground
                     deckId,
                     customGameModeAddress,
                     _tags,
-                    _useBackendGameLogic
+                    _useBackendGameLogic,
+                    _debugCheats
                 );
 
                 await SetState(MatchMakingState.WaitingPeriod);
@@ -387,7 +392,7 @@ namespace Loom.ZombieBattleground
 
         private Task Restart()
         {
-            return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic);
+            return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic, _debugCheats);
         }
 
         public enum MatchMakingState

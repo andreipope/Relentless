@@ -6,20 +6,6 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
-        public static Protobuf.Deck GetDeck(this Deck deck)
-        {
-            Protobuf.Deck protoDeck = new Protobuf.Deck
-            {
-                Id = deck.Id,
-                Name = deck.Name,
-                HeroId = deck.HeroId
-            };
-
-            protoDeck.Cards.AddRange(deck.Cards.Select(card => card.ToProtobuf()));
-
-            return protoDeck;
-        }
-
         public static DeckCard ToProtobuf(this DeckCardData deckCardData)
         {
             return new DeckCard
@@ -192,6 +178,20 @@ namespace Loom.ZombieBattleground.Data
             return new Protobuf.InstanceId
             {
                 Id = instanceId.Id
+            };
+        }
+
+        public static Protobuf.DebugCheatsConfiguration ToProtobuf(this BackendCommunication.DebugCheatsConfiguration debugCheatsConfiguration)
+        {
+            return new Protobuf.DebugCheatsConfiguration
+            {
+                Enabled = debugCheatsConfiguration.Enabled,
+
+                UseCustomRandomSeed = debugCheatsConfiguration.CustomRandom != null,
+                CustomRandomSeed = debugCheatsConfiguration.CustomRandom ?? 0,
+
+                UseCustomDeck = debugCheatsConfiguration.CustomDeck != null,
+                CustomDeck = debugCheatsConfiguration.CustomDeck?.ToProtobuf()
             };
         }
     }

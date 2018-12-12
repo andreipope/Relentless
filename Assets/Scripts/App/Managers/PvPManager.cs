@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using Random = UnityEngine.Random;
 using SystemText = System.Text;
 
@@ -56,6 +57,8 @@ namespace Loom.ZombieBattleground
         public Address? CustomGameModeAddress { get; set; }
 
         public List<string> PvPTags { get; set; }
+
+        public DebugCheatsConfiguration DebugCheats { get; } = new DebugCheatsConfiguration();
 
         public MatchMakingFlowController MatchMakingFlowController => _matchMakingFlowController;
 
@@ -151,7 +154,7 @@ namespace Loom.ZombieBattleground
                 );
 
                 _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
-                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, PvPTags, UseBackendGameLogic);
+                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, PvPTags, UseBackendGameLogic, DebugCheats);
             }
             finally
             {

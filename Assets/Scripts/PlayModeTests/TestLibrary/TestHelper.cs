@@ -3369,17 +3369,13 @@ public class TestHelper
         return Time.time > _turnStartTime + _turnWaitAmount;
     }
 
-    private static IEnumerator TaskAsIEnumerator(Task task)
+    public static IEnumerator TaskAsIEnumerator(Task task)
     {
         while (!task.IsCompleted)
         {
             yield return null;
         }
 
-        if (task.IsFaulted)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            throw task.Exception;
-        }
+        task.Wait();
     }
 }

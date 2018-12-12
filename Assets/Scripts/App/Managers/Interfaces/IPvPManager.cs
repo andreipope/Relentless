@@ -1,12 +1,10 @@
-
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
-using Deck = Loom.ZombieBattleground.Data.Deck;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 
 namespace Loom.ZombieBattleground
 {
@@ -39,6 +37,8 @@ namespace Loom.ZombieBattleground
         GameState InitialGameState { get; }
 
         List<string> PvPTags { get; set; }
+
+        DebugCheatsConfiguration DebugCheats { get; }
 
         MatchMakingFlowController MatchMakingFlowController { get; }
 

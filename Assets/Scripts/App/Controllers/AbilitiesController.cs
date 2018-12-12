@@ -540,7 +540,8 @@ namespace Loom.ZombieBattleground
                                        },
                                        failedCallback: () =>
                                        {
-                                           libraryCard.ForceUpdateAbilities(libraryCard.InitialAbilities);
+                                           // HACK: why do we need to update library card instead of modifying a copy?
+                                           ((ICard) libraryCard).ForceUpdateAbilities(libraryCard.InitialAbilities);
 
                                            card.WorkingCard.Owner.CurrentGoo += card.ManaCost;
 

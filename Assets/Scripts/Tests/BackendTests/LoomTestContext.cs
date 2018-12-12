@@ -85,10 +85,6 @@ public static class LoomTestContext
             yield return null;
         }
 
-        if (task.IsFaulted)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            throw task.Exception;
-        }
+        task.Wait();
     }
 }
