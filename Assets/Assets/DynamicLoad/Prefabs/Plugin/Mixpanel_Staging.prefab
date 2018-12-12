@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4836732589527846}
   - component: {fileID: 114018379192183840}
   m_Layer: 0
-  m_Name: Mixpanel
+  m_Name: Mixpanel_Staging
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,8 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 882752fe4382f41c593a64591e77ee24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  token: 609343ab4cfd24db2e55c89ddd834dfc
-  debugToken: 609343ab4cfd24db2e55c89ddd834dfc
+  token: 7378161f22b124e736e23d71002981df
+  debugToken: 7378161f22b124e736e23d71002981df
   trackInEditor: 1
   minLogLevel: 4
   flushInterval: 10
