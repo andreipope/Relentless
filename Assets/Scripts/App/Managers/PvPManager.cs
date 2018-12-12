@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_gameplayManager.CurrentPlayer != null && _isCheckPlayerAvailableTimerStart)
+            if (_isCheckPlayerAvailableTimerStart)
             {
                 _checkPlayerTimer += Time.deltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
@@ -108,13 +108,6 @@ namespace Loom.ZombieBattleground
                         Debug.LogError("Error sending Keep Alive status " + e);
                     }
 
-                }
-            }
-            else
-            {
-                if (_isCheckPlayerAvailableTimerStart)
-                {
-                    ResetCheckPlayerStatus();
                 }
             }
 
@@ -185,6 +178,7 @@ namespace Loom.ZombieBattleground
             }
 
             _queueManager.Clear();
+            ResetCheckPlayerStatus();
         }
 
         //TODO This method is a start to simplify and clean up
@@ -214,6 +208,7 @@ namespace Loom.ZombieBattleground
             GameStartedActionReceived?.Invoke();
 
             _isCheckPlayerAvailableTimerStart = true;
+            Debug.LogError("Make status = " + true);
 
             _queueManager.Active = true;
         }
@@ -275,6 +270,7 @@ namespace Loom.ZombieBattleground
                         GameEndedActionReceived?.Invoke();
                         break;
                     case Match.Types.Status.Canceled:
+                        Debug.LogError("calced called");
                         break;
                     case Match.Types.Status.Timedout:
                         break;
