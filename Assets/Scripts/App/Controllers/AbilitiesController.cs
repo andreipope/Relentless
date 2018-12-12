@@ -375,6 +375,17 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
+        public bool CanTakeControlUnit(WorkingCard workingCard, AbilityData ability)
+        {
+            if (ability.AbilityType == Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT &&
+                ability.CallType == Enumerators.AbilityCallType.ENTRY &&
+                ability.ActivityType == Enumerators.AbilityActivityType.ACTIVE &&
+                workingCard.Owner.BoardCards.Count >= workingCard.Owner.MaxCardsInPlay)
+                return false;
+
+            return true;
+        }
+
         private ActiveAbility _activeAbility;
         public ActiveAbility CurrentActiveAbility
         {
@@ -431,7 +442,9 @@ namespace Loom.ZombieBattleground
                                !HasSpecialUnitStatusOnBoard(workingCard, ability) ||
                                (ability.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
                                 ability.TargetSetType != Enumerators.SetType.NONE &&
-                               !HasSpecialUnitFactionOnMainBoard(workingCard, ability)))
+                               !HasSpecialUnitFactionOnMainBoard(workingCard, ability)) ||
+                               !CanTakeControlUnit(workingCard, ability))
+
                            {
                                CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
 
@@ -595,7 +608,6 @@ namespace Loom.ZombieBattleground
                        {
                            CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
                            onCompleteCallback?.Invoke(true);
-                           CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
 
                            ResolveAllAbilitiesOnUnit(boardObject);
 

@@ -186,26 +186,38 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
-                if (_gameplayManager.GetController<CardsController>().CardDistribution)
+                if (_gameplayManager.IsGameEnded)
                 {
-                    _uiManager.HidePopup<MulliganPopup>();
+                    HandleQuitToMainMenu();
+                    return;
                 }
 
-                _uiManager.HidePopup<SettingsPopup>();
-
-                _uiManager.HidePopup<YourTurnPopup>();
-
-                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+                _gameplayManager.CurrentPlayer?.ThrowLeaveMatch();
 
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
-                _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+                HandleQuitToMainMenu();
             };
 
             _uiManager.DrawPopup<ConfirmationPopup>(actions);
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+
+        private void HandleQuitToMainMenu()
+        {
+            if (_gameplayManager.GetController<CardsController>().CardDistribution)
+            {
+                _uiManager.HidePopup<MulliganPopup>();
+            }
+
+            _uiManager.HidePopup<SettingsPopup>();
+
+            _uiManager.HidePopup<YourTurnPopup>();
+
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+
+            _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
+            _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
         }
 
         private void QuitToDesktopButtonHandler()

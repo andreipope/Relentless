@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
                             targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                             break;
                         case Player player:
-                            targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;
+                            targetPosition = player.AvatarObject.transform.position;
                             break;
                     }
 
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
                             isUnit = true;
                             break;
                         case Player player:
-                            targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;
+                            targetPosition = player.AvatarObject.transform.position;
                             isUnit = false;
                             break;
                     }
