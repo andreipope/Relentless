@@ -560,6 +560,8 @@ namespace Loom.ZombieBattleground
 
             if (_rearrangingBottomRealTimeSequence != null)
             {
+                _rearrangingBottomRealTimeSequence.onComplete?.Invoke();
+                _rearrangingBottomRealTimeSequence.onComplete = null;
                 _rearrangingBottomRealTimeSequence.Kill();
                 _rearrangingBottomRealTimeSequence = null;
             }
@@ -609,6 +611,8 @@ namespace Loom.ZombieBattleground
 
             if (_rearrangingTopRealTimeSequence != null)
             {
+                _rearrangingTopRealTimeSequence.onComplete?.Invoke();
+                _rearrangingTopRealTimeSequence.onComplete = null;
                 _rearrangingTopRealTimeSequence.Kill();
                 _rearrangingTopRealTimeSequence = null;
             }
