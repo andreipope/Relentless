@@ -153,6 +153,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const bool MulliganEnabled = false;
 
-        internal const bool AutomaticLoginEnabled = true;
+        public const bool AutomaticLoginEnabled = true;
     }
 }

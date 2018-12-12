@@ -881,28 +881,28 @@ public class TestHelper
     /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
-        GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
+        if (Constants.AutomaticLoginEnabled)
+        {
+            yield return new WaitUntil (() => !CheckCurrentPageName("LoadingPage"));
 
-        UserDataModel userDataModel = new UserDataModel(
-            "TestFakeUser_" + UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
-            CryptoUtils.GeneratePrivateKey()
-        );
+            CheckCurrentPageName("MainMenuPage");
+        }
+        else
+        {
+            GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
 
-        _backendDataControlMediator.SetUserDataModel(userDataModel);
-        yield return TaskAsIEnumerator(_backendDataControlMediator.LoginAndLoadData());
+            UserDataModel userDataModel = new UserDataModel(
+                "TestFakeUser_" + UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+                CryptoUtils.GeneratePrivateKey()
+            );
 
-        CheckCurrentPageName("LoginPage");
-        GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-        CheckCurrentPageName("MainMenuPage");
+            _backendDataControlMediator.SetUserDataModel(userDataModel);
+            yield return TaskAsIEnumerator(_backendDataControlMediator.LoginAndLoadData());
 
-        /*GameObject pressAnyText = null;
-        yield return new WaitUntil (() => { pressAnyText = GameObject.Find ("PressAnyText"); return pressAnyText != null; });
-        pressAnyText.SetActive (false);
-        GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
-
-        yield return CombinedCheck (
-            CheckIfLoginBoxAppeared, "", null,
-            CheckCurrentPageName, "MainMenuPage", null);*/
+            CheckCurrentPageName("LoginPage");
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            CheckCurrentPageName("MainMenuPage");
+        }
 
         yield return null;
     }

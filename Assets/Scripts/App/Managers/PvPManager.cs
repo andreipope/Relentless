@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
                 );
 
                 _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
-                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, null, UseBackendGameLogic);
+                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, PvPTags, UseBackendGameLogic);
             }
             finally
             {
