@@ -1002,29 +1002,23 @@ namespace Loom.ZombieBattleground
 
             Vector3 unitPosition = unit.Transform.position;
 
+            _battlegroundController.DeactivateAllAbilitiesOnUnit(unit);
+
             unit.Model.InvokeUnitPrepairingToDie();
 
-            _timerManager.AddTimer(
-                x =>
-                {
-                    // STEP 1 - REMOVE UNIT FROM BOARD
-                    unitOwner.BoardCards.Remove(unit);
+            InternalTools.DoActionDelayed(() =>
+            {
+                unitOwner.BoardCards.Remove(unit);
 
-                    // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE
-                    unit.Model.Die(true);
-                    Object.Destroy(unit.GameObject);
+                unit.Model.Die(true);
+                Object.Destroy(unit.GameObject);
 
-                    // STEP 3 - REMOVE WORKING CARD FROM BOARD
-                    unitOwner.RemoveCardFromBoard(returningCard);
+                unitOwner.RemoveCardFromBoard(returningCard);
 
-                    // STEP 4 - RETURN CARD TO HAND
-                    ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
+                ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
 
-                    // STEP 4 - REARRANGE HANDS
-                    _gameplayManager.RearrangeHands();
-                },
-                null,
-                2f);
+                _gameplayManager.RearrangeHands();
+            }, 2f);
         }
 
         public WorkingCard GetWorkingCardFromCardName(string cardName, Player owner)

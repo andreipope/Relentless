@@ -513,7 +513,8 @@ namespace Loom.ZombieBattleground
             List<WorkingCard> cards = new List<WorkingCard>();
             cards.AddRange(GetUnitCardsInHand());
             cards.AddRange(GetSpellCardsInHand());
-            cards = cards.FindAll(x => CardBePlayableForOverflowGoo(x.LibraryCard.Cost, gooAmount));
+            cards.RemoveAll(x => x == null || x.LibraryCard == null);
+            cards  = cards.FindAll(x => CardBePlayableForOverflowGoo(x.LibraryCard.Cost, gooAmount));
             AbilityData overflowGooAbility;
             for (int i = 0; i < cards.Count; i++)
             {
@@ -591,6 +592,8 @@ namespace Loom.ZombieBattleground
 
         private bool CardBePlayableForOverflowGoo(int cost, int goo)
         {
+            if (_gameplayManager.OpponentPlayer == null)
+                return false;
 #if !DEV_MODE
             return cost <= goo && _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
 #else
