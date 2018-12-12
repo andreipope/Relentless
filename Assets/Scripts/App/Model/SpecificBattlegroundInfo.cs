@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
@@ -31,6 +32,9 @@ namespace Loom.ZombieBattleground
             public List<string> CardsInDeck;
             public List<UnitOnBoardInfo> CardsOnBoard;
             public List<string> CardsOnGraveyard;
+
+            public string PrimaryOverlordSkill;
+            public string SecondaryOverlordSkill;
 
             public SpecificBattlegroundOverlordInfo()
             {

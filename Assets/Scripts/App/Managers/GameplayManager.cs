@@ -4,6 +4,7 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -69,6 +70,18 @@ namespace Loom.ZombieBattleground
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
+        public Deck CurrentPlayerDeck { get; set; }
+
+        public Deck OpponentPlayerDeck { get; set; }
+
+        public int OpponentIdCheat { get; set; }
+
+        public bool AvoidGooCost { get; set; }
+
+        public bool UseInifiniteAbility { get; set; }
+
+        public AnalyticsTimer MatchDuration { get; set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -88,29 +101,29 @@ namespace Loom.ZombieBattleground
 
             IsGameEnded = true;
 
+            MatchDuration.FinishTimer();
+
             _soundManager.PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true);
 
             if (endGameType != Enumerators.EndGameType.CANCEL)
             {
-                _timerManager.AddTimer(
-                    x =>
-                    {
-                        switch (endGameType)
-                        {
-                            case Enumerators.EndGameType.WIN:
-                                _uiManager.DrawPopup<YouWonPopup>();
-                                break;
-                            case Enumerators.EndGameType.LOSE:
-                                _uiManager.DrawPopup<YouLosePopup>();
-                                break;
-                            case Enumerators.EndGameType.CANCEL:
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
-                        }
-                    },
-                    null,
-                    timer);
+                InternalTools.DoActionDelayed(() =>
+                     {
+                         switch (endGameType)
+                         {
+                             case Enumerators.EndGameType.WIN:
+                                 _uiManager.DrawPopup<YouWonPopup>();
+                                 break;
+                             case Enumerators.EndGameType.LOSE:
+                                 _uiManager.DrawPopup<YouLosePopup>();
+                                 break;
+                             case Enumerators.EndGameType.CANCEL:
+                                 break;
+                             default:
+                                 throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                         }
+                     },
+                     timer);
             }
 
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
@@ -131,6 +144,8 @@ namespace Loom.ZombieBattleground
         public void StartGameplay()
         {
             _uiManager.DrawPopup<PreparingForBattlePopup>();
+
+            MatchDuration.StartTimer();
 
             _timerManager.AddTimer(
                 x =>
@@ -158,6 +173,7 @@ namespace Loom.ZombieBattleground
             IsPreparingEnded = false;
 
             CanDoDragActions = false;
+            AvoidGooCost = false;
         }
 
         public bool IsLocalPlayerTurn()
@@ -213,6 +229,11 @@ namespace Loom.ZombieBattleground
                 Constants.ZombiesSoundVolume = 0.25f;
                 Constants.CreatureAttackSoundVolume *= 3;
             }
+
+            OpponentIdCheat = -1;
+            AvoidGooCost = false;
+            UseInifiniteAbility = false;
+            MatchDuration = new AnalyticsTimer();
         }
 
         public void Update()

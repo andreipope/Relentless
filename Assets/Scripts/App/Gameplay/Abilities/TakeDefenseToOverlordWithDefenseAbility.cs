@@ -48,8 +48,8 @@ namespace Loom.ZombieBattleground
                     defenseToBuff = Health;
                 }
 
-                PlayerCallerOfAbility.Defense += defenseToBuff;
                 PlayerCallerOfAbility.BuffedHp += defenseToBuff;
+                PlayerCallerOfAbility.Defense += defenseToBuff;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

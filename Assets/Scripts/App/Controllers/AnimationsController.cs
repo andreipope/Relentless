@@ -73,10 +73,7 @@ namespace Loom.ZombieBattleground
                     source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
-                            InternalTools.DoActionDelayed(() =>
-                            {
-                                onCompleteCallback?.Invoke();
-                            }, 0.5f);
+                            onCompleteCallback?.Invoke();
 
                             sortingGroup.sortingOrder = oldSortingOrder;
                             sortingGroup.sortingLayerName = oldsortingLayerName;

@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "http://stage-auth.loom.games",
                         "ws://127.0.0.1:9999/queryws",
                         "ws://127.0.0.1:46657/websocket",
-                        "v2"
+                        "v3"
                         )
                 },
                 {

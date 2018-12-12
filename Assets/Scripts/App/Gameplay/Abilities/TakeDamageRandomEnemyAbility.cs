@@ -18,12 +18,16 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.SetType SetType;
 
+        private List<BoardObject> _targets;
+
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Damage = ability.Damage;
             Count = ability.Count;
             SetType = ability.AbilitySetType;
+
+            _targets = new List<BoardObject>();
         }
 
         public override void Activate()
@@ -50,8 +54,6 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
-
-            List<BoardObject> _targets;
 
             if (PredefinedTargets != null)
             {
@@ -85,69 +87,54 @@ namespace Loom.ZombieBattleground
                 _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
 
-            VfxObject = null;
-
-            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
-            {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
-            }
-
-            foreach (object target in _targets)
-            {
-                object targetObject = target;
-                Vector3 targetPosition = Vector3.zero;
-
-                switch (target)
-                {
-                    case Player player:
-                        targetPosition = player.AvatarObject.transform.position;
-                        break;
-                    case BoardUnitModel unit:
-                        targetPosition = BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
-                }
-
-                if (VfxObject != null)
-                {
-                    VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
-                    targetPosition = Utilites.CastVfxPosition(targetPosition);
-                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => { ActionCompleted(targetObject, targetPosition); });
-                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
-                }
-                else
-                {
-                    ActionCompleted(targetObject, targetPosition);
-                }
-            }
+            InvokeActionTriggered(_targets);      
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
-
-        private void ActionCompleted(object target, Vector3 targetPosition)
+        protected override void VFXAnimationEndedHandler()
         {
-            ClearParticles();
+            base.VFXAnimationEndedHandler();
 
-            GameObject vfxObject = null;
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            int damageWas = -1;
+            foreach (object target in _targets)
             {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                ActionCompleted(target, out damageWas);
 
-                vfxObject = Object.Instantiate(vfxObject);
-                vfxObject.transform.position = targetPosition;
-                ParticlesController.RegisterParticleSystem(vfxObject, true);
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                    Target = target,
+                    HasValue = true,
+                    Value = -damageWas
+                });
             }
 
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
+
+            if (IsPVPAbility)
+            {
+                Deactivate();
+            }
+        }
+
+        private void ActionCompleted(object target, out int damageWas)
+        {
             int damageOverride = Damage;
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {
                 damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType).Count;
             }
+
+            damageWas = damageOverride;
 
             switch (target)
             {

@@ -32,6 +32,10 @@ namespace Loom.ZombieBattleground
 
         private Transform _matchMakingGroup;
 
+        private GameObject _background;
+
+        private Image _fadeImage;
+
         private ConnectionState _state;
 
         public GameObject Self { get; private set; }
@@ -68,6 +72,8 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ConnectionPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
+            _background = Self.transform.Find("Background").gameObject;
+            _fadeImage = Self.GetComponent<Image>();
             _failedGroup = Self.transform.Find("Failed_Group");
             _connectingGroup = Self.transform.Find("Connecting_Group");
             _matchMakingGroup = Self.transform.Find("Matchmaking_Group");
@@ -94,14 +100,14 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public async Task ExecuteConnection()
+        public async Task ExecuteConnection(ConnectionState state = ConnectionState.Connecting)
         {
             Task task = ConnectFunc?.Invoke();
             if (task != null)
             {
                 try
                 {
-                    SetUIState(ConnectionState.Connecting);
+                    SetUIState(state);
                     await task;
                 }
                 catch (Exception)
@@ -171,8 +177,18 @@ namespace Loom.ZombieBattleground
             _state = state;
             _connectingGroup.gameObject.SetActive(false);
             _failedGroup.gameObject.SetActive(false);
+            _background.SetActive(true);
+            _fadeImage.enabled = true;
             switch (_state)
             {
+                case ConnectionState.FirstConnect:
+                    _background.SetActive(false);
+                    _fadeImage.enabled = false;
+                    _connectingGroup.gameObject.SetActive(false);
+                    _failedGroup.gameObject.SetActive(false);
+                    _matchMakingGroup.gameObject.SetActive(false);
+                    break;
+
                 case ConnectionState.Connecting:
                     _connectingGroup.gameObject.SetActive(true);
                     _failedGroup.gameObject.SetActive(false);
@@ -212,8 +228,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private enum ConnectionState
+        public enum ConnectionState
         {
+            FirstConnect,
+
             Connecting,
 
             ConnectionFailed,

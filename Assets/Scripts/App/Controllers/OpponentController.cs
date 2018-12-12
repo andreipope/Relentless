@@ -104,9 +104,16 @@ namespace Loom.ZombieBattleground
             _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
         }
 
-        private void OnPlayerLeftGameActionHandler()
+        private void OnPlayerLeftGameActionHandler(PlayerActionLeaveMatch leaveMatchAction)
         {
-            _gameplayManager.OpponentPlayer.PlayerDie();
+            if (leaveMatchAction.Winner == _backendDataControlMediator.UserDataModel.UserId)
+            {
+                _gameplayManager.OpponentPlayer.PlayerDie();
+            }
+            else
+            {
+                _gameplayManager.CurrentPlayer.PlayerDie();
+            }
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -225,12 +232,10 @@ namespace Loom.ZombieBattleground
 
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
-                        _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-                        _gameplayManager.OpponentPlayer.BoardCards.Insert(
-                            Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count),
-                            boardUnitViewElement);
+                        _battlegroundController.OpponentBoardCards.Insert(Mathf.Clamp(position, 0, _battlegroundController.OpponentBoardCards.Count), boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count), boardUnitViewElement);
 
-                        boardUnitViewElement.PlayArrivalAnimation();
+                        boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
 
                         _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
 
@@ -255,9 +260,6 @@ namespace Loom.ZombieBattleground
                         });
                         break;
                 }
-
-                _gameplayManager.OpponentPlayer.RemoveCardFromDeck(card);
-                _gameplayManager.OpponentPlayer.AddCardToGraveyard(card);
 
                 _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
             });

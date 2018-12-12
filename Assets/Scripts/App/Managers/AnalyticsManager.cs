@@ -24,13 +24,19 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public const string EventStartedTutorial = "Started Tutorial";
     public const string EventCompletedTutorial = "Completed Tutorial";
     public const string EventStartedMatch = "Started Match";
-    public const string EventEndedMatch = "Ended Match";
+    public const string EventEndedMatch = "Completed Match";
     public const string EventDeckCreated = "Create Deck";
     public const string EventDeckDeleted = "Delete Deck";
     public const string EventDeckEdited = "Edit Deck";
+    public const string EventQuitMatch = "Quit Match";
 
     public const string PropertyTesterKey = "Tester Key";
     public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
+    public const string PropertyMatchType = "Match Type";
+    public const string PropertyTimeToFindOpponent = "Time to Find Opponent";
+    public const string PropertyMatchResult = "Match Result";
+    public const string PropertyMatchDuration = "Match Duration";
+    public const string PropertyTutorialTimeToComplete = "Time to Complete Tutorial";
 
     private BackendFacade _backendFacade;
     private BackendDataControlMediator _backendDataControlMediator;
@@ -128,7 +134,16 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName)
     {
         Value props = new Value();
-        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.BetaKey;
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
+        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+
+        Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
+        Mixpanel.Track(eventName, props);
+    }
+
+    public void SetEvent(string eventName, Value props)
+    {
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
         props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);

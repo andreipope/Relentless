@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
         private readonly GameObject _fightTargetingArrowPrefab;
 
-        private readonly int _initialCooldown;
+        private int _initialCooldown;
 
         private readonly Animator _shutterAnimator;
 
@@ -137,14 +137,14 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = false;
         }
 
-        public void StartDoSkill()
+        public void StartDoSkill(bool localPlayerOverride = false)
         {
             if (!IsSkillCanUsed())
                 return;
 
-            if (OwnerPlayer.IsLocalPlayer)
+            if (OwnerPlayer.IsLocalPlayer && !localPlayerOverride)
             {
-                if (Skill.SkillTargetTypes.Count > 0)
+                if (Skill.CanSelectTarget)
                 {
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
@@ -178,7 +178,7 @@ namespace Loom.ZombieBattleground
                  {
                      DoOnUpSkillAction(completeCallback);
                      IsUsing = false;
-                 });
+                 }, Enumerators.QueueActionType.OverlordSkillUsage);
         }
 
         public void UseSkill(BoardObject target)
@@ -188,11 +188,17 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
 
-            GameClient.Get<IOverlordManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
 
             SkillUsed?.Invoke(this, target);
+
+            if (_gameplayManager.UseInifiniteAbility)
+            {
+                _usedInThisTurn = false;
+                SetCoolDown(0);
+            }
         }
 
         public void Hide()
@@ -339,7 +345,7 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ActivateSelectTarget();
             }
 
-            if (Skill.SkillTargetTypes.Count == 0)
+            if (!Skill.CanSelectTarget)
             {
                 _skillsController.DoSkillAction(this, completeCallback, OwnerPlayer);
             }
