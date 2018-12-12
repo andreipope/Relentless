@@ -592,18 +592,9 @@ namespace Loom.ZombieBattleground
 
         private void PushAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            int goo = owner.CurrentGoo;
-
-            owner.CurrentGoo -= goo;
+            owner.CurrentGoo = 0;
 
             BoardUnitModel targetUnit = (BoardUnitModel) target;
-            BoardUnitView targetUnitView = _battlegroundController.GetBoardUnitViewByModel(targetUnit);
-            Player unitOwner = targetUnit.OwnerPlayer;
-            WorkingCard returningCard = targetUnit.Card;
-
-            returningCard.InstanceCard.Cost = returningCard.LibraryCard.Cost;
-
-            Vector3 unitPosition = targetUnitView.Transform.position;
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"),
                 targetUnit);
@@ -614,29 +605,7 @@ namespace Loom.ZombieBattleground
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
 
-            _timerManager.AddTimer(
-                x =>
-                {
-                    // STEP 1 - REMOVE UNIT FROM BOARD
-                    unitOwner.BoardCards.Remove(targetUnitView);
-
-                    // STEP 2 - DESTROY UNIT ON THE BOARD OR ANIMATE;
-                    targetUnit.Die(true);
-                    Object.Destroy(targetUnitView.GameObject);
-
-                    // STEP 3 - REMOVE WORKING CARD FROM BOARD
-                    unitOwner.RemoveCardFromBoard(returningCard);
-
-                    // STEP 4 - RETURN CARD TO HAND
-                    _cardsController.ReturnToHandBoardUnit(returningCard, unitOwner, unitPosition);
-
-                    // STEP 4 - REARRANGE HANDS
-                    _gameplayManager.RearrangeHands();
-
-                    // _gameplayManager.GetController<RanksController>().UpdateRanksBuffs(unitOwner);
-                },
-                null,
-                2f);
+            _cardsController.ReturnCardToHand(_battlegroundController.GetBoardUnitViewByModel(targetUnit));
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

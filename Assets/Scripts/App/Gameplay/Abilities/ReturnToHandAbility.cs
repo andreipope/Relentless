@@ -44,6 +44,20 @@ namespace Loom.ZombieBattleground
             {
                 TargetUnit
             }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Push,
+                        Target = TargetUnit
+                    }
+                }
+            });
         }
 
         protected override void InputEndedHandler()
