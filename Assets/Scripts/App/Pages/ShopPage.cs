@@ -138,7 +138,7 @@ namespace Loom.ZombieBattleground
             _buttonItem4.onClick.AddListener(() => ChooseItemHandler(3));
 
             _buttonBack.onClick.AddListener(BackButtonhandler);
-            _buttonBuy.onClick.AddListener(BuyButtonHandler);
+            //_buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
             _buttonCollection.onClick.AddListener(CollectionButtonHandler);
             _leftArrowButton.onClick.AddListener(LeftArrowButtonOnClickHandler);
@@ -193,7 +193,13 @@ namespace Loom.ZombieBattleground
             // add fake shop obj in front
             for (int i = 0; i < LoopStartFakeShopCount; i++)
             {
-                ShopObject fakeShopObj = new ShopObject(MaxItemsInShop, _shopsContainer.transform);
+                ShopObject fakeShopObj = new ShopObject(
+                     (MaxItemsInShop-1)+1,
+                     _shopsContainer.transform, 
+                     _isBestValue[MaxItemsInShop-1],
+                     _costs[MaxItemsInShop-1],
+                     ()=> { } 
+                );
                 fakeShopObj.Deselect();
                 _loopFakeShopObjects.Add(fakeShopObj);
             }
@@ -201,14 +207,25 @@ namespace Loom.ZombieBattleground
             // real shop obj
             for (int i = 0; i < MaxItemsInShop; i++)
             {
-                ShopObject current = new ShopObject(i + 1, _shopsContainer.transform);
+                int index = i;
+                ShopObject current = new ShopObject(i + 1, 
+                    _shopsContainer.transform, 
+                    _isBestValue[i],
+                    _costs[i],                    
+                    () => BuyButtonHandler(index)
+                );
                 _shopObjects.Add(current);
             }
 
             // add fake shop obj in end
             for (int i = 0; i < LoopEndFakeShopCount; i++)
             {
-                ShopObject fakeObj = new ShopObject(i + 1, _shopsContainer.transform);
+                ShopObject fakeObj = new ShopObject(i + 1, 
+                    _shopsContainer.transform, 
+                    _isBestValue[0],
+                     _costs[0],
+                    ()=> { }
+                );
                 fakeObj.Deselect();
                 _loopFakeShopObjects.Add(fakeObj);
             }
@@ -216,7 +233,7 @@ namespace Loom.ZombieBattleground
 
             ShopObjectSelected(_shopObjects[0]);
             UpdatePackDescriptionInfo(0);
-        } 
+        }
 
         private void ShopObjectSelected(ShopObject shopObject)
         {
@@ -343,8 +360,10 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IAppStateManager>().BackAppState();
         }
 
-        private void BuyButtonHandler()
+        private void BuyButtonHandler( int id )
         {
+            _currentPackId = id;
+            
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_currentPackId >= _costs.Length || _currentPackId < 0)
@@ -360,17 +379,18 @@ namespace Loom.ZombieBattleground
             {
                 _playerManager.LocalUser.PacksCount++;
 
-                prefab = _packsObjects[_currentPackId].transform.Find("PackItemPrefab").gameObject;
+                prefab = _loadObjectsManager.GetObjectByPath<GameObject>(
+                            "Prefabs/UI/Elements/Shop/PackItem");
 
                 GameObject packItem = Object.Instantiate(prefab);
-                packItem.transform.position = prefab.transform.position;
+                packItem.transform.position = _shopObjects[_selectedShopIndex].GetPackImagePosition();
                 packItem.transform.SetParent(_selfPage.transform, true);
                 packItem.transform.localScale = Vector3.one;
                 packItem.SetActive(true);
 
                 Sequence animationSequence = DOTween.Sequence();
                 animationSequence.AppendInterval(_amount[_currentPackId] * 0.1f - 0.1f * i);
-                animationSequence.Append(packItem.transform.DOMove(Vector3.up * -10, .3f));
+                animationSequence.Append(packItem.transform.DOMove(Vector3.up * -15f, .3f));
             }
         }
 
@@ -423,8 +443,14 @@ namespace Loom.ZombieBattleground
             private Sequence _stateChangeSequence;
 
             private GameObject SelfObject { get; }
+            
+            public delegate void CallbackHandler();
 
-            public ShopObject(int index, Transform parent)
+            public ShopObject(int index, 
+                              Transform parent, 
+                              bool _isBestValue,
+                              float _cost, 
+                              CallbackHandler _chooseItemHandler  )
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
                 SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(
@@ -433,6 +459,35 @@ namespace Loom.ZombieBattleground
                 _activeShopItemObj = SelfObject.transform.Find("Normal").gameObject;
                 _deactiveShopItemObj = SelfObject.transform.Find("Gray").gameObject;
                 _glowImage = SelfObject.transform.Find("Image_Glow").gameObject.GetComponent<Image>();
+
+                //Initialize ShopObject UI display from data
+                InitializeShopItemObj(_activeShopItemObj, _isBestValue, _cost, _chooseItemHandler);
+                InitializeShopItemObj(_deactiveShopItemObj, _isBestValue, _cost, () => {}); 
+
+            }
+            
+            private void InitializeShopItemObj( GameObject _item, bool _isBestValue, float _cost, CallbackHandler _chooseItemHandler )
+            {
+            
+                //Should restructure prefab's child depth later to be more organized
+                Transform _cardTran = _item.transform.Find("Cards");
+                GameObject _bestValueBadge = _cardTran.GetChild(_cardTran.childCount - 1).GetChild(0).gameObject;                          
+                
+                Button _buyButton           = _item.transform.Find("BuyButton").GetComponent<ButtonShiftingContent>();
+                TextMeshProUGUI _costLabel  = _item.transform.Find("Pack_Price").GetComponent<TextMeshProUGUI>();
+
+                _buyButton.onClick.AddListener( ()=> {
+                    _chooseItemHandler();
+                 });
+                
+                _bestValueBadge.SetActive(_isBestValue);
+                _costLabel.text = "$ " + _cost.ToString("N2");                
+                
+            }
+            
+            public Vector3 GetPackImagePosition()
+            {
+                return _activeShopItemObj.transform.position;
             }
 
             public void Select()
