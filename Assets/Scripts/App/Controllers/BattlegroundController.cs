@@ -1014,7 +1014,6 @@ namespace Loom.ZombieBattleground
             boardUnit.Model.HasBuffHeavy = false;
             boardUnit.Model.SetAsWalkerUnit();
             boardUnit.Model.UseShieldFromBuff();
-            boardUnit.Model.BuffsOnUnit.Clear();
             boardUnit.Model.AttackRestriction = Enumerators.AttackRestriction.ANY;
             boardUnit.Model.AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
             {
@@ -1022,17 +1021,24 @@ namespace Loom.ZombieBattleground
                 Enumerators.SkillTargetType.OPPONENT_CARD
             };
 
+            DeactivateAllAbilitiesOnUnit(boardUnit);
+
+            boardUnit.Model.Distract();
+        }
+
+        public void DeactivateAllAbilitiesOnUnit(BoardUnitView boardUnit)
+        {
+            boardUnit.Model.BuffsOnUnit.Clear();
+
+            boardUnit.Model.ClearEffectsOnUnit();
+
             List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit.Model);
 
-            foreach(AbilityBase ability in abilities)
+            foreach (AbilityBase ability in abilities)
             {
                 ability.Deactivate();
                 ability.Dispose();
             }
-
-            boardUnit.Model.ClearEffectsOnUnit();
-
-            boardUnit.Model.Distract();
         }
 
         public BoardUnitView CreateBoardUnit(Player owner, WorkingCard card)
