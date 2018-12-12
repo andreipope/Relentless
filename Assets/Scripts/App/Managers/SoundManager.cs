@@ -138,6 +138,23 @@ namespace Loom.ZombieBattleground
             return soundTypeList.AudioTypeClips.Count > 0 ? soundTypeList.AudioTypeClips[0].length : 0f;
         }
 
+        public void SetSoundPaused(Enumerators.SoundType soundType, string namePattern, bool pause)
+        {
+            SoundContainer container = _soundContainers.Find(x => x.SoundType == soundType && x.AudioSource.clip.name == namePattern);
+
+            if (container != null)
+            {
+                if(pause)
+                {
+                    container.AudioSource.Pause();
+                }
+                else
+                {
+                    container.AudioSource.UnPause();
+                }
+            }
+        }
+
         public void PlaySound(
             Enumerators.SoundType soundType, string clipTitle, float volume = -1f,
             Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)

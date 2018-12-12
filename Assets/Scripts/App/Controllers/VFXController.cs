@@ -439,6 +439,8 @@ namespace Loom.ZombieBattleground
         private bool _withEffect;
         private float _defaultDeathAnimationLength = 0.7f;
 
+        private string _cardDeathEffectSoundName;
+
         public BoardUnitView BoardUnitView;
 
         public UnitDeathAnimation(BoardUnitView unitView, bool withEffect)
@@ -458,6 +460,10 @@ namespace Loom.ZombieBattleground
                 SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_" +
                                                 InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
                                                 "DeathAnimation"));
+
+                _cardDeathEffectSoundName = "ZB_AUD_" +
+                    InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
+                    "ZombieDeath_F1_EXP";
 
                 SelfObject.transform.position = BoardUnitView.Transform.position;
 
@@ -511,6 +517,15 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void EndDeathEffectSound()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.ZOMBIE_DEATH_ANIMATIONS,
+                _cardDeathEffectSoundName,
+                Constants.ZombiesSoundVolume, isLoop: false);
+
+            _soundManager.SetSoundPaused(Enumerators.SoundType.ZOMBIE_DEATH_ANIMATIONS, _cardDeathEffectSoundName, true);
+        }
+
         private void PlayEffectSound()
         {
             // TODO: implement effect sounds!
@@ -522,6 +537,7 @@ namespace Loom.ZombieBattleground
             {
                 ParticleSystem.Play(true);
                 EffectAnimator.speed = _initialAnimationSpeed;
+                EndDeathEffectSound();
             }
             else
             {
