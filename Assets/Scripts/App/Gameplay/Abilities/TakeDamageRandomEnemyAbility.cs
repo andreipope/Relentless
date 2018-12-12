@@ -87,8 +87,7 @@ namespace Loom.ZombieBattleground
                 _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
 
-            InvokeActionTriggered(_targets);
-            
+            InvokeActionTriggered(_targets);      
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
@@ -97,13 +96,36 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            int damageWas = -1;
             foreach (object target in _targets)
             {
-                ActionCompleted(target);
+                ActionCompleted(target, out damageWas);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                    Target = target,
+                    HasValue = true,
+                    Value = -damageWas
+                });
+            }
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
+
+            if (IsPVPAbility)
+            {
+                Deactivate();
             }
         }
 
-        private void ActionCompleted(object target)
+        private void ActionCompleted(object target, out int damageWas)
         {
             int damageOverride = Damage;
 
@@ -111,6 +133,8 @@ namespace Loom.ZombieBattleground
             {
                 damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType).Count;
             }
+
+            damageWas = damageOverride;
 
             switch (target)
             {

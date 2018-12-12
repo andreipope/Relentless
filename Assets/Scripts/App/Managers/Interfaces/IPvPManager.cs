@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
     {
         event Action MatchCreatedActionReceived;
         event Action MatchingStartedActionReceived;
-        event Action PlayerLeftGameActionReceived;
+        event Action<PlayerActionLeaveMatch> PlayerLeftGameActionReceived;
         event Action MatchingFailed;
 
         event Action GameStartedActionReceived;
@@ -28,7 +28,6 @@ namespace Loom.ZombieBattleground
         event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         event Action<PlayerActionDrawCard> DrawCardActionReceived;
         event Action<PlayerActionRankBuff> RankBuffActionReceived;
-
         event Action LeaveMatchReceived;
 
         Address? CustomGameModeAddress { get; set; }

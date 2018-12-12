@@ -31,14 +31,28 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            CountDelay();
+            if (GetCaller() != null)
+            {
+                CountDelay();
+            }
+            else
+            {
+                Deactivate();
+            }
         }
 
         protected override void TurnStartedHandler()
         {
             base.TurnStartedHandler();
 
-            CountDelay();
+            if (GetCaller() != null)
+            {
+                CountDelay();
+            }
+            else
+            {
+                Deactivate();
+            }
         }
 
         private void CountDelay()
@@ -47,7 +61,7 @@ namespace Loom.ZombieBattleground
             {
                 Action();
 
-                AbilitiesController.DeactivateAbility(ActivityId);
+                Deactivate();
             }
 
             _delayedTurnsLeft--;

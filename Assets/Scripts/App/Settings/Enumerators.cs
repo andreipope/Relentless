@@ -217,8 +217,7 @@ namespace Loom.ZombieBattleground.Common
         }
 
         public enum AttackRestriction
-        {
-            NONE,
+        { 
             ANY,
             ONLY_DIFFERENT
         }
@@ -317,7 +316,7 @@ namespace Loom.ZombieBattleground.Common
             DEFENCE,
             HEAVY,
             WEAPON,
-            RUSH,
+            BLITZ,
             ATTACK,
             FREEZE,
             DAMAGE,

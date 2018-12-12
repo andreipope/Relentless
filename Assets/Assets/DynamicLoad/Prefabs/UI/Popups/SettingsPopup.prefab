@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 222724866121544278}
   - component: {fileID: 114854222245360900}
   - component: {fileID: 114506227723436674}
+  - component: {fileID: 223439125535667138}
   m_Layer: 0
   m_Name: Template
   m_TagString: Untagged
@@ -314,6 +315,7 @@ GameObject:
   - component: {fileID: 222723096825864750}
   - component: {fileID: 114507613019443558}
   - component: {fileID: 114498538460461314}
+  - component: {fileID: 223496690288621722}
   m_Layer: 0
   m_Name: Template
   m_TagString: Untagged
@@ -3898,6 +3900,46 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1274486243176442}
   m_CullTransparentMesh: 0
+--- !u!223 &223439125535667138
+Canvas:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1238444957488850}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!223 &223496690288621722
+Canvas:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1274703570192654}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!224 &224031132195945768
 RectTransform:
   m_ObjectHideFlags: 1

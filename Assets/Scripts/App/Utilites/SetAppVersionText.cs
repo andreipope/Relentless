@@ -1,4 +1,4 @@
-﻿using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +9,7 @@ namespace Loom.ZombieBattleground
     {
         private void Start()
         {
-            GetComponent<Text>().text =
-                Constants.CurrentVersionDevelopmentStage + " " + BuildMetaInfo.Instance.FullVersionName;
+            GetComponent<Text>().text = BuildMetaInfo.Instance.FullVersionName;
         }
     }
 }

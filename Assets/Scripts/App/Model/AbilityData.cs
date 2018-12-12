@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public class AbilityData
     {
-        [JsonProperty("Type")]
+        [JsonProperty("type")]
         public Enumerators.AbilityType AbilityType { get; private set; }
 
         [JsonProperty("activity_type")]
@@ -40,21 +40,28 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("unit_type")]
         public Enumerators.CardType TargetUnitType { get; private set; }
 
+        [JsonProperty("value")]
         public int Value { get; private set; }
 
+        [JsonProperty("damage")]
         public int Damage { get; private set; }
 
+        [JsonProperty("health")]
         public int Health { get; private set; }
 
+        [JsonProperty("name")]
         public string Name { get; private set; }
 
+        [JsonProperty("turns")]
         public int Turns { get; private set; }
 
+        [JsonProperty("count")]
         public int Count { get; private set; }
 
+        [JsonProperty("delay")]
         public int Delay { get; private set; }
 
-        [JsonProperty("visual_effects_to_play")]
+        [JsonProperty("VisualEffectsToPlay")]
         public List<VisualEffectInfo> VisualEffectsToPlay { get; private set; }
 
         [JsonProperty("mechanic_description_type")]
@@ -69,8 +76,10 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("choosable_abilities")]
         public List<ChoosableAbility> ChoosableAbilities { get; private set; }
 
+        [JsonProperty("defense")]
         public int Defense { get; private set; }
 
+        [JsonProperty("cost")]
         public int Cost { get; private set; }
 
         [JsonConstructor]
@@ -174,10 +183,10 @@ namespace Loom.ZombieBattleground.Data
 
         public class VisualEffectInfo
         {
-            [JsonProperty("type")]
+            [JsonProperty("Type")]
             public Enumerators.VisualEffectType Type { get; private set; }
 
-            [JsonProperty("path")]
+            [JsonProperty("Path")]
             public string Path { get; private set; }
 
             [JsonConstructor]
@@ -206,6 +215,7 @@ namespace Loom.ZombieBattleground.Data
 
         public class ChoosableAbility
         {
+            [JsonProperty("description")]
             public string Description { get; private set; }
 
             [JsonProperty("ability_data")]

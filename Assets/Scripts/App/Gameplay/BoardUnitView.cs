@@ -307,7 +307,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.BuffType.WEAPON:
                     break;
-                case Enumerators.BuffType.RUSH:
+                case Enumerators.BuffType.BLITZ:
                     _sleepingParticles.gameObject.SetActive(false);
                     if (Model.HasBuffRush && Model.InitialUnitType != Enumerators.CardType.FERAL)
                     {
@@ -407,10 +407,7 @@ namespace Loom.ZombieBattleground
         private void BoardUnitOnTurnEnded()
         {
             CancelTargetingArrows();
-            if (Model.HasBuffRush && Model.InitialUnitType != Enumerators.CardType.FERAL)
-            {
-                SetNormalGlowFromUnitType();
-            }
+            SetNormalGlowFromUnitType();
         }
 
         private void BoardUnitGameMechanicDescriptionsOnUnitChanged()

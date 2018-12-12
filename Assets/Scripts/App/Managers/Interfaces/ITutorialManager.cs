@@ -27,5 +27,7 @@ namespace Loom.ZombieBattleground
         void SkipTutorial(Enumerators.AppState state);
 
         int TutorialsCount { get; }
+
+        AnalyticsTimer TutorialDuration { get; set; }
     }
 }

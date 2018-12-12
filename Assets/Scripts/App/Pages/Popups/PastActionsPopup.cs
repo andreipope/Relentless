@@ -254,6 +254,9 @@ namespace Loom.ZombieBattleground
                             _rightBlockCardUnitElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         }
                         break;
+                    case BoardUnitView unit:
+                        _rightBlockCardUnitElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                 }

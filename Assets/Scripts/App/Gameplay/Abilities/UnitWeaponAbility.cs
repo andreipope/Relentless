@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
                 TargetUnit.UnitDied -= TargetUnitDiedHandler;
             }
 
-            AbilitiesController.DeactivateAbility(ActivityId);
+            Deactivate();
         }
     }
 }

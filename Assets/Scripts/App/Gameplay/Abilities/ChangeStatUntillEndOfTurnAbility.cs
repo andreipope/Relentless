@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
 
             _boardUnits.Clear();
 
-            AbilitiesController.DeactivateAbility(ActivityId);
+            Deactivate();
         }
 
         protected override void VFXAnimationEndedHandler()

@@ -727,6 +727,9 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitView boardUnit:
                     boardCard.DrawTooltipInfoOfUnit(boardUnit);
+                    UnitBoardCard boardCardUnit = boardCard as UnitBoardCard;
+                    boardCardUnit.Damage = boardUnit.Model.MaxCurrentDamage;
+                    boardCardUnit.Health = boardUnit.Model.MaxCurrentHp;
                     break;
                 case BoardCard tooltipCard:
                     boardCard.DrawTooltipInfoOfCard(tooltipCard);
@@ -1169,7 +1172,7 @@ namespace Loom.ZombieBattleground
 
             int targetView = boardCards.IndexOf(GetBoardUnitViewByModel(targetUnit));
 
-            return boardCards.Where(unit =>
+            return boardCards.Where(unit => unit.Model != targetUnit && 
             ((boardCards.IndexOf(unit) == Mathf.Clamp(targetView - 1, 0, boardCards.Count - 1)) ||
             (boardCards.IndexOf(unit) == Mathf.Clamp(targetView + 1, 0, boardCards.Count - 1)) &&
             boardCards.IndexOf(unit) != targetView)

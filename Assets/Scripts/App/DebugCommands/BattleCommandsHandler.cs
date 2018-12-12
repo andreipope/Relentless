@@ -563,4 +563,15 @@ static class BattleCommandsHandler
 
         unitModel.CurrentHp -= boardSkill.Skill.Value;
     }
+
+    [CommandHandler(Description = "Unlocks current overlord abilities")]
+    private static void UnlockAllCurrentOverlordAbilities()
+    {
+        foreach (var skill in _gameplayManager.CurrentPlayer.SelfHero.Skills)
+        {
+            skill.Unlocked = true;
+        }
+
+        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+    }
 }

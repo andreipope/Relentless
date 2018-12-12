@@ -250,11 +250,14 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.BuffType.ATTACK:
                     CurrentDamage++;
+                    BuffedDamage++;
+                    AddBuff(Enumerators.BuffType.ATTACK);
                     break;
                 case Enumerators.BuffType.DAMAGE:
                     break;
                 case Enumerators.BuffType.DEFENCE:
                     CurrentHp++;
+                    BuffedHp++;
                     break;
                 case Enumerators.BuffType.FREEZE:
                     TakeFreezeToAttacked = true;
@@ -263,7 +266,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.HEAVY:
                     HasBuffHeavy = true;
                     break;
-                case Enumerators.BuffType.RUSH:
+                case Enumerators.BuffType.BLITZ:
                     if (NumTurnsOnBoard == 0)
                     {
                         HasBuffRush = true;
@@ -505,7 +508,6 @@ namespace Loom.ZombieBattleground
 
         public void OnStartTurn()
         {
-            Debug.Log("OnStartTurn");
             AttackedBoardObjectsThisTurn.Clear();
             NumTurnsOnBoard++;
 
@@ -520,11 +522,28 @@ namespace Loom.ZombieBattleground
                 UnitStatus = Enumerators.UnitStatusType.NONE;
             }
 
-            if (OwnerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
             {
-                AttackedThisTurn = false;
+                if (IsPlayable)
+                {
+                    AttackedThisTurn = false;
 
-                IsCreatedThisTurn = false;
+                    IsCreatedThisTurn = false;
+                }
+
+                // RANK buff attack should be removed at next player turn
+                if (BuffsOnUnit != null)
+                {
+                    int attackToRemove = BuffsOnUnit.FindAll(x => x == Enumerators.BuffType.ATTACK).Count;
+
+                    if (attackToRemove > 0)
+                    {
+                        BuffsOnUnit.RemoveAll(x => x == Enumerators.BuffType.ATTACK);
+
+                        BuffedDamage -= attackToRemove;
+                        CurrentDamage -= attackToRemove;
+                    }
+                }
             }
 
             TurnStarted?.Invoke();
@@ -532,6 +551,7 @@ namespace Loom.ZombieBattleground
 
         public void OnEndTurn()
         {
+            IsPlayable = false;
             HasBuffRush = false;
             CantAttackInThisTurnBlocker = false;
             TurnEnded?.Invoke();

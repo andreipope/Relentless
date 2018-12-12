@@ -332,6 +332,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string CheckGameStatusMethod = "CheckGameStatus";
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
         private const string AcceptMatchMethod = "AcceptMatch";
+        private const string KeepAliveStatusMethod = "KeepAlive";
 
         public PlayerActionDataReceivedHandler PlayerActionDataReceived;
 
@@ -613,6 +614,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await Contract.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
+        }
+
+        public async Task<KeepAliveResponse> KeepAliveStatus(string userId, long matchId)
+        {
+            KeepAliveRequest request = new KeepAliveRequest
+            {
+                MatchId = matchId,
+                UserId = userId
+            };
+
+            return await Contract.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
         }
 
         #endregion

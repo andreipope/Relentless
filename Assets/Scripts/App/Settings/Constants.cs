@@ -4,9 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.7";
-
-        internal const string CurrentVersionDevelopmentStage = "Alpha";
+        internal const string CurrentVersionBase = "0.1.8";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -102,15 +100,15 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float CardsMoveSoundVolume = 0.025f;
 
-        internal const float BackgroundSoundVolume = 0.05f;
+        internal const float BackgroundSoundVolume = 0.1f;
 
         internal const float SfxSoundVolume = 0.15f;
 
-        internal const float OverlordAbilitySoundVolume = 0.1f;
+        internal const float OverlordAbilitySoundVolume = 0.15f;
 
         internal const float SpellAbilitySoundVolume = 0.1f;
 
-        internal const float BattlegroundEffectsSoundVolume = 0.25f;
+        internal const float BattlegroundEffectsSoundVolume = 0.20f;
 
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;
@@ -134,7 +132,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        internal const float PvPWaitForTurnMaxTime = 150;
+        internal const float PvPCheckPlayerAvailableMaxTime = 5f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -149,5 +147,7 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
 
         internal const bool MulliganEnabled = false;
+
+        internal const bool AutomaticLoginEnabled = true;
     }
 }

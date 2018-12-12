@@ -119,52 +119,71 @@ namespace Loom.ZombieBattleground.Helpers.Tools
                 GUILayout.Label("Abilities: ", EditorStyles.boldLabel);
 
                 string[] vfxTypes = Enum.GetNames(typeof(Enumerators.VisualEffectType));
-                int indexOfVfxType = 0;
 
                 foreach (Data.AbilityData abilityInfo in _selectedCard.Abilities)
                 {
-                    GUILayout.Label(abilityInfo.AbilityType.ToString(), EditorStyles.miniBoldLabel);
+                    DrawAbilityConfigurtion(abilityInfo, vfxTypes);
 
-                    GUILayout.Label("VisualEffectsToPlay", EditorStyles.label);
-
-
-                    Data.AbilityData.VisualEffectInfo vfxInfo;
-                    List<Data.AbilityData.VisualEffectInfo> vfxesToDelete = new List<Data.AbilityData.VisualEffectInfo>();
-                    for (int i = 0; i < abilityInfo.VisualEffectsToPlay.Count; i++)
+                    if (abilityInfo.ChoosableAbilities != null)
                     {
-                        vfxInfo = abilityInfo.VisualEffectsToPlay[i];
-
-                        indexOfVfxType = vfxTypes.ToList().IndexOf(vfxInfo.Type.ToString());
-                        indexOfVfxType = EditorGUILayout.Popup("Type: ", indexOfVfxType, vfxTypes);
-
-                        vfxInfo.ForceSetType(Utilites.CastStringTuEnum<Enumerators.VisualEffectType>(vfxTypes[indexOfVfxType], true));
-                        vfxInfo.ForceSetPath(GUILayout.TextField(vfxInfo.Path, EditorStyles.textField));
-
-                        if (EditorGUILayout.DropdownButton(new GUIContent("Delete", "delete vfx"), FocusType.Passive))
+                        foreach (Data.AbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
                         {
-                            vfxesToDelete.Add(vfxInfo);
+                            DrawAbilityConfigurtion(choosableAbilityInfo, vfxTypes, true);
                         }
-
-                        GUILayout.Space(5);
-
-                        GUILayout.Label("----------------------------", EditorStyles.miniLabel);
-                    }
-
-                    if (vfxesToDelete.Count > 0)
-                    {
-                        foreach (Data.AbilityData.VisualEffectInfo vfx in vfxesToDelete)
-                        {
-                            abilityInfo.VisualEffectsToPlay.Remove(vfx);
-                        }
-                    }
-
-                    GUILayout.Space(5);
-
-                    if (EditorGUILayout.DropdownButton(new GUIContent("Add New", "add new vfx"), FocusType.Passive))
-                    {
-                        abilityInfo.VisualEffectsToPlay.Add(new Data.AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, string.Empty));
                     }
                 }
+            }
+        }
+
+        private void DrawAbilityConfigurtion(Data.AbilityData abilityInfo, string[] vfxTypes, bool itsAbilityFromChoosable = false)
+        {
+            int indexOfVfxType = 0;
+
+            if (itsAbilityFromChoosable)
+            {
+                GUILayout.Label("---This ability located in Choosable Abilities---", EditorStyles.label);
+            }
+
+            GUILayout.Label(abilityInfo.AbilityType.ToString(), EditorStyles.miniBoldLabel);
+
+            GUILayout.Label("VisualEffectsToPlay", EditorStyles.label);
+
+
+            Data.AbilityData.VisualEffectInfo vfxInfo;
+            List<Data.AbilityData.VisualEffectInfo> vfxesToDelete = new List<Data.AbilityData.VisualEffectInfo>();
+            for (int i = 0; i < abilityInfo.VisualEffectsToPlay.Count; i++)
+            {
+                vfxInfo = abilityInfo.VisualEffectsToPlay[i];
+
+                indexOfVfxType = vfxTypes.ToList().IndexOf(vfxInfo.Type.ToString());
+                indexOfVfxType = EditorGUILayout.Popup("Type: ", indexOfVfxType, vfxTypes);
+
+                vfxInfo.ForceSetType(Utilites.CastStringTuEnum<Enumerators.VisualEffectType>(vfxTypes[indexOfVfxType], true));
+                vfxInfo.ForceSetPath(GUILayout.TextField(vfxInfo.Path, EditorStyles.textField));
+
+                if (EditorGUILayout.DropdownButton(new GUIContent("Delete", "delete vfx"), FocusType.Passive))
+                {
+                    vfxesToDelete.Add(vfxInfo);
+                }
+
+                GUILayout.Space(5);
+
+                GUILayout.Label("----------------------------", EditorStyles.miniLabel);
+            }
+
+            if (vfxesToDelete.Count > 0)
+            {
+                foreach (Data.AbilityData.VisualEffectInfo vfx in vfxesToDelete)
+                {
+                    abilityInfo.VisualEffectsToPlay.Remove(vfx);
+                }
+            }
+
+            GUILayout.Space(5);
+
+            if (EditorGUILayout.DropdownButton(new GUIContent("Add New", "add new vfx"), FocusType.Passive))
+            {
+                abilityInfo.VisualEffectsToPlay.Add(new Data.AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, string.Empty));
             }
         }
 
