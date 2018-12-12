@@ -448,9 +448,9 @@ namespace Loom.ZombieBattleground
 
             public ShopObject(int index, 
                               Transform parent, 
-                              bool _isBestValue,
-                              float _cost, 
-                              CallbackHandler _chooseItemHandler  )
+                              bool isBestValue,
+                              float cost, 
+                              CallbackHandler chooseItemHandler  )
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
                 SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>(
@@ -461,27 +461,27 @@ namespace Loom.ZombieBattleground
                 _glowImage = SelfObject.transform.Find("Image_Glow").gameObject.GetComponent<Image>();
 
                 //Initialize ShopObject UI display from data
-                InitializeShopItemObj(_activeShopItemObj, _isBestValue, _cost, _chooseItemHandler);
-                InitializeShopItemObj(_deactiveShopItemObj, _isBestValue, _cost, () => {}); 
+                InitializeShopItemObj(_activeShopItemObj, isBestValue, cost, chooseItemHandler);
+                InitializeShopItemObj(_deactiveShopItemObj, isBestValue, cost, () => {}); 
 
             }
             
-            private void InitializeShopItemObj( GameObject _item, bool _isBestValue, float _cost, CallbackHandler _chooseItemHandler )
+            private void InitializeShopItemObj( GameObject item, bool isBestValue, float cost, CallbackHandler chooseItemHandler )
             {
             
                 //Should restructure prefab's child depth later to be more organized
-                Transform _cardTran = _item.transform.Find("Cards");
-                GameObject _bestValueBadge = _cardTran.GetChild(_cardTran.childCount - 1).GetChild(0).gameObject;                          
+                Transform cardTran = item.transform.Find("Cards");
+                GameObject bestValueBadge = cardTran.GetChild(cardTran.childCount - 1).GetChild(0).gameObject;                          
                 
-                Button _buyButton           = _item.transform.Find("BuyButton").GetComponent<ButtonShiftingContent>();
-                TextMeshProUGUI _costLabel  = _item.transform.Find("Pack_Price").GetComponent<TextMeshProUGUI>();
+                Button buyButton           = item.transform.Find("BuyButton").GetComponent<ButtonShiftingContent>();
+                TextMeshProUGUI costLabel  = item.transform.Find("Pack_Price").GetComponent<TextMeshProUGUI>();
 
-                _buyButton.onClick.AddListener( ()=> {
-                    _chooseItemHandler();
+                buyButton.onClick.AddListener( ()=> {
+                    chooseItemHandler();
                  });
                 
-                _bestValueBadge.SetActive(_isBestValue);
-                _costLabel.text = "$ " + _cost.ToString("N2");                
+                bestValueBadge.SetActive(isBestValue);
+                costLabel.text = "$ " + cost.ToString("N2");                
                 
             }
             
