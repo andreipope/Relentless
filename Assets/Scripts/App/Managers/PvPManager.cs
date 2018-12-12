@@ -98,7 +98,16 @@ namespace Loom.ZombieBattleground
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
-                    await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+                    try
+                    {
+                        Debug.LogError("Send keep Alive");
+                        await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("Error sending Keep Alive status " + e);
+                    }
+
                 }
             }
 
@@ -149,6 +158,7 @@ namespace Loom.ZombieBattleground
 
         public async Task CancelFindMatch()
         {
+            ResetCheckPlayerStatus();
             await StopMatchmaking(MatchMetadata?.Id);
         }
 
@@ -335,6 +345,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
+            Debug.LogError("Reset Alive");
             _isCheckPlayerAvailableTimerStart = false;
             _checkPlayerTimer = 0f;
         }
