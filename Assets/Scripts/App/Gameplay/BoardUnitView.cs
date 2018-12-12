@@ -820,9 +820,7 @@ namespace Loom.ZombieBattleground
                 () =>
                 {
                     Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
-                    _vfxController.PlayAttackVfx(Model.Card.LibraryCard.CardType,
-                        positionOfVfx,
-                        Model.CurrentDamage);
+                    _vfxController.PlayAttackVfx(Model, positionOfVfx);
 
                     hitCallback();
 
@@ -847,8 +845,8 @@ namespace Loom.ZombieBattleground
                 0.5f,
                 () =>
                 {
-                    _vfxController.PlayAttackVfx(Model.Card.LibraryCard.CardType,
-                        targetCardView.Transform.position, Model.CurrentDamage);
+                    _vfxController.PlayAttackVfx(Model,
+                        targetCardView.Transform.position);
 
                     hitCallback();
 
