@@ -123,23 +123,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
         Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel"));
     }
 
-    public void Reset()
-    {
-        GoogleAnalyticsV4[] googleAnalyticsV4Objects = Object.FindObjectsOfType<GoogleAnalyticsV4>();
-        if (googleAnalyticsV4Objects.Length == 1)
-            return;
-
-        for (int i = googleAnalyticsV4Objects.Length-1; i >= 0 ; i--)
-        {
-            if(googleAnalyticsV4Objects[i].gameObject != _googleAnalytics.gameObject)
-                Object.Destroy(googleAnalyticsV4Objects[i].gameObject);
-            else
-            {
-                GoogleAnalyticsV4.instance = _googleAnalytics;
-            }
-        }
-    }
-
     public void Update()
     {
     }
