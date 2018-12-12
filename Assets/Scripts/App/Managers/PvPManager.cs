@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isCheckPlayerAvailableTimerStart)
+            if (_gameplayManager.CurrentPlayer != null && _isCheckPlayerAvailableTimerStart)
             {
                 _checkPlayerTimer += Time.deltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
@@ -108,6 +108,13 @@ namespace Loom.ZombieBattleground
                         Debug.LogError("Error sending Keep Alive status " + e);
                     }
 
+                }
+            }
+            else
+            {
+                if (_isCheckPlayerAvailableTimerStart)
+                {
+                    ResetCheckPlayerStatus();
                 }
             }
 
