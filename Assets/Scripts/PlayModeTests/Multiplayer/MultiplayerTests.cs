@@ -1,5 +1,9 @@
+using System;
 using NUnit.Framework;
 using System.Collections;
+using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Editor.Tools;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -130,6 +134,9 @@ public class MultiplayerTests
         yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndMatchmakeDebugClient());
+
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
         yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
         _testHelper.AssertOverlordName ();
@@ -167,6 +174,9 @@ public class MultiplayerTests
         yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndMatchmakeDebugClient());
+
         yield return _testHelper.PlayAMatch (1);
         yield return _testHelper.ClickGenericButton ("Button_Settings");
         yield return _testHelper.ClickGenericButton ("Button_QuitToMainMenu");
@@ -199,6 +209,9 @@ public class MultiplayerTests
         yield return _testHelper.LetsThink ();
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
+
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndMatchmakeDebugClient());
+
         yield return _testHelper.PlayAMatch ();
     }
 

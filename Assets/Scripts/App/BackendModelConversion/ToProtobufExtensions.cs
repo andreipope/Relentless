@@ -183,12 +183,15 @@ namespace Loom.ZombieBattleground.Data
 
         public static Protobuf.DebugCheatsConfiguration ToProtobuf(this BackendCommunication.DebugCheatsConfiguration debugCheatsConfiguration)
         {
+            if (debugCheatsConfiguration == null)
+                return new Protobuf.DebugCheatsConfiguration();
+
             return new Protobuf.DebugCheatsConfiguration
             {
                 Enabled = debugCheatsConfiguration.Enabled,
 
-                UseCustomRandomSeed = debugCheatsConfiguration.CustomRandom != null,
-                CustomRandomSeed = debugCheatsConfiguration.CustomRandom ?? 0,
+                UseCustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed != null,
+                CustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed ?? 0,
 
                 UseCustomDeck = debugCheatsConfiguration.CustomDeck != null,
                 CustomDeck = debugCheatsConfiguration.CustomDeck?.ToProtobuf()

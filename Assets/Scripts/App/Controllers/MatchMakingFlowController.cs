@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -319,7 +320,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            Debug.LogWarning(exception);
+            ExceptionDispatchInfo.Capture(exception).Throw();
         }
 
         private async Task SetState(MatchMakingState state)

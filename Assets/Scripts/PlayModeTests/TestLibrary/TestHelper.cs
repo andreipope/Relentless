@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Editor.Tools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -140,6 +141,14 @@ public class TestHelper
     public void SetTestName (string testName = "")
     {
         _testName = testName;
+    }
+
+    /// <summary>
+    /// Gets the name of the test.
+    /// </summary>
+    public string GetTestName()
+    {
+        return _testName;
     }
 
     // Google Analytics isn't required for testing and in case of multiple tests it starts being overloaded and providing error on number of requests.
@@ -1055,6 +1064,14 @@ public class TestHelper
         {
             _pvpManager.PvPTags.Add (tag);
         }
+    }
+
+    /// <summary>
+    /// Get matchmaking tags.
+    /// </summary>
+    public List<string> GetPvPTags()
+    {
+        return _pvpManager.PvPTags;
     }
 
     #endregion
@@ -3323,6 +3340,29 @@ public class TestHelper
 
     #endregion
 
+    #region PvP Second Client
+
+    public async Task<MultiplayerDebugClient> CreateAndMatchmakeDebugClient()
+    {
+        bool matchConfirmed = false;
+        void SecondClientMatchConfirmedHandler(MatchMetadata matchMetadata)
+        {
+            matchConfirmed = true;
+        }
+        MultiplayerDebugClient client = new MultiplayerDebugClient();
+        await client.Start(GetTestName(), matchMakingFlowController => matchMakingFlowController.MatchConfirmed += SecondClientMatchConfirmedHandler);
+        await client.MatchMakingFlowController.Start(1, null, GetPvPTags(), false, null);
+        while (!matchConfirmed)
+        {
+            await Task.Delay(300);
+            await client.MatchMakingFlowController.Update();
+        }
+
+        return client;
+    }
+
+    #endregion
+
     private AbilityBoardArrow GetAbilityBoardArrow ()
     {
         if (GameObject.FindObjectOfType<AbilityBoardArrow> () != null)
@@ -3367,6 +3407,11 @@ public class TestHelper
     private bool TurnTimeIsUp ()
     {
         return Time.time > _turnStartTime + _turnWaitAmount;
+    }
+
+    public static IEnumerator TaskAsIEnumerator(Func<Task> taskFunc)
+    {
+        return TaskAsIEnumerator(taskFunc());
     }
 
     public static IEnumerator TaskAsIEnumerator(Task task)

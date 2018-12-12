@@ -221,15 +221,5 @@ namespace Loom.ZombieBattleground.Data
         {
             return new InstanceId(cardInstance.Id);
         }
-
-        public static BackendCommunication.DebugCheatsConfiguration FromProtobuf(this Protobuf.DebugCheatsConfiguration debugCheatsConfiguration)
-        {
-            return new BackendCommunication.DebugCheatsConfiguration
-            {
-                Enabled = debugCheatsConfiguration.Enabled,
-                CustomDeck = debugCheatsConfiguration.UseCustomDeck ? debugCheatsConfiguration.CustomDeck.FromProtobuf() : null,
-                CustomRandom = debugCheatsConfiguration.UseCustomRandomSeed ? debugCheatsConfiguration.CustomRandomSeed : (long?) null
-            };
-        }
     }
 }

@@ -8,6 +8,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public Deck CustomDeck { get; set; }
 
-        public long? CustomRandom { get; set; }
+        public long? CustomRandomSeed { get; set; }
     }
 }

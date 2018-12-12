@@ -325,7 +325,6 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-                            Debug.Log(listCardLibraryResponse.ToString());
                             cardList = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
                         }
                         catch(Exception)
