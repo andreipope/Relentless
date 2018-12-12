@@ -100,7 +100,6 @@ namespace Loom.ZombieBattleground
                     _checkPlayerTimer = 0f;
                     try
                     {
-                        Debug.LogError("Send keep Alive");
                         await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
                     }
                     catch (Exception e)
@@ -208,8 +207,6 @@ namespace Loom.ZombieBattleground
             GameStartedActionReceived?.Invoke();
 
             _isCheckPlayerAvailableTimerStart = true;
-            Debug.LogError("Make status = " + true);
-
             _queueManager.Active = true;
         }
 
@@ -270,7 +267,6 @@ namespace Loom.ZombieBattleground
                         GameEndedActionReceived?.Invoke();
                         break;
                     case Match.Types.Status.Canceled:
-                        Debug.LogError("calced called");
                         break;
                     case Match.Types.Status.Timedout:
                         break;
@@ -348,7 +344,6 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
-            Debug.LogError("Reset Alive");
             _isCheckPlayerAvailableTimerStart = false;
             _checkPlayerTimer = 0f;
         }
