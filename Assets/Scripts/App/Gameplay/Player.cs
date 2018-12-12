@@ -496,6 +496,9 @@ namespace Loom.ZombieBattleground
 
         public void AddCardToGraveyard(WorkingCard card)
         {
+            if (CardsInGraveyard.Contains(card))
+                return;
+
             CardsInGraveyard.Add(card);
 
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
@@ -503,6 +506,9 @@ namespace Loom.ZombieBattleground
 
         public void RemoveCardFromGraveyard(WorkingCard card)
         {
+            if (!CardsInGraveyard.Contains(card))
+                return;
+
             CardsInGraveyard.Remove(card);
 
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
