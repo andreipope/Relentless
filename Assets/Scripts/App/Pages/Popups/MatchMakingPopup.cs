@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
 
         const string PlayerIsAlreadyInAMatch = "Player is already in a match";
 
+        const string OperationHasTimedOut = "The operation has timed out.";
+
         public event Action CancelMatchmakingClicked;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -116,6 +118,17 @@ namespace Loom.ZombieBattleground
                         _backendDataControlMediator.UserDataModel.UserId
                     );
 
+                    await InitiateRegisterPlayerToPool(GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId);
+                }
+                catch (Exception e)
+                {
+                    ErrorHandler(e);
+                }
+            }
+            else if (exception.Message.Contains(OperationHasTimedOut))
+            {
+                try
+                {
                     await InitiateRegisterPlayerToPool(GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId);
                 }
                 catch (Exception e)
