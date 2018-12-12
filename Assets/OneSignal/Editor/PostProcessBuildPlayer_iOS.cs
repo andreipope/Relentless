@@ -1,4 +1,4 @@
-﻿#define ADD_APP_GROUP
+#define ADD_APP_GROUP
 //remove to prevent the addition of the app group
 
 #if UNITY_5_4_OR_NEWER && UNITY_IPHONE && UNITY_EDITOR
@@ -116,21 +116,32 @@
                var groups = entitlements.root.CreateArray("com.apple.security.application-groups");
                groups.AddString("group." + PlayerSettings.applicationIdentifier + ".onesignal");
             }
-         #endif
+#endif
 
-         entitlements.WriteToFile(entitlementPath);
 
-         // Copy the entitlement file to the xcode project
-         var entitlementFileName = Path.GetFileName(entitlementPath);
-         var unityTarget = PBXProject.GetUnityTargetName();
-         var relativeDestination = unityTarget + "/" + entitlementFileName;
+        entitlements.WriteToFile(entitlementPath);
 
-         // Add the pbx configs to include the entitlements files on the project
-         project.AddFile(relativeDestination, entitlementFileName);
-         project.AddBuildProperty(targetGUID, "CODE_SIGN_ENTITLEMENTS", relativeDestination);
+        // write into root plist
+        string pathToRootInfoPlist = path + separator + "Info.plist";
+        PlistDocument rootInfoPlist = new PlistDocument();
+        rootInfoPlist.ReadFromFile(pathToRootInfoPlist);
+        var bmgroups = rootInfoPlist.root.CreateArray("UIBackgroundModes");
+        bmgroups.AddString("remote-notification");
+        rootInfoPlist.WriteToFile(pathToRootInfoPlist);
 
-         // Add push notifications as a capability on the target
-         project.AddBuildProperty(targetGUID, "SystemCapabilities", "{com.apple.Push = {enabled = 1;};}");
+        // Copy the entitlement file to the xcode project
+        var entitlementFileName = Path.GetFileName(entitlementPath);
+        var unityTarget = PBXProject.GetUnityTargetName();
+        var relativeDestination = unityTarget + "/" + entitlementFileName;
+
+        // Add the pbx configs to include the entitlements files on the project
+        project.AddFile(relativeDestination, entitlementFileName);
+        project.AddBuildProperty(targetGUID, "CODE_SIGN_ENTITLEMENTS", relativeDestination);
+
+        project.AddCapability(targetGUID, PBXCapabilityType.BackgroundModes);
+
+        // Add push notifications as a capability on the target
+        project.AddBuildProperty(targetGUID, "SystemCapabilities", "{com.apple.Push = {enabled = 1;};}");
          File.WriteAllText(projectPath, project.WriteToString());
       }
 
