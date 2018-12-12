@@ -12,9 +12,9 @@ namespace Loom.ZombieBattleground
     public class ShopPage : IUIElement
     {
         private const float ScrollAnimationDuration = 0.5f;
-        private const int MaxItemsInShop = 5;
+        private const int MaxItemsInShop = 4;
         private const int LoopStartFakeShopCount = 1;
-        private const int LoopEndFakeShopCount = 2;
+        private const int LoopEndFakeShopCount = 1;
 
         private readonly float[] _costs =
         {
@@ -24,6 +24,27 @@ namespace Loom.ZombieBattleground
         private readonly int[] _amount =
         {
             1, 2, 5, 10
+        };
+        
+        private readonly string[] _longDescriptions =
+        {    
+            "1 pack of cards",
+            "2 packs of cards",
+            "5 packs of cards",
+            "10 packs of cards"
+        };  
+        
+        private readonly bool[] _isBestValue =
+        {
+            false, false, false, true
+        };
+
+        private readonly string[] _productID =
+        {    
+            "booster_pack_1",
+            "booster_pack_2",
+            "booster_pack_5",
+            "booster_pack_10"
         };
 
         private IUIManager _uiManager;
@@ -43,6 +64,8 @@ namespace Loom.ZombieBattleground
         private Button _leftArrowButton, _rightArrowButton;
 
         private TextMeshProUGUI _costItem1, _costItem2, _costItem3, _costItem4, _wallet;
+        
+        private TextMeshProUGUI _infoPackAmount, _infoLongDescription;
 
         private int _currentPackId = -1;
 
@@ -83,6 +106,9 @@ namespace Loom.ZombieBattleground
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/ShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            
+             _infoPackAmount         = _selfPage.transform.Find("Panel_ShopContent/Panel_OverlordInfo/Text_Amount").GetComponent<TextMeshProUGUI>();
+            _infoLongDescription    = _selfPage.transform.Find("Panel_ShopContent/Panel_OverlordInfo/Text_LongDescription").GetComponent<TextMeshProUGUI>();
 
             _wallet = _selfPage.transform.Find("Wallet").GetComponent<TextMeshProUGUI>();
 
@@ -189,7 +215,8 @@ namespace Loom.ZombieBattleground
 
 
             ShopObjectSelected(_shopObjects[0]);
-        }
+            UpdatePackDescriptionInfo(0);
+        } 
 
         private void ShopObjectSelected(ShopObject shopObject)
         {
@@ -215,16 +242,25 @@ namespace Loom.ZombieBattleground
             {
                 SetSelectedShopIndexAndUpdateScrollPosition(_shopObjects.Count, false, false);
                 SetSelectedShopIndexAndUpdateScrollPosition(_shopObjects.Count - 1, true);
+                UpdatePackDescriptionInfo(_shopObjects.Count - 1);
             }
             else if (newIndex >= _shopObjects.Count)
             {
                 SetSelectedShopIndexAndUpdateScrollPosition(-1, false, false);
                 SetSelectedShopIndexAndUpdateScrollPosition(0, true);
+                UpdatePackDescriptionInfo(0);
             }
             else
             {
                 SetSelectedShopIndexAndUpdateScrollPosition(newIndex, true);
+                UpdatePackDescriptionInfo(newIndex);
             }
+        }
+        
+        private void UpdatePackDescriptionInfo( int shopIndex )
+        {
+            _infoPackAmount.text        = _amount[shopIndex].ToString();
+            _infoLongDescription.text   = _longDescriptions[shopIndex];
         }
 
         private bool SetSelectedShopIndexAndUpdateScrollPosition(
