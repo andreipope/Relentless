@@ -672,7 +672,9 @@ namespace Loom.ZombieBattleground
 
         private void Levitate(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
         {
-            WorkingCard card = _cardsController.LowGooCostOfCardInHand(owner, null, skill.Value);
+            int value = -skill.Value;
+
+            WorkingCard card = _cardsController.LowGooCostOfCardInHand(owner, null, value);
 
             if (owner.IsLocalPlayer)
             {
@@ -701,7 +703,7 @@ namespace Loom.ZombieBattleground
                         ActionEffectType = Enumerators.ActionEffectType.LowGooCost,
                         Target = card,
                         HasValue = true,
-                        Value = skill.Value
+                        Value = value
                     }
                 }
             });
