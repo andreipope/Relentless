@@ -195,7 +195,7 @@ namespace Loom.ZombieBattleground
             Player player = _gameplayManager.CurrentPlayer;
             List<WorkingCard> randomCards = new List<WorkingCard>();
             for (int i = 0; i < mulliganCards.Count; i++) {
-                randomCards.Add(player.CardsInDeck[0]);
+                randomCards.Add(player.CardsInDeck[i]);
             }
             player.CardsPreparingToHand = player.CardsPreparingToHand.Except(mulliganCards).ToList();
             player.CardsPreparingToHand.AddRange(randomCards);
