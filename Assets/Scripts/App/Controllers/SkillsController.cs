@@ -662,12 +662,15 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            if (TargetEffects.Count > 0)
             {
-                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
-                Caller = boardSkill,
-                TargetEffects = TargetEffects
-            });
+                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                    Caller = boardSkill,
+                    TargetEffects = TargetEffects
+                });
+            }
         }
 
         private void Levitate(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
@@ -994,7 +997,7 @@ namespace Loom.ZombieBattleground
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = opponentUnitView,
                         HasValue = true,
-                        Value = -skill.Value
+                        Value = -unitAtk
                     });
 
                     opponentUnits.Remove(opponentUnitView);
@@ -1035,7 +1038,7 @@ namespace Loom.ZombieBattleground
                     _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
                     target);
-                    _battleController.AttackUnitBySkill(owner, boardSkill, target.Model, 0);
+                    _battleController.AttackUnitBySkill(owner, boardSkill, target.Model, 0, unitAtk);
                 }, true);
             }, 3.5f);
         }
