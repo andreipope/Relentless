@@ -206,64 +206,79 @@ namespace Loom.ZombieBattleground
             {
                 if (skill.FightTargetingArrow.SelectedPlayer != null)
                 {
-                    Player targetPlayer = skill.FightTargetingArrow.SelectedPlayer;
-
-                    string soundFile = GetSoundBySkills(skill);
-                    if (!string.IsNullOrEmpty(soundFile))
+                    if (CheckSkillByType(skill))
                     {
-                        _soundManager.PlaySound(
-                            Enumerators.SoundType.OVERLORD_ABILITIES,
-                            soundFile,
-                            Constants.OverlordAbilitySoundVolume,
-                            false);
-                    }
+                        Player targetPlayer = skill.FightTargetingArrow.SelectedPlayer;
 
-                    skill.UseSkill(targetPlayer);
-                    CreateSkillVfx(
-                        GetVfxPrefabBySkill(skill),
-                        skill.SelfObject.transform.position,
-                        targetPlayer,
-                        (x) =>
+                        string soundFile = GetSoundBySkills(skill);
+                        if (!string.IsNullOrEmpty(soundFile))
                         {
-                            DoActionByType(skill, targetPlayer, completeCallback);
-                        }, _isDirection);
+                            _soundManager.PlaySound(
+                                Enumerators.SoundType.OVERLORD_ABILITIES,
+                                soundFile,
+                                Constants.OverlordAbilitySoundVolume,
+                                false);
+                        }
 
-                    if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+
+                        skill.UseSkill(targetPlayer);
+                        CreateSkillVfx(
+                            GetVfxPrefabBySkill(skill),
+                            skill.SelfObject.transform.position,
+                            targetPlayer,
+                            (x) =>
+                            {
+                                DoActionByType(skill, targetPlayer, completeCallback);
+                            }, _isDirection);
+
+                        if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                        {
+                            PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetPlayer);
+                            _gameplayManager.PlayerMoves.AddPlayerMove(
+                                new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
+                        }
+                    }
+                    else
                     {
-                        PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetPlayer);
-                        _gameplayManager.PlayerMoves.AddPlayerMove(
-                            new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
+                        completeCallback?.Invoke();
                     }
                 }
                 else if (skill.FightTargetingArrow.SelectedCard != null)
                 {
-                    BoardUnitView targetUnitView = skill.FightTargetingArrow.SelectedCard;
-
-                    string soundFile = GetSoundBySkills(skill);
-                    if (!string.IsNullOrEmpty(soundFile))
+                    if (CheckSkillByType(skill))
                     {
-                        _soundManager.PlaySound(
-                            Enumerators.SoundType.OVERLORD_ABILITIES,
-                            soundFile,
-                            Constants.OverlordAbilitySoundVolume,
-                            false);
-                    }
+                        BoardUnitView targetUnitView = skill.FightTargetingArrow.SelectedCard;
 
-                    skill.UseSkill(targetUnitView.Model);
-                    CreateSkillVfx(
-                        GetVfxPrefabBySkill(skill),
-                        skill.SelfObject.transform.position,
-                        targetUnitView,
-                        (x) =>
+                        string soundFile = GetSoundBySkills(skill);
+                        if (!string.IsNullOrEmpty(soundFile))
                         {
-                            DoActionByType(skill, targetUnitView.Model, completeCallback);
-                        }, _isDirection);
+                            _soundManager.PlaySound(
+                                Enumerators.SoundType.OVERLORD_ABILITIES,
+                                soundFile,
+                                Constants.OverlordAbilitySoundVolume,
+                                false);
+                        }
 
-                    if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                        skill.UseSkill(targetUnitView.Model);
+                        CreateSkillVfx(
+                            GetVfxPrefabBySkill(skill),
+                            skill.SelfObject.transform.position,
+                            targetUnitView,
+                            (x) =>
+                            {
+                                DoActionByType(skill, targetUnitView.Model, completeCallback);
+                            }, _isDirection);
+
+                        if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                        {
+                            PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetUnitView.Model);
+                            _gameplayManager.PlayerMoves.AddPlayerMove(
+                                new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
+                        }
+                    }
+                    else
                     {
-                        PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, targetUnitView.Model);
-                        _gameplayManager.PlayerMoves.AddPlayerMove(
-                            new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
+                        completeCallback?.Invoke();
                     }
                 }
                 else
@@ -275,27 +290,34 @@ namespace Loom.ZombieBattleground
             }
             else if (target != null)
             {
-                string soundFile = GetSoundBySkills(skill);
-                if (!string.IsNullOrEmpty(soundFile))
+                if (CheckSkillByType(skill))
                 {
-                    _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
-                }
-
-                skill.UseSkill(target);
-                CreateSkillVfx(
-                    GetVfxPrefabBySkill(skill),
-                    skill.SelfObject.transform.position,
-                    target,
-                    (x) =>
+                    string soundFile = GetSoundBySkills(skill);
+                    if (!string.IsNullOrEmpty(soundFile))
                     {
-                        DoActionByType(skill, target, completeCallback);
-                    }, _isDirection);
+                        _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
+                    }
 
-                if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                    skill.UseSkill(target);
+                    CreateSkillVfx(
+                        GetVfxPrefabBySkill(skill),
+                        skill.SelfObject.transform.position,
+                        target,
+                        (x) =>
+                        {
+                            DoActionByType(skill, target, completeCallback);
+                        }, _isDirection);
+
+                    if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
+                    {
+                        PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, target);
+                        _gameplayManager.PlayerMoves.AddPlayerMove(
+                            new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
+                    }
+                }
+                else
                 {
-                    PlayOverlordSkill playOverlordSkill = new PlayOverlordSkill(skill, target);
-                    _gameplayManager.PlayerMoves.AddPlayerMove(
-                        new PlayerMove(Enumerators.PlayerActionType.PlayOverlordSkill, playOverlordSkill));
+                    completeCallback?.Invoke();
                 }
             }
             else
@@ -445,6 +467,25 @@ namespace Loom.ZombieBattleground
             }
 
             return soundFileName;
+        }
+
+        private bool CheckSkillByType(BoardSkill skill)
+        {
+            bool state = true;
+
+            switch (skill.Skill.OverlordSkill)
+            {
+                case Enumerators.OverlordSkill.RESSURECT:
+                    state = skill.OwnerPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
+                               && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                               && x.InstanceCard.Cost == skill.Skill.Value
+                               && !skill.OwnerPlayer.BoardCards.Exists(c => c.Model.Card == x)).Count > 0;
+                    break;
+                default:
+                    break;
+            }
+
+            return state;
         }
 
         private void DoActionByType(BoardSkill skill, BoardObject target, Action completeCallback)
@@ -1128,7 +1169,8 @@ namespace Loom.ZombieBattleground
 
             List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
                 && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
-                && x.InstanceCard.Cost == skill.Value);
+                && x.InstanceCard.Cost == skill.Value
+                && !owner.BoardCards.Exists(c => c.Model.Card == x));
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
@@ -1151,6 +1193,7 @@ namespace Loom.ZombieBattleground
                     });
                 });
                 unit.ChangeModelVisibility(false);
+                owner.RemoveCardFromGraveyard(card);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
