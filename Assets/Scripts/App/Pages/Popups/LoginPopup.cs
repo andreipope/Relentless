@@ -191,9 +191,8 @@ namespace Loom.ZombieBattleground
                 UpdateVersionMismatchText(e);
             }
             catch (Exception e) {
-                SetUIState(LoginState.InitiateLogin);
                 Debug.Log(e.ToString());
-                _uiManager.GetPopup<WarningPopup>().Show("Login could not be completed. Please ensure your details are correct and try again.");
+                SetUIState(LoginState.ValidationFailed);
             }
 
             _loginButton.enabled = true;
@@ -216,6 +215,7 @@ namespace Loom.ZombieBattleground
 
         private void SetUIState(LoginState state)
         {
+            Debug.Log(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
             _loginGroup.gameObject.SetActive(false);
@@ -232,8 +232,16 @@ namespace Loom.ZombieBattleground
                     _waitingGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.ValidationFailed:
-                    SetUIState(LoginState.InitiateLogin);
-                    _uiManager.GetPopup<WarningPopup>().Show("The process could not be completed. Please try again.");
+                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                    popup.Show("The process could not be completed. Please try again.");
+                    if (Constants.AutomaticLoginEnabled)
+                    {
+                        popup.ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
+                    } 
+                    else 
+                    {
+                        SetUIState(LoginState.InitiateLogin);
+                    }
                     break;
                 case LoginState.RemoteVersionMismatch:
                     _backgroundGroup.gameObject.SetActive(true);
@@ -242,6 +250,12 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_state), _state, null);
             }
+        }
+
+        private void WarningPopupClosedOnAutomatedLogin()
+        {
+            _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupClosedOnAutomatedLogin;
+            LoginProcess();
         }
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)
