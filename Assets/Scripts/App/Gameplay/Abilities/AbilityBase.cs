@@ -168,6 +168,8 @@ namespace Loom.ZombieBattleground
             TargettingArrow.PlayerUnselected += PlayerUnselectedHandler;
             TargettingArrow.InputEnded += InputEndedHandler;
             TargettingArrow.InputCanceled += InputCanceledHandler;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
         }
 
         public void DeactivateSelectTarget()
@@ -184,10 +186,14 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         public virtual void Activate()
         {
+            GameplayManager.GameEnded += GameEndedHandler;
+
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
 
@@ -226,6 +232,8 @@ namespace Loom.ZombieBattleground
 
         public virtual void Dispose()
         {
+            GameplayManager.GameEnded -= GameEndedHandler;
+
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
 
@@ -251,6 +259,11 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);
+        }
+
+        private void GameEndedHandler(Enumerators.EndGameType endGameType)
+        {
+            Deactivate();
         }
 
         public virtual void SelectedTargetAction(bool callInputEndBefore = false)

@@ -9,7 +9,7 @@ public class AnalyticsTimer
 	public void StartTimer()
 	{
 		_startTime = DateTime.Now;
-	    Debug.LogError("Start Time = " + _startTime);
+	    //Debug.LogError("Start Time = " + _startTime);
 	}
 
 	public void FinishTimer()

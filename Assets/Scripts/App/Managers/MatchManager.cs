@@ -201,7 +201,6 @@ namespace Loom.ZombieBattleground
         public void OnPvPManagerGameStartedActionReceived()
         {
             FindOpponentTime.FinishTimer();
-            Debug.LogError(FindOpponentTime.GetTimeDiffrence());
             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
             matchMakingPopup.Hide();

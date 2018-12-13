@@ -48,14 +48,16 @@ namespace Loom.ZombieBattleground
                    if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
                    {
                         _targets.Add(PlayerCallerOfAbility);
-                        InvokeActionTriggered(_targets);
+
                         _vfxAnimationEndedCallback = HealOverlord;
+                        InvokeActionTriggered(_targets);
                    }
                    else
                    {
-                        HealRandomCountOfAllies();
-                        InvokeActionTriggered(_targets);
+                        SelectRandomCountOfAllies();
+
                         _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                        InvokeActionTriggered(_targets);
                     }
                 }
              }
@@ -67,11 +69,10 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-				AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
                 _targets.Add(TargetUnit);
-                InvokeActionTriggered(_targets);
+
                 _vfxAnimationEndedCallback = HealSelectedTarget;
+                InvokeActionTriggered(_targets);
             }
         }
 
@@ -137,11 +138,9 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             _vfxAnimationEndedCallback?.Invoke();
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
-        private void HealRandomCountOfAllies()
+        private void SelectRandomCountOfAllies()
         {
             if (PredefinedTargets != null)
             {
@@ -149,13 +148,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
-                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
-
-                    if (AbilityUnitOwner != null && _targets.Contains(AbilityUnitOwner))
-                        _targets.Remove(AbilityUnitOwner);
+                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner).Select(x => x.Model));
                 }
 
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
@@ -171,7 +166,7 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            int value = 0;
+            int value = Value;
             foreach (BoardObject boardObject in _targets)
             {
                 switch (boardObject)
@@ -183,6 +178,9 @@ namespace Loom.ZombieBattleground
                         value = player.MaxCurrentHp - player.Defense;
                         break;
                 }
+
+                if (value > Value)
+                    value = Value;
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {

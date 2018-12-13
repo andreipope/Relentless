@@ -217,8 +217,7 @@ namespace Loom.ZombieBattleground.Common
         }
 
         public enum AttackRestriction
-        {
-            NONE,
+        { 
             ANY,
             ONLY_DIFFERENT
         }

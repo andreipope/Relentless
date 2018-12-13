@@ -127,18 +127,11 @@ namespace Loom.ZombieBattleground
                     action.ActionType + " : " + action.Id + " force block disable and try run </color> from >>>> ");
                 }
 
-                action.BlockQueue = false;
+                action.BlockedInQueue = false;
 
-                if (_actionsToDo.Count > 0)
+                if (ActionInProgress == null)
                 {
-                    if (_actionsToDo.GetRange(0, 1)[0] == action && ActionInProgress == null)
-                    {
-                        TryCallNewActionFromQueue(true);
-                    }
-                    else if(ActionInProgress == null)
-                    {
-                        TryCallNewActionFromQueue();
-                    }
+                    TryCallNewActionFromQueue();
                 }
             }
         }
@@ -153,12 +146,12 @@ namespace Loom.ZombieBattleground
 
             if (_actionsToDo.Contains(previousAction))
             {
-                if(ActionInProgress == previousAction)
+                _actionsToDo.Remove(previousAction);
+
+                if (ActionInProgress == previousAction || ActionInProgress == null)
                 {
                     TryCallNewActionFromQueue();
                 }
-
-                _actionsToDo.Remove(previousAction);
             }
             else
             {
@@ -166,26 +159,32 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TryCallNewActionFromQueue(bool ignoreBlock = false)
+        private void TryCallNewActionFromQueue()
         {
             if (_actionsToDo.Count > 0)
             {
-                ActionInProgress = _actionsToDo.GetRange(0, 1)[0];
+                GameplayQueueAction<object> actionToStart = _actionsToDo[0];
 
-                if (ActionInProgress.BlockQueue && !ignoreBlock)
+                if (actionToStart.BlockedInQueue)
                 {
-                    ActionInProgress = null;
+                    if (_isDebugMode)
+                    {
+                        UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=brown> action blocked " +
+                        actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
+                    }
+
                     return;
                 }
 
-                _actionsToDo.Remove(ActionInProgress);
+                _actionsToDo.Remove(actionToStart);
 
                 if (_isDebugMode)
                 {
                     UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=white> Dooooooo action " +
-                    ActionInProgress.ActionType + " : " + ActionInProgress.Id + ";  </color> from >>>> ");
+                    actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
                 }
 
+                ActionInProgress = actionToStart;
                 ActionInProgress.DoAction();
             }
             else
@@ -209,7 +208,7 @@ namespace Loom.ZombieBattleground
 
         public long Id { get; }
 
-        public bool BlockQueue { get; set; }
+        public bool BlockedInQueue { get; set; }
 
         public GameplayQueueAction(Action<T, Action> action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
         {
@@ -219,7 +218,7 @@ namespace Loom.ZombieBattleground
             Parameter = parameter;
             Id = id;
             ActionType = actionType;
-            BlockQueue = blockQueue;
+            BlockedInQueue = blockQueue;
         }
 
         public event Action<GameplayQueueAction<T>> OnActionDoneEvent;

@@ -62,8 +62,10 @@ namespace Loom.ZombieBattleground
             _unitDeathAnimations.Clear();
         }
 
-        public void PlayAttackVfx(Enumerators.CardType type, Vector3 target, int damage)
+        public void PlayAttackVfx(BoardUnitModel model, Vector3 target)
         {
+            Enumerators.CardType type = model.Card.LibraryCard.CardType;
+            int damage = model.CurrentDamage;
             GameObject effect;
             GameObject vfxPrefab;
 
@@ -72,94 +74,106 @@ namespace Loom.ZombieBattleground
                 target = Utilites.CastVfxPosition(target);
             }
 
-            switch (type)
+            if (model.GameMechanicDescriptionsOnUnit.Exists(x => x == Enumerators.GameMechanicDescriptionType.Chainsaw))
             {
-                case Enumerators.CardType.FERAL:
-                    {
-                        vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
-                        effect = Object.Instantiate(vfxPrefab);
-                        effect.transform.position = target;
-                        _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume,
-                            false, false, true);
+                vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ChainSawAttack");
+                effect = Object.Instantiate(vfxPrefab);
+                effect.transform.position = target;
+                _soundManager.PlaySound(Enumerators.SoundType.SPELLS, "ChainSaw_Impact", Constants.CreatureAttackSoundVolume, isLoop: false);
 
-                        _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                        if (damage > 3 && damage < 7)
+                _particlesController.RegisterParticleSystem(effect, true, 5f);
+            }
+            else
+            {
+                switch (type)
+                {
+                    case Enumerators.CardType.FERAL:
                         {
-                            _timerManager.AddTimer(
-                                a =>
-                                {
-                                    effect = Object.Instantiate(vfxPrefab);
-                                    effect.transform.position = target;
-                                    effect.transform.localScale = new Vector3(-1, 1, 1);
-                                    _particlesController.RegisterParticleSystem(effect, true, 5f);
-                                },
-                                null,
-                                0.5f);
-                        }
+                            vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FeralAttackVFX");
+                            effect = Object.Instantiate(vfxPrefab);
+                            effect.transform.position = target;
+                            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ATTACK, Constants.CreatureAttackSoundVolume,
+                                false, false, true);
 
-                        if (damage > 6)
+                            _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+                            if (damage > 3 && damage < 7)
+                            {
+                                _timerManager.AddTimer(
+                                    a =>
+                                    {
+                                        effect = Object.Instantiate(vfxPrefab);
+                                        effect.transform.position = target;
+                                        effect.transform.localScale = new Vector3(-1, 1, 1);
+                                        _particlesController.RegisterParticleSystem(effect, true, 5f);
+                                    },
+                                    null,
+                                    0.5f);
+                            }
+
+                            if (damage > 6)
+                            {
+                                _timerManager.AddTimer(
+                                    a =>
+                                    {
+                                        effect = Object.Instantiate(vfxPrefab);
+                                        effect.transform.position = target - Vector3.right;
+                                        effect.transform.eulerAngles = Vector3.forward * 90;
+
+                                        _particlesController.RegisterParticleSystem(effect, true, 5f);
+                                    });
+                            }
+
+                            break;
+                        }
+                    case Enumerators.CardType.HEAVY:
                         {
-                            _timerManager.AddTimer(
-                                a =>
-                                {
-                                    effect = Object.Instantiate(vfxPrefab);
-                                    effect.transform.position = target - Vector3.right;
-                                    effect.transform.eulerAngles = Vector3.forward * 90;
+                            Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
+                            string prefabName = "Prefabs/VFX/HeavyAttackVFX";
+                            if (damage > 4)
+                            {
+                                prefabName = "Prefabs/VFX/HeavyAttack2VFX";
+                                soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
+                            }
 
-                                    _particlesController.RegisterParticleSystem(effect, true, 5f);
-                                });
+                            vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
+                            effect = Object.Instantiate(vfxPrefab);
+                            effect.transform.position = target;
+
+                            _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+                            _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
+                            break;
                         }
-
-                        break;
-                    }
-                case Enumerators.CardType.HEAVY:
-                    {
-                        Enumerators.SoundType soundType = Enumerators.SoundType.HEAVY_ATTACK_1;
-                        string prefabName = "Prefabs/VFX/HeavyAttackVFX";
-                        if (damage > 4)
+                    default:
                         {
-                            prefabName = "Prefabs/VFX/HeavyAttack2VFX";
-                            soundType = Enumerators.SoundType.HEAVY_ATTACK_2;
+                            vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
+                            effect = Object.Instantiate(vfxPrefab);
+                            effect.transform.position = target;
+
+                            _particlesController.RegisterParticleSystem(effect, true, 5f);
+
+                            _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK, Constants.CreatureAttackSoundVolume,
+                                false, false, true);
+
+                            if (damage > 4)
+                            {
+                                _timerManager.AddTimer(
+                                    a =>
+                                    {
+                                        effect = Object.Instantiate(vfxPrefab);
+                                        effect.transform.position = target;
+
+                                        effect.transform.localScale = new Vector3(-1, 1, 1);
+                                        _particlesController.RegisterParticleSystem(effect, true, 5f);
+                                    },
+                                    null,
+                                    0.5f);
+                            }
+
+                            break;
                         }
-
-                        vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>(prefabName);
-                        effect = Object.Instantiate(vfxPrefab);
-                        effect.transform.position = target;
-
-                        _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                        _soundManager.PlaySound(soundType, Constants.CreatureAttackSoundVolume, false, false, true);
-                        break;
-                    }
-                default:
-                    {
-                        vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WalkerAttackVFX");
-                        effect = Object.Instantiate(vfxPrefab);
-                        effect.transform.position = target;
-
-                        _particlesController.RegisterParticleSystem(effect, true, 5f);
-
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ATTACK, Constants.CreatureAttackSoundVolume,
-                            false, false, true);
-
-                        if (damage > 4)
-                        {
-                            _timerManager.AddTimer(
-                                a =>
-                                {
-                                    effect = Object.Instantiate(vfxPrefab);
-                                    effect.transform.position = target;
-
-                                    effect.transform.localScale = new Vector3(-1, 1, 1);
-                                    _particlesController.RegisterParticleSystem(effect, true, 5f);
-                                },
-                                null,
-                                0.5f);
-                        }
-
-                        break;
-                    }
+                }
             }
         }
 

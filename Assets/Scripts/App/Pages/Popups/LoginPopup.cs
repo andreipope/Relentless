@@ -103,6 +103,10 @@ namespace Loom.ZombieBattleground
             _state = LoginState.InitiateLogin;
             SetUIState(LoginState.InitiateLogin);
             Self.SetActive(true);
+
+            if (Constants.AutomaticLoginEnabled) {
+                LoginProcess();
+            }
         }
 
         public void Show(object data)
@@ -129,8 +133,8 @@ namespace Loom.ZombieBattleground
             {
                 _loginButton.enabled = false;
                 LoginProcess();
-            } 
-            else 
+            }
+            else
             {
                 _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
             }
@@ -141,13 +145,30 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                LoginData loginData =  await _backendFacade.InitiateLogin(_emailField.text, _passwordField.text);
-                Debug.Log(loginData.accessToken);
+                byte[] privateKey;
+                byte[] publicKey;
+                LoginData loginData;
+                string userId;
 
-                UserInfo userInfo = await _backendFacade.GetUserInfo(loginData.accessToken);
+                if (Constants.AutomaticLoginEnabled)
+                {
+                    GenerateKeysAndUserFromGUID(Guid.NewGuid().ToString(), out byte[] privateKeyFromGuID, out byte[] publicKeyFromGuID, out string userIDFromGuID);
+                    privateKey = privateKeyFromGuID;
+                    publicKey = publicKeyFromGuID;
+                    userId = userIDFromGuID;
+                }
+                else 
+                {
+                    loginData = await _backendFacade.InitiateLogin(_emailField.text, _passwordField.text);
+                    Debug.Log(loginData.accessToken);
+                    UserInfo userInfo = await _backendFacade.GetUserInfo(loginData.accessToken);
 
-                string userId = "ZombieSlayer_" + userInfo.UserId;
-                GenerateKeysAndUserFromBetaKey(userId, out byte[] privateKey, out byte[] publicKey);
+                    userId = "ZombieSlayer_" + userInfo.UserId;
+                    GenerateKeysAndUserFromUserID(userId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
+
+                    privateKey = privateKeyFromUserId;
+                    publicKey = publicKeyFromUserID;
+                }
 
                 UserDataModel userDataModel = new UserDataModel(userId, privateKey)
                 {
@@ -229,7 +250,7 @@ namespace Loom.ZombieBattleground
                 $"This version ({exception.LocalVersion}) is out of date.\n\nPlease download version {exception.RemoteVersion}.";
         }
 
-        private void GenerateKeysAndUserFromBetaKey(
+        private void GenerateKeysAndUserFromUserID(
             string userId, out byte[] privateKey, out byte[] publicKey)
         {
             userId = "ZombieSlayer_" + userId;
@@ -241,6 +262,25 @@ namespace Loom.ZombieBattleground
                     new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId)));
 
             byte[] seedByte = CryptoUtils.HexStringToBytes(seedString);
+
+            privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
+
+            publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+        }
+
+        private void GenerateKeysAndUserFromGUID(
+            string guID, out byte[] privateKey, out byte[] publicKey, out string userId)
+        {
+            string guidKey =
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID))) +
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID)));
+
+            byte[] seedByte = CryptoUtils.HexStringToBytes(guidKey);
+
+            BigInteger userIdNumber = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
+            userId = "ZombieSlayer_" + userIdNumber;
 
             privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
 

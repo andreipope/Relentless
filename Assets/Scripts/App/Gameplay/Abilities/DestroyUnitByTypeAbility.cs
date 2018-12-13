@@ -42,8 +42,6 @@ namespace Loom.ZombieBattleground
                         }
                     }
             });
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
@@ -52,8 +50,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
                 InvokeActionTriggered();
             }
         }
