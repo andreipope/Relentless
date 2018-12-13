@@ -42,7 +42,7 @@ public class TutorialTests
 
     private IEnumerator PlayTutorial_Part1 ()
     {
-        if (_testHelper.IsGameEnded ())
+        if (_testHelper.IsTestFinished)
         {
             yield break;
         }
@@ -151,7 +151,7 @@ public class TutorialTests
 
     private IEnumerator PlayTutorial_Part2 ()
     {
-        if (_testHelper.IsGameEnded ())
+        if (_testHelper.IsTestFinished)
         {
             yield break;
         }

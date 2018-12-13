@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 public class SanityChecks
@@ -73,19 +74,16 @@ public class SanityChecks
 
     private IEnumerator PlayTutorial_Part1 ()
     {
-        if (_testHelper.IsGameEnded ())
+        if (_testHelper.IsTestFinished)
         {
             yield break;
         }
 
         yield return _testHelper.ClickGenericButton ("Button_Next", count: 3);
-
         yield return _testHelper.ClickGenericButton ("Button_Play");
-
         yield return _testHelper.ClickGenericButton ("Button_Next", count: 4);
 
         yield return _testHelper.WaitUntilWeHaveACardAtHand ();
-
         yield return _testHelper.PlayCardFromHandToBoard (new[] { 0 });
 
         yield return _testHelper.ClickGenericButton ("Button_Next");
@@ -182,7 +180,7 @@ public class SanityChecks
 
     private IEnumerator PlayTutorial_Part2 ()
     {
-        if (_testHelper.IsGameEnded ())
+        if (_testHelper.IsTestFinished)
         {
             yield break;
         }
@@ -264,9 +262,13 @@ public class SanityChecks
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
         yield return _testHelper.ClickGenericButton ("Button_Tutorial");
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+
         yield return PlayTutorial_Part1 ();
+
         yield return _testHelper.ClickGenericButton ("Button_Continue");
+
         yield return PlayTutorial_Part2 ();
+
         yield return _testHelper.ClickGenericButton ("Button_Continue");
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 

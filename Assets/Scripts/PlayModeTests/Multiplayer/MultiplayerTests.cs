@@ -60,9 +60,7 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
-        yield return _testHelper.LetsThink ();
-        yield return _testHelper.LetsThink ();
-        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink (10);
 
         yield return _testHelper.ClickGenericButton ("Button_Cancel");
 
