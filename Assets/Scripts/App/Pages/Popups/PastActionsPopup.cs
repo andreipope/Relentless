@@ -165,6 +165,9 @@ namespace Loom.ZombieBattleground
                 case HandBoardCard card:
                     _leftBlockCardUnitElement.Init(card.CardView.WorkingCard);
                     break;
+                case BoardUnitView unit:
+                    _leftBlockCardUnitElement.Init(unit.Model.Card);
+                    break;
                 case null:
                     break;
                 default:
@@ -221,6 +224,10 @@ namespace Loom.ZombieBattleground
                             }
 
                             actionElement.Init(card.CardView.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            break;
+                        case BoardUnitView unit:
+                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                            actionElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);

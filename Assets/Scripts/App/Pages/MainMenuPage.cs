@@ -83,10 +83,11 @@ namespace Loom.ZombieBattleground
                 _logoAnimator.SetBool("LogoShow", true);
             }
 
-            if (!_dataManager.CachedUserLocalData.AgreedTerms)
-            {
-                _uiManager.DrawPopup<TermsPopup>();
-            }
+            //Hide for current beta release
+            //if (!_dataManager.CachedUserLocalData.AgreedTerms)
+            //{
+            //    _uiManager.DrawPopup<TermsPopup>();
+            //}
         }
 
         public void Hide()

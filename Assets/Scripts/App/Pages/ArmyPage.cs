@@ -278,6 +278,12 @@ namespace Loom.ZombieBattleground
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
             List<Card> cards = set.Cards;
+            cards.Sort(
+                (Card cardA, Card cardB) =>
+                {
+                    return cardA.Cost - cardB.Cost;
+                }
+            );
 
             int startIndex = page * CardPositions.Count;
 

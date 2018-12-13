@@ -247,7 +247,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerSolverDragStartedHandler()
         {
-            if (Skill.SkillTargetTypes.Count > 0)
+            if (Skill.CanSelectTarget)
             {
                 if (OwnerPlayer.IsLocalPlayer)
                 {
@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerEventSolverClickedHandler()
         {
-            if (Skill.SkillTargetTypes.Count > 0)
+            if (Skill.CanSelectTarget)
             {
                 DrawAbilityTooltip();
             }
