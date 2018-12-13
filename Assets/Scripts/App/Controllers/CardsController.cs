@@ -137,7 +137,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
-            if (Constants.MulliganEnabled)
+            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
                 {
