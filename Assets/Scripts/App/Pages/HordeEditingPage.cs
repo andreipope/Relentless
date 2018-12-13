@@ -982,7 +982,7 @@ namespace Loom.ZombieBattleground
             int foundItemIndex = targetRowCards.FindIndex(c => c.LibraryCard.MouldId == targetLibraryCard.MouldId);
             setPageIndexAction(foundItemIndex / CardsPerPage);
 
-            BoardCard targetCard = targetRowCards.Find(card => card.LibraryCard.MouldId == targetLibraryCard.MouldId);
+            BoardCard targetCard = targetRowCards.First(card => card.LibraryCard.MouldId == targetLibraryCard.MouldId);
             Vector3 animatedCardDestination = targetCard.Transform.position;
 
             if (!targetCardWasAlreadyPresent)
