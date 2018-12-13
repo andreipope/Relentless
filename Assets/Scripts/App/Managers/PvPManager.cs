@@ -98,15 +98,7 @@ namespace Loom.ZombieBattleground
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
-                    try
-                    {
-                        await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError("Error sending Keep Alive status " + e);
-                    }
-
+                    await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
                 }
             }
 
