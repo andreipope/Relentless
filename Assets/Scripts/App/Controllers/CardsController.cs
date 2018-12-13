@@ -796,6 +796,9 @@ namespace Loom.ZombieBattleground
                             _timerManager.AddTimer(
                                 x =>
                                 {
+                                    if (_gameplayManager.IsGameEnded)
+                                        return;
+
                                     completePlayCardCallback?.Invoke(card, target);
                                 },
                                 null,
