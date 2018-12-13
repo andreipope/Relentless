@@ -3636,7 +3636,7 @@ public class TestHelper
     /// </summary>
     public void AssertOverlordName ()
     {
-        if (_recordedExpectedValue.Length <= 0 || _recordedActualValue.Length <= 0)
+        if (string.IsNullOrEmpty (_recordedExpectedValue) || string.IsNullOrEmpty (_recordedActualValue))
         {
             Debug.LogWarning ("One of the overlord names was null, so didn't check.");
 

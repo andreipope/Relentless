@@ -96,42 +96,31 @@ public class SingleplayerTests
         _testHelper.SetTestName ("Solo - Gameplay with Razu");
 
         #region Solo Gameplay
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.MainMenuTransition ("Button_Play");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertIfWentDirectlyToTutorial (
-                _testHelper.GoBackToMainAndPressPlay ());
+        yield return _testHelper.ClickGenericButton ("Button_Play");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
+        yield return _testHelper.AssertIfWentDirectlyToTutorial (
+            _testHelper.GoBackToMainAndPressPlay ());
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return _testHelper.ClickGenericButton ("Button_SoloMode");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.SelectAHordeByName ("Razu");
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
-        if (!_testHelper.IsTestFinished)
-            _testHelper.RecordExpectedOverlordName (_testHelper.SelectedHordeIndex);
+        yield return _testHelper.SelectAHordeByName ("Razu");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.MainMenuTransition ("Button_Battle");
+        _testHelper.RecordExpectedOverlordName (_testHelper.SelectedHordeIndex);
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("GameplayPage");
+        yield return _testHelper.ClickGenericButton ("Button_Battle");
 
-        if (!_testHelper.IsTestFinished)
-            yield return SoloGameplay (true);
+        yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.ClickGenericButton ("Button_Continue");
+        yield return SoloGameplay (true);
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return _testHelper.ClickGenericButton ("Button_Continue");
+
+        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
         #endregion
 
