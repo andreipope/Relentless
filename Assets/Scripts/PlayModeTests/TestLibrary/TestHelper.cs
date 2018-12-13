@@ -151,7 +151,7 @@ public class TestHelper
 
         if (_hasLoginErrorOccured)
         {
-            FailWithMessage ("Couldn't login.");
+            FailWithMessage ("Couldn't login or simply having connectivity issues.");
         }
         else if (!_initialized)
         {
@@ -3022,6 +3022,34 @@ public class TestHelper
         get { return _currentTestState != TestState.Running; }
     }
 
+    private IEnumerator HandleConnectivityIssues ()
+    {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
+        if (GetCurrentPageName (3) == "ConnectionPopup")
+        {
+            WaitStart (10);
+
+            yield return ClickGenericButton ("Button_Reconnect");
+
+            yield return new WaitUntil (() => (GetCurrentPageName (3) != "ConnectionPopup") || WaitTimeIsUp ());
+
+            if (GetCurrentPageName (3) == "ConnectionPopup")
+            {
+                _hasLoginErrorOccured = true;
+
+                FailWithMessage ("Connectivity issue came up.");
+
+                yield return null;
+            }
+        }
+
+        yield return null;
+    }
+
     #region Horde Creation / Editing
 
     /// <summary>
@@ -3035,15 +3063,12 @@ public class TestHelper
         }
 
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
-
         yield return AssertCurrentPageName ("OverlordSelectionPage");
 
         yield return PickOverlord ("Valash", false);
-
         yield return PickOverlordAbility (0);
 
         yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
-
         yield return AssertCurrentPageName ("HordeEditingPage");
 
         SetupArmyCards ();
@@ -3051,24 +3076,17 @@ public class TestHelper
         yield return SetDeckTitle ("Valash");
 
         yield return AddCardToHorde ("Life", "Azuraz", 4);
-
         yield return AddCardToHorde ("Life", "Bloomer", 4);
-
         yield return AddCardToHorde ("Life", "Zap", 4);
-
         yield return AddCardToHorde ("Life", "Amber", 4);
-
         yield return AddCardToHorde ("Life", "Bark", 4);
-
         yield return AddCardToHorde ("Life", "Puffer", 2);
-
         yield return AddCardToHorde ("Life", "Sapper", 2);
-
         yield return AddCardToHorde ("Life", "Keeper", 2);
-
         yield return AddCardToHorde ("Life", "Cactuz", 2);
-
         yield return AddCardToHorde ("Life", "EverlaZting", 2);
+
+        AssertCorrectNumberOfCards ();
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -3084,15 +3102,12 @@ public class TestHelper
         }
 
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
-
         yield return AssertCurrentPageName ("OverlordSelectionPage");
 
         yield return PickOverlord ("Kalile", false);
-
         yield return PickOverlordAbility (1);
 
         yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
-
         yield return AssertCurrentPageName ("HordeEditingPage");
 
         SetupArmyCards ();
@@ -3100,20 +3115,15 @@ public class TestHelper
         yield return SetDeckTitle ("Kalile");
 
         yield return AddCardToHorde ("Air", "Whizpar", 4);
-
         yield return AddCardToHorde ("Air", "Soothsayer", 4);
-
         yield return AddCardToHorde ("Air", "FumeZ", 4);
-
         yield return AddCardToHorde ("Air", "Breezee", 4);
-
         yield return AddCardToHorde ("Air", "Banshee", 4);
-
         yield return AddCardToHorde ("Air", "Zhocker", 4);
-
         yield return AddCardToHorde ("Air", "Whiffer", 4);
-
         yield return AddCardToHorde ("Air", "Bouncer", 2);
+
+        AssertCorrectNumberOfCards ();
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -3129,15 +3139,12 @@ public class TestHelper
         }
 
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
-
         yield return AssertCurrentPageName ("OverlordSelectionPage");
 
         yield return PickOverlord ("Razu", true);
-
         yield return PickOverlordAbility (1);
 
         yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
-
         yield return AssertCurrentPageName ("HordeEditingPage");
 
         SetupArmyCards ();
@@ -3145,22 +3152,16 @@ public class TestHelper
         yield return SetDeckTitle ("Razu");
 
         yield return AddCardToHorde ("Fire", "Pyromaz", 4);
-
         yield return AddCardToHorde ("Fire", "Quazi", 4);
-
         yield return AddCardToHorde ("Fire", "Ember", 4);
-
         yield return AddCardToHorde ("Fire", "Firewall", 4);
-
         yield return AddCardToHorde ("Fire", "BurZt", 4);
-
         yield return AddCardToHorde ("Fire", "Firecaller", 4);
-
         yield return AddCardToHorde ("Fire", "Burrrnn", 2);
-
         yield return AddCardToHorde ("Fire", "Werezomb", 2);
-
         yield return AddCardToHorde ("Fire", "Modo", 2);
+
+        AssertCorrectNumberOfCards ();
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -3189,6 +3190,7 @@ public class TestHelper
     /// <param name="goRight">If set to <c>true</c> goes right, until finds what you set.</param>
     public IEnumerator PickOverlord (string overlordName, bool goRight = true)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3226,6 +3228,7 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator PickOverlordAbility (int index)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3252,6 +3255,7 @@ public class TestHelper
     /// <param name="deckTitle">Deck title.</param>
     public IEnumerator SetDeckTitle (string deckTitle)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3279,6 +3283,7 @@ public class TestHelper
 
     private IEnumerator PickElement (string elementName)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3322,6 +3327,7 @@ public class TestHelper
     /// <param name="count">Count.</param>
     public IEnumerator AddCardToHorde (string elementName, string cardName, int count = 1)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3345,6 +3351,7 @@ public class TestHelper
 
     private IEnumerator AddCardToHorde2 (string cardName, int count = 1)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3387,6 +3394,21 @@ public class TestHelper
         yield return null;
     }
 
+    private bool CheckCorrectNumberOfCards (int correctNumber = 30)
+    {
+        TextMeshProUGUI cardsAmountText = GameObject.Find ("CardsAmountText")?.GetComponent<TextMeshProUGUI> ();
+
+        return (cardsAmountText != null && cardsAmountText.text == "30 / 30");
+    }
+
+    private void AssertCorrectNumberOfCards (int correctNumber = 30)
+    {
+        if (!CheckCorrectNumberOfCards (correctNumber))
+        {
+            FailWithMessage ($"Exactly {correctNumber} cards need to be added to the deck.");
+        }
+    }
+
     /// <summary>
     /// Gets the number of Hordes.
     /// </summary>
@@ -3410,6 +3432,7 @@ public class TestHelper
     /// <param name="hordeName">Horde name.</param>
     public IEnumerator SelectAHordeByName (string hordeName, bool failIfNotFound = true, string failureMessage = "Couldn't find Horde by that name")
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3448,6 +3471,7 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator SelectAHordeByIndex (int index)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3471,6 +3495,7 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator RemoveAHorde (int index)
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
@@ -3493,6 +3518,7 @@ public class TestHelper
     /// </summary>
     public IEnumerator RemoveAllHordesExceptDefault ()
     {
+        yield return HandleConnectivityIssues ();
         if (IsTestFinished)
         {
             yield break;
