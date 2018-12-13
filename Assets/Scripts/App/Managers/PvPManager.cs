@@ -210,7 +210,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CardInstance cardInstance in cardsInHand)
             {
-                _gameplayManager.OpponentPlayer.CardsInHand.Add(cardInstance.FromProtobuf(player));
+                player.CardsInHand.Add(cardInstance.FromProtobuf(player));
             }
         }
 
@@ -220,7 +220,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CardInstance cardInstance in cardsInDeck)
             {
-                _gameplayManager.CurrentPlayer.CardsInDeck.Add(cardInstance.FromProtobuf(player));
+                player.CardsInDeck.Add(cardInstance.FromProtobuf(player));
             }
         }
 
