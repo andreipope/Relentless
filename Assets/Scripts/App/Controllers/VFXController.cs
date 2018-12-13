@@ -439,6 +439,8 @@ namespace Loom.ZombieBattleground
         private bool _withEffect;
         private float _defaultDeathAnimationLength = 0.7f;
 
+        private int _effectSoundIdentificator;
+
         public BoardUnitView BoardUnitView;
 
         public UnitDeathAnimation(BoardUnitView unitView, bool withEffect)
@@ -513,7 +515,11 @@ namespace Loom.ZombieBattleground
 
         private void PlayEffectSound()
         {
-            // TODO: implement effect sounds!
+            _effectSoundIdentificator = _soundManager.PlaySound(Enumerators.SoundType.ZOMBIE_DEATH_ANIMATIONS,
+                "ZB_AUD_" +
+                InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
+                "ZombieDeath_F1_EXP",
+                Constants.ZombiesSoundVolume, isLoop: false);
         }
 
         public void EndDeathAnimation()
@@ -522,6 +528,7 @@ namespace Loom.ZombieBattleground
             {
                 ParticleSystem.Play(true);
                 EffectAnimator.speed = _initialAnimationSpeed;
+                ChangeSoundState(false);
             }
             else
             {
@@ -529,6 +536,11 @@ namespace Loom.ZombieBattleground
             }
 
             DestroyUnitTriggered?.Invoke(this);
+        }
+
+        private void ChangeSoundState(bool pause)
+        {
+            _soundManager.SetSoundPaused(_effectSoundIdentificator, pause);
         }
 
         private void AnimationEventReceived(string method)
@@ -540,6 +552,7 @@ namespace Loom.ZombieBattleground
             {
                 case "Pause":
                     ParticleSystem.Pause(true);
+                    ChangeSoundState(true);
                     EffectAnimator.speed = 0;
 
                     if (_isDeathSoundEnded)
