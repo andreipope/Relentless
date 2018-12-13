@@ -176,11 +176,6 @@ public class TestHelper
 
             yield return LetsThink ();
 
-            /* yield return AssertLoggedInOrLoginFailed (
-                CloseTermsPopupIfRequired (),
-                FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-                SubmitEmailPassword ("some@email.here", "somePassHere")); */
-
             if (IsTestFinished)
                 yield break;
 
@@ -558,9 +553,7 @@ public class TestHelper
     public IEnumerator AssertMulliganPopupCameUp (IEnumerator callback1, IEnumerator callback2)
     {
         if (IsTestFinished)
-        {
             yield break;
-        }
 
         WaitStart (5);
 
@@ -629,9 +622,7 @@ public class TestHelper
         if (canvas2GameObject != null && canvas2GameObject.transform.childCount >= 2)
         {
             if (canvas2GameObject.transform.GetChild (1).name.Split ('(')[0] == "LoginPopup")
-            {
                 return true;
-            }
 
             return false;
         }
@@ -648,9 +639,7 @@ public class TestHelper
         GameObject errorTextObject = GameObject.Find ("Beta_Group/Text_Error");
 
         if (errorTextObject != null && errorTextObject.activeInHierarchy)
-        {
             return true;
-        }
 
         return false;
     }
@@ -664,9 +653,7 @@ public class TestHelper
         if (canvas3GameObject != null && canvas3GameObject.transform.childCount >= 2)
         {
             if (canvas3GameObject.transform.GetChild (1).name.Split ('(')[0] == "WarningPopup")
-            {
                 return true;
-            }
 
             return false;
         }
@@ -711,9 +698,7 @@ public class TestHelper
         if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
         {
             if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
-            {
                 return false;
-            }
             else
             {
                 if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == expectedPageName)
@@ -750,9 +735,7 @@ public class TestHelper
         if (parentGameObject != null)
         {
             if (parentGameObject != null && parentGameObject.transform.childCount >= 2)
-            {
                 return parentGameObject.transform.GetChild (1).name.Split ('(')[0];
-            }
             else
                 return "";
         }
@@ -773,9 +756,7 @@ public class TestHelper
     public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "", bool isGoingBack = false)
     {
         if (!isGoingBack && IsTestFinished)
-        {
             yield break;
-        }
 
         if (expectedPageName == lastCheckedPageName)
             yield break;
@@ -807,9 +788,7 @@ public class TestHelper
             if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
             {
                 if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
-                {
                     return false;
-                }
 
                 return true;
             }
@@ -1088,7 +1067,7 @@ public class TestHelper
             yield return AssertLoggedInOrLoginFailed (
                 CloseTermsPopupIfRequired (),
                 FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-                SubmitEmailPassword ("wecib@cliptik.net", "somePassHere"),
+                SubmitEmailPassword ("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
                 GoOnePageHigher ());
         }
         else if (!CheckCurrentPageName ("MainMenuPage") && !CheckCurrentPageName ("GameplayPage"))
