@@ -104,8 +104,6 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         deltaHealth = player.MaxCurrentHp - player.Defense;
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(currentTarget), currentTarget, null);
                 }
 
                 defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, maxCount);
