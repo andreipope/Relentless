@@ -33,6 +33,7 @@ public class TestHelper
     {
         get { return _initialized; }
     }
+    private bool _hasLoginErrorOccured = false;
 
     private Scene _testScene;
     private GameObject _testerGameObject;
@@ -148,7 +149,11 @@ public class TestHelper
         _currentTestState = TestState.Running;
         _turnWaitAmount = -1;
 
-        if (!_initialized)
+        if (_hasLoginErrorOccured)
+        {
+            FailWithMessage ("Couldn't login.");
+        }
+        else if (!_initialized)
         {
             _testerKey = _testerKeys[(int) _testerType];
 
@@ -202,11 +207,16 @@ public class TestHelper
 
     public IEnumerator TearDown ()
     {
-        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup" || !_initialized)
+        if (!_initialized)
+        {
+            _hasLoginErrorOccured = true;
+        }
+
+        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
         {
             yield return TearDown_Cleanup ();
         }
-        else
+        else if (!_hasLoginErrorOccured)
         {
             yield return TearDown_GoBackToMainScreen ();
         }
@@ -453,6 +463,11 @@ public class TestHelper
     {
         FailWithMessage (message);
 
+        if (!_initialized)
+        {
+            _hasLoginErrorOccured = true;
+        }
+
         yield return null;
     }
 
@@ -460,6 +475,11 @@ public class TestHelper
     {
         _currentTestState = TestState.Failed;
         _failMessage = message;
+
+        if (!_initialized)
+        {
+            _hasLoginErrorOccured = true;
+        }
 
         Debug.LogWarning ("Test is going to fail with message: " + message);
     }
@@ -3009,6 +3029,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator AddValashHorde ()
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
 
         yield return AssertCurrentPageName ("OverlordSelectionPage");
@@ -3053,6 +3078,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator AddKalileHorde ()
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
 
         yield return AssertCurrentPageName ("OverlordSelectionPage");
@@ -3093,6 +3123,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator AddRazuHorde ()
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return ClickGenericButton ("Image_BaackgroundGeneral");
 
         yield return AssertCurrentPageName ("OverlordSelectionPage");
@@ -3154,6 +3189,11 @@ public class TestHelper
     /// <param name="goRight">If set to <c>true</c> goes right, until finds what you set.</param>
     public IEnumerator PickOverlord (string overlordName, bool goRight = true)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         int selectedIndex = 0;
 
         while (_overlordNames[selectedIndex] != overlordName)
@@ -3186,6 +3226,11 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator PickOverlordAbility (int index)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         GameObject abilitiesParent = GameObject.Find ("Abilities");
 
         if (index >= abilitiesParent.transform.childCount)
@@ -3207,6 +3252,11 @@ public class TestHelper
     /// <param name="deckTitle">Deck title.</param>
     public IEnumerator SetDeckTitle (string deckTitle)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         GameObject deckTitleInput = GameObject.Find ("DeckTitleInputText");
 
         if (deckTitleInput == null)
@@ -3229,6 +3279,11 @@ public class TestHelper
 
     private IEnumerator PickElement (string elementName)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         Transform elementsParent = GameObject.Find ("ElementsToggles").transform;
 
         Toggle elementToggle = elementsParent.Find (elementName)?.GetComponent<Toggle> ();
@@ -3267,6 +3322,11 @@ public class TestHelper
     /// <param name="count">Count.</param>
     public IEnumerator AddCardToHorde (string elementName, string cardName, int count = 1)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
             x.Name == cardName);
 
@@ -3285,6 +3345,11 @@ public class TestHelper
 
     private IEnumerator AddCardToHorde2 (string cardName, int count = 1)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         int checkedPage;
 
         for (checkedPage = 0; checkedPage <= 4; checkedPage++)
@@ -3345,6 +3410,11 @@ public class TestHelper
     /// <param name="hordeName">Horde name.</param>
     public IEnumerator SelectAHordeByName (string hordeName, bool failIfNotFound = true, string failureMessage = "Couldn't find Horde by that name")
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
         SelectedHordeIndex = -1;
@@ -3401,6 +3471,11 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator RemoveAHorde (int index)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return SelectAHordeByIndex (index);
 
         GameObject.Find ("Button_Delete").GetComponent<Button> ().onClick.Invoke ();
@@ -3418,6 +3493,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator RemoveAllHordesExceptDefault ()
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         for (int i = GetNumberOfHordes () - 2; i >= 1; i--)
         {
             yield return RemoveAHorde (1);
