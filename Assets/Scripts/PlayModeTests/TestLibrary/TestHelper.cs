@@ -3343,7 +3343,7 @@ public class TestHelper
     /// Selects a Horde by name.
     /// </summary>
     /// <param name="hordeName">Horde name.</param>
-    public IEnumerator SelectAHordeByName (string hordeName)
+    public IEnumerator SelectAHordeByName (string hordeName, bool failIfNotFound = true)
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
@@ -3364,7 +3364,7 @@ public class TestHelper
             }
         }
 
-        if (!hordeSelected)
+        if (!hordeSelected && failIfNotFound)
         {
             FailWithMessage ("Couldn't find Horde by that name");
         }
