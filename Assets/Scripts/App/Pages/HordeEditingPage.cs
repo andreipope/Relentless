@@ -286,13 +286,6 @@ namespace Loom.ZombieBattleground
             else
             {
                 _currentDeck = _dataManager.CachedDecksData.Decks.First(d => d.Id == _currentDeckId).Clone();
-                _currentDeck.Cards.Sort(
-                    (DeckCardData card_A, DeckCardData card_B) =>            
-                    {
-                        return _dataManager.CachedCardsLibraryData.GetCardFromName(card_A.CardName).Cost -
-                            _dataManager.CachedCardsLibraryData.GetCardFromName(card_B.CardName).Cost;
-                    }
-               );
             }
 
             LoadDeckInfo(_currentDeck);
@@ -378,13 +371,7 @@ namespace Loom.ZombieBattleground
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
             List<Card> cards = set.Cards;
-            cards.Sort( 
-                (Card card_A, Card card_B) =>
-                {
-                    return card_A.Cost - card_B.Cost;
-                } 
-            );
-            
+
             int startIndex = page * CardsPerPage;
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
 
@@ -995,7 +982,7 @@ namespace Loom.ZombieBattleground
             int foundItemIndex = targetRowCards.FindIndex(c => c.LibraryCard.MouldId == targetLibraryCard.MouldId);
             setPageIndexAction(foundItemIndex / CardsPerPage);
 
-            BoardCard targetCard = targetRowCards.First(card => card.LibraryCard.MouldId == targetLibraryCard.MouldId);
+            BoardCard targetCard = targetRowCards.Find(card => card.LibraryCard.MouldId == targetLibraryCard.MouldId);
             Vector3 animatedCardDestination = targetCard.Transform.position;
 
             if (!targetCardWasAlreadyPresent)
