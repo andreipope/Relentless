@@ -10,6 +10,7 @@ using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using SystemText = System.Text;
+using Loom.Google.Protobuf.Collections;
 
 namespace Loom.ZombieBattleground
 {
@@ -203,6 +204,26 @@ namespace Loom.ZombieBattleground
             _queueManager.Active = true;
         }
 
+        private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand) 
+        {
+            player.CardsInHand = new List<WorkingCard>();
+
+            foreach (CardInstance cardInstance in cardsInHand)
+            {
+                _gameplayManager.OpponentPlayer.CardsInHand.Add(cardInstance.FromProtobuf(player));
+            }
+        }
+
+        private void UpdateCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
+        {
+            player.CardsInDeck = new List<WorkingCard>();
+
+            foreach (CardInstance cardInstance in cardsInDeck)
+            {
+                _gameplayManager.CurrentPlayer.CardsInDeck.Add(cardInstance.FromProtobuf(player));
+            }
+        }
+
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Func<Task> taskFunc = async () =>
@@ -256,13 +277,8 @@ namespace Loom.ZombieBattleground
 
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id == _backendDataControlMediator.UserDataModel.UserId);
-                                                                                                     
-                                _gameplayManager.CurrentPlayer.CardsInDeck = new List<WorkingCard>();
 
-                                foreach (CardInstance cardInstance in playerState.CardsInDeck)
-                                {
-                                    _gameplayManager.CurrentPlayer.CardsInDeck.Add(cardInstance.FromProtobuf(_gameplayManager.CurrentPlayer));
-                                }
+                                UpdateCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
                             }
                             return;
                         } else {
@@ -273,19 +289,9 @@ namespace Loom.ZombieBattleground
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id != _backendDataControlMediator.UserDataModel.UserId);
 
-                                _gameplayManager.OpponentPlayer.CardsInDeck = new List<WorkingCard>();
+                                UpdateCardsInDeck(_gameplayManager.OpponentPlayer, playerState.CardsInDeck);
 
-                                foreach (CardInstance cardInstance in playerState.CardsInDeck)
-                                {
-                                    _gameplayManager.OpponentPlayer.CardsInDeck.Add(cardInstance.FromProtobuf(_gameplayManager.OpponentPlayer));
-                                }
-
-                                _gameplayManager.OpponentPlayer.CardsInHand = new List<WorkingCard>();
-
-                                foreach (CardInstance cardInstance in playerState.CardsInHand)
-                                {
-                                    _gameplayManager.OpponentPlayer.CardsInHand.Add(cardInstance.FromProtobuf(_gameplayManager.OpponentPlayer));
-                                }
+                                UpdateCardsInHand(_gameplayManager.OpponentPlayer, playerState.CardsInHand);
                             }
                         }
 
