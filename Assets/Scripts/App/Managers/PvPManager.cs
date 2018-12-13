@@ -92,13 +92,21 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isCheckPlayerAvailableTimerStart)
+            if (_isCheckPlayerAvailableTimerStart && !_gameplayManager.IsGameEnded) 
             {
                 _checkPlayerTimer += Time.deltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
-                    await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+
+                    try
+                    {
+                        await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+                    }
+                    catch(Exception ex)
+                    {
+                        Debug.LogWarning($"keep alive error: {ex.Message} ->> {ex.StackTrace}");
+                    }
                 }
             }
 

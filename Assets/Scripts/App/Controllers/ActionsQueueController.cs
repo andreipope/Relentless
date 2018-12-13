@@ -109,6 +109,11 @@ namespace Loom.ZombieBattleground
 
         public void ClearActions()
         {
+            if (_isDebugMode)
+            {
+                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
+            }
+
             if (ActionInProgress != null)
             {
                 ActionInProgress.Action = null;
