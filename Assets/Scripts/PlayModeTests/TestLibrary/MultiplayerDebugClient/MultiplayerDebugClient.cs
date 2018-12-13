@@ -10,12 +10,15 @@ using Newtonsoft.Json;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground.Editor.Tools
 {
     [Serializable]
     public class MultiplayerDebugClient
     {
+        private const float KeepAliveInterval = 15f;
+
         private BackendFacade _backendFacade;
         private UserDataModel _userDataModel;
         private MatchMakingFlowController _matchMakingFlowController;
@@ -26,6 +29,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private bool _useBackendGameLogic = true;
         private List<string> _pvpTags = new List<string>();
         private DebugCheatsConfiguration _debugCheats = new DebugCheatsConfiguration();
+        private double _lastKeepAliveTime;
 
         [JsonIgnore]
         public BackendFacade BackendFacade
@@ -102,7 +106,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint())
             {
-                Logger = Debug.unityLogger
+                Logger = new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] "))
             };
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
@@ -129,6 +133,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         public async Task Reset()
         {
+            _lastKeepAliveTime = 0f;
             if (BackendFacade != null)
             {
                 BackendFacade.Contract?.Client.Dispose();
@@ -137,6 +142,49 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 await MatchMakingFlowController.Stop();
                 MatchMakingFlowController = null;
+            }
+        }
+
+        public async Task Update()
+        {
+            if (MatchMakingFlowController != null)
+            {
+                await MatchMakingFlowController.Update();
+
+                if (MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed)
+                {
+                    double timeSinceStartup;
+#if UNITY_EDITOR
+                    timeSinceStartup = UnityEditor.EditorApplication.timeSinceStartup;
+#else
+                    timeSinceStartup = Time.realtimeSinceStartup;
+#endif
+                    if (timeSinceStartup - _lastKeepAliveTime >= KeepAliveInterval)
+                    {
+                        _lastKeepAliveTime = timeSinceStartup;
+                        await BackendFacade.KeepAliveStatus(UserDataModel.UserId, MatchMakingFlowController.MatchMetadata.Id);
+                    }
+                }
+            }
+        }
+
+        private class PrefixUnityLogger : ILogHandler
+        {
+            private readonly string _prefix;
+
+            public PrefixUnityLogger(string prefix)
+            {
+                _prefix = prefix;
+            }
+
+            public void LogFormat(LogType logType, Object context, string format, params object[] args)
+            {
+                Debug.unityLogger.LogFormat(logType, context, _prefix + format, args);
+            }
+
+            public void LogException(Exception exception, Object context)
+            {
+                Debug.unityLogger.LogException(exception, context);
             }
         }
     }

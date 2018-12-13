@@ -231,10 +231,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
             {
-                if (instanceId == null)
+                if (type != Enumerators.AffectObjectType.Player && instanceId == null)
                     throw new ArgumentNullException(nameof(instanceId));
 
-                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId.Value));
+                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId ?? new Data.InstanceId(-1)));
             }
 
             private void AbilityUsedHandler(

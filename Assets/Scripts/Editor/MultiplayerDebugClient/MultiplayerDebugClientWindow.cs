@@ -69,10 +69,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         private async Task AsyncUpdate()
         {
-            if (DebugClient.MatchMakingFlowController != null)
-            {
-                await DebugClient.MatchMakingFlowController.Update();
-            }
+            await DebugClient.Update();
 
             while (_asyncTaskQueue.Count > 0)
             {
@@ -237,6 +234,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 {
                     if (GUILayout.Button("Create Client"))
                     {
+                        EnqueueAsyncTask(ResetClient);
                         EnqueueAsyncTask(StartClient);
                     }
                 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Editor.Tools;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -135,7 +136,9 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
-        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndMatchmakeDebugClient());
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndConnectOpponentDebugClient());
+        _testHelper.SetupOpponentDebugClienToEndTurns();
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.MatchmakeOpponentDebugClient());
 
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
         yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
@@ -175,7 +178,9 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
-        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndMatchmakeDebugClient());
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndConnectOpponentDebugClient());
+        _testHelper.SetupOpponentDebugClienToEndTurns();
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.MatchmakeOpponentDebugClient());
 
         yield return _testHelper.PlayAMatch (1);
         yield return _testHelper.ClickGenericButton ("Button_Settings");
@@ -210,7 +215,9 @@ public class MultiplayerTests
 
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
-        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndMatchmakeDebugClient());
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndConnectOpponentDebugClient());
+        _testHelper.SetupOpponentDebugClienToEndTurns();
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.MatchmakeOpponentDebugClient());
 
         yield return _testHelper.PlayAMatch ();
     }

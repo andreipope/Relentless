@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Editor.Tools;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -118,6 +119,8 @@ public class TestHelper
     };
 
     private string _currentElementName = "";
+    private MultiplayerDebugClient _opponentDebugClient;
+    private OnBehaviourHandler _opponentDebugClientOwner;
 
     public int SelectedHordeIndex
     {
@@ -216,6 +219,16 @@ public class TestHelper
     /// <remarks>Generally is used only for the last test in the group.</remarks>
     public IEnumerator TearDown_Cleanup ()
     {
+        if (_opponentDebugClient != null)
+        {
+            yield return TaskAsIEnumerator(_opponentDebugClient.Reset());
+        }
+
+        if (_opponentDebugClientOwner != null)
+        {
+            UnityEngine.Object.Destroy(_opponentDebugClientOwner.gameObject);
+        }
+
         Scene dontDestroyOnLoadScene = _testerGameObject.scene;
 
         _testScene = SceneManager.CreateScene ("testScene");
@@ -3342,23 +3355,103 @@ public class TestHelper
 
     #region PvP Second Client
 
-    public async Task<MultiplayerDebugClient> CreateAndMatchmakeDebugClient()
+    /// <summary>
+    /// Gets the opponent's simulated game client.
+    /// </summary>
+    public MultiplayerDebugClient GetOpponentDebugClient()
     {
+        Assert.NotNull(_opponentDebugClient);
+        Assert.NotNull(_opponentDebugClientOwner);
+
+        return _opponentDebugClient;
+    }
+
+    /// <summary>
+    /// Instantiates a simulated game client for the opponent, running in parallel to the game.
+    /// Connects that client to the backend.
+    /// </summary>
+    /// <returns></returns>
+    public async Task CreateAndConnectOpponentDebugClient()
+    {
+        GameObject owner = new GameObject("_OpponentDebugClient");
+        owner.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
+        OnBehaviourHandler onBehaviourHandler = owner.AddComponent<OnBehaviourHandler>();
+
+        MultiplayerDebugClient client = new MultiplayerDebugClient();
+
+        _opponentDebugClient = client;
+        _opponentDebugClientOwner = onBehaviourHandler;
+
+        await client.Start("Test_" + GetTestName());
+
+        onBehaviourHandler.Updating += async go => await client.Update();
+    }
+
+    /// <summary>
+    /// Starts matchmaking flow for the simulated game client of the opponent.
+    /// </summary>
+    /// <returns></returns>
+    public async Task MatchmakeOpponentDebugClient()
+    {
+        MultiplayerDebugClient client = _opponentDebugClient;
         bool matchConfirmed = false;
         void SecondClientMatchConfirmedHandler(MatchMetadata matchMetadata)
         {
+            client.MatchRequestFactory = new MatchRequestFactory(matchMetadata.Id);
+            client.PlayerActionFactory = new PlayerActionFactory(client.UserDataModel.UserId);
             matchConfirmed = true;
         }
-        MultiplayerDebugClient client = new MultiplayerDebugClient();
-        await client.Start(GetTestName(), matchMakingFlowController => matchMakingFlowController.MatchConfirmed += SecondClientMatchConfirmedHandler);
+
+        client.MatchMakingFlowController.MatchConfirmed += SecondClientMatchConfirmedHandler;
         await client.MatchMakingFlowController.Start(1, null, GetPvPTags(), false, null);
+
         while (!matchConfirmed)
         {
             await Task.Delay(300);
-            await client.MatchMakingFlowController.Update();
+        }
+    }
+
+    /// <summary>
+    /// Setups very dumb logic for the simulated opponent that does nothing and only skips turns.
+    /// </summary>
+    public void SetupOpponentDebugClienToEndTurns()
+    {
+        MultiplayerDebugClient client = _opponentDebugClient;
+
+        async Task EndTurnIfCurrentTurn(bool isFirstTurn)
+        {
+            GetGameStateResponse gameStateResponse =
+                await client.BackendFacade.GetGameState(client.MatchMakingFlowController.MatchMetadata.Id);
+            GameState gameState = gameStateResponse.GameState;
+            if (gameState.PlayerStates[gameState.CurrentPlayerIndex].Id == client.UserDataModel.UserId)
+            {
+                Debug.Log("ending FIRST turn: " + isFirstTurn);
+                await client.BackendFacade.SendPlayerAction(
+                    client.MatchRequestFactory.CreateAction(
+                        client.PlayerActionFactory.EndTurn()
+                    )
+                );
+            }
         }
 
-        return client;
+        client.MatchMakingFlowController.MatchConfirmed += async metadata =>
+        {
+            await EndTurnIfCurrentTurn(true);
+        };
+
+        client.BackendFacade.PlayerActionDataReceived += async bytes =>
+        {
+            PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
+            bool? isLocalPlayer =
+                playerActionEvent.PlayerAction != null ?
+                    playerActionEvent.PlayerAction.PlayerId == client.UserDataModel.UserId :
+                    (bool?) null;
+
+            if (isLocalPlayer != null)
+            {
+                await EndTurnIfCurrentTurn(false);
+            }
+        };
     }
 
     #endregion

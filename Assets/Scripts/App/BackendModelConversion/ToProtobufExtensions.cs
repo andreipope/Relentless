@@ -72,15 +72,6 @@ namespace Loom.ZombieBattleground.Data
             return cardAbility;
         }
 
-        public static Protobuf.Unit ToProtobuf(this Unit unit)
-        {
-            return new Protobuf.Unit
-            {
-                InstanceId = unit.InstanceId.ToProtobuf(),
-                AffectObjectType = (AffectObjectType.Types.Enum) unit.AffectObjectType,
-            };
-        }
-
         public static CardChoosableAbility ToProtobuf(this AbilityData.ChoosableAbility choosableAbility)
         {
             return new CardChoosableAbility {
