@@ -3343,7 +3343,7 @@ public class TestHelper
     /// Selects a Horde by name.
     /// </summary>
     /// <param name="hordeName">Horde name.</param>
-    public IEnumerator SelectAHordeByName (string hordeName, bool failIfNotFound = true)
+    public IEnumerator SelectAHordeByName (string hordeName, bool failIfNotFound = true, string failureMessage = "Couldn't find Horde by that name")
     {
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
@@ -3366,7 +3366,7 @@ public class TestHelper
 
         if (!hordeSelected && failIfNotFound)
         {
-            FailWithMessage ("Couldn't find Horde by that name");
+            FailWithMessage (failureMessage);
         }
 
         yield return null;
@@ -3406,6 +3406,11 @@ public class TestHelper
         GameObject.Find ("Button_Delete").GetComponent<Button> ().onClick.Invoke ();
 
         yield return LetsThink ();
+
+        yield return RespondToYesNoOverlay (true);
+
+        yield return LetsThink ();
+        yield return LetsThink ();
     }
 
     /// <summary>
@@ -3417,10 +3422,6 @@ public class TestHelper
         {
             yield return RemoveAHorde (1);
 
-            yield return RespondToYesNoOverlay (true);
-
-            yield return LetsThink ();
-            yield return LetsThink ();
             yield return LetsThink ();
         }
 
