@@ -722,7 +722,14 @@ namespace Loom.ZombieBattleground
 
         public void ThrowLeaveMatch()
         {
-            LeaveMatch?.Invoke();
+            _actionsQueueController.ClearActions();
+
+            _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+            {
+                LeaveMatch?.Invoke();
+
+                completeCallback?.Invoke();
+            }, Enumerators.QueueActionType.LeaveMatch);
         }
 
         public void ThrowOnHandChanged()

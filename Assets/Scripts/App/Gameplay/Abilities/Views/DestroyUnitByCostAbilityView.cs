@@ -8,7 +8,6 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
-
         public DestroyUnitByCostAbilityView(DestroyUnitByCostAbility ability) : base(ability)
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
@@ -16,6 +15,9 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+            if (info == null)
+                return;
+
             BoardUnitModel unit = info as BoardUnitModel;
 
             float delayBeforeDestroy = 3f;
