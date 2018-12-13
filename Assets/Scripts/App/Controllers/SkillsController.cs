@@ -929,7 +929,7 @@ namespace Loom.ZombieBattleground
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = targetObject,
                         HasValue = true,
-                        Value = -skill.Value
+                        Value = -value
                     });
                 }, true);
             }
@@ -1274,7 +1274,8 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
-                && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                && !owner.BoardCards.Exists(c => c.Model.Card == x));
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
@@ -1291,7 +1292,7 @@ namespace Loom.ZombieBattleground
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Reanimate,
-                    Target = target
+                    Target = units[units.Count - 1]
                 });
             }
 
