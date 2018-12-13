@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground
                 OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
                 eventHandler.DragBegan += BoardCardDragBeganHandler;
-                eventHandler.DragEnded += BoardCardDragEndedHandler;
+                eventHandler.DragEnded += BoardCardArmyDragEndedHandler;
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdArmyCards.Add(boardCard);
@@ -647,6 +647,12 @@ namespace Loom.ZombieBattleground
                 deckBuilderCard.Scene = this;
                 deckBuilderCard.Card = card;
                 deckBuilderCard.IsHordeItem = true;
+                
+                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
+
+                eventHandler.DragBegan += BoardCardDragBeganHandler;
+                eventHandler.DragEnded += BoardCardHordeDragEndedHandler; 
+                eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdHordeCards.Add(boardCard);
 
@@ -1037,7 +1043,7 @@ namespace Loom.ZombieBattleground
             _draggingObject.transform.position = position;
         }
 
-        private void BoardCardDragEndedHandler(PointerEventData eventData, GameObject onOnject)
+        private void BoardCardArmyDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
             {
@@ -1058,6 +1064,35 @@ namespace Loom.ZombieBattleground
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         AddCardToDeck(null, armyCard.LibraryCard);
+                    }
+                }
+            }
+
+            Object.Destroy(_draggingObject);
+            _draggingObject = null;
+            _isDragging = false;
+        }
+        private void BoardCardHordeDragEndedHandler(PointerEventData eventData, GameObject onOnject)
+        {
+            if (!_isDragging)
+            {
+                return;
+            }
+
+            Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+
+            if (hits.Length > 0)
+            {
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.gameObject == _armyAreaObject)
+                    {
+                        BoardCard hordeCard = _createdHordeCards.Find(x =>
+                            x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
+
+                        RemoveCardFromDeck(null, hordeCard.LibraryCard);
                     }
                 }
             }
