@@ -224,6 +224,7 @@ public class SanityChecks
     }
 
     [UnityTest]
+    [Timeout (500000)]
     public IEnumerator Test_S1_SkipTutorials ()
     {
         _testHelper.SetTestName ("SanityChecks - Tutorial Skip");
@@ -248,6 +249,7 @@ public class SanityChecks
     }
 
     [UnityTest]
+    [Timeout (500000)]
     public IEnumerator Test_S2_PlayThroughTutorials ()
     {
         _testHelper.SetTestName ("SanityChecks - Tutorial Non-Skip");
@@ -276,6 +278,7 @@ public class SanityChecks
     }
 
     [UnityTest]
+    [Timeout (500000)]
     public IEnumerator Test_S3_CreateAHorde ()
     {
         _testHelper.SetTestName ("SanityChecks - Create a Horde and save");
@@ -302,6 +305,7 @@ public class SanityChecks
     }
 
     [UnityTest]
+    [Timeout (900000)]
     public IEnumerator Test_S4_PlayWithNewHorde ()
     {
         _testHelper.SetTestName ("SanityChecks - Gameplay with Razu");
@@ -330,6 +334,7 @@ public class SanityChecks
     }
 
     [UnityTest]
+    [Timeout (900000)]
     public IEnumerator Test_S5_PlayWithDefaultHorde ()
     {
         _testHelper.SetTestName ("SanityChecks - Gameplay with Default");
