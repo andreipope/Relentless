@@ -32,6 +32,8 @@ namespace Loom.ZombieBattleground
         public float SoundVolume => _soundVolume;
         public float MusicVolume => _musicVolume;
 
+        private int _lastSoundContainerIdentificator;
+
         public void Dispose()
         {
         }
@@ -138,9 +140,9 @@ namespace Loom.ZombieBattleground
             return soundTypeList.AudioTypeClips.Count > 0 ? soundTypeList.AudioTypeClips[0].length : 0f;
         }
 
-        public void SetSoundPaused(Enumerators.SoundType soundType, string namePattern, bool pause)
+        public void SetSoundPaused(int identificator, bool pause)
         {
-            SoundContainer container = _soundContainers.Find(x => x.SoundType == soundType && x.AudioSource.clip.name == namePattern);
+            SoundContainer container = _soundContainers.Find(x => x.UniqueIdentificator == identificator);
 
             if (container != null)
             {
@@ -190,11 +192,16 @@ namespace Loom.ZombieBattleground
             PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic, isInQueue);
         }
 
-        public void PlaySound(
+        public int PlaySound(
             Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false,
             bool isInQueue = false)
         {
-            CreateSound(soundType, 128, volume, null, isLoop, false, 0, clipTitle, isInQueue);
+            SoundContainer soundContainer = CreateSound(soundType, 128, volume, null, isLoop, false, 0, clipTitle, isInQueue);
+            if(soundContainer != null)
+            {
+                return soundContainer.UniqueIdentificator;
+            }
+            return -1;
         }
 
         public void PlaySound(
@@ -530,12 +537,14 @@ namespace Loom.ZombieBattleground
             soundParam.StartPosition = 0f;
 
             container.Tag = tag;
-            container.Init(_soundsRoot, soundType, soundParam, isPlaylist, clipIndex);
+            container.Init(_soundsRoot, soundType, soundParam, isPlaylist, _lastSoundContainerIdentificator, clipIndex);
 
             if (parent != null)
             {
                 container.Container.transform.SetParent(parent);
             }
+
+            _lastSoundContainerIdentificator++;
 
             _soundContainers.Add(container);
             return container;
@@ -619,14 +628,17 @@ namespace Loom.ZombieBattleground
 
         public int CurrentSoundIndex;
 
+        public int UniqueIdentificator;
+
         public string Tag;
 
         public void Init(
-            Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled,
+            Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled, int identificator,
             int soundIndex = 0)
         {
             ForceClose = false;
             CurrentSoundIndex = soundIndex;
+            UniqueIdentificator = identificator;
             SoundParameters = soundParam;
             IsPlaylist = playlistEnabled;
             SoundType = type;
