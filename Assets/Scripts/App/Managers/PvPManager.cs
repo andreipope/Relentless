@@ -149,6 +149,7 @@ namespace Loom.ZombieBattleground
 
         public async Task CancelFindMatch()
         {
+            ResetCheckPlayerStatus();
             await StopMatchmaking(MatchMetadata?.Id);
         }
 
@@ -168,6 +169,7 @@ namespace Loom.ZombieBattleground
             }
 
             _queueManager.Clear();
+            ResetCheckPlayerStatus();
         }
 
         //TODO This method is a start to simplify and clean up
@@ -197,7 +199,6 @@ namespace Loom.ZombieBattleground
             GameStartedActionReceived?.Invoke();
 
             _isCheckPlayerAvailableTimerStart = true;
-
             _queueManager.Active = true;
         }
 
@@ -319,6 +320,7 @@ namespace Loom.ZombieBattleground
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
                 case PlayerActionType.Types.Enum.LeaveMatch:
+                    _gameplayManager.GetController<ActionsQueueController>().ClearActions();
                     ResetCheckPlayerStatus();
                     LeaveMatchReceived?.Invoke();
                     break;

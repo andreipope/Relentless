@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+            List<BoardUnitModel> units = (List<BoardUnitModel>)info;
+
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
 
@@ -23,47 +26,52 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                Vector3 offset = Vector3.zero;
+                Vector3 offset;
 
                 Enumerators.VisualEffectType effectType = Enumerators.VisualEffectType.Impact;
 
-                switch (Ability.TargetUnit.InitialUnitType)
+                foreach (BoardUnitModel unit in units)
                 {
-                    case Enumerators.CardType.FERAL:
-                        effectType = Enumerators.VisualEffectType.Impact_Feral;
-                        break;
-                    case Enumerators.CardType.HEAVY:
-                        effectType = Enumerators.VisualEffectType.Impact_Heavy;
-                        break;
-                    default:
+                    offset = Vector3.zero;
+
+                    switch (unit.InitialUnitType)
+                    {
+                        case Enumerators.CardType.FERAL:
+                            effectType = Enumerators.VisualEffectType.Impact_Feral;
+                            break;
+                        case Enumerators.CardType.HEAVY:
+                            effectType = Enumerators.VisualEffectType.Impact_Heavy;
+                            break;
+                        default:
+                            effectType = Enumerators.VisualEffectType.Impact;
+                            break;
+                    }
+
+                    if (!Ability.AbilityData.HasVisualEffectType(effectType))
+                    {
                         effectType = Enumerators.VisualEffectType.Impact;
-                        break;
+                    }
+
+                    Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
+
+                    Vector3 targetPosition = unitTransform.position;
+
+                    VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
+
+                    AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                    if (effectInfo != null)
+                    {
+                        delayAfter = effectInfo.delayAfterEffect;
+                        delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                        offset = effectInfo.offset;
+                        soundName = effectInfo.soundName;
+                        soundDelay = effectInfo.delayForSound;
+                    }
+
+                    CreateVfx(targetPosition, true, delayBeforeDestroy);
+                    VfxObject.transform.SetParent(unitTransform, false);
+                    VfxObject.transform.localPosition = offset;
                 }
-
-                if (!Ability.AbilityData.HasVisualEffectType(effectType))
-                {
-                    effectType = Enumerators.VisualEffectType.Impact;
-                }
-
-                Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform;
-
-                Vector3 targetPosition = unitTransform.position;
-
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
-
-                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
-                if (effectInfo != null)
-                {
-                    delayAfter = effectInfo.delayAfterEffect;
-                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
-                    offset = effectInfo.offset;
-                    soundName = effectInfo.soundName;
-                    soundDelay = effectInfo.delayForSound;
-                }
-
-                CreateVfx(targetPosition, true, delayBeforeDestroy);
-                VfxObject.transform.SetParent(unitTransform, false);
-                VfxObject.transform.localPosition = offset;
             }
 
             PlaySound(soundName, soundDelay);
