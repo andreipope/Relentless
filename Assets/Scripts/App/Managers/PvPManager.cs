@@ -320,6 +320,7 @@ namespace Loom.ZombieBattleground
                     DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
                 case PlayerActionType.Types.Enum.LeaveMatch:
+                    _gameplayManager.GetController<ActionsQueueController>().ClearActions();
                     ResetCheckPlayerStatus();
                     LeaveMatchReceived?.Invoke();
                     break;

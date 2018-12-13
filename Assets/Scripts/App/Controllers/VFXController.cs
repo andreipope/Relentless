@@ -533,6 +533,9 @@ namespace Loom.ZombieBattleground
 
         private void AnimationEventReceived(string method)
         {
+            if (_gameplayManager.IsGameEnded)
+                return;
+
             switch (method)
             {
                 case "Pause":

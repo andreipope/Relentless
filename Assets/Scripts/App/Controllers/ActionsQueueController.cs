@@ -109,8 +109,14 @@ namespace Loom.ZombieBattleground
 
         public void ClearActions()
         {
+            if (ActionInProgress != null)
+            {
+                ActionInProgress.Action = null;
+                ActionInProgress.ForceActionDone();
+                ActionInProgress = null;
+            }
+
             _actionsToDo.Clear();
-            ActionInProgress = null;
         }
 
         public void ForceContinueAction(GameplayQueueAction<object> action)
