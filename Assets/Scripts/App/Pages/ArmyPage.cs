@@ -283,7 +283,7 @@ namespace Loom.ZombieBattleground
                 {
                     return cardA.Cost - cardB.Cost;
                 }
-           );
+            );
 
             int startIndex = page * CardPositions.Count;
 
