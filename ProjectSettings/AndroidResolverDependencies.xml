@@ -1,20 +1,48 @@
 <dependencies>
   <packages>
+    <package>com.android.support:customtabs:[26.0.0, 27.2.0[</package>
+    <package>com.android.support:support-v4:[26.0.0, 27.2.0[</package>
     <package>com.google.android.gms:play-services-analytics:LATEST</package>
+    <package>com.google.android.gms:play-services-auth:16+</package>
+    <package>com.google.android.gms:play-services-base:[10.2.1, 12.1.0[</package>
+    <package>com.google.android.gms:play-services-location:[10.2.1, 12.1.0[</package>
+    <package>com.google.firebase:firebase-messaging:[10.2.1, 12.1.0[</package>
+    <package>com.google.signin:google-signin-support:1.0.4</package>
   </packages>
   <files>
-    <file>Assets/Plugins/Android/play-services-analytics-11.0.4.aar</file>
-    <file>Assets/Plugins/Android/play-services-analytics-impl-11.0.4.aar</file>
-    <file>Assets/Plugins/Android/play-services-base-11.0.4.aar</file>
-    <file>Assets/Plugins/Android/play-services-basement-11.0.4.aar</file>
-    <file>Assets/Plugins/Android/play-services-tagmanager-v4-impl-11.0.4.aar</file>
-    <file>Assets/Plugins/Android/play-services-tasks-11.0.4.aar</file>
-    <file>Assets/Plugins/Android/support-annotations-25.2.0.jar</file>
-    <file>Assets/Plugins/Android/support-compat-25.2.0.aar</file>
-    <file>Assets/Plugins/Android/support-core-ui-25.2.0.aar</file>
-    <file>Assets/Plugins/Android/support-core-utils-25.2.0.aar</file>
-    <file>Assets/Plugins/Android/support-fragment-25.2.0.aar</file>
-    <file>Assets/Plugins/Android/support-media-compat-25.2.0.aar</file>
-    <file>Assets/Plugins/Android/support-v4-25.2.0.aar</file>
+    <file>Assets/Plugins/Android/android.arch.core.common-1.1.0.jar</file>
+    <file>Assets/Plugins/Android/android.arch.core.runtime-1.1.0.aar</file>
+    <file>Assets/Plugins/Android/android.arch.lifecycle.common-1.1.0.jar</file>
+    <file>Assets/Plugins/Android/android.arch.lifecycle.livedata-core-1.1.0.aar</file>
+    <file>Assets/Plugins/Android/android.arch.lifecycle.runtime-1.1.0.aar</file>
+    <file>Assets/Plugins/Android/android.arch.lifecycle.viewmodel-1.1.0.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.customtabs-27.1.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-annotations-27.1.1.jar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-compat-27.1.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-core-ui-27.1.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-core-utils-27.1.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-fragment-27.1.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-media-compat-27.1.1.aar</file>
+    <file>Assets/Plugins/Android/com.android.support.support-v4-27.1.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-ads-identifier-16.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-analytics-16.0.6.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-analytics-impl-16.0.6.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-16.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-api-phone-16.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-base-16.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-base-16.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-basement-16.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-location-16.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-measurement-base-16.0.5.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-places-placereport-16.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-stats-16.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-tagmanager-v4-impl-16.0.6.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.gms.play-services-tasks-16.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-common-16.0.3</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-17.0.4.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-interop-16.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-17.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-messaging-17.3.4.aar</file>
+    <file>Assets/Plugins/Android/com.google.signin.google-signin-support-1.0.4</file>
   </files>
 </dependencies>
