@@ -220,6 +220,13 @@ namespace Loom.ZombieBattleground
 
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
             {
+                // TODO : try to find issue when this can be
+                if (_gameplayManager.IsGameEnded || workingCard == null || boardObject == null)
+                {
+                    Debug.LogError("got exeption: IsGameEnded " + _gameplayManager.IsGameEnded + " | workingCard " + workingCard + " | boardObject " + boardObject);
+                    return;
+                }
+
                 switch (workingCard.LibraryCard.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:

@@ -793,19 +793,15 @@ namespace Loom.ZombieBattleground
                                 randomCard
                             });
 
-                            _timerManager.AddTimer(
-                                x =>
-                                {
-                                    completePlayCardCallback?.Invoke(card, target);
-                                },
-                                null,
-                                0.1f);
+                            InternalTools.DoActionDelayed(() =>
+                            {
+                                completePlayCardCallback?.Invoke(card, target);
+                            }, 0.1f);
 
-                            _timerManager.AddTimer(
-                                x =>
-                                {
-                                    player.GraveyardCardsCount++;
-                                });
+                            InternalTools.DoActionDelayed(() =>
+                            {
+                                player.GraveyardCardsCount++;
+                            }, 1f);
                         });
                 });
 
