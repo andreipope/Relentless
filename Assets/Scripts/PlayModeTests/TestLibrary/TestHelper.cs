@@ -1329,6 +1329,7 @@ public class TestHelper
     {
         yield return LetsThink ();
 
+        yield return HandleConnectivityIssues ();
         if (IsGameEnded ())
             yield break;
 
@@ -2782,6 +2783,9 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilPlayerOrderIsDecided ()
     {
+        if (IsGameEnded ())
+            yield break;
+
         yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
 
         RecordActualOverlordName ();
@@ -2797,6 +2801,9 @@ public class TestHelper
     /// <remarks>todo: Doesn't work, after the latest changes done to the way this is handled.</remarks>
     public IEnumerator DecideWhichCardsToPick ()
     {
+        if (IsGameEnded ())
+            yield break;
+
         yield return LetsThink ();
 
         yield return ClickGenericButton ("Button_Keep");
@@ -2807,10 +2814,9 @@ public class TestHelper
     /// </summary>
     public IEnumerator EndTurn ()
     {
+        yield return HandleConnectivityIssues ();
         if (IsGameEnded ())
-        {
             yield break;
-        }
 
         _battlegroundController.StopTurn ();
         GameObject.Find ("_1_btn_endturn").GetComponent<EndTurnButton> ().SetEnabled (false);
@@ -2869,9 +2875,15 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilOurTurnStarts ()
     {
-        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null || TurnTimeIsUp ());
+        yield return HandleConnectivityIssues ();
+
+        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null || GetCurrentPageName (3) == "ConnectionPopup" || TurnTimeIsUp ());
+
+        yield return HandleConnectivityIssues ();
 
         yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") == null || TurnTimeIsUp ());
+
+        yield return HandleConnectivityIssues ();
 
         if (TurnTimeIsUp ())
         {
@@ -2884,7 +2896,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilInputIsUnblocked ()
     {
+        yield return HandleConnectivityIssues ();
+
         yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn () || TurnTimeIsUp ());
+
+        yield return HandleConnectivityIssues ();
 
         if (TurnTimeIsUp ())
         {
@@ -2955,6 +2971,9 @@ public class TestHelper
     /// <param name="maxTurns">Max number of turns.</param>
     public IEnumerator MakeMoves (int maxTurns = 100)
     {
+        if (IsGameEnded ())
+            yield break;
+
         // if it doesn't end in 100 moves, end the game anyway
         for (int turns = 1; turns <= maxTurns; turns++)
         {
@@ -3120,8 +3139,8 @@ public class TestHelper
         yield return AddCardToHorde ("Air", "Breezee", 4);
         yield return AddCardToHorde ("Air", "Banshee", 4);
         yield return AddCardToHorde ("Air", "Zhocker", 4);
-        yield return AddCardToHorde ("Air", "Whiffer", 4);
         yield return AddCardToHorde ("Air", "Bouncer", 2);
+        yield return AddCardToHorde ("Air", "Wheezy", 4);
 
         AssertCorrectNumberOfCards ();
 
@@ -3358,6 +3377,7 @@ public class TestHelper
         }
 
         int checkedPage;
+        bool cardAdded = false;
 
         for (checkedPage = 0; checkedPage <= 4; checkedPage++)
         {
@@ -3378,6 +3398,7 @@ public class TestHelper
             }
 
             Debug.Log ("Adding " + cardName + " (" + armyCard.Cost + ") x" + count);
+            cardAdded = true;
 
             for (int counter = 0; counter < count; counter++)
             {
@@ -3389,6 +3410,11 @@ public class TestHelper
             yield return LetsThink ();
 
             break;
+        }
+
+        if (cardAdded == false)
+        {
+            FailWithMessage ($"Card named \"{cardName}\" was not found.");
         }
 
         yield return null;
@@ -3403,6 +3429,11 @@ public class TestHelper
 
     private void AssertCorrectNumberOfCards (int correctNumber = 30)
     {
+        if (IsTestFinished)
+        {
+            return;
+        }
+
         if (!CheckCorrectNumberOfCards (correctNumber))
         {
             FailWithMessage ($"Exactly {correctNumber} cards need to be added to the deck.");

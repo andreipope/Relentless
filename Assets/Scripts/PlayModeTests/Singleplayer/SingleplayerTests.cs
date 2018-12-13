@@ -27,30 +27,24 @@ public class SingleplayerTests
     private IEnumerator SoloGameplay (bool assertOverlordName = false)
     {
         if (_testHelper.IsTestFinished)
-        {
             yield break;
-        }
 
         _testHelper.InitalizePlayer ();
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
+        yield return _testHelper.WaitUntilPlayerOrderIsDecided ();
 
         if (assertOverlordName)
         {
             _testHelper.AssertOverlordName ();
         }
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.AssertMulliganPopupCameUp (
-                _testHelper.DecideWhichCardsToPick (),
-                null);
+        yield return _testHelper.AssertMulliganPopupCameUp (
+            _testHelper.DecideWhichCardsToPick (),
+            null);
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.WaitUntilOurFirstTurn ();
+        yield return _testHelper.WaitUntilOurFirstTurn ();
 
-        if (!_testHelper.IsTestFinished)
-            yield return _testHelper.MakeMoves ();
+        yield return _testHelper.MakeMoves ();
 
         yield return null;
     }
@@ -63,14 +57,14 @@ public class SingleplayerTests
 
         #region Solo Gameplay
 
-        yield return _testHelper.MainMenuTransition ("Button_Play");
+        yield return _testHelper.ClickGenericButton ("Button_Play");
 
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
             _testHelper.GoBackToMainAndPressPlay ());
 
         yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
 
-        yield return _testHelper.MainMenuTransition ("Button_SoloMode");
+        yield return _testHelper.ClickGenericButton ("Button_SoloMode");
 
         yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
 
@@ -80,7 +74,7 @@ public class SingleplayerTests
 
         _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
 
-        yield return _testHelper.MainMenuTransition ("Button_Battle");
+        yield return _testHelper.ClickGenericButton ("Button_Battle");
 
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
 
