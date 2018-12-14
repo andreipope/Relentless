@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
-        public bool IsCheckPlayerAvailableTimerStart { get; set; }
+        private bool _isCheckPlayerAvailableTimerStart;
 
         public List<string> PvPTags { get; set; }
 
@@ -83,6 +83,9 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
 
+            //TODO uncomment this line once we decide to start using KeepAlive
+            //_gameplayManager.GameInitialized += GameInitializedHandler;
+
             if (PvPTags == null)
             {
                 PvPTags = new List<string> ();
@@ -93,7 +96,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (IsCheckPlayerAvailableTimerStart && !_gameplayManager.IsGameEnded) 
+            if (_isCheckPlayerAvailableTimerStart && !_gameplayManager.IsGameEnded) 
             {
                 _checkPlayerTimer += Time.deltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
@@ -154,6 +157,11 @@ namespace Loom.ZombieBattleground
         {
             ResetCheckPlayerStatus();
             await _backendFacade.UnsubscribeEvent();
+        }
+
+        private void GameInitializedHandler()
+        {
+            _isCheckPlayerAvailableTimerStart = true;
         }
 
         public async Task CancelFindMatch()
@@ -345,7 +353,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
-            IsCheckPlayerAvailableTimerStart = false;
+            _isCheckPlayerAvailableTimerStart = false;
             _checkPlayerTimer = 0f;
         }
     }
