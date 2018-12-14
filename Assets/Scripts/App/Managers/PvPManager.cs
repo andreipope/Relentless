@@ -179,10 +179,17 @@ namespace Loom.ZombieBattleground
             await _backendFacade.UnsubscribeEvent();
             if (matchIdToCancel != null)
             {
-                await _backendFacade.CancelFindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    matchIdToCancel.Value
-                );
+                try
+                {
+                    await _backendFacade.CancelFindMatch(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        matchIdToCancel.Value
+                    );
+                }
+                catch(Exception e)
+                {
+                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                }
             }
 
             _queueManager.Clear();
@@ -303,9 +310,21 @@ namespace Loom.ZombieBattleground
         private async Task LoadInitialGameState()
         {
             _isInternetBroken = false;
-            GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
-            InitialGameState = getGameStateResponse.GameState;
-            Debug.LogWarning("Initial game state:\n" + InitialGameState);
+
+            try
+            {
+                GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
+                InitialGameState = getGameStateResponse.GameState;
+
+                Debug.LogWarning("Initial game state:\n" + InitialGameState);
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL, 0f);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+            }
         }
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
