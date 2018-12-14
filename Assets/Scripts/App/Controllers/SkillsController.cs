@@ -808,8 +808,6 @@ namespace Loom.ZombieBattleground
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicPowerVFX"),
                     unit, isIgnoreCastVfx: true);
 
-                _battlegroundController.GetBoardUnitViewByModel(unit).EnabledToxicPowerGlow();
-
                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
