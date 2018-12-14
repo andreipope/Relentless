@@ -581,6 +581,8 @@ namespace Loom.ZombieBattleground
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
                                 {
+                                    card.HandBoardCard.GameObject.SetActive(false);
+
                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
