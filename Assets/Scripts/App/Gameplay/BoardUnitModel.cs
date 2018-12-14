@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsDead { get; private set; }
 
-        public InstanceId InstanceId { get; }
+        public InstanceId InstanceId => Card.InstanceId;
 
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 

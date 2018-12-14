@@ -16,6 +16,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.TestTools;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.Protobuf.DebugCheatsConfiguration;
+using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
+using Player = Loom.ZombieBattleground.Player;
 
 public class TestHelper
 {
@@ -172,8 +175,9 @@ public class TestHelper
     {
         // HACK: Unity sometimes log an harmless internal assert, but the testing framework trips on it
         LogAssert.ignoreFailingMessages = true;
+        Time.timeScale = 3;
 
-        _testStartTime = Time.unscaledTime;
+        _testStartTime = Time.time;
 
         if (!_initialized)
         {
@@ -344,7 +348,7 @@ public class TestHelper
     /// </summary>
     public float GetTestTime ()
     {
-        return Time.unscaledTime - _testStartTime;
+        return Time.time - _testStartTime;
     }
 
     /// <summary>
@@ -356,7 +360,7 @@ public class TestHelper
         Debug.LogWarningFormat (
            "\"{0}\" test successfully finished in {1} seconds.",
            _testName,
-           Time.unscaledTime - _testStartTime
+           Time.time - _testStartTime
        );
 
         yield return LetsThink ();
@@ -714,7 +718,7 @@ public class TestHelper
             cursorPosition = Vector2.Lerp (from, to, interpolation / duration);
             _fakeCursorTransform.position = cursorPosition;
 
-            interpolation = Mathf.Min (interpolation + Time.unscaledTime, duration);
+            interpolation = Mathf.Min (interpolation + Time.time, duration);
 
             yield return null;
         }
@@ -1086,6 +1090,9 @@ public class TestHelper
     {
         return _pvpManager.PvPTags;
     }
+
+    public Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration DebugCheatsConfiguration
+        => _pvpManager.DebugCheats;
 
     #endregion
 
@@ -1548,7 +1555,7 @@ public class TestHelper
         yield return null;
     }
 
-    private IEnumerator PlayCardFromHandToBoard (WorkingCard card)
+    public IEnumerator PlayCardFromHandToBoard (WorkingCard card)
     {
         bool needTargetForAbility = false;
 
@@ -2535,6 +2542,38 @@ public class TestHelper
 
     #endregion
 
+    public Player GetOpponentPlayer()
+    {
+        return _testBroker.GetPlayer(_opponent);
+    }
+
+    public WorkingCard GetCardInHandByInstanceId(InstanceId instanceId)
+    {
+        WorkingCard workingCard =
+            _testBroker.GetPlayer(_player)
+                .CardsInHand
+                .FirstOrDefault(card => card.InstanceId == instanceId);
+
+        if (workingCard == null)
+            throw new Exception($"Card {instanceId} not found in hand");
+
+        return workingCard;
+    }
+
+    public BoardUnitView GetCardOnBoardByInstanceId(InstanceId instanceId)
+    {
+        Player player = _testBroker.GetPlayer(_player);
+        BoardUnitView boardUnitView =
+            player
+                .BoardCards
+                .FirstOrDefault(card => card.Model.InstanceId == instanceId);
+
+        if (boardUnitView == null)
+            throw new Exception($"Card {instanceId} not found on board");
+
+        return boardUnitView;
+    }
+
     /// <summary>
     /// Waits for a specific amount of time.
     /// </summary>
@@ -2610,8 +2649,6 @@ public class TestHelper
     {
         _battlegroundController.StopTurn ();
         GameObject.Find ("_1_btn_endturn").GetComponent<EndTurnButton> ().SetEnabled (false);
-
-        Debug.Log ("Ended turn");
 
         yield return null;
     }
@@ -2731,6 +2768,33 @@ public class TestHelper
     }
 
     /// <summary>
+    /// Checks if game has ended.
+    /// </summary>
+    public bool IsGameEnded ()
+    {
+        if (_gameplayManager == null || _gameplayManager.IsGameEnded)
+        {
+            return true;
+        }
+        else if (_gameplayManager.CurrentPlayer == null || _gameplayManager.OpponentPlayer == null)
+        {
+            return true;
+        }
+
+        int playerHP = _gameplayManager.CurrentPlayer.Defense;
+        int opponentHP = _gameplayManager.OpponentPlayer.Defense;
+
+        if (playerHP <= 0 || opponentHP <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Makes specified number of moves (if timeout allows).
     /// </summary>
     /// <param name="maxTurns">Max number of turns.</param>
@@ -2739,6 +2803,8 @@ public class TestHelper
         // if it doesn't end in 100 moves, end the game anyway
         for (int turns = 1; turns <= maxTurns; turns++)
         {
+            yield return LetsThink();
+
             Debug.Log ("a 0");
 
             yield return TurnStartedHandler ();
@@ -2770,33 +2836,6 @@ public class TestHelper
 
             if (IsGameEnded ())
                 break;
-        }
-    }
-
-    /// <summary>
-    /// Checks if game has ended.
-    /// </summary>
-    public bool IsGameEnded ()
-    {
-        if (_gameplayManager == null || _gameplayManager.IsGameEnded)
-        {
-            return true;
-        }
-        else if (_gameplayManager.CurrentPlayer == null || _gameplayManager.OpponentPlayer == null)
-        {
-            return true;
-        }
-
-        int playerHP = _gameplayManager.CurrentPlayer.Defense;
-        int opponentHP = _gameplayManager.OpponentPlayer.Defense;
-
-        if (playerHP <= 0 || opponentHP <= 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 
@@ -3339,6 +3378,68 @@ public class TestHelper
         Debug.LogWarning ("2");
     }
 
+
+    public IEnumerator PlayMoves(IList<Func<Task>> movesTasks)
+    {
+        yield return AssertCurrentPageName ("GameplayPage");
+
+        InitalizePlayer ();
+
+        yield return WaitUntilPlayerOrderIsDecided ();
+
+        yield return AssertMulliganPopupCameUp (
+            DecideWhichCardsToPick (),
+            null);
+
+        yield return WaitUntilOurFirstTurn();
+
+        {
+            foreach (Func<Task> movesTask in movesTasks)
+            {
+                Debug.Log ("!a 0");
+
+                //yield return CheckGooCard();
+
+                yield return TaskAsIEnumerator(movesTask());
+
+                Debug.Log ("!a 1");
+
+                if (IsGameEnded ())
+                    yield break;
+
+                yield return EndTurn ();
+
+                Debug.Log ("!a 2");
+
+                if (IsGameEnded ())
+                    break;
+                yield return WaitUntilOurTurnStarts ();
+
+                Debug.Log ("!a 3");
+
+                if (IsGameEnded ())
+                    break;
+
+                yield return WaitUntilInputIsUnblocked ();
+
+                Debug.Log ("!a 4");
+
+                if (IsGameEnded ())
+                    break;
+            }
+        }
+
+        Debug.LogWarning ("0");
+
+        yield return ClickGenericButton ("Button_Continue");
+
+        Debug.LogWarning ("1");
+
+        yield return AssertCurrentPageName ("HordeSelectionPage");
+
+        Debug.LogWarning ("2");
+    }
+
     /// <summary>
     /// Presses OK or GotIt button if it's on.
     /// </summary>
@@ -3402,19 +3503,33 @@ public class TestHelper
             matchConfirmed = true;
         }
 
+        client.DebugCheats = new Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration
+        {
+            Enabled = DebugCheatsConfiguration.Enabled,
+            CustomRandomSeed = DebugCheatsConfiguration.CustomRandomSeed
+        };
+
+        client.DeckId = 1;
+
         client.MatchMakingFlowController.MatchConfirmed += SecondClientMatchConfirmedHandler;
-        await client.MatchMakingFlowController.Start(1, null, GetPvPTags(), false, null);
+        await client.MatchMakingFlowController.Start(
+            client.DeckId,
+            client.CustomGameAddress,
+            GetPvPTags(),
+            client.UseBackendGameLogic,
+            client.DebugCheats
+            );
 
         while (!matchConfirmed)
         {
-            await Task.Delay(300);
+            await Task.Delay(200);
         }
     }
 
     /// <summary>
     /// Setups very dumb logic for the simulated opponent that does nothing and only skips turns.
     /// </summary>
-    public void SetupOpponentDebugClienToEndTurns()
+    public void SetupOpponentDebugClientToEndTurns()
     {
         MultiplayerDebugClient client = _opponentDebugClient;
 

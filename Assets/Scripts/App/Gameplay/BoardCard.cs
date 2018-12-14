@@ -45,6 +45,8 @@ namespace Loom.ZombieBattleground
 
         protected BattlegroundController BattlegroundController;
 
+        protected PlayerController PlayerController;
+
         protected GameObject GlowObject;
 
         protected SpriteRenderer BackgroundSprite;
@@ -92,6 +94,7 @@ namespace Loom.ZombieBattleground
             CardsController = GameplayManager.GetController<CardsController>();
             AbilitiesController = GameplayManager.GetController<AbilitiesController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+            PlayerController = GameplayManager.GetController<PlayerController>();
 
             GameObject = selfObject;
 
@@ -339,8 +342,7 @@ namespace Loom.ZombieBattleground
         public virtual bool CanBePlayed(Player owner)
         {
 #if !DEV_MODE
-            return GameplayManager.GetController<PlayerController>()
-                .IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+            return PlayerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
 #else
             return true;
 #endif

@@ -26,9 +26,12 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private PlayerActionFactory _playerActionFactory;
         private List<Card> _cardLibrary;
 
-        private bool _useBackendGameLogic = true;
+        private bool _useBackendGameLogic;
         private List<string> _pvpTags = new List<string>();
         private DebugCheatsConfiguration _debugCheats = new DebugCheatsConfiguration();
+        private Address? _customGameAddress;
+        private long _deckId;
+
         private double _lastKeepAliveTime;
 
         [JsonIgnore]
@@ -84,6 +87,18 @@ namespace Loom.ZombieBattleground.Editor.Tools
             set => _pvpTags = value;
         }
 
+        public Address? CustomGameAddress
+        {
+            get => _customGameAddress;
+            set => _customGameAddress = value;
+        }
+
+        public long DeckId
+        {
+            get => _deckId;
+            set => _deckId = value;
+        }
+
         public DebugCheatsConfiguration DebugCheats
         {
             get => _debugCheats;
@@ -106,7 +121,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint())
             {
-                Logger = new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] "))
+                //Logger = new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] "))
             };
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
@@ -153,11 +168,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 if (MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed)
                 {
-                    double timeSinceStartup;
 #if UNITY_EDITOR
-                    timeSinceStartup = UnityEditor.EditorApplication.timeSinceStartup;
+                    double timeSinceStartup = UnityEditor.EditorApplication.timeSinceStartup;
 #else
-                    timeSinceStartup = Time.realtimeSinceStartup;
+                    double timeSinceStartup = Time.realtimeSinceStartup;
 #endif
                     if (timeSinceStartup - _lastKeepAliveTime >= KeepAliveInterval)
                     {

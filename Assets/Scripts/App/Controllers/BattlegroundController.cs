@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
                         completeCallback?.Invoke();
                     }
 
-                }, Time.deltaTime * Application.targetFrameRate / 2f);
+                }, Time.deltaTime * 60f / 2f);
             };
 
             _actionsQueueController.ForceContinueAction(boardUnitView.Model.ActionForDying);
