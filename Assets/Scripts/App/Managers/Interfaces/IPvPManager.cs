@@ -41,6 +41,8 @@ namespace Loom.ZombieBattleground
 
         bool IsCurrentPlayer();
 
+        bool IsCheckPlayerAvailableTimerStart { get; set; }
+
         Task CancelFindMatch();
         void MatchIsStarting(FindMatchResponse findMatchResponse);
     }

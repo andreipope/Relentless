@@ -52,6 +52,8 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
+        public bool IsCheckPlayerAvailableTimerStart { get; set; }
+
         public List<string> PvPTags { get; set; }
 
         private IUIManager _uiManager;
@@ -65,7 +67,6 @@ namespace Loom.ZombieBattleground
         private bool _isMatchmakingInProgress;
         private float _matchmakingTimeoutCounter;
 
-        private bool _isCheckPlayerAvailableTimerStart;
         private float _checkPlayerTimer;
 
         private bool _isInternetBroken = false;
@@ -92,7 +93,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isCheckPlayerAvailableTimerStart && !_gameplayManager.IsGameEnded) 
+            if (IsCheckPlayerAvailableTimerStart && !_gameplayManager.IsGameEnded) 
             {
                 _checkPlayerTimer += Time.deltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
@@ -206,7 +207,6 @@ namespace Loom.ZombieBattleground
 
             GameStartedActionReceived?.Invoke();
 
-            _isCheckPlayerAvailableTimerStart = true;
             _queueManager.Active = true;
         }
 
@@ -345,7 +345,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
-            _isCheckPlayerAvailableTimerStart = false;
+            IsCheckPlayerAvailableTimerStart = false;
             _checkPlayerTimer = 0f;
         }
     }

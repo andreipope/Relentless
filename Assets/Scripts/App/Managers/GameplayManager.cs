@@ -354,6 +354,8 @@ namespace Loom.ZombieBattleground
 
             IsGameEnded = false;
 
+            _pvpManager.IsCheckPlayerAvailableTimerStart = true;
+
             GameInitialized?.Invoke();
         }
     }
