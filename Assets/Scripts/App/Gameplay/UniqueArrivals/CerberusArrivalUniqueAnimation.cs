@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class CerberusArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
                 InternalTools.DoActionDelayed(() =>
                 {
                     Object.Destroy(animationVFX);
+
+                    endArrivalCallback?.Invoke();
 
                     if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                     {

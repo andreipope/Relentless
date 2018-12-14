@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChernoBillArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -36,6 +36,8 @@ namespace Loom.ZombieBattleground
                 unitView.battleframeAnimator.Play(0, -1, 1);
 
                 Object.Destroy(animationVFX);
+
+                endArrivalCallback?.Invoke();
 
                 if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {

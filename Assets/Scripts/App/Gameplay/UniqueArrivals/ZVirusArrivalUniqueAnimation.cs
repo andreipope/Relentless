@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class ZVirusArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -40,6 +40,8 @@ namespace Loom.ZombieBattleground
                 {
                     unitView.Transform.SetParent(null, true);
                     Object.Destroy(animationVFX);
+
+                    endArrivalCallback?.Invoke();
 
                     if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                     {

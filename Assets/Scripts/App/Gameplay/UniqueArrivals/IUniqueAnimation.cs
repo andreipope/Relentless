@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
         public virtual void Play() { }
 
         public virtual void Play(BoardObject boardObject) { }
-        public virtual void Play(BoardObject boardObject, Action startGeneralArrivalCallback) { }
+        public virtual void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback) { }
 
         public virtual void PlaySound(string clipTitle)
         {
