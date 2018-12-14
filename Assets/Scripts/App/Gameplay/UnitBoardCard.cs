@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         private int _hp, _damage;
 
+        private int _initialHp, _initialDamage;
+
         public UnitBoardCard(GameObject selfObject)
             : base(selfObject)
         {
@@ -56,19 +58,21 @@ namespace Loom.ZombieBattleground
             Damage = card.InstanceCard.Damage;
             Health = card.InstanceCard.Health;
 
-            AttackText.text = Damage.ToString();
-            DefenseText.text = Health.ToString();
+            _initialDamage = Damage;
+            _initialHp = Health;
+
+            DrawStats();
 
             TypeSprite.sprite =
                 LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", card.InstanceCard.CardType + "_icon"));
 
             DamageChangedEvent += (oldValue, newValue) =>
             {
-                AttackText.text = newValue.ToString();
+                DrawStats();
             };
             HealthChangedEvent += (oldValue, newValue) =>
             {
-                DefenseText.text = newValue.ToString();
+                DrawStats();
             };
         }
 
@@ -76,11 +80,41 @@ namespace Loom.ZombieBattleground
         {
             base.Init(card, amount);
 
-            AttackText.text = card.Damage.ToString();
-            DefenseText.text = card.Health.ToString();
+            Damage = card.Damage;
+            Health = card.Health;
+
+            _initialDamage = Damage;
+            _initialHp = Health;
+
+            DrawStats();
 
             TypeSprite.sprite =
                 LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.CardType + "_icon"));
+        }
+
+        private void DrawStats()
+        {
+            AttackText.text = Damage.ToString();
+            DefenseText.text = Health.ToString();
+
+            FillColor(Damage, _initialDamage, AttackText);
+            FillColor(Health, _initialHp, DefenseText);
+        }
+
+        private void FillColor(int stat, int initialStat, TextMeshPro text)
+        {
+            if (stat > initialStat)
+            {
+                text.color = Color.green;
+            }
+            else if (stat < initialStat)
+            {
+                text.color = Color.red;
+            }
+            else
+            {
+                text.color = Color.white;
+            }
         }
     }
 }
