@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground
 
         private int _delayedTurnsLeft;
 
+        public bool ActionDone { get; protected set; }
+
         public DelayedAbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -22,8 +24,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
         }
 
@@ -31,40 +31,54 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (GetCaller() != null)
-            {
-                CountDelay();
-            }
-            else
-            {
-                Deactivate();
-            }
+            if (CheckActionEnded())
+                return;
+
+            CountDelay();
         }
 
         protected override void TurnStartedHandler()
         {
             base.TurnStartedHandler();
 
-            if (GetCaller() != null)
-            {
-                CountDelay();
-            }
-            else
-            {
-                Deactivate();
-            }
+            if (CheckActionEnded())
+                return;
+
+            CountDelay();
         }
 
         private void CountDelay()
         {
-            if (_delayedTurnsLeft == 0)
+            CheckDelayEnded();
+
+            _delayedTurnsLeft--;
+        }
+
+        private void CheckDelayEnded()
+        {
+            if (_delayedTurnsLeft <= 0 && !ActionDone)
             {
                 Action();
 
+                ActionDone = true;
+
+                Deactivate();
+            }
+        }
+
+        private bool CheckActionEnded()
+        {
+            if (GetCaller() == null)
+            {
+                ActionDone = true;
+            }
+
+            if(ActionDone)
+            {
                 Deactivate();
             }
 
-            _delayedTurnsLeft--;
+            return ActionDone;
         }
     }
 }

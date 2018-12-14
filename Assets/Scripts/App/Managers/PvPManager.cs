@@ -52,6 +52,8 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
+        private bool _isCheckPlayerAvailableTimerStart;
+
         public List<string> PvPTags { get; set; }
 
         private IUIManager _uiManager;
@@ -65,7 +67,6 @@ namespace Loom.ZombieBattleground
         private bool _isMatchmakingInProgress;
         private float _matchmakingTimeoutCounter;
 
-        private bool _isCheckPlayerAvailableTimerStart;
         private float _checkPlayerTimer;
 
         private bool _isInternetBroken = false;
@@ -81,6 +82,9 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
+
+            //TODO uncomment this line once we decide to start using KeepAlive
+            //_gameplayManager.GameInitialized += GameInitializedHandler;
 
             if (PvPTags == null)
             {
@@ -155,6 +159,11 @@ namespace Loom.ZombieBattleground
             await _backendFacade.UnsubscribeEvent();
         }
 
+        private void GameInitializedHandler()
+        {
+            _isCheckPlayerAvailableTimerStart = true;
+        }
+
         public async Task CancelFindMatch()
         {
             ResetCheckPlayerStatus();
@@ -170,10 +179,17 @@ namespace Loom.ZombieBattleground
             await _backendFacade.UnsubscribeEvent();
             if (matchIdToCancel != null)
             {
-                await _backendFacade.CancelFindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    matchIdToCancel.Value
-                );
+                try
+                {
+                    await _backendFacade.CancelFindMatch(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        matchIdToCancel.Value
+                    );
+                }
+                catch(Exception e)
+                {
+                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                }
             }
 
             _queueManager.Clear();
@@ -206,7 +222,6 @@ namespace Loom.ZombieBattleground
 
             GameStartedActionReceived?.Invoke();
 
-            _isCheckPlayerAvailableTimerStart = true;
             _queueManager.Active = true;
         }
 
@@ -295,9 +310,21 @@ namespace Loom.ZombieBattleground
         private async Task LoadInitialGameState()
         {
             _isInternetBroken = false;
-            GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
-            InitialGameState = getGameStateResponse.GameState;
-            Debug.LogWarning("Initial game state:\n" + InitialGameState);
+
+            try
+            {
+                GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
+                InitialGameState = getGameStateResponse.GameState;
+
+                Debug.LogWarning("Initial game state:\n" + InitialGameState);
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL, 0f);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+            }
         }
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)

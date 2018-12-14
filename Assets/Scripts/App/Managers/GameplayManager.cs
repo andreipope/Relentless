@@ -24,8 +24,6 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
-        private IPvPManager _pvpManager;
-
         private List<IController> _controllers;
 
         private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
@@ -220,7 +218,6 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _pvpManager = GameClient.Get<IPvPManager>();
 
             InitControllers();
 

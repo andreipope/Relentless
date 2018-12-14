@@ -33,6 +33,9 @@ namespace Loom.ZombieBattleground
 
         public event Action<PointerEventData, GameObject> DragEnded;
 
+        public event Action<GameObject> OnParticleCollisionEvent;
+
+
         public void OnBeginDrag(PointerEventData eventData)
         {
             DragBegan?.Invoke(eventData, gameObject);
@@ -96,6 +99,11 @@ namespace Loom.ZombieBattleground
         private void OnDestroy()
         {
             Destroying?.Invoke(gameObject);
+        }
+
+        public void OnParticleCollision(GameObject other)
+        {
+            OnParticleCollisionEvent?.Invoke(other);
         }
     }
 }

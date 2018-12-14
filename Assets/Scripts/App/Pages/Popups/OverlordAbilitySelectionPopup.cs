@@ -239,7 +239,16 @@ namespace Loom.ZombieBattleground
                 _selectedDeck.PrimarySkill = _selectedHero.PrimarySkill;
                 _selectedDeck.SecondarySkill = _selectedHero.SecondarySkill;
 
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _selectedDeck);
+                try
+                {
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _selectedDeck);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+
+                    OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
+                }
             }
 
             PopupHiding?.Invoke();
@@ -252,6 +261,13 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+
+        private void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            _uiManager.DrawPopup<WarningPopup>(msg);
+        }
 
         private void FillOverlordAbilities()
         {

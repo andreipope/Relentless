@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.Client;
@@ -105,14 +106,21 @@ namespace Loom.ZombieBattleground
         {
             ResetCustomModes();
 
-            GameModeList gameModeList = await _backendFacade.GetCustomGameModeList();
-
-            if (gameModeList != null)
+            try
             {
-                foreach (GameMode gameMode in gameModeList.GameModes)
+                GameModeList gameModeList = await _backendFacade.GetCustomGameModeList();
+
+                if (gameModeList != null)
                 {
-                    _customModesList.Add(new CustomModeItem(_parentOfModesList, gameMode));
+                    foreach (GameMode gameMode in gameModeList.GameModes)
+                    {
+                        _customModesList.Add(new CustomModeItem(_parentOfModesList, gameMode));
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("save deck exception === " + e.Message);
             }
         }
 
@@ -185,20 +193,27 @@ namespace Loom.ZombieBattleground
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-                GetCustomGameModeCustomUiResponse customUiResponse =
-                    await GameClient.Get<BackendFacade>()
-                        .GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
+                try
+                {
+                    GetCustomGameModeCustomUiResponse customUiResponse =
+                        await GameClient.Get<BackendFacade>()
+                            .GetGameModeCustomUi(Address.FromProtobufAddress(Mode.Address));
 
-                RepeatedField<CustomGameModeCustomUiElement> customUiElements = customUiResponse?.UiElements;
-                if (customUiElements?.Count> 0)
-                {
-                    GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
-                    GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(Mode, customUiElements);
+                    RepeatedField<CustomGameModeCustomUiElement> customUiElements = customUiResponse?.UiElements;
+                    if (customUiElements?.Count > 0)
+                    {
+                        GameClient.Get<IUIManager>().GetPage<CustomGameModeListPage>().Hide();
+                        GameClient.Get<IUIManager>().GetPage<CustomGameModeCustomUiPage>().Show(Mode, customUiElements);
+                    }
+                    else
+                    {
+                        _pvpManager.CustomGameModeAddress = Address.FromProtobufAddress(Mode.Address);
+                        _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    _pvpManager.CustomGameModeAddress = Address.FromProtobufAddress(Mode.Address);
-                    _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
+                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
                 }
             }
         }
