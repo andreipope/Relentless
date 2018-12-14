@@ -1194,7 +1194,7 @@ namespace Loom.ZombieBattleground
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                        Target = target,
+                        Target = unit,
                     });
                 });
                 unit.ChangeModelVisibility(false);
