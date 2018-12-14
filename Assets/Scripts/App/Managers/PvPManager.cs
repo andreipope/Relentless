@@ -188,7 +188,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch(Exception e)
                 {
-                    Debug.Log("save deck exception === " + e.Message);
+                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
                 }
             }
 
@@ -320,7 +320,10 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log("save deck exception === " + e.Message);
+                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL, 0f);
+                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
             }
         }
 
