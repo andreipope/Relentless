@@ -106,13 +106,20 @@ namespace Loom.ZombieBattleground
                         elementGameObject.GetComponentInChildren<TextMeshProUGUI>().text = customUiElement.Button.Title;
                         elementGameObject.GetComponent<Button>().onClick.AddListener(async () =>
                         {
-                            await _backendFacade.CallCustomGameModeFunction(
-                                Address.FromProtobufAddress(GameMode.Address),
-                                customUiElement.Button.CallData.ToByteArray()
-                                );
-                            GetCustomGameModeCustomUiResponse customUiResponse =
-                                await _backendFacade.GetGameModeCustomUi(Address.FromProtobufAddress(GameMode.Address));
-                            RefreshCustomUi(customUiResponse.UiElements.ToArray());
+                            try
+                            {
+                                await _backendFacade.CallCustomGameModeFunction(
+                                    Address.FromProtobufAddress(GameMode.Address),
+                                    customUiElement.Button.CallData.ToByteArray()
+                                    );
+                                GetCustomGameModeCustomUiResponse customUiResponse =
+                                    await _backendFacade.GetGameModeCustomUi(Address.FromProtobufAddress(GameMode.Address));
+                                RefreshCustomUi(customUiResponse.UiElements.ToArray());
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                            }
                         });
                         break;
                     default:
