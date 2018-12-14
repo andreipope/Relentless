@@ -213,7 +213,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("save deck exception === " + e.Message);
+                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
                 }
             }
         }

@@ -171,7 +171,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.Log("save deck exception === " + e);
+                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
 
                 OpenAlertDialog("Not able to Save Deck: \n" + e.Message);
             }
