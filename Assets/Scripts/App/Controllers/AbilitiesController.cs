@@ -255,7 +255,8 @@ namespace Loom.ZombieBattleground
 
                 for (int i = 0; i < abilities.Count; i++)
                 {
-                    if (attackedCard.CardSetType == abilities[i].AbilitySetType)
+                    if (attackedCard.CardSetType == abilities[i].AbilitySetType &&
+                        abilities[i].CallType == Enumerators.AbilityCallType.PERMANENT)
                     {
                         value += abilities[i].Value;
                     }

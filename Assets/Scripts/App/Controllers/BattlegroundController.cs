@@ -483,7 +483,7 @@ namespace Loom.ZombieBattleground
                          _timerManager.AddTimer((x) =>
                          {
                              StartTurn();
-                         }, null, 4f);
+                         }, null, Constants.DelayBetweenYourTurnPopup);
                      }
                      else
                      {
