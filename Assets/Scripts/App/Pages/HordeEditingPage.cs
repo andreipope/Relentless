@@ -583,9 +583,8 @@ namespace Loom.ZombieBattleground
         public void AddCardToDeck(DeckBuilderCard sender, IReadOnlyCard card)
         {
             if (_currentDeck == null)
-            {
                 return;
-            }
+            
 
             if (_against[_currentHero.HeroElement] == card.CardSetType)
             {
@@ -1025,9 +1024,8 @@ namespace Loom.ZombieBattleground
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (_isDragging)
-            {
                 return;
-            }
+            
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
@@ -1046,9 +1044,7 @@ namespace Loom.ZombieBattleground
         private void BoardCardArmyDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            {
-                return;
-            }
+                return;            
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -1075,9 +1071,8 @@ namespace Loom.ZombieBattleground
         private void BoardCardHordeDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            {
                 return;
-            }
+            
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -1105,9 +1100,8 @@ namespace Loom.ZombieBattleground
         private void BoardCardDragUpdatedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            {
                 return;
-            }
+            
 
             Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             position.z = _draggingObject.transform.position.z;
