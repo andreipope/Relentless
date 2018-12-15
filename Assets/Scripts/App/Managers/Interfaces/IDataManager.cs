@@ -35,8 +35,6 @@ namespace Loom.ZombieBattleground
 
         TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank);
 
-        void DeleteData();
-
         string DecryptData(string data);
 
         string EncryptData(string data);

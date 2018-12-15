@@ -484,7 +484,7 @@ namespace Loom.ZombieBattleground
                          {
                              StartTurn();
                              completeCallback?.Invoke();
-                         }, null, 4f);
+                         }, null, Constants.DelayBetweenYourTurnPopup);
                      }
                      else
                      {
@@ -596,7 +596,7 @@ namespace Loom.ZombieBattleground
             }
 
             _rearrangingBottomRealTimeSequence = sequence;
-            sequence.OnComplete(
+            sequence.AppendCallback(
                 () =>
                 {
                     onComplete?.Invoke();
@@ -654,7 +654,7 @@ namespace Loom.ZombieBattleground
             }
 
             _rearrangingTopRealTimeSequence = sequence;
-            sequence.OnComplete(
+            sequence.AppendCallback(
                 () =>
                 {
                     onComplete?.Invoke();

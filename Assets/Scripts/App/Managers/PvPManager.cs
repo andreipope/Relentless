@@ -187,6 +187,7 @@ namespace Loom.ZombieBattleground
             finally
             {
                 _matchmakingBusySemaphore.Release();
+                ResetCheckPlayerStatus();
             }
         }
 

@@ -137,7 +137,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
-            if (Constants.MulliganEnabled)
+            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
                 {
@@ -581,6 +581,8 @@ namespace Loom.ZombieBattleground
                                 _gameplayManager.CurrentPlayer.BoardCards,
                                 () =>
                                 {
+                                    card.HandBoardCard.GameObject.SetActive(false);
+
                                     _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
@@ -793,6 +795,9 @@ namespace Loom.ZombieBattleground
                             _timerManager.AddTimer(
                                 x =>
                                 {
+                                    if (_gameplayManager.IsGameEnded)
+                                        return;
+
                                     completePlayCardCallback?.Invoke(card, target);
                                 },
                                 null,

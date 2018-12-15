@@ -60,6 +60,7 @@ namespace Loom.ZombieBattleground
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
+            AddService<PushNotificationManager>(new PushNotificationManager());
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()

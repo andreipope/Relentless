@@ -165,7 +165,23 @@ namespace Loom.ZombieBattleground
 
         private async void SaveDeck(Deck deck)
         {
-            await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+            try
+            {
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+
+                OpenAlertDialog("Not able to Save Deck: \n" + e.Message);
+            }
+        }
+
+        private void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            GameClient.Get<IUIManager>().DrawPopup<WarningPopup>(msg);
         }
 
         public class LevelReward

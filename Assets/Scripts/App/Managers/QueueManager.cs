@@ -60,12 +60,12 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
-                            Debug.LogError(" Time out == " + exception);
+                            Debug.LogWarning(" Time out == " + exception);
                             ShowConnectionPopup();
                         }
                         catch (Exception exception)
                         {
-                            Debug.LogError(" other == " + exception);
+                            Debug.LogWarning(" other == " + exception);
                             ShowConnectionPopup();
                         }
                         break;
@@ -77,12 +77,12 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
-                            Debug.LogError(" Time out == " + exception);
+                            Debug.LogWarning(" Time out == " + exception);
                             ShowConnectionPopup();
                         }
                         catch (Exception exception)
                         {
-                            Debug.LogError(" other == " + exception);
+                            Debug.LogWarning(" other == " + exception);
                             ShowConnectionPopup();
                         }
                         break;

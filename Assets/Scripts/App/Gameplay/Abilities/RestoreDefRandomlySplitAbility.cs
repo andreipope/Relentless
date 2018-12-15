@@ -3,6 +3,8 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -88,15 +90,36 @@ namespace Loom.ZombieBattleground
             int blocksCount = _targets.Count;
             BoardObject currentTarget = null;
 
+            int deltaHealth = 0;
+
             while (maxCount > 0)
             {
-                defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, blocksCount > Count ? maxCount : _targets.Count + 1);
-
                 currentTarget = _targets[UnityEngine.Random.Range(0, _targets.Count)];
+               
+                switch (currentTarget)
+                {
+                    case BoardUnitModel unit:
+                        deltaHealth = unit.MaxCurrentHp - unit.CurrentHp;
+                        break;
+                    case Player player:
+                        deltaHealth = player.MaxCurrentHp - player.Defense;
+                        break;
+                }
+
+                defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, maxCount);
+                defenseValue = Mathf.Clamp(defenseValue, 0, deltaHealth);
+                
                 maxCount -= defenseValue;
 
-                RestoreDefenseOfTarget(currentTarget, defenseValue);
-                _targets.Remove(currentTarget);
+                if (defenseValue > 0)
+                {
+                    RestoreDefenseOfTarget(currentTarget, defenseValue);
+                }
+
+                if (defenseValue == deltaHealth)
+                {
+                    _targets.Remove(currentTarget);
+                }
 
                 abilityTargets.Add(new ParametrizedAbilityBoardObject()
                 {
@@ -106,6 +129,11 @@ namespace Loom.ZombieBattleground
                         Defense = defenseValue
                     }
                 });
+
+                if (_targets.Count == 0)
+                {
+                    maxCount = 0;
+                }
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, abilityTargets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);

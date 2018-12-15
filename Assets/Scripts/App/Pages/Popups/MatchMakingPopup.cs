@@ -62,6 +62,7 @@ namespace Loom.ZombieBattleground
             _cancelMatchmakingButton = _matchMakingGroup.Find("Button_Cancel").GetComponent<Button>();
             _cancelMatchmakingButton.onClick.AddListener(PressedCancelMatchmakingHandler);
 
+            _cancelMatchmakingButton.gameObject.SetActive(true);
             SetUIState(MatchMakingFlowController.MatchMakingState.WaitingPeriod);
         }
 
@@ -101,8 +102,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case MatchMakingFlowController.MatchMakingState.ConfirmingWithOpponent:
                     _generalText.text = "Confirming opponent status...";
-                    break;
-                case MatchMakingFlowController.MatchMakingState.Confirmed:
+                    _cancelMatchmakingButton.gameObject.SetActive(false);
                     break;
                 case MatchMakingFlowController.MatchMakingState.NotStarted:
                     break;

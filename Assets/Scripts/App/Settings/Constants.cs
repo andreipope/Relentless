@@ -92,6 +92,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
 
+        internal const float DelayBetweenYourTurnPopup = 2.1f;
+
         internal static Vector3 VfxOffset = Vector3.zero;
 
         // SOUNDS VOLUME'S
