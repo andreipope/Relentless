@@ -379,7 +379,12 @@ namespace Loom.ZombieBattleground
                     try
                     {
                         ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedDecksData = new DecksData(listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList());
+                        CachedDecksData =
+                            new DecksData(
+                                listDecksResponse.Decks != null ?
+                                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
+                                    new List<Deck>()
+                            );
                     }
                     catch (Exception)
                     {
