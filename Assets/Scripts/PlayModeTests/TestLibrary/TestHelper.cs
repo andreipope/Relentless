@@ -23,19 +23,25 @@ using Player = Loom.ZombieBattleground.Player;
 public class TestHelper
 {
     /// <summary>
+    /// When false, tests are executed as fast as possible.
+    /// When true, they are executed slowly to easy debugging.
+    /// </summary>
+    private const bool DebugTest = false;
+
+    /// <summary>
     /// To be in line with AI Brain, 1.1f was taken as value from AIController.
     /// </summary>
-    private const float DefaultThinkTime = 0f;
+    private const float DefaultThinkTime = DebugTest ? 1.1f : 0f;
 
     /// <summary>
     /// Delay between main menu transition clicks.
     /// </summary>
-    private const float DefaultMainMenuTransitionDelay = 0f;
+    private const float DefaultMainMenuTransitionDelay = DebugTest ? 1f : 0f;
 
     /// <summary>
     /// Time scale to use during tests.
     /// </summary>
-    public const int TestTimeScale = 50;
+    public const int TestTimeScale = DebugTest ? 1 : 50;
 
     private enum TesterType
     {

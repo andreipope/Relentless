@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
@@ -17,7 +18,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
     [Serializable]
     public class MultiplayerDebugClient
     {
-        private const float KeepAliveInterval = 15f;
+        private const float KeepAliveInterval = Constants.PvPCheckPlayerAvailableMaxTime;
 
         private BackendFacade _backendFacade;
         private UserDataModel _userDataModel;
