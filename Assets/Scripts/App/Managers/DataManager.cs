@@ -125,28 +125,6 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        public void DeleteData()
-        {
-            InitCachedData();
-            FileInfo[] files = _dir.GetFiles();
-
-            foreach (FileInfo file in files)
-            {
-                if (_cacheDataFileNames.Values.Any(path => path.EndsWith(file.Name)) ||
-                    file.Extension.Equals("dat", StringComparison.InvariantCultureIgnoreCase) ||
-                    file.Name.Contains(Constants.VersionFileResolution))
-                {
-                    file.Delete();
-                }
-            }
-
-            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
-            {
-            }
-
-            PlayerPrefs.DeleteAll();
-        }
-
         public Task SaveCache(Enumerators.CacheDataType type)
         {
             string dataPath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
@@ -284,10 +262,11 @@ namespace Loom.ZombieBattleground
             FileInfo[] files = _dir.GetFiles();
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains(Constants.VersionFileResolution))
+                if (file.Name.Contains(Constants.VersionFileResolution) ||
+                    _cacheDataFileNames.Values.Any(path => path.EndsWith(file.Name)) ||
+                    file.Extension.Equals("dat", StringComparison.InvariantCultureIgnoreCase))
                 {
                     file.Delete();
-                    break;
                 }
             }
 
