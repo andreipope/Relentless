@@ -101,7 +101,7 @@ public class MultiplayerTests
             async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },*/
             async () =>
             {
-                await IEnumeratorAsTask(
+                await TestHelper.IEnumeratorAsTask(
                     _testHelper.PlayCardFromHandToBoard(
                         _testHelper.GetCardInHandByInstanceId(new InstanceId(36)))
                     );
@@ -227,16 +227,10 @@ public class MultiplayerTests
         yield return _testHelper.PlayMoves(localMoves);
     }
 
-    private async Task IEnumeratorAsTask(IEnumerator enumerator)
-    {
-        while (enumerator.MoveNext())
-        {
-            await Task.Delay(100);
-        }
-    }
+
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (50 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A1_MatchmakingCancel ()
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
@@ -274,7 +268,7 @@ public class MultiplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (50 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A2_MatchmakingTimeout ()
     {
         _testHelper.SetTestName ("PvP - Matchmaking Cancel");
@@ -308,7 +302,7 @@ public class MultiplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (50 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A3_MatchmakeAndQuit ()
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Quit");
@@ -335,7 +329,6 @@ public class MultiplayerTests
         yield return _testHelper.MainMenuTransition ("Button_Battle");
 
         yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndConnectOpponentDebugClient());
-        _testHelper.SetupOpponentDebugClientToEndTurns();
         yield return TestHelper.TaskAsIEnumerator(_testHelper.MatchmakeOpponentDebugClient());
 
         yield return _testHelper.AssertCurrentPageName ("GameplayPage");
@@ -350,7 +343,7 @@ public class MultiplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (50 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A4_MatchmakeMakeOneMoveAndQuit ()
     {
         _testHelper.SetTestName ("PvP - Matchmake, Make One Move And Play");
@@ -387,7 +380,7 @@ public class MultiplayerTests
     }
 
     [UnityTest]
-    [Timeout (900000)]
+    [Timeout (300 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A4_MatchmakeAndPlay ()
     {
         _testHelper.SetTestName ("PvP - Matchmaking And Play");
@@ -421,7 +414,7 @@ public class MultiplayerTests
     }
 
     [UnityTest]
-    [Timeout (500000)]
+    [Timeout (50 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A5_MatchmakingCancelAndMatchmake ()
     {
         _testHelper.SetTestName ("PvP - Create a Horde and save");
@@ -527,7 +520,7 @@ public class MultiplayerPassiveTests
     #endregion
 
     [UnityTest]
-    [Timeout (1800000)]
+    [Timeout (180 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A1_MatchmakeAndPlay ()
     {
         _testHelper.SetTestName ("PvP - Passive Matchmake And Play");
