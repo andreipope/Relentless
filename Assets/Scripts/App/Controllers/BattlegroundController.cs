@@ -483,14 +483,14 @@ namespace Loom.ZombieBattleground
                          _timerManager.AddTimer((x) =>
                          {
                              StartTurn();
+                             completeCallback?.Invoke();
                          }, null, 4f);
                      }
                      else
                      {
                          StartTurn();
+                         completeCallback?.Invoke();
                      }
-
-                     completeCallback?.Invoke();
                  },  Enumerators.QueueActionType.StopTurn);
         }
 

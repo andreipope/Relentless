@@ -66,7 +66,6 @@ namespace Loom.ZombieBattleground
             Action<object[]> handler, object[] parameters = null, float time = 1, bool loop = false,
             bool storeTimer = false)
         {
-            Debug.Log("add timer " + handler.Method + " for " + time);
             Timer timer = new Timer(handler, parameters, time, loop);
             timer.Index = _timersCount++;
 
@@ -139,7 +138,6 @@ namespace Loom.ZombieBattleground
             _currentTime -= Time.deltaTime;
             if (_currentTime < 0)
             {
-                Debug.Log("end timer " + Handler.Method + " for " + _time);
                 Handler(Parameters);
 
                 if (_loop)

@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
         {
             if (_isCheckPlayerAvailableTimerStart)
             {
-                _checkPlayerTimer += Time.deltaTime;
+                _checkPlayerTimer += Time.unscaledDeltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;

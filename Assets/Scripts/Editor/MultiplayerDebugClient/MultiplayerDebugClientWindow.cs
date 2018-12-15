@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                     "PvP Tags (separate with |)",
                                     String.Join("|", DebugClient.PvPTags)
                                 )
-                                .Split('|')
+                                .Split(new [] {'|'}, StringSplitOptions.RemoveEmptyEntries)
                                 .ToList();
                         EditorGUIUtility.labelWidth = 0;
                         DebugClient.UseBackendGameLogic = EditorGUILayout.ToggleLeft("Use Backend Game Logic", DebugClient.UseBackendGameLogic);

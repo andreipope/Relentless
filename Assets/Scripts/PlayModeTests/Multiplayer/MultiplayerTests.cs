@@ -45,7 +45,7 @@ public class MultiplayerTests
     #endregion
 
     [UnityTest]
-    [Timeout(1500000)]
+    [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A0_PlayDefinedGame()
     {
         _testHelper.SetTestName ("PvP - Defined Game");
@@ -81,6 +81,8 @@ public class MultiplayerTests
 
         IList<Func<Task>> localMoves = new List<Func<Task>>
         {
+            async () => { await Task.CompletedTask; },
+            async () => { await Task.CompletedTask; },
             async () => { await Task.CompletedTask; },
             async () => { await Task.CompletedTask; },
             async () => { await Task.CompletedTask; },
