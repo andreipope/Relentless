@@ -369,7 +369,7 @@ public class TestHelper
     /// <remarks>Generally is used at the of the test, to report the time it took to run it.</remarks>
     public IEnumerator ReportTestTime ()
     {
-        Debug.LogWarningFormat (
+        Debug.LogFormat (
            "\"{0}\" test successfully finished in {1} seconds.",
            _testName,
            Time.unscaledTime - _testStartTime
@@ -1588,7 +1588,7 @@ public class TestHelper
             target = GetAbilityTarget (card);
         }
 
-        Debug.LogWarning ("Target: " + (target?.ToString() ?? "Null") + ", Need target: " + needTargetForAbility);
+        Debug.Log ("Target: " + (target?.ToString() ?? "Null") + ", Need target: " + needTargetForAbility);
 
         switch (card.LibraryCard.CardKind)
         {
@@ -3536,6 +3536,7 @@ public class TestHelper
             CustomRandomSeed = DebugCheatsConfiguration.CustomRandomSeed
         };
 
+        // TODO: add customization
         client.DeckId = 1;
 
         client.MatchMakingFlowController.MatchConfirmed += SecondClientMatchConfirmedHandler;
@@ -3549,12 +3550,12 @@ public class TestHelper
 
         while (!matchConfirmed)
         {
-            await Task.Delay(200);
+            await new WaitForEndOfFrame();
         }
     }
 
     /// <summary>
-    /// Setups very dumb logic for the simulated opponent that does nothing and only skips turns.
+    /// Setups very dumb logic for the simulated opponent that only skips turns.
     /// </summary>
     public void SetupOpponentDebugClientToEndTurns()
     {
