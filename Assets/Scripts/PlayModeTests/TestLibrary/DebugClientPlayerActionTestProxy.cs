@@ -38,8 +38,13 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardPlay(InstanceId card, int position)
         {
-            // FIXME: don't hardcode Enumerators.MatchPlayer.OpponentPlayer
-            WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card, Enumerators.MatchPlayer.OpponentPlayer);
+            WorkingCard workingCard =
+                _testHelper.GetCardInHandByInstanceId(
+                    card,
+                    _testHelper.GameplayManager.CurrentTurnPlayer == _testHelper.GameplayManager.CurrentPlayer ?
+                        Enumerators.MatchPlayer.CurrentPlayer :
+                        Enumerators.MatchPlayer.OpponentPlayer
+                );
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(workingCard, position));
         }
 
@@ -71,7 +76,8 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task<bool> GetIsCurrentTurn()
         {
-            GetGameStateResponse gameStateResponse = await _client.BackendFacade.GetGameState(_client.MatchMakingFlowController.MatchMetadata.Id);
+            GetGameStateResponse gameStateResponse =
+                await _client.BackendFacade.GetGameState(_client.MatchMakingFlowController.MatchMetadata.Id);
             GameState gameState = gameStateResponse.GameState;
             return gameState.PlayerStates[gameState.CurrentPlayerIndex].Id == _client.UserDataModel.UserId;
         }

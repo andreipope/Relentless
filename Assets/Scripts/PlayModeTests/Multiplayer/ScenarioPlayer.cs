@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -64,12 +65,21 @@ namespace Loom.ZombieBattleground.Test
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log($"[ScenarioPlayer]: PlayNextDebugClientTurn, current turn {_currentTurn}");
 #endif
-            CreateTurn(_opponentProxy);
+            CreateTurn(_opponentProxy,
+                proxy =>
+                {
+                    proxy.Queue.Enqueue(async () =>
+                    {
+                        while (_testHelper.GameplayManager.IsLocalPlayerTurn())
+                        {
+                            await new WaitForEndOfFrame();
+                        }
+                    });
+                });
             if (!isFirstTurn)
             {
                 _queueProxy.Queue.Enqueue(async () =>
                 {
-                    //while (_testHelper.GameplayManager.IsLocalPlayerTurn())
                     while (_testHelper.GameplayManager.IsLocalPlayerTurn())
                     {
                         await new WaitForEndOfFrame();
@@ -91,7 +101,7 @@ namespace Loom.ZombieBattleground.Test
             return PlayQueue;
         }
 
-        private bool CreateTurn(IPlayerActionTestProxy currentProxy)
+        private bool CreateTurn(IPlayerActionTestProxy currentProxy, Action<QueueProxyPlayerActionTestProxy> callback = null)
         {
             if (_queueProxy.CurrentProxy == currentProxy)
                 throw new Exception("Multiple turns in a row is not possible");
@@ -101,6 +111,7 @@ namespace Loom.ZombieBattleground.Test
 
             Action<QueueProxyPlayerActionTestProxy> turnAction = _turns[_currentTurn];
             _queueProxy.CurrentProxy = currentProxy;
+            callback?.Invoke(_queueProxy);
             turnAction(_queueProxy);
 
             // End turn automatically as last action in turn
