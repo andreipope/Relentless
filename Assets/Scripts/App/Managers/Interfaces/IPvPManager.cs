@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
         List<string> PvPTags { get; set; }
 
-        DebugCheatsConfiguration DebugCheats { get; }
+        DebugCheatsConfiguration DebugCheats { get; set; }
 
         MatchMakingFlowController MatchMakingFlowController { get; }
 

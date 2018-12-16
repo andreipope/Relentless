@@ -613,7 +613,7 @@ namespace Loom.ZombieBattleground
         public void DoCombat(BoardObject target)
         {
             if (target == null)
-                return;
+                throw new ArgumentNullException(nameof(target));
 
             IsAttacking = true;
 

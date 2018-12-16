@@ -50,6 +50,7 @@ namespace Loom.ZombieBattleground
         private Hero _currentPlayerHero;
 
         private bool _isLevelUp;
+        private Coroutine _fillExperienceBarCoroutine;
 
         public void Init()
         {
@@ -74,6 +75,11 @@ namespace Loom.ZombieBattleground
 
             if (Self == null)
                 return;
+
+            if (_fillExperienceBarCoroutine != null)
+            {
+                MainApp.Instance.StopCoroutine(_fillExperienceBarCoroutine);
+            }
 
             Self.SetActive(false);
             Object.Destroy(Self);
@@ -134,21 +140,21 @@ namespace Loom.ZombieBattleground
                                                 _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerHero);
             _experienceBar.fillAmount = currentExperiencePercentage;
 
-            FillingExperinceBar();
+            FillingExperienceBar();
         }
 
-        private void FillingExperinceBar()
+        private void FillingExperienceBar()
         {
             if (_currentPlayerHero.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
             {
-                MainApp.Instance.StartCoroutine(FillExperinceBarWithLevelUp(_currentPlayerHero.Level));
+                _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBarWithLevelUp(_currentPlayerHero.Level));
             }
             else if (_currentPlayerHero.Experience > _overlordManager.MatchExperienceInfo.ExperienceAtBegin)
             {
                 float updatedExperiencePercetage = (float)_currentPlayerHero.Experience
                     / _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerHero);
 
-                MainApp.Instance.StartCoroutine(FillExperinceBar(updatedExperiencePercetage));
+                _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBar(updatedExperiencePercetage));
             }
             else
             {
@@ -165,7 +171,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private IEnumerator FillExperinceBar(float xpPercentage)
+        private IEnumerator FillExperienceBar(float xpPercentage)
         {
             yield return _experienceFillWait;
             _experienceBar.DOFillAmount(xpPercentage, 1f);
@@ -179,7 +185,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private IEnumerator FillExperinceBarWithLevelUp(int currentLevel)
+        private IEnumerator FillExperienceBarWithLevelUp(int currentLevel)
         {
             yield return _experienceFillWait;
             _experienceBar.DOFillAmount(1, 1f);
@@ -194,7 +200,7 @@ namespace Loom.ZombieBattleground
 
             _isLevelUp = true;
 
-            FillingExperinceBar();
+            FillingExperienceBar();
         }
 
         private void OnClickOkButtonEventHandler()

@@ -1,8 +1,10 @@
 ﻿// Source: https://github.com/mechaniqe/VirtualInputModule
 
 using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-namespace UnityEngine.EventSystems
+namespace Loom.ZombieBattleground.Test
 {
     [AddComponentMenu("Event/Virtual Input Module")]
     public class VirtualInputModule : PointerInputModule

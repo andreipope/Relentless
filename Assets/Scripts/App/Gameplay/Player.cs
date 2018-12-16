@@ -44,6 +44,8 @@ namespace Loom.ZombieBattleground
 
         public Data.InstanceId InstanceId { get; }
 
+        public bool MulliganWasStarted { get; set; }
+
         private readonly GameObject _freezedHighlightObject;
 
         private readonly IDataManager _dataManager;

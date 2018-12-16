@@ -109,6 +109,8 @@ namespace Loom.ZombieBattleground
                 case MatchMakingFlowController.MatchMakingState.Canceled:
                     _generalText.text = "Canceling...";
                     break;
+                case MatchMakingFlowController.MatchMakingState.Confirmed:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

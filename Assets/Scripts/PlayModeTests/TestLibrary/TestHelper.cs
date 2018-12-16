@@ -1,4 +1,3 @@
-using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using NUnit.Framework;
@@ -8,17 +7,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Editor.Tools;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.ZombieBattleground.Test;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.TestTools;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using Object = UnityEngine.Object;
 using Player = Loom.ZombieBattleground.Player;
+
+namespace Loom.ZombieBattleground.Test
+{
+
+}
 
 public class TestHelper
 {
@@ -65,7 +71,7 @@ public class TestHelper
 
     private Scene _testScene;
     private GameObject _testerGameObject;
-    private UnityEngine.EventSystems.VirtualInputModule _virtualInputModule;
+    private VirtualInputModule _virtualInputModule;
     private RectTransform _fakeCursorTransform;
     private GameObject _fakeCursorGameObject;
 
@@ -96,9 +102,9 @@ public class TestHelper
     private PlayerController _playerController;
 
     private GameObject canvas1GameObject, canvas2GameObject, canvas3GameObject;
-    public GameObject Canvas1 { get { return canvas1GameObject; } }
-    public GameObject Canvas2 { get { return canvas2GameObject; } }
-    public GameObject Canvas3 { get { return canvas3GameObject; } }
+
+
+    public BattlegroundController BattlegroundController => _battlegroundController;
 
     GameplayQueueAction<object> _callAbilityAction;
 
@@ -136,11 +142,7 @@ public class TestHelper
     private MultiplayerDebugClient _opponentDebugClient;
     private OnBehaviourHandler _opponentDebugClientOwner;
 
-    public int SelectedHordeIndex
-    {
-        get;
-        private set;
-    }
+    public int SelectedHordeIndex { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:TestHelper"/> class.
@@ -182,10 +184,14 @@ public class TestHelper
     /// <summary>
     /// SetUp method to be used for most Solo and PvP tests. Logs in and sets up a number of stuff.
     /// </summary>
-    public IEnumerator SetUp ()
+    public IEnumerator PerTestSetup ()
     {
         // HACK: Unity sometimes log an harmless internal assert, but the testing framework trips on it
+        // So instead, implement our own log handler that ignores asserts.
         LogAssert.ignoreFailingMessages = true;
+        Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
+        Application.logMessageReceivedThreaded += IgnoreAssertsLogMessageReceivedHandler;
+
         Time.timeScale = TestTimeScale;
 
         _testStartTime = Time.unscaledTime;
@@ -234,11 +240,9 @@ public class TestHelper
     /// <remarks>Generally is used only for the last test in the group.</remarks>
     public IEnumerator TearDown_Cleanup ()
     {
-        Time.timeScale = 1;
-
         if (_opponentDebugClient != null)
         {
-            yield return TaskAsIEnumerator(_opponentDebugClient.Reset());
+            yield return TaskAsIEnumerator (_opponentDebugClient.Reset ());
         }
 
         if (_opponentDebugClientOwner != null)
@@ -265,6 +269,9 @@ public class TestHelper
 
         SceneManager.SetActiveScene (_testScene);
         yield return SceneManager.UnloadSceneAsync (currentScene);
+
+        Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
+        Time.timeScale = 1;
     }
 
     /// <summary>
@@ -370,10 +377,10 @@ public class TestHelper
     public IEnumerator ReportTestTime ()
     {
         Debug.LogFormat (
-           "\"{0}\" test successfully finished in {1} seconds.",
-           _testName,
-           Time.unscaledTime - _testStartTime
-       );
+            "\"{0}\" test successfully finished in {1} seconds.",
+            _testName,
+            Time.unscaledTime - _testStartTime
+        );
 
         yield return LetsThink ();
     }
@@ -708,7 +715,7 @@ public class TestHelper
         Camera uiCamera = testSetup.transform.Find ("UI Camera").GetComponent<Camera> ();
 
         UnityEngine.EventSystems.StandaloneInputModule inputModule = GameObject.FindObjectOfType<UnityEngine.EventSystems.StandaloneInputModule> ();
-        _virtualInputModule = inputModule.gameObject.AddComponent<UnityEngine.EventSystems.VirtualInputModule> ();
+        _virtualInputModule = inputModule.gameObject.AddComponent<VirtualInputModule> ();
         inputModule.enabled = false;
         _virtualInputModule.SetLinks (_fakeCursorTransform, uiCamera);
 
@@ -1067,7 +1074,8 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilPageUnloads ()
     {
-        yield return new WaitUntil (() => {
+        yield return new WaitUntil (() =>
+        {
             if (canvas1GameObject != null && canvas1GameObject.transform.childCount <= 1)
             {
                 return true;
@@ -1107,8 +1115,11 @@ public class TestHelper
         return _pvpManager.PvPTags;
     }
 
-    public Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration DebugCheatsConfiguration
-        => _pvpManager.DebugCheats;
+    public DebugCheatsConfiguration DebugCheatsConfiguration
+    {
+        get => _pvpManager.DebugCheats;
+        set => _pvpManager.DebugCheats = value;
+    }
 
     #endregion
 
@@ -1597,10 +1608,15 @@ public class TestHelper
                 {
                     BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
 
-                    _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
-                        PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
-                        _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-                    }, target);
+                    _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player),
+                        boardCard,
+                        boardCard.HandBoardCard,
+                        PlayCardOnBoard =>
+                        {
+                            PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                            _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
+                        },
+                        target);
 
                     yield return null;
 
@@ -1641,12 +1657,17 @@ public class TestHelper
                     {
                         BoardCard boardCard = _battlegroundController.PlayerHandCards.Find (x => x.WorkingCard.Equals (card));
 
-                        _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player), boardCard, boardCard.HandBoardCard, PlayCardOnBoard => {
-                            //todo: handle abilities here
+                        _cardsController.PlayPlayerCard (_testBroker.GetPlayer (_player),
+                            boardCard,
+                            boardCard.HandBoardCard,
+                            PlayCardOnBoard =>
+                            {
+                                //todo: handle abilities here
 
-                            PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
-                            _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
-                        }, target);
+                                PlayerMove playerMove = new PlayerMove (Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                                _gameplayManager.PlayerMoves.AddPlayerMove (playerMove);
+                            },
+                            target);
 
                         yield return null;
 
@@ -2541,7 +2562,7 @@ public class TestHelper
                     skill.FightTargetingArrow.SelectedPlayer = (Player) target;
                     break;
                 case Enumerators.AffectObjectType.Character:
-                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ((BoardUnitModel) target);
+                    BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ( (BoardUnitModel) target);
                     skill.FightTargetingArrow.SelectedCard = selectedCardView;
                     break;
                 case Enumerators.AffectObjectType.None:
@@ -2611,18 +2632,18 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilPlayerOrderIsDecided ()
     {
+        yield return new WaitUntil (() => _gameplayManager.CurrentPlayer != null && _gameplayManager.OpponentPlayer != null);
+        yield return new WaitUntil (() => _gameplayManager.CurrentPlayer.MulliganWasStarted);
+
         // TODO: there is a race condition when the popup has shown and hidden itself
         // *before* this method is even entered. As a result, test gets stuck, waiting for the popup forever.
 
-        /*
-        yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
+        /*yield return new WaitUntil ( () => GameObject.Find ("PlayerOrderPopup (Clone)") != null);
 
         RecordActualOverlordName ();
 
-        yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
-        */
-
-        yield return null;
+        yield return new WaitUntil ( () => GameObject.Find ("PlayerOrderPopup (Clone)") == null);
+*/
     }
 
     /// <summary>
@@ -2860,7 +2881,7 @@ public class TestHelper
         }
     }
 
-    public IEnumerator PlayMoves(IList<Func<Task>> movesTasks)
+    public IEnumerator PlayMoves(Func<Func<Task>> turnTaskGenerator)
     {
         yield return AssertCurrentPageName ("GameplayPage");
 
@@ -2880,36 +2901,30 @@ public class TestHelper
 
         yield return WaitUntilOurFirstTurn();
 
-        foreach (Func<Task> movesTask in movesTasks)
+        Func<Task> currentTurnTask ;
+        while ( (currentTurnTask = turnTaskGenerator ()) != null)
         {
-            yield return LetsThink();
+            yield return LetsThink ();
 
             Debug.Log ("!a 0");
 
-            yield return TaskAsIEnumerator(movesTask());
+            yield return TaskAsIEnumerator(currentTurnTask());
 
             Debug.Log ("!a 1");
-
-            if (IsGameEnded ())
-                yield break;
-
-            yield return EndTurn ();
-
-            Debug.Log ("!a 2");
 
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilOurTurnStarts ();
 
-            Debug.Log ("!a 3");
+            Debug.Log ("!a 2");
 
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilInputIsUnblocked ();
 
-            Debug.Log ("!a 4");
+            Debug.Log ("!a 3");
 
             if (IsGameEnded ())
                 break;
@@ -3523,7 +3538,8 @@ public class TestHelper
     {
         MultiplayerDebugClient client = _opponentDebugClient;
         bool matchConfirmed = false;
-        void SecondClientMatchConfirmedHandler(MatchMetadata matchMetadata)
+
+        void SecondClientMatchConfirmedHandler (MatchMetadata matchMetadata)
         {
             client.MatchRequestFactory = new MatchRequestFactory(matchMetadata.Id);
             client.PlayerActionFactory = new PlayerActionFactory(client.UserDataModel.UserId);
@@ -3546,7 +3562,7 @@ public class TestHelper
             GetPvPTags(),
             client.UseBackendGameLogic,
             client.DebugCheats
-            );
+        );
 
         while (!matchConfirmed)
         {
@@ -3564,7 +3580,7 @@ public class TestHelper
         async Task EndTurnIfCurrentTurn(bool isFirstTurn)
         {
             GetGameStateResponse gameStateResponse =
-                await client.BackendFacade.GetGameState(client.MatchMakingFlowController.MatchMetadata.Id);
+                await client.BackendFacade.GetGameState (client.MatchMakingFlowController.MatchMetadata.Id);
             GameState gameState = gameStateResponse.GameState;
             if (gameState.PlayerStates[gameState.CurrentPlayerIndex].Id == client.UserDataModel.UserId)
             {
@@ -3645,11 +3661,27 @@ public class TestHelper
         return Time.unscaledTime > _turnStartTime + _turnWaitAmount;
     }
 
+    private void IgnoreAssertsLogMessageReceivedHandler (string condition, string stacktrace, LogType type)
+    {
+        switch (type)
+        {
+            case LogType.Error:
+            case LogType.Exception:
+                Assert.Fail (condition + "\n" + stacktrace);
+                break;
+            case LogType.Assert:
+            case LogType.Warning:
+            case LogType.Log:
+                break;
+        }
+    }
+
+
     public static async Task IEnumeratorAsTask(IEnumerator enumerator)
     {
         while (enumerator.MoveNext())
         {
-            await new WaitForEndOfFrame();
+            await new WaitForUpdate();
         }
     }
 

@@ -4,12 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Editor.Tools;
-using Loom.ZombieBattleground.Protobuf;
+using Loom.ZombieBattleground.Test;
 using UnityEngine;
 using UnityEngine.TestTools;
-using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
+
+namespace Loom.ZombieBattleground.Test
+{
+
+}
 
 public class MultiplayerTests
 {
@@ -20,15 +25,13 @@ public class MultiplayerTests
     [UnitySetUp]
     public IEnumerator PerTestSetup ()
     {
-        yield return _testHelper.SetUp ();
+        yield return _testHelper.PerTestSetup ();
     }
 
     [UnityTearDown]
     public IEnumerator PerTestTearDown ()
     {
-        _testHelper.DebugCheatsConfiguration.Enabled = false;
-        _testHelper.DebugCheatsConfiguration.CustomDeck = null;
-        _testHelper.DebugCheatsConfiguration.CustomRandomSeed = null;
+        _testHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration ();
 
         if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
         {
@@ -48,186 +51,71 @@ public class MultiplayerTests
     [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
     public IEnumerator Test_A0_PlayDefinedGame()
     {
-        _testHelper.SetTestName ("PvP - Defined Game");
-        yield return _testHelper.MainMenuTransition ("Button_Play");
+        _testHelper.SetTestName("PvP - Defined Game");
+        yield return _testHelper.MainMenuTransition("Button_Play");
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
-            _testHelper.GoBackToMainAndPressPlay ());
+            _testHelper.GoBackToMainAndPressPlay());
 
-        yield return _testHelper.AssertCurrentPageName ("PlaySelectionPage");
-        yield return _testHelper.MainMenuTransition ("Button_PvPMode");
-        yield return _testHelper.AssertCurrentPageName ("PvPSelectionPage");
-        yield return _testHelper.MainMenuTransition ("Button_CasualType");
-        yield return _testHelper.AssertCurrentPageName ("HordeSelectionPage");
+        yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
+        yield return _testHelper.MainMenuTransition("Button_PvPMode");
+        yield return _testHelper.AssertCurrentPageName("PvPSelectionPage");
+        yield return _testHelper.MainMenuTransition("Button_CasualType");
+        yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
 
         int selectedHordeIndex = 0;
 
-        yield return _testHelper.SelectAHordeByIndex (selectedHordeIndex);
-        _testHelper.RecordExpectedOverlordName (selectedHordeIndex);
-        _testHelper.SetPvPTags (new[] {
+        yield return _testHelper.SelectAHordeByIndex(selectedHordeIndex);
+        _testHelper.RecordExpectedOverlordName(selectedHordeIndex);
+        _testHelper.SetPvPTags(new[] {
             "pvpTest",
             "scenario1"
         });
         _testHelper.DebugCheatsConfiguration.Enabled = true;
         _testHelper.DebugCheatsConfiguration.CustomRandomSeed = 0;
 
-        yield return _testHelper.LetsThink ();
+        yield return _testHelper.LetsThink();
 
-        yield return _testHelper.MainMenuTransition ("Button_Battle");
+        yield return _testHelper.MainMenuTransition("Button_Battle");
 
         yield return TestHelper.TaskAsIEnumerator(_testHelper.CreateAndConnectOpponentDebugClient());
-        _testHelper.SetupOpponentDebugClientToEndTurns();
-        yield return TestHelper.TaskAsIEnumerator(_testHelper.MatchmakeOpponentDebugClient());
 
-
-        IList<Func<Task>> localMoves = new List<Func<Task>>
+        IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
         {
-            async () => { await Task.CompletedTask; },
-            async () => { await Task.CompletedTask; },
-            async () => { await Task.CompletedTask; },
-            async () => { await Task.CompletedTask; },
-            async () => { await Task.CompletedTask; },
-            async () => { await Task.CompletedTask; },
-            async () => { await Task.CompletedTask; },/*
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },
-            async () => { await IEnumeratorAsTask(_testHelper.EndTurn()); },*/
-            async () =>
-            {
-                await TestHelper.IEnumeratorAsTask(
-                    _testHelper.PlayCardFromHandToBoard(
-                        _testHelper.GetCardInHandByInstanceId(new InstanceId(36)))
-                    );
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                _testHelper.GetCardOnBoardByInstanceId(new InstanceId(36))
-                    .Model
-                    .DoCombat(_testHelper.GetOpponentPlayer());
-
-                await Task.CompletedTask;
-            },
-            async () =>
-            {
-                Debug.LogError("that's it folks");
-                await Task.CompletedTask;
-            },
+            opponent => {},
+            player => {},
+            opponent => {},
+            player => {},
+            opponent => {},
+            player => {},
+            opponent => {},
+            player => player.CardPlay(new InstanceId(38), 0),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
+            opponent => {},
+            player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
         };
 
-        yield return _testHelper.PlayMoves(localMoves);
+        ScenarioPlayer scenarioPlayer = new ScenarioPlayer(_testHelper, turns);
+        yield return TestHelper.TaskAsIEnumerator(_testHelper.MatchmakeOpponentDebugClient());
+
+        yield return scenarioPlayer.Play();
     }
-
-
 
     [UnityTest]
     [Timeout (50 * 1000 * TestHelper.TestTimeScale)]
@@ -489,7 +377,6 @@ public class MultiplayerTests
     }
 }
 
-
 public class MultiplayerPassiveTests
 {
     private TestHelper _testHelper = new TestHelper (1);
@@ -499,7 +386,7 @@ public class MultiplayerPassiveTests
     [UnitySetUp]
     public IEnumerator PerTestSetup ()
     {
-        yield return _testHelper.SetUp ();
+        yield return _testHelper.PerTestSetup ();
     }
 
     [UnityTearDown]

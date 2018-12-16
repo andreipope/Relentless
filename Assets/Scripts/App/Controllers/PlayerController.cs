@@ -180,6 +180,7 @@ namespace Loom.ZombieBattleground
             }
 
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+            player.MulliganWasStarted = true;
         }
 
         public virtual void GameStartedHandler()

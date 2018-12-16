@@ -13,7 +13,7 @@ using Card = Loom.ZombieBattleground.Data.Card;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using Object = UnityEngine.Object;
 
-namespace Loom.ZombieBattleground.Editor.Tools
+namespace Loom.ZombieBattleground.Test
 {
     [Serializable]
     public class MultiplayerDebugClient

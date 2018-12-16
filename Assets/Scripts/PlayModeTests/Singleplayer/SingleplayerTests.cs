@@ -1,7 +1,11 @@
 using NUnit.Framework;
 using System.Collections;
-using UnityEngine;
 using UnityEngine.TestTools;
+
+namespace Loom.ZombieBattleground.Test
+{
+
+}
 
 public class SingleplayerTests
 {
@@ -12,7 +16,7 @@ public class SingleplayerTests
     [UnitySetUp]
     public IEnumerator PerTestSetup ()
     {
-        yield return _testHelper.SetUp ();
+        yield return _testHelper.PerTestSetup ();
     }
 
     [UnityTearDown]
@@ -317,7 +321,7 @@ public class TutorialTests
     [UnitySetUp]
     public IEnumerator PerTestSetup ()
     {
-        yield return _testHelper.SetUp ();
+        yield return _testHelper.PerTestSetup ();
     }
 
     [UnityTearDown]
@@ -572,7 +576,7 @@ public class HordeManipulationTests
     [UnitySetUp]
     public IEnumerator PerTestSetup ()
     {
-        yield return _testHelper.SetUp ();
+        yield return _testHelper.PerTestSetup ();
     }
 
     [UnityTearDown]

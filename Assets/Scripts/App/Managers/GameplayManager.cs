@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayerTurn()
         {
-            return CurrentTurnPlayer.Equals(CurrentPlayer);
+            return CurrentTurnPlayer == CurrentPlayer;
         }
 
         public Player GetOpponentByPlayer(Player player)
