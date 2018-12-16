@@ -103,6 +103,7 @@ public class TestHelper
 
     private GameObject canvas1GameObject, canvas2GameObject, canvas3GameObject;
 
+    public IGameplayManager GameplayManager => _gameplayManager;
 
     public BattlegroundController BattlegroundController => _battlegroundController;
 
@@ -2579,15 +2580,20 @@ public class TestHelper
 
     #endregion
 
+    public Player GetCurrentPlayer()
+    {
+        return _testBroker.GetPlayer(_player);
+    }
+
     public Player GetOpponentPlayer()
     {
         return _testBroker.GetPlayer(_opponent);
     }
 
-    public WorkingCard GetCardInHandByInstanceId(InstanceId instanceId)
+    public WorkingCard GetCardInHandByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
     {
         WorkingCard workingCard =
-            _testBroker.GetPlayer(_player)
+            _testBroker.GetPlayer(player)
                 .CardsInHand
                 .FirstOrDefault(card => card.InstanceId == instanceId);
 
@@ -2597,11 +2603,10 @@ public class TestHelper
         return workingCard;
     }
 
-    public BoardUnitView GetCardOnBoardByInstanceId(InstanceId instanceId)
+    public BoardUnitView GetCardOnBoardByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
     {
-        Player player = _testBroker.GetPlayer(_player);
         BoardUnitView boardUnitView =
-            player
+            _testBroker.GetPlayer(player)
                 .BoardCards
                 .FirstOrDefault(card => card.Model.InstanceId == instanceId);
 

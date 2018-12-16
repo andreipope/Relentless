@@ -5,7 +5,8 @@
         "LoomSDK",
         "ZombieBattleground.Editor",
         "ZombieBattleground.Generated",
-        "ZombieBattleground.TestLibrary"
+        "ZombieBattleground.TestLibrary",
+        "AsyncAwaitUtil"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

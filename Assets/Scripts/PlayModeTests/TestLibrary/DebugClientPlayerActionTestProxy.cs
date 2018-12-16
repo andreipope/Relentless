@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -37,7 +38,8 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardPlay(InstanceId card, int position)
         {
-            WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card);
+            // FIXME: don't hardcode Enumerators.MatchPlayer.OpponentPlayer
+            WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card, Enumerators.MatchPlayer.OpponentPlayer);
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(workingCard, position));
         }
 

@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardPlay(InstanceId card, int position)
         {
-            WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card);
+            WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card, Enumerators.MatchPlayer.CurrentPlayer);
             await TestHelper.IEnumeratorAsTask(_testHelper.PlayCardFromHandToBoard(workingCard));
         }
 
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Test
 
         public Task CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
         {
-            BoardUnitModel boardUnitModel = _testHelper.GetCardOnBoardByInstanceId(attacker).Model;
+            BoardUnitModel boardUnitModel = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer).Model;
             boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetById(target, type));
 
             return Task.CompletedTask;

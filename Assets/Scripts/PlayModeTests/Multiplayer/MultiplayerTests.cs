@@ -2,13 +2,10 @@ using System;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Editor.Tools;
 using Loom.ZombieBattleground.Test;
-using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
@@ -49,9 +46,9 @@ public class MultiplayerTests
 
     [UnityTest]
     [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-    public IEnumerator Test_A0_PlayDefinedGame()
+    public IEnumerator Test_A0_PlayScenarioGame1()
     {
-        _testHelper.SetTestName("PvP - Defined Game");
+        _testHelper.SetTestName("PvP - Scenario");
         yield return _testHelper.MainMenuTransition("Button_Play");
         yield return _testHelper.AssertIfWentDirectlyToTutorial (
             _testHelper.GoBackToMainAndPressPlay());
@@ -88,12 +85,14 @@ public class MultiplayerTests
             opponent => {},
             player => {},
             opponent => {},
+            player => {},
+            opponent => {},
             player => player.CardPlay(new InstanceId(38), 0),
-            opponent => {},
+            opponent => opponent.CardPlay(new InstanceId(2), 0),
             player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
-            opponent => {},
+            opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, _testHelper.GetCurrentPlayer().InstanceId),
             player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
-            opponent => {},
+            opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, _testHelper.GetCurrentPlayer().InstanceId),
             player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
             opponent => {},
             player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
