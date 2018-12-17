@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.Test
     /// <summary>
     /// Plays automated scripted PvP matches.
     /// </summary>
-    internal class MatchScenarioPlayer
+    public class MatchScenarioPlayer
     {
         private readonly TestHelper _testHelper;
         private readonly IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> _turns;
@@ -43,20 +43,20 @@ namespace Loom.ZombieBattleground.Test
             opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
         }
 
-        public IEnumerator Play()
+        public async Task Play()
         {
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log("[ScenarioPlayer]: Play 1 - HandleOpponentClientTurn");
 #endif
 
             // Special handling for the first turn
-            yield return TestHelper.TaskAsIEnumerator(() => HandleOpponentClientTurn(true));
+            await TestHelper.TaskAsIEnumerator(() => HandleOpponentClientTurn(true));
 
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log("[ScenarioPlayer]: Play 2 - PlayMoves");
 #endif
 
-            yield return _testHelper.PlayMoves(LocalPlayerTurnTaskGenerator);
+            await _testHelper.PlayMoves(LocalPlayerTurnTaskGenerator);
 
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log("[ScenarioPlayer]: Play 3 - Finished");

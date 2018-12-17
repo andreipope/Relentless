@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
-            await TestHelper.IEnumeratorAsTask(_testHelper.EndTurn());
+            await _testHelper.EndTurn();
         }
 
         public Task LeaveMatch()
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task CardPlay(InstanceId card, int position)
         {
             WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card, Enumerators.MatchPlayer.CurrentPlayer);
-            await TestHelper.IEnumeratorAsTask(_testHelper.PlayCardFromHandToBoard(workingCard));
+            await _testHelper.PlayCardFromHandToBoard(workingCard);
         }
 
         public Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
@@ -8,158 +9,158 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H1_CreateAHordeAndCancel()
+        public async Task Test_H1_CreateAHordeAndCancel()
         {
-            _testHelper.SetTestName("Solo - Create a Horde and cancel");
+            TestHelper.SetTestName("Solo - Create a Horde and cancel");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-            yield return _testHelper.ClickGenericButton("Image_BaackgroundGeneral");
-            yield return _testHelper.AssertCurrentPageName("OverlordSelectionPage");
-            yield return _testHelper.PickOverlord("Razu", true);
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
+            await TestHelper.AssertCurrentPageName("OverlordSelectionPage");
+            await TestHelper.PickOverlord("Razu", true);
 
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            yield return _testHelper.AssertCurrentPageName("HordeEditingPage");
-            yield return _testHelper.ClickGenericButton("Button_Back");
-            yield return _testHelper.RespondToYesNoOverlay(false);
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
+            await TestHelper.AssertCurrentPageName("HordeEditingPage");
+            await TestHelper.ClickGenericButton("Button_Back");
+            await TestHelper.RespondToYesNoOverlay(false);
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            yield return null;
+            await new WaitForUpdate();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H2_CreateAHordeAndDraft()
+        public async Task Test_H2_CreateAHordeAndDraft()
         {
-            _testHelper.SetTestName("Solo - Create a Horde and draft");
+            TestHelper.SetTestName("Solo - Create a Horde and draft");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            yield return _testHelper.SelectAHordeByName("Draft", false);
-            if (_testHelper.SelectedHordeIndex != -1)
+            await TestHelper.SelectAHordeByName("Draft", false);
+            if (TestHelper.SelectedHordeIndex != -1)
             {
-                yield return _testHelper.RemoveAHorde(_testHelper.SelectedHordeIndex);
+                await TestHelper.RemoveAHorde(TestHelper.SelectedHordeIndex);
             }
 
-            yield return _testHelper.ClickGenericButton("Image_BaackgroundGeneral");
-            yield return _testHelper.AssertCurrentPageName("OverlordSelectionPage");
-            yield return _testHelper.PickOverlord("Razu", true);
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            yield return _testHelper.AssertCurrentPageName("HordeEditingPage");
-            yield return _testHelper.SetDeckTitle("Draft");
-            yield return _testHelper.ClickGenericButton("Button_Back");
-            yield return _testHelper.RespondToYesNoOverlay(true);
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-            yield return _testHelper.SelectAHordeByName("Draft", true, "Horde draft isn't displayed.");
+            await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
+            await TestHelper.AssertCurrentPageName("OverlordSelectionPage");
+            await TestHelper.PickOverlord("Razu", true);
+            await TestHelper.LetsThink();
+            await TestHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
+            await TestHelper.AssertCurrentPageName("HordeEditingPage");
+            await TestHelper.SetDeckTitle("Draft");
+            await TestHelper.ClickGenericButton("Button_Back");
+            await TestHelper.RespondToYesNoOverlay(true);
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.SelectAHordeByName("Draft", true, "Horde draft isn't displayed.");
 
-            yield return null;
+            await new WaitForUpdate();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H3_RemoveAllHordesExceptFirst()
+        public async Task Test_H3_RemoveAllHordesExceptFirst()
         {
-            _testHelper.SetTestName("Solo - Remove all Hordes except first");
+            TestHelper.SetTestName("Solo - Remove all Hordes except first");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-            yield return _testHelper.RemoveAllHordesExceptDefault();
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.RemoveAllHordesExceptDefault();
 
-            yield return null;
+            await new WaitForUpdate();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H4_CreateARazuHordeAndSave()
+        public async Task Test_H4_CreateARazuHordeAndSave()
         {
-            _testHelper.SetTestName("Solo - Create a Horde and save");
+            TestHelper.SetTestName("Solo - Create a Horde and save");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-            yield return _testHelper.AddRazuHorde();
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AddRazuHorde();
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            yield return null;
+            await new WaitForUpdate();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H4_CreateKalileHorde()
+        public async Task Test_H4_CreateKalileHorde()
         {
-            _testHelper.SetTestName("Solo - Create a Horde and save");
+            TestHelper.SetTestName("Solo - Create a Horde and save");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-            yield return _testHelper.AddKalileHorde();
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AddKalileHorde();
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            yield return null;
+            await new WaitForUpdate();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H5_CreateValashHorde()
+        public async Task Test_H5_CreateValashHorde()
         {
-            _testHelper.SetTestName("Solo - Create a Horde and save");
+            TestHelper.SetTestName("Solo - Create a Horde and save");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-            yield return _testHelper.AddValashHorde();
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AddValashHorde();
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            yield return null;
+            await new WaitForUpdate();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using NUnit.Framework;
 using UnityEngine.TestTools;
@@ -7,48 +9,47 @@ namespace Loom.ZombieBattleground.Test
 {
     public class BaseIntegrationTest
     {
-        protected TestHelper _testHelper = TestHelper.Instance;
+        protected TestHelper TestHelper = TestHelper.Instance;
 
         #region Setup & TearDown
 
         [UnitySetUp]
         public virtual IEnumerator PerTestSetup()
         {
-            yield return _testHelper.PerTestSetup();
+            yield return  TestHelper.TaskAsIEnumerator(TestHelper.PerTestSetup());
 
-            _testHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
-
+            TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
         }
 
         [UnityTearDown]
         public virtual IEnumerator PerTestTearDown()
         {
-            _testHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
-
-            if (false && TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
+            return AsyncTest(async () =>
             {
-                yield return _testHelper.TearDown_Cleanup();
-            }
-            else
-            {
-                yield return _testHelper.TearDown_GoBackToMainScreen();
-            }
+                TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
 
-            _testHelper.ReportTestTime();
+                if (false && TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
+                {
+                    await TestHelper.TearDown_Cleanup();
+                }
+                else
+                {
+                    await TestHelper.TearDown_GoBackToMainScreen();
+                }
 
-            /*yield return _testHelper.PerTestTearDown();
+                TestHelper.ReportTestTime();
 
-            _testHelper.ReportTestTime();*/
+                /*await _testHelper.PerTestTearDown();
+
+                _testHelper.ReportTestTime();*/
+            });
         }
 
         #endregion
 
-        [UnityTest]
-        public IEnumerator TestN_Cleanup()
+        protected IEnumerator AsyncTest(Func<Task> taskFunc)
         {
-            // Nothing, just to ascertain cleanup
-
-            yield return null;
+            return TestHelper.TaskAsIEnumerator(taskFunc);
         }
     }
 }

@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// SetUp method to be used for most Solo and PvP tests. Logs in and sets up a number of stuff.
         /// </summary>
-        public IEnumerator PerTestSetup()
+        public async Task PerTestSetup()
         {
             // HACK: Unity sometimes log an harmless internal assert, but the testing framework trips on it
             // So instead, implement our own log handler that ignores asserts.
@@ -189,70 +189,66 @@ namespace Loom.ZombieBattleground.Test
                 _testerGameObject = _testScene.GetRootGameObjects()[0];
                 Object.DontDestroyOnLoad(_testerGameObject);
 
-                yield return SceneManager.LoadSceneAsync("APP_INIT", LoadSceneMode.Single);
+                await SceneManager.LoadSceneAsync("APP_INIT", LoadSceneMode.Single);
 
-                yield return AddVirtualInputModule();
+                await AddVirtualInputModule();
 
-                yield return SetCanvases();
+                await SetCanvases();
 
                 SetGameplayManagers();
 
                 #region Login
 
-                yield return HandleLogin();
+                await HandleLogin();
 
                 if (IsTestFailed)
-                    yield break;
+                    return;
 
-                yield return LetsThink();
+                await LetsThink();
 
                 if (IsTestFailed)
-                    yield break;
+                    return;
 
                 #endregion
 
                 _initialized = true;
 
-                yield return LetsThink();
+                await LetsThink();
             }
             else if (GetCurrentPageName() != "")
             {
                 while (GetCurrentPageName() != "MainMenuPage")
                 {
-                    yield return GoOnePageHigher();
-
-                    yield return null;
+                    await GoOnePageHigher();
                 }
             }
-
-            yield return null;
         }
 
-        public IEnumerator PerTestTearDown()
+        public async Task PerTestTearDown()
         {
             if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
             {
-                yield return TearDown_Cleanup();
+                await TearDown_Cleanup();
             }
             else
             {
-                yield return TearDown_GoBackToMainScreen();
+                await TearDown_GoBackToMainScreen();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// TearDown method to be used to clear up everything after either a successful or unsuccessful test.
         /// </summary>
         /// <remarks>Generally is used only for the last test in the group.</remarks>
-        public IEnumerator TearDown_Cleanup()
+        public async Task TearDown_Cleanup()
         {
             _initialized = false;
 
             if (_opponentDebugClient != null)
             {
-                yield return TaskAsIEnumerator(_opponentDebugClient.Reset());
+                await TaskAsIEnumerator(_opponentDebugClient.Reset());
             }
 
             if (_opponentDebugClientOwner != null)
@@ -264,32 +260,32 @@ namespace Loom.ZombieBattleground.Test
 
             _testScene = SceneManager.CreateScene("testScene");
 
-            yield return null;
+            await new WaitForUpdate();
 
             SceneManager.MoveGameObjectToScene(_testerGameObject, _testScene);
             Scene currentScene = SceneManager.GetActiveScene();
 
-            yield return null;
+            await new WaitForUpdate();
 
             foreach (GameObject rootGameObject in currentScene.GetRootGameObjects())
             {
                 GameObject.Destroy(rootGameObject);
             }
 
-            yield return null;
+            await new WaitForUpdate();
 
             foreach (GameObject rootGameObject in dontDestroyOnLoadScene.GetRootGameObjects())
             {
                 GameObject.Destroy(rootGameObject);
             }
 
-            yield return LetsThink();
+            await LetsThink();
 
             SceneManager.SetActiveScene(_testScene);
 
-            yield return null;
+            await new WaitForUpdate();
 
-            yield return SceneManager.UnloadSceneAsync(currentScene);
+            await SceneManager.UnloadSceneAsync(currentScene);
 
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
             Time.timeScale = 1;
@@ -299,25 +295,25 @@ namespace Loom.ZombieBattleground.Test
         /// TearDown method to be used to go back to MainMenuPage, so that other tests can take it from there and go further.
         /// </summary>
         /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
-        public IEnumerator TearDown_GoBackToMainScreen()
+        public async Task TearDown_GoBackToMainScreen()
         {
             while (_lastCheckedPageName != "MainMenuPage")
             {
-                yield return GoOnePageHigher();
+                await GoOnePageHigher();
 
-                yield return LetsThink();
+                await LetsThink();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Goes one page higher in the page hierarchy, towards MainMenuPage.
         /// </summary>
         /// <remarks>Generally we need a number of these to actually get to the MainMenuPage.</remarks>
-        public IEnumerator GoOnePageHigher()
+        public async Task GoOnePageHigher()
         {
-            yield return new WaitUntil(() =>
+            await new WaitUntil(() =>
             {
                 if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount >= 2)
                 {
@@ -328,73 +324,73 @@ namespace Loom.ZombieBattleground.Test
             });
             string actualPageName = _canvas1GameObject.transform.GetChild(1).name.Split('(')[0];
 
-            yield return AssertCurrentPageName(actualPageName, isGoingBack: true);
+            await AssertCurrentPageName(actualPageName, isGoingBack: true);
 
-            yield return LetsThink();
+            await LetsThink();
 
             switch (actualPageName)
             {
                 case "GameplayPage":
                     if (GameObject.Find("Button_Back") != null)
                     {
-                        yield return ClickGenericButton("Button_Back", isGoingBack: true);
+                        await ClickGenericButton("Button_Back", isGoingBack: true);
 
-                        yield return LetsThink();
+                        await LetsThink();
 
-                        yield return RespondToYesNoOverlay(true, isGoingBack: true);
+                        await RespondToYesNoOverlay(true, isGoingBack: true);
 
-                        yield return AssertCurrentPageName("MainMenuPage", isGoingBack: true);
+                        await AssertCurrentPageName("MainMenuPage", isGoingBack: true);
 
-                        yield return LetsThink();
+                        await LetsThink();
                     }
                     else if (GameObject.Find("Button_Settings") != null)
                     {
-                        yield return ClickGenericButton("Button_Settings", isGoingBack: true);
+                        await ClickGenericButton("Button_Settings", isGoingBack: true);
 
-                        yield return LetsThink();
+                        await LetsThink();
 
-                        yield return ClickGenericButton("Button_QuitToMainMenu", isGoingBack: true);
+                        await ClickGenericButton("Button_QuitToMainMenu", isGoingBack: true);
 
-                        yield return LetsThink();
+                        await LetsThink();
 
-                        yield return RespondToYesNoOverlay(true, isGoingBack: true);
+                        await RespondToYesNoOverlay(true, isGoingBack: true);
 
-                        yield return AssertCurrentPageName("MainMenuPage", isGoingBack: true);
+                        await AssertCurrentPageName("MainMenuPage", isGoingBack: true);
 
-                        yield return LetsThink();
+                        await LetsThink();
                     }
 
                     break;
                 case "HordeSelectionPage":
-                    yield return ClickGenericButton("Button_Back", isGoingBack: true);
+                    await ClickGenericButton("Button_Back", isGoingBack: true);
 
-                    yield return AssertCurrentPageName("PlaySelectionPage", isGoingBack: true);
+                    await AssertCurrentPageName("PlaySelectionPage", isGoingBack: true);
 
                     break;
                 case "HordeEditingPage":
-                    yield return ClickGenericButton("Button_Back", isGoingBack: true);
+                    await ClickGenericButton("Button_Back", isGoingBack: true);
 
-                    yield return LetsThink();
+                    await LetsThink();
 
-                    yield return RespondToYesNoOverlay(false, isGoingBack: true);
+                    await RespondToYesNoOverlay(false, isGoingBack: true);
 
-                    yield return AssertCurrentPageName("HordeSelectionPage", isGoingBack: true);
+                    await AssertCurrentPageName("HordeSelectionPage", isGoingBack: true);
 
                     break;
                 case "PlaySelectionPage":
-                    yield return ClickGenericButton("Button_Back", isGoingBack: true);
+                    await ClickGenericButton("Button_Back", isGoingBack: true);
 
-                    yield return AssertCurrentPageName("MainMenuPage", isGoingBack: true);
+                    await AssertCurrentPageName("MainMenuPage", isGoingBack: true);
 
                     break;
                 case "MainMenuPage":
 
-                    yield break;
+                    return;
                 default:
                     throw new ArgumentException("Unhandled page: " + actualPageName);
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
@@ -443,17 +439,17 @@ namespace Loom.ZombieBattleground.Test
             _opponentPlayer = _gameplayManager.OpponentPlayer;
         }
 
-        private IEnumerator SetCanvases()
+        private async Task SetCanvases()
         {
             _canvas1GameObject = null;
 
-            yield return new WaitUntil(() => GameObject.Find("Canvas1") != null);
+            await new WaitUntil(() => GameObject.Find("Canvas1") != null);
 
             _canvas1GameObject = GameObject.Find("Canvas1");
             _canvas2GameObject = GameObject.Find("Canvas2");
             _canvas3GameObject = GameObject.Find("Canvas3");
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         public void TestEndHandler()
@@ -464,18 +460,18 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Asserts if we've logged in or login failed, so that the test doesn't get stuck in the login screen in the case of issue and instead reports the issue.
         /// </summary>
-        public IEnumerator AssertLoggedInOrLoginFailed(
-            IEnumerator callback1,
-            IEnumerator callback2,
-            IEnumerator callback3,
-            IEnumerator callback4)
+        public async Task AssertLoggedInOrLoginFailed(
+            Func<Task> callback1,
+            Func<Task> callback2,
+            Func<Task> callback3,
+            Func<Task> callback4)
         {
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return CombinedCheck(
+            await CombinedCheck(
                 CheckCurrentPageName,
                 "MainMenuPage",
                 callback1,
@@ -489,7 +485,7 @@ namespace Loom.ZombieBattleground.Test
                 "GameplayPage",
                 callback4);
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         public bool IsTestFailed { get; private set; }
@@ -497,14 +493,14 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Asserts if we were sent to tutorial. This is used to get out of tutorial, so that test can go on with its purpose.
         /// </summary>
-        public IEnumerator AssertIfWentDirectlyToTutorial(IEnumerator callback1, IEnumerator callback2 = null)
+        public async Task AssertIfWentDirectlyToTutorial(Func<Task> callback1, Func<Task> callback2 = null)
         {
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return CombinedCheck(
+            await CombinedCheck(
                 CheckCurrentPageName,
                 "GameplayPage",
                 callback1,
@@ -518,16 +514,16 @@ namespace Loom.ZombieBattleground.Test
         /// Asserts if PvP match is started or matchmaking has failed.
         /// </summary>
         /// <remarks>This currently doesn't work, as timeouts have been removed.</remarks>
-        public IEnumerator AssertPvPStartedOrMatchmakingFailed(IEnumerator callback1, IEnumerator callback2)
+        public async Task AssertPvPStartedOrMatchmakingFailed(Func<Task> callback1, Func<Task> callback2)
         {
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             WaitStart(60);
 
-            yield return CombinedCheck(
+            await CombinedCheck(
                 CheckCurrentPageName,
                 "GameplayPage",
                 callback1,
@@ -537,19 +533,19 @@ namespace Loom.ZombieBattleground.Test
                 "",
                 callback2);
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
-        public IEnumerator AssertMulliganPopupCameUp(IEnumerator callback1, IEnumerator callback2)
+        public async Task AssertMulliganPopupCameUp(Func<Task> callback1, Func<Task> callback2)
         {
             if (IsTestFailed)
-                yield break;
+                return;
 
             if (Constants.MulliganEnabled)
             {
                 WaitStart(5);
 
-                yield return CombinedCheck(
+                await CombinedCheck(
                     CheckIfMulliganPopupCameUp,
                     "",
                     callback1,
@@ -562,19 +558,19 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Is used whenever we need a combined check, instead of a single one.
         /// </summary>
-        private IEnumerator CombinedCheck(
+        private async Task CombinedCheck(
             Func<string, bool> check1,
             string parameter1,
-            IEnumerator callback1,
+            Func<Task> callback1,
             Func<string, bool> check2,
             string parameter2,
-            IEnumerator callback2,
+            Func<Task> callback2,
             Func<string, bool> check3 = null,
             string parameter3 = "",
-            IEnumerator callback3 = null,
+            Func<Task> callback3 = null,
             Func<string, bool> check4 = null,
             string parameter4 = "",
-            IEnumerator callback4 = null)
+            Func<Task> callback4 = null)
         {
             bool outcomeDecided = false;
 
@@ -588,34 +584,34 @@ namespace Loom.ZombieBattleground.Test
                     outcomeDecided = true;
 
                     if (callback1 != null)
-                        yield return callback1;
+                        await callback1();
                 }
                 else if (check2(parameter2))
                 {
                     outcomeDecided = true;
 
                     if (callback2 != null)
-                        yield return callback2;
+                        await callback2();
                 }
                 else if (check3 != null && check3(parameter3))
                 {
                     outcomeDecided = true;
 
                     if (callback3 != null)
-                        yield return callback3;
+                        await callback3();
                 }
                 else if (check4 != null && check4(parameter4))
                 {
                     outcomeDecided = true;
 
                     if (callback4 != null)
-                        yield return callback4;
+                        await callback4();
                 }
 
-                yield return null;
+                await new WaitForUpdate();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
@@ -677,7 +673,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// In case Terms Popup shows up, the method closes it.
         /// </summary>
-        public IEnumerator CloseTermsPopupIfRequired()
+        public async Task CloseTermsPopupIfRequired()
         {
             if (GameObject.Find("TermsPopup(Clone)") != null)
             {
@@ -687,9 +683,9 @@ namespace Loom.ZombieBattleground.Test
                     GameObject.Find("Toggle").GetComponent<Toggle>().onValueChanged.Invoke(true);
                 }
 
-                yield return LetsThink();
+                await LetsThink();
 
-                yield return ClickGenericButton("Button_GotIt");
+                await ClickGenericButton("Button_GotIt");
             }
         }
 
@@ -755,22 +751,22 @@ namespace Loom.ZombieBattleground.Test
         /// In case we decide to use this, we need to use it for every page. Using it for just a single one may not work as expected.
         /// </remarks>
         /// <example>
-        /// yield return AssertCurrentPageName ("MainMenuPage");
+        /// await AssertCurrentPageName ("MainMenuPage");
         /// </example>
         /// <param name="expectedPageName">Page name</param>
-        public IEnumerator AssertCurrentPageName(string expectedPageName, string errorTextName = "", bool isGoingBack = false)
+        public async Task AssertCurrentPageName(string expectedPageName, string errorTextName = "", bool isGoingBack = false)
         {
             if (!isGoingBack && IsTestFailed)
-                yield break;
+                return;
 
             if (expectedPageName == _lastCheckedPageName)
-                yield break;
+                return;
 
             WaitStart(pageTransitionWaitTime);
             bool transitionTimeout = false;
 
             GameObject errorTextObject = null;
-            yield return new WaitUntil(() =>
+            await new WaitUntil(() =>
             {
                 if (WaitTimeIsUp())
                 {
@@ -813,7 +809,7 @@ namespace Loom.ZombieBattleground.Test
 
             _lastCheckedPageName = actualPageName;
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
@@ -822,18 +818,18 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>
         /// Used when tutorial is shown instead of letting the script to test what it is meant for.
         /// </remarks>
-        public IEnumerator GoBackToMainAndPressPlay()
+        public async Task GoBackToMainAndPressPlay()
         {
-            yield return GoOnePageHigher();
+            await GoOnePageHigher();
 
-            yield return MainMenuTransition("Button_Play");
+            await MainMenuTransition("Button_Play");
         }
 
         /// <summary>
         /// Adds virtual input module to the scene to handle fake mouse movements and clicks.
         /// </summary>
         /// <returns></returns>
-        public IEnumerator AddVirtualInputModule()
+        public async Task AddVirtualInputModule()
         {
             GameObject testSetup = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/TestSetup"));
             Object.DontDestroyOnLoad(testSetup);
@@ -847,7 +843,7 @@ namespace Loom.ZombieBattleground.Test
             inputModule.enabled = false;
             _virtualInputModule.SetLinks(_fakeCursorTransform, uiCamera);
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
@@ -855,7 +851,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <param name="objectName">Name of the object in the scene</param>
         /// <param name="duration">Movement duration</param>
-        public IEnumerator MoveCursorToObject(string objectName, float duration)
+        public async Task MoveCursorToObject(string objectName, float duration)
         {
             GameObject targetObject = GameObject.Find(objectName);
 
@@ -871,7 +867,7 @@ namespace Loom.ZombieBattleground.Test
 
                 interpolation = Mathf.Min(interpolation + Time.time, duration);
 
-                yield return null;
+                await new WaitForUpdate();
             }
         }
 
@@ -881,40 +877,40 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>
         /// Useful only on UI items.
         /// </remarks>
-        public IEnumerator FakeClick()
+        public async Task FakeClick()
         {
             _virtualInputModule.Press();
 
-            yield return null;
+            await new WaitForUpdate();
 
             _virtualInputModule.Release();
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Goes through list of buttons and checks if they are clickable.
         /// </summary>
         /// <param name="buttonNames">Button names.</param>
-        public IEnumerator ButtonListClickCheck(string[] buttonNames)
+        public async Task ButtonListClickCheck(string[] buttonNames)
         {
             foreach (string buttonName in buttonNames)
             {
-                yield return ButtonClickCheck(buttonName);
+                await ButtonClickCheck(buttonName);
 
-                yield return LetsThink();
+                await LetsThink();
 
-                yield return null;
+                await new WaitForUpdate();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Checks if a button is clickable.
         /// </summary>
         /// <param name="buttonName">Button name.</param>
-        public IEnumerator ButtonClickCheck(string buttonName)
+        public async Task ButtonClickCheck(string buttonName)
         {
             GameObject targetGameObject = GameObject.Find(buttonName);
 
@@ -935,15 +931,15 @@ namespace Loom.ZombieBattleground.Test
                         buttonClickable = true;
                     });
 
-                    yield return null;
+                    await new WaitForUpdate();
 
-                    yield return MoveCursorToObject(buttonName, 1);
-                    yield return FakeClick();
+                    await MoveCursorToObject(buttonName, 1);
+                    await FakeClick();
 
-                    yield return null;
+                    await new WaitForUpdate();
 
                     WaitStart(3);
-                    yield return new WaitUntil(() => buttonClickable || WaitTimeIsUp());
+                    await new WaitUntil(() => buttonClickable || WaitTimeIsUp());
 
                     if (!buttonClickable)
                     {
@@ -962,7 +958,7 @@ namespace Loom.ZombieBattleground.Test
                         Debug.Log("Checked button and it worked fine: " + buttonName);
                     }
 
-                    yield return null;
+                    await new WaitForUpdate();
                 }
                 else if (targetGameObject.GetComponent<MenuButtonNoGlow>() != null)
                 {
@@ -979,15 +975,15 @@ namespace Loom.ZombieBattleground.Test
                         buttonClickable = true;
                     });
 
-                    yield return null;
+                    await new WaitForUpdate();
 
-                    yield return MoveCursorToObject(buttonName, 1);
-                    yield return FakeClick();
+                    await MoveCursorToObject(buttonName, 1);
+                    await FakeClick();
 
-                    yield return null;
+                    await new WaitForUpdate();
 
                     WaitStart(3);
-                    yield return new WaitUntil(() => buttonClickable || WaitTimeIsUp());
+                    await new WaitUntil(() => buttonClickable || WaitTimeIsUp());
 
                     if (!buttonClickable)
                     {
@@ -1006,7 +1002,7 @@ namespace Loom.ZombieBattleground.Test
                         Debug.Log("Checked button and it worked fine: " + buttonName);
                     }
 
-                    yield return null;
+                    await new WaitForUpdate();
                 }
                 else if (targetGameObject.GetComponent<Button>() != null)
                 {
@@ -1023,15 +1019,15 @@ namespace Loom.ZombieBattleground.Test
                         buttonClickable = true;
                     });
 
-                    yield return null;
+                    await new WaitForUpdate();
 
-                    yield return MoveCursorToObject(buttonName, 1);
-                    yield return FakeClick();
+                    await MoveCursorToObject(buttonName, 1);
+                    await FakeClick();
 
-                    yield return null;
+                    await new WaitForUpdate();
 
                     WaitStart(3);
-                    yield return new WaitUntil(() => buttonClickable || WaitTimeIsUp());
+                    await new WaitUntil(() => buttonClickable || WaitTimeIsUp());
 
                     if (!buttonClickable)
                     {
@@ -1050,7 +1046,7 @@ namespace Loom.ZombieBattleground.Test
                         Debug.Log("Checked button and it worked fine: " + buttonName);
                     }
 
-                    yield return null;
+                    await new WaitForUpdate();
                 }
             }
             else
@@ -1058,18 +1054,18 @@ namespace Loom.ZombieBattleground.Test
                 Assert.Fail("Button wasn't found: " + buttonName);
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Logs in into the game using one of the keys. Picks a correct one depending on whether it is an passive or active tester.
         /// </summary>
         /// <remarks>The login.</remarks>
-        public IEnumerator HandleLogin()
+        public async Task HandleLogin()
         {
             if (Constants.AutomaticLoginEnabled)
             {
-                yield return new WaitUntil(() => !CheckCurrentPageName("LoadingPage"));
+                await new WaitUntil(() => !CheckCurrentPageName("LoadingPage"));
 
                 CheckCurrentPageName("MainMenuPage");
             }
@@ -1077,7 +1073,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 WaitStart(10);
                 GameObject pressAnyText = null;
-                yield return new WaitUntil(() =>
+                await new WaitUntil(() =>
                 {
                     pressAnyText = GameObject.Find("PressAnyText");
 
@@ -1090,11 +1086,15 @@ namespace Loom.ZombieBattleground.Test
                     pressAnyText.SetActive(false);
                     GameClient.Get<IUIManager>().DrawPopup<LoginPopup>();
 
-                    yield return AssertLoggedInOrLoginFailed(
-                        CloseTermsPopupIfRequired(),
-                        ActionAsCoroutine(() => Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND")),
-                        SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
-                        GoOnePageHigher());
+                    await AssertLoggedInOrLoginFailed(
+                        CloseTermsPopupIfRequired,
+                        () =>
+                        {
+                            Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND");
+                            return Task.CompletedTask;
+                        },
+                        () => SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
+                        GoOnePageHigher);
                 }
                 else if (!CheckCurrentPageName("MainMenuPage") && !CheckCurrentPageName("GameplayPage"))
                 {
@@ -1102,17 +1102,17 @@ namespace Loom.ZombieBattleground.Test
                         $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
                 }
 
-                /* yield return CombinedCheck (
+                /* await CombinedCheck (
                     CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
                     CheckCurrentPageName, "MainMenuPage", null); */
 
-                yield return null;
+                await new WaitForUpdate();
             }
         }
 
-        private IEnumerator SubmitEmailPassword(string email, string password)
+        private async Task SubmitEmailPassword(string email, string password)
         {
-            yield return LetsThink();
+            await LetsThink();
 
             Transform loginGroup = GameObject.Find("Login_Group").transform;
             Button loginButton = loginGroup.transform.Find("Button_Login").GetComponent<Button>();
@@ -1122,11 +1122,11 @@ namespace Loom.ZombieBattleground.Test
             emailField.text = email;
             passwordField.text = password;
 
-            yield return LetsThink();
+            await LetsThink();
 
             loginButton.onClick.Invoke();
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
@@ -1135,18 +1135,18 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="buttonName">Name of the button to click</param>
         /// <param name="parentGameObject">(Optional) Parent object to look under</param>
         /// <param name="count">(Optional) Number of times to click</param>
-        public IEnumerator ClickGenericButton(string buttonName, GameObject parentGameObject = null, int count = 1, bool isGoingBack = false)
+        public async Task ClickGenericButton(string buttonName, GameObject parentGameObject = null, int count = 1, bool isGoingBack = false)
         {
             if (!isGoingBack && IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             WaitStart(5);
             GameObject menuButtonGameObject = null;
             bool clickTimeout = false;
 
-            yield return new WaitUntil(() =>
+            await new WaitUntil(() =>
             {
                 if (parentGameObject != null)
                 {
@@ -1188,14 +1188,14 @@ namespace Loom.ZombieBattleground.Test
                 Assert.Fail($"Couldn't find the button: {buttonName}");
             }
 
-            yield return LetsThink(0.5f);
+            await LetsThink(0.5f);
 
             if (count >= 2)
             {
-                yield return ClickGenericButton(buttonName, parentGameObject, count - 1);
+                await ClickGenericButton(buttonName, parentGameObject, count - 1);
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
@@ -1213,11 +1213,11 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <param name="transitionPath">Slash separated list of buttons</param>
         /// <param name="delay">(Optional) Delay between clicks</param>
-        public IEnumerator MainMenuTransition(string transitionPath, float delay = DefaultMainMenuTransitionDelay, bool isGoingBack = false)
+        public async Task MainMenuTransition(string transitionPath, float delay = DefaultMainMenuTransitionDelay, bool isGoingBack = false)
         {
             foreach (string buttonName in transitionPath.Split('/'))
             {
-                yield return ClickGenericButton(buttonName);
+                await ClickGenericButton(buttonName);
 
                 if (!isGoingBack && IsTestFailed)
                 {
@@ -1226,12 +1226,12 @@ namespace Loom.ZombieBattleground.Test
 
                 if (delay <= 0f)
                 {
-                    yield return new WaitForEndOfFrame();
-                    yield return new WaitForEndOfFrame();
+                    await new WaitForEndOfFrame();
+                    await new WaitForEndOfFrame();
                 }
                 else
                 {
-                    yield return new WaitForSeconds(delay);
+                    await new WaitForSeconds(delay);
                 }
             }
         }
@@ -1240,17 +1240,17 @@ namespace Loom.ZombieBattleground.Test
         /// Clicks on the overlay Yes/No button.
         /// </summary>
         /// <param name="isResponseYes">Is the response Yes?</param>
-        public IEnumerator RespondToYesNoOverlay(bool isResponseYes, bool isGoingBack = false)
+        public async Task RespondToYesNoOverlay(bool isResponseYes, bool isGoingBack = false)
         {
             if (!isGoingBack && IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             string buttonName = isResponseYes ? "Button_Yes" : "Button_No";
 
             ButtonShiftingContent overlayButton = null;
-            yield return new WaitUntil(() =>
+            await new WaitUntil(() =>
             {
                 overlayButton = GameObject.Find(buttonName)?.GetComponent<ButtonShiftingContent>();
                 return overlayButton != null;
@@ -1258,15 +1258,15 @@ namespace Loom.ZombieBattleground.Test
 
             overlayButton.onClick.Invoke();
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Waits until a page unloads.
         /// </summary>
-        public IEnumerator WaitUntilPageUnloads()
+        public async Task WaitUntilPageUnloads()
         {
-            yield return new WaitUntil(() =>
+            await new WaitUntil(() =>
             {
                 if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount <= 1)
                 {
@@ -1340,50 +1340,50 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Once the turn is started, goes through (AI) steps, to make logical moves.
         /// </summary>
-        public IEnumerator TurnStartedHandler()
+        public async Task TurnStartedHandler()
         {
-            yield return LetsThink();
+            await LetsThink();
 
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsGameEnded())
-                yield break;
+                return;
 
-            yield return PlayCardsFromHand();
-
-            if (IsGameEnded())
-                yield break;
-
-            yield return LetsThink();
-            yield return LetsThink();
-            yield return LetsThink();
-
-            yield return UseUnitsOnBoard();
+            await PlayCardsFromHand();
 
             if (IsGameEnded())
-                yield break;
+                return;
 
-            yield return UsePlayerSkills();
+            await LetsThink();
+            await LetsThink();
+            await LetsThink();
+
+            await UseUnitsOnBoard();
 
             if (IsGameEnded())
-                yield break;
+                return;
+
+            await UsePlayerSkills();
+
+            if (IsGameEnded())
+                return;
 
             if (_testBroker.GetPlayer(_player).SelfHero.HeroElement == Enumerators.SetType.FIRE)
             {
-                yield return UseUnitsOnBoard();
+                await UseUnitsOnBoard();
 
                 if (IsGameEnded())
-                    yield break;
+                    return;
 
-                yield return LetsThink();
-                yield return LetsThink();
+                await LetsThink();
+                await LetsThink();
             }
             else
             {
-                yield return LetsThink();
-                yield return LetsThink();
+                await LetsThink();
+                await LetsThink();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
@@ -1399,9 +1399,9 @@ namespace Loom.ZombieBattleground.Test
         /// AI step 1: Plays cards from hand to board
         /// </summary>
         /// <remarks>Logic taken from AIController.</remarks>
-        public IEnumerator PlayCardsFromHand()
+        public async Task PlayCardsFromHand()
         {
-            yield return CheckGooCard();
+            await CheckGooCard();
 
             List<WorkingCard> cardsInHand = new List<WorkingCard>();
             cardsInHand.AddRange(_normalUnitCardInHand);
@@ -1416,10 +1416,10 @@ namespace Loom.ZombieBattleground.Test
 
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
-                    yield return PlayCardFromHandToBoard(card);
+                    await PlayCardFromHandToBoard(card);
                     wasAction = true;
-                    yield return LetsThink();
-                    yield return LetsThink();
+                    await LetsThink();
+                    await LetsThink();
                 }
             }
 
@@ -1427,20 +1427,20 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
-                    yield return PlayCardFromHandToBoard(card);
+                    await PlayCardFromHandToBoard(card);
                     wasAction = true;
-                    yield return LetsThink();
-                    yield return LetsThink();
+                    await LetsThink();
+                    await LetsThink();
                 }
             }
 
             if (wasAction)
             {
-                yield return LetsThink();
-                yield return LetsThink();
+                await LetsThink();
+                await LetsThink();
             }
 
-            yield return CheckGooCard();
+            await CheckGooCard();
 
             Debug.Log("Played cards from hand");
         }
@@ -1450,13 +1450,13 @@ namespace Loom.ZombieBattleground.Test
         /// AI step 2: Plays cards from board
         /// </summary>
         /// <remarks>Logic taken from AIController.</remarks>
-        private IEnumerator UseUnitsOnBoard()
+        private async Task UseUnitsOnBoard()
         {
             List<BoardUnitModel> unitsOnBoard = new List<BoardUnitModel>();
             List<BoardUnitModel> alreadyUsedUnits = new List<BoardUnitModel>();
 
             if (IsGameEnded())
-                yield break;
+                return;
 
             unitsOnBoard.AddRange(GetUnitsOnBoard());
 
@@ -1495,7 +1495,7 @@ namespace Loom.ZombieBattleground.Test
 
                             alreadyUsedUnits.Add(unit);
 
-                            yield return LetsThink();
+                            await LetsThink();
                             if (!OpponentHasHeavyUnits())
                             {
                                 break;
@@ -1532,7 +1532,7 @@ namespace Loom.ZombieBattleground.Test
                             Enumerators.AffectObjectType.Player,
                             null);
 
-                        yield return LetsThink();
+                        await LetsThink();
                     }
                 }
             }
@@ -1556,7 +1556,7 @@ namespace Loom.ZombieBattleground.Test
                                 Enumerators.AffectObjectType.Player,
                                 null);
 
-                            yield return LetsThink();
+                            await LetsThink();
                         }
                         else
                         {
@@ -1573,7 +1573,7 @@ namespace Loom.ZombieBattleground.Test
                                     Enumerators.AffectObjectType.Character,
                                     attackedCreature.Card.InstanceId);
 
-                                yield return LetsThink();
+                                await LetsThink();
                             }
                             else
                             {
@@ -1586,14 +1586,14 @@ namespace Loom.ZombieBattleground.Test
                                     Enumerators.AffectObjectType.Player,
                                     null);
 
-                                yield return LetsThink();
+                                await LetsThink();
                             }
                         }
                     }
                 }
             }
 
-            yield return null;
+            await new WaitForUpdate();
 
             Debug.Log("Played cards from board");
         }
@@ -1603,12 +1603,12 @@ namespace Loom.ZombieBattleground.Test
         /// AI step 3: Uses player skills
         /// </summary>
         /// <remarks>Logic taken from AIController.</remarks>
-        private IEnumerator UsePlayerSkills()
+        private async Task UsePlayerSkills()
         {
             bool wasAction = false;
 
             if (_testBroker.GetPlayer(_player).IsStunned)
-                yield break;
+                return;
 
             if (_testBroker.GetPlayerPrimarySkill(_player) != null && _testBroker.GetPlayerPrimarySkill(_player).IsSkillReady)
             {
@@ -1618,7 +1618,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (wasAction)
             {
-                yield return LetsThink();
+                await LetsThink();
             }
 
             wasAction = false;
@@ -1630,14 +1630,14 @@ namespace Loom.ZombieBattleground.Test
 
             if (wasAction)
             {
-                yield return LetsThink();
-                yield return LetsThink();
+                await LetsThink();
+                await LetsThink();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
-        private IEnumerator CheckGooCard()
+        private async Task CheckGooCard()
         {
             int benefit = 0;
             int boardCount = 0;
@@ -1695,22 +1695,22 @@ namespace Loom.ZombieBattleground.Test
                         break;
                     if (CardCanBePlayable(card))
                     {
-                        yield return PlayCardFromHandToBoard(card);
+                        await PlayCardFromHandToBoard(card);
                         wasAction = true;
-                        yield return LetsThink();
-                        yield return LetsThink();
+                        await LetsThink();
+                        await LetsThink();
                     }
                 }
 
-                yield return PlayCardFromHandToBoard(expensiveCard);
+                await PlayCardFromHandToBoard(expensiveCard);
 
-                yield return LetsThink();
-                yield return LetsThink();
+                await LetsThink();
+                await LetsThink();
 
                 if (wasAction)
                 {
-                    yield return LetsThink();
-                    yield return LetsThink();
+                    await LetsThink();
+                    await LetsThink();
                 }
             }
             else
@@ -1726,7 +1726,7 @@ namespace Loom.ZombieBattleground.Test
                     x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
             }
 
-            yield return LetsThink();
+            await LetsThink();
         }
 
         private bool CardBePlayableForOverflowGoo(int cost, int goo)
@@ -1770,27 +1770,27 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <remarks>Was written specifically for tutorials, where we need to play cards with certain indices.</remarks>
         /// <param name="cardIndices">Card indices.</param>
-        public IEnumerator PlayCardFromHandToBoard(int[] cardIndices)
+        public async Task PlayCardFromHandToBoard(int[] cardIndices)
         {
             foreach (int cardIndex in cardIndices)
             {
                 if (IsGameEnded())
                 {
-                    yield break;
+                    return;
                 }
 
                 BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
-                yield return PlayCardFromHandToBoard(boardCard.WorkingCard);
+                await PlayCardFromHandToBoard(boardCard.WorkingCard);
 
-                yield return LetsThink();
-                yield return LetsThink();
+                await LetsThink();
+                await LetsThink();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
-        public IEnumerator PlayCardFromHandToBoard(WorkingCard card)
+        public async Task PlayCardFromHandToBoard(WorkingCard card)
         {
             bool needTargetForAbility = false;
 
@@ -1827,22 +1827,22 @@ namespace Loom.ZombieBattleground.Test
                             },
                             target);
 
-                        yield return null;
+                        await new WaitForUpdate();
 
                         if (target == null && needTargetForAbility)
                         {
                             WaitStart(3);
-                            yield return new WaitUntil(() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp());
+                            await new WaitUntil(() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp());
                             _boardArrowController.ResetCurrentBoardArrow();
 
-                            yield return LetsThink();
+                            await LetsThink();
 
                             WaitStart(3);
-                            yield return new WaitUntil(() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp());
+                            await new WaitUntil(() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp());
                             _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction();
                             _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget();
 
-                            yield return LetsThink();
+                            await LetsThink();
                         }
                     }
                     else
@@ -1878,22 +1878,22 @@ namespace Loom.ZombieBattleground.Test
                                 },
                                 target);
 
-                            yield return null;
+                            await new WaitForUpdate();
 
                             if (target == null && needTargetForAbility)
                             {
                                 WaitStart(3);
-                                yield return new WaitUntil(() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp());
+                                await new WaitUntil(() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp());
                                 _boardArrowController.ResetCurrentBoardArrow();
 
-                                yield return LetsThink();
+                                await LetsThink();
 
                                 WaitStart(3);
-                                yield return new WaitUntil(() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp());
+                                await new WaitUntil(() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp());
                                 _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction();
                                 _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget();
 
-                                yield return LetsThink();
+                                await LetsThink();
                             }
                         }
                         else
@@ -1909,7 +1909,7 @@ namespace Loom.ZombieBattleground.Test
 
             _testBroker.GetPlayer(_player).CurrentGoo -= card.LibraryCard.Cost;
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         // todo: reconsider having this
@@ -1920,14 +1920,14 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="attackerCardIndices">Attacker card indices.</param>
         /// <param name="attackedCardIndices">Attacked card indices.</param>
         /// <param name="opponentPlayer">If set to <c>true</c> opponent player.</param>
-        public IEnumerator PlayCardFromBoardToOpponent(
+        public async Task PlayCardFromBoardToOpponent(
             int[] attackerCardIndices,
             int[] attackedCardIndices,
             bool opponentPlayer = false)
         {
             if (IsGameEnded())
             {
-                yield break;
+                return;
             }
 
             for (int i = 0; i < attackerCardIndices.Length; i++)
@@ -1938,7 +1938,7 @@ namespace Loom.ZombieBattleground.Test
                 {
                     Assert.Fail("Card isn't currently at hand.");
 
-                    yield break;
+                    return;
                 }
 
                 BoardUnitView attackerBoardUnitView = _battlegroundController.PlayerBoardCards[attackerCardIndex];
@@ -1957,12 +1957,12 @@ namespace Loom.ZombieBattleground.Test
                 }
             }
 
-            yield return LetsThink();
+            await LetsThink();
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
-        private IEnumerator PlayCardFromBoard(
+        private async Task PlayCardFromBoard(
             BoardUnitModel boardUnitModel,
             Loom.ZombieBattleground.Player targetPlayer,
             BoardUnitModel targetCreatureModel)
@@ -2015,7 +2015,7 @@ namespace Loom.ZombieBattleground.Test
                 else
                     Debug.LogWarning("3");
 
-                yield return LetsThink();
+                await LetsThink();
 
                 fightTargetingArrow.End(boardUnitView);
                 _playerController.IsCardSelected = false;
@@ -2037,7 +2037,7 @@ namespace Loom.ZombieBattleground.Test
                 boardUnitView.Model.DoCombat(target);
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
@@ -2889,42 +2889,42 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Waits for a specific amount of time.
         /// </summary>
-        public IEnumerator LetsThink(float thinkTime = DefaultThinkTime)
+        public async Task LetsThink(float thinkTime = DefaultThinkTime)
         {
             if (thinkTime <= 0f)
             {
-                yield return new WaitForEndOfFrame();
-                yield return new WaitForEndOfFrame();
+                await new WaitForEndOfFrame();
+                await new WaitForEndOfFrame();
             }
             else
             {
-                yield return new WaitForSeconds(thinkTime);
+                await new WaitForSeconds(thinkTime);
             }
         }
 
         /// <summary>
         /// Waits until the player order is decided and records the player overlord’s name in the process (in case we need it for assertion).
         /// </summary>
-        public IEnumerator WaitUntilPlayerOrderIsDecided()
+        public async Task WaitUntilPlayerOrderIsDecided()
         {
-            yield return new WaitUntil(() => GameObject.Find("PlayerOrderPopup(Clone)") != null);
+            await new WaitUntil(() => GameObject.Find("PlayerOrderPopup(Clone)") != null);
 
-            yield return new WaitUntil(() => _gameplayManager.CurrentPlayer != null && _gameplayManager.OpponentPlayer != null);
-            yield return new WaitUntil(() => _gameplayManager.CurrentPlayer.MulliganWasStarted);
+            await new WaitUntil(() => _gameplayManager.CurrentPlayer != null && _gameplayManager.OpponentPlayer != null);
+            await new WaitUntil(() => _gameplayManager.CurrentPlayer.MulliganWasStarted);
 
 
 
             // TODO: there is a race condition when the popup has shown and hidden itself
             // *before* this method is even entered. As a result, test gets stuck, waiting for the popup forever.
 
-            /*yield return new WaitUntil ( () => GameObject.Find ("PlayerOrderPopup (Clone)") != null);
+            /*await new WaitUntil ( () => GameObject.Find ("PlayerOrderPopup (Clone)") != null);
 
             RecordActualOverlordName ();
 
-            yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
+            await new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
 
-            yield return null;
-            yield return new WaitUntil ( () => GameObject.Find ("PlayerOrderPopup (Clone)") == null);
+            await new WaitForUpdate();
+            await new WaitUntil ( () => GameObject.Find ("PlayerOrderPopup (Clone)") == null);
     */
         }
 
@@ -2932,91 +2932,91 @@ namespace Loom.ZombieBattleground.Test
         /// Picks Mulligan Cards.
         /// </summary>
         /// <remarks>todo: Doesn't work, after the latest changes done to the way this is handled.</remarks>
-        public IEnumerator DecideWhichCardsToPick()
+        public async Task DecideWhichCardsToPick()
         {
             if (IsGameEnded())
-                yield break;
+                return;
 
-            yield return LetsThink();
+            await LetsThink();
 
-            yield return ClickGenericButton("Button_Keep");
+            await ClickGenericButton("Button_Keep");
         }
 
         /// <summary>
         /// Ends the turn for the player.
         /// </summary>
-        public IEnumerator EndTurn()
+        public async Task EndTurn()
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsGameEnded())
-                yield break;
+                return;
 
             _battlegroundController.StopTurn();
             GameObject.Find("_1_btn_endturn").GetComponent<EndTurnButton>().SetEnabled(false);
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Waits for player’s first turn, to start off playing. In case it is our turn, it does nothing, if not, it tracks until input is unblocked.
         /// </summary>
-        public IEnumerator WaitUntilOurFirstTurn()
+        public async Task WaitUntilOurFirstTurn()
         {
             if (IsGameEnded())
-                yield break;
+                return;
 
             if (_gameplayManager.CurrentTurnPlayer.InstanceId == _gameplayManager.CurrentPlayer.InstanceId)
             {
-                yield return null;
+                await new WaitForUpdate();
             }
             else
             {
                 if (IsGameEnded())
-                    yield break;
+                    return;
 
-                yield return WaitUntilOurTurnStarts();
+                await WaitUntilOurTurnStarts();
 
                 if (IsGameEnded())
-                    yield break;
+                    return;
 
-                yield return WaitUntilInputIsUnblocked();
+                await WaitUntilInputIsUnblocked();
             }
 
-            yield return LetsThink();
+            await LetsThink();
         }
 
-        public IEnumerator WaitUntilWeHaveACardAtHand()
+        public async Task WaitUntilWeHaveACardAtHand()
         {
-            yield return new WaitUntil(() => _battlegroundController.PlayerHandCards.Count >= 1);
+            await new WaitUntil(() => _battlegroundController.PlayerHandCards.Count >= 1);
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Waits until AIBrain stops thinking.
         /// </summary>
         /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
-        public IEnumerator WaitUntilAIBrainStops()
+        public async Task WaitUntilAIBrainStops()
         {
-            yield return new WaitUntil(() => _gameplayManager.GetController<AIController>().IsBrainWorking == false);
+            await new WaitUntil(() => _gameplayManager.GetController<AIController>().IsBrainWorking == false);
         }
 
         /// <summary>
         /// Waits until player’s turn starts.
         /// </summary>
-        public IEnumerator WaitUntilOurTurnStarts()
+        public async Task WaitUntilOurTurnStarts()
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
 
-            yield return new WaitUntil(() =>
+            await new WaitUntil(() =>
                 IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") != null || GetCurrentPageName(3) == "ConnectionPopup" ||
                 TurnTimeIsUp());
 
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
 
-            yield return new WaitUntil(() => IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") == null || TurnTimeIsUp());
+            await new WaitUntil(() => IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") == null || TurnTimeIsUp());
 
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
 
             if (TurnTimeIsUp())
             {
@@ -3027,13 +3027,13 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Waits until player can make a move.
         /// </summary>
-        public IEnumerator WaitUntilInputIsUnblocked()
+        public async Task WaitUntilInputIsUnblocked()
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
 
-            yield return new WaitUntil(() => IsGameEnded() || _gameplayManager.IsLocalPlayerTurn() || TurnTimeIsUp());
+            await new WaitUntil(() => IsGameEnded() || _gameplayManager.IsLocalPlayerTurn() || TurnTimeIsUp());
 
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
 
             if (TurnTimeIsUp())
             {
@@ -3046,19 +3046,19 @@ namespace Loom.ZombieBattleground.Test
         /// Uses primary skill on opponent player.
         /// </summary>
         /// <remarks>Was written specifically for tutorials.</remarks>
-        public IEnumerator UseSkillToOpponentPlayer()
+        public async Task UseSkillToOpponentPlayer()
         {
             if (IsGameEnded())
             {
-                yield break;
+                return;
             }
 
             DoBoardSkill(_testBroker.GetPlayerPrimarySkill(_player), _testBroker.GetPlayer(_opponent), Enumerators.AffectObjectType.Player);
 
-            yield return LetsThink();
-            yield return LetsThink();
+            await LetsThink();
+            await LetsThink();
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         // todo: reconsider having this
@@ -3066,7 +3066,7 @@ namespace Loom.ZombieBattleground.Test
         /// Plays all non-sleeping cards to attack the enemy player
         /// </summary>
         /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
-        public IEnumerator PlayNonSleepingCardsFromBoardToOpponentPlayer()
+        public async Task PlayNonSleepingCardsFromBoardToOpponentPlayer()
         {
             foreach (BoardUnitView boardUnitView in _battlegroundController.PlayerBoardCards)
             {
@@ -3074,14 +3074,14 @@ namespace Loom.ZombieBattleground.Test
                 {
                     boardUnitView.Model.DoCombat(_gameplayManager.OpponentPlayer);
 
-                    yield return LetsThink();
-                    yield return LetsThink();
+                    await LetsThink();
+                    await LetsThink();
                 }
 
-                yield return null;
+                await new WaitForUpdate();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         // todo: reconsider having this
@@ -3090,12 +3090,12 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
         /// <param name="boardName">Board name.</param>
-        public IEnumerator WaitUntilCardIsAddedToBoard(string boardName)
+        public async Task WaitUntilCardIsAddedToBoard(string boardName)
         {
             Transform boardTransform = GameObject.Find(boardName).transform;
             int boardChildrenCount = boardTransform.childCount;
 
-            yield return new WaitUntil(() =>
+            await new WaitUntil(() =>
                 (boardChildrenCount < boardTransform.childCount) && (boardChildrenCount < _battlegroundController.OpponentBoardCards.Count));
         }
 
@@ -3103,34 +3103,34 @@ namespace Loom.ZombieBattleground.Test
         /// Makes specified number of moves (if timeout allows).
         /// </summary>
         /// <param name="maxTurns">Max number of turns.</param>
-        public IEnumerator MakeMoves(int maxTurns = 100)
+        public async Task MakeMoves(int maxTurns = 100)
         {
             if (IsGameEnded())
-                yield break;
+                return;
 
             // if it doesn't end in 100 moves, end the game anyway
             for (int turns = 1; turns <= maxTurns; turns++)
             {
-                yield return TurnStartedHandler();
+                await TurnStartedHandler();
 
                 TurnEndedHandler();
 
                 if (IsGameEnded())
-                    yield break;
+                    return;
 
-                yield return EndTurn();
+                await EndTurn();
 
                 TurnWaitStart(turnWaitTime);
 
                 if (IsGameEnded())
                     break;
 
-                yield return WaitUntilOurTurnStarts();
+                await WaitUntilOurTurnStarts();
 
                 if (IsGameEnded())
                     break;
 
-                yield return WaitUntilInputIsUnblocked();
+                await WaitUntilInputIsUnblocked();
 
                 if (IsGameEnded())
                     break;
@@ -3147,48 +3147,48 @@ namespace Loom.ZombieBattleground.Test
         /// The method stops if null is returned from the generator.
         /// </param>
         /// <returns></returns>
-        public IEnumerator PlayMoves(Func<Func<Task>> turnTaskGenerator)
+        public async Task PlayMoves(Func<Func<Task>> turnTaskGenerator)
         {
-            yield return AssertCurrentPageName("GameplayPage");
+            await AssertCurrentPageName("GameplayPage");
 
             InitalizePlayer();
 
             Debug.Log("!a -3");
 
-            yield return WaitUntilPlayerOrderIsDecided();
+            await WaitUntilPlayerOrderIsDecided();
 
             Debug.Log("!a -2");
 
-            yield return AssertMulliganPopupCameUp(
-                DecideWhichCardsToPick(),
+            await AssertMulliganPopupCameUp(
+                DecideWhichCardsToPick,
                 null);
 
             Debug.Log("!a -1");
 
-            yield return WaitUntilOurFirstTurn();
+            await WaitUntilOurFirstTurn();
 
             Func<Task> currentTurnTask;
             while ((currentTurnTask = turnTaskGenerator()) != null)
             {
-                yield return LetsThink();
+                await LetsThink();
 
                 Debug.Log("!a 0");
 
-                yield return TaskAsIEnumerator(currentTurnTask());
+                await TaskAsIEnumerator(currentTurnTask());
 
                 Debug.Log("!a 1");
 
                 if (IsGameEnded())
                     break;
 
-                yield return WaitUntilOurTurnStarts();
+                await WaitUntilOurTurnStarts();
 
                 Debug.Log("!a 2");
 
                 if (IsGameEnded())
                     break;
 
-                yield return WaitUntilInputIsUnblocked();
+                await WaitUntilInputIsUnblocked();
 
                 Debug.Log("!a 3");
 
@@ -3198,11 +3198,11 @@ namespace Loom.ZombieBattleground.Test
 
             Debug.LogWarning("0");
 
-            yield return ClickGenericButton("Button_Continue");
+            await ClickGenericButton("Button_Continue");
 
             Debug.LogWarning("1");
 
-            yield return AssertCurrentPageName("HordeSelectionPage");
+            await AssertCurrentPageName("HordeSelectionPage");
 
             Debug.LogWarning("2");
         }
@@ -3238,20 +3238,20 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private IEnumerator HandleConnectivityIssues()
+        private async Task HandleConnectivityIssues()
         {
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             if (GetCurrentPageName(3) == "ConnectionPopup")
             {
                 WaitStart(10);
 
-                yield return ClickGenericButton("Button_Reconnect");
+                await ClickGenericButton("Button_Reconnect");
 
-                yield return new WaitUntil(() => (GetCurrentPageName(3) != "ConnectionPopup") || WaitTimeIsUp());
+                await new WaitUntil(() => (GetCurrentPageName(3) != "ConnectionPopup") || WaitTimeIsUp());
 
                 if (GetCurrentPageName(3) == "ConnectionPopup")
                 {
@@ -3259,7 +3259,7 @@ namespace Loom.ZombieBattleground.Test
                 }
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         #region Horde Creation / Editing
@@ -3267,115 +3267,115 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Adds a Valash Deck and cards from Life group.
         /// </summary>
-        public IEnumerator AddValashHorde()
+        public async Task AddValashHorde()
         {
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return ClickGenericButton("Image_BaackgroundGeneral");
-            yield return AssertCurrentPageName("OverlordSelectionPage");
+            await ClickGenericButton("Image_BaackgroundGeneral");
+            await AssertCurrentPageName("OverlordSelectionPage");
 
-            yield return PickOverlord("Valash", false);
-            yield return PickOverlordAbility(0);
+            await PickOverlord("Valash", false);
+            await PickOverlordAbility(0);
 
-            yield return ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            yield return AssertCurrentPageName("HordeEditingPage");
+            await ClickGenericButton("Canvas_BackLayer/Button_Continue");
+            await AssertCurrentPageName("HordeEditingPage");
 
             SetupArmyCards();
 
-            yield return SetDeckTitle("Valash");
+            await SetDeckTitle("Valash");
 
-            yield return AddCardToHorde("Life", "Azuraz", 4);
-            yield return AddCardToHorde("Life", "Bloomer", 4);
-            yield return AddCardToHorde("Life", "Zap", 4);
-            yield return AddCardToHorde("Life", "Amber", 4);
-            yield return AddCardToHorde("Life", "Bark", 4);
-            yield return AddCardToHorde("Life", "Puffer", 2);
-            yield return AddCardToHorde("Life", "Sapper", 2);
-            yield return AddCardToHorde("Life", "Keeper", 2);
-            yield return AddCardToHorde("Life", "Cactuz", 2);
-            yield return AddCardToHorde("Life", "EverlaZting", 2);
+            await AddCardToHorde("Life", "Azuraz", 4);
+            await AddCardToHorde("Life", "Bloomer", 4);
+            await AddCardToHorde("Life", "Zap", 4);
+            await AddCardToHorde("Life", "Amber", 4);
+            await AddCardToHorde("Life", "Bark", 4);
+            await AddCardToHorde("Life", "Puffer", 2);
+            await AddCardToHorde("Life", "Sapper", 2);
+            await AddCardToHorde("Life", "Keeper", 2);
+            await AddCardToHorde("Life", "Cactuz", 2);
+            await AddCardToHorde("Life", "EverlaZting", 2);
 
             AssertCorrectNumberOfCards();
 
-            yield return ClickGenericButton("Button_Save");
+            await ClickGenericButton("Button_Save");
         }
 
         /// <summary>
         /// Adss a Kalile Horde and cards from Air group.
         /// </summary>
-        public IEnumerator AddKalileHorde()
+        public async Task AddKalileHorde()
         {
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return ClickGenericButton("Image_BaackgroundGeneral");
-            yield return AssertCurrentPageName("OverlordSelectionPage");
+            await ClickGenericButton("Image_BaackgroundGeneral");
+            await AssertCurrentPageName("OverlordSelectionPage");
 
-            yield return PickOverlord("Kalile", false);
-            yield return PickOverlordAbility(1);
+            await PickOverlord("Kalile", false);
+            await PickOverlordAbility(1);
 
-            yield return ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            yield return AssertCurrentPageName("HordeEditingPage");
+            await ClickGenericButton("Canvas_BackLayer/Button_Continue");
+            await AssertCurrentPageName("HordeEditingPage");
 
             SetupArmyCards();
 
-            yield return SetDeckTitle("Kalile");
+            await SetDeckTitle("Kalile");
 
-            yield return AddCardToHorde("Air", "Whizpar", 4);
-            yield return AddCardToHorde("Air", "Soothsayer", 4);
-            yield return AddCardToHorde("Air", "FumeZ", 4);
-            yield return AddCardToHorde("Air", "Breezee", 4);
-            yield return AddCardToHorde("Air", "Banshee", 4);
-            yield return AddCardToHorde("Air", "Zhocker", 4);
-            yield return AddCardToHorde("Air", "Bouncer", 2);
-            yield return AddCardToHorde("Air", "Wheezy", 4);
+            await AddCardToHorde("Air", "Whizpar", 4);
+            await AddCardToHorde("Air", "Soothsayer", 4);
+            await AddCardToHorde("Air", "FumeZ", 4);
+            await AddCardToHorde("Air", "Breezee", 4);
+            await AddCardToHorde("Air", "Banshee", 4);
+            await AddCardToHorde("Air", "Zhocker", 4);
+            await AddCardToHorde("Air", "Bouncer", 2);
+            await AddCardToHorde("Air", "Wheezy", 4);
 
             AssertCorrectNumberOfCards();
 
-            yield return ClickGenericButton("Button_Save");
+            await ClickGenericButton("Button_Save");
         }
 
         /// <summary>
         /// Adds a Razu Horde deck and cards from Fire group.
         /// </summary>
-        public IEnumerator AddRazuHorde()
+        public async Task AddRazuHorde()
         {
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return ClickGenericButton("Image_BaackgroundGeneral");
-            yield return AssertCurrentPageName("OverlordSelectionPage");
+            await ClickGenericButton("Image_BaackgroundGeneral");
+            await AssertCurrentPageName("OverlordSelectionPage");
 
-            yield return PickOverlord("Razu", true);
-            yield return PickOverlordAbility(1);
+            await PickOverlord("Razu", true);
+            await PickOverlordAbility(1);
 
-            yield return ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            yield return AssertCurrentPageName("HordeEditingPage");
+            await ClickGenericButton("Canvas_BackLayer/Button_Continue");
+            await AssertCurrentPageName("HordeEditingPage");
 
             SetupArmyCards();
 
-            yield return SetDeckTitle("Razu");
+            await SetDeckTitle("Razu");
 
-            yield return AddCardToHorde("Fire", "Pyromaz", 4);
-            yield return AddCardToHorde("Fire", "Quazi", 4);
-            yield return AddCardToHorde("Fire", "Ember", 4);
-            yield return AddCardToHorde("Fire", "Firewall", 4);
-            yield return AddCardToHorde("Fire", "BurZt", 4);
-            yield return AddCardToHorde("Fire", "Firecaller", 4);
-            yield return AddCardToHorde("Fire", "Burrrnn", 2);
-            yield return AddCardToHorde("Fire", "Werezomb", 2);
-            yield return AddCardToHorde("Fire", "Modo", 2);
+            await AddCardToHorde("Fire", "Pyromaz", 4);
+            await AddCardToHorde("Fire", "Quazi", 4);
+            await AddCardToHorde("Fire", "Ember", 4);
+            await AddCardToHorde("Fire", "Firewall", 4);
+            await AddCardToHorde("Fire", "BurZt", 4);
+            await AddCardToHorde("Fire", "Firecaller", 4);
+            await AddCardToHorde("Fire", "Burrrnn", 2);
+            await AddCardToHorde("Fire", "Werezomb", 2);
+            await AddCardToHorde("Fire", "Modo", 2);
 
             AssertCorrectNumberOfCards();
 
-            yield return ClickGenericButton("Button_Save");
+            await ClickGenericButton("Button_Save");
         }
 
         /// <summary>
@@ -3400,12 +3400,12 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <param name="overlordName">Overlord name.</param>
         /// <param name="goRight">If set to <c>true</c> goes right, until finds what you set.</param>
-        public IEnumerator PickOverlord(string overlordName, bool goRight = true)
+        public async Task PickOverlord(string overlordName, bool goRight = true)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             int selectedIndex = 0;
@@ -3414,36 +3414,36 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (goRight)
                 {
-                    yield return ClickGenericButton("Button_RightArrow");
+                    await ClickGenericButton("Button_RightArrow");
 
                     selectedIndex = (selectedIndex + 1) % _overlordNames.Count;
                 }
                 else
                 {
-                    yield return ClickGenericButton("Button_LeftArrow");
+                    await ClickGenericButton("Button_LeftArrow");
 
                     selectedIndex = (selectedIndex + 6 - 1) % _overlordNames.Count;
                 }
 
-                yield return LetsThink();
-                yield return LetsThink();
+                await LetsThink();
+                await LetsThink();
             }
 
-            yield return ClickGenericButton("Button_Continue");
+            await ClickGenericButton("Button_Continue");
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Picks the overlord ability.
         /// </summary>
         /// <param name="index">Index.</param>
-        public IEnumerator PickOverlordAbility(int index)
+        public async Task PickOverlordAbility(int index)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             GameObject abilitiesParent = GameObject.Find("Abilities");
@@ -3458,19 +3458,19 @@ namespace Loom.ZombieBattleground.Test
                 abilitiesParent.transform.GetChild(index).GetComponent<Button>().onClick.Invoke();
             }
 
-            yield return LetsThink();
+            await LetsThink();
         }
 
         /// <summary>
         /// Sets the name/title of the deck.
         /// </summary>
         /// <param name="deckTitle">Deck title.</param>
-        public IEnumerator SetDeckTitle(string deckTitle)
+        public async Task SetDeckTitle(string deckTitle)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             GameObject deckTitleInput = GameObject.Find("DeckTitleInputText");
@@ -3490,15 +3490,15 @@ namespace Loom.ZombieBattleground.Test
             deckTitleInputField.text = deckTitle; // for visibility during testing
             deckTitleInputField.onEndEdit.Invoke(deckTitle); // for post deck creation result
 
-            yield return LetsThink();
+            await LetsThink();
         }
 
-        private IEnumerator PickElement(string elementName)
+        private async Task PickElement(string elementName)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             Transform elementsParent = GameObject.Find("ElementsToggles").transform;
@@ -3511,11 +3511,11 @@ namespace Loom.ZombieBattleground.Test
                 {
                     if (elementName != "Fire")
                     {
-                        yield return PickElement("Fire");
+                        await PickElement("Fire");
                     }
                     else
                     {
-                        yield return PickElement("Water");
+                        await PickElement("Water");
                     }
                 }
 
@@ -3524,11 +3524,11 @@ namespace Loom.ZombieBattleground.Test
                 _currentElementName = elementName;
             }
 
-            yield return LetsThink();
+            await LetsThink();
 
             SetupArmyCards();
 
-            yield return LetsThink();
+            await LetsThink();
         }
 
         /// <summary>
@@ -3537,12 +3537,12 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="elementName">Element name.</param>
         /// <param name="cardName">Card name.</param>
         /// <param name="count">Count.</param>
-        public IEnumerator AddCardToHorde(string elementName, string cardName, int count = 1)
+        public async Task AddCardToHorde(string elementName, string cardName, int count = 1)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find(x =>
@@ -3550,10 +3550,10 @@ namespace Loom.ZombieBattleground.Test
 
             if (armyCard == null)
             {
-                yield return PickElement(elementName);
+                await PickElement(elementName);
             }
 
-            yield return AddCardToHorde2(cardName, count);
+            await AddCardToHorde2(cardName, count);
         }
 
         //The method that actually adds the cards is AddCardToHorde2
@@ -3561,12 +3561,12 @@ namespace Loom.ZombieBattleground.Test
         //If it's not, the correct element is picked so that the card can be found
         //Otherwise it can proceed directly to adding said cards
 
-        private IEnumerator AddCardToHorde2(string cardName, int count = 1)
+        private async Task AddCardToHorde2(string cardName, int count = 1)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             int checkedPage;
@@ -3579,13 +3579,13 @@ namespace Loom.ZombieBattleground.Test
 
                 if (armyCard == null)
                 {
-                    yield return ClickGenericButton("Army/ArrowRightButton");
+                    await ClickGenericButton("Army/ArrowRightButton");
 
-                    yield return LetsThink();
+                    await LetsThink();
 
                     SetupArmyCards();
 
-                    yield return LetsThink();
+                    await LetsThink();
 
                     continue;
                 }
@@ -3597,10 +3597,10 @@ namespace Loom.ZombieBattleground.Test
                 {
                     _uiManager.GetPage<HordeEditingPage>().AddCardToDeck(null, armyCard);
 
-                    yield return LetsThink();
+                    await LetsThink();
                 }
 
-                yield return LetsThink();
+                await LetsThink();
 
                 break;
             }
@@ -3610,7 +3610,7 @@ namespace Loom.ZombieBattleground.Test
                 Assert.Fail($"Card named \"{cardName}\" was not found.");
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         private bool CheckCorrectNumberOfCards(int correctNumber = 30)
@@ -3654,15 +3654,15 @@ namespace Loom.ZombieBattleground.Test
         /// Selects a Horde by name.
         /// </summary>
         /// <param name="hordeName">Horde name.</param>
-        public IEnumerator SelectAHordeByName(
+        public async Task SelectAHordeByName(
             string hordeName,
             bool failIfNotFound = true,
             string failureMessage = "Couldn't find Horde by that name")
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             GameObject hordesParent = GameObject.Find("Panel_DecksContainer/Group");
@@ -3689,19 +3689,19 @@ namespace Loom.ZombieBattleground.Test
                 Assert.Fail(failureMessage);
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         /// <summary>
         /// Selects a Horde by index.
         /// </summary>
         /// <param name="index">Index.</param>
-        public IEnumerator SelectAHordeByIndex(int index)
+        public async Task SelectAHordeByIndex(int index)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             if (index + 1 >= GetNumberOfHordes())
@@ -3713,52 +3713,52 @@ namespace Loom.ZombieBattleground.Test
             Transform selectedHordeTransform = hordesParent.transform.GetChild(index);
             selectedHordeTransform.Find("Button_Select").GetComponent<Button>().onClick.Invoke();
 
-            yield return LetsThink();
+            await LetsThink();
         }
 
         /// <summary>
         /// Removes a Horde by index.
         /// </summary>
         /// <param name="index">Index.</param>
-        public IEnumerator RemoveAHorde(int index)
+        public async Task RemoveAHorde(int index)
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return SelectAHordeByIndex(index);
+            await SelectAHordeByIndex(index);
 
             GameObject.Find("Button_Delete").GetComponent<Button>().onClick.Invoke();
 
-            yield return LetsThink();
+            await LetsThink();
 
-            yield return RespondToYesNoOverlay(true);
+            await RespondToYesNoOverlay(true);
 
-            yield return LetsThink();
-            yield return LetsThink();
+            await LetsThink();
+            await LetsThink();
         }
 
         /// <summary>
         /// Removes all Hordes except first.
         /// </summary>
-        public IEnumerator RemoveAllHordesExceptDefault()
+        public async Task RemoveAllHordesExceptDefault()
         {
-            yield return HandleConnectivityIssues();
+            await HandleConnectivityIssues();
             if (IsTestFailed)
             {
-                yield break;
+                return;
             }
 
             for (int i = GetNumberOfHordes() - 2; i >= 1; i--)
             {
-                yield return RemoveAHorde(1);
+                await RemoveAHorde(1);
 
-                yield return LetsThink();
+                await LetsThink();
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
         #endregion
@@ -3867,37 +3867,37 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Plays a match and once the match finishes, presses on Continue button.
         /// </summary>
-        public IEnumerator PlayAMatch(int maxTurns = 100)
+        public async Task PlayAMatch(int maxTurns = 100)
         {
-            yield return AssertCurrentPageName("GameplayPage");
+            await AssertCurrentPageName("GameplayPage");
 
             InitalizePlayer();
 
-            yield return WaitUntilPlayerOrderIsDecided();
+            await WaitUntilPlayerOrderIsDecided();
 
-            yield return AssertMulliganPopupCameUp(
-                DecideWhichCardsToPick(),
+            await AssertMulliganPopupCameUp(
+                DecideWhichCardsToPick,
                 null);
 
-            yield return WaitUntilOurFirstTurn();
+            await WaitUntilOurFirstTurn();
 
-            yield return MakeMoves(maxTurns);
+            await MakeMoves(maxTurns);
 
-            yield return ClickGenericButton("Button_Continue");
+            await ClickGenericButton("Button_Continue");
 
-            yield return AssertCurrentPageName("HordeSelectionPage");
+            await AssertCurrentPageName("HordeSelectionPage");
         }
 
         /// <summary>
         /// Presses OK or GotIt button if it's on.
         /// </summary>
         /// <remarks>Useful where you expect to get a popup with this button.</remarks>
-        public IEnumerator PressOK()
+        public async Task PressOK()
         {
             if (GameObject.Find("Button_OK") != null)
-                yield return ClickGenericButton("Button_OK");
+                await ClickGenericButton("Button_OK");
             else
-                yield return ClickGenericButton("Button_GotIt");
+                await ClickGenericButton("Button_GotIt");
         }
 
         #endregion
@@ -4073,12 +4073,6 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Log:
                     break;
             }
-        }
-
-        private static IEnumerator ActionAsCoroutine (Action action)
-        {
-            action();
-            yield return null;
         }
 
         public static async Task IEnumeratorAsTask(IEnumerator enumerator)

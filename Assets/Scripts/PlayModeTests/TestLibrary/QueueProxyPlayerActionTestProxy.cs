@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground.Test
     /// Convenience wrapper for <see cref="IPlayerActionTestProxy"/> that wraps calls into lambdas and adds the
     /// to a queue to be called in a delayed fashion.
     /// </summary>
-    internal class QueueProxyPlayerActionTestProxy
+    public class QueueProxyPlayerActionTestProxy
     {
         private readonly Func<Queue<Func<Task>>> _getQueueFunc;
 

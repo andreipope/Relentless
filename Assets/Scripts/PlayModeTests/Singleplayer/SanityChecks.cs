@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -9,240 +10,232 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_S1_SkipTutorials()
+        public async Task Test_S1_SkipTutorials()
         {
-            _testHelper.SetTestName("SanityChecks - Tutorial Skip");
+            TestHelper.SetTestName("SanityChecks - Tutorial Skip");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
             #region Tutorial Skip
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_Tutorial");
-            yield return _testHelper.AssertCurrentPageName("GameplayPage");
-            yield return SkipTutorial(false);
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_Tutorial");
+            await TestHelper.AssertCurrentPageName("GameplayPage");
+            await SkipTutorial(false);
 
             #endregion
 
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_S2_PlayThroughTutorials()
+        public async Task Test_S2_PlayThroughTutorials()
         {
-            _testHelper.SetTestName("SanityChecks - Tutorial Non-Skip");
+            TestHelper.SetTestName("SanityChecks - Tutorial Non-Skip");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
             #region Tutorial Non-Skip
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_Tutorial");
-            yield return _testHelper.AssertCurrentPageName("GameplayPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_Tutorial");
+            await TestHelper.AssertCurrentPageName("GameplayPage");
 
-            yield return PlayTutorial_Part1();
+            await PlayTutorial_Part1();
 
-            yield return _testHelper.ClickGenericButton("Button_Continue");
+            await TestHelper.ClickGenericButton("Button_Continue");
 
-            yield return PlayTutorial_Part2();
+            await PlayTutorial_Part2();
 
-            yield return _testHelper.ClickGenericButton("Button_Continue");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.ClickGenericButton("Button_Continue");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
             #endregion
 
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_S3_CreateAHorde()
+        public async Task Test_S3_CreateAHorde()
         {
-            _testHelper.SetTestName("SanityChecks - Create a Horde and save");
+            TestHelper.SetTestName("SanityChecks - Create a Horde and save");
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            yield return _testHelper.SelectAHordeByName("Razu", false);
-            if (_testHelper.SelectedHordeIndex != -1)
+            await TestHelper.SelectAHordeByName("Razu", false);
+            if (TestHelper.SelectedHordeIndex != -1)
             {
-                yield return _testHelper.RemoveAHorde(_testHelper.SelectedHordeIndex);
+                await TestHelper.RemoveAHorde(TestHelper.SelectedHordeIndex);
             }
 
-            yield return _testHelper.AddRazuHorde();
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AddRazuHorde();
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(900000)]
-        public IEnumerator Test_S4_PlayWithNewHorde()
+        public async Task Test_S4_PlayWithNewHorde()
         {
-            _testHelper.SetTestName("SanityChecks - Gameplay with Razu");
+            TestHelper.SetTestName("SanityChecks - Gameplay with Razu");
 
             #region Solo Gameplay
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-            yield return _testHelper.SelectAHordeByName("Razu");
-            _testHelper.RecordExpectedOverlordName(_testHelper.SelectedHordeIndex);
-            yield return _testHelper.ClickGenericButton("Button_Battle");
-            yield return _testHelper.AssertCurrentPageName("GameplayPage");
-            yield return SoloGameplay(true);
-            yield return _testHelper.ClickGenericButton("Button_Continue");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.SelectAHordeByName("Razu");
+            TestHelper.RecordExpectedOverlordName(TestHelper.SelectedHordeIndex);
+            await TestHelper.ClickGenericButton("Button_Battle");
+            await TestHelper.AssertCurrentPageName("GameplayPage");
+            await SoloGameplay(true);
+            await TestHelper.ClickGenericButton("Button_Continue");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
             #endregion
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
         [UnityTest]
         [Timeout(900000)]
-        public IEnumerator Test_S5_PlayWithDefaultHorde()
+        public async Task Test_S5_PlayWithDefaultHorde()
         {
-            _testHelper.SetTestName("SanityChecks - Gameplay with Default");
+            TestHelper.SetTestName("SanityChecks - Gameplay with Default");
 
             #region Solo Gameplay
 
-            yield return _testHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Play");
 
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.ClickGenericButton("Button_SoloMode");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.ClickGenericButton("Button_SoloMode");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
             int selectedHordeIndex = 0;
 
-            yield return _testHelper.SelectAHordeByIndex(selectedHordeIndex);
-            _testHelper.RecordExpectedOverlordName(selectedHordeIndex);
-            yield return _testHelper.ClickGenericButton("Button_Battle");
-            yield return _testHelper.AssertCurrentPageName("GameplayPage");
-            yield return SoloGameplay(true);
-            yield return _testHelper.ClickGenericButton("Button_Continue");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
+            TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
+            await TestHelper.ClickGenericButton("Button_Battle");
+            await TestHelper.AssertCurrentPageName("GameplayPage");
+            await SoloGameplay(true);
+            await TestHelper.ClickGenericButton("Button_Continue");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
             #endregion
 
-            _testHelper.TestEndHandler();
+            TestHelper.TestEndHandler();
         }
 
-        [UnityTest]
-        public IEnumerator TestN_Cleanup()
+        private async Task SoloGameplay(bool assertOverlordName = false)
         {
-            // Nothing, just to ascertain cleanup
-
-            yield return null;
-        }
-
-        private IEnumerator SoloGameplay(bool assertOverlordName = false)
-        {
-            if (_testHelper.IsTestFailed)
+            if (TestHelper.IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            _testHelper.InitalizePlayer();
+            TestHelper.InitalizePlayer();
 
-            if (!_testHelper.IsTestFailed)
-                yield return _testHelper.WaitUntilPlayerOrderIsDecided();
+            if (!TestHelper.IsTestFailed)
+                await TestHelper.WaitUntilPlayerOrderIsDecided();
 
             if (assertOverlordName)
             {
-                _testHelper.AssertOverlordName();
+                TestHelper.AssertOverlordName();
             }
 
-            if (!_testHelper.IsTestFailed)
-                yield return _testHelper.AssertMulliganPopupCameUp(
-                    _testHelper.DecideWhichCardsToPick(),
+            if (!TestHelper.IsTestFailed)
+                await TestHelper.AssertMulliganPopupCameUp(
+                    TestHelper.DecideWhichCardsToPick,
                     null);
 
-            if (!_testHelper.IsTestFailed)
-                yield return _testHelper.WaitUntilOurFirstTurn();
+            if (!TestHelper.IsTestFailed)
+                await TestHelper.WaitUntilOurFirstTurn();
 
-            if (!_testHelper.IsTestFailed)
-                yield return _testHelper.MakeMoves();
+            if (!TestHelper.IsTestFailed)
+                await TestHelper.MakeMoves();
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
-        private IEnumerator SkipTutorial(bool twoSteps = true)
+        private async Task SkipTutorial(bool twoSteps = true)
         {
-            yield return new WaitForSeconds(8);
-            yield return _testHelper.ClickGenericButton("Button_Skip");
+            await new WaitForSeconds(8);
+            await TestHelper.ClickGenericButton("Button_Skip");
 
-            yield return _testHelper.RespondToYesNoOverlay(true);
+            await TestHelper.RespondToYesNoOverlay(true);
 
             if (twoSteps)
             {
-                yield return _testHelper.ClickGenericButton("Button_Skip");
+                await TestHelper.ClickGenericButton("Button_Skip");
 
-                yield return _testHelper.RespondToYesNoOverlay(true);
+                await TestHelper.RespondToYesNoOverlay(true);
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
-        private IEnumerator PlayTutorial_Part1()
+        private async Task PlayTutorial_Part1()
         {
-            if (_testHelper.IsTestFailed)
+            if (TestHelper.IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return _testHelper.ClickGenericButton("Button_Next", count: 3);
-            yield return _testHelper.ClickGenericButton("Button_Play");
-            yield return _testHelper.ClickGenericButton("Button_Next", count: 4);
+            await TestHelper.ClickGenericButton("Button_Next", count: 3);
+            await TestHelper.ClickGenericButton("Button_Play");
+            await TestHelper.ClickGenericButton("Button_Next", count: 4);
 
-            yield return _testHelper.WaitUntilWeHaveACardAtHand();
-            yield return _testHelper.PlayCardFromHandToBoard(new[]
+            await TestHelper.WaitUntilWeHaveACardAtHand();
+            await TestHelper.PlayCardFromHandToBoard(new[]
             {
                 0
             });
 
-            yield return _testHelper.ClickGenericButton("Button_Next");
+            await TestHelper.ClickGenericButton("Button_Next");
 
-            yield return _testHelper.EndTurn();
+            await TestHelper.EndTurn();
 
-            yield return _testHelper.WaitUntilCardIsAddedToBoard("OpponentBoard");
-            yield return _testHelper.WaitUntilAIBrainStops();
+            await TestHelper.WaitUntilCardIsAddedToBoard("OpponentBoard");
+            await TestHelper.WaitUntilAIBrainStops();
 
-            yield return _testHelper.ClickGenericButton("Button_Next");
+            await TestHelper.ClickGenericButton("Button_Next");
 
-            yield return _testHelper.WaitUntilOurTurnStarts();
-            yield return _testHelper.WaitUntilInputIsUnblocked();
+            await TestHelper.WaitUntilOurTurnStarts();
+            await TestHelper.WaitUntilInputIsUnblocked();
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.PlayCardFromBoardToOpponent(new[]
+            await TestHelper.PlayCardFromBoardToOpponent(new[]
                 {
                     0
                 },
@@ -253,44 +246,44 @@ namespace Loom.ZombieBattleground.Test
 
             for (int i = 0; i < 2; i++)
             {
-                yield return _testHelper.ClickGenericButton("Button_Next");
+                await TestHelper.ClickGenericButton("Button_Next");
             }
 
-            yield return _testHelper.EndTurn();
+            await TestHelper.EndTurn();
 
-            yield return _testHelper.WaitUntilOurTurnStarts();
-            yield return _testHelper.WaitUntilInputIsUnblocked();
+            await TestHelper.WaitUntilOurTurnStarts();
+            await TestHelper.WaitUntilInputIsUnblocked();
 
-            yield return _testHelper.ClickGenericButton("Button_Next");
+            await TestHelper.ClickGenericButton("Button_Next");
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.PlayCardFromBoardToOpponent(new[]
+            await TestHelper.PlayCardFromBoardToOpponent(new[]
                 {
                     0
                 },
                 null,
                 true);
 
-            yield return _testHelper.ClickGenericButton("Button_Next");
+            await TestHelper.ClickGenericButton("Button_Next");
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.EndTurn();
+            await TestHelper.EndTurn();
 
-            yield return _testHelper.WaitUntilOurTurnStarts();
-            yield return _testHelper.WaitUntilInputIsUnblocked();
+            await TestHelper.WaitUntilOurTurnStarts();
+            await TestHelper.WaitUntilInputIsUnblocked();
 
-            yield return _testHelper.ClickGenericButton("Button_Next");
+            await TestHelper.ClickGenericButton("Button_Next");
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.PlayCardFromBoardToOpponent(new[]
+            await TestHelper.PlayCardFromBoardToOpponent(new[]
                 {
                     0
                 },
@@ -301,97 +294,97 @@ namespace Loom.ZombieBattleground.Test
 
             for (int i = 0; i < 3; i++)
             {
-                yield return _testHelper.ClickGenericButton("Button_Next");
+                await TestHelper.ClickGenericButton("Button_Next");
             }
 
-            yield return _testHelper.WaitUntilAIBrainStops();
-            yield return _testHelper.WaitUntilInputIsUnblocked();
+            await TestHelper.WaitUntilAIBrainStops();
+            await TestHelper.WaitUntilInputIsUnblocked();
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.PlayCardFromHandToBoard(new[]
+            await TestHelper.PlayCardFromHandToBoard(new[]
             {
                 1
             });
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.PlayCardFromBoardToOpponent(new[]
+            await TestHelper.PlayCardFromBoardToOpponent(new[]
                 {
                     0
                 },
                 null,
                 true);
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
             for (int i = 0; i < 3; i++)
             {
-                yield return _testHelper.ClickGenericButton("Button_Next");
+                await TestHelper.ClickGenericButton("Button_Next");
             }
 
-            yield return _testHelper.UseSkillToOpponentPlayer();
+            await TestHelper.UseSkillToOpponentPlayer();
 
             for (int i = 0; i < 4; i++)
             {
-                yield return _testHelper.ClickGenericButton("Button_Next");
+                await TestHelper.ClickGenericButton("Button_Next");
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
 
-        private IEnumerator PlayTutorial_Part2()
+        private async Task PlayTutorial_Part2()
         {
-            if (_testHelper.IsTestFailed)
+            if (TestHelper.IsTestFailed)
             {
-                yield break;
+                return;
             }
 
-            yield return _testHelper.ClickGenericButton("Button_Next");
+            await TestHelper.ClickGenericButton("Button_Next");
 
-            yield return _testHelper.WaitUntilOurTurnStarts();
-            yield return _testHelper.WaitUntilInputIsUnblocked();
+            await TestHelper.WaitUntilOurTurnStarts();
+            await TestHelper.WaitUntilInputIsUnblocked();
 
             for (int i = 0; i < 11; i++)
             {
-                yield return _testHelper.ClickGenericButton("Button_Next");
+                await TestHelper.ClickGenericButton("Button_Next");
             }
 
-            yield return _testHelper.PlayCardFromHandToBoard(new[]
+            await TestHelper.PlayCardFromHandToBoard(new[]
             {
                 1
             });
 
-            yield return _testHelper.ClickGenericButton("Button_Next");
+            await TestHelper.ClickGenericButton("Button_Next");
 
-            yield return _testHelper.LetsThink();
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.PlayCardFromHandToBoard(new[]
+            await TestHelper.PlayCardFromHandToBoard(new[]
             {
                 0
             });
 
             for (int i = 0; i < 12; i++)
             {
-                yield return _testHelper.ClickGenericButton("Button_Next");
+                await TestHelper.ClickGenericButton("Button_Next");
             }
 
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.PlayNonSleepingCardsFromBoardToOpponentPlayer();
+            await TestHelper.PlayNonSleepingCardsFromBoardToOpponentPlayer();
 
             for (int i = 0; i < 5; i++)
             {
-                yield return _testHelper.ClickGenericButton("Button_Next");
+                await TestHelper.ClickGenericButton("Button_Next");
             }
 
-            yield return null;
+            await new WaitForUpdate();
         }
     }
 }

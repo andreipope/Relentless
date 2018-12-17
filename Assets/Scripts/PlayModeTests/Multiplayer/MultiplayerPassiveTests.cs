@@ -12,57 +12,57 @@ namespace Loom.ZombieBattleground.Test
         [UnityTearDown]
         public override IEnumerator PerTestTearDown()
         {
-            _testHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
+            TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
 
             if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
             {
-                yield return _testHelper.TearDown_Cleanup();
+                await TestHelper.TearDown_Cleanup();
             }
             else
             {
-                yield return _testHelper.TearDown_GoBackToMainScreen();
+                await TestHelper.TearDown_GoBackToMainScreen();
             }
 
-            _testHelper.ReportTestTime();
+            TestHelper.ReportTestTime();
         }
 
         #endregion
 
         [UnityTest]
         [Timeout(180 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A1_MatchmakeAndPlay()
+        public async Task Test_A1_MatchmakeAndPlay()
         {
-            _testHelper.SetTestName("PvP - Passive Matchmake And Play");
-            _testHelper.SetPvPTags(new[]
+            TestHelper.SetTestName("PvP - Passive Matchmake And Play");
+            TestHelper.SetPvPTags(new[]
             {
                 "pvpTest"
             });
 
-            yield return _testHelper.LetsThink();
+            await TestHelper.LetsThink();
 
-            yield return _testHelper.MainMenuTransition("Button_Play");
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
+            await TestHelper.MainMenuTransition("Button_Play");
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
 
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-            yield return _testHelper.MainMenuTransition("Button_PvPMode");
-            yield return _testHelper.AssertCurrentPageName("PvPSelectionPage");
-            yield return _testHelper.MainMenuTransition("Button_CasualType");
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.MainMenuTransition("Button_PvPMode");
+            await TestHelper.AssertCurrentPageName("PvPSelectionPage");
+            await TestHelper.MainMenuTransition("Button_CasualType");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
             int selectedHordeIndex = 0;
 
-            yield return _testHelper.SelectAHordeByIndex(selectedHordeIndex);
-            _testHelper.RecordExpectedOverlordName(selectedHordeIndex);
+            await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
+            TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
 
             while (true)
             {
-                yield return _testHelper.ClickGenericButton("Button_Battle");
-                yield return _testHelper.AssertPvPStartedOrMatchmakingFailed(
-                    _testHelper.PlayAMatch(),
-                    _testHelper.PressOK());
+                await TestHelper.ClickGenericButton("Button_Battle");
+                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
+                    TestHelper.PlayAMatch(),
+                    TestHelper.PressOK());
 
-                yield return _testHelper.LetsThink();
+                await TestHelper.LetsThink();
             }
         }
     }
