@@ -32,6 +32,8 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
+        private BoardController _boardController;
+
         private CardsController _cardsController;
 
         private ActionsQueueController _actionsQueueController;
@@ -69,6 +71,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
             _gameplayManager.GameStarted += GameStartedHandler;
@@ -760,7 +763,7 @@ namespace Loom.ZombieBattleground
 
                         _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
 
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
+                        _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer,
                             () =>
                             {
                                 bool createTargetArrow = false;
@@ -801,8 +804,9 @@ namespace Loom.ZombieBattleground
                                 }
                             });
                         boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
-                        break;
                     }
+                    break;
+
                 case Enumerators.CardKind.SPELL:
                     {
                         GameObject spellCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
@@ -816,6 +820,13 @@ namespace Loom.ZombieBattleground
                         BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
 
                         spellCard.gameObject.SetActive(false);
+
+                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        {
+                            ActionType = Enumerators.ActionType.PlayCardFromHand,
+                            Caller = boardSpell,
+                            TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        });
 
                         bool createTargetArrow = false;
 
@@ -842,9 +853,8 @@ namespace Loom.ZombieBattleground
                             _actionsQueueController.ForceContinueAction(callAbilityAction);
                             ranksBuffAction.ForceActionDone();
                         }
-
-                        break;
                     }
+                    break;
             }
         }
 

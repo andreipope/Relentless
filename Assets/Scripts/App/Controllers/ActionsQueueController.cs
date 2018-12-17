@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         private List<GameplayQueueAction<object>> _actionsToDo;
 
-        private bool _isDebugMode = false;
+        private bool _isDebugMode = true;
 
         public List<PastActionsPopup.PastActionParam> ActionsReports { get; private set; }
 
@@ -162,6 +162,10 @@ namespace Loom.ZombieBattleground
                 if (ActionInProgress == previousAction || ActionInProgress == null)
                 {
                     TryCallNewActionFromQueue();
+                }
+                else
+                {
+                    ActionInProgress = null;
                 }
             }
             else

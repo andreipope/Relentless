@@ -260,7 +260,8 @@ namespace Loom.ZombieBattleground
                 new RanksController(),
                 new InputController(),
                 new OpponentController(),
-                new UniqueAnimationsController()
+                new UniqueAnimationsController(),
+                new BoardController()
             };
 
             foreach (IController controller in _controllers)

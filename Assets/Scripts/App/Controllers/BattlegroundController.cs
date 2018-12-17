@@ -65,6 +65,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private BoardController _boardController;
+
         private IPlayerManager _playerManager;
 
         private ISoundManager _soundManager;
@@ -118,6 +120,7 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
 
@@ -861,7 +864,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     OpponentBoardCards.Add(view);
-                }   
+                }
             }
             else
             {
@@ -896,8 +899,8 @@ namespace Loom.ZombieBattleground
 
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
 
-            UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-            UpdatePositionOfBoardUnitsOfOpponent();
+            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
+            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
         }
 
         public void DistractUnit(BoardUnitView boardUnit)

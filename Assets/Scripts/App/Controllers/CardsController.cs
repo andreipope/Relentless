@@ -485,7 +485,7 @@ namespace Loom.ZombieBattleground
                     _fakeBoardCard = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
                     toArrangeList.Insert(_indexOfCard, _fakeBoardCard);
 
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(toArrangeList);
+                    _boardController.UpdateBoard(toArrangeList, true, null);
 
                     _newCardPositionOfBoard = _fakeBoardCard.PositionOfBoard;
                     _isHoveringCardOfBoard = true;
@@ -582,8 +582,7 @@ namespace Loom.ZombieBattleground
                             _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
 
                             boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
-                                _gameplayManager.CurrentPlayer.BoardCards,
+                            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
                                 {
                                     card.HandBoardCard.GameObject.SetActive(false);
@@ -1135,16 +1134,7 @@ namespace Loom.ZombieBattleground
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
-            if (!owner.IsLocalPlayer)
-            {
-                _battlegroundController.OpponentBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(onComplete);
-            }
-            else
-            {
-                _battlegroundController.PlayerBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(owner.BoardCards, onComplete);
-            }
+            _boardController.UpdateCurrentBoardOfPlayer(owner, onComplete);
 
             return unit;
         }

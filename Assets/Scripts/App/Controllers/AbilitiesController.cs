@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         private BoardArrowController _boardArrowController;
 
+        private BoardController _boardController;
+
         private ulong _castedAbilitiesIds;
 
         private List<ActiveAbility> _activeAbilities;
@@ -49,6 +51,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
         }
 
         public void ResetAll()
@@ -480,9 +483,8 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction (true);
 
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer
-                                       .BoardCards);
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
+                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
+                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
 
                                    onCompleteCallback?.Invoke (true);
 
@@ -584,9 +586,8 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction(true);
 
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
-                                       .BoardCards);
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
+                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
 
                                    onCompleteCallback?.Invoke(true);
 
@@ -760,9 +761,8 @@ namespace Loom.ZombieBattleground
                 {
                     activeAbility.Ability.SelectedTargetAction(true);
 
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
-                        .BoardCards);
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                    _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
+                    _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
                 };
 
                 if (from != null && targets[0].BoardObject != null)
@@ -1137,8 +1137,8 @@ namespace Loom.ZombieBattleground
                 activeAbility.Ability.SelectedTargetAction(true);
             }
 
-            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
+            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
         }
 
         private void ProceedWithCardToGraveyard(BoardCard card)

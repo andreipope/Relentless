@@ -63,6 +63,7 @@ public class TestHelper
     private AbilitiesController _abilitiesController;
     private BoardArrowController _boardArrowController;
     private PlayerController _playerController;
+    private BoardController _boardController;
 
     private GameObject canvas1GameObject, canvas2GameObject, canvas3GameObject;
     public GameObject Canvas1 { get { return canvas1GameObject; } }
@@ -1745,7 +1746,7 @@ public class TestHelper
 
                     _abilitiesController.ResolveAllAbilitiesOnUnit (boardUnitViewElement.Model, false);
 
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent (
+                    _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                         () => {
                             bool createTargetArrow = false;
 
