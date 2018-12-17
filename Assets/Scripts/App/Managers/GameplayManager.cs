@@ -88,8 +88,8 @@ namespace Loom.ZombieBattleground
 
         public void RearrangeHands()
         {
-            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer(CurrentPlayer.BoardCards);
-            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
+            GetController<BoardController>().UpdateCurrentBoardOfPlayer(CurrentPlayer, null);
+            GetController<BoardController>().UpdateCurrentBoardOfPlayer(OpponentPlayer, null);
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)

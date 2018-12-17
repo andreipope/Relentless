@@ -65,6 +65,8 @@ namespace Loom.ZombieBattleground
 
         protected CardsController CardsController;
 
+        protected BoardController BoardController;
+
         protected ILoadObjectsManager LoadObjectsManager;
 
         protected IGameplayManager GameplayManager;
@@ -105,6 +107,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
+            BoardController = GameplayManager.GetController<BoardController>();
 
             AbilityData = ability;
             CardKind = cardKind;
