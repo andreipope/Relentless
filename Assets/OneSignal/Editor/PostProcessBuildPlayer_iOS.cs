@@ -107,16 +107,14 @@
          if (File.Exists(entitlementPath))
             entitlements.ReadFromFile(entitlementPath);
          
-         #if !UNITY_CLOUD_BUILD && ADD_APP_GROUP
-            if (entitlements.root["aps-environment"] == null) {
-               entitlements.root.SetString("aps-environment", "development");
-            }
+         if (entitlements.root["aps-environment"] == null) {
+            entitlements.root.SetString("aps-environment", "development");
+         }
 
-            if (entitlements.root["com.apple.security.application-groups"] == null) {
-               var groups = entitlements.root.CreateArray("com.apple.security.application-groups");
-               groups.AddString("group." + PlayerSettings.applicationIdentifier + ".onesignal");
-            }
-#endif
+         if (entitlements.root["com.apple.security.application-groups"] == null) {
+            var groups = entitlements.root.CreateArray("com.apple.security.application-groups");
+            groups.AddString("group." + PlayerSettings.applicationIdentifier + ".onesignal");
+         }
 
 
         entitlements.WriteToFile(entitlementPath);
@@ -145,7 +143,7 @@
          File.WriteAllText(projectPath, project.WriteToString());
       }
 
-      #if UNITY_2017_2_OR_NEWER && !UNITY_CLOUD_BUILD
+      #if UNITY_2017_2_OR_NEWER
          
          // This function takes a static framework that is already linked to a different target in the project and links it to the specified target
          public static void InsertStaticFrameworkIntoTargetBuildPhaseFrameworks(string staticFrameworkName, string frameworkGuid, string target, ref string contents, PBXProject project) {
