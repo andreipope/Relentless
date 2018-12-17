@@ -606,13 +606,7 @@ namespace Loom.ZombieBattleground
 
         private void UpdateBoard(Action ended)
         {
-            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, () =>
-            {
-                _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, () =>
-                {
-                    ended?.Invoke();
-                });
-            });
+            _boardController.UpdateWholeBoard(ended);
         }
     }
 }

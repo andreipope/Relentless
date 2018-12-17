@@ -64,6 +64,22 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public void UpdateWholeBoard(Action boardUpdated)
+        {
+            int incrementValue = 0;
+            int maxValue = 2;
+
+            UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, () =>
+            {
+                CheckIfBoardWasUpdated(ref incrementValue, maxValue, boardUpdated);
+            });
+
+            UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, () =>
+            {
+                CheckIfBoardWasUpdated(ref incrementValue, maxValue, boardUpdated);
+            });
+        }
+
         public void UpdateCurrentBoardOfPlayer(Player player, Action boardUpdated)
         {
             UpdateBoard(player.BoardCards, player.IsLocalPlayer, boardUpdated);
@@ -111,6 +127,16 @@ namespace Loom.ZombieBattleground
             }
 
             sequence.AppendCallback(() => boardUpdated?.Invoke());
+        }
+
+        private void CheckIfBoardWasUpdated(ref int value, int maxValue, Action endCallback)
+        {
+            value++;
+
+            if (value == maxValue)
+            {
+                endCallback?.Invoke();
+            }
         }
     }
 }

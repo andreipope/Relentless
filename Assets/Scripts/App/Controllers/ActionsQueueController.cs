@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         private List<GameplayQueueAction<object>> _actionsToDo;
 
-        private bool _isDebugMode = true;
+        private bool _isDebugMode = false;
 
         public List<PastActionsPopup.PastActionParam> ActionsReports { get; private set; }
 
