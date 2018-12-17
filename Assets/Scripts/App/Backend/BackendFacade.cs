@@ -32,10 +32,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
-        public ILogger Logger { get; set; }
-#if DEBUG_RPC
-            = Debug.unityLogger;
-#endif
+        public ILogger Logger { get; set; } = Debug.unityLogger;
+
+        public bool EnableRpcLogging { get; } = false;
 
         public BackendFacade(BackendEndpoint backendEndpoint)
         {
@@ -44,10 +43,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public void Init()
         {
-            Debug.Log("Auth Host: " + BackendEndpoint.AuthHost);
-            Debug.Log("Reader Host: " + BackendEndpoint.ReaderHost);
-            Debug.Log("Writer Host: " + BackendEndpoint.WriterHost);
-            Debug.Log("Card Data Version: " + BackendEndpoint.DataVersion);
+            Logger?.Log("Auth Host: " + BackendEndpoint.AuthHost);
+            Logger?.Log("Reader Host: " + BackendEndpoint.ReaderHost);
+            Logger?.Log("Writer Host: " + BackendEndpoint.WriterHost);
+            Logger?.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()
@@ -58,12 +57,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
         }
 
-        public async Task CreateContract(byte[] privateKey)
+        public async Task CreateContract(byte[] privateKey, Action<DAppChainClient> onClientCreatedCallback = null)
         {
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            ILogger logger = Logger ?? NullLogger.Instance;
+            ILogger logger = EnableRpcLogging ? Logger ?? NullLogger.Instance : NullLogger.Instance;
 
             IRpcClient writer =
                 RpcClientFactory
@@ -90,6 +89,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             });
 
             client.Configuration.AutoReconnect = false;
+            onClientCreatedCallback?.Invoke(client);
 
             await client.ReadClient.ConnectAsync();
             await client.WriteClient.ConnectAsync();

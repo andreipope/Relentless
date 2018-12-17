@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -4029,7 +4030,7 @@ namespace Loom.ZombieBattleground.Test
             while (!task.IsCompleted)
             {
                 if (timeoutStopwatch != null && timeoutStopwatch.ElapsedMilliseconds > timeout)
-                    throw new Exception($"Test task {task} timed out after {timeout} ms");
+                    throw new TimeoutException($"Test task {task} timed out after {timeout} ms");
 
                 yield return null;
             }

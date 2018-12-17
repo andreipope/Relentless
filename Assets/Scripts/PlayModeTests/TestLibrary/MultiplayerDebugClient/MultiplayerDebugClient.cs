@@ -113,24 +113,27 @@ namespace Loom.ZombieBattleground.Test
         public async Task Start(
             string name = null,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
-            Action<BackendFacade> onBackendFacadeCreated = null)
+            Action<BackendFacade> onBackendFacadeCreated = null,
+            Action<DAppChainClient> onClientCreatedCallback = null,
+            bool enabledLogs = true)
         {
             await Reset();
 
             UserDataModel = new UserDataModel(
                 "DebugClient_" +
                 (name != null ? name + "_" : "") +
-                UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0") + Time.frameCount,
+                new global::System.Random().Next(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
                 CryptoUtils.GeneratePrivateKey()
             );
 
             BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint())
             {
-                Logger = new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] "))
+                Logger = enabledLogs ? new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] ")) : null
             };
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
-            await backendFacade.CreateContract(UserDataModel.PrivateKey);
+            await backendFacade.CreateContract(UserDataModel.PrivateKey, onClientCreatedCallback);
+
             try
             {
                 await backendFacade.SignUp(UserDataModel.UserId);

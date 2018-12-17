@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -14,17 +15,22 @@ namespace Loom.ZombieBattleground.Test
 {
     public class TestUtility
     {
-        public static IEnumerator AsyncTest(Func<Task> testAction)
+        public static IEnumerator AsyncTest(Func<Task> testAction, int? overrideTimeout = null)
         {
             int timeout =
                 TestContext.CurrentTestExecutionContext.TestCaseTimeout <= 0 ?
                     Timeout.Infinite :
-                    TestContext.CurrentTestExecutionContext.TestCaseTimeout;
+                    TestContext.CurrentTestExecutionContext.TestCaseTimeout;;
+            if (overrideTimeout != null && overrideTimeout.Value > 0)
+            {
+                timeout = overrideTimeout.Value;
+            }
+
 
 #if UNITY_EDITOR
-            if (EditorApplication.isPlaying)
+            if (!EditorApplication.isPlaying)
             {
-                EditorApplication.update += EditorExecuteContinuations;
+                //EditorApplication.update += EditorExecuteContinuations;
             }
 
             return
@@ -34,10 +40,14 @@ namespace Loom.ZombieBattleground.Test
                     {
                         await testAction();
                     }
+                    catch (Exception e)
+                    {
+                        ExceptionDispatchInfo.Capture(e).Throw();
+                    }
                     finally
                     {
-                        if (EditorApplication.isPlaying) {
-                            EditorApplication.update -= EditorExecuteContinuations;
+                        if (!EditorApplication.isPlaying) {
+                            //EditorApplication.update -= EditorExecuteContinuations;
                         }
                     }
                 }, timeout);
@@ -52,7 +62,6 @@ namespace Loom.ZombieBattleground.Test
             SynchronizationContext context = SynchronizationContext.Current;
             MethodInfo execMethod = context.GetType().GetMethod("Exec", BindingFlags.NonPublic | BindingFlags.Instance);
             execMethod.Invoke(context, null);
-            Debug.Log("continuie");
         }
 #endif
     }

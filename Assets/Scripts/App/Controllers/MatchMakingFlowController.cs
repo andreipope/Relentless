@@ -166,8 +166,6 @@ namespace Loom.ZombieBattleground
                     matchId
                 );
 
-                Debug.LogWarning(result.ToString());
-
                 await SetState(MatchMakingState.WaitingForOpponent);
                 await _backendFacade.SubscribeEvent(result.Match.Topics.ToList());
             }
@@ -233,8 +231,6 @@ namespace Loom.ZombieBattleground
                     _userDataModel.UserId,
                     _tags
                 );
-
-                Debug.LogWarning(result.ToString());
 
                 if (result.Match != null)
                 {
@@ -332,7 +328,6 @@ namespace Loom.ZombieBattleground
 
         private async Task SetStateUnchecked(MatchMakingState state)
         {
-            Debug.Log("Matchmaking state: " + state);
             _state = state;
             StateChanged?.Invoke(state);
 
