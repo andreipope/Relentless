@@ -162,8 +162,6 @@ namespace Loom.ZombieBattleground
 
             _playerHero = null;
             _opponentHero = null;
-
-            _soundManager.StopPlaying(Enumerators.SoundType.GOO_TUBE_LOOP);
         }
 
         public void Dispose()
@@ -218,8 +216,6 @@ namespace Loom.ZombieBattleground
 
             StartGame();
             KeepButtonVisibility(false);
-
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume * TubeLoopSoundVolumeKoef, isLoop:true);
         }
 
         public void SetEndTurnButtonStatus(bool status)
