@@ -1,5 +1,4 @@
-using System.Collections;
-using Loom.ZombieBattleground.BackendCommunication;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
@@ -7,27 +6,6 @@ namespace Loom.ZombieBattleground.Test
 {
     public class MultiplayerPassiveTests : BaseIntegrationTest
     {
-        #region Setup & TearDown
-
-        [UnityTearDown]
-        public override IEnumerator PerTestTearDown()
-        {
-            TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
-
-            if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
-            {
-                await TestHelper.TearDown_Cleanup();
-            }
-            else
-            {
-                await TestHelper.TearDown_GoBackToMainScreen();
-            }
-
-            TestHelper.ReportTestTime();
-        }
-
-        #endregion
-
         [UnityTest]
         [Timeout(180 * 1000 * TestHelper.TestTimeScale)]
         public async Task Test_A1_MatchmakeAndPlay()
@@ -59,8 +37,8 @@ namespace Loom.ZombieBattleground.Test
             {
                 await TestHelper.ClickGenericButton("Button_Battle");
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
-                    TestHelper.PlayAMatch(),
-                    TestHelper.PressOK());
+                    () => TestHelper.PlayAMatch(),
+                    TestHelper.PressOK);
 
                 await TestHelper.LetsThink();
             }
