@@ -109,8 +109,19 @@ namespace Loom.ZombieBattleground
 
         public void ClearActions()
         {
+            if (_isDebugMode)
+            {
+                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
+            }
+
+            if (ActionInProgress != null)
+            {
+                ActionInProgress.Action = null;
+                ActionInProgress.ForceActionDone();
+                ActionInProgress = null;
+            }
+
             _actionsToDo.Clear();
-            ActionInProgress = null;
         }
 
         public void ForceContinueAction(GameplayQueueAction<object> action)
@@ -238,7 +249,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"<color=red>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
+                UnityEngine.Debug.LogError($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
 
                 ActionDoneCallback();
             }

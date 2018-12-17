@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground.Data
 
         private void InitData()
         {
-            Cards = Cards.OrderBy(card => card.CardRank).ToList();
+            Cards = Cards.OrderBy(card => card.Cost).ToList();
             Sets =
                 Cards
                     .GroupBy(card => card.CardSetType)

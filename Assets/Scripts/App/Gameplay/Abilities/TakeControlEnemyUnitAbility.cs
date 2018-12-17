@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private int Count { get; }
 
+        private List<BoardUnitModel> _movedUnits;
+
         public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -55,21 +57,29 @@ namespace Loom.ZombieBattleground
 
         private void TakeControlEnemyUnit(List<BoardUnitModel> units)
         {
-            List<BoardUnitModel> movedUnits = new List<BoardUnitModel>();
+            _movedUnits = new List<BoardUnitModel>();
 
             foreach (BoardUnitModel unit in units)
             {
                 if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
-                movedUnits.Add(unit);
+                _movedUnits.Add(unit);
+            }
 
+            InvokeActionTriggered(_movedUnits);
+        }
+
+        private void TakeControlEnemyUnitEnded()
+        {
+            foreach (BoardUnitModel unit in _movedUnits)
+            {
                 BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit, IsPVPAbility);
             }
 
-            if (movedUnits.Count > 0)
+            if (_movedUnits.Count > 0)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, movedUnits.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _movedUnits.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
                                                          Protobuf.AffectObjectType.Types.Enum.Character);
             }
         }
@@ -78,7 +88,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            Action();
+            TakeControlEnemyUnitEnded();
         }
     }
 }

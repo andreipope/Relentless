@@ -255,7 +255,8 @@ namespace Loom.ZombieBattleground
 
                 for (int i = 0; i < abilities.Count; i++)
                 {
-                    if (attackedCard.CardSetType == abilities[i].AbilitySetType)
+                    if (attackedCard.CardSetType == abilities[i].AbilitySetType &&
+                        abilities[i].CallType == Enumerators.AbilityCallType.PERMANENT)
                     {
                         value += abilities[i].Value;
                     }
@@ -650,7 +651,7 @@ namespace Loom.ZombieBattleground
         public void ThrowUseAbilityEvent(WorkingCard card, List<ParametrizedAbilityBoardObject> targets,
                                          Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
         {
-            if (card == null || !card.Owner.IsLocalPlayer)
+            if (!CanHandleAbiityUseEvent(card))
                 return;
 
             AbilityUsed?.Invoke(card, abilityType,
@@ -663,7 +664,7 @@ namespace Loom.ZombieBattleground
         public void ThrowUseAbilityEvent(WorkingCard card, List<WorkingCard> cards,
                                  Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
         {
-            if (card == null || !card.Owner.IsLocalPlayer)
+            if (!CanHandleAbiityUseEvent(card))
                 return;
 
             AbilityUsed?.Invoke(card, abilityType,
@@ -677,8 +678,8 @@ namespace Loom.ZombieBattleground
         public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
                                          Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
         {
-            if (!_gameplayManager.IsLocalPlayerTurn() || card == null)
-                return;
+            if (!CanHandleAbiityUseEvent(card))
+                return; 
 
             List<ParametrizedAbilityBoardObject> parametrizedAbilityBoardObjects = new List<ParametrizedAbilityBoardObject>();
 
@@ -696,6 +697,14 @@ namespace Loom.ZombieBattleground
                                     Protobuf.CardKind.Types.Enum.Spell :
                                     Protobuf.CardKind.Types.Enum.Creature,
                                 affectObjectType, parametrizedAbilityBoardObjects, null);
+        }
+
+        private bool CanHandleAbiityUseEvent(WorkingCard card)
+        {
+            if (!_gameplayManager.IsLocalPlayerTurn() || card == null || !card.Owner.IsLocalPlayer)
+                return false;
+
+            return true;
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)

@@ -523,6 +523,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 PlayerAction = playerAction
             };
 
+            Debug.LogWarning("Action sent: <color=orange>" + JsonConvert.SerializeObject(request, Formatting.Indented) + "</color>");
+
             GameClient.Get<IQueueManager>().AddAction(request);
         }
 
@@ -549,12 +551,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                     catch (TimeoutException exception)
                     {
-                        Debug.LogError(" Time out == " + exception);
+                        Debug.LogWarning(" Time out == " + exception);
                         ShowConnectionPopup();
                     }
                     catch (Exception exception)
                     {
-                        Debug.LogError(" other == " + exception);
+                        Debug.LogWarning(" other == " + exception);
                         ShowConnectionPopup();
                     }
                     break;
@@ -566,12 +568,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     }
                     catch (TimeoutException exception)
                     {
-                        Debug.LogError(" Time out == " + exception);
+                        Debug.LogWarning(" Time out == " + exception);
                         ShowConnectionPopup();
                     }
                     catch (Exception exception)
                     {
-                        Debug.LogError(" other == " + exception);
+                        Debug.LogWarning(" other == " + exception);
                         ShowConnectionPopup();
                     }
                     break;

@@ -742,7 +742,8 @@ namespace Loom.ZombieBattleground.Common
             AbilityUsageBlocker,
             StopTurn,
             EndMatch,
-            UnitCombat
+            UnitCombat,
+            LeaveMatch
         }
     }
 }

@@ -808,8 +808,6 @@ namespace Loom.ZombieBattleground
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicPowerVFX"),
                     unit, isIgnoreCastVfx: true);
 
-                _battlegroundController.GetBoardUnitViewByModel(unit).EnabledToxicPowerGlow();
-
                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
@@ -929,7 +927,7 @@ namespace Loom.ZombieBattleground
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = targetObject,
                         HasValue = true,
-                        Value = -skill.Value
+                        Value = -value
                     });
                 }, true);
             }
@@ -1194,7 +1192,7 @@ namespace Loom.ZombieBattleground
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                        Target = target,
+                        Target = unit,
                     });
                 });
                 unit.ChangeModelVisibility(false);
@@ -1274,7 +1272,8 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<WorkingCard> cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
-                && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                && !owner.BoardCards.Exists(c => c.Model.Card == x));
 
             cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
@@ -1291,7 +1290,7 @@ namespace Loom.ZombieBattleground
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Reanimate,
-                    Target = target
+                    Target = units[units.Count - 1]
                 });
             }
 
@@ -1305,7 +1304,7 @@ namespace Loom.ZombieBattleground
 
         private void ReanimateUnit(List<BoardUnitView> units)
         {
-            foreach (var unit in units)
+            foreach (BoardUnitView unit in units)
             {
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ResurrectVFX"), unit, delay: 6, isIgnoreCastVfx: true);
                 InternalTools.DoActionDelayed(() =>
@@ -1718,6 +1717,14 @@ namespace Loom.ZombieBattleground
                 vfxObject.transform.position =  _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                 _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(vfxObject, true, 8);
 
+                string skillTitle = skill.OverlordSkill.ToString().ToLowerInvariant();
+
+                ParticleSystem particle = vfxObject.transform.Find("Particle System/MeteorShowerVFX").GetComponent<ParticleSystem>();
+                MeteorShowerEmit(particle, 3, skillTitle);
+
+                vfxObject.transform.Find("Particle System/MeteorShowerVFX/Quad").GetComponent<OnBehaviourHandler>().OnParticleCollisionEvent += (obj) =>
+                    MeteorShowerImpact(obj, skillTitle);
+
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
@@ -1735,6 +1742,35 @@ namespace Loom.ZombieBattleground
             });
         }
 
+        private void MeteorShowerEmit(ParticleSystem particle, int count, string skillTitle)
+        {
+            if (particle == null)
+                return;
+
+            if(count > 0)
+            {
+                particle.Emit(1);
+
+                _soundManager.PlaySound(
+                        Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skillTitle + "_Moving_0" + UnityEngine.Random.Range(0, 4).ToString(),
+                        Constants.OverlordAbilitySoundVolume,
+                        false);
+
+                count--;
+                float delay = UnityEngine.Random.Range(0.2f, 0.5f);
+                InternalTools.DoActionDelayed(() => MeteorShowerEmit(particle, count, skillTitle), delay);
+            }
+        }
+
+        private void MeteorShowerImpact(GameObject obj, string skillTitle)
+        {
+            _soundManager.PlaySound(
+                Enumerators.SoundType.OVERLORD_ABILITIES,
+                skillTitle + "_Impact_0" + UnityEngine.Random.Range(0, 4).ToString(),
+                Constants.OverlordAbilitySoundVolume,
+                false);
+        }
         // EARTH
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardObject target)
