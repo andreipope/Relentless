@@ -15,6 +15,9 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground.Test
 {
+    /// <summary>
+    /// Implements a basic independent game client. Useful for simulating remote players in the same process.
+    /// </summary>
     [Serializable]
     public class MultiplayerDebugClient
     {

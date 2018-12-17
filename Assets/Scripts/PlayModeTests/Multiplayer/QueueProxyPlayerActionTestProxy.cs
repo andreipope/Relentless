@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground.Test
     /// </summary>
     internal class QueueProxyPlayerActionTestProxy
     {
-        private Func<Queue<Func<Task>>> _getQueueFunc;
+        private readonly Func<Queue<Func<Task>>> _getQueueFunc;
 
         protected Queue<Func<Task>> Queue => _getQueueFunc();
 

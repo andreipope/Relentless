@@ -4,28 +4,8 @@ using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
-    public class HordeManipulationTests
+    public class HordeManipulationTests : BaseIntegrationTest
     {
-        private TestHelper _testHelper = new TestHelper();
-
-        #region Setup & TearDown
-
-        [UnitySetUp]
-        public IEnumerator PerTestSetup()
-        {
-            yield return _testHelper.PerTestSetup();
-        }
-
-        [UnityTearDown]
-        public IEnumerator PerTestTearDown()
-        {
-            yield return _testHelper.TearDown();
-
-            yield return _testHelper.ReportTestTime();
-        }
-
-        #endregion
-
         [UnityTest]
         [Timeout(500000)]
         public IEnumerator Test_H1_CreateAHordeAndCancel()
@@ -180,14 +160,6 @@ namespace Loom.ZombieBattleground.Test
             yield return null;
 
             _testHelper.TestEndHandler();
-        }
-
-        [UnityTest]
-        public IEnumerator TestN_Cleanup()
-        {
-            // Nothing, just to ascertain cleanup
-
-            yield return null;
         }
     }
 }

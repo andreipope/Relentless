@@ -8,6 +8,9 @@ using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground.Test
 {
+    /// <summary>
+    /// Sends gameplay actions from the debug opponent client. No logic here, just sends requests.
+    /// </summary>
     public class DebugClientPlayerActionTestProxy : IPlayerActionTestProxy
     {
         private readonly TestHelper _testHelper;

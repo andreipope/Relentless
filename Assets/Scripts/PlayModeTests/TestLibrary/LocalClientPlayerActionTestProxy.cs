@@ -8,6 +8,9 @@ using NotImplementedException = System.NotImplementedException;
 
 namespace Loom.ZombieBattleground.Test
 {
+    /// <summary>
+    /// Initiates gameplay actions on the local client.
+    /// </summary>
     public class LocalClientPlayerActionTestProxy : IPlayerActionTestProxy
     {
         private readonly TestHelper _testHelper;

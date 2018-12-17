@@ -4,27 +4,71 @@ using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
-    public class TutorialTests
+    public class TutorialTests : BaseIntegrationTest
     {
-        private TestHelper _testHelper = new TestHelper();
-
-        #region Setup & TearDown
-
-        [UnitySetUp]
-        public IEnumerator PerTestSetup()
+        [UnityTest]
+        [Timeout(500000)]
+        public IEnumerator Test_T1_TutorialNonSkip()
         {
-            yield return _testHelper.PerTestSetup();
+            _testHelper.SetTestName("Solo - Tutorial Non-Skip");
+
+            yield return _testHelper.MainMenuTransition("Button_Play");
+
+            yield return _testHelper.AssertIfWentDirectlyToTutorial(
+                _testHelper.GoBackToMainAndPressPlay());
+
+            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
+
+            #region Tutorial Non-Skip
+
+            yield return _testHelper.MainMenuTransition("Button_Tutorial");
+
+            yield return _testHelper.AssertCurrentPageName("GameplayPage");
+
+            yield return PlayTutorial_Part1();
+
+            yield return _testHelper.ClickGenericButton("Button_Continue");
+
+            yield return PlayTutorial_Part2();
+
+            yield return _testHelper.ClickGenericButton("Button_Continue");
+
+            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
+
+            #endregion
+
+            yield return _testHelper.LetsThink();
+
+            _testHelper.TestEndHandler();
         }
 
-        [UnityTearDown]
-        public IEnumerator PerTestTearDown()
+        [UnityTest]
+        [Timeout(500000)]
+        public IEnumerator Test_T2_TutorialSkip()
         {
-            yield return _testHelper.TearDown();
+            _testHelper.SetTestName("Solo - Tutorial Skip");
 
-            yield return _testHelper.ReportTestTime();
+            yield return _testHelper.MainMenuTransition("Button_Play");
+
+            yield return _testHelper.AssertIfWentDirectlyToTutorial(
+                _testHelper.GoBackToMainAndPressPlay());
+
+            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
+
+            #region Tutorial Skip
+
+            yield return _testHelper.MainMenuTransition("Button_Tutorial");
+
+            yield return _testHelper.AssertCurrentPageName("GameplayPage");
+
+            yield return SkipTutorial(false);
+
+            #endregion
+
+            yield return _testHelper.LetsThink();
+
+            _testHelper.TestEndHandler();
         }
-
-        #endregion
 
         private IEnumerator SkipTutorial(bool twoSteps = true)
         {
@@ -44,7 +88,7 @@ namespace Loom.ZombieBattleground.Test
 
         private IEnumerator PlayTutorial_Part1()
         {
-            if (_testHelper.IsTestFinished)
+            if (_testHelper.IsTestFailed)
             {
                 yield break;
             }
@@ -183,7 +227,7 @@ namespace Loom.ZombieBattleground.Test
 
         private IEnumerator PlayTutorial_Part2()
         {
-            if (_testHelper.IsTestFinished)
+            if (_testHelper.IsTestFailed)
             {
                 yield break;
             }
@@ -226,78 +270,6 @@ namespace Loom.ZombieBattleground.Test
             {
                 yield return _testHelper.ClickGenericButton("Button_Next");
             }
-
-            yield return null;
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator Test_T1_TutorialNonSkip()
-        {
-            _testHelper.SetTestName("Solo - Tutorial Non-Skip");
-
-            yield return _testHelper.MainMenuTransition("Button_Play");
-
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
-
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-
-            #region Tutorial Non-Skip
-
-            yield return _testHelper.MainMenuTransition("Button_Tutorial");
-
-            yield return _testHelper.AssertCurrentPageName("GameplayPage");
-
-            yield return PlayTutorial_Part1();
-
-            yield return _testHelper.ClickGenericButton("Button_Continue");
-
-            yield return PlayTutorial_Part2();
-
-            yield return _testHelper.ClickGenericButton("Button_Continue");
-
-            yield return _testHelper.AssertCurrentPageName("HordeSelectionPage");
-
-            #endregion
-
-            yield return _testHelper.LetsThink();
-
-            _testHelper.TestEndHandler();
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator Test_T2_TutorialSkip()
-        {
-            _testHelper.SetTestName("Solo - Tutorial Skip");
-
-            yield return _testHelper.MainMenuTransition("Button_Play");
-
-            yield return _testHelper.AssertIfWentDirectlyToTutorial(
-                _testHelper.GoBackToMainAndPressPlay());
-
-            yield return _testHelper.AssertCurrentPageName("PlaySelectionPage");
-
-            #region Tutorial Skip
-
-            yield return _testHelper.MainMenuTransition("Button_Tutorial");
-
-            yield return _testHelper.AssertCurrentPageName("GameplayPage");
-
-            yield return SkipTutorial(false);
-
-            #endregion
-
-            yield return _testHelper.LetsThink();
-
-            _testHelper.TestEndHandler();
-        }
-
-        [UnityTest]
-        public IEnumerator TestN_Cleanup()
-        {
-            // Nothing, just to ascertain cleanup
 
             yield return null;
         }

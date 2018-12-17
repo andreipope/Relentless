@@ -44,32 +44,13 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public const int TestTimeScale = DebugTests ? 1 : 50;
 
-        private enum TesterType
-        {
-            Active,
-            Passive
-        }
-
-        private List<string> _testerKeys = new List<string>
-        {
-            "1b84dd3a623c",
-            "1e0575c58ee5"
-        };
-
-        private TesterType _testerType = TesterType.Active;
-        private string _testerKey;
+        private static TestHelper _instance;
 
         private bool _initialized = false;
 
-        public bool Initialized
-        {
-            get
-            {
-                return _initialized;
-            }
-        }
+        public bool Initialized => _initialized;
 
-        private bool _hasLoginErrorOccured = false;
+        private readonly List<LogMessage> _errorMessages = new List<LogMessage>();
 
         private Scene _testScene;
         private GameObject _testerGameObject;
@@ -80,7 +61,7 @@ namespace Loom.ZombieBattleground.Test
         private string _testName;
         private float _testStartTime;
 
-        private string lastCheckedPageName;
+        private string _lastCheckedPageName;
 
         private TestBroker _testBroker;
         private Enumerators.MatchPlayer _player;
@@ -103,7 +84,7 @@ namespace Loom.ZombieBattleground.Test
         private BoardArrowController _boardArrowController;
         private PlayerController _playerController;
 
-        private GameObject canvas1GameObject, canvas2GameObject, canvas3GameObject;
+        private GameObject _canvas1GameObject, _canvas2GameObject, _canvas3GameObject;
 
         public IGameplayManager GameplayManager => _gameplayManager;
 
@@ -111,7 +92,7 @@ namespace Loom.ZombieBattleground.Test
 
         GameplayQueueAction<object> _callAbilityAction;
 
-        private Loom.ZombieBattleground.Player _currentPlayer, _opponentPlayer;
+        private Player _currentPlayer, _opponentPlayer;
 
         private int pageTransitionWaitTime = 30;
         private int turnWaitTime = 300;
@@ -149,13 +130,13 @@ namespace Loom.ZombieBattleground.Test
 
         public int SelectedHordeIndex { get; private set; }
 
+        public static TestHelper Instance => _instance ?? (_instance = new TestHelper());
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:TestHelper"/> class.
         /// </summary>
-        /// <param name="testerType">Tester type.</param>
-        public TestHelper(int testerType = 0)
+        private TestHelper()
         {
-            _testerType = (TesterType) testerType;
         }
 
         /// <summary>
@@ -200,17 +181,10 @@ namespace Loom.ZombieBattleground.Test
             Time.timeScale = TestTimeScale;
 
             _testStartTime = Time.unscaledTime;
-            _currentTestState = TestState.Running;
             _turnWaitAmount = -1;
 
-            if (_hasLoginErrorOccured)
+            if (!_initialized)
             {
-                FailWithMessage("Couldn't login or simply having connectivity issues.");
-            }
-            else if (!_initialized)
-            {
-                _testerKey = _testerKeys[(int) _testerType];
-
                 _testScene = SceneManager.GetActiveScene();
                 _testerGameObject = _testScene.GetRootGameObjects()[0];
                 Object.DontDestroyOnLoad(_testerGameObject);
@@ -227,12 +201,12 @@ namespace Loom.ZombieBattleground.Test
 
                 yield return HandleLogin();
 
-                if (IsTestFinished)
+                if (IsTestFailed)
                     yield break;
 
                 yield return LetsThink();
 
-                if (IsTestFinished)
+                if (IsTestFailed)
                     yield break;
 
                 #endregion
@@ -254,23 +228,16 @@ namespace Loom.ZombieBattleground.Test
             yield return null;
         }
 
-        public IEnumerator TearDown()
+        public IEnumerator PerTestTearDown()
         {
-            if (!_initialized)
-            {
-                _hasLoginErrorOccured = true;
-            }
-
             if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
             {
                 yield return TearDown_Cleanup();
             }
-            else if (!_hasLoginErrorOccured)
+            else
             {
                 yield return TearDown_GoBackToMainScreen();
             }
-
-            yield return LetsThink();
 
             yield return null;
         }
@@ -334,7 +301,7 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
         public IEnumerator TearDown_GoBackToMainScreen()
         {
-            while (lastCheckedPageName != "MainMenuPage")
+            while (_lastCheckedPageName != "MainMenuPage")
             {
                 yield return GoOnePageHigher();
 
@@ -352,14 +319,14 @@ namespace Loom.ZombieBattleground.Test
         {
             yield return new WaitUntil(() =>
             {
-                if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
+                if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount >= 2)
                 {
                     return true;
                 }
 
                 return false;
             });
-            string actualPageName = canvas1GameObject.transform.GetChild(1).name.Split('(')[0];
+            string actualPageName = _canvas1GameObject.transform.GetChild(1).name.Split('(')[0];
 
             yield return AssertCurrentPageName(actualPageName, isGoingBack: true);
 
@@ -442,16 +409,13 @@ namespace Loom.ZombieBattleground.Test
         /// Reports the test time.
         /// </summary>
         /// <remarks>Generally is used at the of the test, to report the time it took to run it.</remarks>
-        public IEnumerator ReportTestTime()
+        public void ReportTestTime()
         {
             Debug.LogFormat(
-                "\"{0}\" test successfully finished in {1} seconds, with status {2}.",
+                "\"{0}\" test finished in {1} seconds",
                 _testName,
-                Time.unscaledTime - _testStartTime,
-                CurrentTestState
+                Time.unscaledTime - _testStartTime
             );
-
-            yield return LetsThink();
         }
 
         private void SetGameplayManagers()
@@ -481,105 +445,20 @@ namespace Loom.ZombieBattleground.Test
 
         private IEnumerator SetCanvases()
         {
-            canvas1GameObject = null;
+            _canvas1GameObject = null;
 
             yield return new WaitUntil(() => GameObject.Find("Canvas1") != null);
 
-            canvas1GameObject = GameObject.Find("Canvas1");
-            canvas2GameObject = GameObject.Find("Canvas2");
-            canvas3GameObject = GameObject.Find("Canvas3");
+            _canvas1GameObject = GameObject.Find("Canvas1");
+            _canvas2GameObject = GameObject.Find("Canvas2");
+            _canvas3GameObject = GameObject.Find("Canvas3");
 
             yield return null;
-        }
-
-        private string _failMessage;
-
-        public string FailMessage
-        {
-            get
-            {
-                return _failMessage;
-            }
-        }
-
-        private TestState _currentTestState;
-
-        public TestState CurrentTestState
-        {
-            get
-            {
-                return _currentTestState;
-            }
-        }
-
-        public enum TestState
-        {
-            Running,
-            Failed,
-            Passed
-        }
-
-        private void AssertAreEqual(string expectedValue, string actualValue)
-        {
-            if (expectedValue != actualValue)
-            {
-                FailWithMessage($"Expected: {expectedValue}, Actual: {actualValue}");
-            }
-        }
-
-        public IEnumerator FailWithMessageCoroutine(string message)
-        {
-            FailWithMessage(message);
-
-            if (!_initialized)
-            {
-                _hasLoginErrorOccured = true;
-            }
-
-            yield return null;
-        }
-
-        private void FailWithMessage(string message)
-        {
-            _currentTestState = TestState.Failed;
-            _failMessage = message;
-
-            if (!_initialized)
-            {
-                _hasLoginErrorOccured = true;
-            }
-
-            Debug.LogWarning("Test is going to fail with message: " + message);
-        }
-
-        public IEnumerator PassWithMessageCoroutine(string message)
-        {
-            PassWithMessage(message);
-
-            yield return null;
-        }
-
-        private void PassWithMessage(string message)
-        {
-            _currentTestState = TestState.Passed;
-            _failMessage = message;
-
-            Debug.LogWarning("Test is going to pass with message: " + message);
         }
 
         public void TestEndHandler()
         {
-            switch (CurrentTestState)
-            {
-                case TestState.Failed:
-                    Assert.Fail(_failMessage);
-
-                    break;
-                case TestState.Passed:
-                    Assert.Pass(_failMessage);
-
-                    break;
-            }
+            //FIXME
         }
 
         /// <summary>
@@ -591,7 +470,7 @@ namespace Loom.ZombieBattleground.Test
             IEnumerator callback3,
             IEnumerator callback4)
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -613,12 +492,14 @@ namespace Loom.ZombieBattleground.Test
             yield return null;
         }
 
+        public bool IsTestFailed { get; private set; }
+
         /// <summary>
         /// Asserts if we were sent to tutorial. This is used to get out of tutorial, so that test can go on with its purpose.
         /// </summary>
         public IEnumerator AssertIfWentDirectlyToTutorial(IEnumerator callback1, IEnumerator callback2 = null)
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -639,7 +520,7 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>This currently doesn't work, as timeouts have been removed.</remarks>
         public IEnumerator AssertPvPStartedOrMatchmakingFailed(IEnumerator callback1, IEnumerator callback2)
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -661,8 +542,9 @@ namespace Loom.ZombieBattleground.Test
 
         public IEnumerator AssertMulliganPopupCameUp(IEnumerator callback1, IEnumerator callback2)
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
                 yield break;
+
             if (Constants.MulliganEnabled)
             {
                 WaitStart(5);
@@ -698,7 +580,7 @@ namespace Loom.ZombieBattleground.Test
 
             while (outcomeDecided == false)
             {
-                if (IsTestFinished)
+                if (IsTestFailed)
                     break;
 
                 if (check1(parameter1))
@@ -742,9 +624,9 @@ namespace Loom.ZombieBattleground.Test
         /// <returns><c>true</c>, if login box appeared was checked, <c>false</c> otherwise.</returns>
         private bool CheckIfLoginBoxAppeared(string dummyparameter)
         {
-            if (canvas2GameObject != null && canvas2GameObject.transform.childCount >= 2)
+            if (_canvas2GameObject != null && _canvas2GameObject.transform.childCount >= 2)
             {
-                if (canvas2GameObject.transform.GetChild(1).name.Split('(')[0] == "LoginPopup")
+                if (_canvas2GameObject.transform.GetChild(1).name.Split('(')[0] == "LoginPopup")
                     return true;
 
                 return false;
@@ -773,9 +655,9 @@ namespace Loom.ZombieBattleground.Test
         /// <returns><c>true</c>, if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
         private bool CheckIfMatchmakingErrorOccured(string dummyParameter)
         {
-            if (canvas3GameObject != null && canvas3GameObject.transform.childCount >= 2)
+            if (_canvas3GameObject != null && _canvas3GameObject.transform.childCount >= 2)
             {
-                if (canvas3GameObject.transform.GetChild(1).name.Split('(')[0] == "WarningPopup")
+                if (_canvas3GameObject.transform.GetChild(1).name.Split('(')[0] == "WarningPopup")
                     return true;
 
                 return false;
@@ -818,13 +700,13 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="expectedPageName">Expected page name.</param>
         private bool CheckCurrentPageName(string expectedPageName)
         {
-            if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
+            if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount >= 2)
             {
-                if (canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == lastCheckedPageName)
+                if (_canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == _lastCheckedPageName)
                     return false;
                 else
                 {
-                    if (canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == expectedPageName)
+                    if (_canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == expectedPageName)
                         return true;
 
                     return false;
@@ -840,15 +722,15 @@ namespace Loom.ZombieBattleground.Test
             switch (canvasGameObjectIndex)
             {
                 case 1:
-                    parentGameObject = canvas1GameObject;
+                    parentGameObject = _canvas1GameObject;
 
                     break;
                 case 2:
-                    parentGameObject = canvas2GameObject;
+                    parentGameObject = _canvas2GameObject;
 
                     break;
                 case 3:
-                    parentGameObject = canvas3GameObject;
+                    parentGameObject = _canvas3GameObject;
 
                     break;
                 default:
@@ -878,10 +760,10 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="expectedPageName">Page name</param>
         public IEnumerator AssertCurrentPageName(string expectedPageName, string errorTextName = "", bool isGoingBack = false)
         {
-            if (!isGoingBack && IsTestFinished)
+            if (!isGoingBack && IsTestFailed)
                 yield break;
 
-            if (expectedPageName == lastCheckedPageName)
+            if (expectedPageName == _lastCheckedPageName)
                 yield break;
 
             WaitStart(pageTransitionWaitTime);
@@ -903,15 +785,15 @@ namespace Loom.ZombieBattleground.Test
 
                     if (errorTextObject != null && errorTextObject.activeInHierarchy)
                     {
-                        FailWithMessage("Wasn't able to login. Try using USE_STAGING_BACKEND");
+                        Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND");
 
                         return true;
                     }
                 }
 
-                if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
+                if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount >= 2)
                 {
-                    if (canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == lastCheckedPageName)
+                    if (_canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == _lastCheckedPageName)
                         return false;
 
                     return true;
@@ -922,14 +804,14 @@ namespace Loom.ZombieBattleground.Test
 
             if (transitionTimeout)
             {
-                yield return FailWithMessageCoroutine($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
+                Assert.Fail($"Page transition took too long from {_lastCheckedPageName} to {expectedPageName}");
             }
 
-            string actualPageName = canvas1GameObject.transform.GetChild(1).name.Split('(')[0];
+            string actualPageName = _canvas1GameObject.transform.GetChild(1).name.Split('(')[0];
 
-            AssertAreEqual(expectedPageName, actualPageName);
+            Assert.AreEqual(expectedPageName, actualPageName);
 
-            lastCheckedPageName = actualPageName;
+            _lastCheckedPageName = actualPageName;
 
             yield return null;
         }
@@ -1069,7 +951,7 @@ namespace Loom.ZombieBattleground.Test
                         dummyButton.onClick = new Button.ButtonClickedEvent();
                         dummyButton.onClick.RemoveAllListeners();
 
-                        FailWithMessage("Button is not clickable: " + buttonName);
+                        Assert.Fail("Button is not clickable: " + buttonName);
                     }
                     else
                     {
@@ -1113,7 +995,7 @@ namespace Loom.ZombieBattleground.Test
                         dummyButton.Clicked = new Button.ButtonClickedEvent();
                         dummyButton.Clicked.RemoveAllListeners();
 
-                        FailWithMessage("Button is not clickable: " + buttonName);
+                        Assert.Fail("Button is not clickable: " + buttonName);
                     }
                     else
                     {
@@ -1157,7 +1039,7 @@ namespace Loom.ZombieBattleground.Test
                         dummyButton.onClick = new Button.ButtonClickedEvent();
                         dummyButton.onClick.RemoveAllListeners();
 
-                        FailWithMessage("Button is not clickable: " + buttonName);
+                        Assert.Fail("Button is not clickable: " + buttonName);
                     }
                     else
                     {
@@ -1173,7 +1055,7 @@ namespace Loom.ZombieBattleground.Test
             }
             else
             {
-                FailWithMessage("Button wasn't found: " + buttonName);
+                Assert.Fail("Button wasn't found: " + buttonName);
             }
 
             yield return null;
@@ -1185,55 +1067,47 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public IEnumerator HandleLogin()
         {
-            WaitStart(10);
-            GameObject pressAnyText = null;
-            yield return new WaitUntil(() =>
+            if (Constants.AutomaticLoginEnabled)
             {
-                pressAnyText = GameObject.Find("PressAnyText");
+                yield return new WaitUntil(() => !CheckCurrentPageName("LoadingPage"));
 
-                return pressAnyText != null || CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") || WaitTimeIsUp();
-            });
-
-            if (pressAnyText != null)
-            {
-                pressAnyText.SetActive(false);
-                GameClient.Get<IUIManager>().DrawPopup<LoginPopup>();
-
-                yield return AssertLoggedInOrLoginFailed(
-                    CloseTermsPopupIfRequired(),
-                    FailWithMessageCoroutine("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-                    SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
-                    GoOnePageHigher());
+                CheckCurrentPageName("MainMenuPage");
             }
-            else if (!CheckCurrentPageName("MainMenuPage") && !CheckCurrentPageName("GameplayPage"))
+            else
             {
-                FailWithMessage(
-                    $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
+                WaitStart(10);
+                GameObject pressAnyText = null;
+                yield return new WaitUntil(() =>
+                {
+                    pressAnyText = GameObject.Find("PressAnyText");
+
+                    return pressAnyText != null || CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") ||
+                        WaitTimeIsUp();
+                });
+
+                if (pressAnyText != null)
+                {
+                    pressAnyText.SetActive(false);
+                    GameClient.Get<IUIManager>().DrawPopup<LoginPopup>();
+
+                    yield return AssertLoggedInOrLoginFailed(
+                        CloseTermsPopupIfRequired(),
+                        ActionAsCoroutine(() => Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND")),
+                        SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
+                        GoOnePageHigher());
+                }
+                else if (!CheckCurrentPageName("MainMenuPage") && !CheckCurrentPageName("GameplayPage"))
+                {
+                    Assert.Fail(
+                        $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
+                }
+
+                /* yield return CombinedCheck (
+                    CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
+                    CheckCurrentPageName, "MainMenuPage", null); */
+
+                yield return null;
             }
-
-            /* yield return CombinedCheck (
-                CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-                CheckCurrentPageName, "MainMenuPage", null); */
-
-            yield return null;
-        }
-
-        /// <summary>
-        /// (Deprecated) Submits the tester key.
-        /// </summary>
-        private IEnumerator SubmitTesterKey()
-        {
-            InputField testerKeyField = null;
-            yield return new WaitUntil(() =>
-            {
-                testerKeyField = GameObject.Find("InputField_Beta")?.GetComponent<InputField>();
-                return testerKeyField != null;
-            });
-
-            testerKeyField.text = _testerKey;
-            GameObject.Find("Button_Beta").GetComponent<ButtonShiftingContent>().onClick.Invoke();
-
-            yield return null;
         }
 
         private IEnumerator SubmitEmailPassword(string email, string password)
@@ -1263,7 +1137,7 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="count">(Optional) Number of times to click</param>
         public IEnumerator ClickGenericButton(string buttonName, GameObject parentGameObject = null, int count = 1, bool isGoingBack = false)
         {
-            if (!isGoingBack && IsTestFinished)
+            if (!isGoingBack && IsTestFailed)
             {
                 yield break;
             }
@@ -1311,9 +1185,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (clickTimeout)
             {
-                FailWithMessage($"Couldn't find the button: {buttonName}");
-
-                yield break;
+                Assert.Fail($"Couldn't find the button: {buttonName}");
             }
 
             yield return LetsThink(0.5f);
@@ -1347,7 +1219,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 yield return ClickGenericButton(buttonName);
 
-                if (!isGoingBack && IsTestFinished)
+                if (!isGoingBack && IsTestFailed)
                 {
                     break;
                 }
@@ -1370,7 +1242,7 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="isResponseYes">Is the response Yes?</param>
         public IEnumerator RespondToYesNoOverlay(bool isResponseYes, bool isGoingBack = false)
         {
-            if (!isGoingBack && IsTestFinished)
+            if (!isGoingBack && IsTestFailed)
             {
                 yield break;
             }
@@ -1396,7 +1268,7 @@ namespace Loom.ZombieBattleground.Test
         {
             yield return new WaitUntil(() =>
             {
-                if (canvas1GameObject != null && canvas1GameObject.transform.childCount <= 1)
+                if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount <= 1)
                 {
                     return true;
                 }
@@ -1413,7 +1285,7 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="tags">Tags</param>
         public void SetPvPTags(string[] tags)
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 return;
             }
@@ -2064,7 +1936,7 @@ namespace Loom.ZombieBattleground.Test
 
                 if (_battlegroundController.PlayerBoardCards.Count <= i)
                 {
-                    FailWithMessage("Card isn't currently at hand.");
+                    Assert.Fail("Card isn't currently at hand.");
 
                     yield break;
                 }
@@ -3148,7 +3020,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (TurnTimeIsUp())
             {
-                FailWithMessage("AI move took too long.");
+                Assert.Fail("AI move took too long.");
             }
         }
 
@@ -3165,7 +3037,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (TurnTimeIsUp())
             {
-                FailWithMessage("AI move took too long.");
+                Assert.Fail("AI move took too long.");
             }
         }
 
@@ -3340,7 +3212,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public bool IsGameEnded()
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 return true;
             }
@@ -3366,17 +3238,9 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public bool IsTestFinished
-        {
-            get
-            {
-                return _currentTestState != TestState.Running;
-            }
-        }
-
         private IEnumerator HandleConnectivityIssues()
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3391,11 +3255,7 @@ namespace Loom.ZombieBattleground.Test
 
                 if (GetCurrentPageName(3) == "ConnectionPopup")
                 {
-                    _hasLoginErrorOccured = true;
-
-                    FailWithMessage("Connectivity issue came up.");
-
-                    yield return null;
+                    Assert.Fail("Connectivity issue came up.");
                 }
             }
 
@@ -3409,7 +3269,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public IEnumerator AddValashHorde()
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3448,7 +3308,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public IEnumerator AddKalileHorde()
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3485,7 +3345,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public IEnumerator AddRazuHorde()
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3543,7 +3403,7 @@ namespace Loom.ZombieBattleground.Test
         public IEnumerator PickOverlord(string overlordName, bool goRight = true)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3581,7 +3441,7 @@ namespace Loom.ZombieBattleground.Test
         public IEnumerator PickOverlordAbility(int index)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3590,7 +3450,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (index >= abilitiesParent.transform.childCount)
             {
-                FailWithMessage("Index higher than number of abilities");
+                Assert.Fail("Index higher than number of abilities");
             }
 
             if (abilitiesParent.transform.GetChild(index).GetComponent<Button>().IsInteractable())
@@ -3608,7 +3468,7 @@ namespace Loom.ZombieBattleground.Test
         public IEnumerator SetDeckTitle(string deckTitle)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3617,14 +3477,14 @@ namespace Loom.ZombieBattleground.Test
 
             if (deckTitleInput == null)
             {
-                FailWithMessage("DeckTitleInputText doesn't exist");
+                Assert.Fail("DeckTitleInputText doesn't exist");
             }
 
             TMP_InputField deckTitleInputField = deckTitleInput.GetComponent<TMP_InputField>();
 
             if (deckTitleInputField == null)
             {
-                FailWithMessage("TextMeshPro InputField doesn't exist");
+                Assert.Fail("TextMeshPro InputField doesn't exist");
             }
 
             deckTitleInputField.text = deckTitle; // for visibility during testing
@@ -3636,7 +3496,7 @@ namespace Loom.ZombieBattleground.Test
         private IEnumerator PickElement(string elementName)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3680,7 +3540,7 @@ namespace Loom.ZombieBattleground.Test
         public IEnumerator AddCardToHorde(string elementName, string cardName, int count = 1)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3704,7 +3564,7 @@ namespace Loom.ZombieBattleground.Test
         private IEnumerator AddCardToHorde2(string cardName, int count = 1)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3747,7 +3607,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (cardAdded == false)
             {
-                FailWithMessage($"Card named \"{cardName}\" was not found.");
+                Assert.Fail($"Card named \"{cardName}\" was not found.");
             }
 
             yield return null;
@@ -3762,14 +3622,14 @@ namespace Loom.ZombieBattleground.Test
 
         private void AssertCorrectNumberOfCards(int correctNumber = 30)
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 return;
             }
 
             if (!CheckCorrectNumberOfCards(correctNumber))
             {
-                FailWithMessage($"Exactly {correctNumber} cards need to be added to the deck.");
+                Assert.Fail($"Exactly {correctNumber} cards need to be added to the deck.");
             }
         }
 
@@ -3800,7 +3660,7 @@ namespace Loom.ZombieBattleground.Test
             string failureMessage = "Couldn't find Horde by that name")
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3826,7 +3686,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (!hordeSelected && failIfNotFound)
             {
-                FailWithMessage(failureMessage);
+                Assert.Fail(failureMessage);
             }
 
             yield return null;
@@ -3839,14 +3699,14 @@ namespace Loom.ZombieBattleground.Test
         public IEnumerator SelectAHordeByIndex(int index)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
 
             if (index + 1 >= GetNumberOfHordes())
             {
-                FailWithMessage("Horde removal index is too high");
+                Assert.Fail("Horde removal index is too high");
             }
 
             GameObject hordesParent = GameObject.Find("Panel_DecksContainer/Group");
@@ -3863,7 +3723,7 @@ namespace Loom.ZombieBattleground.Test
         public IEnumerator RemoveAHorde(int index)
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3886,7 +3746,7 @@ namespace Loom.ZombieBattleground.Test
         public IEnumerator RemoveAllHordesExceptDefault()
         {
             yield return HandleConnectivityIssues();
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 yield break;
             }
@@ -3905,7 +3765,7 @@ namespace Loom.ZombieBattleground.Test
 
         public void RecordExpectedOverlordName(int index)
         {
-            if (IsTestFinished)
+            if (IsTestFailed)
             {
                 return;
             }
@@ -3914,7 +3774,7 @@ namespace Loom.ZombieBattleground.Test
 
             if (index >= hordesParent.transform.childCount || index == -1)
             {
-                FailWithMessage("Horde index is too high");
+                Assert.Fail("Horde index is too high");
 
                 return;
             }
@@ -3988,7 +3848,7 @@ namespace Loom.ZombieBattleground.Test
 
             Debug.LogFormat("{0} vs {1}", _recordedExpectedValue, _recordedActualValue);
 
-            AssertAreEqual(_recordedExpectedValue, _recordedActualValue);
+            Assert.AreEqual(_recordedExpectedValue, _recordedActualValue);
         }
 
         private string UppercaseFirst(string s)
@@ -4163,14 +4023,7 @@ namespace Loom.ZombieBattleground.Test
 
         private AbilityBoardArrow GetAbilityBoardArrow()
         {
-            if (GameObject.FindObjectOfType<AbilityBoardArrow>() != null)
-            {
-                return GameObject.FindObjectOfType<AbilityBoardArrow>();
-            }
-            else
-            {
-                return null;
-            }
+            return GameObject.FindObjectOfType<AbilityBoardArrow>();
         }
 
         /// <summary>
@@ -4213,7 +4066,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    Assert.Fail(condition + "\n" + stacktrace);
+                    _errorMessages.Add(new LogMessage(condition, stacktrace, type));
                     break;
                 case LogType.Assert:
                 case LogType.Warning:
@@ -4222,6 +4075,11 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
+        private static IEnumerator ActionAsCoroutine (Action action)
+        {
+            action();
+            yield return null;
+        }
 
         public static async Task IEnumeratorAsTask(IEnumerator enumerator)
         {
@@ -4244,6 +4102,27 @@ namespace Loom.ZombieBattleground.Test
             }
 
             task.Wait();
+        }
+
+        private struct LogMessage
+        {
+            public string Message { get; }
+
+            public string StackTrace { get; }
+
+            public LogType LogType { get; }
+
+            public LogMessage(string message, string stackTrace, LogType logType)
+            {
+                Message = message;
+                StackTrace = stackTrace;
+                LogType = logType;
+            }
+
+            public override string ToString()
+            {
+                return $"[{LogType}] {Message}";
+            }
         }
     }
 }
