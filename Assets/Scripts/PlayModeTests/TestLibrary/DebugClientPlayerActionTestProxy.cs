@@ -1,12 +1,10 @@
+using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Loom.ZombieBattleground.Test
 {
