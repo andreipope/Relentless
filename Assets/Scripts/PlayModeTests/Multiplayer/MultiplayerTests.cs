@@ -110,10 +110,10 @@ public class MultiplayerTests
             player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, _testHelper.GetOpponentPlayer().InstanceId),
         };
 
-        ScenarioPlayer scenarioPlayer = new ScenarioPlayer(_testHelper, turns);
+        MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(_testHelper, turns);
         yield return TestHelper.TaskAsIEnumerator(_testHelper.MatchmakeOpponentDebugClient());
 
-        yield return scenarioPlayer.Play();
+        yield return matchScenarioPlayer.Play();
     }
 
     [UnityTest]

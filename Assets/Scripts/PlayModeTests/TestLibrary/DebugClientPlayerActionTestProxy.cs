@@ -76,8 +76,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task<bool> GetIsCurrentTurn()
         {
-            GetGameStateResponse gameStateResponse =
-                await _client.BackendFacade.GetGameState(_client.MatchMakingFlowController.MatchMetadata.Id);
+            GetGameStateResponse gameStateResponse = await _client.BackendFacade.GetGameState(_client.MatchMakingFlowController.MatchMetadata.Id);
             GameState gameState = gameStateResponse.GameState;
             return gameState.PlayerStates[gameState.CurrentPlayerIndex].Id == _client.UserDataModel.UserId;
         }

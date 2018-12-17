@@ -105,7 +105,6 @@ namespace Loom.ZombieBattleground
         {
             _pvpManager.CardPlayedActionReceived += OnCardPlayedHandler;
             _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
-            _pvpManager.DrawCardActionReceived += OnDrawCardHandler;
             _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
@@ -130,7 +129,6 @@ namespace Loom.ZombieBattleground
         {
             _pvpManager.CardPlayedActionReceived -= OnCardPlayedHandler;
             _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
-            _pvpManager.DrawCardActionReceived -= OnDrawCardHandler;
             _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
             _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
@@ -138,7 +136,6 @@ namespace Loom.ZombieBattleground
             _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
             _pvpManager.PlayerLeftGameActionReceived -= OnPlayerLeftGameActionHandler;
             _pvpManager.PlayerActionOutcomeReceived -= OnPlayerActionOutcomeReceived;
-
         }
 
         private void OnPlayerActionOutcomeReceived(PlayerActionOutcome outcome)
@@ -197,11 +194,6 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void OnDrawCardHandler(PlayerActionDrawCard actionDrawCard)
-        {
-            GotActionDrawCard(actionDrawCard.CardInstance.FromProtobuf(_gameplayManager.OpponentPlayer));
-        }
-
         private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
         {           
             GotActionUseCardAbility(new UseCardAbilityModel
@@ -247,14 +239,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             _battlegroundController.EndTurn();
-        }
-
-        public void GotActionDrawCard(WorkingCard drawedCard)
-        {
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            _cardsController.AddCardToHandFromOtherPlayerDeck(drawedCard.Owner, drawedCard.Owner, drawedCard);
         }
 
         public void GotActionPlayCard(WorkingCard card, int position)

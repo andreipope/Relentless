@@ -140,7 +140,7 @@ namespace Loom.ZombieBattleground.Test
             CardLibrary = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
 
             MatchMakingFlowController matchMakingFlowController = new MatchMakingFlowController(backendFacade, UserDataModel);
-            matchMakingFlowController.ActionWaitingTime = 0.3f;
+            matchMakingFlowController.ActionWaitingTime = 1f;
             onMatchMakingFlowControllerCreated?.Invoke(matchMakingFlowController);
 
             BackendFacade = backendFacade;

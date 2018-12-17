@@ -6,39 +6,50 @@ using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground.Test
 {
+    /// <summary>
+    /// Convenience wrapper for <see cref="IPlayerActionTestProxy"/> that wraps calls into lambdas and adds the
+    /// to a queue to be called in a delayed fashion.
+    /// </summary>
     internal class QueueProxyPlayerActionTestProxy
     {
-        public readonly Queue<Func<Task>> Queue = new Queue<Func<Task>>();
-        public IPlayerActionTestProxy CurrentProxy;
+        private Func<Queue<Func<Task>>> _getQueueFunc;
+
+        protected Queue<Func<Task>> Queue => _getQueueFunc();
+
+        /// <summary>
+        /// <see cref="IPlayerActionTestProxy"/> to be used for actions .
+        /// </summary>
+        public IPlayerActionTestProxy Proxy { get; }
+
+        public QueueProxyPlayerActionTestProxy(Func<Queue<Func<Task>>> queueFunc, IPlayerActionTestProxy proxy)
+        {
+            _getQueueFunc = queueFunc;
+            Proxy = proxy;
+        }
 
         public void EndTurn()
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.EndTurn());
+            Queue.Enqueue(() => Proxy.EndTurn());
         }
 
         public void LeaveMatch()
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.LeaveMatch());
+            Queue.Enqueue(() => Proxy.LeaveMatch());
         }
 
         public void Mulligan(IEnumerable<InstanceId> cards)
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.Mulligan(cards));
+            Queue.Enqueue(() => Proxy.Mulligan(cards));
         }
 
         public void CardPlay(InstanceId card, int position)
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.CardPlay(card, position));
+            Queue.Enqueue(() => Proxy.CardPlay(card, position));
         }
 
         public void RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.RankBuff(card, units));
+            Queue.Enqueue(() => Proxy.RankBuff(card, units));
         }
 
         public void CardAbilityUsed(
@@ -49,20 +60,17 @@ namespace Loom.ZombieBattleground.Test
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
             IEnumerable<InstanceId> cards = null)
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards));
+            Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards));
         }
 
         public void OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.OverlordSkillUsed(skillId, affectObjectType, targetInstanceId));
+            Queue.Enqueue(() => Proxy.OverlordSkillUsed(skillId, affectObjectType, targetInstanceId));
         }
 
         public void CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
         {
-            IPlayerActionTestProxy currentProxy = CurrentProxy;
-            Queue.Enqueue(() => currentProxy.CardAttack(attacker, type, target));
+            Queue.Enqueue(() => Proxy.CardAttack(attacker, type, target));
         }
     }
 }

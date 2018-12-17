@@ -2886,6 +2886,14 @@ public class TestHelper
         }
     }
 
+    /// <summary>
+    /// Executes tasks on each turn of a match for the local player.
+    /// </summary>
+    /// <param name="turnTaskGenerator">I
+    /// Enumerator-like generator function that returns the current task to execute.
+    /// The method stops if null is returned from the generator.
+    /// </param>
+    /// <returns></returns>
     public IEnumerator PlayMoves(Func<Func<Task>> turnTaskGenerator)
     {
         yield return AssertCurrentPageName ("GameplayPage");
@@ -2907,7 +2915,7 @@ public class TestHelper
         yield return WaitUntilOurFirstTurn();
 
         Func<Task> currentTurnTask ;
-        while ( (currentTurnTask = turnTaskGenerator ()) != null)
+        while ((currentTurnTask = turnTaskGenerator ()) != null)
         {
             yield return LetsThink ();
 

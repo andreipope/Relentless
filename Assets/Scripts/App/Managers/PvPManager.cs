@@ -42,8 +42,6 @@ namespace Loom.ZombieBattleground
 
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
 
-        public event Action<PlayerActionDrawCard> DrawCardActionReceived;
-
         public event Action<PlayerActionRankBuff> RankBuffActionReceived;
 
         public event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
@@ -334,9 +332,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.Types.Enum.OverlordSkillUsed:
                     OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
-                    break;
-                case PlayerActionType.Types.Enum.DrawCard:
-                    DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
                 case PlayerActionType.Types.Enum.LeaveMatch:
                     ResetCheckPlayerStatus();

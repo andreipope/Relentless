@@ -10,16 +10,24 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
-    internal class ScenarioPlayer
+    /// <summary>
+    /// Plays automated scripted PvP matches.
+    /// </summary>
+    internal class MatchScenarioPlayer
     {
         private readonly TestHelper _testHelper;
         private readonly IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> _turns;
-        private readonly LocalClientPlayerActionTestProxy _localProxy;
-        private readonly DebugClientPlayerActionTestProxy _opponentProxy;
-        private readonly QueueProxyPlayerActionTestProxy _queueProxy = new QueueProxyPlayerActionTestProxy();
-        private int _currentTurn;
+        private readonly Queue<Func<Task>> _actionsQueue = new Queue<Func<Task>>();
+        private readonly IPlayerActionTestProxy _localProxy;
+        private readonly IPlayerActionTestProxy _opponentProxy;
+        private readonly QueueProxyPlayerActionTestProxy _localQueueProxy;
+        private readonly QueueProxyPlayerActionTestProxy _opponentQueueProxy;
+        private readonly SemaphoreSlim _opponentClientTurnSemaphore = new SemaphoreSlim(1);
 
-        public ScenarioPlayer(TestHelper testHelper, IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns)
+        private int _currentTurn;
+        private QueueProxyPlayerActionTestProxy _lastQueueProxy;
+
+        public MatchScenarioPlayer(TestHelper testHelper, IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns)
         {
             _testHelper = testHelper;
             _turns = turns;
@@ -28,6 +36,9 @@ namespace Loom.ZombieBattleground.Test
 
             _opponentProxy = new DebugClientPlayerActionTestProxy(_testHelper, opponentClient);
             _localProxy = new LocalClientPlayerActionTestProxy(_testHelper);
+
+            _localQueueProxy = new QueueProxyPlayerActionTestProxy(() => _actionsQueue, _localProxy);
+            _opponentQueueProxy = new QueueProxyPlayerActionTestProxy(() => _actionsQueue, _opponentProxy);
 
             opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
         }
@@ -38,6 +49,7 @@ namespace Loom.ZombieBattleground.Test
             Debug.Log("[ScenarioPlayer]: Play 1 - HandleOpponentClientTurn");
 #endif
 
+            // Special handling for the first turn
             yield return TestHelper.TaskAsIEnumerator(() => HandleOpponentClientTurn(true));
 
 #if DEBUG_SCENARIO_PLAYER
@@ -53,10 +65,18 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task HandleOpponentClientTurn(bool isFirstTurn)
         {
-            bool isCurrentTurn = await _opponentProxy.GetIsCurrentTurn();
-            if (isCurrentTurn)
+            try
             {
-                await PlayNextOpponentClientTurn(isFirstTurn);
+                await _opponentClientTurnSemaphore.WaitAsync();
+                bool isCurrentTurn = await _opponentProxy.GetIsCurrentTurn();
+                if (isCurrentTurn)
+                {
+                    await PlayNextOpponentClientTurn(isFirstTurn);
+                }
+            }
+            finally
+            {
+                _opponentClientTurnSemaphore.Release();
             }
         }
 
@@ -65,26 +85,19 @@ namespace Loom.ZombieBattleground.Test
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log($"[ScenarioPlayer]: PlayNextDebugClientTurn, current turn {_currentTurn}");
 #endif
-            CreateTurn(_opponentProxy,
+            bool success = CreateTurn(_opponentQueueProxy,
                 proxy =>
                 {
-                    proxy.Queue.Enqueue(async () =>
-                    {
-                        while (_testHelper.GameplayManager.IsLocalPlayerTurn())
-                        {
-                            await new WaitForEndOfFrame();
-                        }
-                    });
+                    _actionsQueue.Enqueue(WaitForLocalPlayerTurn);
                 });
+
+            if (!success)
+                return;
+
+            // If the opponent had first turn, it would have submitted his turn before local client realized that
             if (!isFirstTurn)
             {
-                _queueProxy.Queue.Enqueue(async () =>
-                {
-                    while (_testHelper.GameplayManager.IsLocalPlayerTurn())
-                    {
-                        await new WaitForEndOfFrame();
-                    }
-                });
+                _actionsQueue.Enqueue(WaitForLocalPlayerTurn);
             }
 
             await PlayQueue();
@@ -95,45 +108,47 @@ namespace Loom.ZombieBattleground.Test
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log($"[ScenarioPlayer]: LocalPlayerTurnTaskGenerator, current turn {_currentTurn}");
 #endif
-            if (!CreateTurn(_localProxy))
+            if (!CreateTurn(_localQueueProxy))
                 return null;
 
             return PlayQueue;
         }
 
-        private bool CreateTurn(IPlayerActionTestProxy currentProxy, Action<QueueProxyPlayerActionTestProxy> callback = null)
+        private bool CreateTurn(QueueProxyPlayerActionTestProxy queueProxy, Action<QueueProxyPlayerActionTestProxy> beforeTurnActionCallback = null)
         {
-            if (_queueProxy.CurrentProxy == currentProxy)
-                throw new Exception("Multiple turns in a row is not possible");
+            if (_lastQueueProxy == queueProxy)
+                throw new Exception("Multiple turns in a row from the same player are not allowed");
 
             if (_currentTurn == _turns.Count)
                 return false;
 
+            _lastQueueProxy = queueProxy;
             Action<QueueProxyPlayerActionTestProxy> turnAction = _turns[_currentTurn];
-            _queueProxy.CurrentProxy = currentProxy;
-            callback?.Invoke(_queueProxy);
-            turnAction(_queueProxy);
+            beforeTurnActionCallback?.Invoke(queueProxy);
+            turnAction(queueProxy);
 
-            // End turn automatically as last action in turn
-            _queueProxy.EndTurn();
+            // EndTurn is added as last action in turn automatically
+            queueProxy.EndTurn();
 
-            NextTurn();
-
+            _currentTurn++;
             return true;
         }
 
         private async Task PlayQueue()
         {
-            while (_queueProxy.Queue.Count > 0)
+            while (_actionsQueue.Count > 0)
             {
-                Func<Task> turnFunc = _queueProxy.Queue.Dequeue();
+                Func<Task> turnFunc = _actionsQueue.Dequeue();
                 await turnFunc();
             }
         }
 
-        private void NextTurn()
+        private async Task WaitForLocalPlayerTurn()
         {
-            _currentTurn++;
+            while (_testHelper.GameplayManager.IsLocalPlayerTurn())
+            {
+                await new WaitForEndOfFrame();
+            }
         }
 
         private async void OnBackendFacadeOnPlayerActionDataReceived(byte[] bytes)

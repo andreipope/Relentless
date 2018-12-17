@@ -460,6 +460,8 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         EditorGUI.EndDisabledGroup();
                     }
                     EditorGUILayout.EndHorizontal();
+
+                    debugCheats.DisableDeckShuffle = EditorGUILayout.ToggleLeft("Disable Deck Shuffling", debugCheats.DisableDeckShuffle);
                 }
                 EditorGUI.EndDisabledGroup();
             }

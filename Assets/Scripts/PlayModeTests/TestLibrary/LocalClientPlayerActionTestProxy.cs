@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground.Test
             throw new NotImplementedException();
         }
 
-        public async Task Mulligan(IEnumerable<InstanceId> cards)
+        public Task Mulligan(IEnumerable<InstanceId> cards)
         {
             throw new NotImplementedException();
         }
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Test
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
             IEnumerable<InstanceId> cards = null)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Doesn't makes sense - sent as part of other actions");
         }
 
         public Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
