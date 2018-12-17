@@ -11,7 +11,7 @@ using CardViewInfo = Loom.ZombieBattleground.Data.CardViewInfo;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using Hero = Loom.ZombieBattleground.Data.Hero;
 
-namespace Loom.ZombieBattleground.Tests
+namespace Loom.ZombieBattleground.Test
 {
     public class DataTest
     {

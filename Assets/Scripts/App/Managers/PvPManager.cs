@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
 
             if (_matchMakingFlowController != null)
             {
-                await _matchMakingFlowController.Update();
+                await _matchMakingFlowController.Update(Time.deltaTime);
             }
         }
 

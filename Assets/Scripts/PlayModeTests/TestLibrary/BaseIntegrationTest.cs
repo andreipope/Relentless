@@ -9,24 +9,25 @@ namespace Loom.ZombieBattleground.Test
 {
     public class BaseIntegrationTest
     {
-        protected TestHelper TestHelper = TestHelper.Instance;
+        protected readonly TestHelper TestHelper = TestHelper.Instance;
 
         #region Setup & TearDown
 
         [UnitySetUp]
         public virtual IEnumerator PerTestSetup()
         {
-            yield return null;
-            //yield return  TestHelper.TaskAsIEnumerator(TestHelper.PerTestSetup());
+            return AsyncTest(async () =>
+            {
+                await TestHelper.PerTestSetup();
 
-            //TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
+                TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
+            });
         }
 
         [UnityTearDown]
         public virtual IEnumerator PerTestTearDown()
         {
-            yield return null;
-            /*return AsyncTest(async () =>
+            return AsyncTest(async () =>
             {
                 TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
 
@@ -39,12 +40,10 @@ namespace Loom.ZombieBattleground.Test
                     await TestHelper.TearDown_GoBackToMainScreen();
                 }
 
-                TestHelper.ReportTestTime();
-
                 /*await _testHelper.PerTestTearDown();
 
-                _testHelper.ReportTestTime();#1#
-            });*/
+                _testHelper.ReportTestTime();*/
+            });
         }
 
         #endregion

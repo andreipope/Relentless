@@ -1,3 +1,4 @@
+using System.Collections;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using UnityEngine.TestTools;
@@ -8,66 +9,72 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(500000)]
-        public async Task Test_T1_TutorialNonSkip()
+        public IEnumerator Test_T1_TutorialNonSkip()
         {
-            TestHelper.SetTestName("Solo - Tutorial Non-Skip");
+            return AsyncTest(async () =>
+            {
+                TestHelper.SetTestName("Solo - Tutorial Non-Skip");
 
-            await TestHelper.MainMenuTransition("Button_Play");
+                await TestHelper.MainMenuTransition("Button_Play");
 
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
+                await TestHelper.AssertIfWentDirectlyToTutorial(
+                    TestHelper.GoBackToMainAndPressPlay);
 
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
 
-            #region Tutorial Non-Skip
+                #region Tutorial Non-Skip
 
-            await TestHelper.MainMenuTransition("Button_Tutorial");
+                await TestHelper.MainMenuTransition("Button_Tutorial");
 
-            await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName("GameplayPage");
 
-            await PlayTutorial_Part1();
+                await PlayTutorial_Part1();
 
-            await TestHelper.ClickGenericButton("Button_Continue");
+                await TestHelper.ClickGenericButton("Button_Continue");
 
-            await PlayTutorial_Part2();
+                await PlayTutorial_Part2();
 
-            await TestHelper.ClickGenericButton("Button_Continue");
+                await TestHelper.ClickGenericButton("Button_Continue");
 
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            #endregion
+                #endregion
 
-            await TestHelper.LetsThink();
+                await TestHelper.LetsThink();
 
-            TestHelper.TestEndHandler();
+                TestHelper.TestEndHandler();
+            });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public async Task Test_T2_TutorialSkip()
+        public IEnumerator Test_T2_TutorialSkip()
         {
-            TestHelper.SetTestName("Solo - Tutorial Skip");
+            return AsyncTest(async () =>
+            {
+                TestHelper.SetTestName("Solo - Tutorial Skip");
 
-            await TestHelper.MainMenuTransition("Button_Play");
+                await TestHelper.MainMenuTransition("Button_Play");
 
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
+                await TestHelper.AssertIfWentDirectlyToTutorial(
+                    TestHelper.GoBackToMainAndPressPlay);
 
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
 
-            #region Tutorial Skip
+                #region Tutorial Skip
 
-            await TestHelper.MainMenuTransition("Button_Tutorial");
+                await TestHelper.MainMenuTransition("Button_Tutorial");
 
-            await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName("GameplayPage");
 
-            await SkipTutorial(false);
+                await SkipTutorial(false);
 
-            #endregion
+                #endregion
 
-            await TestHelper.LetsThink();
+                await TestHelper.LetsThink();
 
-            TestHelper.TestEndHandler();
+                TestHelper.TestEndHandler();
+            });
         }
 
         private async Task SkipTutorial(bool twoSteps = true)

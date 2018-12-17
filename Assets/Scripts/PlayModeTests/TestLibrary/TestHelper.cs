@@ -4,8 +4,10 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
@@ -14,6 +16,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.TestTools;
+using Debug = UnityEngine.Debug;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using Object = UnityEngine.Object;
@@ -27,7 +30,7 @@ namespace Loom.ZombieBattleground.Test
         /// When false, tests are executed as fast as possible.
         /// When true, they are executed slowly to easy debugging.
         /// </summary>
-        private const bool DebugTests = true;
+        private const bool DebugTests = false;
 
         /// <summary>
         /// To be in line with AI Brain, 1.1f was taken as value from AIController.
@@ -46,9 +49,7 @@ namespace Loom.ZombieBattleground.Test
 
         private static TestHelper _instance;
 
-        private bool _initialized = false;
-
-        public bool Initialized => _initialized;
+        public bool Initialized { get; private set; }
 
         private readonly List<LogMessage> _errorMessages = new List<LogMessage>();
 
@@ -57,9 +58,6 @@ namespace Loom.ZombieBattleground.Test
         private VirtualInputModule _virtualInputModule;
         private RectTransform _fakeCursorTransform;
         private GameObject _fakeCursorGameObject;
-
-        private string _testName;
-        private float _testStartTime;
 
         private string _lastCheckedPageName;
 
@@ -99,8 +97,8 @@ namespace Loom.ZombieBattleground.Test
 
         private string _recordedExpectedValue, _recordedActualValue;
 
-        private float _waitStartTime, _turnStartTime;
-        private float _waitAmount, _turnWaitAmount;
+        private float _waitStartTime;
+        private float _waitAmount;
 
         private const int MinTurnForAttack = 0;
         public BoardCard CurrentSpellCard;
@@ -145,7 +143,6 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="testName">Test name.</param>
         public void SetTestName(string testName = "")
         {
-            _testName = testName;
         }
 
         /// <summary>
@@ -153,7 +150,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public string GetTestName()
         {
-            return _testName;
+            return TestContext.CurrentContext.Test.Name;
         }
 
         // Google Analytics isn't required for testing and in case of multiple tests it starts being overloaded and providing error on number of requests.
@@ -180,10 +177,7 @@ namespace Loom.ZombieBattleground.Test
 
             Time.timeScale = TestTimeScale;
 
-            _testStartTime = Time.unscaledTime;
-            _turnWaitAmount = -1;
-
-            if (!_initialized)
+            if (!Initialized)
             {
                 _testScene = SceneManager.GetActiveScene();
                 _testerGameObject = _testScene.GetRootGameObjects()[0];
@@ -211,7 +205,7 @@ namespace Loom.ZombieBattleground.Test
 
                 #endregion
 
-                _initialized = true;
+                Initialized = true;
 
                 await LetsThink();
             }
@@ -244,7 +238,7 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>Generally is used only for the last test in the group.</remarks>
         public async Task TearDown_Cleanup()
         {
-            _initialized = false;
+            Initialized = false;
 
             if (_opponentDebugClient != null)
             {
@@ -391,27 +385,6 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await new WaitForUpdate();
-        }
-
-        /// <summary>
-        /// Gets the time since the start of the test.
-        /// </summary>
-        public float GetTestTime()
-        {
-            return Time.unscaledTime - _testStartTime;
-        }
-
-        /// <summary>
-        /// Reports the test time.
-        /// </summary>
-        /// <remarks>Generally is used at the of the test, to report the time it took to run it.</remarks>
-        public void ReportTestTime()
-        {
-            Debug.LogFormat(
-                "\"{0}\" test finished in {1} seconds",
-                _testName,
-                Time.unscaledTime - _testStartTime
-            );
         }
 
         private void SetGameplayManagers()
@@ -2907,12 +2880,9 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public async Task WaitUntilPlayerOrderIsDecided()
         {
-            await new WaitUntil(() => GameObject.Find("PlayerOrderPopup(Clone)") != null);
-
+            // await new WaitUntil(() => GameObject.Find("PlayerOrderPopup(Clone)") != null);
             await new WaitUntil(() => _gameplayManager.CurrentPlayer != null && _gameplayManager.OpponentPlayer != null);
             await new WaitUntil(() => _gameplayManager.CurrentPlayer.MulliganWasStarted);
-
-
 
             // TODO: there is a race condition when the popup has shown and hidden itself
             // *before* this method is even entered. As a result, test gets stuck, waiting for the popup forever.
@@ -3009,19 +2979,13 @@ namespace Loom.ZombieBattleground.Test
             await HandleConnectivityIssues();
 
             await new WaitUntil(() =>
-                IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") != null || GetCurrentPageName(3) == "ConnectionPopup" ||
-                TurnTimeIsUp());
+                IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") != null || GetCurrentPageName(3) == "ConnectionPopup");
 
             await HandleConnectivityIssues();
 
-            await new WaitUntil(() => IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") == null || TurnTimeIsUp());
+            await new WaitUntil(() => IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") == null);
 
             await HandleConnectivityIssues();
-
-            if (TurnTimeIsUp())
-            {
-                Assert.Fail("AI move took too long.");
-            }
         }
 
         /// <summary>
@@ -3031,14 +2995,9 @@ namespace Loom.ZombieBattleground.Test
         {
             await HandleConnectivityIssues();
 
-            await new WaitUntil(() => IsGameEnded() || _gameplayManager.IsLocalPlayerTurn() || TurnTimeIsUp());
+            await new WaitUntil(() => IsGameEnded() || _gameplayManager.IsLocalPlayerTurn());
 
             await HandleConnectivityIssues();
-
-            if (TurnTimeIsUp())
-            {
-                Assert.Fail("AI move took too long.");
-            }
         }
 
         // todo: reconsider having this
@@ -3120,8 +3079,6 @@ namespace Loom.ZombieBattleground.Test
 
                 await EndTurn();
 
-                TurnWaitStart(turnWaitTime);
-
                 if (IsGameEnded())
                     break;
 
@@ -3134,8 +3091,6 @@ namespace Loom.ZombieBattleground.Test
 
                 if (IsGameEnded())
                     break;
-
-                TurnWaitStart(-1);
             }
         }
 
@@ -4045,19 +4000,7 @@ namespace Loom.ZombieBattleground.Test
         /// <returns><c>true</c>, if time is up, <c>false</c> otherwise.</returns>
         private bool WaitTimeIsUp(string dummyParameter = "")
         {
-            return Time.unscaledTime > _waitStartTime + _waitAmount;
-        }
-
-        private void TurnWaitStart(int waitAmount)
-        {
-            _turnStartTime = Time.unscaledTime;
-
-            _turnWaitAmount = waitAmount;
-        }
-
-        private bool TurnTimeIsUp()
-        {
-            return _turnWaitAmount > 0 && Time.time > _turnStartTime + _turnWaitAmount;
+            return Time.time > _waitStartTime + _waitAmount;
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)
@@ -4075,23 +4018,19 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public static async Task IEnumeratorAsTask(IEnumerator enumerator)
+        public static IEnumerator TaskAsIEnumerator(Func<Task> taskFunc, int timeout = Timeout.Infinite)
         {
-            while (enumerator.MoveNext())
-            {
-                await new WaitForUpdate();
-            }
+            return TaskAsIEnumerator(taskFunc(), timeout);
         }
 
-        public static IEnumerator TaskAsIEnumerator(Func<Task> taskFunc)
+        public static IEnumerator TaskAsIEnumerator(Task task, int timeout = Timeout.Infinite)
         {
-            return TaskAsIEnumerator(taskFunc());
-        }
-
-        public static IEnumerator TaskAsIEnumerator(Task task)
-        {
+            Stopwatch timeoutStopwatch = timeout != Timeout.Infinite ? Stopwatch.StartNew() : null;
             while (!task.IsCompleted)
             {
+                if (timeoutStopwatch != null && timeoutStopwatch.ElapsedMilliseconds > timeout)
+                    throw new Exception($"Test task {task} timed out after {timeout} ms");
+
                 yield return null;
             }
 

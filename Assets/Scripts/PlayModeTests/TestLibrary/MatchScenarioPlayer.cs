@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground.Test
 #endif
 
             // Special handling for the first turn
-            await TestHelper.TaskAsIEnumerator(() => HandleOpponentClientTurn(true));
+            await HandleOpponentClientTurn(true);
 
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log("[ScenarioPlayer]: Play 2 - PlayMoves");

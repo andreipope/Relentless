@@ -1,3 +1,4 @@
+using System.Collections;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -9,148 +10,163 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(500000)]
-        public async Task Test_S1_SkipTutorials()
+        public IEnumerator Test_S1_SkipTutorials()
         {
-            TestHelper.SetTestName("SanityChecks - Tutorial Skip");
-
-            await TestHelper.ClickGenericButton("Button_Play");
-
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
-
-            #region Tutorial Skip
-
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-            await TestHelper.ClickGenericButton("Button_Tutorial");
-            await TestHelper.AssertCurrentPageName("GameplayPage");
-            await SkipTutorial(false);
-
-            #endregion
-
-            await TestHelper.LetsThink();
-
-            TestHelper.TestEndHandler();
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public async Task Test_S2_PlayThroughTutorials()
-        {
-            TestHelper.SetTestName("SanityChecks - Tutorial Non-Skip");
-
-            await TestHelper.ClickGenericButton("Button_Play");
-
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
-
-            #region Tutorial Non-Skip
-
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-            await TestHelper.ClickGenericButton("Button_Tutorial");
-            await TestHelper.AssertCurrentPageName("GameplayPage");
-
-            await PlayTutorial_Part1();
-
-            await TestHelper.ClickGenericButton("Button_Continue");
-
-            await PlayTutorial_Part2();
-
-            await TestHelper.ClickGenericButton("Button_Continue");
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-            #endregion
-
-            await TestHelper.LetsThink();
-
-            TestHelper.TestEndHandler();
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public async Task Test_S3_CreateAHorde()
-        {
-            TestHelper.SetTestName("SanityChecks - Create a Horde and save");
-
-            await TestHelper.ClickGenericButton("Button_Play");
-
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
-
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-            await TestHelper.ClickGenericButton("Button_SoloMode");
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-            await TestHelper.SelectAHordeByName("Razu", false);
-            if (TestHelper.SelectedHordeIndex != -1)
+            return AsyncTest(async () =>
             {
-                await TestHelper.RemoveAHorde(TestHelper.SelectedHordeIndex);
-            }
+                TestHelper.SetTestName("SanityChecks - Tutorial Skip");
 
-            await TestHelper.AddRazuHorde();
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.ClickGenericButton("Button_Play");
 
-            TestHelper.TestEndHandler();
+                await TestHelper.AssertIfWentDirectlyToTutorial(
+                    TestHelper.GoBackToMainAndPressPlay);
+
+                #region Tutorial Skip
+
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.ClickGenericButton("Button_Tutorial");
+                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await SkipTutorial(false);
+
+                #endregion
+
+                await TestHelper.LetsThink();
+
+                TestHelper.TestEndHandler();
+            });
+        }
+
+        [UnityTest]
+        [Timeout(500000)]
+        public IEnumerator Test_S2_PlayThroughTutorials()
+        {
+            return AsyncTest(async () =>
+            {
+                TestHelper.SetTestName("SanityChecks - Tutorial Non-Skip");
+
+                await TestHelper.ClickGenericButton("Button_Play");
+
+                await TestHelper.AssertIfWentDirectlyToTutorial(
+                    TestHelper.GoBackToMainAndPressPlay);
+
+                #region Tutorial Non-Skip
+
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.ClickGenericButton("Button_Tutorial");
+                await TestHelper.AssertCurrentPageName("GameplayPage");
+
+                await PlayTutorial_Part1();
+
+                await TestHelper.ClickGenericButton("Button_Continue");
+
+                await PlayTutorial_Part2();
+
+                await TestHelper.ClickGenericButton("Button_Continue");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+
+                #endregion
+
+                await TestHelper.LetsThink();
+
+                TestHelper.TestEndHandler();
+            });
+        }
+
+        [UnityTest]
+        [Timeout(500000)]
+        public IEnumerator Test_S3_CreateAHorde()
+        {
+            return AsyncTest(async () =>
+            {
+                TestHelper.SetTestName("SanityChecks - Create a Horde and save");
+
+                await TestHelper.ClickGenericButton("Button_Play");
+
+                await TestHelper.AssertIfWentDirectlyToTutorial(
+                    TestHelper.GoBackToMainAndPressPlay);
+
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.ClickGenericButton("Button_SoloMode");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+
+                await TestHelper.SelectAHordeByName("Razu", false);
+                if (TestHelper.SelectedHordeIndex != -1)
+                {
+                    await TestHelper.RemoveAHorde(TestHelper.SelectedHordeIndex);
+                }
+
+                await TestHelper.AddRazuHorde();
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+
+                TestHelper.TestEndHandler();
+            });
         }
 
         [UnityTest]
         [Timeout(900000)]
-        public async Task Test_S4_PlayWithNewHorde()
+        public IEnumerator Test_S4_PlayWithNewHorde()
         {
-            TestHelper.SetTestName("SanityChecks - Gameplay with Razu");
+            return AsyncTest(async () =>
+            {
+                TestHelper.SetTestName("SanityChecks - Gameplay with Razu");
 
-            #region Solo Gameplay
+                #region Solo Gameplay
 
-            await TestHelper.ClickGenericButton("Button_Play");
+                await TestHelper.ClickGenericButton("Button_Play");
 
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
+                await TestHelper.AssertIfWentDirectlyToTutorial(
+                    TestHelper.GoBackToMainAndPressPlay);
 
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-            await TestHelper.ClickGenericButton("Button_SoloMode");
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-            await TestHelper.SelectAHordeByName("Razu");
-            TestHelper.RecordExpectedOverlordName(TestHelper.SelectedHordeIndex);
-            await TestHelper.ClickGenericButton("Button_Battle");
-            await TestHelper.AssertCurrentPageName("GameplayPage");
-            await SoloGameplay(true);
-            await TestHelper.ClickGenericButton("Button_Continue");
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.ClickGenericButton("Button_SoloMode");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.SelectAHordeByName("Razu");
+                TestHelper.RecordExpectedOverlordName(TestHelper.SelectedHordeIndex);
+                await TestHelper.ClickGenericButton("Button_Battle");
+                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await SoloGameplay(true);
+                await TestHelper.ClickGenericButton("Button_Continue");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            #endregion
+                #endregion
 
-            TestHelper.TestEndHandler();
+                TestHelper.TestEndHandler();
+            });
         }
 
         [UnityTest]
         [Timeout(900000)]
-        public async Task Test_S5_PlayWithDefaultHorde()
+        public IEnumerator Test_S5_PlayWithDefaultHorde()
         {
-            TestHelper.SetTestName("SanityChecks - Gameplay with Default");
+            return AsyncTest(async () =>
+            {
+                TestHelper.SetTestName("SanityChecks - Gameplay with Default");
 
-            #region Solo Gameplay
+                #region Solo Gameplay
 
-            await TestHelper.ClickGenericButton("Button_Play");
+                await TestHelper.ClickGenericButton("Button_Play");
 
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
+                await TestHelper.AssertIfWentDirectlyToTutorial(
+                    TestHelper.GoBackToMainAndPressPlay);
 
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-            await TestHelper.ClickGenericButton("Button_SoloMode");
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.ClickGenericButton("Button_SoloMode");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            int selectedHordeIndex = 0;
+                int selectedHordeIndex = 0;
 
-            await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-            TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-            await TestHelper.ClickGenericButton("Button_Battle");
-            await TestHelper.AssertCurrentPageName("GameplayPage");
-            await SoloGameplay(true);
-            await TestHelper.ClickGenericButton("Button_Continue");
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
+                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
+                await TestHelper.ClickGenericButton("Button_Battle");
+                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await SoloGameplay(true);
+                await TestHelper.ClickGenericButton("Button_Continue");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-            #endregion
+                #endregion
 
-            TestHelper.TestEndHandler();
+                TestHelper.TestEndHandler();
+            });
         }
 
         private async Task SoloGameplay(bool assertOverlordName = false)

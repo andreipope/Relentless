@@ -49,12 +49,12 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(workingCard, position));
         }
 
-        public async Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
+        public Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
         {
             throw new NotImplementedException();
         }
 
-        public async Task CardAbilityUsed(
+        public Task CardAbilityUsed(
             WorkingCard card,
             Enumerators.AbilityType abilityType,
             Enumerators.CardKind cardKind,

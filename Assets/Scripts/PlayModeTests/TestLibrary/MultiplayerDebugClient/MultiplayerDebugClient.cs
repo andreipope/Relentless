@@ -36,7 +36,8 @@ namespace Loom.ZombieBattleground.Test
         private Address? _customGameAddress;
         private long _deckId;
 
-        private double _lastKeepAliveTime;
+        private double? _lastTimeSinceStartup;
+        private double _keepAliveTimer;
 
         [JsonIgnore]
         public BackendFacade BackendFacade
@@ -125,7 +126,7 @@ namespace Loom.ZombieBattleground.Test
 
             BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint())
             {
-                //Logger = new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] "))
+                Logger = new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] "))
             };
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
@@ -152,7 +153,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task Reset()
         {
-            _lastKeepAliveTime = 0f;
+            _keepAliveTimer = 0f;
             if (BackendFacade != null)
             {
                 BackendFacade.Contract?.Client.Dispose();
@@ -166,20 +167,28 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task Update()
         {
+#if UNITY_EDITOR
+            double timeSinceStartup = UnityEditor.EditorApplication.timeSinceStartup;
+#else
+            double timeSinceStartup = Time.realtimeSinceStartup;
+#endif
+            if (_lastTimeSinceStartup == null)
+            {
+                _lastTimeSinceStartup = timeSinceStartup;
+            }
+
+            double deltaTime = timeSinceStartup - _lastTimeSinceStartup.Value;
+
             if (MatchMakingFlowController != null)
             {
-                await MatchMakingFlowController.Update();
+                await MatchMakingFlowController.Update((float) deltaTime);
 
                 if (MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed)
                 {
-#if UNITY_EDITOR
-                    double timeSinceStartup = UnityEditor.EditorApplication.timeSinceStartup;
-#else
-                    double timeSinceStartup = Time.realtimeSinceStartup;
-#endif
-                    if (timeSinceStartup - _lastKeepAliveTime >= KeepAliveInterval)
+                    _keepAliveTimer -= deltaTime;
+                    if (_keepAliveTimer <= 0f)
                     {
-                        _lastKeepAliveTime = timeSinceStartup;
+                        _keepAliveTimer = KeepAliveInterval;
                         await BackendFacade.KeepAliveStatus(UserDataModel.UserId, MatchMakingFlowController.MatchMetadata.Id);
                     }
                 }

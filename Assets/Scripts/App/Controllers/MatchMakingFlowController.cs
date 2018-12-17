@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
-using TMPro;
 using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 
@@ -127,7 +126,7 @@ namespace Loom.ZombieBattleground
             await SetState(MatchMakingState.Canceled);
         }
 
-        public async Task Update()
+        public async Task Update(float deltaTime)
         {
             if (await CancelIfNeededAndSetCanceledState())
                 return;
@@ -136,7 +135,7 @@ namespace Loom.ZombieBattleground
             {
                 case MatchMakingState.WaitingPeriod:
                 {
-                    _currentWaitingTime += Time.deltaTime;
+                    _currentWaitingTime += deltaTime;
                     if (_currentWaitingTime > ActionWaitingTime)
                     {
                         _currentWaitingTime = 0f;
@@ -147,7 +146,7 @@ namespace Loom.ZombieBattleground
                 }
                 case MatchMakingState.WaitingForOpponent:
                 {
-                    _currentWaitingTime += Time.deltaTime;
+                    _currentWaitingTime += deltaTime;
                     if (_currentWaitingTime > ActionWaitingTime)
                     {
                         _currentWaitingTime = 0f;

@@ -1,4 +1,4 @@
-#define USE_STAGING_BACKEND
+//#define USE_STAGING_BACKEND
 
 using System.IO;
 using Loom.ZombieBattleground.BackendCommunication;
