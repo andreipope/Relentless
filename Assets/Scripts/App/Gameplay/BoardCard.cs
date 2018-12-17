@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
             CardAnimator = GameObject.GetComponent<Animator>();
             CardAnimator.enabled = false;
 
-            GlowObject = Transform.Find("Glow").gameObject;
+            GlowObject = Transform.Find("GlowContainer/Glow").gameObject;
             PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
             BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
 
