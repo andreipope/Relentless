@@ -68,6 +68,7 @@ public class TestHelper
     {
         get { return _initialized; }
     }
+    private bool _hasLoginErrorOccured = false;
 
     private Scene _testScene;
     private GameObject _testerGameObject;
@@ -112,6 +113,7 @@ public class TestHelper
     private Loom.ZombieBattleground.Player _currentPlayer, _opponentPlayer;
 
     private int pageTransitionWaitTime = 30;
+    private int turnWaitTime = 300;
 
     private string _recordedExpectedValue, _recordedActualValue;
 
@@ -196,8 +198,14 @@ public class TestHelper
         Time.timeScale = TestTimeScale;
 
         _testStartTime = Time.unscaledTime;
+        _currentTestState = TestState.Running;
+        _turnWaitAmount = -1;
 
-        if (!_initialized)
+        if (_hasLoginErrorOccured)
+        {
+            FailWithMessage ("Couldn't login or simply having connectivity issues.");
+        }
+        else if (!_initialized)
         {
             _testerKey = _testerKeys[(int) _testerType];
 
@@ -206,8 +214,6 @@ public class TestHelper
             Object.DontDestroyOnLoad(_testerGameObject);
 
             yield return SceneManager.LoadSceneAsync ("APP_INIT", LoadSceneMode.Single);
-
-            // RemoveGoogleAnalyticsModule ();
 
             yield return AddVirtualInputModule ();
 
@@ -219,11 +225,13 @@ public class TestHelper
 
             yield return HandleLogin ();
 
+            if (IsTestFinished)
+                yield break;
+
             yield return LetsThink ();
 
-            yield return AssertLoggedInOrLoginFailed (
-                CloseTermsPopupIfRequired (),
-                FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND"));
+            if (IsTestFinished)
+                yield break;
 
             #endregion
 
@@ -231,6 +239,36 @@ public class TestHelper
 
             yield return LetsThink ();
         }
+        else if (GetCurrentPageName () != "")
+        {
+            while (GetCurrentPageName() != "MainMenuPage")
+            {
+                yield return GoOnePageHigher ();
+
+                yield return null;
+            }
+        }
+
+        yield return null;
+    }
+
+    public IEnumerator TearDown ()
+    {
+        if (!_initialized)
+        {
+            _hasLoginErrorOccured = true;
+        }
+
+        if (TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
+        {
+            yield return TearDown_Cleanup ();
+        }
+        else if (!_hasLoginErrorOccured)
+        {
+            yield return TearDown_GoBackToMainScreen ();
+        }
+
+        yield return LetsThink ();
 
         yield return null;
     }
@@ -241,6 +279,8 @@ public class TestHelper
     /// <remarks>Generally is used only for the last test in the group.</remarks>
     public IEnumerator TearDown_Cleanup ()
     {
+        _initialized = false;
+
         if (_opponentDebugClient != null)
         {
             yield return TaskAsIEnumerator (_opponentDebugClient.Reset ());
@@ -250,17 +290,24 @@ public class TestHelper
         {
             UnityEngine.Object.Destroy(_opponentDebugClientOwner.gameObject);
         }
-
         Scene dontDestroyOnLoadScene = _testerGameObject.scene;
 
         _testScene = SceneManager.CreateScene ("testScene");
+
+        yield return null;
+
         SceneManager.MoveGameObjectToScene (_testerGameObject, _testScene);
         Scene currentScene = SceneManager.GetActiveScene ();
+
+        yield return null;
 
         foreach (GameObject rootGameObject in currentScene.GetRootGameObjects ())
         {
             GameObject.Destroy (rootGameObject);
         }
+
+        yield return null;
+
         foreach (GameObject rootGameObject in dontDestroyOnLoadScene.GetRootGameObjects ())
         {
             GameObject.Destroy (rootGameObject);
@@ -269,6 +316,9 @@ public class TestHelper
         yield return LetsThink ();
 
         SceneManager.SetActiveScene (_testScene);
+
+        yield return null;
+
         yield return SceneManager.UnloadSceneAsync (currentScene);
 
         Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
@@ -308,7 +358,7 @@ public class TestHelper
         });
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
 
-        yield return AssertCurrentPageName (actualPageName);
+        yield return AssertCurrentPageName (actualPageName, isGoingBack: true);
 
         yield return LetsThink ();
 
@@ -317,40 +367,54 @@ public class TestHelper
             case "GameplayPage":
                 if (GameObject.Find ("Button_Back") != null)
                 {
-                    yield return ClickGenericButton ("Button_Back");
+                    yield return ClickGenericButton ("Button_Back", isGoingBack: true);
 
                     yield return LetsThink ();
 
-                    yield return RespondToYesNoOverlay (true);
+                    yield return RespondToYesNoOverlay (true, isGoingBack: true);
 
-                    yield return AssertCurrentPageName ("MainMenuPage");
+                    yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
+
+                    yield return LetsThink ();
                 }
                 else if (GameObject.Find ("Button_Settings") != null)
                 {
-                    yield return ClickGenericButton ("Button_Settings");
+                    yield return ClickGenericButton ("Button_Settings", isGoingBack: true);
 
                     yield return LetsThink ();
 
-                    yield return ClickGenericButton ("Button_QuitToMainMenu");
+                    yield return ClickGenericButton ("Button_QuitToMainMenu", isGoingBack: true);
 
                     yield return LetsThink ();
 
-                    yield return RespondToYesNoOverlay (true);
+                    yield return RespondToYesNoOverlay (true, isGoingBack: true);
 
-                    yield return AssertCurrentPageName ("MainMenuPage");
+                    yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
+
+                    yield return LetsThink ();
                 }
 
                 break;
             case "HordeSelectionPage":
-                yield return MainMenuTransition ("Button_Back");
+                yield return ClickGenericButton ("Button_Back", isGoingBack: true);
 
-                yield return AssertCurrentPageName ("PlaySelectionPage");
+                yield return AssertCurrentPageName ("PlaySelectionPage", isGoingBack: true);
+
+                break;
+            case "HordeEditingPage":
+                yield return ClickGenericButton ("Button_Back", isGoingBack: true);
+
+                yield return LetsThink ();
+
+                yield return RespondToYesNoOverlay (false, isGoingBack: true);
+
+                yield return AssertCurrentPageName ("HordeSelectionPage", isGoingBack: true);
 
                 break;
             case "PlaySelectionPage":
-                yield return MainMenuTransition ("Button_Back");
+                yield return ClickGenericButton ("Button_Back", isGoingBack: true);
 
-                yield return AssertCurrentPageName ("MainMenuPage");
+                yield return AssertCurrentPageName ("MainMenuPage", isGoingBack: true);
 
                 break;
             case "MainMenuPage":
@@ -378,10 +442,11 @@ public class TestHelper
     public IEnumerator ReportTestTime ()
     {
         Debug.LogFormat (
-            "\"{0}\" test successfully finished in {1} seconds.",
-            _testName,
-            Time.unscaledTime - _testStartTime
-        );
+           "\"{0}\" test successfully finished in {1} seconds, with status {2}.",
+           _testName,
+           Time.unscaledTime - _testStartTime,
+           CurrentTestState
+       );
 
         yield return LetsThink ();
     }
@@ -424,28 +489,103 @@ public class TestHelper
         yield return null;
     }
 
-    private IEnumerator FailWithMessage (string message)
+    private string _failMessage;
+    public string FailMessage
     {
-        Assert.Fail (message);
+        get { return _failMessage; }
+    }
+
+    private TestState _currentTestState;
+    public TestState CurrentTestState
+    {
+        get { return _currentTestState; }
+    }
+
+    public enum TestState
+    {
+        Running,
+        Failed,
+        Passed
+    }
+
+    private void AssertAreEqual (string expectedValue, string actualValue)
+    {
+        if (expectedValue != actualValue)
+        {
+            FailWithMessage ($"Expected: {expectedValue}, Actual: {actualValue}");
+        }
+    }
+
+    public IEnumerator FailWithMessageCoroutine (string message)
+    {
+        FailWithMessage (message);
+
+        if (!_initialized)
+        {
+            _hasLoginErrorOccured = true;
+        }
 
         yield return null;
     }
 
-    private IEnumerator PassWithMessage (string message)
+    private void FailWithMessage (string message)
     {
-        Assert.Pass (message);
+        _currentTestState = TestState.Failed;
+        _failMessage = message;
+
+        if (!_initialized)
+        {
+            _hasLoginErrorOccured = true;
+        }
+
+        Debug.LogWarning ("Test is going to fail with message: " + message);
+    }
+
+    public IEnumerator PassWithMessageCoroutine (string message)
+    {
+        PassWithMessage (message);
 
         yield return null;
+    }
+
+    private void PassWithMessage (string message)
+    {
+        _currentTestState = TestState.Passed;
+        _failMessage = message;
+
+        Debug.LogWarning ("Test is going to pass with message: " + message);
+    }
+
+    public void TestEndHandler ()
+    {
+        switch (CurrentTestState)
+        {
+            case TestState.Failed:
+                Assert.Fail (_failMessage);
+
+                break;
+            case TestState.Passed:
+                Assert.Pass (_failMessage);
+
+                break;
+        }
     }
 
     /// <summary>
     /// Asserts if we've logged in or login failed, so that the test doesn't get stuck in the login screen in the case of issue and instead reports the issue.
     /// </summary>
-    public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2)
+    public IEnumerator AssertLoggedInOrLoginFailed (IEnumerator callback1, IEnumerator callback2, IEnumerator callback3, IEnumerator callback4)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return CombinedCheck (
             CheckCurrentPageName, "MainMenuPage", callback1,
-            CheckIfLoginErrorOccured, "", callback2);
+            CheckIfLoginErrorOccured, "", callback2,
+            CheckIfLoginBoxAppeared, "", callback3,
+            CheckCurrentPageName, "GameplayPage", callback4);
 
         yield return null;
     }
@@ -455,6 +595,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator AssertIfWentDirectlyToTutorial (IEnumerator callback1, IEnumerator callback2 = null)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return CombinedCheck (
             CheckCurrentPageName, "GameplayPage", callback1,
             CheckCurrentPageName, "PlaySelectionPage", callback2);
@@ -467,6 +612,11 @@ public class TestHelper
     /// <remarks>This currently doesn't work, as timeouts have been removed.</remarks>
     public IEnumerator AssertPvPStartedOrMatchmakingFailed (IEnumerator callback1, IEnumerator callback2)
     {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         WaitStart (60);
 
         yield return CombinedCheck (
@@ -479,6 +629,8 @@ public class TestHelper
 
     public IEnumerator AssertMulliganPopupCameUp (IEnumerator callback1, IEnumerator callback2)
     {
+        if (IsTestFinished)
+            yield break;
         if (Constants.MulliganEnabled)
         {
             WaitStart(5);
@@ -494,12 +646,17 @@ public class TestHelper
     /// </summary>
     private IEnumerator CombinedCheck (
         Func<string, bool> check1, string parameter1, IEnumerator callback1,
-        Func<string, bool> check2, string parameter2, IEnumerator callback2)
+        Func<string, bool> check2, string parameter2, IEnumerator callback2,
+        Func<string, bool> check3 = null, string parameter3 = "", IEnumerator callback3 = null,
+        Func<string, bool> check4 = null, string parameter4 = "", IEnumerator callback4 = null)
     {
         bool outcomeDecided = false;
 
         while (outcomeDecided == false)
         {
+            if (IsTestFinished)
+                break;
+
             if (check1 (parameter1))
             {
                 outcomeDecided = true;
@@ -514,6 +671,20 @@ public class TestHelper
                 if (callback2 != null)
                     yield return callback2;
             }
+            else if (check3 != null && check3 (parameter3))
+            {
+                outcomeDecided = true;
+
+                if (callback3 != null)
+                    yield return callback3;
+            }
+            else if (check4 != null && check4 (parameter4))
+            {
+                outcomeDecided = true;
+
+                if (callback4 != null)
+                    yield return callback4;
+            }
 
             yield return null;
         }
@@ -524,14 +695,15 @@ public class TestHelper
     /// <summary>
     /// Checks if login box appeared.
     /// </summary>
-    /// <returns><c>true</c>, if if login box appeared was checked, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if login box appeared was checked, <c>false</c> otherwise.</returns>
     private bool CheckIfLoginBoxAppeared (string dummyparameter)
     {
-        GameObject loginBox = GameObject.Find ("InputField_Beta");
-
-        if (loginBox != null && loginBox.activeInHierarchy)
+        if (canvas2GameObject != null && canvas2GameObject.transform.childCount >= 2)
         {
-            return true;
+            if (canvas2GameObject.transform.GetChild (1).name.Split ('(')[0] == "LoginPopup")
+                return true;
+
+            return false;
         }
 
         return false;
@@ -540,15 +712,13 @@ public class TestHelper
     /// <summary>
     /// Checks if login error occured.
     /// </summary>
-    /// <returns><c>true</c>, if if login error occured, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if login error occured, <c>false</c> otherwise.</returns>
     private bool CheckIfLoginErrorOccured (string dummyParameter)
     {
         GameObject errorTextObject = GameObject.Find ("Beta_Group/Text_Error");
 
         if (errorTextObject != null && errorTextObject.activeInHierarchy)
-        {
             return true;
-        }
 
         return false;
     }
@@ -556,15 +726,13 @@ public class TestHelper
     /// <summary>
     /// Checks if matchmaking error occured.
     /// </summary>
-    /// <returns><c>true</c>, if if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
+    /// <returns><c>true</c>, if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
     private bool CheckIfMatchmakingErrorOccured (string dummyParameter)
     {
         if (canvas3GameObject != null && canvas3GameObject.transform.childCount >= 2)
         {
             if (canvas3GameObject.transform.GetChild (1).name.Split ('(')[0] == "WarningPopup")
-            {
                 return true;
-            }
 
             return false;
         }
@@ -609,9 +777,7 @@ public class TestHelper
         if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
         {
             if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
-            {
                 return false;
-            }
             else
             {
                 if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == expectedPageName)
@@ -624,6 +790,38 @@ public class TestHelper
         return false;
     }
 
+    private string GetCurrentPageName (int canvasGameObjectIndex = 1)
+    {
+        GameObject parentGameObject = null;
+        switch (canvasGameObjectIndex)
+        {
+            case 1:
+                parentGameObject = canvas1GameObject;
+
+                break;
+            case 2:
+                parentGameObject = canvas2GameObject;
+
+                break;
+            case 3:
+                parentGameObject = canvas3GameObject;
+
+                break;
+            default:
+                throw new IndexOutOfRangeException ("Canvas index is out of range, can be only 1-3.");
+        }
+
+        if (parentGameObject != null)
+        {
+            if (parentGameObject != null && parentGameObject.transform.childCount >= 2)
+                return parentGameObject.transform.GetChild (1).name.Split ('(')[0];
+            else
+                return "";
+        }
+
+        return "";
+    }
+
     /// <summary>
     /// Checks current page’s name and confirms that it’s correct with what was expected.
     /// </summary>
@@ -634,8 +832,11 @@ public class TestHelper
     /// yield return AssertCurrentPageName ("MainMenuPage");
     /// </example>
     /// <param name="expectedPageName">Page name</param>
-    public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "")
+    public IEnumerator AssertCurrentPageName (string expectedPageName, string errorTextName = "", bool isGoingBack = false)
     {
+        if (!isGoingBack && IsTestFinished)
+            yield break;
+
         if (expectedPageName == lastCheckedPageName)
             yield break;
 
@@ -657,7 +858,7 @@ public class TestHelper
 
                 if (errorTextObject != null && errorTextObject.activeInHierarchy)
                 {
-                    Assert.Fail ("Wasn't able to login. Try using USE_STAGING_BACKEND");
+                    FailWithMessage ("Wasn't able to login. Try using USE_STAGING_BACKEND");
 
                     return true;
                 }
@@ -666,9 +867,7 @@ public class TestHelper
             if (canvas1GameObject != null && canvas1GameObject.transform.childCount >= 2)
             {
                 if (canvas1GameObject.transform.GetChild (1).name.Split ('(')[0] == lastCheckedPageName)
-                {
                     return false;
-                }
 
                 return true;
             }
@@ -678,12 +877,12 @@ public class TestHelper
 
         if (transitionTimeout)
         {
-           yield return FailWithMessage ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
+            yield return FailWithMessageCoroutine ($"Page transition took too long from {lastCheckedPageName} to {expectedPageName}");
         }
 
         string actualPageName = canvas1GameObject.transform.GetChild (1).name.Split ('(')[0];
 
-        Assert.AreEqual (expectedPageName, actualPageName);
+        AssertAreEqual (expectedPageName, actualPageName);
 
         lastCheckedPageName = actualPageName;
 
@@ -821,7 +1020,7 @@ public class TestHelper
                     dummyButton.onClick = new Button.ButtonClickedEvent ();
                     dummyButton.onClick.RemoveAllListeners ();
 
-                    Assert.Fail ("Button is not clickable: " + buttonName);
+                    FailWithMessage ("Button is not clickable: " + buttonName);
                 }
                 else
                 {
@@ -862,7 +1061,7 @@ public class TestHelper
                     dummyButton.Clicked = new Button.ButtonClickedEvent ();
                     dummyButton.Clicked.RemoveAllListeners ();
 
-                    Assert.Fail ("Button is not clickable: " + buttonName);
+                    FailWithMessage ("Button is not clickable: " + buttonName);
                 }
                 else
                 {
@@ -903,7 +1102,7 @@ public class TestHelper
                     dummyButton.onClick = new Button.ButtonClickedEvent ();
                     dummyButton.onClick.RemoveAllListeners ();
 
-                    Assert.Fail ("Button is not clickable: " + buttonName);
+                    FailWithMessage ("Button is not clickable: " + buttonName);
                 }
                 else
                 {
@@ -919,7 +1118,7 @@ public class TestHelper
         }
         else
         {
-            Assert.Fail ("Button wasn't found: " + buttonName);
+            FailWithMessage ("Button wasn't found: " + buttonName);
         }
 
         yield return null;
@@ -931,28 +1130,34 @@ public class TestHelper
     /// <remarks>The login.</remarks>
     public IEnumerator HandleLogin ()
     {
-        if (Constants.AutomaticLoginEnabled)
+        WaitStart (10);
+        GameObject pressAnyText = null;
+        yield return new WaitUntil (() =>
         {
-            yield return new WaitUntil (() => !CheckCurrentPageName("LoadingPage"));
+            pressAnyText = GameObject.Find ("PressAnyText");
 
-            CheckCurrentPageName("MainMenuPage");
-        }
-        else
+            return pressAnyText != null || CheckCurrentPageName ("MainMenuPage") || CheckCurrentPageName ("GameplayPage") || WaitTimeIsUp ();
+        });
+
+        if (pressAnyText != null)
         {
-            GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
+            pressAnyText.SetActive (false);
+            GameClient.Get<IUIManager> ().DrawPopup<LoginPopup> ();
 
-            UserDataModel userDataModel = new UserDataModel(
-                "TestFakeUser_" + UnityEngine.Random.Range(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
-                CryptoUtils.GeneratePrivateKey()
-            );
-
-            _backendDataControlMediator.SetUserDataModel(userDataModel);
-            yield return TaskAsIEnumerator(_backendDataControlMediator.LoginAndLoadData());
-
-            CheckCurrentPageName("LoginPage");
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-            CheckCurrentPageName("MainMenuPage");
+            yield return AssertLoggedInOrLoginFailed (
+                CloseTermsPopupIfRequired (),
+                FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
+                SubmitEmailPassword ("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
+                GoOnePageHigher ());
         }
+        else if (!CheckCurrentPageName ("MainMenuPage") && !CheckCurrentPageName ("GameplayPage"))
+        {
+            FailWithMessage ($"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName ()}). This sequence is not implemented.");
+        }
+
+        /* yield return CombinedCheck (
+            CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
+            CheckCurrentPageName, "MainMenuPage", null); */
 
         yield return null;
     }
@@ -971,15 +1176,41 @@ public class TestHelper
         yield return null;
     }
 
+    private IEnumerator SubmitEmailPassword (string email, string password)
+    {
+        yield return LetsThink ();
+
+        Transform loginGroup = GameObject.Find ("Login_Group").transform;
+        Button loginButton = loginGroup.transform.Find ("Button_Login").GetComponent<Button> ();
+        InputField emailField = loginGroup.transform.Find ("Email_InputField").GetComponent<InputField> ();
+        InputField passwordField = loginGroup.transform.Find ("Password_InputField").GetComponent<InputField> ();
+
+        emailField.text = email;
+        passwordField.text = password;
+
+        yield return LetsThink ();
+
+        loginButton.onClick.Invoke ();
+
+        yield return null;
+    }
+
     /// <summary>
     /// Takes name of the gameObject that has Button or ButtonShiftingContent component and clicks it.
     /// </summary>
     /// <param name="buttonName">Name of the button to click</param>
     /// <param name="parentGameObject">(Optional) Parent object to look under</param>
     /// <param name="count">(Optional) Number of times to click</param>
-    public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null, int count = 1)
+    public IEnumerator ClickGenericButton (string buttonName, GameObject parentGameObject = null, int count = 1, bool isGoingBack = false)
     {
+        if (!isGoingBack && IsTestFinished)
+        {
+            yield break;
+        }
+
+        WaitStart (5);
         GameObject menuButtonGameObject = null;
+        bool clickTimeout = false;
 
         yield return new WaitUntil (() => {
             if (parentGameObject != null)
@@ -991,7 +1222,13 @@ public class TestHelper
                 menuButtonGameObject = GameObject.Find (buttonName);
             }
 
-            if (menuButtonGameObject == null || !menuButtonGameObject.activeInHierarchy)
+            if (WaitTimeIsUp ())
+            {
+                clickTimeout = true;
+
+                return true;
+            }
+            else if (menuButtonGameObject == null || !menuButtonGameObject.activeInHierarchy)
             {
                 return false;
             }
@@ -1010,6 +1247,13 @@ public class TestHelper
 
             return false;
         });
+
+        if (clickTimeout)
+        {
+            FailWithMessage ($"Couldn't find the button: {buttonName}");
+
+            yield break;
+        }
 
         yield return LetsThink (0.5f);
 
@@ -1036,11 +1280,16 @@ public class TestHelper
     /// </summary>
     /// <param name="transitionPath">Slash separated list of buttons</param>
     /// <param name="delay">(Optional) Delay between clicks</param>
-    public IEnumerator MainMenuTransition (string transitionPath, float delay = DefaultMainMenuTransitionDelay)
+    public IEnumerator MainMenuTransition (string transitionPath, float delay = DefaultMainMenuTransitionDelay, bool isGoingBack = false)
     {
         foreach (string buttonName in transitionPath.Split ('/'))
         {
             yield return ClickGenericButton (buttonName);
+
+            if (!isGoingBack && IsTestFinished)
+            {
+                break;
+            }
 
             if (delay <= 0f)
             {
@@ -1058,8 +1307,13 @@ public class TestHelper
     /// Clicks on the overlay Yes/No button.
     /// </summary>
     /// <param name="isResponseYes">Is the response Yes?</param>
-    public IEnumerator RespondToYesNoOverlay (bool isResponseYes)
+    public IEnumerator RespondToYesNoOverlay (bool isResponseYes, bool isGoingBack = false)
     {
+        if (!isGoingBack && IsTestFinished)
+        {
+            yield break;
+        }
+
         string buttonName = isResponseYes ? "Button_Yes" : "Button_No";
 
         ButtonShiftingContent overlayButton = null;
@@ -1094,6 +1348,11 @@ public class TestHelper
     /// <param name="tags">Tags</param>
     public void SetPvPTags (string[] tags)
     {
+        if (IsTestFinished)
+        {
+            return;
+        }
+
         if (tags == null || tags.Length <= 0)
         {
             _pvpManager.PvPTags = null;
@@ -1148,6 +1407,7 @@ public class TestHelper
     {
         yield return LetsThink ();
 
+        yield return HandleConnectivityIssues ();
         if (IsGameEnded ())
             yield break;
 
@@ -1572,6 +1832,11 @@ public class TestHelper
     {
         foreach (int cardIndex in cardIndices)
         {
+            if (IsGameEnded ())
+            {
+                yield break;
+            }
+
             BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
             yield return PlayCardFromHandToBoard (boardCard.WorkingCard);
@@ -1717,9 +1982,21 @@ public class TestHelper
         int[] attackedCardIndices,
         bool opponentPlayer = false)
     {
+        if (IsGameEnded ())
+        {
+            yield break;
+        }
+
         for (int i = 0; i < attackerCardIndices.Length; i++)
         {
             int attackerCardIndex = attackerCardIndices[i];
+
+            if (_battlegroundController.PlayerBoardCards.Count <= i)
+            {
+                FailWithMessage ("Card isn't currently at hand.");
+
+                yield break;
+            }
 
             BoardUnitView attackerBoardUnitView = _battlegroundController.PlayerBoardCards[attackerCardIndex];
 
@@ -2637,8 +2914,12 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilPlayerOrderIsDecided ()
     {
+        yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") != null);
+
         yield return new WaitUntil (() => _gameplayManager.CurrentPlayer != null && _gameplayManager.OpponentPlayer != null);
         yield return new WaitUntil (() => _gameplayManager.CurrentPlayer.MulliganWasStarted);
+
+
 
         // TODO: there is a race condition when the popup has shown and hidden itself
         // *before* this method is even entered. As a result, test gets stuck, waiting for the popup forever.
@@ -2647,6 +2928,9 @@ public class TestHelper
 
         RecordActualOverlordName ();
 
+        yield return new WaitUntil (() => GameObject.Find ("PlayerOrderPopup(Clone)") == null);
+
+        yield return null;
         yield return new WaitUntil ( () => GameObject.Find ("PlayerOrderPopup (Clone)") == null);
 */
     }
@@ -2657,33 +2941,9 @@ public class TestHelper
     /// <remarks>todo: Doesn't work, after the latest changes done to the way this is handled.</remarks>
     public IEnumerator DecideWhichCardsToPick ()
     {
-        /* CardsController cardsController = _gameplayManager.GetController<CardsController> ();
+        if (IsGameEnded ())
+            yield break;
 
-        int highCardCounter = 0;
-
-        Loom.ZombieBattleground.Player currentPlayer = _gameplayManager.CurrentPlayer;
-        for (int i = currentPlayer.CardsPreparingToHand.Count - 1; i >= 0; i--)
-        {
-            BoardCard boardCard = currentPlayer.CardsPreparingToHand[i];
-            WorkingCard workingCard = currentPlayer.CardsPreparingToHand[i];
-
-            if ((workingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL) ||
-                (highCardCounter >= 1 && workingCard.LibraryCard.Cost >= 4) ||
-                workingCard.LibraryCard.Cost >= 8)
-            {
-                currentPlayer.CardsPreparingToHand[i].CardShouldBeChanged = !boardCard.CardShouldBeChanged;
-
-                yield return LetsThink ();
-            }
-            else if (workingCard.LibraryCard.Cost >= 4)
-            {
-                highCardCounter++;
-
-                yield return LetsThink ();
-            }
-        }
-
-        yield return LetsThink (); */
         yield return LetsThink ();
 
         yield return ClickGenericButton ("Button_Keep");
@@ -2694,7 +2954,11 @@ public class TestHelper
     /// </summary>
     public IEnumerator EndTurn ()
     {
-        _battlegroundController.StopTurn();
+        yield return HandleConnectivityIssues ();
+        if (IsGameEnded ())
+            yield break;
+
+        _battlegroundController.StopTurn ();
         GameObject.Find ("_1_btn_endturn").GetComponent<EndTurnButton> ().SetEnabled (false);
 
         yield return null;
@@ -2749,9 +3013,20 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilOurTurnStarts ()
     {
-        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null);
+        yield return HandleConnectivityIssues ();
 
-        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") == null);
+        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") != null || GetCurrentPageName (3) == "ConnectionPopup" || TurnTimeIsUp ());
+
+        yield return HandleConnectivityIssues ();
+
+        yield return new WaitUntil (() => IsGameEnded () || GameObject.Find ("YourTurnPopup(Clone)") == null || TurnTimeIsUp ());
+
+        yield return HandleConnectivityIssues ();
+
+        if (TurnTimeIsUp ())
+        {
+            FailWithMessage ("AI move took too long.");
+        }
     }
 
     /// <summary>
@@ -2759,7 +3034,16 @@ public class TestHelper
     /// </summary>
     public IEnumerator WaitUntilInputIsUnblocked ()
     {
-        yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn ());
+        yield return HandleConnectivityIssues ();
+
+        yield return new WaitUntil (() => IsGameEnded () || _gameplayManager.IsLocalPlayerTurn () || TurnTimeIsUp ());
+
+        yield return HandleConnectivityIssues ();
+
+        if (TurnTimeIsUp ())
+        {
+            FailWithMessage ("AI move took too long.");
+        }
     }
 
     // todo: reconsider having this
@@ -2769,6 +3053,11 @@ public class TestHelper
     /// <remarks>Was written specifically for tutorials.</remarks>
     public IEnumerator UseSkillToOpponentPlayer ()
     {
+        if (IsGameEnded ())
+        {
+            yield break;
+        }
+
         DoBoardSkill (_testBroker.GetPlayerPrimarySkill (_player), _testBroker.GetPlayer (_opponent), Enumerators.AffectObjectType.Player);
 
         yield return LetsThink ();
@@ -2815,48 +3104,18 @@ public class TestHelper
     }
 
     /// <summary>
-    /// Checks if game has ended.
-    /// </summary>
-    public bool IsGameEnded ()
-    {
-        if (_gameplayManager == null || _gameplayManager.IsGameEnded)
-        {
-            return true;
-        }
-        else if (_gameplayManager.CurrentPlayer == null || _gameplayManager.OpponentPlayer == null)
-        {
-            return true;
-        }
-
-        int playerHP = _gameplayManager.CurrentPlayer.Defense;
-        int opponentHP = _gameplayManager.OpponentPlayer.Defense;
-
-        if (playerHP <= 0 || opponentHP <= 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// Makes specified number of moves (if timeout allows).
     /// </summary>
     /// <param name="maxTurns">Max number of turns.</param>
     public IEnumerator MakeMoves (int maxTurns = 100)
     {
+        if (IsGameEnded ())
+            yield break;
+
         // if it doesn't end in 100 moves, end the game anyway
         for (int turns = 1; turns <= maxTurns; turns++)
         {
-            yield return LetsThink();
-
-            Debug.Log ("a 0");
-
             yield return TurnStartedHandler ();
-
-            Debug.Log ("a 1");
 
             TurnEndedHandler ();
 
@@ -2865,24 +3124,22 @@ public class TestHelper
 
             yield return EndTurn ();
 
-            Debug.Log ("a 2");
+            TurnWaitStart (turnWaitTime);
 
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilOurTurnStarts ();
 
-            Debug.Log ("a 3");
-
             if (IsGameEnded ())
                 break;
 
             yield return WaitUntilInputIsUnblocked ();
 
-            Debug.Log ("a 4");
-
             if (IsGameEnded ())
                 break;
+
+            TurnWaitStart (-1);
         }
     }
 
@@ -2954,6 +3211,70 @@ public class TestHelper
         Debug.LogWarning ("2");
     }
 
+    /// <summary>
+    /// Checks if game has ended.
+    /// </summary>
+    public bool IsGameEnded ()
+    {
+        if (IsTestFinished)
+        {
+            return true;
+        }
+        else if (_gameplayManager == null || _gameplayManager.IsGameEnded)
+        {
+            return true;
+        }
+        else if (_gameplayManager.CurrentPlayer == null || _gameplayManager.OpponentPlayer == null)
+        {
+            return true;
+        }
+
+        int playerHP = _gameplayManager.CurrentPlayer.Defense;
+        int opponentHP = _gameplayManager.OpponentPlayer.Defense;
+
+        if (playerHP <= 0 || opponentHP <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool IsTestFinished
+    {
+        get { return _currentTestState != TestState.Running; }
+    }
+
+    private IEnumerator HandleConnectivityIssues ()
+    {
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
+        if (GetCurrentPageName (3) == "ConnectionPopup")
+        {
+            WaitStart (10);
+
+            yield return ClickGenericButton ("Button_Reconnect");
+
+            yield return new WaitUntil (() => (GetCurrentPageName (3) != "ConnectionPopup") || WaitTimeIsUp ());
+
+            if (GetCurrentPageName (3) == "ConnectionPopup")
+            {
+                _hasLoginErrorOccured = true;
+
+                FailWithMessage ("Connectivity issue came up.");
+
+                yield return null;
+            }
+        }
+
+        yield return null;
+    }
+
     #region Horde Creation / Editing
 
     /// <summary>
@@ -2961,16 +3282,18 @@ public class TestHelper
     /// </summary>
     public IEnumerator AddValashHorde ()
     {
-        yield return ClickGenericButton ("Image_BaackgroundGeneral");
+        if (IsTestFinished)
+        {
+            yield break;
+        }
 
+        yield return ClickGenericButton ("Image_BaackgroundGeneral");
         yield return AssertCurrentPageName ("OverlordSelectionPage");
 
         yield return PickOverlord ("Valash", false);
-
         yield return PickOverlordAbility (0);
 
         yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
-
         yield return AssertCurrentPageName ("HordeEditingPage");
 
         SetupArmyCards ();
@@ -2978,24 +3301,17 @@ public class TestHelper
         yield return SetDeckTitle ("Valash");
 
         yield return AddCardToHorde ("Life", "Azuraz", 4);
-
         yield return AddCardToHorde ("Life", "Bloomer", 4);
-
         yield return AddCardToHorde ("Life", "Zap", 4);
-
         yield return AddCardToHorde ("Life", "Amber", 4);
-
         yield return AddCardToHorde ("Life", "Bark", 4);
-
         yield return AddCardToHorde ("Life", "Puffer", 2);
-
         yield return AddCardToHorde ("Life", "Sapper", 2);
-
         yield return AddCardToHorde ("Life", "Keeper", 2);
-
         yield return AddCardToHorde ("Life", "Cactuz", 2);
-
         yield return AddCardToHorde ("Life", "EverlaZting", 2);
+
+        AssertCorrectNumberOfCards ();
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -3005,16 +3321,18 @@ public class TestHelper
     /// </summary>
     public IEnumerator AddKalileHorde ()
     {
-        yield return ClickGenericButton ("Image_BaackgroundGeneral");
+        if (IsTestFinished)
+        {
+            yield break;
+        }
 
+        yield return ClickGenericButton ("Image_BaackgroundGeneral");
         yield return AssertCurrentPageName ("OverlordSelectionPage");
 
         yield return PickOverlord ("Kalile", false);
-
         yield return PickOverlordAbility (1);
 
         yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
-
         yield return AssertCurrentPageName ("HordeEditingPage");
 
         SetupArmyCards ();
@@ -3022,20 +3340,15 @@ public class TestHelper
         yield return SetDeckTitle ("Kalile");
 
         yield return AddCardToHorde ("Air", "Whizpar", 4);
-
         yield return AddCardToHorde ("Air", "Soothsayer", 4);
-
         yield return AddCardToHorde ("Air", "FumeZ", 4);
-
         yield return AddCardToHorde ("Air", "Breezee", 4);
-
         yield return AddCardToHorde ("Air", "Banshee", 4);
-
         yield return AddCardToHorde ("Air", "Zhocker", 4);
-
-        yield return AddCardToHorde ("Air", "Whiffer", 4);
-
         yield return AddCardToHorde ("Air", "Bouncer", 2);
+        yield return AddCardToHorde ("Air", "Wheezy", 4);
+
+        AssertCorrectNumberOfCards ();
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -3045,16 +3358,18 @@ public class TestHelper
     /// </summary>
     public IEnumerator AddRazuHorde ()
     {
-        yield return ClickGenericButton ("Image_BaackgroundGeneral");
+        if (IsTestFinished)
+        {
+            yield break;
+        }
 
+        yield return ClickGenericButton ("Image_BaackgroundGeneral");
         yield return AssertCurrentPageName ("OverlordSelectionPage");
 
         yield return PickOverlord ("Razu", true);
-
         yield return PickOverlordAbility (1);
 
         yield return ClickGenericButton ("Canvas_BackLayer/Button_Continue");
-
         yield return AssertCurrentPageName ("HordeEditingPage");
 
         SetupArmyCards ();
@@ -3062,22 +3377,16 @@ public class TestHelper
         yield return SetDeckTitle ("Razu");
 
         yield return AddCardToHorde ("Fire", "Pyromaz", 4);
-
         yield return AddCardToHorde ("Fire", "Quazi", 4);
-
         yield return AddCardToHorde ("Fire", "Ember", 4);
-
         yield return AddCardToHorde ("Fire", "Firewall", 4);
-
         yield return AddCardToHorde ("Fire", "BurZt", 4);
-
         yield return AddCardToHorde ("Fire", "Firecaller", 4);
-
         yield return AddCardToHorde ("Fire", "Burrrnn", 2);
-
         yield return AddCardToHorde ("Fire", "Werezomb", 2);
-
         yield return AddCardToHorde ("Fire", "Modo", 2);
+
+        AssertCorrectNumberOfCards ();
 
         yield return ClickGenericButton ("Button_Save");
     }
@@ -3106,6 +3415,12 @@ public class TestHelper
     /// <param name="goRight">If set to <c>true</c> goes right, until finds what you set.</param>
     public IEnumerator PickOverlord (string overlordName, bool goRight = true)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         int selectedIndex = 0;
 
         while (_overlordNames[selectedIndex] != overlordName)
@@ -3138,11 +3453,17 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator PickOverlordAbility (int index)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         GameObject abilitiesParent = GameObject.Find ("Abilities");
 
         if (index >= abilitiesParent.transform.childCount)
         {
-            Assert.Fail ("Index higher than number of abilities");
+            FailWithMessage ("Index higher than number of abilities");
         }
 
         if (abilitiesParent.transform.GetChild (index).GetComponent<Button> ().IsInteractable ())
@@ -3159,18 +3480,24 @@ public class TestHelper
     /// <param name="deckTitle">Deck title.</param>
     public IEnumerator SetDeckTitle (string deckTitle)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         GameObject deckTitleInput = GameObject.Find ("DeckTitleInputText");
 
         if (deckTitleInput == null)
         {
-            Assert.Fail ("DeckTitleInputText doesn't exist");
+            FailWithMessage ("DeckTitleInputText doesn't exist");
         }
 
         TMP_InputField deckTitleInputField = deckTitleInput.GetComponent<TMP_InputField> ();
 
         if (deckTitleInputField == null)
         {
-            Assert.Fail ("TextMeshPro InputField doesn't exist");
+            FailWithMessage ("TextMeshPro InputField doesn't exist");
         }
 
         deckTitleInputField.text = deckTitle; // for visibility during testing
@@ -3181,6 +3508,12 @@ public class TestHelper
 
     private IEnumerator PickElement (string elementName)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         Transform elementsParent = GameObject.Find ("ElementsToggles").transform;
 
         Toggle elementToggle = elementsParent.Find (elementName)?.GetComponent<Toggle> ();
@@ -3219,6 +3552,12 @@ public class TestHelper
     /// <param name="count">Count.</param>
     public IEnumerator AddCardToHorde (string elementName, string cardName, int count = 1)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         Loom.ZombieBattleground.Data.Card armyCard = _createdArmyCards.Find (x =>
             x.Name == cardName);
 
@@ -3237,7 +3576,14 @@ public class TestHelper
 
     private IEnumerator AddCardToHorde2 (string cardName, int count = 1)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         int checkedPage;
+        bool cardAdded = false;
 
         for (checkedPage = 0; checkedPage <= 4; checkedPage++)
         {
@@ -3258,6 +3604,7 @@ public class TestHelper
             }
 
             Debug.Log ("Adding " + cardName + " (" + armyCard.Cost + ") x" + count);
+            cardAdded = true;
 
             for (int counter = 0; counter < count; counter++)
             {
@@ -3271,7 +3618,32 @@ public class TestHelper
             break;
         }
 
+        if (cardAdded == false)
+        {
+            FailWithMessage ($"Card named \"{cardName}\" was not found.");
+        }
+
         yield return null;
+    }
+
+    private bool CheckCorrectNumberOfCards (int correctNumber = 30)
+    {
+        TextMeshProUGUI cardsAmountText = GameObject.Find ("CardsAmountText")?.GetComponent<TextMeshProUGUI> ();
+
+        return (cardsAmountText != null && cardsAmountText.text == "30 / 30");
+    }
+
+    private void AssertCorrectNumberOfCards (int correctNumber = 30)
+    {
+        if (IsTestFinished)
+        {
+            return;
+        }
+
+        if (!CheckCorrectNumberOfCards (correctNumber))
+        {
+            FailWithMessage ($"Exactly {correctNumber} cards need to be added to the deck.");
+        }
     }
 
     /// <summary>
@@ -3295,8 +3667,14 @@ public class TestHelper
     /// Selects a Horde by name.
     /// </summary>
     /// <param name="hordeName">Horde name.</param>
-    public IEnumerator SelectAHordeByName (string hordeName)
+    public IEnumerator SelectAHordeByName (string hordeName, bool failIfNotFound = true, string failureMessage = "Couldn't find Horde by that name")
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
         SelectedHordeIndex = -1;
@@ -3316,9 +3694,9 @@ public class TestHelper
             }
         }
 
-        if (!hordeSelected)
+        if (!hordeSelected && failIfNotFound)
         {
-            Assert.Fail ("Couldn't find Horde by that name");
+            FailWithMessage (failureMessage);
         }
 
         yield return null;
@@ -3330,9 +3708,15 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator SelectAHordeByIndex (int index)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         if (index + 1 >= GetNumberOfHordes ())
         {
-            Assert.Fail ("Horde removal index is too high");
+            FailWithMessage ("Horde removal index is too high");
         }
 
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
@@ -3348,10 +3732,21 @@ public class TestHelper
     /// <param name="index">Index.</param>
     public IEnumerator RemoveAHorde (int index)
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         yield return SelectAHordeByIndex (index);
 
         GameObject.Find ("Button_Delete").GetComponent<Button> ().onClick.Invoke ();
 
+        yield return LetsThink ();
+
+        yield return RespondToYesNoOverlay (true);
+
+        yield return LetsThink ();
         yield return LetsThink ();
     }
 
@@ -3360,14 +3755,16 @@ public class TestHelper
     /// </summary>
     public IEnumerator RemoveAllHordesExceptDefault ()
     {
+        yield return HandleConnectivityIssues ();
+        if (IsTestFinished)
+        {
+            yield break;
+        }
+
         for (int i = GetNumberOfHordes () - 2; i >= 1; i--)
         {
             yield return RemoveAHorde (1);
 
-            yield return RespondToYesNoOverlay (true);
-
-            yield return LetsThink ();
-            yield return LetsThink ();
             yield return LetsThink ();
         }
 
@@ -3378,11 +3775,18 @@ public class TestHelper
 
     public void RecordExpectedOverlordName (int index)
     {
+        if (IsTestFinished)
+        {
+            return;
+        }
+
         GameObject hordesParent = GameObject.Find ("Panel_DecksContainer/Group");
 
-        if (index >= hordesParent.transform.childCount)
+        if (index >= hordesParent.transform.childCount || index == -1)
         {
-            Assert.Fail ("Horde index is too high");
+            FailWithMessage ("Horde index is too high");
+
+            return;
         }
 
         Transform selectedHordeTransform = hordesParent.transform.GetChild (index);
@@ -3440,16 +3844,21 @@ public class TestHelper
     {
         // FIXME: overlord name is not recorded, see WaitUntilPlayerOrderIsDecided
         return;
-        if (_recordedExpectedValue.Length <= 0 || _recordedActualValue.Length <= 0 || _recordedExpectedValue == "Default")
+
+        if (string.IsNullOrEmpty (_recordedExpectedValue) || string.IsNullOrEmpty (_recordedActualValue))
         {
-            Debug.Log ("One of the overlord names was null, so didn't check.");
+            Debug.LogWarning ("One of the overlord names was null, so didn't check.");
 
             return;
+        }
+        else if (_recordedExpectedValue == "Default")
+        {
+            _recordedExpectedValue = "Mhalik";
         }
 
         Debug.LogFormat ("{0} vs {1}", _recordedExpectedValue, _recordedActualValue);
 
-        Assert.AreEqual (_recordedExpectedValue, _recordedActualValue);
+        AssertAreEqual (_recordedExpectedValue, _recordedActualValue);
     }
 
     private string UppercaseFirst (string s)
@@ -3484,15 +3893,9 @@ public class TestHelper
 
         yield return MakeMoves (maxTurns);
 
-        Debug.LogWarning ("0");
-
         yield return ClickGenericButton ("Button_Continue");
 
-        Debug.LogWarning ("1");
-
         yield return AssertCurrentPageName ("HordeSelectionPage");
-
-        Debug.LogWarning ("2");
     }
 
     /// <summary>
@@ -3671,7 +4074,7 @@ public class TestHelper
 
     private bool TurnTimeIsUp ()
     {
-        return Time.unscaledTime > _turnStartTime + _turnWaitAmount;
+        return _turnWaitAmount > 0 && Time.time > _turnStartTime + _turnWaitAmount;
     }
 
     private void IgnoreAssertsLogMessageReceivedHandler (string condition, string stacktrace, LogType type)
