@@ -16,15 +16,17 @@ namespace Loom.ZombieBattleground.Test
         [UnitySetUp]
         public virtual IEnumerator PerTestSetup()
         {
-            yield return  TestHelper.TaskAsIEnumerator(TestHelper.PerTestSetup());
+            yield return null;
+            //yield return  TestHelper.TaskAsIEnumerator(TestHelper.PerTestSetup());
 
-            TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
+            //TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
         }
 
         [UnityTearDown]
         public virtual IEnumerator PerTestTearDown()
         {
-            return AsyncTest(async () =>
+            yield return null;
+            /*return AsyncTest(async () =>
             {
                 TestHelper.DebugCheatsConfiguration = new DebugCheatsConfiguration();
 
@@ -41,8 +43,8 @@ namespace Loom.ZombieBattleground.Test
 
                 /*await _testHelper.PerTestTearDown();
 
-                _testHelper.ReportTestTime();*/
-            });
+                _testHelper.ReportTestTime();#1#
+            });*/
         }
 
         #endregion

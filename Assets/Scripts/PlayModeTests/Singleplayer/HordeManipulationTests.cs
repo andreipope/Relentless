@@ -1,11 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
     public class HordeManipulationTests : BaseIntegrationTest
     {
+
+        [UnityAsyncTest]
+        [Timeout(500000)]
+        public async Task TestAsync()
+        {
+            Debug.Log("async 1");
+            await Task.Delay(2000);
+            Debug.Log("async 2");
+            await Task.Delay(2000);
+            Debug.Log("async 3");
+        }
+
+        [UnityAsyncTest]
+        [Timeout(500000)]
+        public IEnumerator TestAsync2()
+        {
+            Debug.Log("async 1");
+            yield return new WaitForSeconds(2);
+            Debug.Log("async 2");
+            yield return new WaitForSeconds(2);
+            Debug.Log("async 3");
+        }
+
         [UnityTest]
         [Timeout(500000)]
         public async Task Test_H1_CreateAHordeAndCancel()
