@@ -858,6 +858,7 @@ namespace Loom.ZombieBattleground
         {
             float handWidth = 0.0f;
             float spacing = -1.0f;
+            float zPositionKoef = -0.1f;
 
             for (int i = 0; i < OpponentHandCards.Count; i++)
             {
@@ -882,7 +883,7 @@ namespace Loom.ZombieBattleground
                 GameObject card = OpponentHandCards[i];
                 float twist = startTwist - i * twistPerCard;
 
-                Vector3 movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
+                Vector3 movePosition = new Vector3(pivot.x - handWidth / 2, pivot.y, i * zPositionKoef);
                 Vector3 rotatePosition = new Vector3(0, 0, twist);
 
                 if (isMove)
@@ -893,18 +894,32 @@ namespace Loom.ZombieBattleground
                         card.transform.eulerAngles = Vector3.forward * 90f;
                     }
 
-                    card.transform.DOMove(movePosition, 0.5f);
+                    card.transform.DOMove(movePosition, 0.5f).OnComplete(() => UpdateOpponentHandCardLayer(card));
                     card.transform.DORotate(rotatePosition, 0.5f);
                 }
                 else
                 {
                     card.transform.position = movePosition;
                     card.transform.rotation = Quaternion.Euler(rotatePosition);
+                    UpdateOpponentHandCardLayer(card);
                 }
 
                 pivot.x += handWidth / OpponentHandCards.Count;
+            }
+        }
 
-                card.GetComponent<SortingGroup>().sortingOrder = i;
+        private void UpdateOpponentHandCardLayer(GameObject card)
+        {
+            if (card.layer == 0)
+            {
+                SortingGroup group = card.GetComponent<SortingGroup>();
+                group.sortingLayerID = SRSortingLayers.Default;
+                group.sortingOrder = -1;
+                List<GameObject> allUnitObj = card.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
+                foreach (GameObject child in allUnitObj)
+                {
+                    child.layer = LayerMask.NameToLayer("Battleground");
+                }
             }
         }
 
