@@ -1152,11 +1152,6 @@ namespace Loom.ZombieBattleground
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
 
-            //if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
-            //{
-            //    boardUnitView.Model.IsPlayable = true;
-            //}
-
             boardUnitView.PlayArrivalAnimation();
 
             return boardUnitView;
