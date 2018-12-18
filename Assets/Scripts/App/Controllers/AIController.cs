@@ -255,6 +255,8 @@ namespace Loom.ZombieBattleground
                 await UsePlayerSkills(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
 
+                await LetsWaitForQueue(cancellationToken);
+
                 if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
                 {
                     await UseUnitsOnBoard(cancellationToken);
@@ -464,6 +466,8 @@ namespace Loom.ZombieBattleground
             {
                 if (_skillsController.OpponentPrimarySkill.IsSkillReady)
                 {
+                    await LetsWaitForQueue(cancellationToken);
+
                     DoBoardSkill(_skillsController.OpponentPrimarySkill);
                     wasAction = true;
                 }
@@ -478,6 +482,8 @@ namespace Loom.ZombieBattleground
             {
                 if (_skillsController.OpponentSecondarySkill.IsSkillReady)
                 {
+                    await LetsWaitForQueue(cancellationToken);
+
                     DoBoardSkill(_skillsController.OpponentSecondarySkill);
                     wasAction = true;
                 }
@@ -488,7 +494,6 @@ namespace Loom.ZombieBattleground
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
             }
-
         }
 
         private async Task LetsWaitForQueue(CancellationToken cancellationToken, int delay = 100)

@@ -573,7 +573,8 @@ namespace Loom.ZombieBattleground
                         ParticleSystem.Stop();
                         EffectAnimator.StopPlayback();
                     }
-                    UpdateBoard(() =>
+
+                    _boardController.UpdateWholeBoard(() =>
                     {
                         AnimationEnded?.Invoke(this);
                         Dispose();
@@ -602,11 +603,6 @@ namespace Loom.ZombieBattleground
             {
                 _readyForContinueDeathAnimation = true;
             }
-        }
-
-        private void UpdateBoard(Action ended)
-        {
-            _boardController.UpdateWholeBoard(ended);
         }
     }
 }

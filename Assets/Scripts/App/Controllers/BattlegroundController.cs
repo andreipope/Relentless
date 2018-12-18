@@ -245,6 +245,8 @@ namespace Loom.ZombieBattleground
                     {
                         endOfDestroyAnimationCallback();
 
+                        _boardController.UpdateWholeBoard(null);
+
                         completeCallback?.Invoke();
                     }
 
@@ -819,7 +821,11 @@ namespace Loom.ZombieBattleground
                     .Concat(OpponentGraveyardCards)
                     .Concat(PlayerBoardCards)
                     .Concat(PlayerGraveyardCards)
-                    .First(x => x.Model == boardUnitModel);
+                    .FirstOrDefault(x => x.Model == boardUnitModel);
+
+            if (cardToDestroy is default(BoardUnitView))
+                return null;
+
             return cardToDestroy;
         }
 

@@ -188,6 +188,8 @@ namespace Loom.ZombieBattleground
                         actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
                     }
 
+                    ActionInProgress = null;
+
                     return;
                 }
 
