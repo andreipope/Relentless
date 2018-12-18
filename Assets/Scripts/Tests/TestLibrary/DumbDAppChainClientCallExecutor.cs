@@ -4,6 +4,9 @@ using Loom.Client;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
+    /// <summary>
+    /// No-op call executor for testing purposes.
+    /// </summary>
     public class DumbDAppChainClientCallExecutor : DefaultDAppChainClientCallExecutor
     {
         public DumbDAppChainClientCallExecutor(IDAppChainClientConfigurationProvider configurationProvider) : base(configurationProvider)

@@ -241,7 +241,7 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_A5_MatchmakeMakeOneMoveAndQuit()
+        public IEnumerator MatchmakeMakeOneMoveAndQuit()
         {
             return AsyncTest(async () =>
             {

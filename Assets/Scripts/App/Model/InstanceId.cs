@@ -2,11 +2,10 @@ using System;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public interface IInstanceIdOwner
-    {
-        InstanceId InstanceId { get; }
-    }
 
+    /// <summary>
+    /// Represents an unique object in a match.
+    /// </summary>
     public struct InstanceId : IEquatable<InstanceId>, IComparable<InstanceId>
     {
         public static InstanceId Invalid = new InstanceId(-1);

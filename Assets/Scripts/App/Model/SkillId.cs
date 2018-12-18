@@ -2,11 +2,9 @@ using System;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public interface ISkillIdOwner
-    {
-        SkillId SkillId { get; }
-    }
-
+    /// <summary>
+    /// Represents a unique skill identifier.
+    /// </summary>
     public struct SkillId : IEquatable<SkillId>
     {
         public long Id { get; }

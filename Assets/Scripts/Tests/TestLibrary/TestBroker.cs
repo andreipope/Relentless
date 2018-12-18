@@ -1,18 +1,17 @@
-﻿using Loom.ZombieBattleground.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
     public class TestBroker
     {
-        private IGameplayManager _gameplayManager;
-        private IUIManager _uiManager;
-        private IDataManager _dataManager;
-
-        private BattlegroundController _battlegroundController;
-        private SkillsController _skillsController;
-        private CardsController _cardsController;
+        private readonly IGameplayManager _gameplayManager;
+        private readonly IUIManager _uiManager;
+        private readonly IDataManager _dataManager;
+        private readonly BattlegroundController _battlegroundController;
+        private readonly SkillsController _skillsController;
+        private readonly CardsController _cardsController;
 
         public TestBroker()
         {
@@ -27,58 +26,37 @@ namespace Loom.ZombieBattleground.Test
 
         public Player GetPlayer(Enumerators.MatchPlayer matchPlayer)
         {
-            if (matchPlayer == Enumerators.MatchPlayer.CurrentPlayer)
-                return _gameplayManager.CurrentPlayer;
-            else
-                return _gameplayManager.OpponentPlayer;
+            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
         }
 
         public List<BoardUnitView> GetBoardCards(Enumerators.MatchPlayer matchPlayer)
         {
-            if (matchPlayer == Enumerators.MatchPlayer.CurrentPlayer)
-                return _battlegroundController.PlayerBoardCards;
-            else
-                return _battlegroundController.OpponentBoardCards;
+            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? _battlegroundController.PlayerBoardCards : _battlegroundController.OpponentBoardCards;
         }
 
         public GameObject GetPlayerBoardGameObject(Enumerators.MatchPlayer matchPlayer)
         {
-            if (matchPlayer == Enumerators.MatchPlayer.CurrentPlayer)
-                return GameObject.Find("PlayerBoard");
-            else
-                return GameObject.Find("OpponentBoard");
+            return GameObject.Find(matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? "PlayerBoard" : "OpponentBoard");
         }
 
         public GameObject GetSpellsPivotGameObject(Enumerators.MatchPlayer matchPlayer)
         {
-            if (matchPlayer == Enumerators.MatchPlayer.CurrentPlayer)
-                return GameObject.Find("PlayerSpellsPivot");
-            else
-                return GameObject.Find("OpponentSpellsPivot");
+            return GameObject.Find(matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? "PlayerSpellsPivot" : "OpponentSpellsPivot");
         }
 
         public BoardSkill GetPlayerPrimarySkill(Enumerators.MatchPlayer matchPlayer)
         {
-            if (matchPlayer == Enumerators.MatchPlayer.CurrentPlayer)
-                return _skillsController.PlayerPrimarySkill;
-            else
-                return _skillsController.OpponentPrimarySkill;
+            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? _skillsController.PlayerPrimarySkill : _skillsController.OpponentPrimarySkill;
         }
 
         public BoardSkill GetPlayerSecondarySkill(Enumerators.MatchPlayer matchPlayer)
         {
-            if (matchPlayer == Enumerators.MatchPlayer.CurrentPlayer)
-                return _skillsController.PlayerSecondarySkill;
-            else
-                return _skillsController.OpponentSecondarySkill;
+            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? _skillsController.PlayerSecondarySkill : _skillsController.OpponentSecondarySkill;
         }
 
         public string GetSRTags(Enumerators.MatchPlayer matchPlayer)
         {
-            if (matchPlayer == Enumerators.MatchPlayer.CurrentPlayer)
-                return SRTags.PlayerOwned;
-            else
-                return SRTags.OpponentOwned;
+            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
         }
     }
 }

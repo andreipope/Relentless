@@ -18,7 +18,6 @@ namespace Loom.ZombieBattleground.Test
         public LocalClientPlayerActionTestProxy(TestHelper testHelper)
         {
             _testHelper = testHelper;
-
         }
 
         public async Task EndTurn()
