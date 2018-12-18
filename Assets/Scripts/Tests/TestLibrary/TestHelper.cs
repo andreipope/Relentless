@@ -3874,12 +3874,12 @@ namespace Loom.ZombieBattleground.Test
             owner.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
             OnBehaviourHandler onBehaviourHandler = owner.AddComponent<OnBehaviourHandler>();
 
-            MultiplayerDebugClient client = new MultiplayerDebugClient();
+            MultiplayerDebugClient client = new MultiplayerDebugClient("Test_" + GetTestName());
 
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            await client.Start("Test_" + GetTestName());
+            await client.Start();
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }

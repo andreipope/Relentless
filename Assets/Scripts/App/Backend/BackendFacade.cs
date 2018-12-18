@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public ILogger Logger { get; set; } = Debug.unityLogger;
 
-        public bool EnableRpcLogging { get; } = false;
+        public bool EnableRpcLogging { get; set; } = false;
 
         public BackendFacade(BackendEndpoint backendEndpoint)
         {

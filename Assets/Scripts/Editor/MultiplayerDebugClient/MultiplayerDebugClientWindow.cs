@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         private GameActionsState _gameActionsState = new GameActionsState();
 
-        private MultiplayerDebugClientWrapper _debugClientWrapper = new MultiplayerDebugClientWrapper(new MultiplayerDebugClient());
+        private MultiplayerDebugClientWrapper _debugClientWrapper = new MultiplayerDebugClientWrapper(new MultiplayerDebugClient("Window"));
 
         private MultiplayerDebugClient DebugClient => _debugClientWrapper?.Instance;
 
@@ -609,7 +609,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private async Task StartClient()
         {
             await DebugClient.Start(
-                "Window",
                 matchMakingFlowController =>
                 {
                     matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;

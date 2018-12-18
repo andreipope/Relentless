@@ -48,7 +48,10 @@ namespace Loom.Client
         public static byte[] GeneratePrivateKey()
         {
             var seed = new byte[32];
-            rngCsp.GetBytes(seed);
+            lock (rngCsp)
+            {
+                rngCsp.GetBytes(seed);
+            }
             return GeneratePrivateKey(seed);
         }
 

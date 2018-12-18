@@ -110,8 +110,17 @@ namespace Loom.ZombieBattleground.Test
             set => _debugCheats = value;
         }
 
+        public MultiplayerDebugClient(string name = null)
+        {
+            UserDataModel = new UserDataModel(
+                "DebugClient_" +
+                (name != null ? name + "_" : "") +
+                new global::System.Random().Next(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+                CryptoUtils.GeneratePrivateKey()
+            );
+        }
+
         public async Task Start(
-            string name = null,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,
             Action<DAppChainClient> onClientCreatedCallback = null,
@@ -120,16 +129,12 @@ namespace Loom.ZombieBattleground.Test
         {
             await Reset();
 
-            UserDataModel = new UserDataModel(
-                "DebugClient_" +
-                (name != null ? name + "_" : "") +
-                new global::System.Random().Next(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
-                CryptoUtils.GeneratePrivateKey()
-            );
+            //Debug.Log(JsonConvert.SerializeObject(UserDataModel, Formatting.Indented));
 
             BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint())
             {
-                Logger = enabledLogs ? new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] ")) : null
+                Logger = enabledLogs ? new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] ")) : null,
+                EnableRpcLogging = true
             };
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
