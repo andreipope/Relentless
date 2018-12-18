@@ -12,12 +12,11 @@ using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.De
 
 namespace Loom.ZombieBattleground
 {
+    /// <summary>
+    /// Executes the matchmaking sequences, notices about state changes and successful match.
+    /// </summary>
     public class MatchMakingFlowController
     {
-        public event Action<MatchMakingState> StateChanged;
-
-        public event Action<MatchMetadata> MatchConfirmed;
-
         private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
 
         private readonly BackendFacade _backendFacade;
@@ -33,6 +32,10 @@ namespace Loom.ZombieBattleground
         private IList<string> _tags;
         private bool _useBackendGameLogic;
         private DebugCheatsConfiguration _debugCheats;
+
+        public event Action<MatchMakingState> StateChanged;
+
+        public event Action<MatchMetadata> MatchConfirmed;
 
         public float ActionWaitingTime { get; set; } = 5;
 
@@ -82,6 +85,7 @@ namespace Loom.ZombieBattleground
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
+        // TODO: use a setup object?
         public async Task Start(
             long deckId,
             Address? customGameModeAddress,
@@ -126,6 +130,7 @@ namespace Loom.ZombieBattleground
             await SetState(MatchMakingState.Canceled);
         }
 
+        /// <remarks>Gets deltaTime from outside because Time.deltaTime is always 0 in Editor.</remarks>
         public async Task Update(float deltaTime)
         {
             if (await CancelIfNeededAndSetCanceledState())
@@ -266,7 +271,7 @@ namespace Loom.ZombieBattleground
                         if (opponentHasAccepted && !mustAccept)
                         {
                             Debug.Log("The Match is Starting!");
-                            await StartConfirmedMatch(result);
+                            await ConfirmMatch(result);
                         }
                         else
                         {
@@ -274,7 +279,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
                     else if (result.Match.Status == Match.Types.Status.Started) {
-                        await StartConfirmedMatch(result);
+                        await ConfirmMatch(result);
                     }
                     else
                     {
@@ -358,7 +363,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task StartConfirmedMatch(FindMatchResponse findMatchResponse)
+        private async Task ConfirmMatch(FindMatchResponse findMatchResponse)
         {
             _matchMetadata = new MatchMetadata(
                 findMatchResponse.Match.Id,

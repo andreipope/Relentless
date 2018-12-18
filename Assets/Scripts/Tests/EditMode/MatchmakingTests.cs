@@ -30,8 +30,99 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(30000)]
+        [Ignore("")]
         public IEnumerator Matchmake([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
         {
+            return TestUtility.AsyncTest(async () =>
+            {
+                List<MultiplayerDebugClient> clients =
+                    Enumerable.Range(0, clientCount)
+                        .Select(_ => new MultiplayerDebugClient())
+                        .ToList();
+
+                async Task Cleanup()
+                {
+                    await Task.WhenAll(clients.Select(client => client.Reset()).ToArray());
+                }
+
+                _failedTestsCleanupTasks.Enqueue(Cleanup);
+
+                try
+                {
+                    clients.ForEach(client => client.DeckId = 1);
+
+                    Random random = new Random();
+                    int counter = 1;
+
+                    await Task.WhenAll(
+                        clients
+                            .Select(client =>
+                            {
+                                Func<Task> t = async () =>
+                                {
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    await client.Start(
+                                        TestContext.CurrentContext.Test.Name + "_" + random.Next(int.MinValue, int.MaxValue).ToString(),
+                                        enabledLogs: false,
+                                        chainClientCallExecutor: new DumbDAppChainClientCallExecutor(new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration()))
+                                    );
+                                    sw.Stop();
+                                    Debug.Log($"Started client {counter} in {sw.ElapsedMilliseconds} ms");
+                                    counter++;
+                                };
+
+                                return t();
+                            })
+                            .ToArray()
+                    );
+
+                    Assert.AreEqual(clients.Count, clients.Select(client => client.UserDataModel.UserId).Distinct().ToArray().Length);
+
+                    Debug.Log($"Created {clientCount} clients");
+
+                    int confirmationCount = 0;
+                    Action<MatchMetadata> onMatchConfirmed = metadata =>
+                    {
+                        confirmationCount++;
+                        Debug.Log("Got confirmation " + confirmationCount);
+                    };
+
+                    clients.ForEach(client => client.MatchMakingFlowController.MatchConfirmed += onMatchConfirmed);
+
+                    await Task.WhenAll(
+                        clients
+                            .Select(client => client.MatchMakingFlowController.Start(1, null, null, false, null))
+                            .ToArray()
+                    );
+
+                    Debug.Log($"Started {clientCount} clients");
+
+                    while (confirmationCount != clientCount)
+                    {
+                        await Task.Delay(200);
+                        await Task.WhenAll(
+                            clients
+                                .Select(client => client.Update())
+                                .ToArray()
+                        );
+                    }
+
+                    Assert.AreEqual(clientCount, confirmationCount);
+                }
+                finally
+                {
+                    await Cleanup();
+
+                    Debug.Log($"Stopped {clientCount} clients");
+                }
+            });
+        }
+
+        [UnityTest]
+        [Timeout(30000)]
+        public IEnumerator MatchmakeAndDoTurns([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
+        {
+            int turnCount = 10;
             return TestUtility.AsyncTest(async () =>
             {
                 List<MultiplayerDebugClient> clients =

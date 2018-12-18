@@ -1,10 +1,17 @@
+#if UNITY_EDITOR
+#define ENABLE_METRICS_LOGS
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -21,6 +28,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public TimeMetricsContractCallProxy(Contract contract)
         {
+            Application.quitting += ApplicationOnQuitting;
             Contract = contract ?? throw new ArgumentNullException(nameof(contract));
         }
 
@@ -64,11 +72,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     timedOut = elapsedMilliseconds >= Contract.Client.Configuration.CallTimeout;
                 }
-                LogCallTime(method, elapsedMilliseconds, isStatic, timedOut);
+                LogCallTime(method, (int) elapsedMilliseconds, isStatic, timedOut);
             }
         }
 
-        private void LogCallTime(string method, long callRoundabout, bool isStatic, bool timedOut)
+        private void LogCallTime(string method, int callRoundabout, bool isStatic, bool timedOut)
         {
             if (!_methodToCallRoundabouts.TryGetValue(method, out CallRoundaboutData roundaboutData))
             {
@@ -82,7 +90,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             long totalEntries = 0;
             foreach (var methodToCallRoundabout in _methodToCallRoundabouts)
             {
-                List<long> roundabouts = methodToCallRoundabout.Value.Roundabouts;
+                List<int> roundabouts = methodToCallRoundabout.Value.Roundabouts;
                 for (int i = 0; i < roundabouts.Count; i++)
                 {
                     long roundabout = roundabouts[i];
@@ -94,28 +102,44 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             AverageRoundabout = (int) (roundaboutSum / (double) totalEntries);
 
+#if ENABLE_METRICS_LOGS
             string log =
                 $"{(isStatic ? "Static call" : "Call")} to '{method}' finished in {callRoundabout} ms" +
-                //$", average call roundabout {roundaboutData.CallAverageRoundabout} ms" +
                 $"{(timedOut ? ", timed out!" : "")}";
-
-            File.AppendAllText("calltimes.txt", log + "\r\n");
 
             if (timedOut)
             {
                 log = "<color=red>" + log + "</color>";
             }
 
-            UnityEngine.Debug.Log(log);
+            Debug.Log(log);
+#endif
+        }
+
+        public void Dispose()
+        {
+            Application.quitting -= ApplicationOnQuitting;
+        }
+
+        private void ApplicationOnQuitting()
+        {
+            IDataManager dataManager = GameClient.Get<IDataManager>();
+            string json = dataManager.SerializeToJson(_methodToCallRoundabouts, true);
+            string path = dataManager.GetPersistentDataPath("CallMetrics.json");
+            File.WriteAllText(path, json, Encoding.UTF8);
         }
 
         public class CallRoundaboutData
         {
-            public List<long> Roundabouts { get; } = new List<long>();
+            public List<int> Roundabouts { get; } = new List<int>();
 
-            public int CallAverageRoundabout { get; private set; }
+            public int Average { get; private set; }
 
-            public void Add(long roundabout)
+            public int Min { get; private set; } = int.MaxValue;
+
+            public int Max { get; private set; } = int.MinValue;
+
+            public void Add(int roundabout)
             {
                 Roundabouts.Add(roundabout);
 
@@ -126,7 +150,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     roundaboutSum += entry;
                 }
 
-                CallAverageRoundabout = (int) (roundaboutSum / (double) Roundabouts.Count);
+                Average = (int) (roundaboutSum / (double) Roundabouts.Count);
+
+                if (roundabout < Min)
+                {
+                    Min = roundabout;
+                }
+
+                if (roundabout > Max)
+                {
+                    Max = roundabout;
+                }
             }
         }
     }
