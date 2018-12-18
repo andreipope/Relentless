@@ -440,7 +440,7 @@ namespace Loom.ZombieBattleground
             return AbilityUnitOwner ?? (object) BoardSpell;
         }
 
-        protected Player GetOpponentOverlord()
+        public Player GetOpponentOverlord()
         {
             return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
                 GameplayManager.OpponentPlayer :

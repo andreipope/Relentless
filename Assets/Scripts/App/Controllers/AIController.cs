@@ -236,6 +236,8 @@ namespace Loom.ZombieBattleground
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            await LetsWaitForQueue(cancellationToken);
+
             await PlayCardsFromHand(cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -249,6 +251,8 @@ namespace Loom.ZombieBattleground
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
+
+                await LetsWaitForQueue(cancellationToken);
 
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -324,6 +328,8 @@ namespace Loom.ZombieBattleground
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
                 }
+
+                await LetsWaitForQueue(cancellationToken);
             }
 
             foreach (WorkingCard card in _normalSpellCardInHand)
@@ -335,6 +341,8 @@ namespace Loom.ZombieBattleground
                     await LetsThink(cancellationToken);
                     await LetsThink(cancellationToken);
                 }
+
+                await LetsWaitForQueue(cancellationToken);
             }
 
             if (wasAction)
