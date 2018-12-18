@@ -1,0 +1,34 @@
+using System;
+using System.Threading.Tasks;
+using Loom.Client;
+
+namespace Loom.ZombieBattleground.BackendCommunication
+{
+    public class DumbDAppChainClientCallExecutor : DefaultDAppChainClientCallExecutor
+    {
+        public DumbDAppChainClientCallExecutor(IDAppChainClientConfigurationProvider configurationProvider) : base(configurationProvider)
+        {
+        }
+
+        protected override async Task<Task> ExecuteTaskWithTimeout(Func<Task> taskProducer, int timeoutMs)
+        {
+            Task task = taskProducer();
+            await task;
+            return task;
+        }
+
+        protected override async Task<Task> ExecuteTaskWaitForOtherTasks(Func<Task<Task>> taskProducer)
+        {
+            Task<Task> task = taskProducer();
+            await task;
+            return await task;
+        }
+
+        protected override async Task<Task> ExecuteTaskWithRetryOnInvalidTxNonceException(Func<Task<Task>> taskTaskProducer)
+        {
+            Task<Task> task = taskTaskProducer();
+            await task;
+            return await task;
+        }
+    }
+}

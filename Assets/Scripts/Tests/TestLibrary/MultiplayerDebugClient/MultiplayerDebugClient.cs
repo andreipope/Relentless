@@ -115,6 +115,7 @@ namespace Loom.ZombieBattleground.Test
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,
             Action<DAppChainClient> onClientCreatedCallback = null,
+            IDAppChainClientCallExecutor chainClientCallExecutor = null,
             bool enabledLogs = true)
         {
             await Reset();
@@ -132,7 +133,7 @@ namespace Loom.ZombieBattleground.Test
             };
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
-            await backendFacade.CreateContract(UserDataModel.PrivateKey, onClientCreatedCallback);
+            await backendFacade.CreateContract(UserDataModel.PrivateKey, onClientCreatedCallback, chainClientCallExecutor);
 
             try
             {
@@ -144,7 +145,10 @@ namespace Loom.ZombieBattleground.Test
             }
 
             ListCardLibraryResponse listCardLibraryResponse = await backendFacade.GetCardLibrary();
-            CardLibrary = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
+            if (listCardLibraryResponse != null)
+            {
+                CardLibrary = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
+            }
 
             MatchMakingFlowController matchMakingFlowController = new MatchMakingFlowController(backendFacade, UserDataModel);
             matchMakingFlowController.ActionWaitingTime = 1f;
@@ -159,7 +163,7 @@ namespace Loom.ZombieBattleground.Test
             _keepAliveTimer = 0f;
             if (BackendFacade != null)
             {
-                BackendFacade.Contract?.Client.Dispose();
+                BackendFacade.Dispose();
 
                 BackendFacade = null;
 

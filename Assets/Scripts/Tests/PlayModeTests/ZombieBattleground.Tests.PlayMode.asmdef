@@ -1,5 +1,5 @@
 {
-    "name": "ZombieBattleground.PlayModeTests",
+    "name": "ZombieBattleground.Tests.PlayMode",
     "references": [
         "ZombieBattleground.Main",
         "LoomSDK",

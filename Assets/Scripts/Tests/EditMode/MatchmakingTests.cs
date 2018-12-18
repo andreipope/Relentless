@@ -2,8 +2,11 @@ using System;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine.TestTools;
 using Debug = UnityEngine.Debug;
@@ -20,36 +23,14 @@ namespace Loom.ZombieBattleground.Test
             70,
             100,
             200,
-            300,
-            500,
-            1000
+            300
         };
 
         private readonly Queue<Func<Task>> _failedTestsCleanupTasks = new Queue<Func<Task>>();
 
-        [UnityTearDown]
-        public IEnumerator Cleanup()
-        {
-            return TestUtility.AsyncTest(async () =>
-            {
-                while (_failedTestsCleanupTasks.Count > 0)
-                {
-                    try
-                    {
-                        Func<Task> func = _failedTestsCleanupTasks.Dequeue();
-                        await func();
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                    }
-                }
-            }, 10000);
-        }
-
         [UnityTest]
-        [Timeout(90000)]
-        public IEnumerator Test_A_Matchmake([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
+        [Timeout(30000)]
+        public IEnumerator Matchmake([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
         {
             return TestUtility.AsyncTest(async () =>
             {
@@ -69,21 +50,27 @@ namespace Loom.ZombieBattleground.Test
                 {
                     clients.ForEach(client => client.DeckId = 1);
 
-                    Random random = new global::System.Random();
+                    Random random = new Random();
+                    int counter = 1;
 
                     await Task.WhenAll(
                         clients
-                            //.Select(client => Task.Run(async () => await client.Start(TestContext.CurrentContext.Test.Name, enabledLogs: false)))
                             .Select(client =>
                             {
-                                return client.Start(
-                                    TestContext.CurrentContext.Test.Name + "_" + random.Next(int.MinValue, int.MaxValue).ToString(),
-                                    onClientCreatedCallback: c =>
-                                    {
-                                        //c.Configuration.CallTimeout = c.Configuration.StaticCallTimeout = 30000;
-                                    },
-                                    enabledLogs: false
+                                Func<Task> t = async () =>
+                                {
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    await client.Start(
+                                        TestContext.CurrentContext.Test.Name + "_" + random.Next(int.MinValue, int.MaxValue).ToString(),
+                                        enabledLogs: false,
+                                        chainClientCallExecutor: new DumbDAppChainClientCallExecutor(new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration()))
                                     );
+                                    sw.Stop();
+                                    Debug.Log($"Started client {counter} in {sw.ElapsedMilliseconds} ms");
+                                    counter++;
+                                };
+
+                                return t();
                             })
                             .ToArray()
                     );
@@ -130,11 +117,24 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public static IEnumerable<IEnumerable<T>> Split<T>(IEnumerable<T> items,
-            int numOfParts)
+        [UnityTearDown]
+        public IEnumerator Cleanup()
         {
-            int i = 0;
-            return items.GroupBy(x => i++ % numOfParts);
+            return TestUtility.AsyncTest(async () =>
+            {
+                while (_failedTestsCleanupTasks.Count > 0)
+                {
+                    try
+                    {
+                        Func<Task> func = _failedTestsCleanupTasks.Dequeue();
+                        await func();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
+                }
+            }, 10000);
         }
     }
 }

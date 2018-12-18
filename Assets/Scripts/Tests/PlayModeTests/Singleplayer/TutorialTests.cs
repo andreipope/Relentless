@@ -9,12 +9,10 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_T1_TutorialNonSkip()
+        public IEnumerator TutorialNonSkip()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Tutorial Non-Skip");
-
                 await TestHelper.MainMenuTransition("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -39,21 +37,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
                 #endregion
-
-                await TestHelper.LetsThink();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_T2_TutorialSkip()
+        public IEnumerator TutorialSkip()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Tutorial Skip");
-
                 await TestHelper.MainMenuTransition("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -70,10 +62,6 @@ namespace Loom.ZombieBattleground.Test
                 await SkipTutorial(false);
 
                 #endregion
-
-                await TestHelper.LetsThink();
-
-                TestHelper.TestEndHandler();
             });
         }
 

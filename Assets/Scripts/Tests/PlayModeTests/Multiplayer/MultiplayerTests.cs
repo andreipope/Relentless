@@ -14,11 +14,10 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A0_PlayScenarioGame1()
+        public IEnumerator PlayScenarioGame1()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Scenario");
                 await TestHelper.MainMenuTransition("Button_Play");
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
@@ -89,11 +88,10 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A1_MatchmakingCancel()
+        public IEnumerator MatchmakingCancel()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Matchmaking Cancel");
                 await TestHelper.MainMenuTransition("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -121,20 +119,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.LetsThink(10);
 
                 await TestHelper.ClickGenericButton("Button_Cancel");
-
-                await TestHelper.LetsThink();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A2_MatchmakingTimeout()
+        public IEnumerator MatchmakingTimeout()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Matchmaking Cancel");
                 await TestHelper.MainMenuTransition("Button_Play");
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
@@ -160,20 +153,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
                     () => TestHelper.PlayAMatch(),
                     () => TestHelper.ClickGenericButton("Button_Cancel"));
-
-                await TestHelper.LetsThink();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A3_MatchmakeAndQuit()
+        public IEnumerator MatchmakeAndQuit()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Matchmaking And Quit");
                 await TestHelper.MainMenuTransition("Button_Play");
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
@@ -207,21 +195,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.ClickGenericButton("Button_Settings");
                 await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
                 await TestHelper.RespondToYesNoOverlay(true);
-
-                await TestHelper.LetsThink();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A4_MatchmakeWaitForOurTurnAndQuit()
+        public IEnumerator MatchmakeWaitForOurTurnAndQuit()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Matchmake, Wait for Our Turn and Quit");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -254,8 +236,6 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.ClickGenericButton("Button_Settings");
                 await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
                 await TestHelper.RespondToYesNoOverlay(true);
-
-                TestHelper.TestEndHandler();
             });
         }
 
@@ -265,8 +245,6 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Matchmake, Make One Move And Quit");
-
                 await TestHelper.MainMenuTransition("Button_Play");
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
@@ -298,18 +276,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.ClickGenericButton("Button_Settings");
                 await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
                 await TestHelper.RespondToYesNoOverlay(true);
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(300 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A6_MatchmakeAndPlay()
+        public IEnumerator MatchmakeAndPlay()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Matchmaking And Play");
                 await TestHelper.MainMenuTransition("Button_Play");
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
@@ -338,18 +313,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.MatchmakeOpponentDebugClient();
 
                 await TestHelper.PlayAMatch();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Test_A7_MatchmakingCancelAndMatchmake()
+        public IEnumerator MatchmakingCancelAndMatchmake()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("PvP - Create a Horde and save");
                 await TestHelper.MainMenuTransition("Button_Play");
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
@@ -412,8 +384,6 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.LetsThink();
 
                 #endregion
-
-                TestHelper.TestEndHandler();
             });
         }
     }

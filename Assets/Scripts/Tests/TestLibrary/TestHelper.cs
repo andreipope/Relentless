@@ -139,14 +139,6 @@ namespace Loom.ZombieBattleground.Test
         }
 
         /// <summary>
-        /// Sets the name of the test. It is used to log the result (time taken) at the end of the test.
-        /// </summary>
-        /// <param name="testName">Test name.</param>
-        public void SetTestName(string testName = "")
-        {
-        }
-
-        /// <summary>
         /// Gets the name of the test.
         /// </summary>
         public string GetTestName()

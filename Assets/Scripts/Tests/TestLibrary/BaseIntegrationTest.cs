@@ -50,7 +50,17 @@ namespace Loom.ZombieBattleground.Test
 
         protected IEnumerator AsyncTest(Func<Task> taskFunc)
         {
-            return TestHelper.TaskAsIEnumerator(taskFunc);
+            return TestHelper.TaskAsIEnumerator(async () =>
+            {
+                try
+                {
+                    await taskFunc();
+                }
+                finally
+                {
+                    TestHelper.TestEndHandler();
+                }
+            });
         }
     }
 }

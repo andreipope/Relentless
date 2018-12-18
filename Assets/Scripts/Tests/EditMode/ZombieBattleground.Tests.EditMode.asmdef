@@ -1,5 +1,5 @@
 {
-    "name": "ZombieBattleground.Tests",
+    "name": "ZombieBattleground.Tests.EditMode",
     "references": [
         "ZombieBattleground.Editor",
         "ZombieBattleground.Main",

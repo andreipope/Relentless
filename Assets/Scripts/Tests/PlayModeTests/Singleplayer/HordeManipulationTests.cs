@@ -8,12 +8,10 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H1_CreateAHordeAndCancel()
+        public IEnumerator CreateHordeAndCancel()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Create a Horde and cancel");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -33,21 +31,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.ClickGenericButton("Button_Back");
                 await TestHelper.RespondToYesNoOverlay(false);
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                await new WaitForUpdate();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H2_CreateAHordeAndDraft()
+        public IEnumerator CreateHordeAndDraft()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Create a Horde and draft");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -74,21 +66,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.RespondToYesNoOverlay(true);
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.SelectAHordeByName("Draft", true, "Horde draft isn't displayed.");
-
-                await new WaitForUpdate();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H3_RemoveAllHordesExceptFirst()
+        public IEnumerator RemoveAllHordesExceptFirst()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Remove all Hordes except first");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -98,21 +84,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.ClickGenericButton("Button_SoloMode");
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.RemoveAllHordesExceptDefault();
-
-                await new WaitForUpdate();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H4_CreateARazuHordeAndSave()
+        public IEnumerator CreateRazuHordeAndSave()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Create a Horde and save");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -123,21 +103,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.AddRazuHorde();
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                await new WaitForUpdate();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H4_CreateKalileHorde()
+        public IEnumerator CreateKalileHorde()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Create a Horde and save");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -148,21 +122,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.AddKalileHorde();
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                await new WaitForUpdate();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_H5_CreateValashHorde()
+        public IEnumerator CreateValashHorde()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("Solo - Create a Horde and save");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -173,10 +141,6 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.AddValashHorde();
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                await new WaitForUpdate();
-
-                TestHelper.TestEndHandler();
             });
         }
     }

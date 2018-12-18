@@ -10,12 +10,10 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_S1_SkipTutorials()
+        public IEnumerator SkipTutorials()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("SanityChecks - Tutorial Skip");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -29,21 +27,15 @@ namespace Loom.ZombieBattleground.Test
                 await SkipTutorial(false);
 
                 #endregion
-
-                await TestHelper.LetsThink();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_S2_PlayThroughTutorials()
+        public IEnumerator PlayThroughTutorials()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("SanityChecks - Tutorial Non-Skip");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -65,21 +57,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
                 #endregion
-
-                await TestHelper.LetsThink();
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator Test_S3_CreateAHorde()
+        public IEnumerator CreateAHorde()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("SanityChecks - Create a Horde and save");
-
                 await TestHelper.ClickGenericButton("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
@@ -97,19 +83,15 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.AddRazuHorde();
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(900000)]
-        public IEnumerator Test_S4_PlayWithNewHorde()
+        public IEnumerator PlayWithNewHorde()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("SanityChecks - Gameplay with Razu");
-
                 #region Solo Gameplay
 
                 await TestHelper.ClickGenericButton("Button_Play");
@@ -129,19 +111,15 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
                 #endregion
-
-                TestHelper.TestEndHandler();
             });
         }
 
         [UnityTest]
         [Timeout(900000)]
-        public IEnumerator Test_S5_PlayWithDefaultHorde()
+        public IEnumerator PlayWithDefaultHorde()
         {
             return AsyncTest(async () =>
             {
-                TestHelper.SetTestName("SanityChecks - Gameplay with Default");
-
                 #region Solo Gameplay
 
                 await TestHelper.ClickGenericButton("Button_Play");
@@ -164,8 +142,6 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
                 #endregion
-
-                TestHelper.TestEndHandler();
             });
         }
 

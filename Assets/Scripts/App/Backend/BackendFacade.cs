@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
     {
         private int _subscribeCount;
         private IRpcClient _reader;
+        private IContractCallProxy _contractCallProxy;
 
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
@@ -55,9 +56,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public void Dispose()
         {
+            Contract?.Client?.Dispose();
         }
 
-        public async Task CreateContract(byte[] privateKey, Action<DAppChainClient> onClientCreatedCallback = null)
+        public async Task CreateContract(
+            byte[] privateKey,
+            Action<DAppChainClient> onClientCreatedCallback = null,
+            IDAppChainClientCallExecutor chainClientCallExecutor = null
+            )
         {
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
@@ -78,7 +84,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     .WithWebSocket(BackendEndpoint.ReaderHost)
                     .Create();
 
-            DAppChainClient client = new DAppChainClient(writer, _reader)
+            DAppChainClient client = new DAppChainClient(
+                writer,
+                _reader,
+                callExecutor: chainClientCallExecutor
+                )
             {
                 Logger = logger
             };
@@ -96,6 +106,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Address contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
             Contract oldContract = Contract;
             Contract = new Contract(client, contractAddr, callerAddr);
+            _contractCallProxy = new TimeMetricsContractCallProxy(Contract);
             ContractCreated?.Invoke(oldContract, Contract);
         }
 
@@ -110,7 +121,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId
             };
 
-            return await Contract.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
         }
 
         #endregion
@@ -126,7 +137,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await Contract.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
+            return await _contractCallProxy.StaticCallAsync<ListCardLibraryResponse>(GetCardLibraryMethod, request);
         }
 
         #endregion
@@ -150,7 +161,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId
             };
 
-            return await Contract.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
+            return await _contractCallProxy.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
         }
 
         public async Task<GetAIDecksResponse> GetAiDecks()
@@ -160,7 +171,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await Contract.StaticCallAsync<GetAIDecksResponse>(GetAiDecksDataMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GetAIDecksResponse>(GetAiDecksDataMethod, request);
         }
 
         public async Task DeleteDeck(string userId, long deckId)
@@ -171,7 +182,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 DeckId = deckId
             };
 
-            await Contract.CallAsync(DeleteDeckMethod, request);
+            await _contractCallProxy.CallAsync(DeleteDeckMethod, request);
         }
 
         public async Task EditDeck(string userId, Data.Deck deck)
@@ -183,7 +194,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            await Contract.CallAsync(EditDeckMethod, request);
+            await _contractCallProxy.CallAsync(EditDeckMethod, request);
         }
 
         public async Task<long> AddDeck(string userId, Data.Deck deck)
@@ -195,7 +206,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            CreateDeckResponse createDeckResponse = await Contract.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
+            CreateDeckResponse createDeckResponse = await _contractCallProxy.CallAsync<CreateDeckResponse>(AddDeckMethod, request);
             return createDeckResponse.DeckId;
         }
 
@@ -212,7 +223,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId
             };
 
-            return await Contract.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
+            return await _contractCallProxy.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
         }
 
         private const string GlobalHeroesList = "ListHeroLibrary";
@@ -224,7 +235,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await Contract.StaticCallAsync<ListHeroLibraryResponse>(GlobalHeroesList, request);
+            return await _contractCallProxy.StaticCallAsync<ListHeroLibraryResponse>(GlobalHeroesList, request);
         }
 
         #endregion
@@ -241,7 +252,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId
             };
 
-            await Contract.CallAsync(CreateAccountMethod, req);
+            await _contractCallProxy.CallAsync(CreateAccountMethod, req);
         }
 
         #endregion
@@ -260,7 +271,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-                
+
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
 
@@ -290,16 +301,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-                
+
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
-                
+
             LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
                 httpResponseMessage.ReadToEnd());
             return loginData;
         }
 
-        private struct LoginRequest 
+        private struct LoginRequest
         {
             public string email;
             public string password;
@@ -337,7 +348,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 MatchId = matchId
             };
 
-            return await Contract.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
+            return await _contractCallProxy.CallAsync<AcceptMatchResponse>(AcceptMatchMethod, request);
         }
 
         public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(
@@ -370,7 +381,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             };
 
-            return await Contract.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
+            return await _contractCallProxy.CallAsync<RegisterPlayerPoolResponse>(RegisterPlayerPoolMethod, request);
         }
 
         public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags)
@@ -389,7 +400,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             };
 
-            return await Contract.CallAsync<FindMatchResponse>(FindMatchMethod, request);
+            return await _contractCallProxy.CallAsync<FindMatchResponse>(FindMatchMethod, request);
         }
 
         public async Task<CancelFindMatchResponse> CancelFindMatch(string userId, long matchId)
@@ -400,7 +411,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 MatchId = matchId
             };
 
-            return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
+            return await _contractCallProxy.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
         }
 
         public async Task<CancelFindMatchResponse> CancelFindMatchRelatedToUserId(string userId)
@@ -410,7 +421,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId
             };
 
-            return await Contract.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
+            return await _contractCallProxy.CallAsync<CancelFindMatchResponse>(CancelFindMatchMethod, request);
         }
 
         public async Task<GetGameStateResponse> GetGameState(long matchId)
@@ -420,7 +431,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 MatchId = matchId
             };
 
-            return await Contract.StaticCallAsync<GetGameStateResponse>(GetGameStateMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GetGameStateResponse>(GetGameStateMethod, request);
         }
 
         public async Task<GetMatchResponse> GetMatch(long matchId)
@@ -430,20 +441,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 MatchId = matchId
             };
 
-            return await Contract.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GetMatchResponse>(GetMatchMethod, request);
         }
 
         public async Task SubscribeEvent(IList<string> topics)
          {
-            //TODO Remove the logs once we fix the multiple subscription issue once and for all
-            Debug.Log("Subscribing to Event - Current Subscriptions = " + _subscribeCount);
+            #warning Fix the multiple subscription issue once and for all
+
             for (int i = _subscribeCount; i > 0; i--) {
                 await UnsubscribeEvent();
             }
 
             await _reader.SubscribeAsync(EventHandler, topics);
             _subscribeCount++;
-            Debug.Log("Final Subscriptions = " + _subscribeCount);
         }
 
          public async Task UnsubscribeEvent()
@@ -471,12 +481,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SendPlayerAction(PlayerActionRequest request)
         {
-            await Contract.CallAsync(SendPlayerActionMethod, request);
+            await _contractCallProxy.CallAsync(SendPlayerActionMethod, request);
         }
 
         public async Task SendEndMatchRequest(EndMatchRequest request)
         {
-            await Contract.CallAsync(EndMatchMethod, request);
+            await _contractCallProxy.CallAsync(EndMatchMethod, request);
         }
 
         public async Task<CheckGameStatusResponse> CheckPlayerStatus(long matchId)
@@ -486,7 +496,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 MatchId = matchId
             };
 
-            return await Contract.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
+            return await _contractCallProxy.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
         }
 
         public async Task<KeepAliveResponse> KeepAliveStatus(string userId, long matchId)
@@ -497,7 +507,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 UserId = userId
             };
 
-            return await Contract.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
+            return await _contractCallProxy.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
         }
 
         private void EventHandler(object sender, JsonRpcEventData e)
@@ -516,7 +526,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<GameModeList> GetCustomGameModeList()
         {
             ListGameModesRequest request = new ListGameModesRequest();
-            return await Contract.StaticCallAsync<GameModeList>(ListGameModesMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GameModeList>(ListGameModesMethod, request);
         }
 
         public async Task<GetCustomGameModeCustomUiResponse> GetGameModeCustomUi(Address address)
@@ -526,7 +536,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Address = address.ToProtobufAddress()
             };
 
-            return await Contract.StaticCallAsync<GetCustomGameModeCustomUiResponse>(GetGameModeCustomUiMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GetCustomGameModeCustomUiResponse>(GetGameModeCustomUiMethod, request);
         }
 
         public async Task CallCustomGameModeFunction(Address address, byte[] callData)
@@ -537,7 +547,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CallData = ByteString.CopyFrom(callData)
             };
 
-            await Contract.CallAsync(CallCustomGameModeFunctionMethod, request);
+            await _contractCallProxy.CallAsync(CallCustomGameModeFunctionMethod, request);
         }
 
         #endregion
