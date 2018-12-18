@@ -483,14 +483,14 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction (true);
 
-                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
-                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+                                   _boardController.UpdateWholeBoard(() =>
+                                   {
+                                       onCompleteCallback?.Invoke(true);
 
-                                   onCompleteCallback?.Invoke (true);
+                                       ResolveAllAbilitiesOnUnit(boardObject);
 
-                                   ResolveAllAbilitiesOnUnit (boardObject);
-
-                                   completeCallback?.Invoke ();
+                                       completeCallback?.Invoke();
+                                   });
                                }
                                else if (isPlayer)
                                {
@@ -586,14 +586,15 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction(true);
 
-                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
-                                   _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+                                   _boardController.UpdateWholeBoard(() =>
+                                   {
 
-                                   onCompleteCallback?.Invoke(true);
+                                       onCompleteCallback?.Invoke(true);
 
-                                   ResolveAllAbilitiesOnUnit(boardObject);
+                                       ResolveAllAbilitiesOnUnit(boardObject);
 
-                                   completeCallback?.Invoke();
+                                       completeCallback?.Invoke();
+                                   });
                                }
                            }
                            else
@@ -761,8 +762,7 @@ namespace Loom.ZombieBattleground
                 {
                     activeAbility.Ability.SelectedTargetAction(true);
 
-                    _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
-                    _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+                    _boardController.UpdateWholeBoard(null);
                 };
 
                 if (from != null && targets[0].BoardObject != null)
@@ -1137,8 +1137,7 @@ namespace Loom.ZombieBattleground
                 activeAbility.Ability.SelectedTargetAction(true);
             }
 
-            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
-            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+            _boardController.UpdateWholeBoard(null);
         }
 
         private void ProceedWithCardToGraveyard(BoardCard card)

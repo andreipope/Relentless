@@ -899,8 +899,7 @@ namespace Loom.ZombieBattleground
 
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
 
-            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
-            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+            _boardController.UpdateWholeBoard(null);
         }
 
         public void DistractUnit(BoardUnitView boardUnit)
