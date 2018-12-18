@@ -190,7 +190,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 await MatchMakingFlowController.Update((float) deltaTime);
 
-                if (MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed)
+                if (!Constants.DisableKeepAlive && MatchMakingFlowController.State == MatchMakingFlowController.MatchMakingState.Confirmed)
                 {
                     _keepAliveTimer -= deltaTime;
                     if (_keepAliveTimer <= 0f)
