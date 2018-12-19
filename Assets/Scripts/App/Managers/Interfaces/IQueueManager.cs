@@ -1,10 +1,6 @@
-using Loom.ZombieBattleground.Protobuf;
 using System;
 using System.Threading.Tasks;
-using UnityEngine;
-using static Loom.ZombieBattleground.QueueManager;
 using Loom.Google.Protobuf;
-
 
 namespace Loom.ZombieBattleground
 {
@@ -12,7 +8,7 @@ namespace Loom.ZombieBattleground
     {
         bool Active { get; set; }
         void AddTask(Func<Task> taskFunc);
-        void AddAction(IMessage action);
+        void AddAction(IMessage request);
         void Clear();
     }
 }

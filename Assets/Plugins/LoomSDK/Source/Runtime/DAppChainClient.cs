@@ -51,6 +51,9 @@ namespace Loom.Client
         /// </summary>
         public DAppChainClientConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Controls the flow of blockchain calls.
+        /// </summary>
         public IDAppChainClientCallExecutor CallExecutor { get; }
 
         /// <summary>

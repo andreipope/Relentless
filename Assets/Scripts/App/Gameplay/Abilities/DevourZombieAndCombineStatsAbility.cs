@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                 {
                     TargetUnit
-                }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
             }
         }
 
@@ -97,9 +97,18 @@ namespace Loom.ZombieBattleground
                 BattlegroundController.DestroyBoardUnit(unit, false);
             }
 
+            if (!PlayerCallerOfAbility.IsLocalPlayer)
+            {
+                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+            }
+            else
+            {
+                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(PlayerCallerOfAbility.BoardCards);
+            }
+
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         private void DevourTargetZombie(BoardUnitModel unit)

@@ -12,8 +12,8 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Enumerators.AbilityType, Protobuf.CardKind.Types.Enum,
-                            Protobuf.AffectObjectType.Types.Enum, List<ParametrizedAbilityBoardObject>, List<WorkingCard>> AbilityUsed;
+        public event Action<WorkingCard, Enumerators.AbilityType, Enumerators.CardKind,
+                            Enumerators.AffectObjectType, List<ParametrizedAbilityBoardObject>, List<WorkingCard>> AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -255,7 +255,8 @@ namespace Loom.ZombieBattleground
 
                 for (int i = 0; i < abilities.Count; i++)
                 {
-                    if (attackedCard.CardSetType == abilities[i].AbilitySetType)
+                    if (attackedCard.CardSetType == abilities[i].AbilitySetType &&
+                        abilities[i].CallType == Enumerators.AbilityCallType.PERMANENT)
                     {
                         value += abilities[i].Value;
                     }
@@ -540,7 +541,8 @@ namespace Loom.ZombieBattleground
                                        },
                                        failedCallback: () =>
                                        {
-                                           libraryCard.ForceUpdateAbilities(libraryCard.InitialAbilities);
+                                           // HACK: why do we need to update library card instead of modifying a copy?
+                                           ((ICard) libraryCard).ForceUpdateAbilities(libraryCard.InitialAbilities);
 
                                            card.WorkingCard.Owner.CurrentGoo += card.ManaCost;
 
@@ -648,37 +650,29 @@ namespace Loom.ZombieBattleground
         }
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<ParametrizedAbilityBoardObject> targets,
-                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
+                                         Enumerators.AbilityType abilityType, Enumerators.AffectObjectType affectObjectType)
         {
-            if (card == null || !card.Owner.IsLocalPlayer)
+            if (!CanHandleAbiityUseEvent(card))
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
-                                    Protobuf.CardKind.Types.Enum.Spell :
-                                    Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, targets, null);
+            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, targets, null);
         }
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<WorkingCard> cards,
-                                 Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
+                                 Enumerators.AbilityType abilityType, Enumerators.AffectObjectType affectObjectType)
         {
-            if (card == null || !card.Owner.IsLocalPlayer)
+            if (!CanHandleAbiityUseEvent(card))
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
-                                    Protobuf.CardKind.Types.Enum.Spell :
-                                    Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, null, cards);
+            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, null, cards);
         }
 
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
-                                         Enumerators.AbilityType abilityType, Protobuf.AffectObjectType.Types.Enum affectObjectType)
+                                         Enumerators.AbilityType abilityType, Enumerators.AffectObjectType affectObjectType)
         {
-            if (!_gameplayManager.IsLocalPlayerTurn() || card == null)
-                return;
+            if (!CanHandleAbiityUseEvent(card))
+                return; 
 
             List<ParametrizedAbilityBoardObject> parametrizedAbilityBoardObjects = new List<ParametrizedAbilityBoardObject>();
 
@@ -691,18 +685,22 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            AbilityUsed?.Invoke(card, abilityType,
-                                card.LibraryCard.CardKind == Enumerators.CardKind.SPELL ?
-                                    Protobuf.CardKind.Types.Enum.Spell :
-                                    Protobuf.CardKind.Types.Enum.Creature,
-                                affectObjectType, parametrizedAbilityBoardObjects, null);
+            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, parametrizedAbilityBoardObjects, null);
         }
 
-        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Card card, Player owner)
+        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)
         {
             ActiveAbility activeAbility =
-                CreateActiveAbility(GetAbilityDataByType(ability), card.CardKind, target, owner, card, null);
+                CreateActiveAbility(GetAbilityDataByType(ability), cardKind, target, owner, card, null);
             activeAbility.Ability.Activate();
+        }
+
+        private bool CanHandleAbiityUseEvent(WorkingCard card)
+        {
+            if (!_gameplayManager.IsLocalPlayerTurn() || card == null || !card.Owner.IsLocalPlayer)
+                return false;
+
+            return true;
         }
 
         public void CallAbilitiesInHand(BoardCard boardCard, WorkingCard card)

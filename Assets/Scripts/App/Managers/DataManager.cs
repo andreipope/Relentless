@@ -125,31 +125,9 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        public void DeleteData()
-        {
-            InitCachedData();
-            FileInfo[] files = _dir.GetFiles();
-
-            foreach (FileInfo file in files)
-            {
-                if (_cacheDataFileNames.Values.Any(path => path.EndsWith(file.Name)) ||
-                    file.Extension.Equals("dat", StringComparison.InvariantCultureIgnoreCase) ||
-                    file.Name.Contains(Constants.VersionFileResolution))
-                {
-                    file.Delete();
-                }
-            }
-
-            using (File.Create(_dir + BuildMetaInfo.Instance.ShortVersionName + Constants.VersionFileResolution))
-            {
-            }
-
-            PlayerPrefs.DeleteAll();
-        }
-
         public Task SaveCache(Enumerators.CacheDataType type)
         {
-            string dataPath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
+            string dataPath = GetPersistentDataPath(_cacheDataFileNames[type]);
             string data = "";
             switch (type)
             {
@@ -284,10 +262,11 @@ namespace Loom.ZombieBattleground
             FileInfo[] files = _dir.GetFiles();
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains(Constants.VersionFileResolution))
+                if (file.Name.Contains(Constants.VersionFileResolution) ||
+                    _cacheDataFileNames.Values.Any(path => path.EndsWith(file.Name)) ||
+                    file.Extension.Equals("dat", StringComparison.InvariantCultureIgnoreCase))
                 {
                     file.Delete();
-                    break;
                 }
             }
 
@@ -312,7 +291,7 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                    string cardsLibraryFilePath = GetPersistentDataItemPath(_cacheDataFileNames[type]);
+                    string cardsLibraryFilePath = GetPersistentDataPath(_cacheDataFileNames[type]);
 
                     List<Card> cardList;
                     if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
@@ -325,7 +304,6 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-                            Debug.Log(listCardLibraryResponse.ToString());
                             cardList = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
                         }
                         catch(Exception)
@@ -340,9 +318,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.HEROES_DATA:
                     try
                     {
-                        if (File.Exists(GetPersistentDataItemPath(_cacheDataFileNames[type])))
+                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
                         {
-                            CachedHeroesData = DeserializeObjectFromPersistentData<HeroesData>(GetPersistentDataItemPath(_cacheDataFileNames[type]));
+                            CachedHeroesData = DeserializeObjectFromPersistentData<HeroesData>(GetPersistentDataPath(_cacheDataFileNames[type]));
                         }
                         else
                         {
@@ -359,9 +337,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
-                        if (File.Exists(GetPersistentDataItemPath(_cacheDataFileNames[type])))
+                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
                         {
-                            CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataItemPath(_cacheDataFileNames[type]));
+                            CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
                         }
                         else
                         {
@@ -380,7 +358,12 @@ namespace Loom.ZombieBattleground
                     try
                     {
                         ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedDecksData = new DecksData(listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList());
+                        CachedDecksData =
+                            new DecksData(
+                                listDecksResponse.Decks != null ?
+                                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
+                                    new List<Deck>()
+                            );
                     }
                     catch (Exception)
                     {
@@ -418,7 +401,7 @@ namespace Loom.ZombieBattleground
 
         private void LoadLocalCachedData()
         {
-            string userLocalDataFilePath = GetPersistentDataItemPath(_cacheDataFileNames[Enumerators.CacheDataType.USER_LOCAL_DATA]);
+            string userLocalDataFilePath = GetPersistentDataPath(_cacheDataFileNames[Enumerators.CacheDataType.USER_LOCAL_DATA]);
             if (File.Exists(userLocalDataFilePath))
             {
                 CachedUserLocalData = DeserializeObjectFromPersistentData<UserLocalData>(userLocalDataFilePath);
@@ -488,6 +471,11 @@ namespace Loom.ZombieBattleground
             return JsonConvert.DeserializeObject<T>(json, JsonSerializerSettings);
         }
 
+        public string GetPersistentDataPath(string fileName)
+        {
+            return Path.Combine(Application.persistentDataPath, fileName);
+        }
+
         private T DeserializeObjectFromAssets<T>(string fileName)
         {
             return DeserializeFromJson<T>(_loadObjectsManager.GetObjectByPath<TextAsset>(fileName).text);
@@ -523,11 +511,6 @@ namespace Loom.ZombieBattleground
                         });
                 }
             }
-        }
-
-        private static string GetPersistentDataItemPath(string fileName)
-        {
-            return Path.Combine(Application.persistentDataPath, fileName);
         }
     }
 }

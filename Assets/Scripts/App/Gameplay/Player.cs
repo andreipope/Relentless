@@ -1,20 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using DG.Tweening;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
 
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
+
 namespace Loom.ZombieBattleground
 {
-    public class Player : BoardObject, IView
+    public class Player : BoardObject, IView, IInstanceIdOwner
     {
         public int Turn { get; set; }
 
@@ -38,11 +42,15 @@ namespace Loom.ZombieBattleground
 
         public PlayerState PvPPlayerState { get; }
 
+        public Data.InstanceId InstanceId { get; }
+
+        public bool MulliganWasStarted { get; set; }
+
         private readonly GameObject _freezedHighlightObject;
 
         private readonly IDataManager _dataManager;
 
-        private readonly BackendFacade _backendFacade;
+        private readonly IQueueManager _queueManager;
 
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
@@ -96,9 +104,9 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-        public Player(int id, GameObject playerObject, bool isOpponent)
+        public Player(Data.InstanceId instanceId, GameObject playerObject, bool isOpponent)
         {
-            Id = id;
+            InstanceId = instanceId;
             PlayerObject = playerObject;
             IsLocalPlayer = !isOpponent;
 
@@ -108,7 +116,7 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
+            _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -241,6 +249,10 @@ namespace Loom.ZombieBattleground
             PlayerDefenseChanged += PlayerDefenseChangedHandler;
 
             DamageByNoMoreCardsInDeck = 0;
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
 
         public event Action TurnStarted;
@@ -265,7 +277,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<WorkingCard, int> CardPlayed;
 
-        public event Action<WorkingCard, AffectObjectType.Types.Enum, int> CardAttacked;
+        public event Action<WorkingCard, Enumerators.AffectObjectType, Data.InstanceId?> CardAttacked;
 
         public event Action LeaveMatch;
 
@@ -412,7 +424,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                cardObject = _cardsController.AddCardToOpponentHand(card, silent);
+                cardObject = _cardsController.AddCardToOpponentHand(card, silent).GameObject;
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
@@ -430,13 +442,18 @@ namespace Loom.ZombieBattleground
 
             if (IsLocalPlayer)
             {
-                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(opponent, this,
+                _animationsController.MoveCardFromPlayerDeckToPlayerHandAnimation(
+                    opponent,
+                    this,
                     _cardsController.GetBoardCard(card));
             }
             else
             {
-                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(opponent, this,
-                    _cardsController.GetOpponentBoardCard(card));
+                _animationsController.MoveCardFromPlayerDeckToOpponentHandAnimation(
+                    opponent,
+                    this,
+                    _cardsController.GetOpponentBoardCard(card)
+                    );
             }
 
             HandChanged?.Invoke(CardsInHand.Count);
@@ -481,6 +498,9 @@ namespace Loom.ZombieBattleground
 
         public void AddCardToGraveyard(WorkingCard card)
         {
+            if (CardsInGraveyard.Contains(card))
+                return;
+
             CardsInGraveyard.Add(card);
 
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
@@ -488,6 +508,9 @@ namespace Loom.ZombieBattleground
 
         public void RemoveCardFromGraveyard(WorkingCard card)
         {
+            if (!CardsInGraveyard.Contains(card))
+                return;
+
             CardsInGraveyard.Remove(card);
 
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
@@ -579,23 +602,11 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    _cardsController.AddCardToHand(this, CardsInDeck[0], removeCardsFromDeck);
+                    _cardsController.AddCardToHand(this, workingCard, removeCardsFromDeck);
                 }
             }
 
             ThrowMulliganCardsEvent(_cardsController.MulliganCards);
-        }
-
-        public void DistributeCard()
-        {
-            if (IsLocalPlayer)
-            {
-                _cardsController.AddCardToDistributionState(this, GetCardThatNotInDistribution());
-            }
-            else
-            {
-                _cardsController.AddCardToHand(this, CardsInDeck[Random.Range(0, CardsInDeck.Count)]);
-            }
         }
 
         public void PlayerDie()
@@ -654,9 +665,12 @@ namespace Loom.ZombieBattleground
 
                     _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
                     {
-                        _backendFacade.EndMatch(_backendDataControlMediator.UserDataModel.UserId,
-                                                    (int)_pvpManager.MatchMetadata.Id,
-                                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId);
+                        _queueManager.AddAction(
+                            new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
+                                _backendDataControlMediator.UserDataModel.UserId,
+                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
+                            )
+                        );
 
                         completeCallback?.Invoke();
                     }, Enumerators.QueueActionType.EndMatch);
@@ -709,14 +723,21 @@ namespace Loom.ZombieBattleground
             CardPlayed?.Invoke(card, position);
         }
 
-        public void ThrowCardAttacked(WorkingCard card, AffectObjectType.Types.Enum type, int instanceId)
+        public void ThrowCardAttacked(WorkingCard card, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
         {
             CardAttacked?.Invoke(card, type, instanceId);
         }
 
         public void ThrowLeaveMatch()
         {
-            LeaveMatch?.Invoke();
+            _actionsQueueController.ClearActions();
+
+            _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+            {
+                LeaveMatch?.Invoke();
+
+                completeCallback?.Invoke();
+            }, Enumerators.QueueActionType.LeaveMatch);
         }
 
         public void ThrowOnHandChanged()
@@ -736,6 +757,19 @@ namespace Loom.ZombieBattleground
             return cards[0];
         }
 
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (_avatarObject == null || AvatarObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfHero.Name);
+        }
+#endif
+
         #region handlers
 
         private void PlayerDefenseChangedHandler(int now)
@@ -754,6 +788,5 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-
     }
 }

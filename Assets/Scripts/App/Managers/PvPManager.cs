@@ -9,6 +9,8 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
+using Random = UnityEngine.Random;
 using SystemText = System.Text;
 using Loom.Google.Protobuf.Collections;
 
@@ -43,9 +45,9 @@ namespace Loom.ZombieBattleground
 
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
 
-        public event Action<PlayerActionDrawCard> DrawCardActionReceived;
-
         public event Action<PlayerActionRankBuff> RankBuffActionReceived;
+
+        public event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
 
         public event Action LeaveMatchReceived;
 
@@ -57,32 +59,31 @@ namespace Loom.ZombieBattleground
 
         public List<string> PvPTags { get; set; }
 
-        private IUIManager _uiManager;
-        private IDataManager _dataManager;
+        public DebugCheatsConfiguration DebugCheats { get; set; } = new DebugCheatsConfiguration();
+
+        public MatchMakingFlowController MatchMakingFlowController => _matchMakingFlowController;
+
+        public bool UseBackendGameLogic { get; set; }
+
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
-        private IGameplayManager _gameplayManager;
-
-        private CancellationTokenSource _matchmakingCancellationTokenSource;
-        private bool _isMatchmakingInProgress;
-        private float _matchmakingTimeoutCounter;
 
         private bool _isCheckPlayerAvailableTimerStart;
         private float _checkPlayerTimer;
 
-        private bool _isInternetBroken = false;
-        private float _checkInternetInterval = 5f;
-        private float _elapsedInternetCheckTime;
+        private SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
+
+        private IGameplayManager _gameplayManager;
+
+        private MatchMakingFlowController _matchMakingFlowController;
 
         public void Init()
         {
-            _uiManager = GameClient.Get<IUIManager>();
-            _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _queueManager = GameClient.Get<IQueueManager>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
 
             if (PvPTags == null)
@@ -95,9 +96,9 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isCheckPlayerAvailableTimerStart)
+            if (!Constants.DisableKeepAlive && _isCheckPlayerAvailableTimerStart)
             {
-                _checkPlayerTimer += Time.deltaTime;
+                _checkPlayerTimer += Time.unscaledDeltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
@@ -105,19 +106,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (_gameplayManager.CurrentPlayer != null && !_isInternetBroken)
+            if (_matchMakingFlowController != null)
             {
-                _elapsedInternetCheckTime += Time.deltaTime;
-                if (_elapsedInternetCheckTime >= _checkInternetInterval)
-                {
-                    if (Application.internetReachability == NetworkReachability.NotReachable)
-                    {
-                        _isInternetBroken = true;
-                        _backendFacade.ShowConnectionPopup();
-
-                    }
-                    _elapsedInternetCheckTime = 0f;
-                }
+                await _matchMakingFlowController.Update(Time.deltaTime);
             }
         }
 
@@ -150,44 +141,68 @@ namespace Loom.ZombieBattleground
             await _backendFacade.UnsubscribeEvent();
         }
 
-        public async Task CancelFindMatch()
+        public async Task StartMatchmaking(int deckId)
         {
-            await StopMatchmaking(MatchMetadata?.Id);
-        }
+            await _matchmakingBusySemaphore.WaitAsync();
 
-        private async Task StopMatchmaking(long? matchIdToCancel)
-        {
-            _queueManager.Active = false;
-            _isMatchmakingInProgress = false;
-            _matchmakingCancellationTokenSource?.Cancel();
-
-            await _backendFacade.UnsubscribeEvent();
-            if (matchIdToCancel != null)
+            try
             {
-                await _backendFacade.CancelFindMatch(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    matchIdToCancel.Value
-                );
-            }
+                if (_matchMakingFlowController != null)
+                {
+                    await _matchMakingFlowController.Stop();
+                }
 
-            _queueManager.Clear();
+                _matchMakingFlowController = new MatchMakingFlowController(
+                    _backendFacade,
+                    _backendDataControlMediator.UserDataModel
+                );
+
+                _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
+                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, PvPTags, UseBackendGameLogic, DebugCheats);
+            }
+            finally
+            {
+                _matchmakingBusySemaphore.Release();
+            }
         }
 
-        //TODO This method is a start to simplify and clean up
-        public async void MatchIsStarting (FindMatchResponse findMatchResponse) {
-            _matchmakingTimeoutCounter = 0;
+        public async Task StopMatchmaking()
+        {
+            await _matchmakingBusySemaphore.WaitAsync();
 
+            try
+            {
+                _queueManager.Active = false;
+                _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
+                await _matchMakingFlowController.Stop();
+                _matchMakingFlowController = null;
+
+                await _backendFacade.UnsubscribeEvent();
+                if (MatchMetadata?.Id != null)
+                {
+                    await _backendFacade.CancelFindMatch(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        MatchMetadata.Id
+                    );
+                }
+
+                _queueManager.Clear();
+            }
+            finally
+            {
+                _matchmakingBusySemaphore.Release();
+                ResetCheckPlayerStatus();
+            }
+        }
+
+        private async void MatchMakingFlowControllerOnMatchConfirmed(MatchMetadata matchMetadata)
+        {
             _queueManager.Active = false;
             _queueManager.Clear();
 
             InitialGameState = null;
-            MatchMetadata = null;
 
-            MatchMetadata = new MatchMetadata(
-                findMatchResponse.Match.Id,
-                findMatchResponse.Match.Topics,
-                findMatchResponse.Match.Status
-            );
+            MatchMetadata = matchMetadata;
 
             // No need to reload if a match was found immediately
             if (InitialGameState == null)
@@ -229,7 +244,7 @@ namespace Loom.ZombieBattleground
             Func<Task> taskFunc = async () =>
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
-                Debug.LogWarning("! " + playerActionEvent); // todo delete
+                Debug.LogWarning(playerActionEvent); // todo delete
 
                 if (playerActionEvent.Block != null)
                 {
@@ -318,6 +333,14 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IQueueManager>().AddTask(taskFunc);
         }
 
+        private async Task LoadInitialGameState()
+        {
+            GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
+            InitialGameState = getGameStateResponse.GameState;
+            Debug.LogWarning("Initial game state:\n" + InitialGameState);
+            Debug.LogWarning("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
+        }
+
         private void OnReceivePlayerLeftAction(PlayerActionEvent playerActionEvent)
         {
             switch (playerActionEvent.PlayerAction.ActionType)
@@ -329,16 +352,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task LoadInitialGameState()
-        {
-            _isInternetBroken = false;
-            GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
-            InitialGameState = getGameStateResponse.GameState;
-            Debug.LogWarning("Initial game state:\n" + InitialGameState);
-        }
-
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
         {
+            foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
+            {
+                Debug.Log(playerActionOutcome.ToString());
+                PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
+            }
+
             switch (playerActionEvent.PlayerAction.ActionType)
             {
                 case PlayerActionType.Types.Enum.None:
@@ -360,9 +381,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.Types.Enum.OverlordSkillUsed:
                     OverlordSkillUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.OverlordSkillUsed);
-                    break;
-                case PlayerActionType.Types.Enum.DrawCard:
-                    DrawCardActionReceived?.Invoke(playerActionEvent.PlayerAction.DrawCard);
                     break;
                 case PlayerActionType.Types.Enum.LeaveMatch:
                     ResetCheckPlayerStatus();

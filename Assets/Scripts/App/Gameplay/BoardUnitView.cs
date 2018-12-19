@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -8,6 +7,9 @@ using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -56,8 +58,6 @@ namespace Loom.ZombieBattleground
         private readonly TextMeshPro _healthText;
 
         private readonly ParticleSystem _sleepingParticles;
-
-        private readonly ParticleSystem _toxicPowerGlowParticles;
 
         private readonly GameObject _unitContentObject;
 
@@ -143,14 +143,16 @@ namespace Loom.ZombieBattleground
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
-            _toxicPowerGlowParticles = GameObject.transform.Find("Other/ToxicPowerGlowVFX").GetComponent<ParticleSystem>();
-
 
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
 
         public BoardUnitModel Model { get; }
@@ -615,11 +617,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void EnabledToxicPowerGlow()
-        {
-            _toxicPowerGlowParticles.Play();
-        }
-
         public void ChangeModelVisibility(bool state)
         {
             _unitContentObject.SetActive(state);
@@ -820,9 +817,7 @@ namespace Loom.ZombieBattleground
                 () =>
                 {
                     Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
-                    _vfxController.PlayAttackVfx(Model.Card.LibraryCard.CardType,
-                        positionOfVfx,
-                        Model.CurrentDamage);
+                    _vfxController.PlayAttackVfx(Model, positionOfVfx);
 
                     hitCallback();
 
@@ -847,8 +842,8 @@ namespace Loom.ZombieBattleground
                 0.5f,
                 () =>
                 {
-                    _vfxController.PlayAttackVfx(Model.Card.LibraryCard.CardType,
-                        targetCardView.Transform.position, Model.CurrentDamage);
+                    _vfxController.PlayAttackVfx(Model,
+                        targetCardView.Transform.position);
 
                     hitCallback();
 
@@ -963,5 +958,21 @@ namespace Loom.ZombieBattleground
 
             sequence.Play();
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (GameObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            if (Model.Card == null)
+                return;
+
+            DebugCardInfoDrawer.Draw(GameObject.transform.position, Model.Card.InstanceId.Id, Model.Card.LibraryCard.Name);
+        }
+#endif
     }
 }

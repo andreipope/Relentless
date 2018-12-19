@@ -1,3 +1,5 @@
+#define USE_STAGING_BACKEND
+
 using System.IO;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -22,15 +24,7 @@ namespace Loom.ZombieBattleground
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
-            const BackendPurpose backend = BackendPurpose.Local;
-#elif USE_PRODUCTION_BACKEND
-            const BackendPurpose backend = BackendPurpose.Production;
-#else
-            const BackendPurpose backend = BackendPurpose.Staging;
-#endif
-
-            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
             string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
             ConfigData configData = new ConfigData();
@@ -61,13 +55,28 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(configData));
-            AddService<BackendFacade>(new BackendFacade(backendEndpoint));
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contract => new TimeMetricsContractCallProxy(contract, false, true)));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
+            AddService<PushNotificationManager>(new PushNotificationManager());
+        }
+
+        public static BackendEndpoint GetDefaultBackendEndpoint()
+        {
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
+            const BackendPurpose backend = BackendPurpose.Local;
+#elif USE_PRODUCTION_BACKEND
+            const BackendPurpose backend = BackendPurpose.Production;
+#else
+            const BackendPurpose backend = BackendPurpose.Staging;
+#endif
+
+            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            return backendEndpoint;
         }
 
         public static GameClient Instance

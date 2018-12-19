@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSkill : OwnableBoardObject
+    public class BoardSkill : OwnableBoardObject, ISkillIdOwner
     {
         public event Action<BoardSkill, BoardObject> SkillUsed;
 
@@ -52,6 +52,8 @@ namespace Loom.ZombieBattleground
 
         private SkillCoolDownTimer _coolDownTimer;
 
+        public SkillId SkillId { get; }
+
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
             SelfObject = obj;
@@ -80,7 +82,7 @@ namespace Loom.ZombieBattleground
             _shutterAnimator = SelfObject.transform.parent.transform
                 .Find("OverlordArea/RegularModel/RegularPosition/OverlordRegular/Shutters/" + name).GetComponent<Animator>();
 
-            Id = isPrimary ? 0 : 1;
+            SkillId = new SkillId(isPrimary ? 0 : 1);
 
             OwnerPlayer.TurnStarted += TurnStartedHandler;
             OwnerPlayer.TurnEnded += TurnEndedHandler;
@@ -247,7 +249,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerSolverDragStartedHandler()
         {
-            if (Skill.SkillTargetTypes.Count > 0)
+            if (Skill.CanSelectTarget)
             {
                 if (OwnerPlayer.IsLocalPlayer)
                 {
@@ -262,7 +264,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerEventSolverClickedHandler()
         {
-            if (Skill.SkillTargetTypes.Count > 0)
+            if (Skill.CanSelectTarget)
             {
                 DrawAbilityTooltip();
             }

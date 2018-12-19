@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -87,6 +88,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             private readonly BackendFacade _backendFacade;
 
+            private readonly IQueueManager _queueManager;
+
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
             private readonly BattlegroundController _battlegroundController;
@@ -99,9 +102,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private readonly RanksController _ranksController;
 
+            private readonly MatchRequestFactory _matchRequestFactory;
+            private readonly PlayerActionFactory _playerActionFactory;
+
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
+                _queueManager = GameClient.Get<IQueueManager>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _pvpManager = GameClient.Get<IPvPManager>();
                 _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -120,6 +127,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     matchManager.MatchType == Enumerators.MatchType.PVE ||
                     _pvpManager.InitialGameState == null)
                     return;
+
+                _matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
+                _playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
 
                 if (!isOpponent)
                 {
@@ -207,258 +217,74 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void CardPlayedHandler(WorkingCard card, int position)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.CardPlay,
-                    PlayerId = playerId,
-                    CardPlay = new PlayerActionCardPlay
-                    {
-                        Card = card.ToProtobuf(),
-                        Position = position
-                    }
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.CardPlay(card, position));
             }
 
             private void TurnEndedHandler()
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.EndTurn,
-                    PlayerId = playerId,
-                    EndTurn = new PlayerActionEndTurn()
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.EndTurn());
             }
 
             private void LeaveMatchHandler()
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.LeaveMatch,
-                    PlayerId = playerId,
-                    LeaveMatch = new PlayerActionLeaveMatch()
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, AffectObjectType.Types.Enum type, int instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.CardAttack,
-                    PlayerId = playerId,
-                    CardAttack = new PlayerActionCardAttack
-                    {
-                        Attacker = attacker.ToProtobuf(),
-                        AffectObjectType = type,
-                        Target = new Protobuf.Unit
-                        {
-                            InstanceId = instanceId,
-                            Parameter = new Parameter() { }
-                        }
-                    }
-                };
+                if (type != Enumerators.AffectObjectType.Player && instanceId == null)
+                    throw new ArgumentNullException(nameof(instanceId));
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId ?? new Data.InstanceId(-1)));
             }
 
             private void AbilityUsedHandler(
                 WorkingCard card,
                 Enumerators.AbilityType abilityType,
-                CardKind.Types.Enum cardKind,
-                AffectObjectType.Types.Enum affectObjectType,
+                Enumerators.CardKind cardKind,
+                Enumerators.AffectObjectType affectObjectType,
                 List<ParametrizedAbilityBoardObject> targets = null,
                 List<WorkingCard> cards = null)
             {
-                PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed()
-                {
-                    CardKind = cardKind,
-                    AbilityType = abilityType.ToString(),
-                    Card = card.ToProtobuf()
-                };
-
-                Protobuf.Unit targetUnit;
-                if (targets != null)
-                {
-                    foreach(ParametrizedAbilityBoardObject parametrizedAbility in targets)
-                    {
-                        if (parametrizedAbility.BoardObject == null)
-                            continue;
-                            
-                        targetUnit = new Protobuf.Unit();
-
-                        if (parametrizedAbility.BoardObject is BoardUnitModel model)
-                        {
-                            targetUnit = new Protobuf.Unit
-                            {
-                                InstanceId = model.Card.InstanceId,
-                                AffectObjectType =  AffectObjectType.Types.Enum.Character,
-                                Parameter = new Parameter()
-                                {
-                                    Attack = parametrizedAbility.Parameters.Attack,
-                                    Defense = parametrizedAbility.Parameters.Defense,
-                                    CardName = parametrizedAbility.Parameters.CardName
-                                }
-                            };
-                        }
-                        else if (parametrizedAbility.BoardObject is Player player)
-                        {
-                            targetUnit = new Protobuf.Unit
-                            {
-                                InstanceId = player.Id == 0 ? 1 : 0,
-                                AffectObjectType = AffectObjectType.Types.Enum.Player,
-                                Parameter = new Parameter() { }
-                            };
-                        }
-                        else if(parametrizedAbility.BoardObject is HandBoardCard handCard)
-                        {
-                            targetUnit = new Protobuf.Unit
-                            {
-                                InstanceId = handCard.CardView.WorkingCard.InstanceId,
-                                AffectObjectType = AffectObjectType.Types.Enum.Card,
-                                Parameter = new Parameter()
-                                {
-                                    Attack = parametrizedAbility.Parameters.Attack,
-                                    Defense = parametrizedAbility.Parameters.Defense,
-                                    CardName = parametrizedAbility.Parameters.CardName
-                                }
-                            };
-                        }
-
-                        cardAbilityUsed.Targets.Add(targetUnit);
-                    }
-                }
-
-                if(cards != null)
-                {
-                    foreach (WorkingCard workingCard in cards)
-                    {
-                        targetUnit = new Protobuf.Unit
-                        {
-                            InstanceId = workingCard.InstanceId,
-                            AffectObjectType = AffectObjectType.Types.Enum.Card,
-                            Parameter = new Parameter() { }
-                        };
-
-                        cardAbilityUsed.Targets.Add(targetUnit);
-                    }
-                }
-
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.CardAbilityUsed,
-                    PlayerId = playerId,
-                    CardAbilityUsed = cardAbilityUsed
-
-                };
-
-                 UnityEngine.Debug.LogWarning("Action json send = " + Newtonsoft.Json.JsonConvert.SerializeObject(playerAction));
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards?.Select(otherCard => otherCard.InstanceId)));
             }
 
             private void MulliganHandler(List<WorkingCard> cards)
             {
-                PlayerActionMulligan playerActionMulligan = new PlayerActionMulligan();
-
-                foreach (WorkingCard card in cards)
-                {
-                    playerActionMulligan.MulliganedCards.Add(card.ToProtobuf());
-                }
-
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.Mulligan,
-                    PlayerId = playerId,
-                    Mulligan = playerActionMulligan
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
-
 
             private void SkillUsedHandler(BoardSkill skill, BoardObject target)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                AffectObjectType.Types.Enum affectObjectType =
+                Enumerators.AffectObjectType affectObjectType =
                     target is Player ?
-                        AffectObjectType.Types.Enum.Player :
-                        AffectObjectType.Types.Enum.Character;
-                Protobuf.Unit targetUnit = null;
+                        Enumerators.AffectObjectType.Player :
+                        Enumerators.AffectObjectType.Character;
 
+                Data.InstanceId targetInstanceId;
                 switch (target)
                 {
                     case BoardUnitModel unit:
-                        targetUnit = new Protobuf.Unit
-                        {
-                            InstanceId = unit.Card.InstanceId,
-                            Parameter = new Parameter() { }
-                        };
+                        targetInstanceId = unit.Card.InstanceId;
                         break;
                     case Player player:
-                        targetUnit = new Protobuf.Unit
-                        {
-                            InstanceId = player.Id == 0 ? 1 : 0,
-                            Parameter = new Parameter() { }
-                        };
+                        targetInstanceId = new Data.InstanceId(player.InstanceId.Id);
                         break;
+                    default:
+                        throw new Exception($"Unhandled target type {target}");
                 }
 
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.OverlordSkillUsed,
-                    PlayerId = playerId,
-                    OverlordSkillUsed = new PlayerActionOverlordSkillUsed
-                    {
-                        SkillId = skill.Id,
-                        AffectObjectType = affectObjectType,     
-                        Target = targetUnit
-                    }
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, affectObjectType, targetInstanceId));
             }
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                AddAction(_playerActionFactory.RankBuff(card, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
+            }
 
-                PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
-                {
-                    Card = card.ToProtobuf()
-                };
-
-                Protobuf.Unit unit;
-                foreach (BoardUnitView view in units)
-                {
-                    unit = new Protobuf.Unit
-                    {
-                        InstanceId = view.Model.Card.InstanceId,
-                        AffectObjectType = AffectObjectType.Types.Enum.Character,
-                        Parameter = new Parameter() { }
-                    };
-
-                    rankBuff.Targets.Add(unit);
-                }
-
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.RankBuff,
-                    PlayerId = playerId,
-                    RankBuff = rankBuff
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+            private void AddAction(PlayerAction playerAction)
+            {
+                _queueManager.AddAction(_matchRequestFactory.CreateAction(playerAction));
             }
         }
     }

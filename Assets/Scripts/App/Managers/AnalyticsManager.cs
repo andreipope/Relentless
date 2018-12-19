@@ -51,7 +51,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
         if (matchesInPreviousSittingKey != -1)
         {
             PlayerPrefs.DeleteKey(MatchesInPreviousSittingKey);
-            Debug.Log("Sending previousMatchesPerSitting = " + matchesInPreviousSittingKey);
             LogEvent("MatchesInPreviousSitting", "", matchesInPreviousSittingKey);
         }
 
@@ -75,7 +74,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void LogEvent(string eventAction, string eventLabel, long value)
     {
-        Debug.Log("=== Log Event = " + eventAction);
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
         AnalyticsEvent.Custom(
             eventAction,
@@ -120,7 +118,21 @@ public class AnalyticsManager : IAnalyticsManager, IService
         ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
         _backendFacade = GameClient.Get<BackendFacade>();
         _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-        Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel"));
+
+        #if USE_PRODUCTION_BACKEND
+            _googleAnalytics.IOSTrackingCode = "UA-124278621-1";
+            _googleAnalytics.androidTrackingCode = "UA-124278621-1";
+            _googleAnalytics.otherTrackingCode = "UA-124278621-1";
+
+            Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Production"));
+        #else
+            _googleAnalytics.IOSTrackingCode = "UA-130846432-1";
+            _googleAnalytics.androidTrackingCode = "UA-130846432-1";
+            _googleAnalytics.otherTrackingCode = "UA-130846432-1";
+
+            Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Staging"));
+        #endif
+
     }
 
     public void Update()
@@ -134,8 +146,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName)
     {
         Value props = new Value();
-        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
-        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+        FillBasicProps(props);
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);
@@ -144,7 +155,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName, Value props)
     {
         props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
-        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+        FillBasicProps(props);
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);
@@ -167,5 +178,13 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetPoepleIncrement(string property, int value)
     {
         Mixpanel.people.Increment(property, value);
+    }
+
+    private void FillBasicProps(Value props)
+    {
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
+
+        // FIXME
+        //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
     }
 }
