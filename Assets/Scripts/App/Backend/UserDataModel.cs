@@ -8,6 +8,12 @@
 
         public bool IsValid;
 
+        public bool IsRegistered;
+
+        public string Email;
+
+        public string Password;
+
         public UserDataModel(string userId, byte[] privateKey)
         {
             UserId = userId;

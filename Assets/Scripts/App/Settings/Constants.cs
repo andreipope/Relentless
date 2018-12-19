@@ -149,7 +149,5 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
 
         internal const bool MulliganEnabled = false;
-
-        internal const bool AutomaticLoginEnabled = true;
     }
 }

@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
 {
@@ -28,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _buttonTutorial;
 
+        private BackendDataControlMediator _backendDataControlMediator;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -35,6 +38,7 @@ namespace Loom.ZombieBattleground
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
         public void Update()
@@ -100,7 +104,14 @@ namespace Loom.ZombieBattleground
         private void PvPModeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);
+            if (!_backendDataControlMediator.UserDataModel.IsRegistered)
+            {
+                _uiManager.GetPopup<LoginPopup>().Show();
+            }
+            else
+            {
+                _stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);
+            }
         }
 
         private void BackButtonOnClickHandler()
