@@ -269,6 +269,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string signupEndPoint = "/auth/email/game_signup";
 
+        private const string forgottenPasswordEndPoint = "/auth/mlink/generate";
+
         public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
@@ -341,6 +343,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
             RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
                 httpResponseMessage.ReadToEnd());
             return registerData;
+        }
+
+        public async Task<bool> InitiateForgottenPassword(string email)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email +"&kind=signup";
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception(
+                    $"{nameof(InitiateForgottenPassword)} failed with error code {httpResponseMessage.StatusCode}");
+                    
+            return true;
         }
 
         private struct LoginRequest 

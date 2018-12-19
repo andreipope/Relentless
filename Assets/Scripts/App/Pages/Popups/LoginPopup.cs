@@ -35,6 +35,10 @@ namespace Loom.ZombieBattleground
 
         private Transform _registerGroup;
 
+        private Transform _forgottenGroup;
+
+        private Transform _forgottenSuccessGroup;
+
         private Transform _waitingGroup;
 
         private Transform _versionMismatchGroup;
@@ -49,11 +53,19 @@ namespace Loom.ZombieBattleground
 
         private Button _closeLoginButton;
 
+        private Button _forgotPasswordLoginButton;
+
         private Button _registerButton;
 
         private Button _toLoginButton;
 
         private Button _closeRegisterButton;
+
+        private Button _cancelForgotButton;
+
+        private Button _sendForgotButton;
+
+        private Button _gotitForgotSuccessButton;
 
         private InputField _emailFieldLogin;
         private InputField _passwordFieldLogin;
@@ -62,6 +74,7 @@ namespace Loom.ZombieBattleground
         private InputField _passwordFieldRegister;
         private InputField _confirmFieldRegister;
 
+        private InputField _emailFieldForgot;
 
         private LoginState _state;
 
@@ -114,6 +127,7 @@ namespace Loom.ZombieBattleground
             _passwordFieldLogin = _loginGroup.transform.Find("Password_BG/Password_InputField").GetComponent<InputField>();
             _loginButton = _loginGroup.transform.Find("Button_Login_BG/Button_Login").GetComponent<Button>();
             _toRegisterButton = _loginGroup.transform.Find("Button_Register_BG/Button_Register").GetComponent<Button>();
+            _forgotPasswordLoginButton = _loginGroup.transform.Find("Button_ForgotPassword").GetComponent<Button>();
             _closeLoginButton = _loginGroup.transform.Find("Button_Close_BG/Button_Close").GetComponent<Button>();
 
             _registerGroup = Self.transform.Find("Register_Group");
@@ -123,6 +137,14 @@ namespace Loom.ZombieBattleground
             _passwordFieldRegister = _registerGroup.transform.Find("Password_BG/Password_InputField").GetComponent<InputField>();
             _confirmFieldRegister = _registerGroup.transform.Find("Confirm_BG/Confirm_InputField").GetComponent<InputField>();
             _closeRegisterButton = _registerGroup.transform.Find("Button_Close_BG/Button_Close").GetComponent<Button>();
+
+            _forgottenGroup = Self.transform.Find("Forgot_Group");
+            _cancelForgotButton = _forgottenGroup.transform.Find("Button_Cancel_BG/Button_Cancel").GetComponent<Button>();
+            _sendForgotButton = _forgottenGroup.transform.Find("Button_Send_BG/Button_Send").GetComponent<Button>();
+            _emailFieldForgot = _forgottenGroup.transform.Find("Email_BG/Email_InputField").GetComponent<InputField>();
+
+            _forgottenSuccessGroup = Self.transform.Find("SuccessForgot_Group");
+            _gotitForgotSuccessButton = _forgottenSuccessGroup.transform.Find("Button_Confirm_BG/Button_Confirm").GetComponent<Button>();
 
             _waitingGroup = Self.transform.Find("Waiting_Group");
             _versionMismatchGroup = Self.transform.Find("VersionMismatch_Group");
@@ -134,6 +156,10 @@ namespace Loom.ZombieBattleground
             _registerButton.onClick.AddListener(PressedRegisterHandler);
             _toRegisterButton.onClick.AddListener(PressedGoToRegisterHandler);
             _toLoginButton.onClick.AddListener(PressedGoToLoginHandler);
+            _forgotPasswordLoginButton.onClick.AddListener(PressedGoToForgotPasswordHandler);
+            _cancelForgotButton.onClick.AddListener(PressedGoToLoginHandler);
+            _gotitForgotSuccessButton.onClick.AddListener(PressedGoToLoginHandler);
+            _sendForgotButton.onClick.AddListener(PressedSendForgotPasswordHandler);
             _closeLoginButton.onClick.AddListener(Hide);
             _closeRegisterButton.onClick.AddListener(Hide);
 
@@ -169,6 +195,29 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.InitiateLogin);
             LoginProcess(false);
         }
+
+        private void PressedSendForgotPasswordHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            if (_emailFieldForgot.text.Length > 0) 
+            {
+                ForgottenPasswordProcess();
+            }
+            else
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+            }
+        }
+
+        private void PressedGoToForgotPasswordHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SetUIState(LoginState.ForgotPassword);
+        }
+
 
         private void PressedGoToLoginHandler()
         {
@@ -213,6 +262,22 @@ namespace Loom.ZombieBattleground
             else
             {
                 _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+            }
+        }
+
+        private async void ForgottenPasswordProcess()
+        {
+            SetUIState(LoginState.ValidateAndLogin);
+            try
+            {
+                await _backendFacade.InitiateForgottenPassword(_emailFieldForgot.text);
+
+                SetUIState(LoginState.SuccessForgotPassword);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+                SetUIState(LoginState.ValidationFailed);
             }
         }
 
@@ -317,6 +382,8 @@ namespace Loom.ZombieBattleground
             _registerGroup.gameObject.SetActive(false);
             _waitingGroup.gameObject.SetActive(false);
             _versionMismatchGroup.gameObject.SetActive(false);
+            _forgottenGroup.gameObject.SetActive(false);
+            _forgottenSuccessGroup.gameObject.SetActive(false);
             switch (_state)
             {
                 case LoginState.InitiateLogin:
@@ -345,6 +412,15 @@ namespace Loom.ZombieBattleground
                 case LoginState.LoginAsGuest:
                     _lastPopupState = _state;
                     LoginProcess(true);
+                    break;
+                case LoginState.ForgotPassword:
+                    _lastPopupState = _state;
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _forgottenGroup.gameObject.SetActive(true);
+                    break;
+                case LoginState.SuccessForgotPassword:
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _forgottenSuccessGroup.gameObject.SetActive(true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_state), _state, null);
@@ -406,7 +482,9 @@ namespace Loom.ZombieBattleground
             ValidationFailed,
             ValidateAndLogin,
             RemoteVersionMismatch,
-            LoginAsGuest
+            LoginAsGuest,
+            ForgotPassword,
+            SuccessForgotPassword
         }
     }
 }
