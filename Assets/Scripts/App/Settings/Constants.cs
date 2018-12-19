@@ -45,7 +45,12 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float PointerMinDragDeltaMobile = 35f;
 
-        internal const float LoadingTimeBetweenGameplayAndAppInit = 2f;
+        internal const float LoadingTimeBetweenGameplayAndAppInit =
+#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
+            0f;
+#else
+            2f;
+#endif
 
         internal const int TutorialPlayerHeroId = 4;
 
@@ -134,7 +139,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        internal const float PvPCheckPlayerAvailableMaxTime = 5f;
+        public const float PvPCheckPlayerAvailableMaxTime = 30f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -148,8 +153,8 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
 
-        internal const bool MulliganEnabled = false;
+        public const bool DisableKeepAlive = true;
 
-        internal const bool AutomaticLoginEnabled = true;
+        public const bool MulliganEnabled = false;
     }
 }

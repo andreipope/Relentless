@@ -56,14 +56,14 @@ namespace Loom.ZombieBattleground
                 }
 
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Select(x => x.Model).Cast<BoardObject>().ToList(),
-                                          AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                                          AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
             }
             else
             {
                 TakeBlitzToUnit(AbilityUnitOwner);
 
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { AbilityUnitOwner },
-                                             AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                                             AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
             }
         }
 

@@ -9,9 +9,11 @@ public class DebugCommandsManager : IService
         ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
         Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/DebugConsole"));
 
+        GeneralCommandsHandler.Initialize();
         QuickPlayCommandsHandler.Initialize();
         BattleCommandsHandler.Initialize();
         DecksCommandHandler.Initialize();
+        PvPCommandsHandler.Initialize();
         #endif
     }
 
