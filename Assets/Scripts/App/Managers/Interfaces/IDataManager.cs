@@ -42,5 +42,7 @@ namespace Loom.ZombieBattleground
         string SerializeToJson(object obj, bool indented = false);
 
         T DeserializeFromJson<T>(string json);
+
+        string GetPersistentDataPath(string fileName);
     }
 }

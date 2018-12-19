@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
                 CardsController.AddCardToHand(PlayerCallerOfAbility, card);
 
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<WorkingCard>() { card },
-                                                         AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+                                                         AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
             }
         }
     }
