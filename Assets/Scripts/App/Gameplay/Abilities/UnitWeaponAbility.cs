@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             TargetUnit.CurrentHp += Health;
             TargetUnit.BuffedHp += Health;
 
-            TargetUnit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
+            TargetUnit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.SuperSerum); //SuperSerum or Chainsaw
         }
 
         protected override void InputEndedHandler()
@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
 
-                TargetUnit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
+                TargetUnit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.SuperSerum); //SuperSerum or Chainsaw
             }
         }
 
