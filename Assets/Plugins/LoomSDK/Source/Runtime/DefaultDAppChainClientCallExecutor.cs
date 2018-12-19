@@ -124,6 +124,7 @@ namespace Loom.Client
         protected virtual async Task<Task> ExecuteTaskWithRetryOnInvalidTxNonceException(Func<Task<Task>> taskTaskProducer)
         {
             int badNonceCount = 0;
+            InvalidTxNonceException lastNonceException;
             do
             {
                 try
@@ -131,9 +132,10 @@ namespace Loom.Client
                     Task<Task> task = taskTaskProducer();
                     await task;
                     return await task;
-                } catch (InvalidTxNonceException)
+                } catch (InvalidTxNonceException e)
                 {
                     badNonceCount++;
+                    lastNonceException = e;
                 }
 
                 // WaitForSecondsRealtime can throw a "get_realtimeSinceStartup can only be called from the main thread." error.
@@ -148,7 +150,7 @@ namespace Loom.Client
                 this.configurationProvider.Configuration.InvalidNonceTxRetries != 0 &&
                 badNonceCount <= this.configurationProvider.Configuration.InvalidNonceTxRetries);
 
-            throw new InvalidTxNonceException(1, "sequence number does not match");
+            throw lastNonceException;
         }
     }
 }

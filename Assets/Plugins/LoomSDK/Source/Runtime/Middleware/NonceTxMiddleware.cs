@@ -9,7 +9,7 @@ namespace Loom.Client
     /// </summary>
     public class NonceTxMiddleware : ITxMiddlewareHandler
     {
-        private readonly string publicKeyHex;
+        protected readonly string publicKeyHex;
 
         /// <summary>
         /// Public key for which the nonce should be set.
