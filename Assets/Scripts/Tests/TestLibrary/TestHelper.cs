@@ -1029,51 +1029,42 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
-            if (Constants.AutomaticLoginEnabled)
+            WaitStart(10);
+            GameObject pressAnyText = null;
+            await new WaitUntil(() =>
             {
-                await new WaitUntil(() => !CheckCurrentPageName("LoadingPage"));
+                pressAnyText = GameObject.Find("PressAnyText");
 
-                CheckCurrentPageName("MainMenuPage");
-            }
-            else
+                return pressAnyText != null || CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") ||
+                    WaitTimeIsUp();
+            });
+
+            if (pressAnyText != null)
             {
-                WaitStart(10);
-                GameObject pressAnyText = null;
-                await new WaitUntil(() =>
-                {
-                    pressAnyText = GameObject.Find("PressAnyText");
+                pressAnyText.SetActive(false);
+                GameClient.Get<IUIManager>().DrawPopup<LoginPopup>();
 
-                    return pressAnyText != null || CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") ||
-                        WaitTimeIsUp();
-                });
-
-                if (pressAnyText != null)
-                {
-                    pressAnyText.SetActive(false);
-                    GameClient.Get<IUIManager>().DrawPopup<LoginPopup>();
-
-                    await AssertLoggedInOrLoginFailed(
-                        CloseTermsPopupIfRequired,
-                        () =>
-                        {
-                            Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND");
-                            return Task.CompletedTask;
-                        },
-                        () => SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
-                        GoOnePageHigher);
-                }
-                else if (!CheckCurrentPageName("MainMenuPage") && !CheckCurrentPageName("GameplayPage"))
-                {
-                    Assert.Fail(
-                        $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
-                }
-
-                /* await CombinedCheck (
-                    CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-                    CheckCurrentPageName, "MainMenuPage", null); */
-
-                await new WaitForUpdate();
+                await AssertLoggedInOrLoginFailed(
+                    CloseTermsPopupIfRequired,
+                    () =>
+                    {
+                        Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND");
+                        return Task.CompletedTask;
+                    },
+                    () => SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
+                    GoOnePageHigher);
             }
+            else if (!CheckCurrentPageName("MainMenuPage") && !CheckCurrentPageName("GameplayPage"))
+            {
+                Assert.Fail(
+                    $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
+            }
+
+            /* await CombinedCheck (
+                CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
+                CheckCurrentPageName, "MainMenuPage", null); */
+
+            await new WaitForUpdate();
         }
 
         private async Task SubmitEmailPassword(string email, string password)
