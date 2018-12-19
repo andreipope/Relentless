@@ -187,7 +187,7 @@ namespace Loom.Client
 
                 if (result.CheckTx.Code != 0)
                 {
-                    if ((result.CheckTx.Code == 1) && (result.CheckTx.Error == "sequence number does not match"))
+                    if ((result.CheckTx.Code == 1) && (result.CheckTx.Error.StartsWith("sequence number does not match")))
                     {
                         throw new InvalidTxNonceException(result.CheckTx.Code, result.CheckTx.Error);
                     }

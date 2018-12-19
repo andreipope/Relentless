@@ -156,7 +156,5 @@ namespace Loom.ZombieBattleground.Common
         public const bool DisableKeepAlive = true;
 
         public const bool MulliganEnabled = false;
-
-        public const bool AutomaticLoginEnabled = true;
     }
 }

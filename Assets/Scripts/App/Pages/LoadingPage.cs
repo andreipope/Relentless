@@ -84,51 +84,23 @@ namespace Loom.ZombieBattleground
                 if (_backendDataControlMediator.LoadUserDataModel() &&
                     _backendDataControlMediator.UserDataModel.IsValid)
                 {
-                    ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                    LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                    popup.Show();
 
-                    Func<Task> connectFunc = async () =>
+                    if (!_backendDataControlMediator.UserDataModel.IsRegistered)
                     {
-                        bool success = true;
-                        try
-                        {
-                            await _backendDataControlMediator.LoginAndLoadData();
-                            _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
-                        }
-                        catch (GameVersionMismatchException e)
-                        {
-                            success = false;
-                            _uiManager.GetPopup<LoginPopup>().Show(e);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogWarning(e);
-                            success = false;
-                            _uiManager.DrawPopup<LoginPopup>();
-                        }
-
-                        connectionPopup.Hide();
-
-                        if (success)
-                        {
-                            if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
-                            {
-                                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
-
-                                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
-                            }
-                            else
-                            {
-                                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-                            }
-                        }
-                    };
-                    _uiManager.DrawPopup<ConnectionPopup>();
-                    connectionPopup.ConnectFunc = connectFunc;
-                    await connectionPopup.ExecuteConnection(ConnectionPopup.ConnectionState.FirstConnect);
+                        popup.SetLoginAsGuestState();
+                    }
+                    else
+                    {
+                        popup.SetLoginFieldsDataAndInitiateLogin(_backendDataControlMediator.UserDataModel.Email, _backendDataControlMediator.UserDataModel.Password);
+                    }
                 }
                 else
                 {
-                    _uiManager.DrawPopup<LoginPopup>();
+                    LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                    popup.Show();
+                    popup.SetLoginAsGuestState();
                 }
             }
         }

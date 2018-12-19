@@ -267,6 +267,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string loginEndPoint = "/auth/email/login";
 
+        private const string signupEndPoint = "/auth/email/game_signup";
+
+        private const string forgottenPasswordEndPoint = "/auth/mlink/generate";
+
         public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
@@ -314,7 +318,49 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return loginData;
         }
 
-        private struct LoginRequest
+        public async Task<RegisterData> InitiateRegister(string email, string password)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + signupEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.email = email;
+            loginRequest.password = password;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(loginRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+
+            RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
+                httpResponseMessage.ReadToEnd());
+            return registerData;
+        }
+
+        public async Task<bool> InitiateForgottenPassword(string email)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email +"&kind=signup";
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception(
+                    $"{nameof(InitiateForgottenPassword)} failed with error code {httpResponseMessage.StatusCode}");
+                    
+            return true;
+        }
+
+        private struct LoginRequest 
         {
             public string email;
             public string password;
