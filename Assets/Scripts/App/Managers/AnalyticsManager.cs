@@ -51,7 +51,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
         if (matchesInPreviousSittingKey != -1)
         {
             PlayerPrefs.DeleteKey(MatchesInPreviousSittingKey);
-            Debug.Log("Sending previousMatchesPerSitting = " + matchesInPreviousSittingKey);
             LogEvent("MatchesInPreviousSitting", "", matchesInPreviousSittingKey);
         }
 
@@ -75,7 +74,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void LogEvent(string eventAction, string eventLabel, long value)
     {
-        Debug.Log("=== Log Event = " + eventAction);
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
         AnalyticsEvent.Custom(
             eventAction,
@@ -148,8 +146,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName)
     {
         Value props = new Value();
-        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
-        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+        FillBasicProps(props);
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);
@@ -158,7 +155,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetEvent(string eventName, Value props)
     {
         props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
-        props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+        FillBasicProps(props);
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);
@@ -181,5 +178,13 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void SetPoepleIncrement(string property, int value)
     {
         Mixpanel.people.Increment(property, value);
+    }
+
+    private void FillBasicProps(Value props)
+    {
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
+
+        // FIXME
+        //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
     }
 }

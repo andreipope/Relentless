@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
-using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -83,7 +81,7 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 PlayerCallerOfAbility
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
+            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -111,10 +109,14 @@ namespace Loom.ZombieBattleground
 
             HealTarget(boardObject, Value);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                boardObject
-            }, AbilityData.AbilityType,  (Protobuf.AffectObjectType.Types.Enum) AffectObjectType);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard,
+                new List<BoardObject>
+                {
+                    boardObject
+                },
+                AbilityData.AbilityType,
+                AffectObjectType
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -193,7 +195,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

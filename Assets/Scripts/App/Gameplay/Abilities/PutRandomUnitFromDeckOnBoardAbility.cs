@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(),
-                                                     AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+                                                     AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

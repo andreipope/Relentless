@@ -1,0 +1,17 @@
+{
+    "name": "ZombieBattleground.Tests.PlayMode",
+    "references": [
+        "ZombieBattleground.Main",
+        "LoomSDK",
+        "ZombieBattleground.Editor",
+        "ZombieBattleground.Generated",
+        "ZombieBattleground.TestLibrary",
+        "AsyncAwaitUtil"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}

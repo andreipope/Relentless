@@ -91,9 +91,9 @@ namespace Loom.ZombieBattleground
             _aiBrainCancellationTokenSource?.Cancel();
         }
 
-        public void InitializePlayer(int playerId)
+        public void InitializePlayer(InstanceId instanceId)
         {
-            _gameplayManager.OpponentPlayer = new Player(playerId, GameObject.Find("Opponent"), true);
+            _gameplayManager.OpponentPlayer = new Player(instanceId, GameObject.Find("Opponent"), true);
 
             _fightTargetingArrowPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object");
 

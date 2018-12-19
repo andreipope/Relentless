@@ -2,7 +2,6 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
-using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -83,11 +82,14 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
             }
 
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-               target
-            }, AbilityData.AbilityType, (AffectObjectType.Types.Enum) AffectObjectType);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard,
+                new List<BoardObject>
+                {
+                    target
+                },
+                AbilityData.AbilityType,
+                AffectObjectType
+            );
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 

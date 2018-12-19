@@ -64,6 +64,10 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                 return;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _percentage = 100f;
+#endif
+
             if (!_isLoaded)
             {
                 _percentage += 1.4f;
@@ -106,7 +110,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.LOGO_APPEAR, Constants.SfxSoundVolume, false, false, true);
 
             _selfPage = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPageOptimized"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/LoadingPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _progressBar = _selfPage.transform.Find("ProgresBar");

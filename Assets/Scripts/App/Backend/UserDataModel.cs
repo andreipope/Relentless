@@ -1,5 +1,8 @@
-﻿namespace Loom.ZombieBattleground.BackendCommunication
+﻿using System;
+
+namespace Loom.ZombieBattleground.BackendCommunication
 {
+    [Serializable]
     public class UserDataModel
     {
         public string UserId;
