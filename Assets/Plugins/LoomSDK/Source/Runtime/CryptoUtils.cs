@@ -18,7 +18,10 @@ namespace Loom.Client
         public static byte[] RandomBytes(uint length)
         {
             var random = new byte[length];
-            rngCsp.GetBytes(random);
+            lock (rngCsp)
+            {
+                rngCsp.GetBytes(random);
+            }
             return random;
         }
 
@@ -125,7 +128,10 @@ namespace Loom.Client
         /// <returns>Array of bytes representing a local address.</returns>
         public static byte[] LocalAddressFromPublicKey(byte[] publicKey)
         {
-            return ripemd160.ComputeHash(publicKey);
+            lock (ripemd160)
+            {
+                return ripemd160.ComputeHash(publicKey);
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private int _subscribeCount;
         private IRpcClient _reader;
         private IContractCallProxy _contractCallProxy;
+        private Func<Contract, IContractCallProxy> _contractCallProxyFactory;
 
         public delegate void ContractCreatedEventHandler(Contract oldContract, Contract newContract);
 
@@ -37,9 +38,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public bool EnableRpcLogging { get; set; } = false;
 
-        public BackendFacade(BackendEndpoint backendEndpoint)
+        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory = null)
         {
             BackendEndpoint = backendEndpoint;
+            _contractCallProxyFactory = contractCallProxyFactory;
         }
 
         public void Init()
@@ -107,7 +109,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Address contractAddr = await client.ResolveContractAddressAsync("ZombieBattleground");
             Contract oldContract = Contract;
             Contract = new Contract(client, contractAddr, callerAddr);
-            _contractCallProxy = new TimeMetricsContractCallProxy(Contract);
+
+            _contractCallProxy = _contractCallProxyFactory?.Invoke(Contract) ?? new DefaultContractCallProxy(Contract);
             ContractCreated?.Invoke(oldContract, Contract);
         }
 

@@ -42,17 +42,6 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        [UnityTest]
-        [Timeout(30000)]
-        //[Ignore("")]
-        public IEnumerator ThreadedLogin([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
-        {
-            return TestUtility.AsyncTest(async () =>
-            {
-                await ThreadedLoginTestBase(clientCount);
-            });
-        }
-
         private async Task MatchmakingTestBase(int clientCount, Func<List<MultiplayerDebugClient>, Task> onEndCallback = null)
         {
             int counter = 0;
@@ -83,14 +72,12 @@ namespace Loom.ZombieBattleground.Test
                         {
                             Func<Task> t = async () =>
                             {
-                                Stopwatch sw = Stopwatch.StartNew();
                                 await client.Start(
                                     enabledLogs: false,
                                     chainClientCallExecutor: new DumbDAppChainClientCallExecutor(
-                                        new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration()))
+                                        new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration())),
+                                    contractCallProxyFactory: contract => new ThreadedTimeMetricsContractCallProxy(contract, true, false)
                                 );
-                                sw.Stop();
-                                Debug.Log($"Started client in {sw.ElapsedMilliseconds} ms");
                             };
 
                             return t();
@@ -222,51 +209,6 @@ namespace Loom.ZombieBattleground.Test
                             break;
                     }
                 }));
-        }
-
-        private async Task ThreadedLoginTestBase(int clientCount)
-        {
-            int counter = 0;
-            List<MultiplayerDebugClient> clients =
-                Enumerable.Range(0, clientCount)
-                    .Select(_ => new MultiplayerDebugClient(TestContext.CurrentContext.Test.Name + "_" + counter++.ToString()))
-                    .ToList();
-
-            clients.ForEach(client => client.DeckId = 1);
-
-            Assert.AreEqual(clients.Count, clients.Select(client => client.UserDataModel.UserId).Distinct().ToArray().Length);
-            Assert.AreEqual(clients.Count, clients.Select(client => CryptoUtils.BytesToHexString(client.UserDataModel.PrivateKey)).Distinct().ToArray().Length);
-
-            async Task Cleanup()
-            {
-                await Task.WhenAll(clients.Select(client => client.Reset()).ToArray());
-            }
-
-            _failedTestsCleanupTasks.Enqueue(Cleanup);
-
-            try
-            {
-                await Task.WhenAll(
-                    clients
-                        .Select(client => Task.Run(async () =>
-                        {
-                            Stopwatch sw = Stopwatch.StartNew();
-                            await client.Start(
-                                enabledLogs: false,
-                                chainClientCallExecutor: new DumbDAppChainClientCallExecutor(
-                                    new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration()))
-                            );
-                            sw.Stop();
-                            Debug.Log($"Started client {counter} in {sw.ElapsedMilliseconds} ms");
-                        }))
-                        .ToArray()
-                );
-            }
-            finally
-            {
-                await Cleanup();
-                Debug.Log($"Stopped {clientCount} clients");
-            }
         }
 
         [UnityTearDown]

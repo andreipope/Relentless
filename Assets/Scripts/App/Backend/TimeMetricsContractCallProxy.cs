@@ -1,7 +1,3 @@
-#if UNITY_EDITOR
-#define ENABLE_METRICS_LOGS
-#endif
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,30 +18,40 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public Contract Contract { get; }
 
+        public bool EnableConsoleLogs { get; set; }
+
+        public bool SaveMetricsToJsonOnExit { get; set; }
+
         public IReadOnlyDictionary<string, CallRoundaboutData> MethodToCallRoundabouts => _methodToCallRoundabouts;
 
         public int AverageRoundabout { get; private set; }
 
-        public TimeMetricsContractCallProxy(Contract contract)
+        public TimeMetricsContractCallProxy(Contract contract, bool enableConsoleLogs, bool saveMetricsToJsonOnExit)
         {
-            Application.quitting += ApplicationOnQuitting;
             Contract = contract ?? throw new ArgumentNullException(nameof(contract));
+            EnableConsoleLogs = enableConsoleLogs;
+            SaveMetricsToJsonOnExit = saveMetricsToJsonOnExit;
+
+            if (SaveMetricsToJsonOnExit)
+            {
+                Application.quitting += ApplicationOnQuitting;
+            }
         }
 
-        public async Task CallAsync(string method, IMessage args)
+        public virtual async Task CallAsync(string method, IMessage args)
         {
             Task call = Contract.CallAsync(method, args);
             await LoggingCall(method, false, call);
         }
 
-        public async Task<T> CallAsync<T>(string method, IMessage args) where T : IMessage, new()
+        public virtual async Task<T> CallAsync<T>(string method, IMessage args) where T : IMessage, new()
         {
             Task<T> call = Contract.CallAsync<T>(method, args);
             await LoggingCall(method, false, call);
             return await call;
         }
 
-        public async Task<T> StaticCallAsync<T>(string method, IMessage args) where T : IMessage, new()
+        public virtual async Task<T> StaticCallAsync<T>(string method, IMessage args) where T : IMessage, new()
         {
             Task<T> call = Contract.StaticCallAsync<T>(method, args);
             await LoggingCall(method, true, call);
@@ -102,23 +108,30 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             AverageRoundabout = (int) (roundaboutSum / (double) totalEntries);
 
-#if ENABLE_METRICS_LOGS
-            string log =
-                $"{(isStatic ? "Static call" : "Call")} to '{method}' finished in {callRoundabout} ms" +
-                $"{(timedOut ? ", timed out!" : "")}";
 
-            if (timedOut)
+            if (EnableConsoleLogs)
             {
-                log = "<color=red>" + log + "</color>";
-            }
+                string log =
+                    $"{(isStatic ? "Static call" : "Call")} to '{method}' finished in {callRoundabout} ms" +
+                    $"{(timedOut ? ", timed out!" : "")}";
 
-            Debug.Log(log);
+#if UNITY_EDITOR
+                if (timedOut)
+                {
+                    log = "<color=red>" + log + "</color>";
+                }
 #endif
+
+                Debug.Log(log);
+            }
         }
 
         public void Dispose()
         {
-            Application.quitting -= ApplicationOnQuitting;
+            if (SaveMetricsToJsonOnExit)
+            {
+                Application.quitting -= ApplicationOnQuitting;
+            }
         }
 
         private void ApplicationOnQuitting()
