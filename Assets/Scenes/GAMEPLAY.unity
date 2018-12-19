@@ -49644,7 +49644,7 @@ GameObject:
   - component: {fileID: 1157499366}
   m_Layer: 0
   m_Name: Main CameraEffects
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100844,7 +100844,7 @@ GameObject:
   - component: {fileID: 1758512568}
   m_Layer: 0
   m_Name: CameraBattleground
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103788,7 +103788,7 @@ GameObject:
   - component: {fileID: 2011449203}
   m_Layer: 0
   m_Name: Main CameraMeshMask
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

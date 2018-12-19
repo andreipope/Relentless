@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 
@@ -8,20 +6,6 @@ namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
-        public static Protobuf.Deck GetDeck(this Deck deck)
-        {
-            Protobuf.Deck protoDeck = new Protobuf.Deck
-            {
-                Id = deck.Id,
-                Name = deck.Name,
-                HeroId = deck.HeroId
-            };
-
-            protoDeck.Cards.AddRange(deck.Cards.Select(card => card.ToProtobuf()));
-
-            return protoDeck;
-        }
-
         public static DeckCard ToProtobuf(this DeckCardData deckCardData)
         {
             return new DeckCard
@@ -88,15 +72,6 @@ namespace Loom.ZombieBattleground.Data
             return cardAbility;
         }
 
-        public static Protobuf.Unit ToProtobuf(this Unit unit)
-        {
-            return new Protobuf.Unit
-            {
-                InstanceId = unit.InstanceId,
-                AffectObjectType = (AffectObjectType.Types.Enum) unit.AffectObjectType,
-            };
-        }
-
         public static CardChoosableAbility ToProtobuf(this AbilityData.ChoosableAbility choosableAbility)
         {
             return new CardChoosableAbility {
@@ -117,12 +92,26 @@ namespace Loom.ZombieBattleground.Data
         {
             CardInstance cardInstance = new CardInstance
             {
-                InstanceId   = workingCard.InstanceId,
+                InstanceId = workingCard.InstanceId.ToProtobuf(),
                 Prototype = workingCard.LibraryCard.ToProtobuf(),
                 Instance = workingCard.InstanceCard.ToProtobuf()
             };
 
             return cardInstance;
+        }
+
+        public static Protobuf.CardInstanceSpecificData ToProtobuf(this CardInstanceSpecificData data)
+        {
+            Protobuf.CardInstanceSpecificData protoData = new Protobuf.CardInstanceSpecificData
+            {
+                GooCost = data.Cost,
+                Attack = data.Damage,
+                Defense = data.Health,
+                Set = (CardSetType.Types.Enum) data.CardSetType,
+                Type = (CreatureType.Types.Enum) data.CardType,
+            };
+
+            return protoData;
         }
 
         public static Protobuf.Card ToProtobuf(this IReadOnlyCard card)
@@ -172,6 +161,33 @@ namespace Loom.ZombieBattleground.Data
             {
                 Position = cardViewInfo.Position.ToProtobuf(),
                 Scale = cardViewInfo.Scale.ToProtobuf()
+            };
+        }
+
+        public static Protobuf.InstanceId ToProtobuf(this InstanceId instanceId)
+        {
+            return new Protobuf.InstanceId
+            {
+                Id = instanceId.Id
+            };
+        }
+
+        public static Protobuf.DebugCheatsConfiguration ToProtobuf(this BackendCommunication.DebugCheatsConfiguration debugCheatsConfiguration)
+        {
+            if (debugCheatsConfiguration == null)
+                return new Protobuf.DebugCheatsConfiguration();
+
+            return new Protobuf.DebugCheatsConfiguration
+            {
+                Enabled = debugCheatsConfiguration.Enabled,
+
+                UseCustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed != null,
+                CustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed ?? 0,
+
+                UseCustomDeck = debugCheatsConfiguration.CustomDeck != null,
+                CustomDeck = debugCheatsConfiguration.CustomDeck?.ToProtobuf(),
+
+                DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle
             };
         }
     }
