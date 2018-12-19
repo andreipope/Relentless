@@ -29,6 +29,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public const string EventDeckDeleted = "Delete Deck";
     public const string EventDeckEdited = "Edit Deck";
     public const string EventQuitMatch = "Quit Match";
+    public const string EventQuitToDesktop = "Quit To Desktop";
 
     public const string PropertyTesterKey = "Tester Key";
     public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
@@ -69,7 +70,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 
-        Mixpanel.Track(title);
+        //Mixpanel.Track(title);
     }
 
     public void LogEvent(string eventAction, string eventLabel, long value)
@@ -186,5 +187,12 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
         // FIXME
         //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
+    }
+
+    private void OnApplicationQuit()
+    {
+        // TODO : Do testing for creating a build
+        Debug.LogError("Send On Application Quit");
+        SetEvent(EventQuitToDesktop);
     }
 }
