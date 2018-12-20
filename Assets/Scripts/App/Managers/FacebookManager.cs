@@ -37,7 +37,9 @@ namespace Loom.ZombieBattleground
         {
             _dataManager = GameClient.Get<IDataManager>();
 
+#if UNITY_ANDROID || UNITY_IOS
             InitFacebook();
+#endif
         }
 
         public void Update()
