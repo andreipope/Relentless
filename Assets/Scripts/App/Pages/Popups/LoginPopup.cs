@@ -344,6 +344,8 @@ namespace Loom.ZombieBattleground
                 SuccessfulLogin();
 
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+
+                return;
             }
             catch (GameVersionMismatchException e)
             {
@@ -375,6 +377,9 @@ namespace Loom.ZombieBattleground
 
         private void SetUIState(LoginState state)
         {
+            if (Self == null) 
+                return;
+            
             Debug.Log(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
