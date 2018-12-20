@@ -377,9 +377,9 @@ namespace Loom.ZombieBattleground
 
         private void SetUIState(LoginState state)
         {
-            if (Self == null) {
+            if (Self == null) 
                 return;
-            }
+            
             Debug.Log(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
