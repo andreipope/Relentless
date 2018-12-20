@@ -65,6 +65,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private BoardController _boardController;
+
         private IPlayerManager _playerManager;
 
         private ISoundManager _soundManager;
@@ -118,6 +120,7 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
 
@@ -241,6 +244,8 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         endOfDestroyAnimationCallback();
+
+                        _boardController.UpdateWholeBoard(null);
 
                         completeCallback?.Invoke();
                     }
@@ -553,114 +558,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnitView> cardsList, Action onComplete = null)
-        {
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            if (_rearrangingBottomRealTimeSequence != null)
-            {
-                _rearrangingBottomRealTimeSequence.onComplete?.Invoke();
-                _rearrangingBottomRealTimeSequence.onComplete = null;
-                _rearrangingBottomRealTimeSequence.Kill();
-                _rearrangingBottomRealTimeSequence = null;
-            }
-
-            float boardWidth = 0.0f;
-            float spacing = 0.2f;
-            float cardWidth = 0.0f;
-            for (int i = 0; i < cardsList.Count; i++)
-            {
-                cardWidth = 2.5f;
-                boardWidth += cardWidth;
-                boardWidth += spacing;
-            }
-
-            boardWidth -= spacing;
-
-            List<Vector2> newPositions = new List<Vector2>(cardsList.Count);
-            Vector3 pivot = PlayerBoardObject.transform.position;
-
-            for (int i = 0; i < cardsList.Count; i++)
-            {
-                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
-                pivot.x += boardWidth / cardsList.Count;
-            }
-
-            Sequence sequence = DOTween.Sequence();
-            for (int i = 0; i < cardsList.Count; i++)
-            {
-                BoardUnitView card = cardsList[i];
-                card.PositionOfBoard = newPositions[i];
-                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-            }
-
-            _rearrangingBottomRealTimeSequence = sequence;
-            sequence.AppendCallback(
-                () =>
-                {
-                    onComplete?.Invoke();
-                });
-
-        }
-
-        public void UpdatePositionOfBoardUnitsOfOpponent(Action onComplete = null)
-        {
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            if (_rearrangingTopRealTimeSequence != null)
-            {
-                _rearrangingTopRealTimeSequence.onComplete?.Invoke();
-                _rearrangingTopRealTimeSequence.onComplete = null;
-                _rearrangingTopRealTimeSequence.Kill();
-                _rearrangingTopRealTimeSequence = null;
-            }
-
-            List<BoardUnitView> opponentBoardCards = OpponentBoardCards;
-
-            float boardWidth = 0.0f;
-            float spacing = 0.2f;
-            float cardWidth = 0.0f;
-
-            for (int i = 0; i < opponentBoardCards.Count; i++)
-            {
-                cardWidth = 2.5f;
-                boardWidth += cardWidth;
-                boardWidth += spacing;
-            }
-
-            boardWidth -= spacing;
-
-            List<Vector2> newPositions = new List<Vector2>(opponentBoardCards.Count);
-            Vector3 pivot = OpponentBoardObject.transform.position;
-
-            for (int i = 0; i < opponentBoardCards.Count; i++)
-            {
-                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
-                pivot.x += boardWidth / opponentBoardCards.Count;
-            }
-
-            Sequence sequence = DOTween.Sequence();
-            for (int i = 0; i < opponentBoardCards.Count; i++)
-            {
-                BoardUnitView card = opponentBoardCards[i];
-
-                if (card.Model.IsDead)
-                    continue;
-
-                card.PositionOfBoard = newPositions[i];
-                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-            }
-
-            _rearrangingTopRealTimeSequence = sequence;
-            sequence.AppendCallback(
-                () =>
-                {
-                    onComplete?.Invoke();
-                });
-        }
-
         // rewrite
         public void CreateCardPreview(object target, Vector3 pos, bool highlight = true)
         {
@@ -924,7 +821,11 @@ namespace Loom.ZombieBattleground
                     .Concat(OpponentGraveyardCards)
                     .Concat(PlayerBoardCards)
                     .Concat(PlayerGraveyardCards)
-                    .First(x => x.Model == boardUnitModel);
+                    .FirstOrDefault(x => x.Model == boardUnitModel);
+
+            if (cardToDestroy is default(BoardUnitView))
+                return null;
+
             return cardToDestroy;
         }
 
@@ -969,7 +870,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     OpponentBoardCards.Add(view);
-                }   
+                }
             }
             else
             {
@@ -1004,8 +905,7 @@ namespace Loom.ZombieBattleground
 
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
 
-            UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-            UpdatePositionOfBoardUnitsOfOpponent();
+            _boardController.UpdateWholeBoard(null);
         }
 
         public void DistractUnit(BoardUnitView boardUnit)
