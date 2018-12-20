@@ -156,5 +156,12 @@ namespace Loom.ZombieBattleground.Common
         public const bool DisableKeepAlive = true;
 
         public const bool MulliganEnabled = false;
+
+        internal const string FacebookAppId =
+#if USE_STAGING_BACKEND
+            "1985151694912169";
+#else
+            "1985151694912169";
+#endif
     }
 }
