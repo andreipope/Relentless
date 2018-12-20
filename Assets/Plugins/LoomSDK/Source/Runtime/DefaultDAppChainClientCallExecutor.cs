@@ -3,6 +3,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client.Internal.AsyncEx;
+using UnityEngine;
 
 namespace Loom.Client
 {
@@ -124,6 +125,7 @@ namespace Loom.Client
         protected virtual async Task<Task> ExecuteTaskWithRetryOnInvalidTxNonceException(Func<Task<Task>> taskTaskProducer)
         {
             int badNonceCount = 0;
+            float delay = 0.5f;
             InvalidTxNonceException lastNonceException;
             do
             {
@@ -138,14 +140,16 @@ namespace Loom.Client
                     lastNonceException = e;
                 }
 
+                Debug.Log($"NonceLog: badNonceCount == {badNonceCount}, delay: {delay:F2}");
+
                 // WaitForSecondsRealtime can throw a "get_realtimeSinceStartup can only be called from the main thread." error.
                 // WebGL doesn't have threads, so use WaitForSecondsRealtime for WebGL anyway
-                const float delay = 0.5f;
 #if UNITY_WEBGL && !UNITY_EDITOR
                 await new WaitForSecondsRealtime(delay);
 #else
                 await Task.Delay(TimeSpan.FromSeconds(delay));
 #endif
+                delay *= 2f;
             } while (
                 this.configurationProvider.Configuration.InvalidNonceTxRetries != 0 &&
                 badNonceCount <= this.configurationProvider.Configuration.InvalidNonceTxRetries);
