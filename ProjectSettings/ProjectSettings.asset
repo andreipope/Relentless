@@ -731,7 +731,7 @@ PlayerSettings:
     Build: 1
     Collab: 1
     UNet: 1
-  facebookSdkVersion: 7.9.4
+  facebookSdkVersion: plugin
   apiCompatibilityLevel: 3
   cloudProjectId: 227000ce-c46a-4627-abea-e35335a5bbf7
   projectName: battleground
