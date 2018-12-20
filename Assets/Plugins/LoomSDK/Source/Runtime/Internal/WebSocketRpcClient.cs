@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using Loom.Newtonsoft.Json;
 using Loom.WebSocketSharp;
 using UnityEngine;
@@ -181,14 +180,10 @@ namespace Loom.Client.Internal
             return Task.CompletedTask;
         }
 
-        private long _counter;
-
         public override async Task<TResult> SendAsync<TResult, TArgs>(string method, TArgs args)
         {
             var tcs = new TaskCompletionSource<TResult>();
-            long counter = Interlocked.Increment(ref _counter);
-            var msgId = counter.ToString();
-            //var msgId = Guid.NewGuid().ToString();
+            var msgId = Guid.NewGuid().ToString();
             EventHandler<CloseEventArgs> closeHandler = null;
             EventHandler<MessageEventArgs> messageHandler = null;
             closeHandler = (sender, e) =>
