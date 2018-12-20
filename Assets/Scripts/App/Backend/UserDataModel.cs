@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public string Password;
 
+        public string GUID;
+
         public UserDataModel(string userId, byte[] privateKey)
         {
             UserId = userId;

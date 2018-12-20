@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
 
                     if (!_backendDataControlMediator.UserDataModel.IsRegistered)
                     {
-                        popup.SetLoginAsGuestState();
+                        popup.SetLoginAsGuestState(_backendDataControlMediator.UserDataModel.GUID);
                     }
                     else
                     {
