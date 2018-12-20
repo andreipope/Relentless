@@ -258,6 +258,7 @@ namespace Loom.ZombieBattleground
                 UnityEngine.Debug.LogError($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
 
                 ActionDoneCallback();
+                throw;
             }
         }
 

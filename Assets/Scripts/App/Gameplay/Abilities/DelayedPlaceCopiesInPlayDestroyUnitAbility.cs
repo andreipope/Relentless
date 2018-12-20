@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
                 TargetEffects = TargetEffects
             });
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
     }
 }
