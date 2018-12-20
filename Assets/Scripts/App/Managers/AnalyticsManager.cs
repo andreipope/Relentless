@@ -29,7 +29,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public const string EventDeckDeleted = "Delete Deck";
     public const string EventDeckEdited = "Edit Deck";
     public const string EventQuitMatch = "Quit Match";
-    public const string EventQuitToDesktop = "Quit To Desktop";
+    public const string EventQuitToDesktop = "Quit App";
 
     public const string PropertyTesterKey = "Tester Key";
     public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
@@ -187,12 +187,5 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
         // FIXME
         //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
-    }
-
-    private void OnApplicationQuit()
-    {
-        // TODO : Do testing for creating a build
-        Debug.LogError("Send On Application Quit");
-        SetEvent(EventQuitToDesktop);
     }
 }
