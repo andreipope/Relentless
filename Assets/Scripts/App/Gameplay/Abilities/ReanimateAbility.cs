@@ -40,6 +40,15 @@ namespace Loom.ZombieBattleground
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
+            if (owner.IsLocalPlayer)
+            {
+                BattlegroundController.PlayerBoardCards.Add(unit);
+            }
+            else
+            {
+                BattlegroundController.OpponentBoardCards.Add(unit);
+            }
+
             BoardController.UpdateCurrentBoardOfPlayer(owner, null);
 
             InvokeActionTriggered(unit);
