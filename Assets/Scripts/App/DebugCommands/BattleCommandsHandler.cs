@@ -158,7 +158,7 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Debug.LogWarning("Please Wait For Your Turn");
             return;
         }
 
@@ -188,7 +188,9 @@ static class BattleCommandsHandler
         }
 
         if (gooAmount > player.GooVials)
+        {
             gooAmount = player.GooVials;
+        }
 
         player.CurrentGoo = gooAmount;
     }
