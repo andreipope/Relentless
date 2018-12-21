@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public bool EnableRpcLogging { get; set; } = false;
 
+        public IContractCallProxy ContractCallProxy => _contractCallProxy;
+
         public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory = null)
         {
             BackendEndpoint = backendEndpoint;
