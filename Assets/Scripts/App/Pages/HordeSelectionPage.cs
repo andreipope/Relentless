@@ -589,6 +589,12 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
+            if (_hordeDecks.Count <= 1)
+            {
+                _uiManager.DrawPopup<WarningPopup>("Sorry, Not able to delete Last Deck.");
+                return;
+            }
+
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (deck != null)
             {
