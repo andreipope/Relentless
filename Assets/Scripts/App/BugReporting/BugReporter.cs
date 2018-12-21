@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CodeStage.AdvancedFPSCounter;
 using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.BackendCommunication;
 using TMPro;
 using Unity.Cloud.BugReporting;
 using Unity.Cloud.BugReporting.Plugin;
@@ -209,6 +211,27 @@ namespace Loom.ZombieBattleground
                             "text/plain",
                             global::System.Text.Encoding.UTF8.GetBytes(_exceptionStacktrace)
                             ));
+                }
+
+                try
+                {
+                    BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                    IDataManager dataManager = GameClient.Get<IDataManager>();
+                    if (backendFacade.ContractCallProxy is TimeMetricsContractCallProxy callProxy)
+                    {
+                        string callMetricsJson = dataManager.SerializeToJson(callProxy.MethodToCallRoundabouts, true);
+                        br.Attachments.Add(
+                            new BugReportAttachment(
+                                TimeMetricsContractCallProxy.CallMetricsFileName,
+                                TimeMetricsContractCallProxy.CallMetricsFileName,
+                                "application/json",
+                                global::System.Text.Encoding.UTF8.GetBytes(callMetricsJson)
+                            ));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("Error while getting call metrics:" + e);
                 }
 
                 br.DeviceMetadata.Add(new BugReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
