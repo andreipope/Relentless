@@ -102,7 +102,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case MatchMakingFlowController.MatchMakingState.ConfirmingWithOpponent:
                     _generalText.text = "Confirming opponent status...";
-                    _cancelMatchmakingButton.gameObject.SetActive(false);
                     break;
                 case MatchMakingFlowController.MatchMakingState.NotStarted:
                     break;

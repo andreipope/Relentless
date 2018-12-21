@@ -771,8 +771,6 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitView unit in units)
                 {
-                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"), unit); // retreat vfx
-
                     _cardsController.ReturnCardToHand(unit);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
