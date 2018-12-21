@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
         {
             if (_selfPage != null)
             {
-                if (_backendDataControlMediator.UserDataModel != null && !_backendDataControlMediator.UserDataModel.IsRegistered)
+                if (!Constants.AlwaysGuestLogin && _backendDataControlMediator.UserDataModel != null && !_backendDataControlMediator.UserDataModel.IsRegistered)
                 {
                     if (!_buttonLogin.gameObject.activeSelf)
                     {

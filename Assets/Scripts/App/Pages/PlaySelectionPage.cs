@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
         private void PvPModeButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            if (!_backendDataControlMediator.UserDataModel.IsRegistered)
+            if (!Constants.AlwaysGuestLogin && !_backendDataControlMediator.UserDataModel.IsRegistered)
             {
                 _uiManager.GetPopup<LoginPopup>().Show();
             }

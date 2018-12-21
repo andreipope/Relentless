@@ -105,12 +105,17 @@ namespace Loom.ZombieBattleground
             _debugCheats = debugCheats;
 
             await SetState(MatchMakingState.RegisteringToPool);
+            await RegisterPlayerToPool();
+        }
+
+        public async Task RegisterPlayerToPool ()
+        {
             try
             {
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
                     _userDataModel.UserId,
-                    deckId,
-                    customGameModeAddress,
+                    _deckId,
+                    _customGameModeAddress,
                     _tags,
                     _useBackendGameLogic,
                     _debugCheats
@@ -128,6 +133,11 @@ namespace Loom.ZombieBattleground
         {
             _cancellationTokenSource.Cancel();
             await SetState(MatchMakingState.Canceled);
+        }
+
+        public Task Restart()
+        {
+            return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic, _debugCheats);
         }
 
         /// <remarks>Gets deltaTime from outside because Time.deltaTime is always 0 in Editor.</remarks>
@@ -319,8 +329,11 @@ namespace Loom.ZombieBattleground
 
                 return;
             }
-
-            ExceptionDispatchInfo.Capture(exception).Throw();
+            else
+            {
+                Debug.Log("Exception not handled, restarting matchmaking:" + exception.Message);
+                await RegisterPlayerToPool();
+            }
         }
 
         private async Task SetState(MatchMakingState state)
@@ -390,10 +403,6 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        private Task Restart()
-        {
-            return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic, _debugCheats);
-        }
 
         public enum MatchMakingState
         {
