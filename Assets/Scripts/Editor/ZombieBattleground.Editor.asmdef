@@ -5,7 +5,8 @@
         "Unity.TextMeshPro.Editor",
         "ZombieBattleground.Main",
         "ZombieBattleground.Generated",
-        "LoomSDK"
+        "LoomSDK",
+        "ZombieBattleground.TestLibrary"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
 
             InvokeActionTriggered(_targets);      
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         protected override void VFXAnimationEndedHandler()

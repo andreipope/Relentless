@@ -14,6 +14,7 @@ namespace Loom.ZombieBattleground
         protected ISoundManager SoundManager;
 
         protected BattlegroundController BattlegroundController;
+        protected BoardController BoardController;
         protected CardsController CardsController;
 
         public UniqueAnimation()
@@ -24,6 +25,7 @@ namespace Loom.ZombieBattleground
 
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
+            BoardController = GameplayManager.GetController<BoardController>();
         }
 
         public virtual void Play() { }

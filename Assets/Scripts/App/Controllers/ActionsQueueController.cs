@@ -163,6 +163,10 @@ namespace Loom.ZombieBattleground
                 {
                     TryCallNewActionFromQueue();
                 }
+                else
+                {
+                    ActionInProgress = null;
+                }
             }
             else
             {
@@ -183,6 +187,8 @@ namespace Loom.ZombieBattleground
                         UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=brown> action blocked " +
                         actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
                     }
+
+                    ActionInProgress = null;
 
                     return;
                 }
@@ -252,6 +258,7 @@ namespace Loom.ZombieBattleground
                 UnityEngine.Debug.LogError($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
 
                 ActionDoneCallback();
+                throw;
             }
         }
 
