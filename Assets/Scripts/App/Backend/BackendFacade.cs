@@ -98,8 +98,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
-                //new NonceTxMiddleware(publicKey, client),
-                new LoggingNonceTxMiddleware(publicKey, client),
+                new NonceTxMiddleware(publicKey, client),
                 new SignedTxMiddleware(privateKey)
             });
 

@@ -135,6 +135,11 @@ namespace Loom.ZombieBattleground
             await SetState(MatchMakingState.Canceled);
         }
 
+        public Task Restart()
+        {
+            return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic, _debugCheats);
+        }
+
         /// <remarks>Gets deltaTime from outside because Time.deltaTime is always 0 in Editor.</remarks>
         public async Task Update(float deltaTime)
         {
@@ -398,10 +403,6 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        private Task Restart()
-        {
-            return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic, _debugCheats);
-        }
 
         public enum MatchMakingState
         {
