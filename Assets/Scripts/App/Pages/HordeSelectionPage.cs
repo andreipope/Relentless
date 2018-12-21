@@ -156,8 +156,14 @@ namespace Loom.ZombieBattleground
             _gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
             // todod improve I guess
-            _defaultSelectedDeck = 1;
+            _defaultSelectedDeck = _dataManager.CachedUserLocalData.LastSelectedDeckId;
+            if (_defaultSelectedDeck > _dataManager.CachedDecksData.Decks.Count)
+            {
+                _defaultSelectedDeck = 1;
+            }
+            Debug.LogError("Default Selected Deck = " + _defaultSelectedDeck);
             _selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _defaultSelectedDeck);
+            Debug.LogError(_selectedDeck.Name);
             //_hordeSelection.gameObject.SetActive(false);
 
             LoadDeckObjects();
@@ -247,7 +253,8 @@ namespace Loom.ZombieBattleground
             //if (_hordeSelection.gameObject.activeSelf)
             {
                 HordeDeckObject selectedHorde = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
-                selectedHorde.Deselect();
+                if(selectedHorde != null)
+                    selectedHorde.Deselect();
             }
             //Debug.LogError("Horde selected = " + horde.SelfDeck.Name + " , " + horde.SelfHero.FullName);
             horde.Select();
@@ -346,15 +353,22 @@ namespace Loom.ZombieBattleground
 
             _scrolledDeck = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
 
-            if (_scrolledDeck < 2)
+            Debug.LogError("Scroll deck = " + _scrolledDeck);
+            if (_scrolledDeck < 1)
             {
                 _scrolledDeck = 0;
+                Debug.LogError("make scrol deck 0 = " + _scrolledDeck);
             }
-            else
+            /*else
             {
                 _scrolledDeck--;
-            }
+                Debug.LogError("scrol deck -- = " + _scrolledDeck);
+            }*/
 
+
+            _scrolledDeck = Mathf.Clamp(_scrolledDeck, 0, _scrolledDeck);
+            Debug.LogError("After Scroll deck = " + _scrolledDeck);
+            Debug.LogError(HordeContainerXoffset - HordeItemSpace * _scrolledDeck);
             _containerOfDecks.transform.localPosition =
                 new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
             RepositionSelection();
