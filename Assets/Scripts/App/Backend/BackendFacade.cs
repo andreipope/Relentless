@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Dispose()
         {
             Contract?.Client?.Dispose();
-            _contractCallProxy.Dispose();
+            _contractCallProxy?.Dispose();
         }
 
         public async Task CreateContract(
