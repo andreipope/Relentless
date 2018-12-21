@@ -59,7 +59,6 @@ namespace Loom.ZombieBattleground
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
-            AddService<IFacebookManager>(new FacebookManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
         }
