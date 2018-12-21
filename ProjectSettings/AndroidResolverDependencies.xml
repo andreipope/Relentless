@@ -38,11 +38,11 @@
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-stats-16.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-tagmanager-v4-impl-16.0.6.aar</file>
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-tasks-16.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.firebase.firebase-common-16.0.3.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-common-16.0.3</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-17.0.4.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-interop-16.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-17.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-messaging-17.3.4.aar</file>
-    <file>Assets/Plugins/Android/com.google.signin.google-signin-support-1.0.4.aar</file>
+    <file>Assets/Plugins/Android/com.google.signin.google-signin-support-1.0.4</file>
   </files>
 </dependencies>
