@@ -157,6 +157,8 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool MulliganEnabled = false;
 
+        public const bool AlwaysGuestLogin = true;
+
         internal const string FacebookAppId =
 #if USE_STAGING_BACKEND
             "1985151694912169";

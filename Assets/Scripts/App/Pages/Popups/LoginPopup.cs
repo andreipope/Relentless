@@ -165,9 +165,12 @@ namespace Loom.ZombieBattleground
             _closeLoginButton.onClick.AddListener(Hide);
             _closeRegisterButton.onClick.AddListener(Hide);
 
-            _state = LoginState.InitiateLogin;
-            SetUIState(LoginState.InitiateLogin);
-            Self.SetActive(true);
+            if (!Constants.AlwaysGuestLogin)
+            {
+                _state = LoginState.InitiateLogin;
+                SetUIState(LoginState.InitiateLogin);
+                Self.SetActive(true);
+            }
         }
 
         public void Show(object data)
@@ -196,7 +199,10 @@ namespace Loom.ZombieBattleground
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
             SetUIState(LoginState.InitiateLogin);
-            LoginProcess(false);
+            if (!Constants.AlwaysGuestLogin)
+            {
+                LoginProcess(false);
+            }
         }
 
         private void PressedSendForgotPasswordHandler()
@@ -292,12 +298,16 @@ namespace Loom.ZombieBattleground
                 RegisterData registerData = await _backendFacade.InitiateRegister(_emailFieldRegister.text, _passwordFieldRegister.text);
 
                 SetLoginFieldsDataAndInitiateLogin(_emailFieldRegister.text, _passwordFieldRegister.text);
+
+                return;
             }
             catch (Exception e)
             {
                 Debug.Log(e.ToString());
                 SetUIState(LoginState.ValidationFailed);
             }
+
+            _registerButton.enabled = true;
         }
 
         private async void LoginProcess(bool isGuest)
@@ -385,6 +395,14 @@ namespace Loom.ZombieBattleground
 
         private void SetUIState(LoginState state)
         {
+            if (Constants.AlwaysGuestLogin) 
+            {
+                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration) 
+                {
+                    state = LoginState.LoginAsGuest;
+                }
+            }
+
             if (Self == null) 
                 return;
             
