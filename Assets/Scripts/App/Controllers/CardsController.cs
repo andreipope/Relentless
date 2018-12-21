@@ -48,6 +48,8 @@ namespace Loom.ZombieBattleground
 
         private RanksController _ranksController;
 
+        private BoardController _boardController;
+
         private GameObject _playerBoard;
 
         private GameObject _opponentBoard;
@@ -91,6 +93,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
 
             CreatureCardViewPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
@@ -482,7 +485,8 @@ namespace Loom.ZombieBattleground
                     _fakeBoardCard = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
                     toArrangeList.Insert(_indexOfCard, _fakeBoardCard);
 
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(toArrangeList);
+                    _boardController.UpdateBoard(toArrangeList, true, null);
+
                     _newCardPositionOfBoard = _fakeBoardCard.PositionOfBoard;
                     _isHoveringCardOfBoard = true;
                 }
@@ -493,7 +497,8 @@ namespace Loom.ZombieBattleground
         {
             if (_indexOfCard != -1)
             {
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
+                _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
+
                 _indexOfCard = -1;
                 if (_fakeBoardCard != null)
                 {
@@ -577,8 +582,7 @@ namespace Loom.ZombieBattleground
                             _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model.Card, RankBuffAction);
 
                             boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
-                            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(
-                                _gameplayManager.CurrentPlayer.BoardCards,
+                            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
                                 {
                                     card.HandBoardCard.GameObject.SetActive(false);
@@ -735,14 +739,7 @@ namespace Loom.ZombieBattleground
                 {
                     boardUnitView.PlayArrivalAnimation();
 
-                    if (player.IsLocalPlayer)
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(player.BoardCards);
-                    }
-                    else
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
+                    _boardController.UpdateCurrentBoardOfPlayer(player, null);
                 }, 0.1f);
             });
         }
@@ -1134,16 +1131,7 @@ namespace Loom.ZombieBattleground
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
-            if (!owner.IsLocalPlayer)
-            {
-                _battlegroundController.OpponentBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(onComplete);
-            }
-            else
-            {
-                _battlegroundController.PlayerBoardCards.Add(unit);
-                _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(owner.BoardCards, onComplete);
-            }
+            _boardController.UpdateCurrentBoardOfPlayer(owner, onComplete);
 
             return unit;
         }
@@ -1160,11 +1148,6 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, unitYPositionOnBoard);
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
-
-            if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
-            {
-                boardUnitView.Model.IsPlayable = true;
-            }
 
             boardUnitView.PlayArrivalAnimation();
 

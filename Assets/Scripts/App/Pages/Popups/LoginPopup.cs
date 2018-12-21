@@ -80,6 +80,8 @@ namespace Loom.ZombieBattleground
 
         private LoginState _lastPopupState;
 
+        private string _lastGUID;
+
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -183,8 +185,9 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void SetLoginAsGuestState () 
+        public void SetLoginAsGuestState (string GUID = null) 
         {
+            _lastGUID = GUID;
             SetUIState(LoginState.LoginAsGuest);
         }
 
@@ -307,9 +310,12 @@ namespace Loom.ZombieBattleground
                 LoginData loginData;
                 string userId;
 
+                string GUID = _lastGUID ?? Guid.NewGuid().ToString();
+
+
                 if (isGuest)
                 {
-                    GenerateKeysAndUserFromGUID(Guid.NewGuid().ToString(), out byte[] privateKeyFromGuID, out byte[] publicKeyFromGuID, out string userIDFromGuID);
+                    GenerateKeysAndUserFromGUID(GUID, out byte[] privateKeyFromGuID, out byte[] publicKeyFromGuID, out string userIDFromGuID);
                     privateKey = privateKeyFromGuID;
                     publicKey = publicKeyFromGuID;
                     userId = userIDFromGuID;
@@ -332,7 +338,8 @@ namespace Loom.ZombieBattleground
                     IsValid = false,
                     IsRegistered = !isGuest,
                     Email = _emailFieldLogin.text,
-                    Password = _passwordFieldLogin.text
+                    Password = _passwordFieldLogin.text,
+                    GUID = GUID
                 };
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
@@ -344,13 +351,16 @@ namespace Loom.ZombieBattleground
                 SuccessfulLogin();
 
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+
+                return;
             }
             catch (GameVersionMismatchException e)
             {
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
             }
-            catch (Exception e) {
+            catch (Exception e) 
+            {
                 Debug.Log(e.ToString());
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -375,6 +385,9 @@ namespace Loom.ZombieBattleground
 
         private void SetUIState(LoginState state)
         {
+            if (Self == null) 
+                return;
+            
             Debug.Log(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);

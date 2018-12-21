@@ -82,6 +82,7 @@ namespace Loom.ZombieBattleground.Test
         private AbilitiesController _abilitiesController;
         private BoardArrowController _boardArrowController;
         private PlayerController _playerController;
+        private BoardController _boardController;
 
         private GameObject _canvas1GameObject, _canvas2GameObject, _canvas3GameObject;
 
@@ -400,6 +401,8 @@ namespace Loom.ZombieBattleground.Test
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
+
 
             _currentPlayer = _gameplayManager.CurrentPlayer;
             _opponentPlayer = _gameplayManager.OpponentPlayer;
@@ -2037,8 +2040,7 @@ namespace Loom.ZombieBattleground.Test
                     boardUnitViewElement.PlayArrivalAnimation();
 
                     _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
-
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent(
+                    _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                         () =>
                         {
                             bool createTargetArrow = false;

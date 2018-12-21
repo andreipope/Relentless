@@ -97,14 +97,7 @@ namespace Loom.ZombieBattleground
                 BattlegroundController.DestroyBoardUnit(unit, false);
             }
 
-            if (!PlayerCallerOfAbility.IsLocalPlayer)
-            {
-                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-            }
-            else
-            {
-                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(PlayerCallerOfAbility.BoardCards);
-            }
+            BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);
 
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
 
