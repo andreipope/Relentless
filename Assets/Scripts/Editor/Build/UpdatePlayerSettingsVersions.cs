@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
@@ -29,6 +30,10 @@ namespace Loom.ZombieBattleground.Editor
             PlayerSettings.iOS.buildNumber = buildMetaInfo.CloudBuildBuildNumber.ToString();
             PlayerSettings.Android.bundleVersionCode = buildMetaInfo.CloudBuildBuildNumber;
 #endif
+
+            EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
+            EditorUserBuildSettings.androidDebugMinification = AndroidMinification.Gradle;
+            EditorUserBuildSettings.androidReleaseMinification = AndroidMinification.Gradle;
         }
     }
 }
