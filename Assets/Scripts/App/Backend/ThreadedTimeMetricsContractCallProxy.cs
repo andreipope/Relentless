@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class ThreadedTimeMetricsContractCallProxy : TimeMetricsContractCallProxy
     {
-        public ThreadedTimeMetricsContractCallProxy(Contract contract, bool enableConsoleLogs, bool saveMetricsToJsonOnExit) : base(contract, enableConsoleLogs, saveMetricsToJsonOnExit)
+        public ThreadedTimeMetricsContractCallProxy(Contract contract, bool enableConsoleLogs, bool storeCallMetrics) : base(contract, enableConsoleLogs, storeCallMetrics)
         {
         }
 

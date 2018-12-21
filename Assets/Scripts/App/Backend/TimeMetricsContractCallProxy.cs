@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.Google.Protobuf;
+using Newtonsoft.Json;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -13,28 +14,54 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class TimeMetricsContractCallProxy : IContractCallProxy
     {
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+
         private readonly Dictionary<string, CallRoundaboutData> _methodToCallRoundabouts = new Dictionary<string, CallRoundaboutData>();
+
+        private readonly IDataManager _dataManager;
+
+        public const string CallMetricsFileName = "CallMetrics.json";
 
         public Contract Contract { get; }
 
         public bool EnableConsoleLogs { get; set; }
 
-        public bool SaveMetricsToJsonOnExit { get; set; }
+        public bool StoreCallMetrics { get; set; }
+
+        public bool LoadCallMetricsOnStartup { get; set; }
 
         public IReadOnlyDictionary<string, CallRoundaboutData> MethodToCallRoundabouts => _methodToCallRoundabouts;
 
         public int AverageRoundabout { get; private set; }
 
-        public TimeMetricsContractCallProxy(Contract contract, bool enableConsoleLogs, bool saveMetricsToJsonOnExit)
+        public TimeMetricsContractCallProxy(Contract contract, bool enableConsoleLogs, bool storeCallMetrics)
         {
+            _dataManager = GameClient.Get<IDataManager>();
             Contract = contract ?? throw new ArgumentNullException(nameof(contract));
             EnableConsoleLogs = enableConsoleLogs;
-            SaveMetricsToJsonOnExit = saveMetricsToJsonOnExit;
+            StoreCallMetrics = storeCallMetrics;
 
-            if (SaveMetricsToJsonOnExit)
+            if (StoreCallMetrics)
             {
                 Application.quitting += ApplicationOnQuitting;
+                if (LoadCallMetricsOnStartup)
+                {
+                    _dataManager = GameClient.Get<IDataManager>();
+                    string path = _dataManager.GetPersistentDataPath(CallMetricsFileName);
+                    if (File.Exists(path))
+                    {
+                        try
+                        {
+                            string json = File.ReadAllText(path);
+                            _methodToCallRoundabouts =
+                                JsonConvert.DeserializeObject<Dictionary<string, CallRoundaboutData>>(json)
+                                ?? new Dictionary<string, CallRoundaboutData>();
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogWarning("Unable to read call metrics: " + e);
+                        }
+                    }
+                }
             }
         }
 
@@ -60,10 +87,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private async Task LoggingCall(string method, bool isStatic, Task task)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
             bool timedOut = false;
             try
             {
-                _stopwatch.Restart();
+                stopwatch.Restart();
                 await task;
             }
             catch (TimeoutException)
@@ -73,7 +101,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             finally
             {
-                long elapsedMilliseconds = _stopwatch.ElapsedMilliseconds;
+                long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
                 if (!timedOut)
                 {
                     timedOut = elapsedMilliseconds >= Contract.Client.Configuration.CallTimeout;
@@ -108,7 +136,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             AverageRoundabout = (int) (roundaboutSum / (double) totalEntries);
 
-
             if (EnableConsoleLogs)
             {
                 string log =
@@ -128,7 +155,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public void Dispose()
         {
-            if (SaveMetricsToJsonOnExit)
+            if (StoreCallMetrics)
             {
                 Application.quitting -= ApplicationOnQuitting;
             }
@@ -136,9 +163,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private void ApplicationOnQuitting()
         {
-            IDataManager dataManager = GameClient.Get<IDataManager>();
-            string json = dataManager.SerializeToJson(_methodToCallRoundabouts, true);
-            string path = dataManager.GetPersistentDataPath("CallMetrics.json");
+            string json = _dataManager.SerializeToJson(_methodToCallRoundabouts, true);
+            string path = _dataManager.GetPersistentDataPath(CallMetricsFileName);
             File.WriteAllText(path, json, Encoding.UTF8);
         }
 

@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(configData));
-            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contract => new TimeMetricsContractCallProxy(contract, false, true)));
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contract => new ThreadedTimeMetricsContractCallProxy(contract, false, true)));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IAnalyticsManager>(new AnalyticsManager());
