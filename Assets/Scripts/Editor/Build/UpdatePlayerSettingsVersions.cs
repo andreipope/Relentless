@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground.Editor
 
         public void OnPreprocessBuild(BuildReport report)
         {
+            PlayerSettings.SplashScreen.showUnityLogo = false;
+
 #if UNITY_CLOUD_BUILD
             BuildMetaInfo buildMetaInfo = BuildMetaInfo.Instance;
 
