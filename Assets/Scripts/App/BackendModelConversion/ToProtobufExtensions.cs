@@ -187,7 +187,9 @@ namespace Loom.ZombieBattleground.Data
                 UseCustomDeck = debugCheatsConfiguration.CustomDeck != null,
                 CustomDeck = debugCheatsConfiguration.CustomDeck?.ToProtobuf(),
 
-                DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle
+                DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle,
+
+                ForceFirstTurnUserId = debugCheatsConfiguration.ForceFirstTurnUserId
             };
         }
     }

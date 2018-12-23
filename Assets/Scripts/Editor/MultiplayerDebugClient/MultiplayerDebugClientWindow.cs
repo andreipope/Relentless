@@ -501,10 +501,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 if (hasCurrentTurn)
                 {
-                    playerId = playerId + " (Current Turn)";
+                    playerId = "(Current Turn) " + playerId;
                 }
 
-                GUILayout.Label(playerId);
+                GUILayout.TextField(playerId, GUI.skin.label, GUILayout.MaxWidth(Screen.width / 2 - 50));
 
                 EditorGUILayout.Space();
                 GUILayout.Label("<b>Stats</b>", Styles.RichLabel);
@@ -609,6 +609,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private async Task StartClient()
         {
             await DebugClient.Start(
+                contract => new DefaultContractCallProxy(contract),
                 matchMakingFlowController =>
                 {
                     matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;
@@ -667,6 +668,8 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             public static GUIStyle BoxLeftAlign;
 
+            public static GUIStyle LabelWithWordWrap;
+
             static Styles()
             {
                 RichLabel = new GUIStyle(EditorStyles.label);
@@ -674,6 +677,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 BoxLeftAlign = new GUIStyle(GUI.skin.box);
                 BoxLeftAlign.alignment = TextAnchor.UpperLeft;
+
+                LabelWithWordWrap = new GUIStyle(GUI.skin.label);
+                LabelWithWordWrap.wordWrap = true;
             }
         }
 

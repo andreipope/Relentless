@@ -121,11 +121,11 @@ namespace Loom.ZombieBattleground.Test
         }
 
         public async Task Start(
+            Func<Contract, IContractCallProxy> contractCallProxyFactory,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,
             Action<DAppChainClient> onClientCreatedCallback = null,
             IDAppChainClientCallExecutor chainClientCallExecutor = null,
-            Func<Contract, IContractCallProxy> contractCallProxyFactory = null,
             bool enabledLogs = true)
         {
             await Reset();

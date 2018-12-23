@@ -18,32 +18,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest", "scenario1"
-                });
-                TestHelper.DebugCheatsConfiguration.Enabled = true;
-                TestHelper.DebugCheatsConfiguration.CustomRandomSeed = 0;
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.CreateAndConnectOpponentDebugClient();
+                await StartOnlineMatch();
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
@@ -92,31 +67,9 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.MainMenuTransition("Button_Play");
+                await StartOnlineMatch(createOpponent: false);
 
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest", "NoOpponentCancel"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.LetsThink(10);
+                await TestHelper.LetsThink(5, true);
 
                 await TestHelper.ClickGenericButton("Button_Cancel");
             });
@@ -128,28 +81,8 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
+                await StartOnlineMatch(createOpponent: false);
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest", "NoOpponentTimeout"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
                     () => TestHelper.PlayAMatch(),
                     () => TestHelper.ClickGenericButton("Button_Cancel"));
@@ -162,30 +95,8 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
+                await StartOnlineMatch();
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.CreateAndConnectOpponentDebugClient();
                 await TestHelper.MatchmakeOpponentDebugClient();
 
                 await TestHelper.AssertCurrentPageName("GameplayPage");
@@ -204,29 +115,10 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.ClickGenericButton("Button_Play");
+                await StartOnlineMatch();
 
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
+                await TestHelper.MatchmakeOpponentDebugClient();
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.ClickGenericButton("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.ClickGenericButton("Button_Battle");
                 await TestHelper.AssertCurrentPageName("GameplayPage");
                 await TestHelper.WaitUntilPlayerOrderIsDecided();
                 await TestHelper.AssertMulliganPopupCameUp(
@@ -245,31 +137,8 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
+                await StartOnlineMatch();
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.CreateAndConnectOpponentDebugClient();
-                TestHelper.SetupOpponentDebugClientToEndTurns();
                 await TestHelper.MatchmakeOpponentDebugClient();
 
                 await TestHelper.PlayAMatch(1);
@@ -285,30 +154,8 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
+                await StartOnlineMatch();
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.CreateAndConnectOpponentDebugClient();
                 TestHelper.SetupOpponentDebugClientToEndTurns();
                 await TestHelper.MatchmakeOpponentDebugClient();
 
@@ -337,7 +184,7 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
                 TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
 
-                #region Matchmaking Cancel
+                // Matchmaking Cancel
 
                 TestHelper.SetPvPTags(new[]
                 {
@@ -353,12 +200,10 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Button_Cancel");
 
-                #endregion
-
                 await TestHelper.LetsThink();
                 await TestHelper.LetsThink();
 
-                #region Matchmake and Quit
+                // Matchmake and Quit
 
                 TestHelper.SetPvPTags(new[]
                 {
@@ -382,9 +227,44 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.RespondToYesNoOverlay(true);
 
                 await TestHelper.LetsThink();
-
-                #endregion
             });
+        }
+
+        private async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
+        {
+            await TestHelper.MainMenuTransition("Button_Play");
+            await TestHelper.AssertIfWentDirectlyToTutorial(
+                TestHelper.GoBackToMainAndPressPlay);
+
+            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.MainMenuTransition("Button_PvPMode");
+            await TestHelper.AssertCurrentPageName("PvPSelectionPage");
+            await TestHelper.MainMenuTransition("Button_CasualType");
+            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+
+            await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
+            TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
+
+            if (tags == null)
+            {
+                tags = new List<string>();
+            }
+
+            tags.Insert(0, "pvpTest");
+            tags.Insert(1, TestHelper.GetTestName());
+
+            TestHelper.SetPvPTags(tags);
+            TestHelper.DebugCheatsConfiguration.Enabled = true;
+            TestHelper.DebugCheatsConfiguration.CustomRandomSeed = 0;
+
+            await TestHelper.LetsThink();
+
+            await TestHelper.MainMenuTransition("Button_Battle");
+
+            if (createOpponent)
+            {
+                await TestHelper.CreateAndConnectOpponentDebugClient();
+            }
         }
     }
 }

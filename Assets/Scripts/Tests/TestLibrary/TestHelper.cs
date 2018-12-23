@@ -1243,14 +1243,14 @@ namespace Loom.ZombieBattleground.Test
         /// Sets tags to be used by the matchmaking system.
         /// </summary>
         /// <param name="tags">Tags</param>
-        public void SetPvPTags(string[] tags)
+        public void SetPvPTags(IList<string> tags)
         {
             if (IsTestFailed)
             {
                 return;
             }
 
-            if (tags == null || tags.Length <= 0)
+            if (tags == null || tags.Count <= 0)
             {
                 _pvpManager.PvPTags = null;
 
@@ -2848,7 +2848,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Waits for a specific amount of time.
         /// </summary>
-        public async Task LetsThink(float thinkTime = DefaultThinkTime)
+        public async Task LetsThink(float thinkTime = DefaultThinkTime, bool forceRealtime = false)
         {
             if (thinkTime <= 0f)
             {
@@ -2857,7 +2857,14 @@ namespace Loom.ZombieBattleground.Test
             }
             else
             {
-                await new WaitForSeconds(thinkTime);
+                if (forceRealtime)
+                {
+                    await new WaitForSecondsRealtime(thinkTime);
+                }
+                else
+                {
+                    await new WaitForSeconds(thinkTime);
+                }
             }
         }
 
@@ -3872,7 +3879,7 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            await client.Start();
+            await client.Start(contract => new DefaultContractCallProxy(contract));
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }
