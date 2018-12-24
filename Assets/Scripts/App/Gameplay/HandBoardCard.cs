@@ -161,10 +161,7 @@ public class HandBoardCard : OwnableBoardObject
             }
             else
             {
-                Transform.position = InitialPos;
-                Transform.eulerAngles = InitialRotation;
-
-                _gameplayManager.CanDoDragActions = true;
+                ReturnToHandAnim();
 
                 if (_tutorialManager.IsTutorial)
                 {
@@ -174,21 +171,26 @@ public class HandBoardCard : OwnableBoardObject
         }
         else
         {
-            _isReturnToHand = true;
-            _gameplayManager.CanDoDragActions = true;
-
-            _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
-
-            Transform.DOMove(InitialPos, 0.5f).OnComplete(
-                () =>
-                {
-                    Transform.position = InitialPos;
-                    Transform.eulerAngles = InitialRotation;
-                    _isReturnToHand = false;
-
-                    _gameplayManager.CanDoDragActions = true;
-                });
+            ReturnToHandAnim();
         }
+    }
+
+    private void ReturnToHandAnim()
+    {
+        _isReturnToHand = true;
+        _gameplayManager.CanDoDragActions = true;
+
+        _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
+
+        Transform.DOMove(InitialPos, 0.5f).OnComplete(
+            () =>
+            {
+                Transform.position = InitialPos;
+                Transform.eulerAngles = InitialRotation;
+                _isReturnToHand = false;
+
+                _gameplayManager.CanDoDragActions = true;
+            });
     }
 
     public void ResetToInitialPosition()
