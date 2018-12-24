@@ -114,7 +114,7 @@
     },
     {
       "name": "Super Serum",
-      "tooltip": "Add 3 Atk / 3 Def to a zombie; End: -3 Def",
+      "tooltip": "Add 3 Atk and 3 Def to a zombie; End: -3 Def",
       "type": "SUPER_SERUM"
     },
     {
