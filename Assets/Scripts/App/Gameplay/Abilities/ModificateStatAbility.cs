@@ -131,8 +131,6 @@ namespace Loom.ZombieBattleground
             if (revert && !_canBeReverted)
                 return;
 
-            Debug.LogError(11111);
-
             switch (boardObject)
             {
                 case BoardUnitModel boardUnit:
