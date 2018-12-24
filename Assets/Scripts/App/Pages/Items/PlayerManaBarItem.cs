@@ -135,6 +135,7 @@ namespace Loom.ZombieBattleground
             {
                 bootle.Self.SetActive(true);
             }, 2f);
+            _vialGooPrefab = null;
         }
 
         public void Active(GooBottleItem item)
