@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         private const int LoopEndFakeHeroCount = 2;
 
+        private const string ColorName = "_TintColor";
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -315,9 +317,8 @@ namespace Loom.ZombieBattleground
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
 
                 _glowMeshMaterial.color.SetAlpha(0);
-                _glowParticleShine.SetFloat("_Alpha", 0);
-                _glowParticleDots.SetFloat("_Alpha", 0);
-                //_glow.SetActive(false);
+                _glowParticleShine.SetColor(ColorName, _glowParticleShine.GetColor(ColorName).SetAlpha(0));
+                _glowParticleDots.SetColor(ColorName, _glowParticleDots.GetColor(ColorName).SetAlpha(0));
 
                 Deselect(false, true);
             }
@@ -387,8 +388,14 @@ namespace Loom.ZombieBattleground
                     float durationGlow = duration / 3f;
 
                     _stateChangeSequence.Insert(delay, _glowMeshMaterial.DOFade(color.a, durationGlow));
-                    _stateChangeSequence.Insert(delay, _glowParticleShine.DOFloat(color.a, "_Alpha", durationGlow));
-                    _stateChangeSequence.Insert(delay, _glowParticleDots.DOFloat(color.a, "_Alpha", durationGlow));
+                    _stateChangeSequence.Insert(delay, DOTween.ToAlpha(() =>
+                        _glowParticleShine.GetColor(ColorName),
+                        x => _glowParticleShine.SetColor(ColorName, x),
+                        color.a, durationGlow));
+                    _stateChangeSequence.Insert(delay, DOTween.ToAlpha(() =>
+                        _glowParticleDots.GetColor(ColorName),
+                        x => _glowParticleDots.SetColor(ColorName, x),
+                        color.a, durationGlow));
                     _stateChangeSequence.Insert(0f,
                             image.DOColor(color, duration)
                             .OnComplete(() => {
