@@ -427,6 +427,8 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
+        private BoardController _boardController;
+
         private GameObject SelfObject;
         private AnimationEventTriggering AnimationEventTriggeringHandler;
         private Animator EffectAnimator;
@@ -450,6 +452,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
 
             BoardUnitView = unitView;
 
@@ -570,9 +573,12 @@ namespace Loom.ZombieBattleground
                         ParticleSystem.Stop();
                         EffectAnimator.StopPlayback();
                     }
-                    AnimationEnded?.Invoke(this);
-                    Dispose();
-                    UpdateBoard();
+
+                    _boardController.UpdateWholeBoard(() =>
+                    {
+                        AnimationEnded?.Invoke(this);
+                        Dispose();
+                    });
                     break;
             }
         }
@@ -597,12 +603,6 @@ namespace Loom.ZombieBattleground
             {
                 _readyForContinueDeathAnimation = true;
             }
-        }
-
-        private void UpdateBoard()
-        {
-            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
         }
     }
 }

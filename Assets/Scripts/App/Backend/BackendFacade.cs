@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public bool EnableRpcLogging { get; set; } = false;
 
+        public IContractCallProxy ContractCallProxy => _contractCallProxy;
+
         public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory = null)
         {
             BackendEndpoint = backendEndpoint;
@@ -59,7 +61,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Dispose()
         {
             Contract?.Client?.Dispose();
-            _contractCallProxy.Dispose();
+            _contractCallProxy?.Dispose();
         }
 
         public async Task CreateContract(
@@ -98,7 +100,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
-                new NonceTxMiddleware(publicKey, client), new SignedTxMiddleware(privateKey)
+                new NonceTxMiddleware(publicKey, client),
+                new SignedTxMiddleware(privateKey)
             });
 
             client.Configuration.AutoReconnect = false;

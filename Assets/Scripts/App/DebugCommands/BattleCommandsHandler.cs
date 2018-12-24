@@ -11,6 +11,7 @@ static class BattleCommandsHandler
     private static IGameplayManager _gameplayManager;
     private static SkillsController _skillController;
     private static BattlegroundController _battlegroundController;
+    private static BoardController _boardController;
     private static CardsController _cardsController;
     private static AIController _aiController;
 
@@ -23,6 +24,7 @@ static class BattleCommandsHandler
         _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
         _aiController = _gameplayManager.GetController<AIController>();
+        _boardController = _gameplayManager.GetController<BoardController>();
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
@@ -285,7 +287,7 @@ static class BattleCommandsHandler
         player.BoardCards.Add(newUnit);
 
         _battlegroundController.PlayerBoardCards.Add(newUnit);
-        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(player.BoardCards);
+        _boardController.UpdateBoard(player.BoardCards, true, null);
     }
 
 
