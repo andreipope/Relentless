@@ -126,6 +126,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1 &1439931700512764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4830577644696844}
+  m_Layer: 0
+  m_Name: GlowContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1451325516822642
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,7 +225,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1615202507973852
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
@@ -479,8 +494,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
-  m_Father: {fileID: 4315762273941086}
-  m_RootOrder: 10
+  m_Father: {fileID: 4830577644696844}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4038629577185322
 Transform:
@@ -596,7 +611,7 @@ Transform:
   - {fileID: 4032486927391906}
   - {fileID: 4807584698212356}
   - {fileID: 4193345175967648}
-  - {fileID: 4033804476882482}
+  - {fileID: 4830577644696844}
   - {fileID: 4694407695786574}
   - {fileID: 4749675900975622}
   - {fileID: 4522149887320650}
@@ -736,6 +751,20 @@ Transform:
   - {fileID: 224468785637693856}
   m_Father: {fileID: 4315762273941086}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4830577644696844
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1439931700512764}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4033804476882482}
+  m_Father: {fileID: 4315762273941086}
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4972778805661748
 Transform:

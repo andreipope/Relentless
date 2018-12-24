@@ -19,7 +19,7 @@ static class DecksCommandHandler
     }
 
     [CommandHandler(Description = "Find PvP Match with specific Deck Set")]
-    public static void FindPvPMatch([Autocomplete(typeof(DecksCommandHandler), "DecksName")] string deckName)
+    public static void FindPvPMatch(string deckName)
     {
         string path = Path.Combine(Application.persistentDataPath, "default_decks.json");
         if (!File.Exists(path))

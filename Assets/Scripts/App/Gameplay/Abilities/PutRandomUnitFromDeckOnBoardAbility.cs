@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
             }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(),
-                                                     AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+                                                     AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -94,6 +94,8 @@ namespace Loom.ZombieBattleground
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
                                             ref List<HandBoardCard> cards)
         {
+            owner.RemoveCardFromDeck(boardCard.WorkingCard);
+
             CardsController.SummonUnitFromHand(owner, boardCard);
 
             cards.Add(boardCard.HandBoardCard);

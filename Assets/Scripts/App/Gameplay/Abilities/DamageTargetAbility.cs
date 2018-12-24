@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
 
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
 
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetPlayer
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
+                    }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
 
                     target = TargetPlayer;
                     actionType = Enumerators.ActionType.CardAffectingOverlord;
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetUnit
-                    }, AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+                    }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
                     target = TargetUnit;
                     actionType = Enumerators.ActionType.CardAffectingCard;

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public class Card : ICard, IReadOnlyCard
+    public class Card : ICard
     {
         [JsonProperty("id")]
         public long MouldId { get; set; }

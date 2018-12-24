@@ -3,12 +3,14 @@ using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Data
 {
-    public interface ICard
+    public interface ICard : IReadOnlyCard
     {
-        long MouldId { get; set; }
+        new long MouldId { get; set; }
 
-        int Cost { get; set; }
+        new int Cost { get; set; }
 
-        Enumerators.SetType CardSetType { get; set; }
+        new Enumerators.SetType CardSetType { get; set; }
+
+        void ForceUpdateAbilities(List<AbilityData> abilities);
     }
 }

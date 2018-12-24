@@ -41,14 +41,7 @@ namespace Loom.ZombieBattleground
                     unitView.Transform.SetParent(null, true);
                     Object.Destroy(animationVFX);
 
-                    if (unitView.Model.OwnerPlayer.IsLocalPlayer)
-                    {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(unitView.Model.OwnerPlayer.BoardCards);
-                    }
-                    else
-                    {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;
                 }, delayBeforeDestroyVFX);
