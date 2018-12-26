@@ -547,17 +547,10 @@ namespace Loom.ZombieBattleground
 
             buffs.Clear();
 
-            foreach (var item in BuffOnCardInfoObjects)
-            {
-                Debug.LogError(item.BuffTooltipInfo.Title);
-            }
-
             // right block info ------------------------------------
             foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
-
-                Debug.LogError(gameMechanicInfo.Name);
 
                 if (BuffOnCardInfoObjects.Find(x => x.BuffTooltipInfo.Title == gameMechanicInfo.Name) != null)
                     continue;
