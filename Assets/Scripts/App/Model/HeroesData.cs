@@ -118,6 +118,8 @@ namespace Loom.ZombieBattleground.Data
 
         public bool CanSelectTarget { get; private set; }
 
+        public bool SingleUse { get; private set; }
+
         public HeroSkill(
             int id,
             string title,

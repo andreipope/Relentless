@@ -32,6 +32,12 @@ public class SkillCoolDownTimer
         SelfObject.transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
+    public void Close()
+    {
+        SelfObject.transform.eulerAngles = Vector3.zero;
+        DestroyGaps();
+    }
+
     private void Reset(int coolDown)
     {
         SelfObject.transform.eulerAngles = Vector3.zero;
