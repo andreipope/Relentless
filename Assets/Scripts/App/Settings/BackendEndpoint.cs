@@ -17,5 +17,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public string WriterHost { get; set; }
 
         public string DataVersion { get; set; }
+
+        public BackendEndpoint(BackendEndpoint source)
+        {
+            AuthHost = source.AuthHost;
+            ReaderHost = source.ReaderHost;
+            WriterHost = source.WriterHost;
+            DataVersion = source.DataVersion;
+        }
     }
 }

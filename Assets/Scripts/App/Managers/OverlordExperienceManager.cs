@@ -61,6 +61,15 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
+        public void ApplyExperience(Hero hero, int experience)
+        {
+            hero.Experience += experience;
+            CheckLevel(hero);
+
+            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+        }
+
         public int GetRequiredExperienceForNewLevel(Hero hero)
         {
             return _overlordXPInfo.Fixed + _overlordXPInfo.ExperienceStep * (hero.Level + 1);

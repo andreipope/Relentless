@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             if (!AbilityUnitOwner.IsReanimated)
             {
@@ -40,16 +40,16 @@ namespace Loom.ZombieBattleground
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
-            if (!owner.IsLocalPlayer)
+            if (owner.IsLocalPlayer)
             {
-                BattlegroundController.OpponentBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                BattlegroundController.PlayerBoardCards.Add(unit);
             }
             else
             {
-                BattlegroundController.PlayerBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
+                BattlegroundController.OpponentBoardCards.Add(unit);
             }
+
+            BoardController.UpdateCurrentBoardOfPlayer(owner, null);
 
             InvokeActionTriggered(unit);
         }

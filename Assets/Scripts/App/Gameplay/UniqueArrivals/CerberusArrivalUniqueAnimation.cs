@@ -4,6 +4,7 @@ using System;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
 using DG.Tweening;
+using UnityEngine.Rendering;
 
 namespace Loom.ZombieBattleground
 {
@@ -21,7 +22,8 @@ namespace Loom.ZombieBattleground
             const float delayBeforeDestroyVFX = 3f;
 
             BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
-
+            SortingGroup unitSortingGroup = unitView.GameObject.GetComponent<SortingGroup>();
+            unitSortingGroup.enabled = false;
             unitView.GameObject.SetActive(false);
 
             InternalTools.DoActionDelayed(() =>
@@ -37,18 +39,12 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
+                    unitSortingGroup.enabled = true;
                     Object.Destroy(animationVFX);
 
                     endArrivalCallback?.Invoke();
 
-                    if (unitView.Model.OwnerPlayer.IsLocalPlayer)
-                    {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(unitView.Model.OwnerPlayer.BoardCards);
-                    }
-                    else
-                    {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;
                 }, delayBeforeDestroyVFX);

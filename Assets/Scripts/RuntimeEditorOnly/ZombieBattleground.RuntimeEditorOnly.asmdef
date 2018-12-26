@@ -1,0 +1,8 @@
+{
+    "name": "ZombieBattleground.RuntimeEditorOnly",
+    "references": [],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

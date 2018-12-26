@@ -80,20 +80,25 @@ namespace Loom.ZombieBattleground
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
+                AbilityEffectInfoView effectInfo = null;
+
                 for (int i = 0; i < _targetUnits.Count; i++)
                 {
-                    AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
-                    if (effectInfo != null)
+                    if (_targetUnits[i].GameObject != null)
                     {
-                        _cardName = effectInfo.cardName;
-                        delayAfter = effectInfo.delayAfterEffect;
-                        delayBeforeDestroy = effectInfo.delayBeforeEffect;
-                        soundName = effectInfo.soundName;
-                    }
+                        effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                        if (effectInfo != null)
+                        {
+                            _cardName = effectInfo.cardName;
+                            delayAfter = effectInfo.delayAfterEffect;
+                            delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                            soundName = effectInfo.soundName;
+                        }
 
-                    Vector3 targetPosition = _targetUnits[i].Transform.position;
-                  
-                    CreateVfx(targetPosition, true, delayBeforeDestroy);
+                        Vector3 targetPosition = _targetUnits[i].Transform.position;
+
+                        CreateVfx(targetPosition, true, delayBeforeDestroy);
+                    }
                 }
             }
             PlaySound(soundName, 0);

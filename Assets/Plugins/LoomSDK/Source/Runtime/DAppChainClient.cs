@@ -51,6 +51,9 @@ namespace Loom.Client
         /// </summary>
         public DAppChainClientConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Controls the flow of blockchain calls.
+        /// </summary>
         public IDAppChainClientCallExecutor CallExecutor { get; }
 
         /// <summary>
@@ -167,7 +170,7 @@ namespace Loom.Client
             if (this.writeClient == null)
                 throw new InvalidOperationException("Write client was not set");
 
-            return await this.CallExecutor.Call(async () =>
+            return await this.CallExecutor.Call<BroadcastTxResult>(async () =>
             {
                 await EnsureConnected();
 
@@ -177,27 +180,42 @@ namespace Loom.Client
                     txBytes = await this.TxMiddleware.Handle(txBytes);
                 }
 
-                string payload = CryptoBytes.ToBase64String(txBytes);
-                var result = await this.writeClient.SendAsync<BroadcastTxResult, string[]>("broadcast_tx_commit", new[] { payload });
-                if (result == null)
-                    return null;
-
-                if (result.CheckTx.Code != 0)
+                try
                 {
-                    if ((result.CheckTx.Code == 1) && (result.CheckTx.Error == "sequence number does not match"))
+                    string payload = CryptoBytes.ToBase64String(txBytes);
+                    var result = await this.writeClient.SendAsync<BroadcastTxResult, string[]>("broadcast_tx_commit", new[] { payload });
+                    if (result == null)
+                        return null;
+
+                    if (result.CheckTx.Code != 0)
                     {
-                        throw new InvalidTxNonceException(result.CheckTx.Code, result.CheckTx.Error);
+                        if ((result.CheckTx.Code == 1) && (result.CheckTx.Error.StartsWith("sequence number does not match")))
+                        {
+                            throw new InvalidTxNonceException(result.CheckTx.Code, result.CheckTx.Error);
+                        }
+
+                        throw new TxCommitException(result.CheckTx.Code, result.CheckTx.Error);
                     }
 
-                    throw new TxCommitException(result.CheckTx.Code, result.CheckTx.Error);
-                }
+                    if (result.DeliverTx.Code != 0)
+                    {
+                        throw new TxCommitException(result.DeliverTx.Code, result.DeliverTx.Error);
+                    }
 
-                if (result.DeliverTx.Code != 0)
+                    if (this.TxMiddleware != null)
+                    {
+                        this.TxMiddleware.HandleTxResult(result);
+                    }
+
+                    return result;
+                } catch (LoomException e)
                 {
-                    throw new TxCommitException(result.DeliverTx.Code, result.DeliverTx.Error);
+                    if (this.TxMiddleware != null)
+                    {
+                        this.TxMiddleware.HandleTxException(e);
+                    }
+                    throw;
                 }
-
-                return result;
             });
         }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -8,6 +7,9 @@ using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -147,6 +149,10 @@ namespace Loom.ZombieBattleground
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
 
         public BoardUnitModel Model { get; }
@@ -955,5 +961,21 @@ namespace Loom.ZombieBattleground
 
             sequence.Play();
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (GameObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            if (Model.Card == null)
+                return;
+
+            DebugCardInfoDrawer.Draw(GameObject.transform.position, Model.Card.InstanceId.Id, Model.Card.LibraryCard.Name);
+        }
+#endif
     }
 }

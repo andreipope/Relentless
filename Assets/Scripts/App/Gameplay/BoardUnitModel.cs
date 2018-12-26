@@ -1,20 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
-using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitModel : OwnableBoardObject
+    public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
     {
         public bool AttackedThisTurn;
 
@@ -57,6 +51,8 @@ namespace Loom.ZombieBattleground
         private int _stunTurns;
 
         public bool IsDead { get; private set; }
+
+        public InstanceId InstanceId => Card.InstanceId;
 
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 
@@ -279,7 +275,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.REANIMATE_UNIT,
                         this,
-                        Card.InstanceCard,
+                        Card.LibraryCard.CardKind,
+                        Card.LibraryCard,
                         OwnerPlayer
                         );
                     break;
@@ -287,7 +284,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.InstanceCard,
+                        Card.LibraryCard.CardKind,
+                        Card.LibraryCard,
                         OwnerPlayer
                         );
                     break;
@@ -615,7 +613,7 @@ namespace Loom.ZombieBattleground
         public void DoCombat(BoardObject target)
         {
             if (target == null)
-                return;
+                throw new ArgumentNullException(nameof(target));
 
             IsAttacking = true;
 

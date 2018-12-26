@@ -74,5 +74,6 @@ namespace Loom.ZombieBattleground
         int OpponentIdCheat { get; set; }
         bool AvoidGooCost { get; set; }
         bool UseInifiniteAbility { get; set; }
+        bool UseBackendGameLogic { get; }
     }
 }

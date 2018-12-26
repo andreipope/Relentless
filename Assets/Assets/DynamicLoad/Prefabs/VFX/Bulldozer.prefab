@@ -1264,12 +1264,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: 
   cardNameOfAbility: 1
-  delayBeforeEffect: 8
+  delayBeforeEffect: 6
   delayAfterEffect: 8
   delayForChangeState: 0
-  offset: {x: 1.106934, y: 0.4196777, z: 0}
-  delayForSound: 0
   soundName: CZB_AUD_Bulldozer_Drive_F1_EXP
+  delayForSound: 0
+  offset: {x: 1.106934, y: 0.4196777, z: 0}
+  localOffset: {x: 0, y: 0, z: 0}
+  isRotate: 0
   positionInfo:
     type: 0
 --- !u!198 &198039422529328788

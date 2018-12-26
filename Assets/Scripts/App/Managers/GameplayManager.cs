@@ -24,6 +24,10 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IPvPManager _pvpManager;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private List<IController> _controllers;
 
         private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
@@ -80,6 +84,8 @@ namespace Loom.ZombieBattleground
 
         public AnalyticsTimer MatchDuration { get; set; }
 
+        public bool UseBackendGameLogic => _pvpManager?.MatchMetadata?.UseBackendGameLogic ?? false;
+
         public T GetController<T>()
             where T : IController
         {
@@ -88,8 +94,8 @@ namespace Loom.ZombieBattleground
 
         public void RearrangeHands()
         {
-            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfPlayer(CurrentPlayer.BoardCards);
-            GetController<BattlegroundController>().UpdatePositionOfBoardUnitsOfOpponent();
+            GetController<BoardController>().UpdateCurrentBoardOfPlayer(CurrentPlayer, null);
+            GetController<BoardController>().UpdateCurrentBoardOfPlayer(OpponentPlayer, null);
         }
 
         public void EndGame(Enumerators.EndGameType endGameType, float timer = 4f)
@@ -176,7 +182,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayerTurn()
         {
-            return CurrentTurnPlayer.Equals(CurrentPlayer);
+            return CurrentTurnPlayer == CurrentPlayer;
         }
 
         public Player GetOpponentByPlayer(Player player)
@@ -186,7 +192,7 @@ namespace Loom.ZombieBattleground
 
         public Player GetPlayerById(int id)
         {
-            return CurrentPlayer.Id == id ? CurrentPlayer : OpponentPlayer;
+            return CurrentPlayer.InstanceId.Id == id ? CurrentPlayer : OpponentPlayer;
         }
 
         public void ResetWholeGameplayScene()
@@ -218,6 +224,8 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             InitControllers();
 
@@ -260,7 +268,8 @@ namespace Loom.ZombieBattleground
                 new RanksController(),
                 new InputController(),
                 new OpponentController(),
-                new UniqueAnimationsController()
+                new UniqueAnimationsController(),
+                new BoardController()
             };
 
             foreach (IController controller in _controllers)
@@ -276,17 +285,19 @@ namespace Loom.ZombieBattleground
                 IsSpecificGameplayBattleground = true;
             }
 
-            GetController<PlayerController>().InitializePlayer(0);
-
             PlayerMoves = new PlayerMoveAction();
 
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    GetController<AIController>().InitializePlayer(1);
+                    GetController<PlayerController>().InitializePlayer(new InstanceId(0));
+                    GetController<AIController>().InitializePlayer(new InstanceId(1));
                     break;
                 case Enumerators.MatchType.PVP:
-                    GetController<OpponentController>().InitializePlayer(1);
+                    bool localPlayerHasZeroIndex =
+                        _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId;
+                    GetController<PlayerController>().InitializePlayer(new InstanceId(localPlayerHasZeroIndex ? 0 : 1));
+                    GetController<OpponentController>().InitializePlayer(new InstanceId(!localPlayerHasZeroIndex ? 0 : 1));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
@@ -294,8 +305,6 @@ namespace Loom.ZombieBattleground
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
-
-            UnityEngine.Debug.Log(IsTutorial + " IsTutorial");
 
             if (IsTutorial)
             {
@@ -336,6 +345,16 @@ namespace Loom.ZombieBattleground
                             OpponentPlayer.PvPPlayerState.CardsInHand
                                 .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
+
+                        Debug.Log(
+                            $"Player ID {OpponentPlayer.InstanceId}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
+                            String.Join(
+                                "\n",
+                                (IList<WorkingCard>) opponentCardsInHand
+                                    .OrderBy(card => card.InstanceId)
+                                    .ToArray()
+                            )
+                        );
 
                         OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
                         break;
