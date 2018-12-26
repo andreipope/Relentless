@@ -791,14 +791,14 @@ namespace Loom.ZombieBattleground
                         card.Transform.eulerAngles = Vector3.forward * 90f;
                     }
 
-                    card.Transform.DOMove(movePosition, 0.5f).OnComplete(() => UpdateOpponentHandCardLayer(card));
+                    card.Transform.DOMove(movePosition, 0.5f).OnComplete(() => UpdateOpponentHandCardLayer(card.GameObject));
                     card.Transform.DORotate(rotatePosition, 0.5f);
                 }
                 else
                 {
                     card.Transform.position = movePosition;
                     card.Transform.rotation = Quaternion.Euler(rotatePosition);
-                    UpdateOpponentHandCardLayer(card);
+                    UpdateOpponentHandCardLayer(card.GameObject);
                 }
 
                 pivot.x += handWidth / OpponentHandCards.Count;
@@ -817,7 +817,6 @@ namespace Loom.ZombieBattleground
                 {
                     child.layer = LayerMask.NameToLayer("Battleground");
                 }
-                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
             }
         }
 
