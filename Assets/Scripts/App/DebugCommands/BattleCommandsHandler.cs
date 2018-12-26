@@ -313,7 +313,7 @@ static class BattleCommandsHandler
             return;
         }
         WorkingCard workingCard = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
-        _aiController.PlayCardOnBoard(workingCard);
+        _aiController.PlayCardOnBoard(workingCard, true);
     }
 
     [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
@@ -331,7 +331,7 @@ static class BattleCommandsHandler
         {
             _cardsController.AddCardToHand(opponentPlayer, workingCard);
             workingCard = opponentPlayer.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
-            _aiController.PlayCardOnBoard(workingCard);
+            _aiController.PlayCardOnBoard(workingCard, true);
         }
         else
         {
