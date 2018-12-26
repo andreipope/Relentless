@@ -95,6 +95,8 @@ namespace Loom.ZombieBattleground
 
                 yield return null;
             }
+
+            SceneLoadingProgress = 100;
         }
     }
 }

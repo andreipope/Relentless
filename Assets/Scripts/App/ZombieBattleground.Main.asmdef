@@ -7,7 +7,8 @@
         "AsyncAwaitUtil",
         "GoogleAnalytics",
         "DOTween.Modules",
-        "AdvancedFPSCounter"
+        "AdvancedFPSCounter",
+        "ZombieBattleground.RuntimeEditorOnly"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

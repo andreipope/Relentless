@@ -1,12 +1,10 @@
-
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
-using Deck = Loom.ZombieBattleground.Data.Deck;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 
 namespace Loom.ZombieBattleground
 {
@@ -26,8 +24,9 @@ namespace Loom.ZombieBattleground
         event Action<PlayerActionOverlordSkillUsed> OverlordSkillUsedActionReceived;
         event Action<PlayerActionCardAbilityUsed> CardAbilityUsedActionReceived;
         event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
-        event Action<PlayerActionDrawCard> DrawCardActionReceived;
         event Action<PlayerActionRankBuff> RankBuffActionReceived;
+        event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
+
         event Action LeaveMatchReceived;
 
         Address? CustomGameModeAddress { get; set; }
@@ -37,11 +36,19 @@ namespace Loom.ZombieBattleground
         GameState InitialGameState { get; }
 
         List<string> PvPTags { get; set; }
+
+        DebugCheatsConfiguration DebugCheats { get; set; }
+
+        MatchMakingFlowController MatchMakingFlowController { get; }
+
         string GetOpponentUserId();
 
         bool IsCurrentPlayer();
 
-        Task CancelFindMatch();
-        void MatchIsStarting(FindMatchResponse findMatchResponse);
+        Task StartMatchmaking(int deckId);
+
+        Task StopMatchmaking();
+
+        bool UseBackendGameLogic { get; set; }
     }
 }

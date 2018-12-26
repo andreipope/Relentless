@@ -8,4 +8,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
         [JsonProperty(PropertyName = "accessToken")]
         public string accessToken;
     }
+
+    public class RegisterData
+    {
+        [JsonProperty(PropertyName = "accessToken")]
+        public string accessToken;
+    }
 }
