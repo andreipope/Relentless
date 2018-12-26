@@ -1,10 +1,17 @@
-﻿using System;
+using CodeStage.AdvancedFPSCounter;
+using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.BackendCommunication;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using Unity.Cloud.UserReporting;
 using Unity.Cloud.UserReporting.Plugin;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -94,7 +101,7 @@ public class UserReportingScript : MonoBehaviour
     /// Gets or sets the display text for the progress text.
     /// </summary>
     [Tooltip("The display text for the progress text.")]
-    public Text ProgressText;
+    public TextMeshProUGUI ProgressText;
 
     /// <summary>
     /// Gets or sets a value indicating whether the user report client send events to analytics.
@@ -121,6 +128,12 @@ public class UserReportingScript : MonoBehaviour
     public Image ThumbnailViewer;
 
     private UnityUserReportingUpdater unityUserReportingUpdater;
+
+    private AFPSCounter _afpsCounter;
+
+    private bool _isCrashing;
+
+    private string _exceptionStacktrace;
 
     #endregion
 
@@ -192,10 +205,18 @@ public class UserReportingScript : MonoBehaviour
         this.DescriptionInput.text = null;
     }
 
+    public void ExitApplication()
+    {
+#if UNITY_EDITOR
+        Debug.Log("Application.Quit();");
+#endif
+        Application.Quit();
+    }
+
     /// <summary>
     /// Creates a user report.
     /// </summary>
-    public void CreateUserReport()
+    public void CreateUserReport(bool isCrashReport)
     {
         // Check Creating Flag
         if (this.isCreatingUserReport)
@@ -203,14 +224,50 @@ public class UserReportingScript : MonoBehaviour
             return;
         }
 
+        // Hide FPS counter
+        if (_afpsCounter != null)
+        {
+            _afpsCounter.OperationMode = OperationMode.Background;
+        }
+
         // Set Creating Flag
         this.isCreatingUserReport = true;
 
+        if (!String.IsNullOrEmpty(_exceptionStacktrace))
+        {
+            Debug.LogError(_exceptionStacktrace);
+        }
+
         // Take Main Screenshot
-        UnityUserReporting.CurrentClient.TakeScreenshot(2048, 2048, s => { });
+        UnityUserReporting.CurrentClient.TakeScreenshot(1280, 1280, s => { });
 
         // Take Thumbnail Screenshot
-        UnityUserReporting.CurrentClient.TakeScreenshot(512, 512, s => { });
+        UnityUserReporting.CurrentClient.TakeScreenshot(256, 256, s => { });
+
+        // Kill everything else to make sure no more exceptions are being thrown
+        if (isCrashReport)
+        {
+            Scene[] scenes = new Scene[SceneManager.sceneCount];
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
+            {
+                scenes[i] = SceneManager.GetSceneAt(i);
+            }
+
+            IEnumerable<GameObject> rootGameObjects =
+                scenes
+                    .Concat(new[]
+                    {
+                            gameObject.scene
+                    })
+                    .Distinct()
+                    .SelectMany(scene => scene.GetRootGameObjects())
+                    .Where((go, i) => go != transform.root.gameObject);
+
+            foreach (GameObject rootGameObject in rootGameObjects)
+            {
+                Destroy(rootGameObject);
+            }
+        }
 
         // Create Report
         UnityUserReporting.CurrentClient.CreateUserReport((br) =>
@@ -224,9 +281,35 @@ public class UserReportingScript : MonoBehaviour
             // Attachments
             br.Attachments.Add(new UserReportAttachment("Sample Attachment.txt", "SampleAttachment.txt", "text/plain", System.Text.Encoding.UTF8.GetBytes("This is a sample attachment.")));
 
+            try
+            {
+                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                IDataManager dataManager = GameClient.Get<IDataManager>();
+                if (backendFacade.ContractCallProxy is TimeMetricsContractCallProxy callProxy)
+                {
+                    string callMetricsJson = dataManager.SerializeToJson(callProxy.MethodToCallRoundabouts, true);
+                    br.Attachments.Add(
+                        new UserReportAttachment(
+                            TimeMetricsContractCallProxy.CallMetricsFileName,
+                            TimeMetricsContractCallProxy.CallMetricsFileName,
+                            "application/json",
+                            global::System.Text.Encoding.UTF8.GetBytes(callMetricsJson)
+                        ));
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("Error while getting call metrics:" + e);
+            }
+
+            br.DeviceMetadata.Add(new UserReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
+            br.DeviceMetadata.Add(new UserReportNamedValue("Min FPS", _afpsCounter.fpsCounter.LastMinimumValue.ToString()));
+            br.DeviceMetadata.Add(new UserReportNamedValue("Max FPS", _afpsCounter.fpsCounter.LastMaximumValue.ToString()));
+            br.DeviceMetadata.Add(new UserReportNamedValue("Average FPS", _afpsCounter.fpsCounter.LastAverageValue.ToString()));
+
             // Dimensions
             string platform = "Unknown";
-            string version = "0.0";
+            string version = BuildMetaInfo.Instance.DisplayVersionName;
             foreach (UserReportNamedValue deviceMetadata in br.DeviceMetadata)
             {
                 if (deviceMetadata.Name == "Platform")
@@ -241,6 +324,10 @@ public class UserReportingScript : MonoBehaviour
             }
 
             br.Dimensions.Add(new UserReportNamedValue("Platform.Version", string.Format("{0}.{1}", platform, version)));
+
+            br.Dimensions.Add(new UserReportNamedValue("IsCrashReport", isCrashReport.ToString()));
+
+            br.Dimensions.Add(new UserReportNamedValue("GitBranch", BuildMetaInfo.Instance.GitBranchName));
 
             // Set Current Report
             this.CurrentUserReport = br;
@@ -280,6 +367,31 @@ public class UserReportingScript : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(transform.root.gameObject);
+
+#if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
+            Application.logMessageReceived += OnLogMessageReceived;
+#endif
+    }
+
+    private void OnLogMessageReceived(string condition, string stacktrace, LogType type)
+    {
+        if (type != LogType.Exception || _isCrashing)
+            return;
+
+        _isCrashing = true;
+        _exceptionStacktrace = stacktrace;
+        StartCoroutine(DelayedCreateBugReport(true));
+    }
+
+    public IEnumerator DelayedCreateBugReport(bool isCrashReport)
+    {
+        yield return new WaitForEndOfFrame();
+        CreateUserReport(isCrashReport);
+    }
+
     private void Start()
     {
         // Set Up Event System
@@ -300,6 +412,10 @@ public class UserReportingScript : MonoBehaviour
         {
             UnityUserReporting.Configure();
         }
+
+        _afpsCounter = FindObjectOfType<AFPSCounter>();
+        if (_afpsCounter == null)
+            throw new Exception("AFPSCounter instance not found in scene");
     }
 
     /// <summary>
@@ -370,18 +486,6 @@ public class UserReportingScript : MonoBehaviour
 
     private void Update()
     {
-        // Hotkey Support
-        if (this.IsHotkeyEnabled)
-        {
-            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftAlt))
-            {
-                if (Input.GetKeyDown(KeyCode.B))
-                {
-                    this.CreateUserReport();
-                }
-            }
-        }
-
         // Update Client
         UnityUserReporting.CurrentClient.IsSelfReporting = this.IsSelfReporting;
         UnityUserReporting.CurrentClient.SendEventsToAnalytics = this.SendEventsToAnalytics;
