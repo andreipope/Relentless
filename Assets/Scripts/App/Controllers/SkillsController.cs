@@ -953,7 +953,7 @@ namespace Loom.ZombieBattleground
                     _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
                     target, delay: 6f, isIgnoreCastVfx: true);
-                    _battlegroundController.DestroyBoardUnit(unit, false);
+                    _battlegroundController.DestroyBoardUnit(unit, false, true);
 
                     List<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
 
@@ -1099,7 +1099,7 @@ namespace Loom.ZombieBattleground
                 _vfxController.CreateVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
                 unit, delay: 6f, isIgnoreCastVfx: true);
-                _battlegroundController.DestroyBoardUnit(unit.Model, false);
+                _battlegroundController.DestroyBoardUnit(unit.Model, false, true);
 
                 if (target != null)
                 {

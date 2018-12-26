@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
                 if (unit == AbilityUnitOwner)
                     continue;
 
-                BattlegroundController.DestroyBoardUnit(unit, false);
+                BattlegroundController.DestroyBoardUnit(unit, false, true);
             }
 
             BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);

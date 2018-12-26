@@ -848,11 +848,18 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true)
+        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true, bool isForceDestroy = false)
         {
-            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
+            if (!isForceDestroy && unit.HasBuffShield)
+            {
+                unit.UseShieldFromBuff();
+            }
+            else
+            {
+                _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
 
-            unit?.Die(withDeathEffect: withDeathEffect);
+                unit?.Die(withDeathEffect: withDeathEffect);
+            }
         }
 
         public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit, bool revertPositioning = false)
