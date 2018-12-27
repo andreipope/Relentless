@@ -192,7 +192,8 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardType) card.Type,
                 card.Abilities.Select(a => a.FromProtobuf()).ToList(),
                 card.CardViewInfo.FromProtobuf(),
-                (Enumerators.UniqueAnimationType) card.UniqueAnimationType
+                (Enumerators.UniqueAnimationType) card.UniqueAnimationType,
+                (Enumerators.SetType)card.HiddenSet
             );
         }
 
