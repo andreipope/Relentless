@@ -152,7 +152,8 @@ namespace Loom.ZombieBattleground.Test
                             Enumerators.SetType.LIFE
                         },
                         true,
-                        true
+                        true,
+                        false
                     )
                 },
                 Enumerators.OverlordSkill.HEALING_TOUCH,
