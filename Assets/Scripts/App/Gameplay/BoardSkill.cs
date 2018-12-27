@@ -46,6 +46,10 @@ namespace Loom.ZombieBattleground
 
         private bool _isOpen;
 
+        private bool _isAlreadyUsed;
+
+        private bool _singleUse;
+
         private OnBehaviourHandler _behaviourHandler;
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
@@ -63,6 +67,7 @@ namespace Loom.ZombieBattleground
 
             _initialCooldown = skillInfo.InitialCooldown;
             _cooldown = skillInfo.Cooldown;
+            _singleUse = skillInfo.SingleUse;
 
             _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
 
@@ -103,7 +108,7 @@ namespace Loom.ZombieBattleground
             _isOpen = false;
         }
 
-        public bool IsSkillReady => _cooldown == 0;
+        public bool IsSkillReady => _cooldown == 0 && (!_singleUse || !_isAlreadyUsed);
 
         public bool IsUsing { get; private set; }
 
@@ -132,6 +137,9 @@ namespace Loom.ZombieBattleground
 
         public void SetCoolDown(int coolDownValue)
         {
+            if (_isAlreadyUsed && _singleUse)
+                return;
+
             _cooldown = coolDownValue;
             _coolDownTimer.SetAngle(_cooldown);
 
@@ -189,7 +197,7 @@ namespace Loom.ZombieBattleground
             _cooldown = _initialCooldown;
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
-
+            _isAlreadyUsed = true;
             GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
             _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
@@ -200,6 +208,11 @@ namespace Loom.ZombieBattleground
             {
                 _usedInThisTurn = false;
                 SetCoolDown(0);
+            }
+
+            if(_singleUse)
+            {
+                _coolDownTimer.Close();
             }
         }
 
@@ -306,7 +319,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _coolDownTimer.SetAngle(_cooldown);
+            if (!_singleUse || !_isAlreadyUsed)
+            {
+                _coolDownTimer.SetAngle(_cooldown);
+            }
         }
 
         private void TurnEndedHandler()

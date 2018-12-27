@@ -782,6 +782,15 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
 
+            SortingGroup group = opponentHandCard.Transform.GetComponent<SortingGroup>();
+            group.sortingLayerID = SRSortingLayers.Foreground;
+            group.sortingOrder = _battlegroundController.OpponentHandCards.FindIndex(x => x == opponentHandCard);
+            List<GameObject> allUnitObj = opponentHandCard.Transform.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
+            foreach (GameObject child in allUnitObj)
+            {
+                child.layer = LayerMask.NameToLayer("Default");
+            }
+
             opponentHandCard.Transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(
                 () =>
                 {
