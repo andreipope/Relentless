@@ -38,5 +38,7 @@ namespace Loom.ZombieBattleground.Data
         CardViewInfo CardViewInfo { get; }
 
         Enumerators.UniqueAnimationType UniqueAnimationType { get; }
+
+        Enumerators.SetType HiddenCardSetType { get; }
     }
 }

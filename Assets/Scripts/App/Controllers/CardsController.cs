@@ -923,7 +923,8 @@ namespace Loom.ZombieBattleground
                         .Select(a => new AbilityData(a))
                         .ToList(),
                     new CardViewInfo(card.LibraryCard.CardViewInfo),
-                    card.LibraryCard.UniqueAnimationType
+                    card.LibraryCard.UniqueAnimationType,
+                    card.LibraryCard.HiddenCardSetType
                 );
             }
         }
