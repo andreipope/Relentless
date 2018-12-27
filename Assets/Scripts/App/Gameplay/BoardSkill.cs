@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
             _initialCooldown = skillInfo.InitialCooldown;
             _cooldown = skillInfo.Cooldown;
-            _singleUse = true;// skillInfo.SingleUse;
+            _singleUse = skillInfo.SingleUse;
 
             _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
 

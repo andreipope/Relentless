@@ -135,7 +135,8 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.UnitStatusType targetUnitStatusType,
             List<Enumerators.SetType> elementTargetTypes,
             bool unlocked,
-            bool canSelectTarget)
+            bool canSelectTarget,
+            bool singleUse)
         {
             Id = id;
             Title = title;
@@ -152,6 +153,7 @@ namespace Loom.ZombieBattleground.Data
             ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.SetType>();
             CanSelectTarget = canSelectTarget;
             Unlocked = unlocked;
+            SingleUse = singleUse;
         }
     }
 }
