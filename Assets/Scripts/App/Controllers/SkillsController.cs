@@ -1506,7 +1506,7 @@ namespace Loom.ZombieBattleground
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target).Transform.position + Vector3.up * 0.34f;
 
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
-                _battlegroundController.DestroyBoardUnit(boardUnitModel, false);
+                _battlegroundController.DestroyBoardUnit(boardUnitModel, false, true);
 
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
