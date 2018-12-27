@@ -65,6 +65,8 @@ namespace Loom.ZombieBattleground
 
         protected TextMeshPro AmountTextForArmy;
 
+        protected Transform IconsForArmyPanel;
+
         protected Animator CardAnimator;
 
         protected Vector3 PositionOnHand;
@@ -114,6 +116,7 @@ namespace Loom.ZombieBattleground
             BodyText = Transform.Find("BodyText").GetComponent<TextMeshPro>();
             AmountText = Transform.Find("Amount/Text").GetComponent<TextMeshPro>();
             AmountTextForArmy = Transform.Find("AmountForArmy/Text").GetComponent<TextMeshPro>();
+            IconsForArmyPanel = Transform.Find("AmountForArmy/RankIcons");
 
             RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
@@ -441,9 +444,12 @@ namespace Loom.ZombieBattleground
 
             if (isArmy)
             {
-                offset = 1.1f;
-                offsetY = -0.3f;
+                offsetY = -0.17f;
                 AmountTextForArmy.text = amount.ToString();
+                if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+                {
+                    IconsForArmyPanel.Find("Icon_" + LibraryCard.CardRank.ToString())?.gameObject.SetActive(true);
+                }
             }
             InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
         }
