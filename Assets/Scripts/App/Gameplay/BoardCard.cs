@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyCard LibraryCard;
 
+        protected const float cardToHandSoundKoef = 2f;
+
         protected ILoadObjectsManager LoadObjectsManager;
 
         protected ISoundManager SoundManager;
@@ -289,7 +291,8 @@ namespace Loom.ZombieBattleground
                 CardAnimator.enabled = true;
                 CardAnimator.SetTrigger("DeckToHand");
 
-                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume);
+                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume * cardToHandSoundKoef);
+
             }
 
             IsNewCard = false;
