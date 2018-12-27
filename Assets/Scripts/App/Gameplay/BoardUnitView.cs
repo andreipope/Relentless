@@ -204,38 +204,41 @@ namespace Loom.ZombieBattleground
 
             Model.FightSequenceHandler = this;
 
-            switch (Model.InitialUnitType)
+            if (!_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
             {
-                case Enumerators.CardType.FERAL:
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
-                                false, false, true);
-                    }, 0.55f);
+                switch (Model.InitialUnitType)
+                {
+                    case Enumerators.CardType.FERAL:
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
+                                    false, false, true);
+                        }, 0.55f);
 
-                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
 
-                    break;
-                case Enumerators.CardType.HEAVY:
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
-                                false, false, true);
-                    }, 1f);
+                        break;
+                    case Enumerators.CardType.HEAVY:
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
+                                    false, false, true);
+                        }, 1f);
 
-                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
 
-                    break;
-                case Enumerators.CardType.WALKER:
-                default:
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
-                                false, false, true);
-                    }, .6f);
+                        break;
+                    case Enumerators.CardType.WALKER:
+                    default:
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
+                                    false, false, true);
+                        }, .6f);
 
-                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
-                    break;
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
+                        break;
+                }
             }
 
             SetNormalGlowFromUnitType();
@@ -487,7 +490,7 @@ namespace Loom.ZombieBattleground
 
             if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
             {
-                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction);
+                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction, endArrivalCallback: ArrivalAnimationEventHandler);
             }
             else
             {
