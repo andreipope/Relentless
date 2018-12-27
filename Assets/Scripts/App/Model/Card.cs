@@ -59,6 +59,9 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("unique_animation_type")]
         public Enumerators.UniqueAnimationType UniqueAnimationType { get; protected set; }
 
+        [JsonProperty("hidden_set")]
+        public Enumerators.SetType HiddenCardSetType { get; set; }
+
         [JsonConstructor]
         public Card(
             long mouldId,
@@ -76,7 +79,8 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardType cardType,
             List<AbilityData> abilities,
             CardViewInfo cardViewInfo,
-            Enumerators.UniqueAnimationType uniqueAnimationType
+            Enumerators.UniqueAnimationType uniqueAnimationType,
+            Enumerators.SetType hiddenCardSetType
             )
         {
             MouldId = mouldId;
@@ -95,7 +99,14 @@ namespace Loom.ZombieBattleground.Data
             Abilities = abilities ?? new List<AbilityData>();
             CardViewInfo = cardViewInfo;
             UniqueAnimationType = uniqueAnimationType;
+            HiddenCardSetType = HiddenCardSetType;
             CloneAbilitiesToInitialAbilities();
+
+            if(CardSetType == Enumerators.SetType.OTHERS &&
+               HiddenCardSetType != Enumerators.SetType.NONE)
+            {
+                CardSetType = HiddenCardSetType;
+            }
         }
 
         public Card(IReadOnlyCard sourceCard)
@@ -119,6 +130,7 @@ namespace Loom.ZombieBattleground.Data
                     .ToList();
             CardViewInfo = new CardViewInfo(sourceCard.CardViewInfo);
             UniqueAnimationType = sourceCard.UniqueAnimationType;
+            HiddenCardSetType = sourceCard.HiddenCardSetType;
             CloneAbilitiesToInitialAbilities();
         }
 
