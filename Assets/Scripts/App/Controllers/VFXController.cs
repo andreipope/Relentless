@@ -54,6 +54,14 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameStarted)
             {
                 ChechTouchOnBattleground();
+
+                if(_unitDeathAnimations != null)
+                {
+                    foreach(UnitDeathAnimation deathAnimation in _unitDeathAnimations)
+                    {
+                        deathAnimation.Update();
+                    }
+                }
             }
         }
 
@@ -390,7 +398,7 @@ namespace Loom.ZombieBattleground
             return Vector3.Angle(Vector3.forward, diference) * sign;
         }
 
-        public void CreateDeathZombieAnimation(BoardUnitView unitView, Action endOfDestroyAnimationCallback, Action completeCallback)
+        public void CreateDeathZombieAnimation(BoardUnitView unitView, Action endOfDestroyAnimationCallback, Action endOfAnimationCallback, Action completeCallback)
         {
             bool withEffect = true;
 
@@ -406,10 +414,18 @@ namespace Loom.ZombieBattleground
             deathAnimation.DestroyUnitTriggered += (x) =>
             {
                 endOfDestroyAnimationCallback?.Invoke();
+
+                unitView.GameObject = deathAnimation.SelfObject;
             };
             deathAnimation.AnimationEnded += (x) =>
             {
-                completeCallback?.Invoke();
+                _unitDeathAnimations.Remove(deathAnimation);
+                endOfAnimationCallback?.Invoke();
+
+                _gameplayManager.GetController<BoardController>().UpdateWholeBoard(() =>
+                {
+                    completeCallback?.Invoke();
+                });   
             };
 
             _unitDeathAnimations.Add(deathAnimation);
@@ -429,7 +445,6 @@ namespace Loom.ZombieBattleground
 
         private BoardController _boardController;
 
-        private GameObject SelfObject;
         private AnimationEventTriggering AnimationEventTriggeringHandler;
         private Animator EffectAnimator;
         private ParticleSystem ParticleSystem;
@@ -444,6 +459,8 @@ namespace Loom.ZombieBattleground
         private int _effectSoundIdentificator;
 
         public BoardUnitView BoardUnitView;
+
+        public GameObject SelfObject;
 
         public UnitDeathAnimation(BoardUnitView unitView, bool withEffect)
         {
@@ -486,6 +503,17 @@ namespace Loom.ZombieBattleground
 
             PlayEffectSound();
             PlayDeathSound();
+        }
+
+        public void Update()
+        {
+            if (BoardUnitView != null && !BoardUnitView.WasDestroyed)
+            {
+                if (_withEffect)
+                {
+                    SelfObject.transform.position = BoardUnitView.Transform.position;
+                }
+            }
         }
 
         public void Dispose()
@@ -573,12 +601,8 @@ namespace Loom.ZombieBattleground
                         ParticleSystem.Stop();
                         EffectAnimator.StopPlayback();
                     }
-
-                    _boardController.UpdateWholeBoard(() =>
-                    {
-                        AnimationEnded?.Invoke(this);
-                        Dispose();
-                    });
+                    AnimationEnded?.Invoke(this);
+                    Dispose();
                     break;
             }
         }
