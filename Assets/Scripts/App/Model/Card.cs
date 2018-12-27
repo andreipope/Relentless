@@ -99,12 +99,13 @@ namespace Loom.ZombieBattleground.Data
             Abilities = abilities ?? new List<AbilityData>();
             CardViewInfo = cardViewInfo;
             UniqueAnimationType = uniqueAnimationType;
-            HiddenCardSetType = hiddenCardSetType;
+            HiddenCardSetType = HiddenCardSetType;
             CloneAbilitiesToInitialAbilities();
 
-            if(CardSetType == Enumerators.SetType.OTHERS)
+            if(CardSetType == Enumerators.SetType.OTHERS &&
+               HiddenCardSetType != Enumerators.SetType.NONE)
             {
-                CardSetType = hiddenCardSetType;
+                CardSetType = HiddenCardSetType;
             }
         }
 
