@@ -213,51 +213,45 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            if (boardUnitView.Model.ActionForDying == null)
-            {
-                boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-            }
+            Action completeCallback = () => { };
 
-            boardUnitView.Model.ActionForDying.Action = (parameter, completeCallback) =>
-            {
-                boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
-                    boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
+            boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
+                boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
 
-                InternalTools.DoActionDelayed(() =>
+            InternalTools.DoActionDelayed(() =>
+            {
+                Action endOfDestroyAnimationCallback = () =>
                 {
-                    Action endOfDestroyAnimationCallback = () =>
-                    {
-                        boardUnitView.Transform.DOKill();
-                        Object.Destroy(boardUnitView.GameObject);
+                    boardUnitView.Transform.DOKill();
+                    Object.Destroy(boardUnitView.GameObject);
 
-                        boardUnitView.WasDestroyed = true;
-                    };
+                    boardUnitView.WasDestroyed = true;
+                };
 
-                    Action endOfAnimationCallback = () =>
-                    {
-                        boardUnitView.Model.InvokeUnitDied();
+                Action endOfAnimationCallback = () =>
+                {
+                    boardUnitView.Model.InvokeUnitDied();
 
-                        boardUnitModel.OwnerPlayer.BoardCards.Remove(boardUnitView);
-                        boardUnitModel.OwnerPlayer.RemoveCardFromBoard(boardUnitModel.Card);
-                        boardUnitModel.OwnerPlayer.AddCardToGraveyard(boardUnitModel.Card);
-                    };
+                    boardUnitModel.OwnerPlayer.BoardCards.Remove(boardUnitView);
+                    boardUnitModel.OwnerPlayer.RemoveCardFromBoard(boardUnitModel.Card);
+                    boardUnitModel.OwnerPlayer.AddCardToGraveyard(boardUnitModel.Card);
+                };
 
-                    if (withDeathEffect)
-                    {
-                        _vfxController.CreateDeathZombieAnimation(boardUnitView, endOfDestroyAnimationCallback, endOfAnimationCallback, completeCallback);
-                    }
-                    else
-                    {
-                        endOfAnimationCallback();
-                        endOfDestroyAnimationCallback();
+                if (withDeathEffect)
+                {
+                    _vfxController.CreateDeathZombieAnimation(boardUnitView, endOfDestroyAnimationCallback, endOfAnimationCallback, completeCallback);
+                }
+                else
+                {
+                    endOfAnimationCallback();
+                    endOfDestroyAnimationCallback();
 
-                        _boardController.UpdateWholeBoard(null);
+                    _boardController.UpdateWholeBoard(null);
 
-                        completeCallback?.Invoke();
-                    }
+                    completeCallback?.Invoke();
+                }
 
-                }, Time.deltaTime * 60f / 2f);
-            };
+            }, Time.deltaTime * 60f / 2f);
 
             _actionsQueueController.ForceContinueAction(boardUnitView.Model.ActionForDying);
         }
