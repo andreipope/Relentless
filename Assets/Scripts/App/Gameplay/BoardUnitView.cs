@@ -159,7 +159,9 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform => GameObject?.transform;
 
-        public GameObject GameObject { get; }
+        public GameObject GameObject { get; set; }
+
+        public bool WasDestroyed { get; set; }
 
         public Sprite Sprite => _pictureSprite.sprite;
 
