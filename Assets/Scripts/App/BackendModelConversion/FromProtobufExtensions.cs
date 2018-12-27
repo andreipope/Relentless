@@ -117,7 +117,8 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.UnitStatusType) skill.TargetUnitSpecialStatus,
                 skill.ElementTargets.Select(t => (Enumerators.SetType) t).ToList(),
                 skill.Unlocked,
-                skill.CanSelectTarget
+                skill.CanSelectTarget,
+                skill.SingleUse
             );
         }
 
