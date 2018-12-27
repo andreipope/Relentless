@@ -161,8 +161,6 @@ namespace Loom.ZombieBattleground
 
             _playerHero = null;
             _opponentHero = null;
-
-            _soundManager.StopPlaying(Enumerators.SoundType.GOO_TUBE_LOOP);
         }
 
         public void Dispose()
@@ -217,8 +215,6 @@ namespace Loom.ZombieBattleground
 
             StartGame();
             KeepButtonVisibility(false);
-
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume * TubeLoopSoundVolumeKoef, isLoop:true);
         }
 
         public void SetEndTurnButtonStatus(bool status)
@@ -592,8 +588,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             _playerManaBar.SetGoo(goo);
-
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnPlayerGooVialsChanged(int currentTurnGoo)
@@ -627,7 +621,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             _opponentManaBar.SetGoo(goo);
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnOpponentGooVialsChanged(int currentTurnGoo)
@@ -641,6 +634,8 @@ namespace Loom.ZombieBattleground
         private void TurnStartedHandler()
         {
             _zippingVfx.SetActive(_gameplayManager.GetController<PlayerController>().IsActive);
+
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         #endregion

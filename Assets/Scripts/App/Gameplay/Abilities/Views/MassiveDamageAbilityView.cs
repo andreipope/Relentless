@@ -129,12 +129,15 @@ namespace Loom.ZombieBattleground
             {
                 unitView = _unitsViews[i];
 
-                if (_lineObject.transform.position.x + 1f < unitView.Transform.position.x)
+                if (unitView.GameObject != null)
                 {
-                    Ability.OneActionComleted(unitView.Model);
-                    CreateSubParticle(unitView.Transform.position);
-                    _unitsViews.Remove(unitView);
-                    _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
+                    if (_lineObject.transform.position.x + 1f < unitView.Transform.position.x)
+                    {
+                        Ability.OneActionComleted(unitView.Model);
+                        CreateSubParticle(unitView.Transform.position);
+                        _unitsViews.Remove(unitView);
+                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
+                    }
                 }
             }
 
