@@ -213,54 +213,49 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            if (boardUnitView.Model.ActionForDying == null)
-            {
-                boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-            }
+            Action completeCallback = () => { };
 
-            boardUnitView.Model.ActionForDying.Action = (parameter, completeCallback) =>
-            {
-                boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
-                    boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
+            boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
+                boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
 
-                InternalTools.DoActionDelayed(() =>
+            InternalTools.DoActionDelayed(() =>
+            {
+                Action endOfDestroyAnimationCallback = () =>
                 {
-                    Action endOfDestroyAnimationCallback = () =>
-                        {
-                            boardUnitView.Model.InvokeUnitDied();
+                    boardUnitView.Transform.DOKill();
+                    Object.Destroy(boardUnitView.GameObject);
 
-                            boardUnitModel.OwnerPlayer.BoardCards.Remove(boardUnitView);
-                            boardUnitModel.OwnerPlayer.RemoveCardFromBoard(boardUnitModel.Card);
-                            boardUnitModel.OwnerPlayer.AddCardToGraveyard(boardUnitModel.Card);
+                    boardUnitView.WasDestroyed = true;
+                };
 
-                            boardUnitView.Transform.DOKill();
-                            Object.Destroy(boardUnitView.GameObject);
-                        };
+                Action endOfAnimationCallback = () =>
+                {
+                    boardUnitView.Model.InvokeUnitDied();
 
-                    if (withDeathEffect)
-                    {
-                        CreateDeathAnimation(boardUnitView, endOfDestroyAnimationCallback, completeCallback);
-                    }
-                    else
-                    {
-                        endOfDestroyAnimationCallback();
+                    boardUnitModel.OwnerPlayer.BoardCards.Remove(boardUnitView);
+                    boardUnitModel.OwnerPlayer.RemoveCardFromBoard(boardUnitModel.Card);
+                    boardUnitModel.OwnerPlayer.AddCardToGraveyard(boardUnitModel.Card);
+                };
 
-                        _boardController.UpdateWholeBoard(null);
+                if (withDeathEffect)
+                {
+                    _vfxController.CreateDeathZombieAnimation(boardUnitView, endOfDestroyAnimationCallback, endOfAnimationCallback, completeCallback);
+                }
+                else
+                {
+                    endOfAnimationCallback();
+                    endOfDestroyAnimationCallback();
 
-                        completeCallback?.Invoke();
-                    }
+                    _boardController.UpdateWholeBoard(null);
 
-                }, Time.deltaTime * 60f / 2f);
-            };
+                    completeCallback?.Invoke();
+                }
+
+            }, Time.deltaTime * 60f / 2f);
 
             _actionsQueueController.ForceContinueAction(boardUnitView.Model.ActionForDying);
         }
     
-        private void CreateDeathAnimation(BoardUnitView unitView, Action endOfDestroyAnimationCallback, Action completeCallback)
-        {
-            _vfxController.CreateDeathZombieAnimation(unitView, endOfDestroyAnimationCallback, completeCallback);
-        }
-
         public void CheckGameDynamic()
         {
             if (!_battleDynamic)
@@ -505,18 +500,23 @@ namespace Loom.ZombieBattleground
             if (boardCard == null)
                 return;
 
-            boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
+            if (!boardCard.WasDestroyed)
+            {
+                boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
                 boardCard.Transform.localPosition.y, -0.2f);
+            }
 
             PlayerBoardCards.Remove(boardCard);
             PlayerGraveyardCards.Add(boardCard);
 
             boardCard.SetHighlightingEnabled(false);
             boardCard.StopSleepingParticles();
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
 
-            Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
-
+            if (!boardCard.WasDestroyed)
+            {
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
+            }
         }
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
@@ -525,7 +525,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView boardCard = OpponentBoardCards.Find(x => x.Model.Card == card);
             if (boardCard != null)
             {
-                if (boardCard.Transform != null)
+                if (!boardCard.WasDestroyed)
                 {
                     boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
                         boardCard.Transform.localPosition.y, -0.2f);
@@ -535,7 +535,8 @@ namespace Loom.ZombieBattleground
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                if (boardCard.GameObject != null)
+
+                if (!boardCard.WasDestroyed)
                 {
                     boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                     Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
@@ -830,7 +831,7 @@ namespace Loom.ZombieBattleground
             if (boardUnitModel == null)
                 return null;
 
-            BoardUnitView cardToDestroy =
+            BoardUnitView unitView =
                 OpponentBoardCards
                     .Concat(OpponentBoardCards)
                     .Concat(OpponentGraveyardCards)
@@ -838,10 +839,10 @@ namespace Loom.ZombieBattleground
                     .Concat(PlayerGraveyardCards)
                     .FirstOrDefault(x => x.Model == boardUnitModel);
 
-            if (cardToDestroy is default(BoardUnitView))
+            if (unitView is default(BoardUnitView))
                 return null;
 
-            return cardToDestroy;
+            return unitView;
         }
 
         public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)

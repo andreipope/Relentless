@@ -652,11 +652,11 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void PlayCardOnBoard(WorkingCard card)
+        public void PlayCardOnBoard(WorkingCard card, bool ignorePlayAbility = false)
         {
             _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
             {
-                if(!CardCanBePlayable(card))
+                if(!CardCanBePlayable(card) && !ignorePlayAbility)
                 {
                     completeCallback?.Invoke();
                     return;

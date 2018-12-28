@@ -65,7 +65,8 @@ namespace Loom.ZombieBattleground.Test
                     new FloatVector3(0.3f, 0.4f, 0.5f),
                     FloatVector3.One
                 ),
-                Enumerators.UniqueAnimationType.ShammannArrival
+                Enumerators.UniqueAnimationType.ShammannArrival,
+                Enumerators.SetType.ITEM
             );
 
             Card deserialized = original.ToProtobuf().FromProtobuf();
@@ -151,7 +152,8 @@ namespace Loom.ZombieBattleground.Test
                             Enumerators.SetType.LIFE
                         },
                         true,
-                        true
+                        true,
+                        false
                     )
                 },
                 Enumerators.OverlordSkill.HEALING_TOUCH,

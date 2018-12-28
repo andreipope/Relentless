@@ -119,9 +119,6 @@ namespace Loom.ZombieBattleground
             {
                 BoardUnitView card = units[i];
 
-                if (card.Model.IsDead)
-                    continue;
-
                 card.PositionOfBoard = newPositions[i];
                 sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
             }

@@ -614,6 +614,8 @@ namespace Loom.ZombieBattleground
                                                 boardUnitView.Transform.DOKill();
                                                 Object.Destroy(boardUnitView.GameObject);
                                                 boardUnitView.Model.Die(true);
+
+                                                _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
 
                                         }, CallAbilityAction, target, handCard);
@@ -932,7 +934,8 @@ namespace Loom.ZombieBattleground
                         .Select(a => new AbilityData(a))
                         .ToList(),
                     new CardViewInfo(card.LibraryCard.CardViewInfo),
-                    card.LibraryCard.UniqueAnimationType
+                    card.LibraryCard.UniqueAnimationType,
+                    card.LibraryCard.HiddenCardSetType
                 );
             }
         }

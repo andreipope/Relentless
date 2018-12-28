@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEndedEvent;
 
+        private Enumerators.GameMechanicDescriptionType _gameMechanicType;
+
         public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -39,7 +41,21 @@ namespace Loom.ZombieBattleground
             TargetUnit.CurrentHp += Health;
             TargetUnit.BuffedHp += Health;
 
-            TargetUnit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
+            _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
+
+            switch (MainWorkingCard.LibraryCard.MouldId)
+            {
+                case 151:
+                    _gameMechanicType = Enumerators.GameMechanicDescriptionType.SuperSerum;
+                    break;
+                case 143:
+                    _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
+                    break;
+                default:
+                    break;
+            }
+
+            TargetUnit.AddGameMechanicDescriptionOnUnit(_gameMechanicType);
         }
 
         protected override void InputEndedHandler()
@@ -89,7 +105,7 @@ namespace Loom.ZombieBattleground
 
                 CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
 
-                TargetUnit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Chainsaw);
+                TargetUnit.RemoveGameMechanicDescriptionFromUnit(_gameMechanicType);
             }
         }
 
