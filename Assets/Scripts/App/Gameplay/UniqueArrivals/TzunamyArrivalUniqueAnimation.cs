@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class TzunamyArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -33,6 +33,7 @@ namespace Loom.ZombieBattleground
                 {
                     Object.Destroy(animationVFX);
 
+                    endArrivalCallback?.Invoke();
                     BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;

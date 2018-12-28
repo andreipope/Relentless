@@ -614,6 +614,8 @@ namespace Loom.ZombieBattleground
                                                 boardUnitView.Transform.DOKill();
                                                 Object.Destroy(boardUnitView.GameObject);
                                                 boardUnitView.Model.Die(true);
+
+                                                _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
 
                                         }, CallAbilityAction, target, handCard);
@@ -782,6 +784,15 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
 
+            SortingGroup group = opponentHandCard.Transform.GetComponent<SortingGroup>();
+            group.sortingLayerID = SRSortingLayers.Foreground;
+            group.sortingOrder = _battlegroundController.OpponentHandCards.FindIndex(x => x == opponentHandCard);
+            List<GameObject> allUnitObj = opponentHandCard.Transform.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
+            foreach (GameObject child in allUnitObj)
+            {
+                child.layer = LayerMask.NameToLayer("Default");
+            }
+
             opponentHandCard.Transform.DOMove(Vector3.up * 2.5f, 0.6f).OnComplete(
                 () =>
                 {
@@ -923,7 +934,8 @@ namespace Loom.ZombieBattleground
                         .Select(a => new AbilityData(a))
                         .ToList(),
                     new CardViewInfo(card.LibraryCard.CardViewInfo),
-                    card.LibraryCard.UniqueAnimationType
+                    card.LibraryCard.UniqueAnimationType,
+                    card.LibraryCard.HiddenCardSetType
                 );
             }
         }
