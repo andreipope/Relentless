@@ -44,6 +44,14 @@ public class UserReportingScript : MonoBehaviour
     [Tooltip("The user report button used to create a user report.")]
     public Button UserReportButton;
 
+    public Button BugReportFormCancelButton;
+
+    public Button BugReportFormExitButton;
+
+    public Text BugReportFormCrashText;
+
+    public GameObject CrashBackupObjectsRoot;
+
     /// <summary>
     /// Gets or sets the UI for the user report form. Shown after a user report is created.
     /// </summary>
@@ -134,6 +142,7 @@ public class UserReportingScript : MonoBehaviour
     private bool _isCrashing;
 
     private string _exceptionStacktrace;
+
 
     #endregion
 
@@ -229,6 +238,11 @@ public class UserReportingScript : MonoBehaviour
         {
             _afpsCounter.OperationMode = OperationMode.Background;
         }
+
+        BugReportFormCancelButton.gameObject.SetActive(!isCrashReport);
+        BugReportFormExitButton.gameObject.SetActive(isCrashReport);
+        BugReportFormCrashText.gameObject.SetActive(isCrashReport);
+        CrashBackupObjectsRoot.SetActive(isCrashReport);
 
         // Set Creating Flag
         this.isCreatingUserReport = true;
@@ -473,6 +487,8 @@ public class UserReportingScript : MonoBehaviour
             }
         }, (success, br2) =>
         {
+            Debug.Log("Successfully sent bug report: " + success);
+
             if (!success)
             {
                 this.isShowingError = true;
@@ -481,6 +497,11 @@ public class UserReportingScript : MonoBehaviour
 
             this.CurrentUserReport = null;
             this.isSubmitting = false;
+
+            if (_isCrashing)
+            {
+                ExitApplication();
+            }
         });
     }
 
@@ -493,6 +514,7 @@ public class UserReportingScript : MonoBehaviour
         // Update UI
         if (this.UserReportButton != null)
         {
+            UserReportButton.gameObject.SetActive(_afpsCounter.OperationMode == OperationMode.Normal);
             this.UserReportButton.interactable = this.State == UserReportingState.Idle;
         }
 
