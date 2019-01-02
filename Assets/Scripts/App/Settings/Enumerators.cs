@@ -307,6 +307,9 @@ namespace Loom.ZombieBattleground.Common
 
             [EnumMember(Value = "CHAINSAW")]
             Chainsaw,
+
+            [EnumMember(Value = "SUPER_SERUM")]
+            SuperSerum,
         }
 
         public enum BuffType

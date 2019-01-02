@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float HeroDeathSoundVolume = 0.1f;
 
-        internal const float CardsMoveSoundVolume = 0.025f;
+        internal const float CardsMoveSoundVolume = 0.05f;
 
         internal const float BackgroundSoundVolume = 0.1f;
 

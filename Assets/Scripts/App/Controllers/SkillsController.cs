@@ -1916,7 +1916,7 @@ namespace Loom.ZombieBattleground
                 unit.Model.CurrentHp += skill.Value;
 
                 position = unit.Transform.position;
-                position -= Vector3.up * 3.3f;
+                position -= Vector3.up * 3.65f;
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),
