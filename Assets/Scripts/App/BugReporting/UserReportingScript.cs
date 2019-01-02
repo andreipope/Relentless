@@ -293,7 +293,16 @@ public class UserReportingScript : MonoBehaviour
             }
 
             // Attachments
-            br.Attachments.Add(new UserReportAttachment("Sample Attachment.txt", "SampleAttachment.txt", "text/plain", System.Text.Encoding.UTF8.GetBytes("This is a sample attachment.")));
+            if (!String.IsNullOrEmpty(_exceptionStacktrace))
+            {
+                br.Attachments.Add(
+                    new UserReportAttachment(
+                        "Exception",
+                        "Exception.txt",
+                        "text/plain",
+                        global::System.Text.Encoding.UTF8.GetBytes(_exceptionStacktrace)
+                        ));
+            }
 
             try
             {
@@ -329,11 +338,6 @@ public class UserReportingScript : MonoBehaviour
                 if (deviceMetadata.Name == "Platform")
                 {
                     platform = deviceMetadata.Value;
-                }
-
-                if (deviceMetadata.Name == "Version")
-                {
-                    version = deviceMetadata.Value;
                 }
             }
 
