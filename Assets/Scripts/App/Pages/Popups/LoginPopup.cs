@@ -499,6 +499,7 @@ namespace Loom.ZombieBattleground
             byte[] seedByte = CryptoUtils.HexStringToBytes(guidKey);
 
             BigInteger userIdNumber = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
+            userIdNumber = BigInteger.Abs(userIdNumber);
             userId = "ZombieSlayer_" + userIdNumber;
 
             privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
