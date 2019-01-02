@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
 {
     public class HealTargetAbility : AbilityBase
     {
+        private const int ZedKitId = 146;
+
         public int Value { get; }
 
         public int Count { get; }
@@ -152,10 +154,10 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
                 {
-                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner).Select(x => x.Model));
+                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentHp < x.Model.MaxCurrentHp).Select(x => x.Model));
                 }
 
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
+                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER) && (BoardSpell == null || BoardSpell.Card.LibraryCard.MouldId != ZedKitId))
                 {
                     _targets.Add(PlayerCallerOfAbility);
                 }
