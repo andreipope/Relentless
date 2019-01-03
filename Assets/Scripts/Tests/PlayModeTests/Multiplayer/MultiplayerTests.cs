@@ -58,6 +58,36 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.MatchmakeOpponentDebugClient();
 
                 await matchScenarioPlayer.Play();
+
+                await TestHelper.ClickGenericButton("Button_Continue");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator CorrectCardDraw()
+        {
+            return AsyncTest(async () =>
+            {
+                await StartOnlineMatch();
+                TestHelper.DebugCheatsConfiguration.ForceFirstTurnUserId = TestHelper.BackendDataControlMediator.UserDataModel.UserId;
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                    player => {},
+                    opponent => {},
+                    player => {},
+                };
+
+                MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
+                await TestHelper.MatchmakeOpponentDebugClient();
+
+                await matchScenarioPlayer.Play();
+
+                await TestHelper.ClickGenericButton("Button_Settings");
+                await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
+                await TestHelper.RespondToYesNoOverlay(true);
             });
         }
 
@@ -72,6 +102,14 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.LetsThink(5, true);
 
                 await TestHelper.ClickGenericButton("Button_Cancel");
+
+                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
+                    () =>
+                    {
+                        Assert.Fail("It shouldn't have been matched.");
+                        return Task.CompletedTask;
+                    },
+                    () => TestHelper.ClickGenericButton ("Button_Cancel"));
             });
         }
 
@@ -84,7 +122,11 @@ namespace Loom.ZombieBattleground.Test
                 await StartOnlineMatch(createOpponent: false);
 
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
-                    () => TestHelper.PlayAMatch(),
+                    () =>
+                    {
+                        Assert.Fail("It shouldn't have been matched.");
+                        return Task.CompletedTask;
+                    },
                     () => TestHelper.ClickGenericButton("Button_Cancel"));
             });
         }
@@ -96,6 +138,13 @@ namespace Loom.ZombieBattleground.Test
             return AsyncTest(async () =>
             {
                 await StartOnlineMatch();
+                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
+                    null,
+                    () =>
+                    {
+                        Assert.Fail("Didn't match, so couldn't check.");
+                        return Task.CompletedTask;
+                    });
 
                 await TestHelper.MatchmakeOpponentDebugClient();
 
@@ -138,6 +187,13 @@ namespace Loom.ZombieBattleground.Test
             return AsyncTest(async () =>
             {
                 await StartOnlineMatch();
+                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
+                    null,
+                    () =>
+                    {
+                        Assert.Fail("Didn't match, so couldn't check.");
+                        return Task.CompletedTask;
+                    });
 
                 await TestHelper.MatchmakeOpponentDebugClient();
 
@@ -155,6 +211,13 @@ namespace Loom.ZombieBattleground.Test
             return AsyncTest(async () =>
             {
                 await StartOnlineMatch();
+                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
+                    null,
+                    () =>
+                    {
+                        Assert.Fail("Didn't match, so couldn't check.");
+                        return Task.CompletedTask;
+                    });
 
                 TestHelper.SetupOpponentDebugClientToEndTurns();
                 await TestHelper.MatchmakeOpponentDebugClient();
@@ -193,6 +256,13 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.LetsThink();
                 await TestHelper.MainMenuTransition("Button_Battle");
+                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
+                    () =>
+                    {
+                        Assert.Fail("It shouldn't have been matched.");
+                        return Task.CompletedTask;
+                    },
+                    () => TestHelper.ClickGenericButton ("Button_Cancel"));
 
                 await TestHelper.LetsThink();
                 await TestHelper.LetsThink();
@@ -213,6 +283,14 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.LetsThink();
 
                 await TestHelper.MainMenuTransition("Button_Battle");
+                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
+                    null,
+                    () =>
+                    {
+                        Assert.Fail("Didn't match, so couldn't check.");
+                        return Task.CompletedTask;
+                    });
+
                 await TestHelper.AssertCurrentPageName("GameplayPage");
                 await TestHelper.WaitUntilPlayerOrderIsDecided();
                 TestHelper.AssertOverlordName();
@@ -232,9 +310,10 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
         {
+            await TestHelper.HandleLogin();
+
             await TestHelper.MainMenuTransition("Button_Play");
-            await TestHelper.AssertIfWentDirectlyToTutorial(
-                TestHelper.GoBackToMainAndPressPlay);
+            await TestHelper.AssertIfWentDirectlyToTutorial(TestHelper.GoBackToMainAndPressPlay);
 
             await TestHelper.AssertCurrentPageName("PlaySelectionPage");
             await TestHelper.MainMenuTransition("Button_PvPMode");

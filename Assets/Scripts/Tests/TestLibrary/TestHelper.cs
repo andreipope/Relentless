@@ -90,6 +90,8 @@ namespace Loom.ZombieBattleground.Test
 
         public BattlegroundController BattlegroundController => _battlegroundController;
 
+        public BackendDataControlMediator BackendDataControlMediator => _backendDataControlMediator;
+
         GameplayQueueAction<object> _callAbilityAction;
 
         private Player _currentPlayer, _opponentPlayer;
@@ -1033,6 +1035,14 @@ namespace Loom.ZombieBattleground.Test
         public async Task HandleLogin()
         {
             WaitStart(10);
+            await new WaitUntil(() =>
+            {
+
+                return CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") ||
+                    WaitTimeIsUp();
+            });
+
+            /*WaitStart(10);
             GameObject pressAnyText = null;
             await new WaitUntil(() =>
             {
@@ -1061,7 +1071,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 Assert.Fail(
                     $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
-            }
+            }*/
 
             /* await CombinedCheck (
                 CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
@@ -3143,16 +3153,6 @@ namespace Loom.ZombieBattleground.Test
                 if (IsGameEnded())
                     break;
             }
-
-            Debug.LogWarning("0");
-
-            await ClickGenericButton("Button_Continue");
-
-            Debug.LogWarning("1");
-
-            await AssertCurrentPageName("HordeSelectionPage");
-
-            Debug.LogWarning("2");
         }
 
         /// <summary>

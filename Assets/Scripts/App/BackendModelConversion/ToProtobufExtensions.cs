@@ -189,7 +189,7 @@ namespace Loom.ZombieBattleground.Data
 
                 DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle,
 
-                ForceFirstTurnUserId = debugCheatsConfiguration.ForceFirstTurnUserId
+                ForceFirstTurnUserId = debugCheatsConfiguration.ForceFirstTurnUserId ?? ""
             };
         }
     }

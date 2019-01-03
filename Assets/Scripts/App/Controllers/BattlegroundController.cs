@@ -327,7 +327,7 @@ namespace Loom.ZombieBattleground
                 Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ?
                     _gameplayManager.OpponentPlayer :
                     _gameplayManager.CurrentPlayer;
-                _cardsController.AddCardToHand(player);
+                _cardsController.AddCardToHand(player); ////!!!!
             }
         }
 

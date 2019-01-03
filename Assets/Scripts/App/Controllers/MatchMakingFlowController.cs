@@ -326,13 +326,16 @@ namespace Loom.ZombieBattleground
                 {
                     ErrorHandler(e);
                 }
-
-                return;
+            }
+            else if (exception is LoomException)
+            {
+                Debug.Log("Exception not handled, restarting matchmaking:" + exception.Message);
+                await Task.Delay(1000);
+                await RegisterPlayerToPool();
             }
             else
             {
-                Debug.Log("Exception not handled, restarting matchmaking:" + exception.Message);
-                await RegisterPlayerToPool();
+                throw exception;
             }
         }
 
