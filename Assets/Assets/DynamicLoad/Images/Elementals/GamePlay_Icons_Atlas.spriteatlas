@@ -100,6 +100,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5ee585aea3cbd514c87d1da9161247cf, type: 3}
   - {fileID: 21300000, guid: 1a5570ee60b8ecb499dc569b7aedd03e, type: 3}
   - {fileID: 21300000, guid: e62b68fe05d786b42899b62cf895875e, type: 3}
+  - {fileID: 21300000, guid: 884c120fe475c9c48a72b52508e233d4, type: 3}
   - {fileID: 21300000, guid: f199031faa37c1c49a3737868390c638, type: 3}
   m_PackedSpriteNamesToIndex:
   - battleground_mechanic_icon_destroy_large
@@ -142,6 +143,7 @@ SpriteAtlas:
   - battleground_mechanic_icon_attack_large
   - battleground_mechanic_icon_freeze_large
   - battleground_mechanic_icon_overflowx_large
+  - battleground_mechanic_icon_superserum_large
   - battleground_mechanic_icon_chainsaw_large
   m_Tag: GamePlay_Icons_Atlas
   m_IsVariant: 0
