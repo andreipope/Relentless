@@ -17,9 +17,9 @@ namespace Loom.ZombieBattleground.Data
 
         public int CurrentTutorialId = 0;
 
-        public float MusicVolume = 1;
+        public float MusicVolume = 0.3f;
 
-        public float SoundVolume = 1;
+        public float SoundVolume = 0.5f;
 
         public bool MusicMuted = false;
 
@@ -42,8 +42,8 @@ namespace Loom.ZombieBattleground.Data
             LastSelectedDeckId = -1;
             OpenedFirstPack = false;
             CurrentTutorialId = 0;
-            MusicVolume = 1;
-            SoundVolume = 1;
+            MusicVolume = 0.3f;
+            SoundVolume = 0.5f;
             MusicMuted = false;
             SoundMuted = false;
 #if !UNITY_ANDROID && !UNITY_IOS

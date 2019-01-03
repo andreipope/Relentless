@@ -76,6 +76,8 @@ namespace Loom.ZombieBattleground
 
         private InputField _emailFieldForgot;
 
+        private Image _backgroundDarkImage;
+
         private LoginState _state;
 
         private LoginState _lastPopupState;
@@ -120,6 +122,8 @@ namespace Loom.ZombieBattleground
                 Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoginPopup"));
             }
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _backgroundDarkImage = Self.GetComponent<Image>();
 
             _backgroundGroup = Self.transform.Find("Background");
 
@@ -415,6 +419,7 @@ namespace Loom.ZombieBattleground
             _versionMismatchGroup.gameObject.SetActive(false);
             _forgottenGroup.gameObject.SetActive(false);
             _forgottenSuccessGroup.gameObject.SetActive(false);
+            _backgroundDarkImage.enabled = true;
             switch (_state)
             {
                 case LoginState.InitiateLogin:
@@ -428,8 +433,7 @@ namespace Loom.ZombieBattleground
                     _registerGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.ValidateAndLogin:
-                    _backgroundGroup.gameObject.SetActive(true);
-                    _waitingGroup.gameObject.SetActive(true);
+                    _backgroundDarkImage.enabled = false;
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
@@ -499,6 +503,7 @@ namespace Loom.ZombieBattleground
             byte[] seedByte = CryptoUtils.HexStringToBytes(guidKey);
 
             BigInteger userIdNumber = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
+            userIdNumber = BigInteger.Abs(userIdNumber);
             userId = "ZombieSlayer_" + userIdNumber;
 
             privateKey = CryptoUtils.GeneratePrivateKey(seedByte);

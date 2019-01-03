@@ -4,7 +4,7 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: OverlordSelectorMask_Life
   m_Shader: {fileID: 4800000, guid: 4d9928fefd167d246a9350d6f216a497, type: 3}

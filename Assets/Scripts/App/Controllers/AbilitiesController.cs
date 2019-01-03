@@ -1168,7 +1168,10 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         0,
-                        null,
+                        new List<AbilityData.VisualEffectInfo>()
+                        {
+                            new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, "Prefabs/VFX/ReanimateVFX")
+                        },
                         Enumerators.GameMechanicDescriptionType.Reanimate,
                         default(Enumerators.SetType),
                         default(Enumerators.AbilitySubTrigger),

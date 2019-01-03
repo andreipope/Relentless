@@ -42,19 +42,29 @@ namespace Loom.ZombieBattleground
 
             foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
+                BoardUnitView unit = null;
+
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                            CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, IsPVPAbility);
+                            if (unit != null)
+                            {
+                                BattlegroundController.OpponentBoardCards.Add(unit);
+                            }
                         }
 
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
-                            CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, IsPVPAbility);
+                            if (unit != null)
+                            {
+                                BattlegroundController.PlayerBoardCards.Add(unit);
+                            }
                         }
 
                         break;

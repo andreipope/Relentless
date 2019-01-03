@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
-using Unity.Cloud.BugReporting;
-using Unity.Cloud.BugReporting.Plugin;
+using Unity.Cloud.UserReporting;
+using Unity.Cloud.UserReporting.Plugin;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
 
             AppState = stateTo;
 
-            UnityBugReporting.CurrentClient.LogEvent(BugReportEventLevel.Info, "App state: " + AppState);
+            UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
         }
 
         public void SetPausingApp(bool mustPause) {
