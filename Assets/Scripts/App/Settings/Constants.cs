@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        public const float PvPCheckPlayerAvailableMaxTime = 30f;
+        public const float PvPCheckPlayerAvailableMaxTime = 10f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -152,8 +152,6 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
-
-        public const bool DisableKeepAlive = true;
 
         public const bool MulliganEnabled = false;
 

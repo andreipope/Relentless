@@ -1137,7 +1137,9 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.PlayCardFromHand,
                 Caller = card,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
+                checkForCardOwner = false,
+                workingCard = card.WorkingCard
             });
         }
 

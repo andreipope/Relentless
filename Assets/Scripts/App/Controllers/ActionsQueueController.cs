@@ -22,10 +22,13 @@ namespace Loom.ZombieBattleground
 
         public GameplayQueueAction<object> ActionInProgress { get; private set; }
 
+        private List<PastActionsPopup.PastActionParam> _bufferActionsReports;
+
         public void Init()
         {
             _actionsToDo = new List<GameplayQueueAction<object>>();
             ActionsReports = new List<PastActionsPopup.PastActionParam>();
+            _bufferActionsReports = new List<PastActionsPopup.PastActionParam>();
             ActionInProgress = null;
         }
 
@@ -42,6 +45,7 @@ namespace Loom.ZombieBattleground
             StopAllActions();
 
             ActionsReports.Clear();
+            _bufferActionsReports.Clear();
 
             _nextActionId = 0;
         }
@@ -50,9 +54,35 @@ namespace Loom.ZombieBattleground
         {
             if (report != null)
             {
-                ActionsReports.Add(report);
-                GotNewActionReportEvent?.Invoke(report);
+                if (report.checkForCardOwner && !ActionsReports.Exists(x => x.workingCard == report.workingCard))
+                {
+                    _bufferActionsReports.Add(report);
+                }
+                else
+                {
+                    AddNewPostGameActionReport(report, !report.checkForCardOwner);
+                }
             }
+        }
+
+        private void AddNewPostGameActionReport(PastActionsPopup.PastActionParam report, bool checkBuffer = false)
+        {
+            ActionsReports.Add(report);
+            GotNewActionReportEvent?.Invoke(report);
+            if(checkBuffer)
+            {
+                CheckReportsInBuffer(report);
+            }
+        }
+
+        private void CheckReportsInBuffer(PastActionsPopup.PastActionParam report)
+        {
+            foreach (PastActionsPopup.PastActionParam sortingReport in _bufferActionsReports)
+            {
+                ActionsReports.Add(sortingReport);
+                GotNewActionReportEvent?.Invoke(sortingReport);
+            }
+            _bufferActionsReports.Clear();
         }
 
         /// <summary>
