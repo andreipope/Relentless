@@ -51,6 +51,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Logger?.Log("Auth Host: " + BackendEndpoint.AuthHost);
             Logger?.Log("Reader Host: " + BackendEndpoint.ReaderHost);
             Logger?.Log("Writer Host: " + BackendEndpoint.WriterHost);
+            Logger?.Log("Vault Host: " + BackendEndpoint.VaultHost);
             Logger?.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
@@ -274,6 +275,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string forgottenPasswordEndPoint = "/auth/mlink/generate";
 
+        private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
+
+        private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
+
         public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
@@ -316,6 +321,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
 
+            Debug.Log(httpResponseMessage.ReadToEnd());
             LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
                 httpResponseMessage.ReadToEnd());
             return loginData;
@@ -363,10 +369,107 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
+        public async Task<CreateVaultTokenData> CreateVaultToken(string otp, string accessToken)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            VaultTokenRequest vaultTokenRequest = new VaultTokenRequest();
+            vaultTokenRequest.authy_token = otp;
+            vaultTokenRequest.access_token = accessToken;
+
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+
+            CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
+                httpResponseMessage.ReadToEnd());
+            return vaultTokenData;
+        }
+
+        public async Task<GetVaultDataResponse> GetVaultData(string vaultToken)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.GET;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + accessVaultEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode.ToString() == Constants.VaultEmptyErrorCode)
+                {
+                    throw new Exception(httpResponseMessage.StatusCode.ToString());
+                }
+                else 
+                {
+                    throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+                }
+            }
+
+            GetVaultDataResponse getVaultDataResponse = JsonConvert.DeserializeObject<GetVaultDataResponse>(
+                httpResponseMessage.ReadToEnd());
+            return getVaultDataResponse;
+        }
+
+        public async Task<bool> SetVaultData(string vaultToken, string privateKey)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.GET;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + accessVaultEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            VaultPrivateKeyRequest vaultPrivateKeyRequest = new VaultPrivateKeyRequest();
+            vaultPrivateKeyRequest.privatekey = privateKey;
+
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultPrivateKeyRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+            }
+
+            return true;
+        }
+
         private struct LoginRequest 
         {
             public string email;
             public string password;
+        }
+
+        private struct VaultTokenRequest
+        {
+            public string authy_token;
+            public string access_token;
+        }
+
+        private struct VaultPrivateKeyRequest
+        {
+            public string privatekey;
         }
 
         private struct BetaKeyValidationResponse

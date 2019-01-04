@@ -155,7 +155,9 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool MulliganEnabled = false;
 
-        public const bool AlwaysGuestLogin = true;
+        public const bool AlwaysGuestLogin = false;
+
+        public const string VaultEmptyErrorCode = "404";
 
         internal const string FacebookAppId =
 #if USE_STAGING_BACKEND
