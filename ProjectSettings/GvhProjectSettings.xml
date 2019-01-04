@@ -6,10 +6,10 @@
   <projectSetting name="GooglePlayServices.AndroidPackageInstallationEnabled" value="True" />
   <projectSetting name="GooglePlayServices.AutoResolutionDisabledWarning" value="True" />
   <projectSetting name="GooglePlayServices.AutoResolverEnabled" value="True" />
-  <projectSetting name="GooglePlayServices.ExplodeAars" value="False" />
+  <projectSetting name="GooglePlayServices.ExplodeAars" value="True" />
   <projectSetting name="GooglePlayServices.FetchDependenciesWithGradle" value="False" />
   <projectSetting name="GooglePlayServices.PatchAndroidManifest" value="True" />
   <projectSetting name="GooglePlayServices.PrebuildWithGradle" value="False" />
   <projectSetting name="GooglePlayServices.UseGradleDaemon" value="True" />
-  <projectSetting name="GooglePlayServices.VerboseLogging" value="True" />
+  <projectSetting name="GooglePlayServices.VerboseLogging" value="False" />
 </projectSettings>
