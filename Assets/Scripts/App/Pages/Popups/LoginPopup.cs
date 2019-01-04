@@ -226,10 +226,6 @@ namespace Loom.ZombieBattleground
             if (_OTPFieldOTP.text.Length > 0)
             {
                 ConfirmOTPProcess();
-                //2. afterwards, access the vault
-                //3. 404 means vault is empty
-                //4. save private key if empty and wait for 204
-                //5. finalize login
             }
             else
             {
