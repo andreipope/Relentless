@@ -540,8 +540,15 @@ namespace Loom.ZombieBattleground
                     _registerGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.ValidateAndLogin:
-                    _backgroundGroup.gameObject.SetActive(true);
-                    _waitingGroup.gameObject.SetActive(true);
+                    if (_uiManager.GetPage<LoadingPage>().ConfirmIfActive())
+                    {
+                        _backgroundDarkImage.enabled = false;
+                    }
+                    else
+                    {
+                        _backgroundGroup.gameObject.SetActive(true);
+                        _waitingGroup.gameObject.SetActive(true);
+                    }
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
