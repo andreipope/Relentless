@@ -3,3 +3,9 @@
     public <methods>;
     public <fields>;
 }
+
+-keep public class com.facebook.unity.**
+-keepclassmembers class com.facebook.unity.** {
+    public <methods>;
+    public <fields>;
+}

@@ -61,6 +61,7 @@ namespace Loom.ZombieBattleground
             AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
+            AddService<IFacebookManager>(new FacebookManager());
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
