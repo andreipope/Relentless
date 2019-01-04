@@ -19,6 +19,7 @@ namespace Loom.ZombieBattleground.Test
             return AsyncTest(async () =>
             {
                 await StartOnlineMatch();
+                TestHelper.DebugCheatsConfiguration.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
@@ -31,27 +32,27 @@ namespace Loom.ZombieBattleground.Test
                     opponent => {},
                     player => {},
                     opponent => {},
-                    player => player.CardPlay(new InstanceId(38), 0),
+                    player => player.CardPlay(new InstanceId(36), 0),
                     opponent => opponent.CardPlay(new InstanceId(2), 0),
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                     opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                 };
 
                 MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);

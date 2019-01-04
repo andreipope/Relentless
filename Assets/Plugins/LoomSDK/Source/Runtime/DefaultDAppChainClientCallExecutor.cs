@@ -140,7 +140,7 @@ namespace Loom.Client
                     lastNonceException = e;
                 }
 
-                Debug.Log($"NonceLog: badNonceCount == {badNonceCount}, delay: {delay:F2}");
+                //Debug.Log($"NonceLog: badNonceCount == {badNonceCount}, delay: {delay:F2}");
 
                 // WaitForSecondsRealtime can throw a "get_realtimeSinceStartup can only be called from the main thread." error.
                 // WebGL doesn't have threads, so use WaitForSecondsRealtime for WebGL anyway
