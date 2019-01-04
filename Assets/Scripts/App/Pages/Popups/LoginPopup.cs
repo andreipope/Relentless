@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
 
         private IAnalyticsManager _analyticsManager;
 
+        private IAppStateManager _appStateManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -102,6 +104,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
         }
 
         public void Dispose()
@@ -497,7 +500,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
             Hide();
         }
@@ -540,7 +543,7 @@ namespace Loom.ZombieBattleground
                     _registerGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.ValidateAndLogin:
-                    if (_uiManager.GetPage<LoadingPage>().ConfirmIfActive())
+                    if (_appStateManager.AppState == Enumerators.AppState.APP_INIT)
                     {
                         _backgroundDarkImage.enabled = false;
                     }

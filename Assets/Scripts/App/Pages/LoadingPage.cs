@@ -136,11 +136,6 @@ namespace Loom.ZombieBattleground
             _isLoaded = false;
         }
 
-        public bool ConfirmIfActive () 
-        {
-            return !(_selfPage == null || !_selfPage.activeInHierarchy);
-        }
-
         public void Dispose()
         {
 
