@@ -306,6 +306,8 @@ namespace Loom.ZombieBattleground
             public Enumerators.ActionType ActionType;
             public object Caller;
             public List<TargetEffectParam> TargetEffects;
+            public bool checkForCardOwner;
+            public WorkingCard workingCard;
         }
 
         public class TargetEffectParam
