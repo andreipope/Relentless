@@ -187,10 +187,16 @@ namespace Loom.ZombieBattleground
             output = output.Replace('_', '/');
             switch (output.Length % 4)
             {
-                case 0: break; 
-                case 2: output += "=="; break;
-                case 3: output += "="; break; 
-                default: throw new Exception("Illegal base64url string!");
+                case 0: 
+                    break; 
+                case 2: 
+                    output += "=="; 
+                    break;
+                case 3: 
+                    output += "="; 
+                    break; 
+                default: 
+                    throw new Exception("Illegal base64url string!");
             }
             byte[] converted = Convert.FromBase64String(output); 
             return converted;
