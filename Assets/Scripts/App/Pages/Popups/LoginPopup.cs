@@ -10,6 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Loom.Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
@@ -41,6 +42,8 @@ namespace Loom.ZombieBattleground
 
         private Transform _waitingGroup;
 
+        private Transform _OTPGroup;
+
         private Transform _versionMismatchGroup;
 
         private TextMeshProUGUI _versionMismatchText;
@@ -67,6 +70,10 @@ namespace Loom.ZombieBattleground
 
         private Button _gotitForgotSuccessButton;
 
+        private Button _cancelOTPButton;
+
+        private Button _sendOTPButton;
+
         private InputField _emailFieldLogin;
         private InputField _passwordFieldLogin;
 
@@ -75,6 +82,8 @@ namespace Loom.ZombieBattleground
         private InputField _confirmFieldRegister;
 
         private InputField _emailFieldForgot;
+
+        private InputField _OTPFieldOTP;
 
         private LoginState _state;
 
@@ -149,10 +158,16 @@ namespace Loom.ZombieBattleground
             _gotitForgotSuccessButton = _forgottenSuccessGroup.transform.Find("Button_Confirm_BG/Button_Confirm").GetComponent<Button>();
 
             _waitingGroup = Self.transform.Find("Waiting_Group");
+
             _versionMismatchGroup = Self.transform.Find("VersionMismatch_Group");
             _versionMismatchText = _versionMismatchGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
             _versionMismatchExitButton = _versionMismatchGroup.Find("Button_Exit").GetComponent<Button>();
             _versionMismatchExitButton.onClick.AddListener(Application.Quit);
+
+            _OTPGroup = Self.transform.Find("OTP_Group");
+            _sendOTPButton = _OTPGroup.transform.Find("Button_Send_BG/Button_Send").GetComponent<Button>();
+            _cancelOTPButton = _OTPGroup.transform.Find("Button_Cancel_BG/Button_Cancel").GetComponent<Button>();
+            _OTPFieldOTP = _OTPGroup.transform.Find("OTP_BG/OTP_InputField").GetComponent<InputField>();
 
             _loginButton.onClick.AddListener(PressedLoginHandler);
             _registerButton.onClick.AddListener(PressedRegisterHandler);
@@ -164,6 +179,8 @@ namespace Loom.ZombieBattleground
             _sendForgotButton.onClick.AddListener(PressedSendForgotPasswordHandler);
             _closeLoginButton.onClick.AddListener(Hide);
             _closeRegisterButton.onClick.AddListener(Hide);
+            _cancelOTPButton.onClick.AddListener(PressedGoToLoginHandler);
+            _sendOTPButton.onClick.AddListener(PressedSendOTPHandler);
 
             if (!Constants.AlwaysGuestLogin)
             {
@@ -194,14 +211,29 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.LoginAsGuest);
         }
 
-        public void SetLoginFieldsDataAndInitiateLogin (string _email, string _password) 
+        public void SetLoginFieldsData (string _email, string _password) 
         {
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
             SetUIState(LoginState.InitiateLogin);
-            if (!Constants.AlwaysGuestLogin)
+        }
+
+        private void PressedSendOTPHandler() 
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            if (_OTPFieldOTP.text.Length > 0)
             {
-                LoginProcess(false);
+                ConfirmOTPProcess();
+                //2. afterwards, access the vault
+                //3. 404 means vault is empty
+                //4. save private key if empty and wait for 204
+                //5. finalize login
+            }
+            else
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input a valid OTP.");
             }
         }
 
@@ -274,6 +306,46 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private async void ConfirmOTPProcess()
+        {
+            SetUIState(LoginState.ValidateAndLogin);
+            try
+            {
+                CreateVaultTokenData vaultTokenData =  await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
+                _backendDataControlMediator.UserDataModel.PrivateKey = Encoding.UTF8.GetBytes(vaultDataData.data.privatekey);
+                CompleteLoginFromCurrentSetUserData();
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Constants.VaultEmptyErrorCode) 
+                {
+                    UpdatePrivateKeyProcess();
+                }
+                else 
+                {
+                    Debug.Log(e.ToString());
+                    SetUIState(LoginState.ValidationFailed);
+                }
+            }
+        }
+
+        private async void UpdatePrivateKeyProcess()
+        {
+            SetUIState(LoginState.ValidateAndLogin);
+            try
+            {
+                CreateVaultTokenData vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Encoding.UTF8.GetString(_backendDataControlMediator.UserDataModel.PrivateKey));
+                CompleteLoginFromCurrentSetUserData();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+                SetUIState(LoginState.ValidationFailed);
+            }
+        }
+
         private async void ForgottenPasswordProcess()
         {
             SetUIState(LoginState.ValidateAndLogin);
@@ -297,8 +369,9 @@ namespace Loom.ZombieBattleground
             {
                 RegisterData registerData = await _backendFacade.InitiateRegister(_emailFieldRegister.text, _passwordFieldRegister.text);
 
-                SetLoginFieldsDataAndInitiateLogin(_emailFieldRegister.text, _passwordFieldRegister.text);
+                SetLoginFieldsData(_emailFieldRegister.text, _passwordFieldRegister.text);
 
+                LoginProcess(false);
                 return;
             }
             catch (Exception e)
@@ -319,6 +392,8 @@ namespace Loom.ZombieBattleground
                 byte[] publicKey;
                 LoginData loginData;
                 string userId;
+                int authyId = 0;
+                string accessToken = "";
 
                 string GUID = _lastGUID ?? Guid.NewGuid().ToString();
 
@@ -333,10 +408,18 @@ namespace Loom.ZombieBattleground
                 else 
                 {
                     loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
-                    Debug.Log(loginData.accessToken);
-                    UserInfo userInfo = await _backendFacade.GetUserInfo(loginData.accessToken);
 
-                    userId = "ZombieSlayer_" + userInfo.UserId;
+                    string payload = loginData.accessToken.Split('.')[1];
+
+                    string decodedText = Encoding.UTF8.GetString(Utilites.Base64UrlDecode(payload));
+
+                    AccessTokenData accessTokenData = JsonConvert.DeserializeObject<AccessTokenData>(decodedText);
+
+                    authyId = accessTokenData.authy_id;
+
+                    accessToken = loginData.accessToken;
+
+                    userId = "ZombieSlayer_" + accessTokenData.user_id;
                     GenerateKeysAndUserFromUserID(userId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
 
                     privateKey = privateKeyFromUserId;
@@ -349,18 +432,31 @@ namespace Loom.ZombieBattleground
                     IsRegistered = !isGuest,
                     Email = _emailFieldLogin.text,
                     Password = _passwordFieldLogin.text,
-                    GUID = GUID
+                    GUID = GUID,
+                    AccessToken = accessToken
                 };
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
-                await _backendDataControlMediator.LoginAndLoadData();
 
-                userDataModel.IsValid = true;
-                _backendDataControlMediator.SetUserDataModel(userDataModel);
+                if (authyId != 0) 
+                {
+                    SetUIState(LoginState.PromptOTP);
+                    return;
+                }
 
-                SuccessfulLogin();
+                _OTPFieldOTP.text = "";
 
-                _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+                if (isGuest)
+                {
+                    CompleteLoginFromCurrentSetUserData();
+                }
+                else
+                {
+                    CompleteLoginFromCurrentSetUserData();
+                    //TODO Remove the line above, and uncomment the one below
+                    //once Parth implements Create Vault Token for users without 2FA
+                    //ConfirmOTPProcess();
+                }
 
                 return;
             }
@@ -376,6 +472,19 @@ namespace Loom.ZombieBattleground
             }
 
             _loginButton.enabled = true;
+        }
+
+        public async void CompleteLoginFromCurrentSetUserData () {
+            SetUIState(LoginState.ValidateAndLogin);
+
+            await _backendDataControlMediator.LoginAndLoadData();
+
+            _backendDataControlMediator.UserDataModel.IsValid = true;
+            _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
+
+            SuccessfulLogin();
+
+            _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
         }
 
         private void SuccessfulLogin()
@@ -415,6 +524,7 @@ namespace Loom.ZombieBattleground
             _versionMismatchGroup.gameObject.SetActive(false);
             _forgottenGroup.gameObject.SetActive(false);
             _forgottenSuccessGroup.gameObject.SetActive(false);
+            _OTPGroup.gameObject.SetActive(false);
             switch (_state)
             {
                 case LoginState.InitiateLogin:
@@ -452,6 +562,11 @@ namespace Loom.ZombieBattleground
                 case LoginState.SuccessForgotPassword:
                     _backgroundGroup.gameObject.SetActive(false);
                     _forgottenSuccessGroup.gameObject.SetActive(true);
+                    break;
+                case LoginState.PromptOTP:
+                    _lastPopupState = _state;
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _OTPGroup.gameObject.SetActive(true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_state), _state, null);
@@ -515,7 +630,8 @@ namespace Loom.ZombieBattleground
             RemoteVersionMismatch,
             LoginAsGuest,
             ForgotPassword,
-            SuccessForgotPassword
+            SuccessForgotPassword,
+            PromptOTP
         }
     }
 }

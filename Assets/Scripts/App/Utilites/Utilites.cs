@@ -180,6 +180,22 @@ namespace Loom.ZombieBattleground
             return new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read);
         }
 
+        public static byte[] Base64UrlDecode(string input)
+        {
+            string output = input;
+            output = output.Replace('-', '+');
+            output = output.Replace('_', '/');
+            switch (output.Length % 4)
+            {
+                case 0: break; 
+                case 2: output += "=="; break;
+                case 3: output += "="; break; 
+                default: throw new Exception("Illegal base64url string!");
+            }
+            byte[] converted = Convert.FromBase64String(output); 
+            return converted;
+        }
+
         #endregion cryptography
     }
 }
