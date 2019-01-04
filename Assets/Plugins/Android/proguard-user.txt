@@ -1,0 +1,5 @@
+-keep public class com.google.android.gms.**
+-keepclassmembers class com.google.android.gms.** {
+    public <methods>;
+    public <fields>;
+}
