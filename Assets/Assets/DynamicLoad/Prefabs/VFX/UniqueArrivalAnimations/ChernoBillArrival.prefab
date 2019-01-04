@@ -716,7 +716,7 @@ GameObject:
   - component: {fileID: 4459908623892612}
   - component: {fileID: 198000799606903514}
   - component: {fileID: 199972032967636792}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: bot_pt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
