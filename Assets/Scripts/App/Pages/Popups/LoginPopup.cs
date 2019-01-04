@@ -313,7 +313,7 @@ namespace Loom.ZombieBattleground
             {
                 CreateVaultTokenData vaultTokenData =  await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
                 GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
-                _backendDataControlMediator.UserDataModel.PrivateKey = Encoding.UTF8.GetBytes(vaultDataData.data.privatekey);
+                _backendDataControlMediator.UserDataModel.PrivateKey = Convert.FromBase64String(vaultDataData.data.privatekey);
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
@@ -540,7 +540,8 @@ namespace Loom.ZombieBattleground
                     _registerGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.ValidateAndLogin:
-                    _backgroundDarkImage.enabled = false;
+                    _backgroundGroup.gameObject.SetActive(true);
+                    _waitingGroup.gameObject.SetActive(true);
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
