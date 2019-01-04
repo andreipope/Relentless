@@ -32,9 +32,9 @@ namespace Loom.ZombieBattleground.Editor
             PlayerSettings.Android.bundleVersionCode = buildMetaInfo.CloudBuildBuildNumber;
 #endif
 
-           // EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
-          //  EditorUserBuildSettings.androidDebugMinification = AndroidMinification.Gradle;
-          //  EditorUserBuildSettings.androidReleaseMinification = AndroidMinification.Gradle;
+            EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
+            EditorUserBuildSettings.androidDebugMinification = AndroidMinification.Gradle;
+            EditorUserBuildSettings.androidReleaseMinification = AndroidMinification.Gradle;
         }
     }
 }
