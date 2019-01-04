@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (!Constants.DisableKeepAlive && _isCheckPlayerAvailableTimerStart)
+            if (_isCheckPlayerAvailableTimerStart)
             {
                 _checkPlayerTimer += Time.unscaledDeltaTime;
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
