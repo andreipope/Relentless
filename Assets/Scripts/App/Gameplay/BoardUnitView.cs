@@ -368,8 +368,6 @@ namespace Loom.ZombieBattleground
                         StopSleepingParticles();
                     }
                     break;
-                case Enumerators.CardType.NONE:
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }

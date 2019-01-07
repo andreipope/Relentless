@@ -358,7 +358,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                 DebugClient.PlayerActionFactory.CardAttack(
                                     new Data.InstanceId(attackers[_gameActionsState.CardAttackAttackerIndex].InstanceId.Id),
                                     _gameActionsState.CardAttackAffectObjectType,
-                                    new Data.InstanceId(targets[_gameActionsState.CardAttackTargetIndex].InstanceId.Id)
+                                    new Data.InstanceId(targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex].InstanceId.Id)
                                 )
                             )
                         );

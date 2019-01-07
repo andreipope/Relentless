@@ -103,6 +103,7 @@ namespace Loom.ZombieBattleground.Test
 
         private float _waitStartTime;
         private float _waitAmount;
+        private bool _waitUnscaledTime;
 
         private const int MinTurnForAttack = 0;
         public BoardCard CurrentSpellCard;
@@ -733,7 +734,7 @@ namespace Loom.ZombieBattleground.Test
             if (expectedPageName == _lastCheckedPageName)
                 return;
 
-            WaitStart(pageTransitionWaitTime);
+            WaitStart(pageTransitionWaitTime, true);
             bool transitionTimeout = false;
 
             GameObject errorTextObject = null;
@@ -1781,8 +1782,7 @@ namespace Loom.ZombieBattleground.Test
 
             switch (card.LibraryCard.CardKind)
             {
-                case Enumerators.CardKind.CREATURE
-                    when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
+                case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
                         BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
@@ -3627,7 +3627,7 @@ namespace Loom.ZombieBattleground.Test
                 {
                     selectedHordeTransform.Find("Button_Select").GetComponent<Button>().onClick.Invoke();
 
-                    SelectedHordeIndex = i;
+                    SelectedHordeIndex = i - 1;
                     hordeSelected = true;
                 }
             }
@@ -3658,7 +3658,8 @@ namespace Loom.ZombieBattleground.Test
             }
 
             GameObject hordesParent = GameObject.Find("Panel_DecksContainer/Group");
-            Transform selectedHordeTransform = hordesParent.transform.GetChild(index);
+            // +1 to account for Item_HordeSelectionNewHordeLeft
+            Transform selectedHordeTransform = hordesParent.transform.GetChild(index + 1);
             selectedHordeTransform.Find("Button_Select").GetComponent<Button>().onClick.Invoke();
 
             await LetsThink();
@@ -3979,9 +3980,11 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <remarks>Useful in case you have concern of getting a response for a request. To be coupled with WaitTimeIsUp.</remarks>
         /// <param name="waitAmount">Wait amount.</param>
-        private void WaitStart(int waitAmount)
+        private void WaitStart(int waitAmount, bool unscaledTime = false)
         {
-            _waitStartTime = Time.time;
+            _waitUnscaledTime = unscaledTime;
+
+            _waitStartTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
 
             _waitAmount = waitAmount;
         }
@@ -3993,7 +3996,8 @@ namespace Loom.ZombieBattleground.Test
         /// <returns><c>true</c>, if time is up, <c>false</c> otherwise.</returns>
         private bool WaitTimeIsUp(string dummyParameter = "")
         {
-            return Time.time > _waitStartTime + _waitAmount;
+            float baseTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
+            return baseTime > _waitStartTime + _waitAmount;
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)

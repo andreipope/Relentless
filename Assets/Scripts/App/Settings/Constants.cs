@@ -82,8 +82,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaximumPlayerGoo = 10;
 
-        internal const int FirstGameTurnIndex = 1;
-
         internal const int DefaultCardsInHandAtStartGame = 3;
 
         internal const float DelayBetweenGameplayActions = 0.1f;
@@ -139,7 +137,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        public const float PvPCheckPlayerAvailableMaxTime = 10f;
+        public const float PvPCheckPlayerAvailableMaxTime = 30f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
