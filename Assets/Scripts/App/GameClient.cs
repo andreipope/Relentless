@@ -56,12 +56,12 @@ namespace Loom.ZombieBattleground
             AddService<BackendFacade>(new BackendFacade(backendEndpoint, contract => new ThreadedTimeMetricsContractCallProxy(contract, false, true)));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
+            AddService<IFacebookManager>(new FacebookManager());
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
-            AddService<IFacebookManager>(new FacebookManager());
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()

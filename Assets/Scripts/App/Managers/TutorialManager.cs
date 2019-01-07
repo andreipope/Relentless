@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -7,8 +6,6 @@ using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
-using System.Linq;
-using mixpanel;
 
 namespace Loom.ZombieBattleground
 {
@@ -188,9 +185,9 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             TutorialDuration.FinishTimer();
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTutorialTimeToComplete] = TutorialDuration.GetTimeDiffrence();
-            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial, props);
+            Dictionary<string, object> eventParameters = new Dictionary<string, object>();
+            eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDiffrence());
+            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial, eventParameters);
         }
 
         public void SkipTutorial(Enumerators.AppState state)
