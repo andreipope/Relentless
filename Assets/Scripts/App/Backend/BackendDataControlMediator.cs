@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Newtonsoft.Json;
 using UnityEngine;
+using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
