@@ -1,12 +1,8 @@
-using Facebook.MiniJSON;
 using Facebook.Unity;
-using Facebook.Unity.Editor;
 using Facebook.Unity.Settings;
 using Loom.ZombieBattleground.Common;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -63,6 +59,14 @@ namespace Loom.ZombieBattleground
                 return;
 
             FB.ShareLink(new Uri(uri), title, description, new Uri(imageUri), FeedShareResponse);
+        }
+
+        public void LogEvent(string logEvent, float? valueToSum = null, Dictionary<string, object> parameters = null)
+        {
+            if (!FB.IsInitialized)
+                return;
+
+            FB.LogAppEvent(logEvent, valueToSum, parameters);
         }
 
         private void OnInitComplete()

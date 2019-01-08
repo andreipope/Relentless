@@ -17,5 +17,6 @@ namespace Loom.ZombieBattleground
         void InitFacebook();
 
         void FeedShare(string title, string caption, string description, string uri, string imageUri);
+        void LogEvent(string logEvent, float? valueToSum = null, Dictionary<string, object> parameters = null);
     }
 }
