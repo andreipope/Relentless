@@ -279,6 +279,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
 
+        private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
+
         public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
@@ -378,6 +380,32 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             VaultTokenRequest vaultTokenRequest = new VaultTokenRequest();
             vaultTokenRequest.authy_token = otp;
+            vaultTokenRequest.access_token = accessToken;
+
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+
+            CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
+                httpResponseMessage.ReadToEnd());
+            return vaultTokenData;
+        }
+
+        public async Task<CreateVaultTokenData> CreateVaultTokenForNon2FAUsers(string accessToken)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenForNon2FAUsersEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            VaultTokenRequest vaultTokenRequest = new VaultTokenRequest();
             vaultTokenRequest.access_token = accessToken;
 
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));

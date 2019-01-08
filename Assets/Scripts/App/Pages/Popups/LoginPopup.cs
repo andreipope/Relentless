@@ -309,12 +309,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void ConfirmOTPProcess()
+        private async void ConfirmOTPProcess(bool noOTP = false)
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                CreateVaultTokenData vaultTokenData =  await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                CreateVaultTokenData vaultTokenData;
+                if (noOTP)
+                {
+                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                }
+                else
+                {
+                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                }
                 GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
                 _backendDataControlMediator.UserDataModel.PrivateKey = Convert.FromBase64String(vaultDataData.data.privatekey);
                 CompleteLoginFromCurrentSetUserData();
