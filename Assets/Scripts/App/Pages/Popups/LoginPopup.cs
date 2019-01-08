@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldForgot.text.Length > 0 && Utilites.validateEmail(_emailFieldForgot.text)) 
+            if (_emailFieldForgot.text.Length > 0 && Utilites.ValidateEmail(_emailFieldForgot.text)) 
             {
                 ForgottenPasswordProcess();
             }
@@ -282,7 +282,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldRegister.text.Length > 0 && Utilites.validateEmail(_emailFieldRegister.text) && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
+            if (_emailFieldRegister.text.Length > 0 && Utilites.ValidateEmail(_emailFieldRegister.text) && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
             {
                 _registerButton.enabled = false;
                 RegisterProcess();
@@ -298,7 +298,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldLogin.text.Length > 0 && Utilites.validateEmail(_emailFieldLogin.text) && _passwordFieldLogin.text.Length > 0)
+            if (_emailFieldLogin.text.Length > 0 && Utilites.ValidateEmail(_emailFieldLogin.text) && _passwordFieldLogin.text.Length > 0)
             {
                 _loginButton.enabled = false;
                 LoginProcess(false);

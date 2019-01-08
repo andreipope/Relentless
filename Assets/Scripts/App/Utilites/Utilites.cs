@@ -204,7 +204,7 @@ namespace Loom.ZombieBattleground
             return converted;
         }
 
-        public static bool validateEmail(string email)
+        public static bool ValidateEmail(string email)
         {
             return email != null ? Regex.IsMatch(email, Constants.MatchEmailPattern) : false;
         }
