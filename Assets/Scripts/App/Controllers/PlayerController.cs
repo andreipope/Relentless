@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
 {
@@ -93,14 +94,15 @@ namespace Loom.ZombieBattleground
         {
             StopHandTimer();
             _timerManager.StopTimer(SetStatusZoomingFalse);
-            _timerManager.StopTimer(UpdateCardDistribution);
         }
 
-        public void InitializePlayer(int playerId)
+        public void InitializePlayer(Data.InstanceId instanceId)
         {
-            Player player = new Player(playerId, GameObject.Find("Player"), false);
+            Player player = new Player(instanceId, GameObject.Find("Player"), false);
 
             _gameplayManager.CurrentPlayer = player;
+
+            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfHero);
 
             if (!_gameplayManager.IsSpecificGameplayBattleground)
             {
@@ -122,7 +124,7 @@ namespace Loom.ZombieBattleground
 // playerDeck.Add("Nail Bomb");
 #endif
 
-                                workingDeck.Add(new WorkingCard(_dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName), player));
+                                workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, player));
                             }
                         }
 
@@ -131,8 +133,13 @@ namespace Loom.ZombieBattleground
                     case Enumerators.MatchType.PVP:
                         foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
                         {
-                            workingDeck.Add(_pvpManager.GetWorkingCardFromCardInstance(cardInstance, player));
+                            workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
+
+                        Debug.Log(
+                            $"Player ID {instanceId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
+                            String.Join("\n", workingDeck.Cast<object>().ToArray())
+                        );
 
                         isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
                         break;
@@ -158,8 +165,13 @@ namespace Loom.ZombieBattleground
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
                         player.PvPPlayerState.CardsInHand
-                        .Select(instance => _pvpManager.GetWorkingCardFromCardInstance(instance, player))
+                        .Select(instance => instance.FromProtobuf(player))
                         .ToList();
+
+                    Debug.Log(
+                        $"Player ID {player.InstanceId}, local: {player.IsLocalPlayer}, added CardsInHand:\n" +
+                        String.Join("\n", workingCards.Cast<object>().ToArray())
+                    );
 
                     player.SetFirstHandForPvPMatch(workingCards);
                     break;
@@ -167,13 +179,8 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            _timerManager.AddTimer(UpdateCardDistribution);
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-        }
-
-        private void UpdateCardDistribution(object[] param)
-        {
-            _cardsController.UpdatePositionOfCardsForDistribution(_gameplayManager.CurrentPlayer);
+            player.MulliganWasStarted = true;
         }
 
         public virtual void GameStartedHandler()
@@ -311,7 +318,7 @@ namespace Loom.ZombieBattleground
                         BoardUnitView selectedBoardUnitView =
                             _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
                         if (selectedBoardUnitView != null && (!_battlegroundController.IsPreviewActive ||
-                            selectedBoardUnitView.Model.Card.Id != _battlegroundController.CurrentPreviewedCardId))
+                            selectedBoardUnitView.Model.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
                         {
                             float delta = Application.isMobilePlatform ?
                                 Constants.PointerMinDragDelta * 2f :
@@ -393,7 +400,7 @@ namespace Loom.ZombieBattleground
             _topmostBoardCard = null;
             _selectedBoardUnitView = null;
 
-            _battlegroundController.CurrentPreviewedCardId = -1;
+            _battlegroundController.CurrentPreviewedCardId = InstanceId.Invalid;
         }
 
         private void CheckCardPreviewShow()

@@ -2,30 +2,35 @@ using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
+using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class RestoreDefRandomlySplitAbility : AbilityBase
     {
-        private List<object> _targets;
+        private List<BoardObject> _targets;
 
-        public int Value;
+        public int Count;
         public List<Enumerators.AbilityTargetType> TargetTypes;
 
         public RestoreDefRandomlySplitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Count = ability.Count;
             TargetTypes = ability.AbilityTargetTypes;
 
-            _targets = new List<object>();
+            _targets = new List<BoardObject>();
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Restore);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -39,26 +44,33 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             FillRandomTargets();
+            InvokeActionTriggered(_targets);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
             SplitDefense();
         }
 
         private void FillRandomTargets()
         {
-            foreach(Enumerators.AbilityTargetType targetType in TargetTypes)
+            foreach (Enumerators.AbilityTargetType targetType in TargetTypes)
             {
-                switch(targetType)
+                switch (targetType)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        _targets.Add(GameplayManager.OpponentPlayer);
+                        _targets.Add(GetOpponentOverlord());
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        _targets.Add(GameplayManager.CurrentPlayer);
+                        _targets.Add(PlayerCallerOfAbility);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _targets.AddRange(GameplayManager.CurrentPlayer.BoardCards);
+                        _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _targets.AddRange(GameplayManager.OpponentPlayer.BoardCards);
+                        _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);
@@ -71,27 +83,68 @@ namespace Loom.ZombieBattleground
             if (_targets.Count == 0)
                 return;
 
-            int maxCount = Value;
+            List<ParametrizedAbilityBoardObject> abilityTargets = new List<ParametrizedAbilityBoardObject>();    
+
+            int maxCount = Count;
             int defenseValue = 0;
             int blocksCount = _targets.Count;
-            object currentTarget = null;
+            BoardObject currentTarget = null;
+
+            int deltaHealth = 0;
 
             while (maxCount > 0)
             {
-                defenseValue = UnityEngine.Random.Range(1, blocksCount > Value ? Value + 1 : _targets.Count);
                 currentTarget = _targets[UnityEngine.Random.Range(0, _targets.Count)];
-                RestoreDefenseOfTarget(currentTarget, defenseValue);
+               
+                switch (currentTarget)
+                {
+                    case BoardUnitModel unit:
+                        deltaHealth = unit.MaxCurrentHp - unit.CurrentHp;
+                        break;
+                    case Player player:
+                        deltaHealth = player.MaxCurrentHp - player.Defense;
+                        break;
+                }
+
+                defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, maxCount);
+                defenseValue = Mathf.Clamp(defenseValue, 0, deltaHealth);
+
                 maxCount -= defenseValue;
-                _targets.Remove(currentTarget);
+
+                if (defenseValue > 0)
+                {
+                    RestoreDefenseOfTarget(currentTarget, defenseValue);
+                }
+
+                if (defenseValue == deltaHealth)
+                {
+                    _targets.Remove(currentTarget);
+                }
+
+                abilityTargets.Add(new ParametrizedAbilityBoardObject()
+                {
+                    BoardObject = currentTarget,
+                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                    {
+                        Defense = defenseValue
+                    }
+                });
+
+                if (_targets.Count == 0)
+                {
+                    maxCount = 0;
+                }
             }
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, abilityTargets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)
         {
             switch (target)
             {
-                case BoardUnitView unit:
-                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit.Model, defenseValue);
+                case BoardUnitModel unit:
+                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, defenseValue);
                     break;
                 case Player player:
                     BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, defenseValue);

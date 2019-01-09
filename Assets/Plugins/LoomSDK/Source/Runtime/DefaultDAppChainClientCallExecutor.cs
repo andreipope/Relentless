@@ -2,72 +2,81 @@ using System;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Loom.Client.Internal;
+using Loom.Client.Internal.AsyncEx;
+using UnityEngine;
 
 namespace Loom.Client
 {
+    /// <summary>
+    /// Default call executor provides handling for general blockchain situations.
+    /// 1. Calls throw a <see cref="TimeoutException"/> if the calls receives no response for too long.
+    /// 2. Calls are queued, there can be only one active call at any given moment.
+    /// 3. If the blockchain reports an invalid nonce, the call will be retried a number of times.
+    /// </summary>
     public class DefaultDAppChainClientCallExecutor : IDAppChainClientCallExecutor
     {
         private readonly AsyncSemaphore callAsyncSemaphore = new AsyncSemaphore(1);
+        private readonly IDAppChainClientConfigurationProvider configurationProvider;
 
-        public DAppChainClientConfiguration Configuration { get; }
-
-        public DefaultDAppChainClientCallExecutor(DAppChainClientConfiguration configuration)
+        public DefaultDAppChainClientCallExecutor(IDAppChainClientConfigurationProvider configurationProvider)
         {
-            this.Configuration = configuration;
+            if (configurationProvider == null)
+                throw new ArgumentNullException(nameof(configurationProvider));
+
+            this.configurationProvider = configurationProvider;
         }
 
-        public async Task<T> Call<T>(Func<Task<T>> taskProducer)
+        public virtual async Task<T> Call<T>(Func<Task<T>> taskProducer)
         {
             Task<T> task = (Task<T>) await ExecuteTaskWithRetryOnInvalidTxNonceException(
                 () => ExecuteTaskWaitForOtherTasks(
-                    () => ExecuteTaskWithTimeout(taskProducer, this.Configuration.CallTimeout)
+                    () => ExecuteTaskWithTimeout(taskProducer, this.configurationProvider.Configuration.CallTimeout)
                 ));
 
             return await task;
         }
 
-        public async Task Call(Func<Task> taskProducer)
+        public virtual async Task Call(Func<Task> taskProducer)
         {
             Task task = await ExecuteTaskWithRetryOnInvalidTxNonceException(
                 () => ExecuteTaskWaitForOtherTasks(
-                    () => ExecuteTaskWithTimeout(taskProducer, this.Configuration.CallTimeout)
+                    () => ExecuteTaskWithTimeout(taskProducer, this.configurationProvider.Configuration.CallTimeout)
                 ));
 
             await task;
         }
 
-        public async Task<T> StaticCall<T>(Func<Task<T>> taskProducer)
+        public virtual async Task<T> StaticCall<T>(Func<Task<T>> taskProducer)
         {
             Task<T> task = (Task<T>) await ExecuteTaskWaitForOtherTasks(
-                () => ExecuteTaskWithTimeout(taskProducer, this.Configuration.StaticCallTimeout)
+                () => ExecuteTaskWithTimeout(taskProducer, this.configurationProvider.Configuration.StaticCallTimeout)
             );
 
             return await task;
         }
 
-        public async Task StaticCall(Func<Task> taskProducer)
+        public virtual async Task StaticCall(Func<Task> taskProducer)
         {
             Task task = await ExecuteTaskWaitForOtherTasks(
-                () => ExecuteTaskWithTimeout(taskProducer, this.Configuration.StaticCallTimeout)
+                () => ExecuteTaskWithTimeout(taskProducer, this.configurationProvider.Configuration.StaticCallTimeout)
             );
 
             await task;
         }
 
-        public async Task<T> UnsafeStaticCall<T>(Func<Task<T>> taskProducer)
+        public virtual async Task<T> NonBlockingStaticCall<T>(Func<Task<T>> taskProducer)
         {
-            Task<T> task = (Task<T>) await ExecuteTaskWithTimeout(taskProducer, this.Configuration.StaticCallTimeout);
+            Task<T> task = (Task<T>) await ExecuteTaskWithTimeout(taskProducer, this.configurationProvider.Configuration.StaticCallTimeout);
             return await task;
         }
 
-        public async Task UnsafeStaticCall(Func<Task> taskProducer)
+        public virtual async Task NonBlockingStaticCall(Func<Task> taskProducer)
         {
-            Task task = await ExecuteTaskWithTimeout(taskProducer, this.Configuration.StaticCallTimeout);
+            Task task = await ExecuteTaskWithTimeout(taskProducer, this.configurationProvider.Configuration.StaticCallTimeout);
             await task;
         }
 
-        private static async Task<Task> ExecuteTaskWithTimeout(Func<Task> taskProducer, int timeoutMs)
+        protected virtual async Task<Task> ExecuteTaskWithTimeout(Func<Task> taskProducer, int timeoutMs)
         {
             Task task = taskProducer();
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -99,7 +108,7 @@ namespace Loom.Client
 #endif
         }
 
-        private async Task<Task> ExecuteTaskWaitForOtherTasks(Func<Task<Task>> taskProducer)
+        protected virtual async Task<Task> ExecuteTaskWaitForOtherTasks(Func<Task<Task>> taskProducer)
         {
             try
             {
@@ -113,9 +122,11 @@ namespace Loom.Client
             }
         }
 
-        private async Task<Task> ExecuteTaskWithRetryOnInvalidTxNonceException(Func<Task<Task>> taskTaskProducer)
+        protected virtual async Task<Task> ExecuteTaskWithRetryOnInvalidTxNonceException(Func<Task<Task>> taskTaskProducer)
         {
             int badNonceCount = 0;
+            float delay = 0.5f;
+            InvalidTxNonceException lastNonceException;
             do
             {
                 try
@@ -123,22 +134,27 @@ namespace Loom.Client
                     Task<Task> task = taskTaskProducer();
                     await task;
                     return await task;
-                } catch (InvalidTxNonceException)
+                } catch (InvalidTxNonceException e)
                 {
                     badNonceCount++;
+                    lastNonceException = e;
                 }
+
+                Debug.Log($"NonceLog: badNonceCount == {badNonceCount}, delay: {delay:F2}");
 
                 // WaitForSecondsRealtime can throw a "get_realtimeSinceStartup can only be called from the main thread." error.
                 // WebGL doesn't have threads, so use WaitForSecondsRealtime for WebGL anyway
-                const float delay = 0.5f;
 #if UNITY_WEBGL && !UNITY_EDITOR
                 await new WaitForSecondsRealtime(delay);
 #else
                 await Task.Delay(TimeSpan.FromSeconds(delay));
 #endif
-            } while (this.Configuration.InvalidNonceTxRetries != 0 && badNonceCount <= this.Configuration.InvalidNonceTxRetries);
+                delay *= 2f;
+            } while (
+                this.configurationProvider.Configuration.InvalidNonceTxRetries != 0 &&
+                badNonceCount <= this.configurationProvider.Configuration.InvalidNonceTxRetries);
 
-            throw new InvalidTxNonceException(1, "sequence number does not match");
+            throw lastNonceException;
         }
     }
 }

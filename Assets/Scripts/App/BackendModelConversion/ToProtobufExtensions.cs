@@ -1,62 +1,195 @@
-using System.Collections.Generic;
-using Loom.Google.Protobuf.Collections;
+using System.Linq;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground.Data
 {
     public static class ToProtobufExtensions
     {
-        public static CardPrototype GetCardPrototype(this Card card)
+        public static DeckCard ToProtobuf(this DeckCardData deckCardData)
         {
-            CardPrototype cardPrototype = new CardPrototype
+            return new DeckCard
             {
-                DataId = card.Id,
-                CardSetType = (ElementKind)card.CardSetType,
+                Amount = deckCardData.Amount,
+                CardName = deckCardData.CardName
+            };
+        }
+
+        public static Protobuf.Deck ToProtobuf(this Deck deck)
+        {
+            return new Protobuf.Deck
+            {
+                Id = deck.Id,
+                HeroId = deck.HeroId,
+                Name = deck.Name,
+                Cards =
+                {
+                    deck.Cards.Select(card => card.ToProtobuf())
+                },
+                PrimarySkill = (OverlordSkillKind.Types.Enum)deck.PrimarySkill,
+                SecondarySkill = (OverlordSkillKind.Types.Enum)deck.SecondarySkill
+            };
+        }
+
+        public static CardAbility ToProtobuf(this AbilityData ability) {
+            CardAbility cardAbility = new CardAbility {
+                Type = (CardAbilityType.Types.Enum) ability.AbilityType,
+                ActivityType = (CardAbilityActivityType.Types.Enum) ability.ActivityType,
+                Trigger = (CardAbilityTrigger.Types.Enum) ability.CallType,
+                TargetTypes =
+                {
+                    ability.AbilityTargetTypes.Select(t => (CardAbilityTarget.Types.Enum) t)
+                },
+                Stat = (StatType.Types.Enum) ability.AbilityStatType,
+                Set = (CardSetType.Types.Enum) ability.AbilitySetType,
+                Effect = (CardAbilityEffect.Types.Enum) ability.AbilityEffectType,
+                AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
+                TargetCardType = (CreatureType.Types.Enum) ability.TargetCardType,
+                TargetUnitSpecialStatus = (UnitSpecialStatus.Types.Enum) ability.TargetUnitStatusType,
+                TargetUnitType = (CreatureType.Types.Enum) ability.TargetUnitType,
+                Value = ability.Value,
+                Attack = ability.Damage,
+                Defense = ability.Health,
+                Name = ability.Name,
+                Turns = ability.Turns,
+                Count = ability.Count,
+                Delay = ability.Delay,
+                VisualEffectsToPlay =
+                {
+                    ability.VisualEffectsToPlay.Select(v => v.ToProtobuf())
+                },
+                GameMechanicDescriptionType = (GameMechanicDescriptionType.Types.Enum) ability.GameMechanicDescriptionType,
+                TargetSet = (CardSetType.Types.Enum) ability.TargetSetType,
+                SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.AbilitySubTrigger,
+                ChoosableAbilities =
+                {
+                    ability.ChoosableAbilities.Select(a => a.ToProtobuf())
+                },
+                Defense2 = ability.Defense,
+                Cost = ability.Cost
+            };
+
+            return cardAbility;
+        }
+
+        public static CardChoosableAbility ToProtobuf(this AbilityData.ChoosableAbility choosableAbility)
+        {
+            return new CardChoosableAbility {
+                Description = choosableAbility.Description,
+                AbilityData = choosableAbility.AbilityData.ToProtobuf()
+            };
+        }
+
+        public static CardAbility.Types.VisualEffectInfo ToProtobuf(this AbilityData.VisualEffectInfo visualEffectInfo)
+        {
+            return new CardAbility.Types.VisualEffectInfo {
+                Type = (CardAbility.Types.VisualEffectInfo.Types.VisualEffectType) visualEffectInfo.Type,
+                Path = visualEffectInfo.Path
+            };
+        }
+
+        public static CardInstance ToProtobuf(this WorkingCard workingCard)
+        {
+            CardInstance cardInstance = new CardInstance
+            {
+                InstanceId = workingCard.InstanceId.ToProtobuf(),
+                Prototype = workingCard.LibraryCard.ToProtobuf(),
+                Instance = workingCard.InstanceCard.ToProtobuf()
+            };
+
+            return cardInstance;
+        }
+
+        public static Protobuf.CardInstanceSpecificData ToProtobuf(this CardInstanceSpecificData data)
+        {
+            Protobuf.CardInstanceSpecificData protoData = new Protobuf.CardInstanceSpecificData
+            {
+                GooCost = data.Cost,
+                Attack = data.Damage,
+                Defense = data.Health,
+                Set = (CardSetType.Types.Enum) data.CardSetType,
+                Type = (CreatureType.Types.Enum) data.CardType,
+            };
+
+            return protoData;
+        }
+
+        public static Protobuf.Card ToProtobuf(this IReadOnlyCard card)
+        {
+            Protobuf.Card protoCard = new Protobuf.Card
+            {
+                MouldId = card.MouldId,
                 Name = card.Name,
                 GooCost = card.Cost,
                 Description = card.Description,
                 FlavorText = card.FlavorText,
                 Picture = card.Picture,
+                Attack = card.Damage,
+                Defense = card.Health,
+                Set = (CardSetType.Types.Enum) card.CardSetType,
                 Frame = card.Frame,
-                InitialDamage = card.Damage,
-                InitialDefence = card.Health,
-                Rank = card.Rank,
-                Type = card.Type,
-
-                // TODO : Fill ability later, some problem on backend side now
-                //Abilities = new RepeatedField<CardAbility>(){ },
-
-                CardViewInfo = new Protobuf.CardViewInfo
+                Kind = (CardKind.Types.Enum) card.CardKind,
+                Rank = (CreatureRank.Types.Enum) card.CardRank,
+                Type = (CreatureType.Types.Enum) card.CardType,
+                CardViewInfo = card.CardViewInfo.ToProtobuf(),
+                Abilities =
                 {
-                    Position = new Coordinates { X = card.CardViewInfo.Position.X, Y = card.CardViewInfo.Position.Y, Z = card.CardViewInfo.Position.Z },
-                    Scale = new Coordinates { X = card.CardViewInfo.Scale.X, Y = card.CardViewInfo.Scale.Y, Z = card.CardViewInfo.Scale.Z }
+                    card.Abilities.Select(a => a.ToProtobuf())
                 },
-                CreatureRank = (CreatureRank)card.CardRank,
-                CreatureType = (CreatureType)card.CardType,
-                CardKind = (CardKind)card.CardKind,
-                Kind = card.Kind
+                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimationType
             };
 
-            return cardPrototype;
+            return protoCard;
         }
 
-        private static RepeatedField<CardInstance> GetMulliganCards(this List<WorkingCard> cards)
+        public static Vector3Float ToProtobuf(this FloatVector3 vector)
         {
-            RepeatedField<CardInstance> cardInstances = new RepeatedField<CardInstance>();
-            for (int i = 0; i < cards.Count; i++)
+            return new Vector3Float
             {
-                cardInstances[i] = new CardInstance
-                {
-                    InstanceId = cards[i].Id,
-                    Prototype = cards[i].LibraryCard.GetCardPrototype(),
-                    Defense = cards[i].Health,
-                    Attack = cards[i].Damage
-                };
-            }
+                X = vector.X,
+                Y = vector.Y,
+                Z = vector.Z
+            };
+        }
 
-            return cardInstances;
+        public static Protobuf.CardViewInfo ToProtobuf(this CardViewInfo cardViewInfo)
+        {
+            if (cardViewInfo == null)
+                return null;
+
+            return new Protobuf.CardViewInfo
+            {
+                Position = cardViewInfo.Position.ToProtobuf(),
+                Scale = cardViewInfo.Scale.ToProtobuf()
+            };
+        }
+
+        public static Protobuf.InstanceId ToProtobuf(this InstanceId instanceId)
+        {
+            return new Protobuf.InstanceId
+            {
+                Id = instanceId.Id
+            };
+        }
+
+        public static Protobuf.DebugCheatsConfiguration ToProtobuf(this BackendCommunication.DebugCheatsConfiguration debugCheatsConfiguration)
+        {
+            if (debugCheatsConfiguration == null)
+                return new Protobuf.DebugCheatsConfiguration();
+
+            return new Protobuf.DebugCheatsConfiguration
+            {
+                Enabled = debugCheatsConfiguration.Enabled,
+
+                UseCustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed != null,
+                CustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed ?? 0,
+
+                UseCustomDeck = debugCheatsConfiguration.CustomDeck != null,
+                CustomDeck = debugCheatsConfiguration.CustomDeck?.ToProtobuf(),
+
+                DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle
+            };
         }
     }
-
 }
 

@@ -26,9 +26,13 @@ namespace Loom.ZombieBattleground
         private SoundsData _cardsSoundsFilename;
         private SoundsData _overlordAbilitiesSoundsFilename;
         private SoundsData _spellsSoundsFilename;
+        private SoundsData _uniqueArrivalsSoundsFilename;
+        private SoundsData _zombieDeathAnimationsSoundsFilename;
 
         public float SoundVolume => _soundVolume;
         public float MusicVolume => _musicVolume;
+
+        private int _lastSoundContainerIdentificator;
 
         public void Dispose()
         {
@@ -43,6 +47,8 @@ namespace Loom.ZombieBattleground
             _cardsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/CardsSounds");
             _overlordAbilitiesSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/OverlordAbilitiesSounds");
             _spellsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/SpellsSounds");
+            _uniqueArrivalsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/UniqueArrivalsSounds");
+            _zombieDeathAnimationsSoundsFilename = LoadObjectsManager.GetObjectByPath<SoundsData>("SoundData/ZombieDeathAnimationsSounds");
 
             _soundsRoot = new GameObject("SoundContainers").transform;
             _soundsRoot.gameObject.AddComponent<AudioListener>();
@@ -134,6 +140,23 @@ namespace Loom.ZombieBattleground
             return soundTypeList.AudioTypeClips.Count > 0 ? soundTypeList.AudioTypeClips[0].length : 0f;
         }
 
+        public void SetSoundPaused(int identificator, bool pause)
+        {
+            SoundContainer container = _soundContainers.Find(x => x.UniqueIdentificator == identificator);
+
+            if (container != null)
+            {
+                if(pause)
+                {
+                    container.AudioSource.Pause();
+                }
+                else
+                {
+                    container.AudioSource.UnPause();
+                }
+            }
+        }
+
         public void PlaySound(
             Enumerators.SoundType soundType, string clipTitle, float volume = -1f,
             Enumerators.CardSoundType cardSoundType = Enumerators.CardSoundType.NONE)
@@ -169,11 +192,16 @@ namespace Loom.ZombieBattleground
             PlaySound(soundType, 128, volume, null, isLoop, false, dropOldBackgroundMusic, isInQueue);
         }
 
-        public void PlaySound(
+        public int PlaySound(
             Enumerators.SoundType soundType, string clipTitle, float volume = -1f, bool isLoop = false,
             bool isInQueue = false)
         {
-            CreateSound(soundType, 128, volume, null, isLoop, false, 0, clipTitle, isInQueue);
+            SoundContainer soundContainer = CreateSound(soundType, 128, volume, null, isLoop, false, 0, clipTitle, isInQueue);
+            if(soundContainer != null)
+            {
+                return soundContainer.UniqueIdentificator;
+            }
+            return -1;
         }
 
         public void PlaySound(
@@ -509,12 +537,14 @@ namespace Loom.ZombieBattleground
             soundParam.StartPosition = 0f;
 
             container.Tag = tag;
-            container.Init(_soundsRoot, soundType, soundParam, isPlaylist, clipIndex);
+            container.Init(_soundsRoot, soundType, soundParam, isPlaylist, _lastSoundContainerIdentificator, clipIndex);
 
             if (parent != null)
             {
                 container.Container.transform.SetParent(parent);
             }
+
+            _lastSoundContainerIdentificator++;
 
             _soundContainers.Add(container);
             return container;
@@ -556,6 +586,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.SoundType.SPELLS:
                     list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_spellsSoundsFilename.soundList).ToList();
                     break;
+                case Enumerators.SoundType.UNIQUE_ARRIVALS:
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_uniqueArrivalsSoundsFilename.soundList).ToList();
+                    break;
+                case Enumerators.SoundType.ZOMBIE_DEATH_ANIMATIONS:
+                    list = LoadObjectsManager.GetObjectsByPath<AudioClip>(_zombieDeathAnimationsSoundsFilename.soundList).ToList();
+                    break;
                 default:
                     list = LoadObjectsManager.GetObjectsByPath<AudioClip>(new string[] { pathToSoundsLibrary + soundType.ToString() }).ToList();
                     break;
@@ -592,14 +628,17 @@ namespace Loom.ZombieBattleground
 
         public int CurrentSoundIndex;
 
+        public int UniqueIdentificator;
+
         public string Tag;
 
         public void Init(
-            Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled,
+            Transform soundsContainerRoot, Enumerators.SoundType type, SoundParam soundParam, bool playlistEnabled, int identificator,
             int soundIndex = 0)
         {
             ForceClose = false;
             CurrentSoundIndex = soundIndex;
+            UniqueIdentificator = identificator;
             SoundParameters = soundParam;
             IsPlaylist = playlistEnabled;
             SoundType = type;

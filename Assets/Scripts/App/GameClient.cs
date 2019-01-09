@@ -22,15 +22,7 @@ namespace Loom.ZombieBattleground
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
-            const BackendPurpose backend = BackendPurpose.Local;
-#elif USE_PRODUCTION_BACKEND
-            const BackendPurpose backend = BackendPurpose.Production;
-#else
-            const BackendPurpose backend = BackendPurpose.Staging;
-#endif
-
-            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
             string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
             ConfigData configData = new ConfigData();
@@ -49,7 +41,6 @@ namespace Loom.ZombieBattleground
             AddService<ITimerManager>(new TimerManager());
             AddService<IInputManager>(new InputManager());
             AddService<ILocalizationManager>(new LocalizationManager());
-            AddService<IDataManager>(new DataManager(configData));
             AddService<IScenesManager>(new ScenesManager());
             AddService<IAppStateManager>(new AppStateManager());
             AddService<ICameraManager>(new CameraManager());
@@ -57,17 +48,34 @@ namespace Loom.ZombieBattleground
             AddService<ISoundManager>(new SoundManager());
             AddService<INavigationManager>(new NavigationManager());
             AddService<IGameplayManager>(new GameplayManager());
-            AddService<IOverlordManager>(new OverlordManager());
+            AddService<IOverlordExperienceManager>(new OverlordExperienceManager());
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
-            AddService<BackendFacade>(new BackendFacade(backendEndpoint));
+            AddService<IDataManager>(new DataManager(configData));
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contract => new ThreadedTimeMetricsContractCallProxy(contract, false, true)));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
+            AddService<IFacebookManager>(new FacebookManager());
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
+            AddService<PushNotificationManager>(new PushNotificationManager());
+        }
+
+        public static BackendEndpoint GetDefaultBackendEndpoint()
+        {
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
+            const BackendPurpose backend = BackendPurpose.Local;
+#elif USE_PRODUCTION_BACKEND
+            const BackendPurpose backend = BackendPurpose.Production;
+#else
+            const BackendPurpose backend = BackendPurpose.Staging;
+#endif
+
+            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+            return backendEndpoint;
         }
 
         public static GameClient Instance

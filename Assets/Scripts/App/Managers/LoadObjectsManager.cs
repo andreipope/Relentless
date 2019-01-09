@@ -3,10 +3,12 @@
 using UnityEngine;
 using System.IO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
+using Debug = UnityEngine.Debug;
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
 using System.Linq;
 using UnityEditor;
@@ -45,7 +47,7 @@ namespace Loom.ZombieBattleground
             string fileName = Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
             T asset = Load<T>(fileName, assetBundle, bundleName);
             if (asset == null)
-                UnityEngine.Debug.LogError($"Failed to load '{path}' from bundle '{bundleName}'");
+                UnityEngine.Debug.LogWarning($"Failed to load '{path}' from bundle '{bundleName}'");
 
             return asset;
         }
@@ -61,7 +63,7 @@ namespace Loom.ZombieBattleground
                 string fileName = Path.GetFileNameWithoutExtension(paths[i]).ToLowerInvariant();
                 assets[i] = Load<T>(fileName, assetBundle, bundleName);
                 if (assets[i] == null)
-                    UnityEngine.Debug.LogError($"Failed to load '{paths[i]}' from bundle '{bundleName}'");
+                    UnityEngine.Debug.LogWarning($"Failed to load '{paths[i]}' from bundle '{bundleName}'");
             }
 
             return assets;
@@ -104,6 +106,26 @@ namespace Loom.ZombieBattleground
                 throw new Exception($"Failed to load asset bundle '{name}'");
 
             _loadedAssetBundles.Add(name, request.assetBundle);
+        }
+
+        public IEnumerator LoadFromCacheAndDownload(string name, string link, int bundleVersion)
+        {
+            while (!Caching.ready)
+                yield return null;
+
+            string url = Path.Combine(link, name);
+            using (WWW www = WWW.LoadFromCacheOrDownload(url, bundleVersion))
+            {
+                yield return www;
+
+                if (!string.IsNullOrEmpty(www.error))
+                {
+                    throw new Exception("WWW download had an error:" + www.error);
+                }
+
+                _loadedAssetBundles.Add(name, www.assetBundle);
+                www.assetBundle.Unload(false);
+            }
         }
 
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION

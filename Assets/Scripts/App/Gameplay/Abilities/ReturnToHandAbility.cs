@@ -43,7 +43,21 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Push,
+                        Target = TargetUnit
+                    }
+                }
+            });
         }
 
         protected override void InputEndedHandler()

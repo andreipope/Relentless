@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Analytics;
 using Object = UnityEngine.Object;
+using mixpanel;
 
 public class AnalyticsManager : IAnalyticsManager, IService
 {
@@ -13,9 +15,34 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private GoogleAnalyticsV4 _googleAnalytics;
 
+    private IFacebookManager _fbManager;
+
     private int _startedMatchCounter;
 
     private int _finishedMatchCounter;
+
+    public const string EventLogIn = "Log In";
+    public const string EventStartedTutorial = "Started Tutorial";
+    public const string EventCompletedTutorial = "Completed Tutorial";
+    public const string EventStartedMatch = "Started Match";
+    public const string EventEndedMatch = "Completed Match";
+    public const string EventDeckCreated = "Create Deck";
+    public const string EventDeckDeleted = "Delete Deck";
+    public const string EventDeckEdited = "Edit Deck";
+    public const string EventQuitMatch = "Quit Match";
+    public const string EventQuitToDesktop = "Quit App";
+
+    public const string PropertyTesterKey = "Tester Key";
+    public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
+    public const string PropertyMatchType = "Match Type";
+    public const string PropertyTimeToFindOpponent = "Time to Find Opponent";
+    public const string PropertyMatchResult = "Match Result";
+    public const string PropertyMatchDuration = "Match Duration";
+    public const string PropertyTutorialTimeToComplete = "Time to Complete Tutorial";
+
+    private BackendFacade _backendFacade;
+    private BackendDataControlMediator _backendDataControlMediator;
+
 
     public void StartSession()
     {
@@ -26,7 +53,6 @@ public class AnalyticsManager : IAnalyticsManager, IService
         if (matchesInPreviousSittingKey != -1)
         {
             PlayerPrefs.DeleteKey(MatchesInPreviousSittingKey);
-            Debug.Log("Sending previousMatchesPerSitting = " + matchesInPreviousSittingKey);
             LogEvent("MatchesInPreviousSitting", "", matchesInPreviousSittingKey);
         }
 
@@ -44,11 +70,12 @@ public class AnalyticsManager : IAnalyticsManager, IService
         Debug.Log("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
+
+        //Mixpanel.Track(title);
     }
 
     public void LogEvent(string eventAction, string eventLabel, long value)
     {
-        Debug.Log("=== Log Event = " + eventAction);
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
         AnalyticsEvent.Custom(
             eventAction,
@@ -89,6 +116,26 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _googleAnalytics = Object.FindObjectOfType<GoogleAnalyticsV4>();
         if (_googleAnalytics == null)
             throw new Exception("GoogleAnalyticsV4 object not found");
+
+        ILoadObjectsManager loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+        _backendFacade = GameClient.Get<BackendFacade>();
+        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+        #if USE_PRODUCTION_BACKEND
+            _googleAnalytics.IOSTrackingCode = "UA-124278621-1";
+            _googleAnalytics.androidTrackingCode = "UA-124278621-1";
+            _googleAnalytics.otherTrackingCode = "UA-124278621-1";
+
+            Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Production"));
+        #else
+            _googleAnalytics.IOSTrackingCode = "UA-130846432-1";
+            _googleAnalytics.androidTrackingCode = "UA-130846432-1";
+            _googleAnalytics.otherTrackingCode = "UA-130846432-1";
+
+            Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Staging"));
+        #endif
+
+        _fbManager = GameClient.Get<IFacebookManager>();
     }
 
     public void Update()
@@ -97,5 +144,63 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     void IService.Dispose()
     {
+    }
+
+    public void SetEvent(string eventName)
+    {
+        // Mixpanel
+        Value props = new Value();
+        FillBasicProps(props);
+
+        Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
+        Mixpanel.Track(eventName, props);
+
+        // FB
+        _fbManager.LogEvent(eventName, null, new Dictionary<string, object>());
+    }
+
+    public void SetEvent(string eventName, Dictionary<string, object> paramters)
+    {
+        // Mixpanel
+        Value props = new Value();
+        FillBasicProps(props);
+
+        foreach (KeyValuePair<string, object> parameter in paramters)
+        {
+            props[parameter.Key] = parameter.Value.ToString();
+        }
+
+        Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
+        Mixpanel.Track(eventName, props);
+
+        // FB
+        _fbManager.LogEvent(eventName, null, paramters);
+    }
+
+    public void SetPoepleProperty(string identityId, string property, string value)
+    {
+        if (string.IsNullOrEmpty(identityId))
+            return;
+
+        Mixpanel.Identify(identityId);
+        Mixpanel.people.Set(property, value);
+    }
+
+    public void SetSuperProperty(string property, string value)
+    {
+        Mixpanel.Register(property, value);
+    }
+
+    public void SetPoepleIncrement(string property, int value)
+    {
+        Mixpanel.people.Increment(property, value);
+    }
+
+    private void FillBasicProps(Value props)
+    {
+        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
+
+        // FIXME
+        //props[PropertyDAppChainWalletAddress] = _backendFacade.DAppChainWalletAddress;
     }
 }

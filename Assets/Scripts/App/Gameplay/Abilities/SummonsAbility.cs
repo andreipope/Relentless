@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -42,19 +42,29 @@ namespace Loom.ZombieBattleground
 
             foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
+                BoardUnitView unit = null;
+
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                            CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, IsPVPAbility);
+                            if (unit != null)
+                            {
+                                BattlegroundController.OpponentBoardCards.Add(unit);
+                            }
                         }
 
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
-                            CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, IsPVPAbility);
+                            if (unit != null)
+                            {
+                                BattlegroundController.PlayerBoardCards.Add(unit);
+                            }
                         }
 
                         break;
@@ -70,6 +80,17 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
                 !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            Action();
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+               !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             Action();

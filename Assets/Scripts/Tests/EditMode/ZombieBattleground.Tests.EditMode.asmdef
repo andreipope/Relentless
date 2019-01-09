@@ -1,0 +1,19 @@
+{
+    "name": "ZombieBattleground.Tests.EditMode",
+    "references": [
+        "ZombieBattleground.Editor",
+        "ZombieBattleground.Main",
+        "ZombieBattleground.Generated",
+        "LoomSDK",
+        "ZombieBattleground.TestLibrary",
+        "AsyncAwaitUtil"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

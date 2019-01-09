@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -7,6 +8,8 @@ namespace Loom.ZombieBattleground
     public class DestroyFrozenZombieAbilityView : AbilityViewBase<DestroyFrozenZombieAbility>
     {
         private BattlegroundController _battlegroundController;
+
+        private Vector3 _targetPosition;
 
         public DestroyFrozenZombieAbilityView(DestroyFrozenZombieAbility ability) : base(ability)
         {
@@ -17,14 +20,13 @@ namespace Loom.ZombieBattleground
         {
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+                _targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
-                targetPosition = Utilites.CastVfxPosition(targetPosition);
-                VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
+                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
+                VfxObject.transform.DOMove(_targetPosition, 0.5f).OnComplete(ActionCompleted);
                 ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
             }
             else
@@ -37,24 +39,39 @@ namespace Loom.ZombieBattleground
         {
             ClearParticles();
 
+            float delayBeforeDestroy = 5f;
+            float delayAfter = 0;
+            Vector3 offset = Vector3.zero;
+
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                Vector3 targetPosition = VfxObject.transform.position;
-
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = targetPosition;
-                ParticlesController.RegisterParticleSystem(VfxObject, true);
+                AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
+                if (effectInfo != null)
+                {
+                    delayAfter = effectInfo.delayAfterEffect;
+                    delayBeforeDestroy = effectInfo.delayBeforeEffect;
+                    offset = effectInfo.offset;
+                    soundClipTitle = effectInfo.soundName;
+                    delayBeforeSound = effectInfo.delayForSound;
+                }
+
+                _targetPosition += offset;
+                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform, false);
+                ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
+                VfxObject.transform.position = _targetPosition;
             }
 
-            Ability.InvokeVFXAnimationEnded();
+            PlaySound(soundClipTitle, delayBeforeSound);
+
+            InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
 
 
         protected override void CreateVfx(Vector3 pos, bool autoDestroy = false, float duration = 3, bool justPosition = false)
         {
-            base.CreateVfx(pos, true, 5f);
+            base.CreateVfx(pos, autoDestroy, duration, justPosition);
         }
     }
 }

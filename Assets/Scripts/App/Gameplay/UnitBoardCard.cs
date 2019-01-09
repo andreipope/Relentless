@@ -7,8 +7,6 @@ namespace Loom.ZombieBattleground
 {
     public class UnitBoardCard : BoardCard
     {
-        public int InitialHealth, InitialDamage;
-
         protected TextMeshPro AttackText;
 
         protected SpriteRenderer TypeSprite;
@@ -16,6 +14,8 @@ namespace Loom.ZombieBattleground
         protected TextMeshPro DefenseText;
 
         private int _hp, _damage;
+
+        private int _initialHp, _initialDamage;
 
         public UnitBoardCard(GameObject selfObject)
             : base(selfObject)
@@ -55,37 +55,66 @@ namespace Loom.ZombieBattleground
         {
             base.Init(card);
 
-            Damage = card.Damage;
-            InitialDamage = card.Damage;
+            Damage = card.InstanceCard.Damage;
+            Health = card.InstanceCard.Health;
 
-            Health = card.Health;
-            InitialHealth = card.Health;
+            _initialDamage = Damage;
+            _initialHp = Health;
 
-            AttackText.text = Damage.ToString();
-            DefenseText.text = Health.ToString();
+            DrawStats();
 
             TypeSprite.sprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", card.InstanceCard.CardType + "_icon"));
 
             DamageChangedEvent += (oldValue, newValue) =>
             {
-                AttackText.text = newValue.ToString();
+                DrawStats();
             };
             HealthChangedEvent += (oldValue, newValue) =>
             {
-                DefenseText.text = newValue.ToString();
+                DrawStats();
             };
         }
 
-        public override void Init(Card card, int amount = 0)
+        public override void Init(IReadOnlyCard card, int amount = 0)
         {
             base.Init(card, amount);
 
-            AttackText.text = card.Damage.ToString();
-            DefenseText.text = card.Health.ToString();
+            Damage = card.Damage;
+            Health = card.Health;
+
+            _initialDamage = Damage;
+            _initialHp = Health;
+
+            DrawStats();
 
             TypeSprite.sprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.Type + "_icon"));
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.CardType + "_icon"));
+        }
+
+        private void DrawStats()
+        {
+            AttackText.text = Damage.ToString();
+            DefenseText.text = Health.ToString();
+
+            FillColor(Damage, _initialDamage, AttackText);
+            FillColor(Health, _initialHp, DefenseText);
+        }
+
+        private void FillColor(int stat, int initialStat, TextMeshPro text)
+        {
+            if (stat > initialStat)
+            {
+                text.color = Color.green;
+            }
+            else if (stat < initialStat)
+            {
+                text.color = Color.red;
+            }
+            else
+            {
+                text.color = Color.white;
+            }
         }
     }
 }

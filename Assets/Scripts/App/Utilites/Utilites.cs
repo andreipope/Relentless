@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Text;
 using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -71,18 +73,33 @@ namespace Loom.ZombieBattleground
             return color;
         }
 
-        public static long GetCurrentUnixTimestampMillis()
+        public static string LimitStringLength(string str, int maxLength)
         {
-            DateTime localDateTime = DateTime.Now;
-            DateTime universalDateTime = localDateTime.ToUniversalTime();
-            return (long) (universalDateTime - UnixEpoch).TotalMilliseconds;
+            if (str.Length < maxLength)
+                return str;
+
+            return str.Substring(0, maxLength);
         }
 
-        public static string FirstCharToUpper(string input)
+        // FIXME: this has only drawbacks compared to using PlayerPrefs directly, what's the purpose of it?
+        public static int GetIntValueFromPlayerPrefs(string key)
         {
-            if (String.IsNullOrEmpty(input))
-                throw new ArgumentException("input cannot be empty!");
-            return input.First().ToString().ToUpperInvariant() + input.Substring(1).ToLowerInvariant();
+            return PlayerPrefs.GetInt(key, 0);
+        }
+
+        public static void SetIntValueInPlayerPrefs(string key, int value)
+        {
+            PlayerPrefs.SetInt(key, value);
+        }
+
+        public static string GetStringFromPlayerPrefs(string key)
+        {
+            return PlayerPrefs.GetString(key, string.Empty);
+        }
+
+        public static void SetStringInPlayerPrefs(string key, string value)
+        {
+            PlayerPrefs.SetString(key, value);
         }
 
         #region asset bundles and cache
@@ -163,6 +180,33 @@ namespace Loom.ZombieBattleground
 
             MemoryStream memoryStream = new MemoryStream(key);
             return new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read);
+        }
+
+        public static byte[] Base64UrlDecode(string input)
+        {
+            string output = input;
+            output = output.Replace('-', '+');
+            output = output.Replace('_', '/');
+            switch (output.Length % 4)
+            {
+                case 0: 
+                    break; 
+                case 2: 
+                    output += "=="; 
+                    break;
+                case 3: 
+                    output += "="; 
+                    break; 
+                default: 
+                    throw new Exception("Illegal base64url string!");
+            }
+            byte[] converted = Convert.FromBase64String(output); 
+            return converted;
+        }
+
+        public static bool ValidateEmail(string email)
+        {
+            return email != null ? Regex.IsMatch(email, Constants.MatchEmailPattern) : false;
         }
 
         #endregion cryptography

@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -53,25 +53,16 @@ namespace Loom.ZombieBattleground
             if (playerOwner.BoardCards.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
-            Card libraryCard = workingCard.LibraryCard.Clone();
+            Card libraryCard = new Card(workingCard.LibraryCard);
 
-            WorkingCard card = new WorkingCard(libraryCard, playerOwner);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, playerOwner);
             BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
             playerOwner.AddCardToBoard(card);
             playerOwner.BoardCards.Add(unit);
 
-            if (playerOwner.IsLocalPlayer)
-            {
-                BattlegroundController.PlayerBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
-            }
-            else
-            {
-                BattlegroundController.OpponentBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-            }
+            BoardController.UpdateCurrentBoardOfPlayer(playerOwner, null);
         }
     }
 }

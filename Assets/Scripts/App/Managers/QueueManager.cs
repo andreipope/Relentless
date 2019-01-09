@@ -8,107 +8,121 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class QueueManager : IService, IQueueManager
     {
-        private Queue<Action> _mainThreadActions;
+        private Queue<Func<Task>> _tasks;
+        private BackendFacade _backendFacade;
 
-        private BlockingCollection<IMessage> _networkThreadActions;
-
-        private Thread _networkThread;
-
-        private bool _networkThreadAlive;
+        public bool Active { get; set; }
 
         public void Init()
         {
-            _mainThreadActions = new Queue<Action>();
-            _networkThreadActions = new BlockingCollection<IMessage>();
-        }
-
-        public void StartNetworkThread()
-        {
-            _networkThreadAlive = true;
-            _networkThread = new Thread(NetworkThread);
-            _networkThread.Start();
-        }
-
-        public void StopNetworkThread()
-        {
-            if (_networkThread != null)
-            {
-                _networkThreadAlive = false;
-                _networkThread.Abort();
-                _networkThread = null;
-            }
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _tasks = new Queue<Func<Task>>();
         }
 
         public void Clear()
         {
-            _mainThreadActions.Clear();
-            while (_networkThreadActions.Count > 0)
+            _tasks.Clear();
+        }
+
+        public async void Update()
+        {
+            if (!Active)
+                return;
+
+            while (_tasks.Count > 0)
             {
-                _networkThreadActions.Take();
+                await _tasks.Dequeue()();
             }
         }
 
-        //Main Gameplay Thread
-        public void Update()
+        public void AddTask(Func<Task> taskFunc)
         {
-            MainThread();
+            _tasks.Enqueue(taskFunc);
         }
 
-        public void AddAction(Action action)
+        public void AddAction(IMessage request)
         {
-            _mainThreadActions.Enqueue(action);
-        }
-
-        public void AddAction(IMessage action)
-        {
-            _networkThreadActions.Add(action);
-        }
-
-        public bool Active { get; set; }
-
-        private void MainThread()
-        {
-            if (Active && _mainThreadActions.Count > 0)
+            AddTask(async () =>
             {
-                _mainThreadActions.Dequeue().Invoke();
-            }
-        }
-
-        private async void NetworkThread()
-        {
-            try
-            {
-                while (_networkThreadAlive)
+                switch (request)
                 {
-                    while (_networkThreadActions.Count > 0)
-                    {
-                        IMessage request = _networkThreadActions.Take();
-                        await GameClient.Get<BackendFacade>().SendAction(request);
-                    }
+                    case PlayerActionRequest playerActionMessage:
+                        try
+                        {
+                            await _backendFacade.SendPlayerAction(playerActionMessage);
+                        }
+                        catch (TimeoutException exception)
+                        {
+                            Debug.LogWarning(" Time out == " + exception);
+                            ShowConnectionPopup();
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.LogWarning(" other == " + exception);
+                            ShowConnectionPopup();
+                        }
+                        break;
+
+                    case EndMatchRequest endMatchMessage:
+                        try
+                        {
+                            await _backendFacade.SendEndMatchRequest(endMatchMessage);
+                        }
+                        catch (TimeoutException exception)
+                        {
+                            Debug.LogWarning(" Time out == " + exception);
+                            ShowConnectionPopup();
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.LogWarning(" other == " + exception);
+                            ShowConnectionPopup();
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException($"Unknown action type: {request.GetType()}");
                 }
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                throw;
-            }
+            });
         }
 
         public void Dispose()
         {
-            if(_networkThread != null)
+            Clear();
+        }
+
+        private void ShowConnectionPopup()
+        {
+            IUIManager uiManager = GameClient.Get<IUIManager>();
+            IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+            ConnectionPopup connectionPopup = uiManager.GetPopup<ConnectionPopup>();
+
+            if (gameplayManager.CurrentPlayer == null)
             {
-                _networkThreadAlive = false;
-                _networkThread.Interrupt();
-                _networkThreadActions.Dispose();
+                return;
             }
-            _mainThreadActions.Clear();
+
+            if (connectionPopup.Self == null)
+            {
+                Func<Task> connectFuncInGame = async () =>
+                {
+                    GameClient.Get<IQueueManager>().Clear();
+                    gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+                    gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                    connectionPopup.Hide();
+                };
+
+                connectionPopup.ConnectFuncInGameplay = connectFuncInGame;
+                connectionPopup.Show();
+                connectionPopup.ShowFailedInGamePlay();
+            }
         }
     }
 }

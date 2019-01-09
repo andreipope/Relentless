@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
@@ -32,6 +32,24 @@ namespace Loom.ZombieBattleground
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
+
+            Action();
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+                return;
+
+            Action();
+        }
+
+
+        public override void Action(object info = null)
+        {
+            base.Action(info);
 
             switch (StatType)
             {

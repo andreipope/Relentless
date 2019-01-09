@@ -19,7 +19,7 @@ namespace Loom.Client
     /// <summary>
     /// Writes to & reads from a Loom DAppChain.
     /// </summary>
-    public class DAppChainClient : IDisposable
+    public class DAppChainClient : IDAppChainClientConfigurationProvider, IDisposable
     {
         private const string LogTag = "Loom.DAppChainClient";
 
@@ -28,8 +28,6 @@ namespace Loom.Client
 
         private readonly IRpcClient writeClient;
         private readonly IRpcClient readClient;
-
-        private readonly IDAppChainClientCallExecutor callExecutor;
 
         private ILogger logger = NullLogger.Instance;
 
@@ -48,7 +46,15 @@ namespace Loom.Client
         /// </summary>
         public TxMiddleware TxMiddleware { get; set; }
 
+        /// <summary>
+        /// Client options container.
+        /// </summary>
         public DAppChainClientConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Controls the flow of blockchain calls.
+        /// </summary>
+        public IDAppChainClientCallExecutor CallExecutor { get; }
 
         /// <summary>
         /// Logger to be used for logging, defaults to <see cref="NullLogger"/>.
@@ -91,12 +97,14 @@ namespace Loom.Client
         /// <param name="writeClient">RPC client to use for submitting transactions.</param>
         /// <param name="readClient">RPC client to use for querying DAppChain state.</param>
         /// <param name="configuration">Client configuration structure.</param>
-        public DAppChainClient(IRpcClient writeClient, IRpcClient readClient, DAppChainClientConfiguration configuration = null)
+        /// <param name="callExecutor">Blockchain call execution flow controller.</param>
+        public DAppChainClient(IRpcClient writeClient, IRpcClient readClient, DAppChainClientConfiguration configuration = null, IDAppChainClientCallExecutor callExecutor = null)
         {
             this.writeClient = writeClient;
             this.readClient = readClient;
-            Configuration = configuration ?? new DAppChainClientConfiguration();
-            this.callExecutor = new DefaultDAppChainClientCallExecutor(Configuration);
+
+            this.Configuration = configuration ?? new DAppChainClientConfiguration();
+            this.CallExecutor = callExecutor ?? new DefaultDAppChainClientCallExecutor(this);
         }
 
         public void Dispose()
@@ -115,28 +123,15 @@ namespace Loom.Client
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            return await this.callExecutor.StaticCall(async () => await GetNonceAsyncRaw(key));
+            return await this.CallExecutor.StaticCall(async () => await GetNonceAsyncRaw(key));
         }
 
-        public async Task<ulong> GetNonceAsyncUnsafe(string key)
+        public async Task<ulong> GetNonceAsyncNonBlocking(string key)
         {
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            return await this.callExecutor.UnsafeStaticCall(async () => await GetNonceAsyncRaw(key));
-        }
-
-        public async Task<ulong> GetNonceAsyncRaw(string key)
-        {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
-            await EnsureConnected();
-            string nonce = await this.readClient.SendAsync<string, NonceParams>(
-                "nonce",
-                new NonceParams { Key = key }
-            );
-            return UInt64.Parse(nonce);
+            return await this.CallExecutor.NonBlockingStaticCall(async () => await GetNonceAsyncRaw(key));
         }
 
         /// <summary>
@@ -149,7 +144,7 @@ namespace Loom.Client
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            return await this.callExecutor.StaticCall(async () =>
+            return await this.CallExecutor.StaticCall(async () =>
             {
                 await EnsureConnected();
                 var addressStr = await this.readClient.SendAsync<string, ResolveParams>(
@@ -169,13 +164,13 @@ namespace Loom.Client
         /// </summary>
         /// <param name="tx">Transaction to commit.</param>
         /// <returns>Commit metadata.</returns>
-        /// <exception cref="InvalidTxNonceException">Thrown if transaction is rejected due to a bad nonce after allowed number of attempts</exception>
+        /// <exception cref="InvalidTxNonceException">Thrown when transaction is rejected by the DAppChain due to a bad nonce.</exception>
         internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx)
         {
             if (this.writeClient == null)
                 throw new InvalidOperationException("Write client was not set");
 
-            return await this.callExecutor.Call(async () =>
+            return await this.CallExecutor.Call<BroadcastTxResult>(async () =>
             {
                 await EnsureConnected();
 
@@ -185,27 +180,42 @@ namespace Loom.Client
                     txBytes = await this.TxMiddleware.Handle(txBytes);
                 }
 
-                string payload = CryptoBytes.ToBase64String(txBytes);
-                var result = await this.writeClient.SendAsync<BroadcastTxResult, string[]>("broadcast_tx_commit", new[] { payload });
-                if (result == null)
-                    return null;
-
-                if (result.CheckTx.Code != 0)
+                try
                 {
-                    if ((result.CheckTx.Code == 1) && (result.CheckTx.Error == "sequence number does not match"))
+                    string payload = CryptoBytes.ToBase64String(txBytes);
+                    var result = await this.writeClient.SendAsync<BroadcastTxResult, string[]>("broadcast_tx_commit", new[] { payload });
+                    if (result == null)
+                        return null;
+
+                    if (result.CheckTx.Code != 0)
                     {
-                        throw new InvalidTxNonceException(result.CheckTx.Code, result.CheckTx.Error);
+                        if ((result.CheckTx.Code == 1) && (result.CheckTx.Error.StartsWith("sequence number does not match")))
+                        {
+                            throw new InvalidTxNonceException(result.CheckTx.Code, result.CheckTx.Error);
+                        }
+
+                        throw new TxCommitException(result.CheckTx.Code, result.CheckTx.Error);
                     }
 
-                    throw new TxCommitException(result.CheckTx.Code, result.CheckTx.Error);
-                }
+                    if (result.DeliverTx.Code != 0)
+                    {
+                        throw new TxCommitException(result.DeliverTx.Code, result.DeliverTx.Error);
+                    }
 
-                if (result.DeliverTx.Code != 0)
+                    if (this.TxMiddleware != null)
+                    {
+                        this.TxMiddleware.HandleTxResult(result);
+                    }
+
+                    return result;
+                } catch (LoomException e)
                 {
-                    throw new TxCommitException(result.DeliverTx.Code, result.DeliverTx.Error);
+                    if (this.TxMiddleware != null)
+                    {
+                        this.TxMiddleware.HandleTxException(e);
+                    }
+                    throw;
                 }
-
-                return result;
             });
         }
 
@@ -249,11 +259,24 @@ namespace Loom.Client
                 queryParams.CallerAddress = caller.QualifiedAddress;
             }
 
-            return await this.callExecutor.StaticCall(async () =>
+            return await this.CallExecutor.StaticCall(async () =>
             {
                 await EnsureConnected();
                 return await this.readClient.SendAsync<T, QueryParams>("query", queryParams);
             });
+        }
+
+        private async Task<ulong> GetNonceAsyncRaw(string key)
+        {
+            if (this.readClient == null)
+                throw new InvalidOperationException("Read client is not set");
+
+            await EnsureConnected();
+            string nonce = await this.readClient.SendAsync<string, NonceParams>(
+                "nonce",
+                new NonceParams { Key = key }
+            );
+            return UInt64.Parse(nonce);
         }
 
         private async void SubReadClient(EventHandler<RawChainEventArgs> handler)
@@ -261,7 +284,7 @@ namespace Loom.Client
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            await this.callExecutor.Call(async () =>
+            await this.CallExecutor.Call(async () =>
             {
                 await EnsureConnected();
                 EventHandler<JsonRpcEventData> wrapper = (sender, e) =>
@@ -286,7 +309,7 @@ namespace Loom.Client
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            await this.callExecutor.Call(async () =>
+            await this.CallExecutor.Call(async () =>
             {
                 EventHandler<JsonRpcEventData> wrapper = this.eventSubs[handler];
                 await this.readClient.UnsubscribeAsync(wrapper);

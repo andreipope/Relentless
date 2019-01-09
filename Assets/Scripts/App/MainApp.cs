@@ -1,8 +1,10 @@
 using System;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -15,6 +17,8 @@ namespace Loom.ZombieBattleground
         public event Action LateUpdateEvent;
 
         public event Action FixedUpdateEvent;
+
+        public event Action OnDrawGizmosCalled;
 
         public static MainApp Instance { get; private set; }
 
@@ -35,12 +39,6 @@ namespace Loom.ZombieBattleground
             if (Instance == this)
             {
                 GameClient.Instance.InitServices();
-
-#if DEV_MODE
-                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.BACKGROUND, 128, Constants.BackgroundSoundVolume, null, true, false, true);
-                GameClient.Get<IDataManager>().StartLoadCache();
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
-#endif
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 
@@ -82,12 +80,27 @@ namespace Loom.ZombieBattleground
             }
         }
 
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (!GizmosGuiHelper.CanRenderGui() || (Camera.main != Camera.current && Camera.current.name != "SceneCamera"))
+                return;
+
+            OnDrawGizmosCalled?.Invoke();
+        }
+#endif
+
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             if (Instance == this)
             {
                 LevelLoaded?.Invoke(arg0.buildIndex);
             }
+        }
+
+        private void OnApplicationQuit()
+        {
+            GameClient.Get<IAnalyticsManager>().SetEvent(AnalyticsManager.EventQuitToDesktop);
         }
     }
 }

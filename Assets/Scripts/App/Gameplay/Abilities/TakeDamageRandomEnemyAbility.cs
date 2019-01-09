@@ -12,12 +12,22 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDamageRandomEnemyAbility : AbilityBase
     {
-        public int Value { get; } = 1;
+        public int Damage { get; }
+
+        public int Count { get; }
+
+        public Enumerators.SetType SetType;
+
+        private List<BoardObject> _targets;
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Damage = ability.Damage;
+            Count = ability.Count;
+            SetType = ability.AbilitySetType;
+
+            _targets = new List<BoardObject>();
         }
 
         public override void Activate()
@@ -27,92 +37,112 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action(null);
+            Action();
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            Action();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            List<BoardObject> _targets;
-
             if (PredefinedTargets != null)
             {
-                _targets = PredefinedTargets;
+                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
             }
             else
             {
                 _targets = new List<BoardObject>();
-                _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
-                _targets.Add(GetOpponentOverlord());
 
-                _targets = InternalTools.GetRandomElementsFromList(_targets, Value);
-            }
-
-            VfxObject = null;
-
-            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
-            {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
-            }
-
-            foreach (object target in _targets)
-            {
-                object targetObject = target;
-                Vector3 targetPosition = Vector3.zero;
-
-                switch (target)
+                foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
                 {
-                    case Player player:
-                        targetPosition = player.AvatarObject.transform.position;
-                        break;
-                    case BoardUnitModel unit:
-                        targetPosition =  BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                    switch (abilityTarget)
+                    {
+                        case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                        case Enumerators.AbilityTargetType.PLAYER_CARD:
+                            _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER:
+                            _targets.Add(PlayerCallerOfAbility);
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                            _targets.Add(GetOpponentOverlord());
+                            break;
+                    }
                 }
 
-                if (VfxObject != null)
-                {
-                    VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = Utilites.CastVfxPosition(BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner).Transform.position);
-                    targetPosition = Utilites.CastVfxPosition(targetPosition);
-                    VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(() => { ActionCompleted(targetObject, targetPosition); });
-                    ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
-                }
-                else
-                {
-                    ActionCompleted(targetObject, targetPosition);
-                }
+                _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            InvokeActionTriggered(_targets);      
+
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
-
-    private void ActionCompleted(object target, Vector3 targetPosition)
+        protected override void VFXAnimationEndedHandler()
         {
-            ClearParticles();
+            base.VFXAnimationEndedHandler();
 
-            GameObject vfxObject = null;
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
+            int damageWas = -1;
+            foreach (object target in _targets)
             {
-                VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+                ActionCompleted(target, out damageWas);
 
-                vfxObject = Object.Instantiate(vfxObject);
-                vfxObject.transform.position = targetPosition;
-                ParticlesController.RegisterParticleSystem(vfxObject, true);
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                    Target = target,
+                    HasValue = true,
+                    Value = -damageWas
+                });
             }
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
+
+            if (IsPVPAbility)
+            {
+                Deactivate();
+            }
+        }
+
+        private void ActionCompleted(object target, out int damageWas)
+        {
+            int damageOverride = Damage;
+
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
+            {
+                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType).Count;
+            }
+
+            damageWas = damageOverride;
 
             switch (target)
             {
-                case Player allyPlayer:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, allyPlayer);
+                case Player player:
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, damageOverride);
                     break;
-                case BoardUnitModel allyUnit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, allyUnit);
+                case BoardUnitModel unit:
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, damageOverride);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);

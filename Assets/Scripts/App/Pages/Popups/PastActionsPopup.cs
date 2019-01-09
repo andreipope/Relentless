@@ -50,6 +50,9 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
+            if (Self == null)
+                return;
+
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -138,6 +141,7 @@ namespace Loom.ZombieBattleground
             }
 
             // setup left block
+            UnitCardElement unitCardElement = null;
 
             switch (pastActionParam.Caller)
             {
@@ -149,6 +153,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardUnitModel unit:
                     _leftBlockCardUnitElement.Init(unit.Card);
+                    unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
+                    unitCardElement.Damage = unit.MaxCurrentDamage;
+                    unitCardElement.Health = unit.MaxCurrentHp;
                     break;
                 case SpellBoardCard spellBoardCard:
                     _leftBlockCardSpellElement.Init(spellBoardCard.WorkingCard);
@@ -158,6 +165,17 @@ namespace Loom.ZombieBattleground
                     break;
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.WorkingCard);
+                    unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
+                    unitCardElement.Damage = unitBoardCard.Damage;
+                    unitCardElement.Health = unitBoardCard.Health;
+                    break;
+                case HandBoardCard card:
+                    _leftBlockCardUnitElement.Init(card.CardView.WorkingCard);
+                    break;
+                case BoardUnitView unit:
+                    _leftBlockCardUnitElement.Init(unit.Model.Card);
+                    break;
+                case null:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pastActionParam.Caller), pastActionParam.Caller, null);
@@ -202,6 +220,22 @@ namespace Loom.ZombieBattleground
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                             actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
+                        case HandBoardCard card:
+                            if(card.CardView is SpellBoardCard)
+                            {
+                                actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
+                            }
+                            else
+                            {
+                                actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                            }
+
+                            actionElement.Init(card.CardView.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            break;
+                        case BoardUnitView unit:
+                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                            actionElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                     }
@@ -232,9 +266,18 @@ namespace Loom.ZombieBattleground
                         break;
                     case BoardCard card when card is UnitBoardCard:
                         _rightBlockCardUnitElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
+                        unitCardElement.Damage = (card as UnitBoardCard).Damage;
+                        unitCardElement.Health = (card as UnitBoardCard).Health;
+                        break;
+                    case HandBoardCard card:
+                        _rightBlockCardUnitElement.Init(card.CardView.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardUnitModel unit:
                         _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
+                        unitCardElement.Damage = unit.MaxCurrentDamage;
+                        unitCardElement.Health = unit.MaxCurrentHp;
                         break;
                     case BoardSkill skill:
                         _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -249,6 +292,9 @@ namespace Loom.ZombieBattleground
                             _rightBlockCardUnitElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         }
                         break;
+                    case BoardUnitView unit:
+                        _rightBlockCardUnitElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                 }
@@ -260,6 +306,8 @@ namespace Loom.ZombieBattleground
             public Enumerators.ActionType ActionType;
             public object Caller;
             public List<TargetEffectParam> TargetEffects;
+            public bool checkForCardOwner;
+            public WorkingCard workingCard;
         }
 
         public class TargetEffectParam
@@ -307,6 +355,36 @@ namespace Loom.ZombieBattleground
                           _pictureImage,
                           _effectImage;
 
+            private int _hp, _damage;
+
+            private int _initialHp, _initialDamage;
+
+            public event Action<int, int> HealthChangedEvent;
+
+            public event Action<int, int> DamageChangedEvent;
+
+            public int Health
+            {
+                get => _hp;
+                set
+                {
+                    int oldHp = _hp;
+                    _hp = Mathf.Clamp(value, 0, int.MaxValue);
+                    HealthChangedEvent?.Invoke(oldHp, _hp);
+                }
+            }
+
+            public int Damage
+            {
+                get => _damage;
+                set
+                {
+                    int oldDamage = _damage;
+                    _damage = Mathf.Clamp(value, 0, int.MaxValue);
+                    DamageChangedEvent?.Invoke(oldDamage, _damage);
+                }
+            }
+
             private bool _withEffect;
 
             public UnitCardElement(GameObject selfObject, bool withEffect = false)
@@ -336,29 +414,43 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
-                _attackText.text = LibraryCard.Damage.ToString();
-                _defenseText.text = LibraryCard.Health.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
+                Damage = libraryCard.Damage;
+                Health = libraryCard.Health;
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                _initialDamage = Damage;
+                _initialHp = Health;
 
-                string setName = LibraryCard.CardSetType.ToString();
+                DrawStats();
+
+                DamageChangedEvent += (oldValue, newValue) =>
+                {
+                    DrawStats();
+                };
+                HealthChangedEvent += (oldValue, newValue) =>
+                {
+                    DrawStats();
+                };
+
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
+
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", LibraryCard.Type + "_icon"));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
 
                 if (_withEffect)
                 {
@@ -387,6 +479,31 @@ namespace Loom.ZombieBattleground
                 }
 
                 _selfObject.SetActive(true);
+            }
+
+            private void DrawStats()
+            {
+                _attackText.text = Damage.ToString();
+                _defenseText.text = Health.ToString();
+
+                FillColor(Damage, _initialDamage, _attackText);
+                FillColor(Health, _initialHp, _defenseText);
+            }
+
+            private void FillColor(int stat, int initialStat, TextMeshProUGUI text)
+            {
+                if (stat > initialStat)
+                {
+                    text.color = Color.green;
+                }
+                else if (stat < initialStat)
+                {
+                    text.color = Color.red;
+                }
+                else
+                {
+                    text.color = Color.white;
+                }
             }
         }
 
@@ -429,26 +546,26 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = LibraryCard.CardSetType.ToString();
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
 
                 if (_withEffect)
                 {
@@ -456,6 +573,12 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -513,6 +636,12 @@ namespace Loom.ZombieBattleground
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
 
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
+
                         if (hasValue)
                         {
                             _valueText.text = value.ToString();
@@ -568,6 +697,12 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -631,29 +766,29 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
-                _attackText.text = LibraryCard.Damage.ToString();
-                _defenseText.text = LibraryCard.Health.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
+                _attackText.text = libraryCard.Damage.ToString();
+                _defenseText.text = libraryCard.Health.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = LibraryCard.CardSetType.ToString();
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", LibraryCard.Type + "_icon"));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
 
                 if (_withEffect)
                 {
@@ -661,6 +796,12 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {
@@ -724,26 +865,26 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                Card LibraryCard = workingCard.LibraryCard;
+                IReadOnlyCard libraryCard = workingCard.LibraryCard;
 
-                _titleText.text = LibraryCard.Name;
-                _bodyText.text = LibraryCard.Description;
-                _gooText.text = LibraryCard.Cost.ToString();
+                _titleText.text = libraryCard.Name;
+                _bodyText.text = libraryCard.Description;
+                _gooText.text = libraryCard.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), LibraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = LibraryCard.CardSetType.ToString();
+                string setName = libraryCard.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(LibraryCard.Frame))
+                if (!string.IsNullOrEmpty(libraryCard.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), LibraryCard.Picture.ToLowerInvariant()));
+                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
 
                 if (_withEffect)
                 {
@@ -751,6 +892,12 @@ namespace Loom.ZombieBattleground
                     {
                         _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
                             "Images/IconsBuffTypes/battleground_past_action_bar_icon_" + actionEffectType.ToString().ToLowerInvariant());
+
+                        if (_effectImage.sprite == null)
+                        {
+                            _effectImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                                "Images/IconsBuffTypes/battleground_past_action_bar_icon_blank");
+                        }
 
                         if (hasValue)
                         {

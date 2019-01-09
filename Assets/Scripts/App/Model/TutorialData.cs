@@ -10,6 +10,7 @@ namespace Loom.ZombieBattleground
         public List<TutorialDataStep> TutorialDataSteps;
         public SpecificBattlegroundInfo SpecificBattlegroundInfo;
         public bool PlayerTurnFirst;
+        public bool Ignore;
     }
 
     public class TutorialDataStep

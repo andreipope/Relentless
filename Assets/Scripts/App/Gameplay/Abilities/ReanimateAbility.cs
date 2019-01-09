@@ -16,7 +16,12 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+            if (!AbilityUnitOwner.IsReanimated)
+            {
+                AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+            }
         }
 
         public override void Action(object info = null)
@@ -27,35 +32,40 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            Card libraryCard = AbilityUnitOwner.Card.LibraryCard.Clone();
-            WorkingCard card = new WorkingCard(libraryCard, owner);
+            Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
             BoardUnitView unit = CreateBoardUnit(card, owner);
-            unit.Model.IsReanimated = true;
             AbilityUnitOwner.IsReanimated = true;
 
             owner.AddCardToBoard(card);
             owner.BoardCards.Add(unit);
 
-            if (!owner.IsLocalPlayer)
+            if (owner.IsLocalPlayer)
             {
-                BattlegroundController.OpponentBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                BattlegroundController.PlayerBoardCards.Add(unit);
             }
             else
             {
-                BattlegroundController.PlayerBoardCards.Add(unit);
-                BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(GameplayManager.CurrentPlayer.BoardCards);
+                BattlegroundController.OpponentBoardCards.Add(unit);
             }
+
+            BoardController.UpdateCurrentBoardOfPlayer(owner, null);
+
+            InvokeActionTriggered(unit);
         }
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
+            Action();
+        }
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
 
             Action();
+
+            base.UnitDiedHandler();
         }
 
         private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _buttonThanks;
 
-        private GameObject _creditListItemPrefab, _creditSubsectionListItemPrefab;
+        private GameObject _creditListItemPrefab, _creditPostListItemPrefab, _creditSubsectionListItemPrefab;
 
         private ScrollRect _creditsListScroll;
 
@@ -37,6 +38,8 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
 
+            _creditPostListItemPrefab =
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/PostListItem");
             _creditListItemPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/CreditListItem");
             _creditSubsectionListItemPrefab =
@@ -91,24 +94,30 @@ namespace Loom.ZombieBattleground
 
         private void FillCredits()
         {
+            CreditView post = null;
             for (int i = 0; i < _dataManager.CachedCreditsData.CreditsInfo.Count; i++)
             {
-                if (i > 0)
+                new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList,
+                    _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
+                for (int j = 0; j < _dataManager.CachedCreditsData.CreditsInfo[i].Posts.Count; j++)
                 {
-                    new CreditSubSectionView(_creditSubsectionListItemPrefab, _panelCreditsList,
-                        _dataManager.CachedCreditsData.CreditsInfo[i].SubsectionType);
-                }
+                        post =
+                        new CreditView(
+                            _creditPostListItemPrefab,
+                            _panelCreditsList,
+                            _dataManager.CachedCreditsData.CreditsInfo[i].Posts[j].Post
+                        );
 
-                for (int j = 0; j < _dataManager.CachedCreditsData.CreditsInfo[i].Credits.Count; j++)
-                {
-                    CreditView credit =
+                    for (int k = 0; k < _dataManager.CachedCreditsData.CreditsInfo[i].Posts[j].Credits.Count; k++)
+                    {
+                        CreditView credit =
                         new CreditView(
                             _creditListItemPrefab,
-                            _panelCreditsList,
-                            _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].FullName,
-                            _dataManager.CachedCreditsData.CreditsInfo[i].Credits[j].Post
+                            post.SelfObject.transform,
+                            _dataManager.CachedCreditsData.CreditsInfo[i].Posts[j].Credits[k].FullName
                         );
-                    _credits.Add(credit);
+                        _credits.Add(credit);
+                    }
                 }
             }
 
@@ -129,20 +138,15 @@ namespace Loom.ZombieBattleground
 
         public TextMeshProUGUI FullNameText;
 
-        public TextMeshProUGUI PostText;
-
-        public CreditView(GameObject prefab, Transform parent, string name, string post)
+        public CreditView(GameObject prefab, Transform parent, string name)
         {
             SelfObject = Object.Instantiate(prefab, parent, false);
             FullNameText = SelfObject.transform.Find("Text_Name").GetComponent<TextMeshProUGUI>();
-            PostText = SelfObject.transform.Find("Text_Post").GetComponent<TextMeshProUGUI>();
             FullNameText.text = name;
             if (string.IsNullOrWhiteSpace(name))
             {
                 FullNameText.gameObject.SetActive(false);
             }
-
-            PostText.text = post;
         }
     }
 

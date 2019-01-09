@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Newtonsoft.Json;
 using UnityEngine;
+using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string UserDataFileName = "UserLoginData.json";
 
         private IDataManager _dataManager;
+
+        private IUIManager _uiManager;
 
         private BackendFacade _backendFacade;
 
@@ -22,6 +25,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
+            _uiManager = GameClient.Get<IUIManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
         }
 
@@ -68,7 +72,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 File.WriteAllText(UserDataFilePath, _dataManager.EncryptData(modelJson));
             }
-            else 
+            else
             {
                 File.WriteAllText(UserDataFilePath, modelJson);
             }
@@ -81,23 +85,36 @@ namespace Loom.ZombieBattleground.BackendCommunication
             LoadUserDataModel();
             Debug.Log("User Id: " + UserDataModel.UserId);
 
-            await _dataManager.LoadRemoteConfig();
-            Debug.Log(
-                $"Remote version {_dataManager.BetaConfig.LatestVersion}, local version {BuildMetaInfo.Instance.Version}");
-#if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !USE_LOCAL_BACKEND && !FORCE_DISABLE_VERSION_CHECK
-            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion)) 
-                throw new GameVersionMismatchException(
-                    BuildMetaInfo.Instance.Version.ToString(),
-                    _dataManager.BetaConfig.LatestVersion.ToString()
-                 );
-#elif UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(_dataManager.BetaConfig.LatestVersion))
-            {
-                Debug.LogWarning("Remote and local versions mismatch!");
-            }
-#endif
-
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
+
+            await _dataManager.LoadRemoteConfig();
+            Version contentVersion = Version.Parse(_dataManager.CachedVersions.ContentVersion);
+            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(contentVersion))
+            {
+                Action[] actions = new Action[2];
+                actions[0] = () =>
+                {
+                    #if UNITY_EDITOR
+                    Debug.LogWarning("Version Mismatched");
+                    #elif UNITY_ANDROID
+                    Application.OpenURL(Constants.GameLinkForAndroid);
+                    #elif UNITY_IOS
+                    Application.OpenURL(Constants.GameLinkForIOS);
+                    #elif UNITY_STANDALONE_OSX
+                    Application.OpenURL(Constants.GameLinkForOSX);
+                    #elif UNITY_STANDALONE_WIN
+                    Application.OpenURL(Constants.GameLinkForWindows);
+                    #else
+                    Debug.LogWarning("Version Mismatched");
+                    #endif
+                };
+                actions[1] = () =>
+                {
+                    Application.Quit();
+                };
+
+                _uiManager.DrawPopup<UpdatePopup>(actions);
+            }
 
             try
             {

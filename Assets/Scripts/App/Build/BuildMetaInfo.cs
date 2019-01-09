@@ -74,8 +74,8 @@ namespace Loom.ZombieBattleground
         public bool CheckBackendVersionMatch(Version backendVersion)
         {
             Version localVersion = Version;
-            return localVersion.Major == backendVersion.Major && localVersion.Minor == backendVersion.Minor &&
-                localVersion.Build == backendVersion.Build;
+            return localVersion.Major >= backendVersion.Major && localVersion.Minor >= backendVersion.Minor &&
+                localVersion.Build >= backendVersion.Build;
         }
     }
 }

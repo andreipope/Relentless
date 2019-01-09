@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
 
         public int Turns { get; }
 
+        private List<BoardObject> _allies;
+
         public FreezeNumberOfRandomAllyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -28,8 +30,6 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
-
             Action();
         }
 
@@ -37,40 +37,49 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardObject> allies = new List<BoardObject>();
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            _allies = new List<BoardObject>();
 
             if (PredefinedTargets != null)
             {
-                allies = PredefinedTargets;
+                _allies = PredefinedTargets.Select(x => x.BoardObject).ToList();
             }
             else
             {
-                allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
-                allies.Remove(AbilityUnitOwner);
-                allies.Add(PlayerCallerOfAbility);
+                _allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                _allies.Remove(AbilityUnitOwner);
+                _allies.Add(PlayerCallerOfAbility);
 
-                allies = InternalTools.GetRandomElementsFromList(allies, Value);
+                _allies = InternalTools.GetRandomElementsFromList(_allies, Value);
             }
 
-            for (int i = 0; i < allies.Count; i++)
+            InvokeActionTriggered(_allies);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            for (int i = 0; i < _allies.Count; i++)
             {
-                object ally = allies[i];
+                object ally = _allies[i];
                 switch (ally)
                 {
                     case Player player:
                         player.Stun(Enumerators.StunType.FREEZE, Turns);
-                        CreateVfx(player.AvatarObject.transform.position, true, 5f);
                         break;
                     case BoardUnitModel unit:
                         unit.Stun(Enumerators.StunType.FREEZE, Turns);
-                        CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position, true, 5f);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ally), ally, null);
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _allies, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

@@ -23,36 +23,56 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Player);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/toxicDamageVFX");
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            Action();
+            InvokeActionTriggered();
         }
 
-        public override void Action(object param = null)
+        protected override void VFXAnimationEndedHandler()
         {
-            base.Action(param);
+            base.VFXAnimationEndedHandler();
+
+            Player targetObject = null; 
 
             foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        GetOpponentOverlord().Defense -= Value;
-                        CreateVfx(Utilites.CastVfxPosition(GetOpponentOverlord().AvatarObject.transform.position), true, 5f, true);
+                        targetObject = GetOpponentOverlord();
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        PlayerCallerOfAbility.Defense -= Value;
-                        CreateVfx(Utilites.CastVfxPosition(PlayerCallerOfAbility.AvatarObject.transform.position), true, 5f, true);
+                        targetObject = PlayerCallerOfAbility;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
+
+                BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
             }
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingOverlord,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = targetObject,
+                            HasValue = true,
+                            Value = -AbilityData.Value
+                        }
+                    }
+            });
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

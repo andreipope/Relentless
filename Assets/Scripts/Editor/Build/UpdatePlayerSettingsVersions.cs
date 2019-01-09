@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
@@ -16,6 +17,8 @@ namespace Loom.ZombieBattleground.Editor
 
         public void OnPreprocessBuild(BuildReport report)
         {
+            PlayerSettings.SplashScreen.showUnityLogo = false;
+
 #if UNITY_CLOUD_BUILD
             BuildMetaInfo buildMetaInfo = BuildMetaInfo.Instance;
 
@@ -29,6 +32,10 @@ namespace Loom.ZombieBattleground.Editor
             PlayerSettings.iOS.buildNumber = buildMetaInfo.CloudBuildBuildNumber.ToString();
             PlayerSettings.Android.bundleVersionCode = buildMetaInfo.CloudBuildBuildNumber;
 #endif
+
+            EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
+            EditorUserBuildSettings.androidDebugMinification = AndroidMinification.Proguard;
+            EditorUserBuildSettings.androidReleaseMinification = AndroidMinification.Proguard;
         }
     }
 }

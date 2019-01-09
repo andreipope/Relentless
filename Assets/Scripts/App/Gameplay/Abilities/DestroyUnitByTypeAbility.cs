@@ -16,20 +16,32 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            BattlegroundController.DestroyBoardUnit(TargetUnit);
-
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
                 TargetUnit
-            }, AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+            BattlegroundController.DestroyBoardUnit(TargetUnit);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                            Target = TargetUnit
+                        }
+                    }
+            });
         }
 
         protected override void InputEndedHandler()
@@ -38,8 +50,15 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered();
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

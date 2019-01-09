@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
@@ -11,7 +11,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
     {
         private IGameplayManager _gameplayManager;
 
+        private IMatchManager _matchManager;
+
         private IAnalyticsManager _analyticsManager;
+
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
 
         private PlayerEventListener _playerEventListener;
 
@@ -20,7 +26,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _gameplayManager.GameInitialized += GameplayManagerGameInitialized;
             _gameplayManager.GameEnded += GameplayManagerGameEnded;
@@ -42,6 +51,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener?.Dispose();
 
             _analyticsManager.NotifyFinishedMatch(obj);
+
+            if (!_gameplayManager.IsTutorial)
+            {
+                Dictionary<string, object> eventParameters = new Dictionary<string, object>();
+                eventParameters.Add(AnalyticsManager.PropertyMatchDuration, _gameplayManager.MatchDuration.GetTimeDiffrence());
+                eventParameters.Add(AnalyticsManager.PropertyMatchType, _matchManager.MatchType.ToString());
+                if (obj == Enumerators.EndGameType.CANCEL)
+                {
+                    _analyticsManager.SetEvent(AnalyticsManager.EventQuitMatch, eventParameters);
+                }
+                else
+                {
+                    eventParameters.Add(AnalyticsManager.PropertyMatchResult, obj.ToString());
+                    _analyticsManager.SetEvent(AnalyticsManager.EventEndedMatch, eventParameters);
+                }
+            }
         }
 
         private void GameplayManagerGameInitialized()
@@ -53,27 +78,41 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener = new PlayerEventListener(_gameplayManager.OpponentPlayer, true);
 
             _analyticsManager.NotifyStartedMatch();
+
+            if (!_gameplayManager.IsTutorial)
+            {
+                Dictionary<string, object> eventParameters = new Dictionary<string, object>();
+                eventParameters.Add(AnalyticsManager.PropertyTimeToFindOpponent, _matchManager.MatchType == Enumerators.MatchType.PVP ? _matchManager.FindOpponentTime.GetTimeDiffrence() : "0");
+                eventParameters.Add(AnalyticsManager.PropertyMatchType, _matchManager.MatchType.ToString());
+                _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch, eventParameters);
+            }
         }
 
         private class PlayerEventListener : IDisposable
         {
             private readonly BackendFacade _backendFacade;
 
+            private readonly IQueueManager _queueManager;
+
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
             private readonly BattlegroundController _battlegroundController;
 
             private readonly IPvPManager _pvpManager;
-            
+
             private readonly SkillsController _skillsController;
 
             private readonly AbilitiesController _abilitiesController;
 
             private readonly RanksController _ranksController;
 
+            private readonly MatchRequestFactory _matchRequestFactory;
+            private readonly PlayerActionFactory _playerActionFactory;
+
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
+                _queueManager = GameClient.Get<IQueueManager>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _pvpManager = GameClient.Get<IPvPManager>();
                 _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -93,6 +132,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     _pvpManager.InitialGameState == null)
                     return;
 
+                _matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
+                _playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
+
                 if (!isOpponent)
                 {
                     _battlegroundController.TurnEnded += TurnEndedHandler;
@@ -104,8 +146,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Player.CardAttacked += CardAttackedHandler;
                     Player.LeaveMatch += LeaveMatchHandler;
 
-                    _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
-                    _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
+                    if (_skillsController.PlayerPrimarySkill != null)
+                    {
+                        _skillsController.PlayerPrimarySkill.SkillUsed += SkillUsedHandler;
+                    }
+
+                    if (_skillsController.PlayerSecondarySkill != null)
+                    {
+                        _skillsController.PlayerSecondarySkill.SkillUsed += SkillUsedHandler;
+                    }
 
                     _ranksController.RanksUpdated += RanksUpdatedHandler;
                 }
@@ -116,7 +165,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
                 {
-                    ActionType = PlayerActionType.DrawCard,
+                    ActionType = PlayerActionType.Types.Enum.DrawCard,
                     PlayerId = playerId,
                     DrawCard = new PlayerActionDrawCard
                     {
@@ -155,8 +204,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Player.CardAttacked -= CardAttackedHandler;
                     Player.LeaveMatch -= LeaveMatchHandler;
 
-                    _skillsController.PlayerPrimarySkill.SkillUsed -= SkillUsedHandler;
-                    _skillsController.PlayerSecondarySkill.SkillUsed -= SkillUsedHandler;
+                    if (_skillsController.PlayerPrimarySkill != null)
+                    {
+                        _skillsController.PlayerPrimarySkill.SkillUsed -= SkillUsedHandler;
+                    }
+
+                    if (_skillsController.PlayerSecondarySkill != null)
+                    {
+                        _skillsController.PlayerSecondarySkill.SkillUsed -= SkillUsedHandler;
+                    }
 
                     _ranksController.RanksUpdated -= RanksUpdatedHandler;
                 }
@@ -164,227 +220,74 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void CardPlayedHandler(WorkingCard card, int position)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.CardPlay,
-                    PlayerId = playerId,
-                    CardPlay = new PlayerActionCardPlay
-                    {
-                        Card = new CardInstance
-                        {
-                            InstanceId = card.Id,
-                            Prototype = card.LibraryCard.GetCardPrototype(),
-                            Defense = card.Health,
-                            Attack = card.Damage,
-                        },
-                        Position = position
-                    }
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.CardPlay(card, position));
             }
 
             private void TurnEndedHandler()
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.EndTurn,
-                    PlayerId = playerId,
-                    EndTurn = new PlayerActionEndTurn()
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.EndTurn());
             }
 
             private void LeaveMatchHandler()
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.LeaveMatch,
-                    PlayerId = playerId,
-                    LeaveMatch = new PlayerActionLeaveMatch()
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, AffectObjectType type, int instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.CardAttack,
-                    PlayerId = playerId,
-                    CardAttack = new PlayerActionCardAttack
-                    {
-                        Attacker = new CardInstance
-                        {
-                            InstanceId = attacker.Id,
-                            Prototype = attacker.LibraryCard.GetCardPrototype(),
-                            Defense = attacker.Health,
-                            Attack = attacker.Damage
-                        },
-                        AffectObjectType = type,
-                        Target = new Unit
-                        {
-                            InstanceId = instanceId
-                        }
-                    }
-                };
+                if (type != Enumerators.AffectObjectType.Player && instanceId == null)
+                    throw new ArgumentNullException(nameof(instanceId));
 
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId ?? new Data.InstanceId(-1)));
             }
 
-            private async void AbilityUsedHandler(WorkingCard card, Enumerators.AbilityType abilityType, CardKind cardKind,
-                                                  AffectObjectType affectObjectType, List<BoardObject> targets = null)
+            private void AbilityUsedHandler(
+                WorkingCard card,
+                Enumerators.AbilityType abilityType,
+                Enumerators.CardKind cardKind,
+                Enumerators.AffectObjectType affectObjectType,
+                List<ParametrizedAbilityBoardObject> targets = null,
+                List<WorkingCard> cards = null)
             {
-                PlayerActionCardAbilityUsed CardAbilityUsed = new PlayerActionCardAbilityUsed()
-                {
-                    CardKind = cardKind,
-                    AbilityType = abilityType.ToString(),
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = card.LibraryCard.GetCardPrototype(),
-                        Defense = card.Health,
-                        Attack = card.Damage
-                    }
-                };
-
-                Unit targetUnit;
-                if (targets != null)
-                {
-                    foreach(BoardObject boardObject in targets)
-                    {
-                        targetUnit = new Unit();
-
-                        if (boardObject is BoardUnitModel model)
-                        {
-                            targetUnit = new Unit()
-                            {
-                                InstanceId = model.Card.Id,
-                                AffectObjectType =  AffectObjectType.Character
-                            };
-                        }
-                        else if (boardObject is Player player)
-                        {
-                            targetUnit = new Unit()
-                            {
-                                InstanceId = player.Id == 0 ? 1 : 0,
-                                AffectObjectType = AffectObjectType.Player
-                            };
-                        }
-                        else if(boardObject is HandBoardCard handCard)
-                        {
-                            targetUnit = new Unit()
-                            {
-                                InstanceId = handCard.Id,
-                                AffectObjectType = AffectObjectType.Card
-                            };
-                        }
-
-                        CardAbilityUsed.Targets.Add(targetUnit);
-                    }
-                }
-
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.CardAbilityUsed,
-                    PlayerId = playerId,
-                    CardAbilityUsed = CardAbilityUsed
-
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards?.Select(otherCard => otherCard.InstanceId)));
             }
 
             private void MulliganHandler(List<WorkingCard> cards)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Mulligan,
-                    PlayerId = playerId,
-                    Mulligan = new PlayerActionMulligan
-                    {
-                        // TODO : cant able to set the mulligan cards, no setter in zb protobuf
-                        //MulliganedCards = GetMulliganCards(cards)
-                    }
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
-
 
             private void SkillUsedHandler(BoardSkill skill, BoardObject target)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                AffectObjectType affectObjectType = target is Player ? AffectObjectType.Player : AffectObjectType.Character;
-                Unit targetUnit = null;
+                Enumerators.AffectObjectType affectObjectType =
+                    target is Player ?
+                        Enumerators.AffectObjectType.Player :
+                        Enumerators.AffectObjectType.Character;
 
-                if(target is BoardUnitModel unit)
+                Data.InstanceId targetInstanceId;
+                switch (target)
                 {
-                    targetUnit = new Unit() { InstanceId = unit.Card.Id };
+                    case BoardUnitModel unit:
+                        targetInstanceId = unit.Card.InstanceId;
+                        break;
+                    case Player player:
+                        targetInstanceId = new Data.InstanceId(player.InstanceId.Id);
+                        break;
+                    default:
+                        throw new Exception($"Unhandled target type {target}");
                 }
-                else if(target is Player player)
-                {
-                    targetUnit = new Unit() { InstanceId = player.Id == 0 ? 1 : 0 };
-                }
 
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.OverlordSkillUsed,
-                    PlayerId = playerId,
-                    OverlordSkillUsed = new PlayerActionOverlordSkillUsed
-                    {
-                        SkillId = skill.Id,
-                        AffectObjectType = affectObjectType,     
-                        Target = targetUnit
-                    }
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, affectObjectType, targetInstanceId));
             }
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
-                string playerId = _backendDataControlMediator.UserDataModel.UserId;
+                AddAction(_playerActionFactory.RankBuff(card, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
+            }
 
-                PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
-                {
-                    Card = new CardInstance
-                    {
-                        InstanceId = card.Id,
-                        Prototype = card.LibraryCard.GetCardPrototype(),
-                        Defense = card.Health,
-                        Attack = card.Damage
-                    }
-                };
-
-                Unit unit;
-                foreach (BoardUnitView view in units)
-                {
-                    unit = new Unit()
-                    {
-                        InstanceId = view.Model.Card.Id,
-                        AffectObjectType = AffectObjectType.Character
-                    };
-
-                    rankBuff.Targets.Add(unit);
-                }
-
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.RankBuff,
-                    PlayerId = playerId,
-                    RankBuff = rankBuff
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);
+            private void AddAction(PlayerAction playerAction)
+            {
+                _queueManager.AddAction(_matchRequestFactory.CreateAction(playerAction));
             }
         }
     }

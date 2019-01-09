@@ -20,29 +20,34 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         protected override void UnitHpChangedHandler()
         {
             base.UnitHpChangedHandler();
 
-            if (!_wasChanged)
+            if (!GameplayManager.UseBackendGameLogic)
             {
-                if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
+                if (!_wasChanged)
                 {
-                    _wasChanged = true;
-                    AbilityUnitOwner.BuffedDamage += Value;
-                    AbilityUnitOwner.CurrentDamage += Value;
+                    if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
+                    {
+                        _wasChanged = true;
+                        AbilityUnitOwner.BuffedDamage += Value;
+                        AbilityUnitOwner.CurrentDamage += Value;
+                        InvokeActionTriggered(true);
+                    }
                 }
-            }
-            else
-            {
-                if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
+                else
                 {
-                    AbilityUnitOwner.BuffedDamage -= Value;
-                    AbilityUnitOwner.CurrentDamage -= Value;
-                    _wasChanged = false;
+                    if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
+                    {
+                        AbilityUnitOwner.BuffedDamage -= Value;
+                        AbilityUnitOwner.CurrentDamage -= Value;
+                        _wasChanged = false;
+                        InvokeActionTriggered(false);
+                    }
                 }
             }
         }

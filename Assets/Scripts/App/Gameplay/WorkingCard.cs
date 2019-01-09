@@ -1,4 +1,3 @@
-using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground
@@ -7,52 +6,46 @@ namespace Loom.ZombieBattleground
     {
         private CardsController _cardsController;
 
-        public int Id;
-
-        public int CardId;
-
-        public Card LibraryCard;
-
         public Player Owner;
 
-        public int InitialHealth, InitialDamage, Health, Damage;
+        public IReadOnlyCard LibraryCard;
 
-        public int InitialCost, RealCost;
+        public CardInstanceSpecificData InstanceCard;
 
-        public Enumerators.CardType Type;
+        public InstanceId InstanceId { get; set; }
 
-        public WorkingCard(Card card, Player player, int id = -1)
+        public WorkingCard(IReadOnlyCard cardPrototype, IReadOnlyCard card, Player player, InstanceId? id = null)
+            : this(cardPrototype, new CardInstanceSpecificData(card), player, id)
         {
-            LibraryCard = card.Clone();
-            CardId = LibraryCard.Id;
+        }
+
+        public WorkingCard(IReadOnlyCard cardPrototype, CardInstanceSpecificData cardInstanceData, Player player, InstanceId? id = null)
+        {
             Owner = player;
-
-            InitialHealth = LibraryCard.Health;
-            InitialDamage = LibraryCard.Damage;
-            InitialCost = LibraryCard.Cost;
-            Health = InitialHealth;
-            Damage = InitialDamage;
-            RealCost = InitialCost;
-
-            Type = LibraryCard.CardType;
+            LibraryCard = new Card(cardPrototype);
+            InstanceCard = cardInstanceData;
 
             _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
-            if (id == -1)
+            if (id == null)
             {
-                Id = _cardsController.GetNewCardInstanceId();
+                InstanceId = _cardsController.GetNewCardInstanceId();
             }
             else
             {
-                Id = id;
+                InstanceId = id.Value;
 
-                if(Id > _cardsController.GetCardInstanceId())
+                if (InstanceId.Id > _cardsController.GetCardInstanceId().Id)
                 {
-                    _cardsController.SetNewCardInstanceId(Id);
+                    _cardsController.SetNewCardInstanceId(InstanceId.Id);
                 }
             }
         }
 
-        public bool IsPlayable { get; set; }
+        public override string ToString()
+        {
+            return $"{{InstanceId: {InstanceId}, Name: {LibraryCard.Name}}}";
+        }
     }
+
 }

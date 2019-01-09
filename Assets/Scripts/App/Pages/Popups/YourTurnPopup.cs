@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
 
             Self.transform.localScale = Vector3.zero;
             Self.transform.DOScale(1.0f, 0.4f).SetEase(Ease.InOutBack);
-            GameClient.Get<ITimerManager>().AddTimer(HideDelay, null, 4f);
+            GameClient.Get<ITimerManager>().AddTimer(HideDelay, null, Constants.DelayBetweenYourTurnPopup);
         }
 
         public void Show(object data)
