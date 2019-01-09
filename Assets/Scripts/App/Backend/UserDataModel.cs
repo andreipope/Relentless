@@ -1,19 +1,29 @@
-﻿namespace Loom.ZombieBattleground.BackendCommunication
+﻿using System;
+
+namespace Loom.ZombieBattleground.BackendCommunication
 {
+    [Serializable]
     public class UserDataModel
     {
         public string UserId;
-
-        public string BetaKey;
 
         public byte[] PrivateKey;
 
         public bool IsValid;
 
-        public UserDataModel(string userId, string betaKey, byte[] privateKey)
+        public bool IsRegistered;
+
+        public string Email;
+
+        public string Password;
+
+        public string GUID;
+
+        public string AccessToken;
+
+        public UserDataModel(string userId, byte[] privateKey)
         {
             UserId = userId;
-            BetaKey = betaKey;
             PrivateKey = privateKey;
         }
     }

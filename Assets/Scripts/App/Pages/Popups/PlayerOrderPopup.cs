@@ -89,9 +89,9 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            object[] param = (object[]) data;
+            object[] param = (object[])data;
 
-            ApplyInfoAboutHeroes((Hero) param[0], (Hero) param[1]);
+            ApplyInfoAboutHeroes((Hero)param[0], (Hero)param[1]);
         }
 
         public void Update()

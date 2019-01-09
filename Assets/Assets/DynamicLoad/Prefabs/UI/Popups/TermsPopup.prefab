@@ -269,13 +269,13 @@ MonoBehaviour:
   m_text: "For this testing phase of Zombie Battleground,  ALL CARDS ARE AVAILABLE
     TO ALL BACKERS. This way, players can build decks using all the cards released
     so far, and help us identify card balance issues more quickly, with the goal of
-    creating the best possible player experience for the official beta release. \r\n\r\nOnce
-    the open beta officially launches, the game will be reset, and you will only have
-    access to the cards you have acquired (by pre-purchasing packs or trading on the
-    marketplace).\r\n\r\nAdditionally, as this is a very early alpha version of the
-    game, some bugs are expected, and only a limited number of cards have been finalized.
-    We appreciate your help reporting bugs and giving us your feedback, so each build
-    can be more amazing than the last!\r\n"
+    creating the best possible player experience for the official release. \r\n\r\nOnce
+    the Zombie Battleground officially launches, the game will be reset, and you will
+    only have access to the cards you have acquired (by pre-purchasing packs or trading
+    on the marketplace).\r\n\r\nAdditionally, as this is a very early alpha version
+    of the game, some bugs are expected, and only a limited number of cards have been
+    finalized. We appreciate your help reporting bugs and giving us your feedback,
+    so each build can be more amazing than the last!\r\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 900311af7129d4bf3bae8e6e42d5c0a2, type: 2}
   m_sharedMaterial: {fileID: 21882343216845158, guid: 900311af7129d4bf3bae8e6e42d5c0a2,
@@ -352,11 +352,11 @@ MonoBehaviour:
     lineCount: 13
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:

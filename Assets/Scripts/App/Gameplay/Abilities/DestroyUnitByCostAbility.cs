@@ -8,11 +8,15 @@ namespace Loom.ZombieBattleground
 {
     public class DestroyUnitByCostAbility : AbilityBase
     {
+        private const int TorchCardId = 147;
+
         public int Cost { get; }
 
         private BoardUnitModel _unit;
 
         private bool _isRandom;
+
+        private bool _checkForCardOwner;
 
         public DestroyUnitByCostAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -32,7 +36,7 @@ namespace Loom.ZombieBattleground
                 _isRandom = true;
                 _unit = GetRandomUnit();
                 InvokeActionTriggered(_unit);
-                
+
             }
         }
 
@@ -58,7 +62,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                 DestroyUnit(TargetUnit);
 
@@ -100,9 +104,16 @@ namespace Loom.ZombieBattleground
             if (unit != null && unit.Card.InstanceCard.Cost <= Cost)
             {
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { unit }, AbilityData.AbilityType,
-                                                     Protobuf.AffectObjectType.Types.Enum.Character);
+                                                     Enumerators.AffectObjectType.Character);
 
-                BattlegroundController.DestroyBoardUnit(unit);
+                BattlegroundController.DestroyBoardUnit(unit, false);
+
+                WorkingCard card = BoardSpell?.Card;
+
+                if(card != null && card.LibraryCard.MouldId == TorchCardId)
+                {
+                    _checkForCardOwner = true;
+                }
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
@@ -115,7 +126,9 @@ namespace Loom.ZombieBattleground
                             ActionEffectType = Enumerators.ActionEffectType.DeathMark,
                             Target = unit
                         }
-                    }
+                    },
+                    checkForCardOwner = _checkForCardOwner,
+                    workingCard = card
                 });
             }
         }

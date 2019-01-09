@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground
 
         private int _delayedTurnsLeft;
 
+        public bool ActionDone { get; protected set; }
+
         public DelayedAbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -22,17 +24,14 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
-         !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (CheckActionEnded())
                 return;
 
             CountDelay();
@@ -42,8 +41,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
-            !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (CheckActionEnded())
                 return;
 
             CountDelay();
@@ -51,14 +49,36 @@ namespace Loom.ZombieBattleground
 
         private void CountDelay()
         {
-            if (_delayedTurnsLeft == 0)
+            CheckDelayEnded();
+
+            _delayedTurnsLeft--;
+        }
+
+        private void CheckDelayEnded()
+        {
+            if (_delayedTurnsLeft <= 0 && !ActionDone)
             {
                 Action();
 
-                AbilitiesController.DeactivateAbility(ActivityId);
+                ActionDone = true;
+
+                Deactivate();
+            }
+        }
+
+        private bool CheckActionEnded()
+        {
+            if (GetCaller() == null)
+            {
+                ActionDone = true;
             }
 
-            _delayedTurnsLeft--;
+            if(ActionDone)
+            {
+                Deactivate();
+            }
+
+            return ActionDone;
         }
     }
 }

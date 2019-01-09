@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
 {
@@ -95,9 +96,9 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(SetStatusZoomingFalse);
         }
 
-        public void InitializePlayer(int playerId)
+        public void InitializePlayer(Data.InstanceId instanceId)
         {
-            Player player = new Player(playerId, GameObject.Find("Player"), false);
+            Player player = new Player(instanceId, GameObject.Find("Player"), false);
 
             _gameplayManager.CurrentPlayer = player;
 
@@ -135,6 +136,11 @@ namespace Loom.ZombieBattleground
                             workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
 
+                        Debug.Log(
+                            $"Player ID {instanceId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
+                            String.Join("\n", workingDeck.Cast<object>().ToArray())
+                        );
+
                         isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
                         break;
                     default:
@@ -162,6 +168,11 @@ namespace Loom.ZombieBattleground
                         .Select(instance => instance.FromProtobuf(player))
                         .ToList();
 
+                    Debug.Log(
+                        $"Player ID {player.InstanceId}, local: {player.IsLocalPlayer}, added CardsInHand:\n" +
+                        String.Join("\n", workingCards.Cast<object>().ToArray())
+                    );
+
                     player.SetFirstHandForPvPMatch(workingCards);
                     break;
                 default:
@@ -169,6 +180,7 @@ namespace Loom.ZombieBattleground
             }
 
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+            player.MulliganWasStarted = true;
         }
 
         public virtual void GameStartedHandler()
@@ -388,7 +400,7 @@ namespace Loom.ZombieBattleground
             _topmostBoardCard = null;
             _selectedBoardUnitView = null;
 
-            _battlegroundController.CurrentPreviewedCardId = -1;
+            _battlegroundController.CurrentPreviewedCardId = InstanceId.Invalid;
         }
 
         private void CheckCardPreviewShow()

@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
 
             if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
             CardsController.SetGooCostOfCardInHand(
                 PlayerCallerOfAbility,
                 MainWorkingCard,
-                MainWorkingCard.InstanceCard.Cost + gooCost,
+                MainWorkingCard.LibraryCard.Cost + gooCost,
                 BoardCard
                 );
         }

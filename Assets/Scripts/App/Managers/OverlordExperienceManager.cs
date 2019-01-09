@@ -5,6 +5,7 @@ using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
 {
@@ -16,6 +17,10 @@ namespace Loom.ZombieBattleground
 
         private OvelordExperienceInfo _overlordXPInfo;
 
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+
         public ExperienceInfo MatchExperienceInfo { get; private set; }
 
         public void Init()
@@ -26,6 +31,9 @@ namespace Loom.ZombieBattleground
 
             _overlordXPInfo = JsonConvert.DeserializeObject<OvelordExperienceInfo>(
                             _loadObjectsManager.GetObjectByPath<TextAsset>("Data/overlord_experience_data").text);
+
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
         public void Dispose()
@@ -47,6 +55,15 @@ namespace Loom.ZombieBattleground
         public void ApplyExperienceFromMatch(Hero hero)
         {
             hero.Experience += MatchExperienceInfo.ExperienceReceived;
+            CheckLevel(hero);
+
+            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+        }
+
+        public void ApplyExperience(Hero hero, int experience)
+        {
+            hero.Experience += experience;
             CheckLevel(hero);
 
             _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
@@ -121,13 +138,61 @@ namespace Loom.ZombieBattleground
                 }
                 else if (levelReward.SkillReward != null)
                 {
-                    hero.GetSkill(levelReward.SkillReward.SkillIndex).Unlocked = true;
+                    HeroSkill unlockedSkill = hero.GetSkill(levelReward.SkillReward.SkillIndex);
+                    unlockedSkill.Unlocked = true;
+
+                    SaveSkillInDecks(hero.HeroId, unlockedSkill);
                 }
 
                 MatchExperienceInfo.GotRewards.Add(levelReward);
             }
         }
-    
+
+        private void SaveSkillInDecks(int heroId, HeroSkill skill)
+        {
+            List<Deck> decks = _dataManager.CachedDecksData.Decks.FindAll((x) =>
+                x.HeroId == heroId &&
+                (x.PrimarySkill == Enumerators.OverlordSkill.NONE || x.SecondarySkill == Enumerators.OverlordSkill.NONE));
+
+            foreach (Deck deck in decks)
+            {
+                if (deck.HeroId == heroId)
+                {
+                    if (deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
+                    {
+                        deck.PrimarySkill = skill.OverlordSkill;
+                        SaveDeck(deck);
+                    }
+                    else if (deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
+                    {
+                        deck.SecondarySkill = skill.OverlordSkill;
+                        SaveDeck(deck);
+                    }                   
+                }
+            }          
+        }
+
+        private async void SaveDeck(Deck deck)
+        {
+            try
+            {
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+
+                OpenAlertDialog("Not able to Save Deck: \n" + e.Message);
+            }
+        }
+
+        private void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            GameClient.Get<IUIManager>().DrawPopup<WarningPopup>(msg);
+        }
+
         public class LevelReward
         {
             public int Level;

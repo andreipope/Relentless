@@ -371,6 +371,7 @@ namespace Loom.ZombieBattleground
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
             List<Card> cards = set.Cards;
+
             int startIndex = page * CardsPerPage;
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
 
@@ -734,7 +735,7 @@ namespace Loom.ZombieBattleground
             foreach (Deck deck in _dataManager.CachedDecksData.Decks)
             {
                 if (_currentDeckId != deck.Id &&
-                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+                    deck.Name.Trim().Equals(_currentDeck.Name.Trim(), StringComparison.InvariantCultureIgnoreCase))
                 {
                     _buttonSave.interactable = true;
                     OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
@@ -1098,8 +1099,10 @@ namespace Loom.ZombieBattleground
             {
                 OnDoneButtonPressed();
             }
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            else
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            }
         }
 
         private void BuyButtonHandler()
@@ -1146,11 +1149,7 @@ namespace Loom.ZombieBattleground
 
         private void MoveHordeToLeft()
         {
-            _currentHordePage--;
-            if (_currentHordePage < 0)
-            {
-                _currentHordePage = _numHordePages - 1;
-            }
+            _currentHordePage = Mathf.Clamp(_currentHordePage - 1, 0, _numHordePages - 1);
 
             CalculateVisibility();
         }
@@ -1164,12 +1163,7 @@ namespace Loom.ZombieBattleground
 
         private void MoveHordeToRight()
         {
-            _currentHordePage++;
-
-            if (_currentHordePage >= _numHordePages)
-            {
-                _currentHordePage = 0;
-            }
+            _currentHordePage = Mathf.Clamp(_currentHordePage + 1, 0, _numHordePages - 1);
 
             CalculateVisibility();
         }

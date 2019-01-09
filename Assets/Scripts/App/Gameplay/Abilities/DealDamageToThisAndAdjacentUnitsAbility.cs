@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object param = null)
         {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             base.Action(param);
             _units = new List<BoardUnitModel>();
@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
             }
             _units.Clear();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             AbilityProcessingAction?.ForceActionDone();
         }

@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 222724866121544278}
   - component: {fileID: 114854222245360900}
   - component: {fileID: 114506227723436674}
+  - component: {fileID: 223439125535667138}
   m_Layer: 0
   m_Name: Template
   m_TagString: Untagged
@@ -314,6 +315,7 @@ GameObject:
   - component: {fileID: 222723096825864750}
   - component: {fileID: 114507613019443558}
   - component: {fileID: 114498538460461314}
+  - component: {fileID: 223496690288621722}
   m_Layer: 0
   m_Name: Template
   m_TagString: Untagged
@@ -1592,7 +1594,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 514
+  m_textAlignment: 4098
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -3533,7 +3535,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 514
+  m_textAlignment: 4098
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -3898,6 +3900,46 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1274486243176442}
   m_CullTransparentMesh: 0
+--- !u!223 &223439125535667138
+Canvas:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1238444957488850}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: -1311579977
+  m_SortingOrder: 30000
+  m_TargetDisplay: 0
+--- !u!223 &223496690288621722
+Canvas:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1274703570192654}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: -1311579977
+  m_SortingOrder: 30000
+  m_TargetDisplay: 0
 --- !u!224 &224031132195945768
 RectTransform:
   m_ObjectHideFlags: 1
@@ -3920,10 +3962,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 3326, y: 1536}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224063612771749746
 RectTransform:
@@ -4361,7 +4403,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 700, y: 126.5}
+  m_SizeDelta: {x: 643.8, y: 166.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224576708900642912
 RectTransform:
@@ -4502,9 +4544,9 @@ RectTransform:
   m_Father: {fileID: 224031132195945768}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -1280, y: -110}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 40, y: -120}
   m_SizeDelta: {x: 210, y: 186}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224750794825709236
@@ -4771,7 +4813,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 700, y: 126.5}
+  m_SizeDelta: {x: 643.8, y: 166.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224979627041488290
 RectTransform:

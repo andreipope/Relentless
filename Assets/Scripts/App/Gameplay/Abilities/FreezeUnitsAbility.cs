@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
                 unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             AbilityProcessingAction?.ForceActionDone();
         }
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             _opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
             GameplayManager.OpponentPlayer :

@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -32,12 +32,12 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            {
+                InvokeActionTriggered();
+            }
+
             base.UnitDiedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
-                return;
-
-            InvokeActionTriggered();
         }
 
         public override void Action(object info = null)

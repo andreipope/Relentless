@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4367408277220696}
   - component: {fileID: 198789530147093096}
   - component: {fileID: 199859584188773560}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4690003327940060}
   - component: {fileID: 33833263392556888}
   - component: {fileID: 23598898456032638}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4268658343052492}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 4787225403151172}
   - component: {fileID: 33421180888057870}
   - component: {fileID: 23565204944614546}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 26
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4600762243224088}
   - component: {fileID: 198527532989790274}
   - component: {fileID: 199270637054527118}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pulse (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4390831683566666}
   - component: {fileID: 212093702248721556}
   - component: {fileID: 331635270811565448}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Cracks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 4029877516028554}
   - component: {fileID: 198378069522235538}
   - component: {fileID: 199197846057668178}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 4364986856125980}
   - component: {fileID: 33929059342821270}
   - component: {fileID: 23334663137472114}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 22
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 4883159527039380}
   - component: {fileID: 198491492486577274}
   - component: {fileID: 199587122141179070}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Rays
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4917871131579256}
   - component: {fileID: 331667687494056704}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 4225524289752188}
   - component: {fileID: 33013027006941028}
   - component: {fileID: 23250933452566874}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 17
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ GameObject:
   - component: {fileID: 4485181570667310}
   - component: {fileID: 33657390348993244}
   - component: {fileID: 23303119040522774}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 15
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 4058134054011544}
   - component: {fileID: 33639431261973446}
   - component: {fileID: 23022861658925272}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 21
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -256,7 +256,7 @@ GameObject:
   - component: {fileID: 4635954585685702}
   - component: {fileID: 198126742332669166}
   - component: {fileID: 199915192784671492}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BotSpark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 4386057344218576}
   - component: {fileID: 198204748928179512}
   - component: {fileID: 199860059700525562}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: botring_pt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,7 +288,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4847459042337660}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4937895028466668}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BrickGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ GameObject:
   - component: {fileID: 4853599239868890}
   - component: {fileID: 33788707216022068}
   - component: {fileID: 23005034094269690}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Column
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 4724520138898238}
   - component: {fileID: 33307408091858044}
   - component: {fileID: 23748866607891442}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 27
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,7 +353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4720745354567234}
   - component: {fileID: 331324228149164666}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,7 +368,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4677221726095550}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ImpactParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +384,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4543197484736918}
   - component: {fileID: 212868433940582538}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CreaturePicture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -401,7 +401,7 @@ GameObject:
   - component: {fileID: 4665776150782508}
   - component: {fileID: 198646335377820446}
   - component: {fileID: 199747384561059212}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: PuddleBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +418,7 @@ GameObject:
   - component: {fileID: 4945809696291254}
   - component: {fileID: 198451035691168556}
   - component: {fileID: 199740783268266810}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pulse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   - component: {fileID: 4268017004346792}
   - component: {fileID: 33485277501996648}
   - component: {fileID: 23864018586614060}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,7 +452,7 @@ GameObject:
   - component: {fileID: 4872123988980754}
   - component: {fileID: 33502763448653682}
   - component: {fileID: 23718724655333766}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 14
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -467,7 +467,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4880623587067144}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SpriteContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -484,7 +484,7 @@ GameObject:
   - component: {fileID: 4351409685387940}
   - component: {fileID: 33859209345910680}
   - component: {fileID: 23934708349133540}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -501,7 +501,7 @@ GameObject:
   - component: {fileID: 4313644920468108}
   - component: {fileID: 198854108862176004}
   - component: {fileID: 199151454002122586}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -517,7 +517,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4582052901224786}
   - component: {fileID: 212565064447293094}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ChernoBillPH
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -532,7 +532,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4775438730552880}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ColumnGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -549,7 +549,7 @@ GameObject:
   - component: {fileID: 4847099198604382}
   - component: {fileID: 33582854932167360}
   - component: {fileID: 23941767020049094}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -566,7 +566,7 @@ GameObject:
   - component: {fileID: 4476667579160022}
   - component: {fileID: 198963177409676734}
   - component: {fileID: 199654392173149994}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BubblesFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -583,7 +583,7 @@ GameObject:
   - component: {fileID: 4017632001326788}
   - component: {fileID: 198170906313252156}
   - component: {fileID: 199103906805319856}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -600,7 +600,7 @@ GameObject:
   - component: {fileID: 4685619515919850}
   - component: {fileID: 198364532011988990}
   - component: {fileID: 199254622765537088}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Pulse (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -615,7 +615,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4321891215057136}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SpriteContainer (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -632,7 +632,7 @@ GameObject:
   - component: {fileID: 4462948325205446}
   - component: {fileID: 33850207516573348}
   - component: {fileID: 23489428477501612}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 25
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +648,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4156055272447352}
   - component: {fileID: 212443724620908576}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CZB_2D_Chernobill_F3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -665,7 +665,7 @@ GameObject:
   - component: {fileID: 4298276053100418}
   - component: {fileID: 198709725595228776}
   - component: {fileID: 199632972293029414}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: GooCurtain (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -682,7 +682,7 @@ GameObject:
   - component: {fileID: 4978164019357530}
   - component: {fileID: 198093826961718898}
   - component: {fileID: 199390173653122358}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -699,7 +699,7 @@ GameObject:
   - component: {fileID: 4341243973682668}
   - component: {fileID: 198763615684846014}
   - component: {fileID: 199901394748768266}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Puddle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -733,7 +733,7 @@ GameObject:
   - component: {fileID: 4668846728232678}
   - component: {fileID: 198798918753086548}
   - component: {fileID: 199236438624412374}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -750,7 +750,7 @@ GameObject:
   - component: {fileID: 4746669118433204}
   - component: {fileID: 198414296610292350}
   - component: {fileID: 199808753754278586}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: botsmoke_pt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -767,7 +767,7 @@ GameObject:
   - component: {fileID: 4229635546002714}
   - component: {fileID: 33667652548868498}
   - component: {fileID: 23144266383051524}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Plank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -784,7 +784,7 @@ GameObject:
   - component: {fileID: 4271060034039362}
   - component: {fileID: 198094140264988914}
   - component: {fileID: 199658378349700460}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BubblesStart (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -801,7 +801,7 @@ GameObject:
   - component: {fileID: 4408650127295464}
   - component: {fileID: 33067149053825116}
   - component: {fileID: 23335369464397122}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 23
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -818,7 +818,7 @@ GameObject:
   - component: {fileID: 4594909656153944}
   - component: {fileID: 33959817331773370}
   - component: {fileID: 23384009348433956}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 28
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -835,7 +835,7 @@ GameObject:
   - component: {fileID: 4083598902084342}
   - component: {fileID: 198678577876807040}
   - component: {fileID: 199024856095558944}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: GooCurtain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -852,7 +852,7 @@ GameObject:
   - component: {fileID: 4771709189123016}
   - component: {fileID: 198046213709076690}
   - component: {fileID: 199993549961126436}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -869,7 +869,7 @@ GameObject:
   - component: {fileID: 4416644957064054}
   - component: {fileID: 33428859570021306}
   - component: {fileID: 23012273758788826}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -885,7 +885,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4592185563384024}
   - component: {fileID: 212559318987867582}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CardImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -902,7 +902,7 @@ GameObject:
   - component: {fileID: 4064893047213812}
   - component: {fileID: 33014101257795160}
   - component: {fileID: 23480990608986714}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -919,7 +919,7 @@ GameObject:
   - component: {fileID: 4197163272061164}
   - component: {fileID: 198405409320774912}
   - component: {fileID: 199108517228869330}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -936,7 +936,7 @@ GameObject:
   - component: {fileID: 4068054993193978}
   - component: {fileID: 33594293381183818}
   - component: {fileID: 23807273459218672}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -953,7 +953,7 @@ GameObject:
   - component: {fileID: 4470683669934184}
   - component: {fileID: 33201624387483448}
   - component: {fileID: 23091961920120942}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 24
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -970,7 +970,7 @@ GameObject:
   - component: {fileID: 4784387428008026}
   - component: {fileID: 198159062105153142}
   - component: {fileID: 199448695653360940}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -986,7 +986,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4922255206058282}
   - component: {fileID: 331856694759091898}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SpriteMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1003,7 +1003,7 @@ GameObject:
   - component: {fileID: 4956630211545328}
   - component: {fileID: 33196694365213464}
   - component: {fileID: 23117779614968598}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1036,7 +1036,7 @@ GameObject:
   - component: {fileID: 4839103780494888}
   - component: {fileID: 33307466892072776}
   - component: {fileID: 23844675271360208}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1053,7 +1053,7 @@ GameObject:
   - component: {fileID: 4484383005501284}
   - component: {fileID: 198954979294123004}
   - component: {fileID: 199563474595672018}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1070,7 +1070,7 @@ GameObject:
   - component: {fileID: 4956386181044704}
   - component: {fileID: 198773313787318750}
   - component: {fileID: 199951753287495798}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1087,7 +1087,7 @@ GameObject:
   - component: {fileID: 4372916936254488}
   - component: {fileID: 33082298459238728}
   - component: {fileID: 23219074834518098}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 18
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1104,7 +1104,7 @@ GameObject:
   - component: {fileID: 4649748593397970}
   - component: {fileID: 212023016935944684}
   - component: {fileID: 331761177980600912}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1121,7 +1121,7 @@ GameObject:
   - component: {fileID: 4860095276198280}
   - component: {fileID: 198590857360685898}
   - component: {fileID: 199798765858235454}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1138,7 +1138,7 @@ GameObject:
   - component: {fileID: 4869950652231132}
   - component: {fileID: 198144699286075334}
   - component: {fileID: 199246291896918680}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1155,7 +1155,7 @@ GameObject:
   - component: {fileID: 4280902278712696}
   - component: {fileID: 198733235582251786}
   - component: {fileID: 199463878854642394}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Crepuscular
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1172,7 +1172,7 @@ GameObject:
   - component: {fileID: 4884741217954692}
   - component: {fileID: 33684785060897504}
   - component: {fileID: 23969940509792792}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Sike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1189,7 +1189,7 @@ GameObject:
   - component: {fileID: 4286282798221352}
   - component: {fileID: 33770395408913630}
   - component: {fileID: 23499916970615680}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 20
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1206,7 +1206,7 @@ GameObject:
   - component: {fileID: 4245431625241106}
   - component: {fileID: 33389241072547460}
   - component: {fileID: 23040325202612746}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1223,7 +1223,7 @@ GameObject:
   - component: {fileID: 4499250861832118}
   - component: {fileID: 198986555855591622}
   - component: {fileID: 199826610750032242}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BubblesInside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1240,7 +1240,7 @@ GameObject:
   - component: {fileID: 4342731619517468}
   - component: {fileID: 33141246682580794}
   - component: {fileID: 23633675741638836}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 12
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1255,7 +1255,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4823814319025246}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Spike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1272,7 +1272,7 @@ GameObject:
   - component: {fileID: 4617786151576830}
   - component: {fileID: 198822989208938598}
   - component: {fileID: 199998690035384266}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1289,7 +1289,7 @@ GameObject:
   - component: {fileID: 4404630982963122}
   - component: {fileID: 33016811057213278}
   - component: {fileID: 23521255927757816}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 19
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1306,7 +1306,7 @@ GameObject:
   - component: {fileID: 4575298992540378}
   - component: {fileID: 198107842921910254}
   - component: {fileID: 199373477676315528}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BubblesOutside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1321,7 +1321,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4667281991356990}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Mid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1337,7 +1337,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4856065127519808}
   - component: {fileID: 95489894451225180}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Heavy_Arrival
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1354,7 +1354,7 @@ GameObject:
   - component: {fileID: 4443570054392266}
   - component: {fileID: 33816379780739520}
   - component: {fileID: 23152825408020214}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1371,7 +1371,7 @@ GameObject:
   - component: {fileID: 4863925374082574}
   - component: {fileID: 198296556800267710}
   - component: {fileID: 199539997417064748}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1388,7 +1388,7 @@ GameObject:
   - component: {fileID: 4551221348257202}
   - component: {fileID: 198880506624076626}
   - component: {fileID: 199305501263119178}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BetweenSmoke (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1403,7 +1403,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4131226638162012}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1420,7 +1420,7 @@ GameObject:
   - component: {fileID: 4147100367590796}
   - component: {fileID: 198888773902691416}
   - component: {fileID: 199689658167736996}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Puddle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1437,7 +1437,7 @@ GameObject:
   - component: {fileID: 4681527200643206}
   - component: {fileID: 33865147932129354}
   - component: {fileID: 23244023980320862}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1454,7 +1454,7 @@ GameObject:
   - component: {fileID: 4767486498219898}
   - component: {fileID: 33790799732336244}
   - component: {fileID: 23133678655391030}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: 9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1471,7 +1471,7 @@ GameObject:
   - component: {fileID: 4053095327718778}
   - component: {fileID: 198653720063054336}
   - component: {fileID: 199634757028657460}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Smoke (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1597,7 +1597,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1609117697356226}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22.36, y: 1.2466074, z: -2.0703125}
+  m_LocalPosition: {x: 0, y: 1.2466074, z: -2.0703125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4949073625120294}
@@ -168751,8 +168751,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 4
   m_RenderMode: 0
   m_SortMode: 0
@@ -169150,8 +169150,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 6
   m_RenderMode: 0
   m_SortMode: 0
@@ -169207,8 +169207,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -169321,8 +169321,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -169606,8 +169606,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -169663,8 +169663,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 3
   m_RenderMode: 0
   m_SortMode: 0
@@ -169720,8 +169720,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 5
   m_RenderMode: 0
   m_SortMode: 0
@@ -169834,8 +169834,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 4
   m_RenderMode: 0
   m_SortMode: 0
@@ -169891,8 +169891,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 5
   m_RenderMode: 0
   m_SortMode: 0
@@ -169948,8 +169948,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 5
   m_RenderMode: 0
   m_SortMode: 0
@@ -170005,8 +170005,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 3
   m_RenderMode: 0
   m_SortMode: 0
@@ -170062,8 +170062,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -170233,8 +170233,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 5
   m_RenderMode: 0
   m_SortMode: 0
@@ -170404,8 +170404,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_RenderMode: 0
   m_SortMode: 0
@@ -170518,8 +170518,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -170847,8 +170847,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2131230863
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e6cea1e89b743484f95370838cb3a771, type: 3}
   m_Color: {r: 0.13240942, g: 0.24528301, b: 0, a: 1}
@@ -170950,7 +170950,7 @@ SpriteRenderer:
   m_Size: {x: 14.99, y: 21.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!212 &212565064447293094
@@ -170996,7 +170996,7 @@ SpriteRenderer:
   m_Size: {x: 14.99, y: 21.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!212 &212868433940582538
@@ -171127,10 +171127,10 @@ SpriteMask:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 8b6a3586d086d1c4bb23475ca16992ed, type: 3}
   m_MaskAlphaCutoff: 0.2
-  m_FrontSortingLayerID: 0
-  m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 0
-  m_BackSortingLayer: 0
+  m_FrontSortingLayerID: -2131230863
+  m_BackSortingLayerID: -2131230863
+  m_FrontSortingLayer: 8
+  m_BackSortingLayer: 8
   m_FrontSortingOrder: 0
   m_BackSortingOrder: 0
   m_IsCustomRangeActive: 1

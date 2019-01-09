@@ -4,18 +4,20 @@ using System;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
 using DG.Tweening;
+using System.Linq;
+using UnityEngine.Rendering;
 
 namespace Loom.ZombieBattleground
 {
     public class ZeuZArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
             IsPlaying = true;
 
-            Vector3 offset = new Vector3(0, 1.3f, 0f);
+            Vector3 offset = new Vector3(0, 1.2f, 0f);
 
             const float delayBeforeSpawn = 0.7f;
             const float delayBeforeDestroyVFX = 5f;
@@ -23,6 +25,23 @@ namespace Loom.ZombieBattleground
             BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
 
             unitView.GameObject.SetActive(false);
+
+            unitView.GameObject.transform.Find("Other").gameObject?.SetActive(true);
+
+            Dictionary<GameObject, int> unitLayerInfo = new Dictionary<GameObject, int>();
+
+            SortingGroup sortingGroup = unitView.Transform.GetComponent<SortingGroup>();
+
+            int sortingIndex = sortingGroup.sortingLayerID;
+
+            sortingGroup.sortingLayerID = SRSortingLayers.GameUI3;
+
+            List<GameObject>  allUnitObj = unitView.GameObject.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
+            foreach (GameObject child in allUnitObj)
+            {
+                unitLayerInfo.Add(child, child.layer);
+                child.layer = 0;
+            }
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -41,14 +60,18 @@ namespace Loom.ZombieBattleground
                     unitView.Transform.SetParent(null, true);
                     Object.Destroy(animationVFX);
 
-                    if (unitView.Model.OwnerPlayer.IsLocalPlayer)
+                    foreach (GameObject child in allUnitObj)
                     {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(unitView.Model.OwnerPlayer.BoardCards);
+                        if (unitLayerInfo.ContainsKey(child))
+                        {
+                            child.layer = unitLayerInfo[child];
+                        }
                     }
-                    else
-                    {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
+                    sortingGroup.sortingLayerID = sortingIndex;
+
+                    endArrivalCallback?.Invoke();
+
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;
                 }, delayBeforeDestroyVFX);

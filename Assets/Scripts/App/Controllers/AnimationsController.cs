@@ -73,10 +73,7 @@ namespace Loom.ZombieBattleground
                     source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
-                            InternalTools.DoActionDelayed(() =>
-                            {
-                                onCompleteCallback?.Invoke();
-                            }, 0.5f);
+                            onCompleteCallback?.Invoke();
 
                             sortingGroup.sortingOrder = oldSortingOrder;
                             sortingGroup.sortingLayerName = oldsortingLayerName;
@@ -91,12 +88,12 @@ namespace Loom.ZombieBattleground
             boardCard.DrawCardFromOpponentDeckToPlayer();
         }
 
-        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, GameObject boardCard)
+        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCard boardCard)
         {
-            Animator animator = boardCard.GetComponent<Animator>();
+            Animator animator = boardCard.GameObject.GetComponent<Animator>();
 
-            boardCard.transform.localScale = Vector3.zero;
-            boardCard.transform.DOScale(new Vector3(0.9f, 0.9f, 0.9f), 0.15f);
+            boardCard.Transform.localScale = Vector3.zero;
+            boardCard.Transform.DOScale(new Vector3(0.9f, 0.9f, 0.9f), 0.15f);
 
             animator.enabled = true;
             animator.StopPlayback();

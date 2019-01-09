@@ -4,9 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.7";
-
-        internal const string CurrentVersionDevelopmentStage = "Alpha";
+        internal const string CurrentVersionBase = "0.1.9";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -47,7 +45,12 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float PointerMinDragDeltaMobile = 35f;
 
-        internal const float LoadingTimeBetweenGameplayAndAppInit = 2f;
+        internal const float LoadingTimeBetweenGameplayAndAppInit =
+#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
+            0f;
+#else
+            2f;
+#endif
 
         internal const int TutorialPlayerHeroId = 4;
 
@@ -89,6 +92,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float ZombieDeathVoDelayBeforeFadeout = 3f;
 
+        internal const float DelayBetweenYourTurnPopup = 2.1f;
+
         internal static Vector3 VfxOffset = Vector3.zero;
 
         // SOUNDS VOLUME'S
@@ -100,17 +105,17 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float HeroDeathSoundVolume = 0.1f;
 
-        internal const float CardsMoveSoundVolume = 0.025f;
+        internal const float CardsMoveSoundVolume = 0.05f;
 
-        internal const float BackgroundSoundVolume = 0.05f;
+        internal const float BackgroundSoundVolume = 0.1f;
 
         internal const float SfxSoundVolume = 0.15f;
 
-        internal const float OverlordAbilitySoundVolume = 0.1f;
+        internal const float OverlordAbilitySoundVolume = 0.15f;
 
         internal const float SpellAbilitySoundVolume = 0.1f;
 
-        internal const float BattlegroundEffectsSoundVolume = 0.25f;
+        internal const float BattlegroundEffectsSoundVolume = 0.20f;
 
         // HACK: must be const
         internal static float ZombiesSoundVolume = 0.05f;
@@ -134,7 +139,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        internal const float PvPWaitForTurnMaxTime = 150;
+        public const float PvPCheckPlayerAvailableMaxTime = 10f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -147,7 +152,24 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
-        
 
+        public const bool MulliganEnabled = false;
+
+        public const bool AlwaysGuestLogin = false;
+
+        public const string VaultEmptyErrorCode = "404";
+
+        public const string MatchEmailPattern =
+        @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+        + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})$";
+
+        internal const string FacebookAppId =
+#if USE_STAGING_BACKEND
+            "1985151694912169";
+#else
+            "1985151694912169";
+#endif
     }
 }

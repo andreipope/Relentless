@@ -28,11 +28,11 @@ namespace Loom.ZombieBattleground.Data
 
         public static Unit FromProtobuf(this Protobuf.Unit unit)
         {
-            Unit.ParameterType Parameter = new Unit.ParameterType();
+            Unit.ParameterType parameter = new Unit.ParameterType();
 
             if (unit.Parameter != null)
             {
-                Parameter = new Unit.ParameterType
+                parameter = new Unit.ParameterType
                 (
                     unit.Parameter.Attack,
                     unit.Parameter.Defense,
@@ -41,9 +41,9 @@ namespace Loom.ZombieBattleground.Data
             }
 
             return new Unit(
-                unit.InstanceId,
+                unit.InstanceId.FromProtobuf(),
                 (Enumerators.AffectObjectType) unit.AffectObjectType,
-                Parameter
+                parameter
             );
         }
 
@@ -117,7 +117,8 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.UnitStatusType) skill.TargetUnitSpecialStatus,
                 skill.ElementTargets.Select(t => (Enumerators.SetType) t).ToList(),
                 skill.Unlocked,
-                skill.CanSelectTarget
+                skill.CanSelectTarget,
+                skill.SingleUse
             );
         }
 
@@ -135,7 +136,7 @@ namespace Loom.ZombieBattleground.Data
                 deck.Id,
                 (int) deck.HeroId,
                 deck.Name,
-                deck.Cards.Select(skill => skill.FromProtobuf()).ToList(),
+                deck.Cards.Select(card => card.FromProtobuf()).ToList(),
                 (Enumerators.OverlordSkill)deck.PrimarySkill,
                 (Enumerators.OverlordSkill)deck.SecondarySkill
             );
@@ -191,15 +192,20 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardType) card.Type,
                 card.Abilities.Select(a => a.FromProtobuf()).ToList(),
                 card.CardViewInfo.FromProtobuf(),
-                (Enumerators.UniqueAnimationType) card.UniqueAnimation
+                (Enumerators.UniqueAnimationType) card.UniqueAnimationType,
+                (Enumerators.SetType)card.HiddenSet
             );
         }
 
-        public static List<CardInstance> FromProtobuf(this RepeatedField<CardInstance> repeatedFieldCardInstance)
+        public static CardInstanceSpecificData FromProtobuf(this Protobuf.CardInstanceSpecificData card)
         {
-            List<CardInstance> cardInstances = new List<CardInstance>();
-            cardInstances.AddRange(repeatedFieldCardInstance);
-            return cardInstances;
+            return new CardInstanceSpecificData(
+                card.Attack,
+                card.Defense,
+                (Enumerators.SetType) card.Set,
+                (Enumerators.CardType) card.Type,
+                card.GooCost
+            );
         }
 
         public static WorkingCard FromProtobuf(this CardInstance cardInstance, Player player)
@@ -209,8 +215,13 @@ namespace Loom.ZombieBattleground.Data
                     cardInstance.Prototype.FromProtobuf(),
                     cardInstance.Instance.FromProtobuf(),
                     player,
-                    cardInstance.InstanceId
+                    cardInstance.InstanceId.FromProtobuf()
                 );
+        }
+
+        public static InstanceId FromProtobuf(this Protobuf.InstanceId cardInstance)
+        {
+            return new InstanceId(cardInstance.Id);
         }
     }
 }

@@ -4,12 +4,13 @@ using System;
 using Loom.ZombieBattleground.Helpers;
 using Object = UnityEngine.Object;
 using DG.Tweening;
+using UnityEngine.Rendering;
 
 namespace Loom.ZombieBattleground
 {
     public class CerberusArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -21,7 +22,8 @@ namespace Loom.ZombieBattleground
             const float delayBeforeDestroyVFX = 3f;
 
             BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
-
+            SortingGroup unitSortingGroup = unitView.GameObject.GetComponent<SortingGroup>();
+            unitSortingGroup.enabled = false;
             unitView.GameObject.SetActive(false);
 
             InternalTools.DoActionDelayed(() =>
@@ -37,16 +39,12 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
+                    unitSortingGroup.enabled = true;
                     Object.Destroy(animationVFX);
 
-                    if (unitView.Model.OwnerPlayer.IsLocalPlayer)
-                    {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfPlayer(unitView.Model.OwnerPlayer.BoardCards);
-                    }
-                    else
-                    {
-                        BattlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
+                    endArrivalCallback?.Invoke();
+
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;
                 }, delayBeforeDestroyVFX);

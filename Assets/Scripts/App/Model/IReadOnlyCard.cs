@@ -39,6 +39,6 @@ namespace Loom.ZombieBattleground.Data
 
         Enumerators.UniqueAnimationType UniqueAnimationType { get; }
 
-        void ForceUpdateAbilities(List<AbilityData> abilities);
+        Enumerators.SetType HiddenCardSetType { get; }
     }
 }

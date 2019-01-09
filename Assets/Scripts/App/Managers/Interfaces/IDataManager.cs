@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -23,9 +24,9 @@ namespace Loom.ZombieBattleground
 
         ConfigData ConfigData { get; set; }
 
-        BetaConfig BetaConfig { get; set; }
+        UserInfo UserInfo { get; set; }
 
-        Task LoadRemoteConfig();
+        GetVersionsResponse CachedVersions { get; set; }
 
         Task StartLoadCache();
 
@@ -37,8 +38,6 @@ namespace Loom.ZombieBattleground
 
         TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank);
 
-        void DeleteData();
-
         string DecryptData(string data);
 
         string EncryptData(string data);
@@ -46,5 +45,9 @@ namespace Loom.ZombieBattleground
         string SerializeToJson(object obj, bool indented = false);
 
         T DeserializeFromJson<T>(string json);
+
+        string GetPersistentDataPath(string fileName);
+
+        Task LoadRemoteConfig();
     }
 }

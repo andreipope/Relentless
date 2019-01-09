@@ -66,7 +66,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new ConfirmationPopup());
             _uiPopups.Add(new LoadingGameplayPopup());
             _uiPopups.Add(new PlayerOrderPopup());
-            _uiPopups.Add(new TermsPopup());
+            //Hide for current Beta release
+            //_uiPopups.Add(new TermsPopup());
             _uiPopups.Add(new LoginPopup());
             _uiPopups.Add(new MatchMakingPopup());
             _uiPopups.Add(new ConnectionPopup());

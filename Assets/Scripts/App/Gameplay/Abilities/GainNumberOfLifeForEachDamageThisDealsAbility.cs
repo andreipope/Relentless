@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         public override void Action(object info = null)
@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
             int damageDeal = (int) info;
 
-            AbilityUnitOwner.CurrentHp += Mathf.Clamp(Value * damageDeal, 0, AbilityUnitOwner.MaxCurrentHp);
+            AbilityUnitOwner.CurrentHp = Mathf.Clamp(AbilityUnitOwner.CurrentHp + (Value * damageDeal), 0, AbilityUnitOwner.MaxCurrentHp);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !_isAttacker)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }

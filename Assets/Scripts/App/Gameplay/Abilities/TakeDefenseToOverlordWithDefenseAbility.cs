@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Player);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -48,8 +48,8 @@ namespace Loom.ZombieBattleground
                     defenseToBuff = Health;
                 }
 
-                PlayerCallerOfAbility.Defense += defenseToBuff;
                 PlayerCallerOfAbility.BuffedHp += defenseToBuff;
+                PlayerCallerOfAbility.Defense += defenseToBuff;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

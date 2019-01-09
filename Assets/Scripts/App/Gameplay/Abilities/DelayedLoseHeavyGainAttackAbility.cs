@@ -18,8 +18,8 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityUnitOwner.CurrentDamage += Value;
             AbilityUnitOwner.BuffedDamage += Value;
+            AbilityUnitOwner.CurrentDamage += Value;
 
             AbilityUnitOwner.SetAsWalkerUnit();
         }

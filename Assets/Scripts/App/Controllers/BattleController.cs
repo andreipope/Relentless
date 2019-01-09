@@ -175,12 +175,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, BoardUnitModel attackedUnitModel, int modifier)
+        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, BoardUnitModel attackedUnitModel, int modifier, int damageOverride = -1)
         {
-            int damage = skill.Skill.Value + modifier;
-
             if (attackedUnitModel != null)
             {
+                int damage = damageOverride != -1 ? damageOverride : skill.Skill.Value + modifier;
+
                 if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
@@ -195,11 +195,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackPlayerBySkill(Player attackingPlayer, BoardSkill skill, Player attackedPlayer)
+        public void AttackPlayerBySkill(Player attackingPlayer, BoardSkill skill, Player attackedPlayer, int damageOverride = -1)
         {
             if (attackedPlayer != null)
             {
-                int damage = skill.Skill.Value;
+                int damage = damageOverride != -1 ? damageOverride : skill.Skill.Value;
 
                 attackedPlayer.Defense -= damage;
 

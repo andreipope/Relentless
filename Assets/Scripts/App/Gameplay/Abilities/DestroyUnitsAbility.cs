@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -67,7 +67,10 @@ namespace Loom.ZombieBattleground
 
             OnUpdateEvent = null;
 
-            _units.ForEach(BattlegroundController.DestroyBoardUnit);
+            foreach(BoardUnitModel unit in _units)
+            {
+                BattlegroundController.DestroyBoardUnit(unit, false);
+            }
 
             if (_units.Count > 0)
             {
