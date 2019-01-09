@@ -4,12 +4,13 @@ using System.Numerics;
 using Loom.Client;
 using System.Security.Cryptography;
 using System.Text;
-using Loom.Client;using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Loom.Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,23 +18,33 @@ namespace Loom.ZombieBattleground
     {
         public static Action OnHidePopupEvent;
 
+        public bool IsRegisteredUser;
+
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
 
         private IAnalyticsManager _analyticsManager;
 
+        private IAppStateManager _appStateManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private ButtonShiftingContent _betaButton;
+        private Transform _backgroundGroup;
 
-        private Transform _betaGroup;
+        private Transform _loginGroup;
+
+        private Transform _registerGroup;
+
+        private Transform _forgottenGroup;
+
+        private Transform _forgottenSuccessGroup;
 
         private Transform _waitingGroup;
 
-        private Transform _betaErrorText;
+        private Transform _OTPGroup;
 
         private Transform _versionMismatchGroup;
 
@@ -41,9 +52,48 @@ namespace Loom.ZombieBattleground
 
         private Button _versionMismatchExitButton;
 
-        private InputField _betaKeyInputField;
+        private Button _loginButton;
+
+        private Button _toRegisterButton;
+
+        private Button _closeLoginButton;
+
+        private Button _forgotPasswordLoginButton;
+
+        private Button _registerButton;
+
+        private Button _toLoginButton;
+
+        private Button _closeRegisterButton;
+
+        private Button _cancelForgotButton;
+
+        private Button _sendForgotButton;
+
+        private Button _gotitForgotSuccessButton;
+
+        private Button _cancelOTPButton;
+
+        private Button _sendOTPButton;
+
+        private InputField _emailFieldLogin;
+        private InputField _passwordFieldLogin;
+
+        private InputField _emailFieldRegister;
+        private InputField _passwordFieldRegister;
+        private InputField _confirmFieldRegister;
+
+        private InputField _emailFieldForgot;
+
+        private InputField _OTPFieldOTP;
+        private Image _backgroundDarkImage;
+
 
         private LoginState _state;
+
+        private LoginState _lastPopupState;
+
+        private string _lastGUID;
 
         public GameObject Self { get; private set; }
 
@@ -54,6 +104,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
         }
 
         public void Dispose()
@@ -84,29 +135,66 @@ namespace Loom.ZombieBattleground
             }
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _betaGroup = Self.transform.Find("Beta_Group");
-            _betaButton = _betaGroup.Find("Button_Beta").GetComponent<ButtonShiftingContent>();
-            _betaKeyInputField = Self.transform.Find("Beta_Group/InputField_Beta").GetComponent<InputField>();
-            _betaErrorText = _betaGroup.Find("Text_Error");
+            _backgroundDarkImage = Self.GetComponent<Image>();
 
-            _betaButton.onClick.AddListener(PressedBetaHandler);
+            _backgroundGroup = Self.transform.Find("Background");
+
+            _loginGroup = Self.transform.Find("Login_Group");
+            _loginButton = _loginGroup.transform.Find("Button_Login_BG/Button_Login").GetComponent<Button>();
+            _emailFieldLogin = _loginGroup.transform.Find("Email_BG/Email_InputField").GetComponent<InputField>();
+            _passwordFieldLogin = _loginGroup.transform.Find("Password_BG/Password_InputField").GetComponent<InputField>();
+            _loginButton = _loginGroup.transform.Find("Button_Login_BG/Button_Login").GetComponent<Button>();
+            _toRegisterButton = _loginGroup.transform.Find("Button_Register_BG/Button_Register").GetComponent<Button>();
+            _forgotPasswordLoginButton = _loginGroup.transform.Find("Button_ForgotPassword").GetComponent<Button>();
+            _closeLoginButton = _loginGroup.transform.Find("Button_Close_BG/Button_Close").GetComponent<Button>();
+
+            _registerGroup = Self.transform.Find("Register_Group");
+            _registerButton = _registerGroup.transform.Find("Button_Register_BG/Button_Register").GetComponent<Button>();
+            _toLoginButton = _registerGroup.transform.Find("Button_Login").GetComponent<Button>();
+            _emailFieldRegister = _registerGroup.transform.Find("Email_BG/Email_InputField").GetComponent<InputField>();
+            _passwordFieldRegister = _registerGroup.transform.Find("Password_BG/Password_InputField").GetComponent<InputField>();
+            _confirmFieldRegister = _registerGroup.transform.Find("Confirm_BG/Confirm_InputField").GetComponent<InputField>();
+            _closeRegisterButton = _registerGroup.transform.Find("Button_Close_BG/Button_Close").GetComponent<Button>();
+
+            _forgottenGroup = Self.transform.Find("Forgot_Group");
+            _cancelForgotButton = _forgottenGroup.transform.Find("Button_Cancel_BG/Button_Cancel").GetComponent<Button>();
+            _sendForgotButton = _forgottenGroup.transform.Find("Button_Send_BG/Button_Send").GetComponent<Button>();
+            _emailFieldForgot = _forgottenGroup.transform.Find("Email_BG/Email_InputField").GetComponent<InputField>();
+
+            _forgottenSuccessGroup = Self.transform.Find("SuccessForgot_Group");
+            _gotitForgotSuccessButton = _forgottenSuccessGroup.transform.Find("Button_Confirm_BG/Button_Confirm").GetComponent<Button>();
 
             _waitingGroup = Self.transform.Find("Waiting_Group");
+
             _versionMismatchGroup = Self.transform.Find("VersionMismatch_Group");
             _versionMismatchText = _versionMismatchGroup.Find("Text_Error").GetComponent<TextMeshProUGUI>();
             _versionMismatchExitButton = _versionMismatchGroup.Find("Button_Exit").GetComponent<Button>();
             _versionMismatchExitButton.onClick.AddListener(Application.Quit);
 
-            _state = LoginState.BetaKeyRequest;
-            SetUIState(LoginState.BetaKeyRequest);
-            _betaKeyInputField.text = "";
-            Self.SetActive(true);
+            _OTPGroup = Self.transform.Find("OTP_Group");
+            _sendOTPButton = _OTPGroup.transform.Find("Button_Send_BG/Button_Send").GetComponent<Button>();
+            _cancelOTPButton = _OTPGroup.transform.Find("Button_Cancel_BG/Button_Cancel").GetComponent<Button>();
+            _OTPFieldOTP = _OTPGroup.transform.Find("OTP_BG/OTP_InputField").GetComponent<InputField>();
 
-            GameObject betaText = Self.transform.Find("Beta_Group/Text_Beta").gameObject;
-            betaText.SetActive(false);
-            _betaKeyInputField.gameObject.SetActive(false);
+            _loginButton.onClick.AddListener(PressedLoginHandler);
+            _registerButton.onClick.AddListener(PressedRegisterHandler);
+            _toRegisterButton.onClick.AddListener(PressedGoToRegisterHandler);
+            _toLoginButton.onClick.AddListener(PressedGoToLoginHandler);
+            _forgotPasswordLoginButton.onClick.AddListener(PressedGoToForgotPasswordHandler);
+            _cancelForgotButton.onClick.AddListener(PressedGoToLoginHandler);
+            _gotitForgotSuccessButton.onClick.AddListener(PressedGoToLoginHandler);
+            _sendForgotButton.onClick.AddListener(PressedSendForgotPasswordHandler);
+            _closeLoginButton.onClick.AddListener(Hide);
+            _closeRegisterButton.onClick.AddListener(Hide);
+            _cancelOTPButton.onClick.AddListener(PressedGoToLoginHandler);
+            _sendOTPButton.onClick.AddListener(PressedSendOTPHandler);
 
-            PressedBetaHandler();
+            if (!Constants.AlwaysGuestLogin)
+            {
+                _state = LoginState.InitiateLogin;
+                SetUIState(LoginState.InitiateLogin);
+                Self.SetActive(true);
+            }
         }
 
         public void Show(object data)
@@ -124,86 +212,382 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private void PressedBetaHandler()
+        public void SetLoginAsGuestState (string GUID = null) 
+        {
+            _lastGUID = GUID;
+            SetUIState(LoginState.LoginAsGuest);
+        }
+
+        public void SetLoginFieldsData (string _email, string _password) 
+        {
+            _emailFieldLogin.text = _email;
+            _passwordFieldLogin.text = _password;
+            SetUIState(LoginState.InitiateLogin);
+        }
+
+        private void PressedSendOTPHandler() 
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            LoginProcess();
+            if (_OTPFieldOTP.text.Length > 0)
+            {
+                ConfirmOTPProcess();
+            }
+            else
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input a valid OTP.");
+            }
         }
 
-        private async void LoginProcess()
+        private void PressedSendForgotPasswordHandler()
         {
-            string betaKey =
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(SystemInfo.deviceUniqueIdentifier.ToLowerInvariant()))) +
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(Application.productName.ToLowerInvariant())));
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            // check if field is empty. Can replace with exact value once we know if there's a set length for beta keys
-            SetUIState(LoginState.BetaKeyValidateAndLogin);
+            if (_emailFieldForgot.text.Length > 0 && Utilites.ValidateEmail(_emailFieldForgot.text)) 
+            {
+                ForgottenPasswordProcess();
+            }
+            else
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+            }
+        }
 
-            GenerateKeysAndUserFromBetaKey(betaKey, out byte[] privateKey, out byte[] _, out string userId);
+        private void PressedGoToForgotPasswordHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SetUIState(LoginState.ForgotPassword);
+        }
 
+
+        private void PressedGoToLoginHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SetUIState(LoginState.InitiateLogin);
+        }
+
+        private void PressedGoToRegisterHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            SetUIState(LoginState.InitiateRegistration);
+        }
+
+        private void PressedRegisterHandler() 
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            if (_emailFieldRegister.text.Length > 0 && Utilites.ValidateEmail(_emailFieldRegister.text) && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
+            {
+                _registerButton.enabled = false;
+                RegisterProcess();
+            }
+            else
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+            }
+        }
+
+        private void PressedLoginHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            if (_emailFieldLogin.text.Length > 0 && Utilites.ValidateEmail(_emailFieldLogin.text) && _passwordFieldLogin.text.Length > 0)
+            {
+                _loginButton.enabled = false;
+                LoginProcess(false);
+            }
+            else
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+            }
+        }
+
+        private async void ConfirmOTPProcess()
+        {
+            SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                UserDataModel userDataModel = new UserDataModel(userId, betaKey, privateKey)
+                CreateVaultTokenData vaultTokenData =  await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
+                _backendDataControlMediator.UserDataModel.PrivateKey = Convert.FromBase64String(vaultDataData.data.privatekey);
+                CompleteLoginFromCurrentSetUserData();
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Constants.VaultEmptyErrorCode) 
                 {
-                    IsValid = false
+                    UpdatePrivateKeyProcess();
+                }
+                else 
+                {
+                    Debug.Log(e.ToString());
+                    SetUIState(LoginState.ValidationFailed);
+                }
+            }
+        }
+
+        private async void UpdatePrivateKeyProcess()
+        {
+            SetUIState(LoginState.ValidateAndLogin);
+            try
+            {
+                CreateVaultTokenData vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Encoding.UTF8.GetString(_backendDataControlMediator.UserDataModel.PrivateKey));
+                CompleteLoginFromCurrentSetUserData();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+                SetUIState(LoginState.ValidationFailed);
+            }
+        }
+
+        private async void ForgottenPasswordProcess()
+        {
+            SetUIState(LoginState.ValidateAndLogin);
+            try
+            {
+                await _backendFacade.InitiateForgottenPassword(_emailFieldForgot.text);
+
+                SetUIState(LoginState.SuccessForgotPassword);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+                SetUIState(LoginState.ValidationFailed);
+            }
+        }
+
+        private async void RegisterProcess () 
+        {
+            SetUIState(LoginState.ValidateAndLogin);
+            try
+            {
+                RegisterData registerData = await _backendFacade.InitiateRegister(_emailFieldRegister.text, _passwordFieldRegister.text);
+
+                SetLoginFieldsData(_emailFieldRegister.text, _passwordFieldRegister.text);
+
+                LoginProcess(false);
+                return;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+                SetUIState(LoginState.ValidationFailed);
+            }
+
+            _registerButton.enabled = true;
+        }
+
+        private async void LoginProcess(bool isGuest)
+        {
+            SetUIState(LoginState.ValidateAndLogin);
+            try
+            {
+                byte[] privateKey;
+                byte[] publicKey;
+                LoginData loginData;
+                string userId;
+                int authyId = 0;
+                string accessToken = "";
+
+                string GUID = _lastGUID ?? Guid.NewGuid().ToString();
+
+
+                if (isGuest)
+                {
+                    GenerateKeysAndUserFromGUID(GUID, out byte[] privateKeyFromGuID, out byte[] publicKeyFromGuID, out string userIDFromGuID);
+                    privateKey = privateKeyFromGuID;
+                    publicKey = publicKeyFromGuID;
+                    userId = userIDFromGuID;
+                }
+                else 
+                {
+                    loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
+
+                    string payload = loginData.accessToken.Split('.')[1];
+
+                    string decodedText = Encoding.UTF8.GetString(Utilites.Base64UrlDecode(payload));
+
+                    AccessTokenData accessTokenData = JsonConvert.DeserializeObject<AccessTokenData>(decodedText);
+
+                    authyId = accessTokenData.authy_id;
+
+                    accessToken = loginData.accessToken;
+
+                    userId = "ZombieSlayer_" + accessTokenData.user_id;
+                    GenerateKeysAndUserFromUserID(userId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
+
+                    privateKey = privateKeyFromUserId;
+                    publicKey = publicKeyFromUserID;
+                }
+
+                UserDataModel userDataModel = new UserDataModel(userId, privateKey)
+                {
+                    IsValid = false,
+                    IsRegistered = !isGuest,
+                    Email = _emailFieldLogin.text,
+                    Password = _passwordFieldLogin.text,
+                    GUID = GUID,
+                    AccessToken = accessToken
                 };
-                _backendDataControlMediator.SetUserDataModel(userDataModel);
-                await _backendDataControlMediator.LoginAndLoadData();
 
-                userDataModel.IsValid = true;
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
 
-                SuccessfulLogin();
+                if (authyId != 0) 
+                {
+                    SetUIState(LoginState.PromptOTP);
+                    return;
+                }
 
-                _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+                _OTPFieldOTP.text = "";
+
+                if (isGuest)
+                {
+                    CompleteLoginFromCurrentSetUserData();
+                }
+                else
+                {
+                    CompleteLoginFromCurrentSetUserData();
+                    //TODO Remove the line above, and uncomment the one below
+                    //once Parth implements Create Vault Token for users without 2FA
+                    //ConfirmOTPProcess();
+                }
+
+                return;
             }
             catch (GameVersionMismatchException e)
             {
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
             }
-            catch (Exception e)
+            catch (Exception e) 
             {
-                Debug.LogWarning(e);
-                SetUIState(LoginState.BetaKeyValidationFailed);
+                Debug.Log(e.ToString());
+                SetUIState(LoginState.ValidationFailed);
             }
+
+            _loginButton.enabled = true;
+        }
+
+        public async void CompleteLoginFromCurrentSetUserData () {
+            SetUIState(LoginState.ValidateAndLogin);
+
+            await _backendDataControlMediator.LoginAndLoadData();
+
+            _backendDataControlMediator.UserDataModel.IsValid = true;
+            _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
+
+            SuccessfulLogin();
+
+            _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
         }
 
         private void SuccessfulLogin()
         {
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
+            {
+                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            }
+            else
+            {
+                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+            }
             Hide();
         }
 
         private void SetUIState(LoginState state)
         {
+            if (Constants.AlwaysGuestLogin) 
+            {
+                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration) 
+                {
+                    state = LoginState.LoginAsGuest;
+                }
+            }
+
+            if (Self == null) 
+                return;
+            
+            Debug.Log(state);
             _state = state;
+            _backgroundGroup.gameObject.SetActive(false);
+            _loginGroup.gameObject.SetActive(false);
+            _registerGroup.gameObject.SetActive(false);
             _waitingGroup.gameObject.SetActive(false);
-            _betaGroup.gameObject.SetActive(false);
-            _betaErrorText.gameObject.SetActive(false);
             _versionMismatchGroup.gameObject.SetActive(false);
+            _forgottenGroup.gameObject.SetActive(false);
+            _forgottenSuccessGroup.gameObject.SetActive(false);
+            _OTPGroup.gameObject.SetActive(false);
+            _backgroundDarkImage.enabled = true;
+
             switch (_state)
             {
-                case LoginState.BetaKeyRequest:
-                    _betaGroup.gameObject.SetActive(true);
+                case LoginState.InitiateLogin:
+                    _lastPopupState = _state;
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _loginGroup.gameObject.SetActive(true);
                     break;
-                case LoginState.BetaKeyValidateAndLogin:
-                    _waitingGroup.gameObject.SetActive(true);
+                case LoginState.InitiateRegistration:
+                    _lastPopupState = _state;
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _registerGroup.gameObject.SetActive(true);
                     break;
-                case LoginState.BetaKeyValidationFailed:
-                    _betaGroup.gameObject.SetActive(true);
-                    _betaErrorText.gameObject.SetActive(true);
+                case LoginState.ValidateAndLogin:
+                    if (_appStateManager.AppState == Enumerators.AppState.APP_INIT)
+                    {
+                        _backgroundDarkImage.enabled = false;
+                    }
+                    else
+                    {
+                        _backgroundGroup.gameObject.SetActive(true);
+                        _waitingGroup.gameObject.SetActive(true);
+                    }
+                    break;
+                case LoginState.ValidationFailed:
+                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                    popup.Show("The process could not be completed. Please try again.");
+                    _uiManager.GetPopup<WarningPopup>().ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
                     break;
                 case LoginState.RemoteVersionMismatch:
+                    _backgroundGroup.gameObject.SetActive(true);
                     _versionMismatchGroup.gameObject.SetActive(true);
+                    break;
+                case LoginState.LoginAsGuest:
+                    _lastPopupState = _state;
+                    LoginProcess(true);
+                    break;
+                case LoginState.ForgotPassword:
+                    _lastPopupState = _state;
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _forgottenGroup.gameObject.SetActive(true);
+                    break;
+                case LoginState.SuccessForgotPassword:
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _forgottenSuccessGroup.gameObject.SetActive(true);
+                    break;
+                case LoginState.PromptOTP:
+                    _lastPopupState = _state;
+                    _backgroundGroup.gameObject.SetActive(false);
+                    _OTPGroup.gameObject.SetActive(true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_state), _state, null);
             }
+        }
+
+        private void WarningPopupClosedOnAutomatedLogin()
+        {
+            SetUIState(_lastPopupState);
         }
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)
@@ -212,27 +596,55 @@ namespace Loom.ZombieBattleground
                 $"This version ({exception.LocalVersion}) is out of date.\n\nPlease download version {exception.RemoteVersion}.";
         }
 
-        private void GenerateKeysAndUserFromBetaKey(
-            string betaKey, out byte[] privateKey, out byte[] publicKey, out string userId)
+        private void GenerateKeysAndUserFromUserID(
+            string userId, out byte[] privateKey, out byte[] publicKey)
         {
-            betaKey = betaKey.ToLowerInvariant();
+            userId = "ZombieSlayer_" + userId;
 
-            byte[] betaKeySeed = CryptoUtils.HexStringToBytes(betaKey);
+            string seedString =
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId))) +
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId)));
 
-            BigInteger userIdNumber = new BigInteger(betaKeySeed) + betaKeySeed.Sum(b => b * 2);
+            byte[] seedByte = CryptoUtils.HexStringToBytes(seedString);
+
+            privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
+
+            publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
+        }
+
+        private void GenerateKeysAndUserFromGUID(
+            string guID, out byte[] privateKey, out byte[] publicKey, out string userId)
+        {
+            string guidKey =
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID))) +
+                CryptoUtils.BytesToHexString(
+                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(guID)));
+
+            byte[] seedByte = CryptoUtils.HexStringToBytes(guidKey);
+
+            BigInteger userIdNumber = new BigInteger(seedByte) + seedByte.Sum(b => b * 2);
+            userIdNumber = BigInteger.Abs(userIdNumber);
             userId = "ZombieSlayer_" + userIdNumber;
 
-            privateKey = CryptoUtils.GeneratePrivateKey(betaKeySeed);
+            privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
 
             publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         }
 
         private enum LoginState
         {
-            BetaKeyRequest,
-            BetaKeyValidationFailed,
-            BetaKeyValidateAndLogin,
-            RemoteVersionMismatch
+            InitiateLogin,
+            InitiateRegistration,
+            ValidationFailed,
+            ValidateAndLogin,
+            RemoteVersionMismatch,
+            LoginAsGuest,
+            ForgotPassword,
+            SuccessForgotPassword,
+            PromptOTP
         }
     }
 }

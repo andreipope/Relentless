@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
 
         float GetSoundLength(Enumerators.SoundType soundType);
 
+        void SetSoundPaused(int identificator, bool pause);
+
         void PlaySound(
             Enumerators.SoundType soundType,
             string clipTitle,
@@ -47,7 +49,7 @@ namespace Loom.ZombieBattleground
             bool dropOldBackgroundMusic = false,
             bool isInQueue = false);
 
-        void PlaySound(
+        int PlaySound(
             Enumerators.SoundType soundType,
             string clipTitle,
             float volume = -1f,

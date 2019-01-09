@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -8,6 +7,9 @@ using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -41,6 +43,8 @@ namespace Loom.ZombieBattleground
 
         private readonly UniqueAnimationsController _uniqueAnimationsController;
 
+        private readonly ActionsQueueController _actionsQueueController;
+
         private readonly GameObject _fightTargetingArrowPrefab;
 
         private readonly SpriteRenderer _pictureSprite;
@@ -54,8 +58,6 @@ namespace Loom.ZombieBattleground
         private readonly TextMeshPro _healthText;
 
         private readonly ParticleSystem _sleepingParticles;
-
-        private readonly ParticleSystem _toxicPowerGlowParticles;
 
         private readonly GameObject _unitContentObject;
 
@@ -122,6 +124,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _uniqueAnimationsController = _gameplayManager.GetController<UniqueAnimationsController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             GameObject.transform.SetParent(parent, false);
@@ -140,21 +143,25 @@ namespace Loom.ZombieBattleground
             _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
-            _toxicPowerGlowParticles = GameObject.transform.Find("Other/ToxicPowerGlowVFX").GetComponent<ParticleSystem>();
-
 
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
 
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
 
         public BoardUnitModel Model { get; }
 
-        public Transform Transform => GameObject.transform;
+        public Transform Transform => GameObject?.transform;
 
-        public GameObject GameObject { get; }
+        public GameObject GameObject { get; set; }
+
+        public bool WasDestroyed { get; set; }
 
         public Sprite Sprite => _pictureSprite.sprite;
 
@@ -199,38 +206,41 @@ namespace Loom.ZombieBattleground
 
             Model.FightSequenceHandler = this;
 
-            switch (Model.InitialUnitType)
+            if (!_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
             {
-                case Enumerators.CardType.FERAL:
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
-                                false, false, true);
-                    }, 0.55f);
+                switch (Model.InitialUnitType)
+                {
+                    case Enumerators.CardType.FERAL:
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.FERAL_ARRIVAL, Constants.ArrivalSoundVolume,
+                                    false, false, true);
+                        }, 0.55f);
 
-                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
 
-                    break;
-                case Enumerators.CardType.HEAVY:
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
-                                false, false, true);
-                    }, 1f);
+                        break;
+                    case Enumerators.CardType.HEAVY:
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.HEAVY_ARRIVAL, Constants.ArrivalSoundVolume,
+                                    false, false, true);
+                        }, 1f);
 
-                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f);
 
-                    break;
-                case Enumerators.CardType.WALKER:
-                default:
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
-                                false, false, true);
-                    }, .6f);
+                        break;
+                    case Enumerators.CardType.WALKER:
+                    default:
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _soundManager.PlaySound(Enumerators.SoundType.WALKER_ARRIVAL, Constants.ArrivalSoundVolume,
+                                    false, false, true);
+                        }, .6f);
 
-                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
-                    break;
+                        InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f);
+                        break;
+                }
             }
 
             SetNormalGlowFromUnitType();
@@ -280,10 +290,15 @@ namespace Loom.ZombieBattleground
         private void BoardUnitDistractEffectStateChanged(bool status)
         {
             _distractObject.SetActive(status);
+
             if (status)
-                _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume, isLoop: true);
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.DISTRACT_LOOP, Constants.SfxSoundVolume);
+            }
             else
+            {
                 _soundManager.StopPlaying(Enumerators.SoundType.DISTRACT_LOOP);
+            }
         }
 
         private void BoardUnitOnBuffApplied(Enumerators.BuffType type)
@@ -299,7 +314,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.BuffType.WEAPON:
                     break;
-                case Enumerators.BuffType.RUSH:
+                case Enumerators.BuffType.BLITZ:
                     _sleepingParticles.gameObject.SetActive(false);
                     if (Model.HasBuffRush && Model.InitialUnitType != Enumerators.CardType.FERAL)
                     {
@@ -399,10 +414,7 @@ namespace Loom.ZombieBattleground
         private void BoardUnitOnTurnEnded()
         {
             CancelTargetingArrows();
-            if (Model.HasBuffRush && Model.InitialUnitType != Enumerators.CardType.FERAL)
-            {
-                SetNormalGlowFromUnitType();
-            }
+            SetNormalGlowFromUnitType();
         }
 
         private void BoardUnitGameMechanicDescriptionsOnUnitChanged()
@@ -480,7 +492,7 @@ namespace Loom.ZombieBattleground
 
             if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
             {
-                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction);
+                _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction, endArrivalCallback: ArrivalAnimationEventHandler);
             }
             else
             {
@@ -608,11 +620,6 @@ namespace Loom.ZombieBattleground
             {
                 _sleepingParticles.Stop();
             }
-        }
-
-        public void EnabledToxicPowerGlow()
-        {
-            _toxicPowerGlowParticles.Play();
         }
 
         public void ChangeModelVisibility(bool state)
@@ -815,9 +822,7 @@ namespace Loom.ZombieBattleground
                 () =>
                 {
                     Vector3 positionOfVfx = targetPlayer.AvatarObject.transform.position;
-                    _vfxController.PlayAttackVfx(Model.Card.LibraryCard.CardType,
-                        positionOfVfx,
-                        Model.CurrentDamage);
+                    _vfxController.PlayAttackVfx(Model, positionOfVfx);
 
                     hitCallback();
 
@@ -829,15 +834,6 @@ namespace Loom.ZombieBattleground
                     attackCompleteCallback();
 
                     completeCallback?.Invoke();
-
-                    if (Model.OwnerPlayer.IsLocalPlayer)
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(Model.OwnerPlayer.BoardCards);
-                    }
-                    else
-                    {
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
-                    }
                 }
                 );
         }
@@ -851,8 +847,8 @@ namespace Loom.ZombieBattleground
                 0.5f,
                 () =>
                 {
-                    _vfxController.PlayAttackVfx(Model.Card.LibraryCard.CardType,
-                        targetCardView.Transform.position, Model.CurrentDamage);
+                    _vfxController.PlayAttackVfx(Model,
+                        targetCardView.Transform.position);
 
                     hitCallback();
 
@@ -863,30 +859,19 @@ namespace Loom.ZombieBattleground
                 {
                     attackCompleteCallback();
 
+                    if (Model.CurrentHp > 0)
+                    {
+                        _actionsQueueController.ForceContinueAction(Model.ActionForDying);
+                        Model.ActionForDying = null;
+                    }
+
+                    if (targetCard.CurrentHp > 0)
+                    {
+                        _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);
+                        targetCard.ActionForDying = null;
+                    }
+
                     completeCallback?.Invoke();
-
-                    Model.WaiterAction?.ForceActionDone();
-                    targetCardView.Model.WaiterAction?.ForceActionDone();
-
-                    if (targetCardView.Model.CurrentHp <= 0)
-                    {
-                        if (Model.CurrentHp > 0)
-                        {
-                            Model.ActionForDying?.ForceActionDone();
-                        }
-                    }
-                    else if (Model.CurrentHp <= 0)
-                    {
-                        if (targetCardView.Model.CurrentHp > 0)
-                        {
-                            targetCardView.Model.ActionForDying?.ForceActionDone();
-                        }
-                    }
-                    else
-                    {
-                        Model.ActionForDying?.ForceActionDone();
-                        targetCardView.Model.ActionForDying?.ForceActionDone();
-                    }
                 }
             );
         }
@@ -978,5 +963,21 @@ namespace Loom.ZombieBattleground
 
             sequence.Play();
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (GameObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            if (Model.Card == null)
+                return;
+
+            DebugCardInfoDrawer.Draw(GameObject.transform.position, Model.Card.InstanceId.Id, Model.Card.LibraryCard.Name);
+        }
+#endif
     }
 }

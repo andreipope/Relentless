@@ -217,8 +217,7 @@ namespace Loom.ZombieBattleground.Common
         }
 
         public enum AttackRestriction
-        {
-            NONE,
+        { 
             ANY,
             ONLY_DIFFERENT
         }
@@ -300,14 +299,17 @@ namespace Loom.ZombieBattleground.Common
             [EnumMember(Value = "PERMANENT")]
             Permanent,
 
-            [EnumMember(Value = "CHAINSAW")]
-            Chainsaw,
-
             [EnumMember(Value = "BLITZ")]
             Blitz,
 
             [EnumMember(Value = "RESTORE")]
             Restore,
+
+            [EnumMember(Value = "CHAINSAW")]
+            Chainsaw,
+
+            [EnumMember(Value = "SUPER_SERUM")]
+            SuperSerum,
         }
 
         public enum BuffType
@@ -317,7 +319,7 @@ namespace Loom.ZombieBattleground.Common
             DEFENCE,
             HEAVY,
             WEAPON,
-            RUSH,
+            BLITZ,
             ATTACK,
             FREEZE,
             DAMAGE,
@@ -722,6 +724,29 @@ namespace Loom.ZombieBattleground.Common
             Short,
             Medium,
             Long
+        }
+
+        public enum MatchPlayer
+        {
+            CurrentPlayer,
+            OpponentPlayer
+        }
+
+        public enum QueueActionType
+        {
+            CardPlay,
+            RankBuff,
+            AbilityUsage,
+            UnitDeath,
+            WholeBoardUpdate,
+            PlayerBoardUpdate,
+            OpponentBoardUpdate,
+            OverlordSkillUsage,
+            AbilityUsageBlocker,
+            StopTurn,
+            EndMatch,
+            UnitCombat,
+            LeaveMatch
         }
     }
 }

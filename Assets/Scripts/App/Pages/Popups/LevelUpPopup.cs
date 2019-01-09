@@ -62,12 +62,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            foreach (AbilityViewItem abilityViewItem in _abilities)
-            {
-                abilityViewItem.Dispose();
-            }
-
-            _abilities.Clear();
+            ClearSkillInfo();
         }
 
         public void Hide()
@@ -173,7 +168,7 @@ namespace Loom.ZombieBattleground
 
         private void FillRewardSkillInfo(int skillIndex)
         {
-            _abilities.Clear();
+            ClearSkillInfo();
 
             AbilityViewItem abilityInstance = null;
             bool isDefault = false;
@@ -191,6 +186,16 @@ namespace Loom.ZombieBattleground
             }
 
             _newOpenAbility = _abilities[skillIndex];
+        }
+
+        private void ClearSkillInfo()
+        {
+            foreach (AbilityViewItem abilityViewItem in _abilities)
+            {
+                abilityViewItem.Dispose();
+            }
+
+            _abilities.Clear();
         }
 
         public void Update()

@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private int Count { get; }
 
+        private List<BoardUnitModel> _movedUnits;
+
         public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -25,7 +27,14 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                TakeControlEnemyUnit(GetRandomEnemyUnits());
+                if (PredefinedTargets != null)
+                {
+                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList());
+                }
+                else
+                {
+                    TakeControlEnemyUnit(GetRandomEnemyUnits(Count));
+                }
             }
         }
 
@@ -46,27 +55,40 @@ namespace Loom.ZombieBattleground
             TakeControlEnemyUnit(new List<BoardUnitModel>() { TargetUnit });
         }
 
-        private List<BoardUnitModel> GetRandomEnemyUnits()
-        {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, Count).Select(x => x.Model).ToList();
-        }
-
         private void TakeControlEnemyUnit(List<BoardUnitModel> units)
         {
+            _movedUnits = new List<BoardUnitModel>();
+
             foreach (BoardUnitModel unit in units)
             {
-                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit);
+                if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
+                    break;
+
+                _movedUnits.Add(unit);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
-                                                     Protobuf.AffectObjectType.Types.Enum.Character);
+            InvokeActionTriggered(_movedUnits);
+        }
+
+        private void TakeControlEnemyUnitEnded()
+        {
+            foreach (BoardUnitModel unit in _movedUnits)
+            {
+                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit, IsPVPAbility);
+            }
+
+            if (_movedUnits.Count > 0)
+            {
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _movedUnits.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
+                                                         Enumerators.AffectObjectType.Character);
+            }
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
 
-            Action();
+            TakeControlEnemyUnitEnded();
         }
     }
 }

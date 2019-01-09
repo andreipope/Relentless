@@ -19,6 +19,8 @@ namespace Loom.ZombieBattleground
         private IAppStateManager _appStateManager;
         private IApplicationSettingsManager _applicationSettingsManager;
 
+        private static Vector3 positionCenterForQuitToDesktopButton = new Vector3(0, -2.3f, 0);
+
         private ButtonShiftingContent _quitToMenuButton,
                                       _quitToDesktopButton,
                                       _settingsButton,
@@ -110,6 +112,7 @@ namespace Loom.ZombieBattleground
             _appStateManager.SetPausingApp(true);
 
 #if UNITY_ANDROID || UNITY_IOS
+            _quitToDesktopButton.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = "QUIT";
             _panelVideoSettingsObject.SetActive(false);
 #endif
         }
@@ -121,7 +124,7 @@ namespace Loom.ZombieBattleground
             if (data is bool isFromMainMenu && isFromMainMenu)
             {
                 _fromMainMenu = isFromMainMenu;
-
+                _quitToDesktopButton.transform.position = positionCenterForQuitToDesktopButton;
                 _quitToMenuButton.gameObject.SetActive(false);
                 _settingsButton.gameObject.SetActive(false);
             }
@@ -183,26 +186,38 @@ namespace Loom.ZombieBattleground
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
-                if (_gameplayManager.GetController<CardsController>().CardDistribution)
+                if (_gameplayManager.IsGameEnded)
                 {
-                    _uiManager.HidePopup<MulliganPopup>();
+                    HandleQuitToMainMenu();
+                    return;
                 }
 
-                _uiManager.HidePopup<SettingsPopup>();
-
-                _uiManager.HidePopup<YourTurnPopup>();
-
-                _gameplayManager.CurrentPlayer.ThrowLeaveMatch();
+                _gameplayManager.CurrentPlayer?.ThrowLeaveMatch();
 
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
-                GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
-                _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
-                _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
+                HandleQuitToMainMenu();
             };
 
             _uiManager.DrawPopup<ConfirmationPopup>(actions);
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+
+        private void HandleQuitToMainMenu()
+        {
+            if (_gameplayManager.GetController<CardsController>().CardDistribution)
+            {
+                _uiManager.HidePopup<MulliganPopup>();
+            }
+
+            _uiManager.HidePopup<SettingsPopup>();
+
+            _uiManager.HidePopup<YourTurnPopup>();
+
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+
+            _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
+            _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
         }
 
         private void QuitToDesktopButtonHandler()

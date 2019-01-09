@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Text;
 using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -69,6 +71,14 @@ namespace Loom.ZombieBattleground
         {
             color.a = alpha;
             return color;
+        }
+
+        public static string LimitStringLength(string str, int maxLength)
+        {
+            if (str.Length < maxLength)
+                return str;
+
+            return str.Substring(0, maxLength);
         }
 
         // FIXME: this has only drawbacks compared to using PlayerPrefs directly, what's the purpose of it?
@@ -170,6 +180,33 @@ namespace Loom.ZombieBattleground
 
             MemoryStream memoryStream = new MemoryStream(key);
             return new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read);
+        }
+
+        public static byte[] Base64UrlDecode(string input)
+        {
+            string output = input;
+            output = output.Replace('-', '+');
+            output = output.Replace('_', '/');
+            switch (output.Length % 4)
+            {
+                case 0: 
+                    break; 
+                case 2: 
+                    output += "=="; 
+                    break;
+                case 3: 
+                    output += "="; 
+                    break; 
+                default: 
+                    throw new Exception("Illegal base64url string!");
+            }
+            byte[] converted = Convert.FromBase64String(output); 
+            return converted;
+        }
+
+        public static bool ValidateEmail(string email)
+        {
+            return email != null ? Regex.IsMatch(email, Constants.MatchEmailPattern) : false;
         }
 
         #endregion cryptography

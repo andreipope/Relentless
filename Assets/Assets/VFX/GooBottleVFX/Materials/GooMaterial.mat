@@ -4,7 +4,7 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: GooMaterial
   m_Shader: {fileID: 4800000, guid: 98ad3126eff91b247a9bdd71bf16bf59, type: 3}
@@ -88,7 +88,7 @@ Material:
     - _ColorMask: 15
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _Displacement_Plus_Size_1: -0.04
+    - _Displacement_Plus_Size_1: -0.07
     - _Displacement_Plus_ValueX_1: -0.08974203
     - _Displacement_Plus_ValueY_1: -1
     - _Displacement_Value_1: 0.07153835

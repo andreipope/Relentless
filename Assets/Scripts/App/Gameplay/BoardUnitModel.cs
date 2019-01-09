@@ -1,20 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
-using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitModel : OwnableBoardObject
+    public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
     {
         public bool AttackedThisTurn;
 
@@ -57,6 +51,8 @@ namespace Loom.ZombieBattleground
         private int _stunTurns;
 
         public bool IsDead { get; private set; }
+
+        public InstanceId InstanceId => Card.InstanceId;
 
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 
@@ -134,8 +130,6 @@ namespace Loom.ZombieBattleground
 
         public event Action GameMechanicDescriptionsOnUnitChanged;
 
-        public event Action UnitStartedDying;
-
         public Enumerators.CardType InitialUnitType { get; private set; }
 
         public int MaxCurrentDamage => InitialDamage + BuffedDamage;
@@ -210,17 +204,18 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescriptionType> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescriptionType>();
 
-        public GameAction<object> WaiterAction;
-        public GameAction<object> ActionForDying;
+        public GameplayQueueAction<object> ActionForDying;
 
-        public void Die(bool forceUnitDieEvent= false)
+        public bool WasDistracted { get; private set; }
+
+        public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true)
         {
             UnitDying?.Invoke();
 
             IsDead = true;
             if (!forceUnitDieEvent)
             {
-                _battlegroundController.KillBoardCard(this);
+                _battlegroundController.KillBoardCard(this, withDeathEffect);
             }
             else
             {
@@ -237,6 +232,11 @@ namespace Loom.ZombieBattleground
 
         public void AddBuff(Enumerators.BuffType type)
         {
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             BuffsOnUnit.Add(type);
         }
 
@@ -246,11 +246,14 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.BuffType.ATTACK:
                     CurrentDamage++;
+                    BuffedDamage++;
+                    AddBuff(Enumerators.BuffType.ATTACK);
                     break;
                 case Enumerators.BuffType.DAMAGE:
                     break;
                 case Enumerators.BuffType.DEFENCE:
                     CurrentHp++;
+                    BuffedHp++;
                     break;
                 case Enumerators.BuffType.FREEZE:
                     TakeFreezeToAttacked = true;
@@ -259,7 +262,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.HEAVY:
                     HasBuffHeavy = true;
                     break;
-                case Enumerators.BuffType.RUSH:
+                case Enumerators.BuffType.BLITZ:
                     if (NumTurnsOnBoard == 0)
                     {
                         HasBuffRush = true;
@@ -272,7 +275,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.REANIMATE_UNIT,
                         this,
-                        Card.InstanceCard,
+                        Card.LibraryCard.CardKind,
+                        Card.LibraryCard,
                         OwnerPlayer
                         );
                     break;
@@ -280,7 +284,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.InstanceCard,
+                        Card.LibraryCard.CardKind,
+                        Card.LibraryCard,
                         OwnerPlayer
                         );
                     break;
@@ -354,6 +359,11 @@ namespace Loom.ZombieBattleground
             if (HasHeavy)
                 return;
 
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
+
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Heavy);
 
@@ -387,6 +397,11 @@ namespace Loom.ZombieBattleground
         {
             if (HasFeral)
                 return;
+
+            if (GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            {
+                DisableDistract();
+            }
 
             ClearUnitTypeEffects();
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Feral);
@@ -491,7 +506,6 @@ namespace Loom.ZombieBattleground
 
         public void OnStartTurn()
         {
-            Debug.Log("OnStartTurn");
             AttackedBoardObjectsThisTurn.Clear();
             NumTurnsOnBoard++;
 
@@ -506,11 +520,28 @@ namespace Loom.ZombieBattleground
                 UnitStatus = Enumerators.UnitStatusType.NONE;
             }
 
-            if (OwnerPlayer != null && IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
             {
-                AttackedThisTurn = false;
+                if (IsPlayable)
+                {
+                    AttackedThisTurn = false;
 
-                IsCreatedThisTurn = false;
+                    IsCreatedThisTurn = false;
+                }
+
+                // RANK buff attack should be removed at next player turn
+                if (BuffsOnUnit != null)
+                {
+                    int attackToRemove = BuffsOnUnit.FindAll(x => x == Enumerators.BuffType.ATTACK).Count;
+
+                    if (attackToRemove > 0)
+                    {
+                        BuffsOnUnit.RemoveAll(x => x == Enumerators.BuffType.ATTACK);
+
+                        BuffedDamage -= attackToRemove;
+                        CurrentDamage -= attackToRemove;
+                    }
+                }
             }
 
             TurnStarted?.Invoke();
@@ -518,6 +549,7 @@ namespace Loom.ZombieBattleground
 
         public void OnEndTurn()
         {
+            IsPlayable = false;
             HasBuffRush = false;
             CantAttackInThisTurnBlocker = false;
             TurnEnded?.Invoke();
@@ -549,10 +581,19 @@ namespace Loom.ZombieBattleground
 
         public void Distract()
         {
+            WasDistracted = true;
+
             AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Distract);
 
             UpdateVisualStateOfDistract(true);
             UnitDistracted?.Invoke();
+        }
+
+        public void DisableDistract()
+        {
+            RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Distract);
+
+            UpdateVisualStateOfDistract(false);
         }
 
         public void UpdateVisualStateOfDistract(bool status)
@@ -572,7 +613,7 @@ namespace Loom.ZombieBattleground
         public void DoCombat(BoardObject target)
         {
             if (target == null)
-                return;
+                throw new ArgumentNullException(nameof(target));
 
             IsAttacking = true;
 
@@ -609,7 +650,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                             );
-                        });
+                        }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 case BoardUnitModel targetCardModel:
                     IsPlayable = false;
@@ -627,11 +668,8 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
-                            WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
-                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
-
-                            targetCardModel.WaiterAction = _actionsQueueController.AddNewActionInToQueue(null);
-                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null);
+                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
                             AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             FightSequenceHandler.HandleAttackCard(
@@ -670,7 +708,7 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                                 );
-                        });
+                        }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 default:
                     throw new NotSupportedException(target.GetType().ToString());
@@ -733,11 +771,6 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitDied()
         {
             UnitDied?.Invoke();
-        }
-
-        public void InvokeUnitStartedDying()
-        {
-            UnitStartedDying?.Invoke();
         }
 
         public void InvokeKilledUnit(BoardUnitModel boardUnit)

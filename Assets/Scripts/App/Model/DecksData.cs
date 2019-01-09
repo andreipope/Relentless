@@ -46,6 +46,7 @@ namespace Loom.ZombieBattleground.Data
             int heroId,
             string name,
             List<DeckCardData> cards,
+
             Enumerators.OverlordSkill primarySkill,
             Enumerators.OverlordSkill secondarySkill
             )

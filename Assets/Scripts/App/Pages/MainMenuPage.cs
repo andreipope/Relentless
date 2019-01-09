@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
 {
@@ -29,9 +30,13 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _buttonBuy, _buttonOpen;
 
+        private Button _buttonLogin;
+
         private TextMeshProUGUI _packsCount;
 
         private Animator _logoAnimator;
+
+        private BackendDataControlMediator _backendDataControlMediator;
 
         public void Init()
         {
@@ -41,11 +46,29 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
         public void Update()
-        {  
-        } 
+        {
+            if (_selfPage != null)
+            {
+                if (!Constants.AlwaysGuestLogin && _backendDataControlMediator.UserDataModel != null && !_backendDataControlMediator.UserDataModel.IsRegistered)
+                {
+                    if (!_buttonLogin.gameObject.activeSelf)
+                    {
+                        _buttonLogin.gameObject.SetActive(true);
+                    }
+                }
+                else
+                {
+                    if (_buttonLogin.gameObject.activeSelf)
+                    {
+                        _buttonLogin.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }  
 
         public void Show()
         {
@@ -61,6 +84,7 @@ namespace Loom.ZombieBattleground
             _buttonOpen = _selfPage.transform.Find("Button_OpenPacks").GetComponent<ButtonShiftingContent>();
             _packsCount = _selfPage.transform.Find("Button_OpenPacks/Count").GetComponent<TextMeshProUGUI>();
             _buttonSettings = _selfPage.transform.Find("Button_Settings").GetComponent<Button>();
+            _buttonLogin = _selfPage.transform.Find("Button_Login").GetComponent<Button>();
 
             _logoAnimator = _selfPage.transform.Find("Logo").GetComponent<Animator>();
 
@@ -68,6 +92,7 @@ namespace Loom.ZombieBattleground
             _buttonArmy.Clicked.AddListener(OnClickCollection);
             _buttonBuy.onClick.AddListener(BuyButtonHandler);
             _buttonOpen.onClick.AddListener(OpenButtonHandler);
+            _buttonLogin.onClick.AddListener(PressedLoginHandler);
 
             _buttonCredits.onClick.AddListener(CreditsButtonOnClickHandler);
             _buttonSettings.onClick.AddListener(SettingsButtonOnClickHandler);
@@ -83,10 +108,11 @@ namespace Loom.ZombieBattleground
                 _logoAnimator.SetBool("LogoShow", true);
             }
 
-            if (!_dataManager.CachedUserLocalData.AgreedTerms)
-            {
-                _uiManager.DrawPopup<TermsPopup>();
-            }
+            //Hide for current beta release
+            //if (!_dataManager.CachedUserLocalData.AgreedTerms)
+            //{
+            //    _uiManager.DrawPopup<TermsPopup>();
+            //}
         }
 
         public void Hide()
@@ -103,6 +129,14 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        private void PressedLoginHandler() 
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+            popup.Show();
+        }
+
         private void OpenAlertDialog(string msg)
         {
             _uiManager.DrawPopup<WarningPopup>(msg);
@@ -113,16 +147,8 @@ namespace Loom.ZombieBattleground
         private void OnClickPlay()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            if (GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
-            {
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
 
-                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
-            }
-            else
-            {
-                _stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
-            }
+            _stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
         private void OnClickCollection()

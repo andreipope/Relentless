@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using JetBrains.Annotations;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
@@ -52,6 +54,7 @@ namespace Loom.ZombieBattleground.Data
             int level,
             Enumerators.SetType heroElement,
             List<HeroSkill> skills,
+
             Enumerators.OverlordSkill primaryAbility,
             Enumerators.OverlordSkill secondaryAbility)
         {
@@ -115,6 +118,8 @@ namespace Loom.ZombieBattleground.Data
 
         public bool CanSelectTarget { get; private set; }
 
+        public bool SingleUse { get; private set; }
+
         public HeroSkill(
             int id,
             string title,
@@ -130,7 +135,8 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.UnitStatusType targetUnitStatusType,
             List<Enumerators.SetType> elementTargetTypes,
             bool unlocked,
-            bool canSelectTarget)
+            bool canSelectTarget,
+            bool singleUse)
         {
             Id = id;
             Title = title;
@@ -147,6 +153,7 @@ namespace Loom.ZombieBattleground.Data
             ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.SetType>();
             CanSelectTarget = canSelectTarget;
             Unlocked = unlocked;
+            SingleUse = singleUse;
         }
     }
 }

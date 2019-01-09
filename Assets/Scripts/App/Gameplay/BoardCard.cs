@@ -9,6 +9,9 @@ using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using ZombieBattleground.Editor.Runtime;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -26,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyCard LibraryCard;
 
+        protected const float cardToHandSoundKoef = 2f;
+
         protected ILoadObjectsManager LoadObjectsManager;
 
         protected ISoundManager SoundManager;
@@ -42,6 +47,8 @@ namespace Loom.ZombieBattleground
 
         protected BattlegroundController BattlegroundController;
 
+        protected PlayerController PlayerController;
+
         protected GameObject GlowObject;
 
         protected SpriteRenderer BackgroundSprite;
@@ -57,6 +64,8 @@ namespace Loom.ZombieBattleground
         protected TextMeshPro AmountText;
 
         protected TextMeshPro AmountTextForArmy;
+
+        protected Transform IconsForArmyPanel;
 
         protected Animator CardAnimator;
 
@@ -89,6 +98,7 @@ namespace Loom.ZombieBattleground
             CardsController = GameplayManager.GetController<CardsController>();
             AbilitiesController = GameplayManager.GetController<AbilitiesController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+            PlayerController = GameplayManager.GetController<PlayerController>();
 
             GameObject = selfObject;
 
@@ -97,7 +107,7 @@ namespace Loom.ZombieBattleground
             CardAnimator = GameObject.GetComponent<Animator>();
             CardAnimator.enabled = false;
 
-            GlowObject = Transform.Find("Glow").gameObject;
+            GlowObject = Transform.Find("GlowContainer/Glow").gameObject;
             PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
             BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
 
@@ -106,6 +116,7 @@ namespace Loom.ZombieBattleground
             BodyText = Transform.Find("BodyText").GetComponent<TextMeshPro>();
             AmountText = Transform.Find("Amount/Text").GetComponent<TextMeshPro>();
             AmountTextForArmy = Transform.Find("AmountForArmy/Text").GetComponent<TextMeshPro>();
+            IconsForArmyPanel = Transform.Find("AmountForArmy/RankIcons");
 
             RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
@@ -126,6 +137,10 @@ namespace Loom.ZombieBattleground
             BehaviourHandler.MouseUpTriggered += MouseUpTriggeredHandler;
 
             BehaviourHandler.Destroying += DestroyingHandler;
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
 
         public SpriteRenderer PictureSprite { get; protected set; }
@@ -279,7 +294,8 @@ namespace Loom.ZombieBattleground
                 CardAnimator.enabled = true;
                 CardAnimator.SetTrigger("DeckToHand");
 
-                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume);
+                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume * cardToHandSoundKoef);
+
             }
 
             IsNewCard = false;
@@ -332,8 +348,7 @@ namespace Loom.ZombieBattleground
         public virtual bool CanBePlayed(Player owner)
         {
 #if !DEV_MODE
-            return GameplayManager.GetController<PlayerController>()
-                .IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+            return PlayerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
 #else
             return true;
 #endif
@@ -429,9 +444,12 @@ namespace Loom.ZombieBattleground
 
             if (isArmy)
             {
-                offset = 1.1f;
-                offsetY = -0.3f;
+                offsetY = -0.17f;
                 AmountTextForArmy.text = amount.ToString();
+                if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+                {
+                    IconsForArmyPanel.Find("Icon_" + LibraryCard.CardRank.ToString())?.gameObject.SetActive(true);
+                }
             }
             InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
         }
@@ -487,8 +505,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.LibraryCard.Abilities != null &&
-                !unit.Model.GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Distract))
+            if (unit.Model.Card.LibraryCard.Abilities != null && !unit.Model.WasDistracted)
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
@@ -540,31 +557,13 @@ namespace Loom.ZombieBattleground
             buffs.Clear();
 
             // right block info ------------------------------------
-
-            foreach (AbilityBase abil in AbilitiesController.GetAbilitiesConnectedToUnit(unit.Model))
-            {
-                // FIXME: hack
-                continue;
-         
-                Enumerators.BuffType buffType =
-                    (Enumerators.BuffType) Enum.Parse(typeof(Enumerators.BuffType), abil.AbilityData.GameMechanicDescriptionType.ToString(), true);
-                TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.AbilityData.GameMechanicDescriptionType);
-                if (gameMechanicInfo != null)
-                {
-                    buffs.Add(
-                        new BuffTooltipInfo
-                        {
-                            Title = gameMechanicInfo.Name,
-                            Description = gameMechanicInfo.Tooltip,
-                            TooltipObjectType = Enumerators.TooltipObjectType.BUFF,
-                            Value = -1
-                        });
-                }
-            }
-
             foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
+
+                if (BuffOnCardInfoObjects.Find(x => x.BuffTooltipInfo.Title == gameMechanicInfo.Name) != null)
+                    continue;
+
                 if (gameMechanicInfo != null)
                 {
                     buffs.Add(
@@ -780,6 +779,22 @@ namespace Loom.ZombieBattleground
                     return ability.Value;
             }
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (GameObject == null)
+            {
+                MainApp.Instance.OnDrawGizmosCalled -= OnDrawGizmos;
+                return;
+            }
+
+            if (WorkingCard == null)
+                return;
+
+            DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId.Id, WorkingCard.LibraryCard.Name);
+        }
+#endif
 
         public class BuffTooltipInfo
         {

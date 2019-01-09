@@ -4,7 +4,6 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +18,8 @@ namespace Loom.ZombieBattleground
         public OnBehaviourHandler PlayerPrimarySkillHandler, PlayerSecondarySkillHandler;
 
         public OnBehaviourHandler OpponentPrimarySkillHandler, OpponentSecondarySkillHandler;
+
+        private const float TubeLoopSoundVolumeKoef = 0.2f;
 
         private IUIManager _uiManager;
 
@@ -160,8 +161,6 @@ namespace Loom.ZombieBattleground
 
             _playerHero = null;
             _opponentHero = null;
-
-            _soundManager.StopPlaying(Enumerators.SoundType.GOO_TUBE_LOOP);
         }
 
         public void Dispose()
@@ -216,8 +215,6 @@ namespace Loom.ZombieBattleground
 
             StartGame();
             KeepButtonVisibility(false);
-
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_TUBE_LOOP, Constants.BackgroundSoundVolume / 2, isLoop:true);
         }
 
         public void SetEndTurnButtonStatus(bool status)
@@ -256,6 +253,7 @@ namespace Loom.ZombieBattleground
 
                         Data.AIDeck opponentDeck = _gameplayManager.OpponentIdCheat == -1 ? decks[Random.Range(0, decks.Count)] : decks[_gameplayManager.OpponentIdCheat];
 
+
                         opponentHeroId = opponentDeck.Deck.HeroId;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
                         _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
@@ -264,7 +262,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.MatchType.PVP:
-                    foreach (PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
+                    foreach (Protobuf.PlayerState playerState in _pvpManager.InitialGameState.PlayerStates)
                     {
                         if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
@@ -274,7 +272,7 @@ namespace Loom.ZombieBattleground
                         {
                             opponentHeroId = (int) playerState.Deck.HeroId;
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
-                            _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
+                            _gameplayManager.OpponentDeckId = -1;
                         }
                     }
                     break;
@@ -590,8 +588,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             _playerManaBar.SetGoo(goo);
-
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnPlayerGooVialsChanged(int currentTurnGoo)
@@ -625,7 +621,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             _opponentManaBar.SetGoo(goo);
-            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         private void OnOpponentGooVialsChanged(int currentTurnGoo)
@@ -639,6 +634,8 @@ namespace Loom.ZombieBattleground
         private void TurnStartedHandler()
         {
             _zippingVfx.SetActive(_gameplayManager.GetController<PlayerController>().IsActive);
+
+            _soundManager.PlaySound(Enumerators.SoundType.GOO_BOTTLE_FILLING, Constants.SfxSoundVolume);
         }
 
         #endregion

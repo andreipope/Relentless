@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -53,6 +52,8 @@ namespace Loom.ZombieBattleground
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialDataStep CurrentTutorialDataStep { get; private set; }
 
+        public AnalyticsTimer TutorialDuration { get; set; }
+
         public int TutorialsCount
         {
             get { return _tutorials.Count; }
@@ -82,19 +83,41 @@ namespace Loom.ZombieBattleground
                         .GetObjectByPath<TextAsset>("Data/tutorial_data").text).TutorialDatas;
 
             _tutorialHelpBoardArrows = new List<TutorialBoardArrow>();
+
+            TutorialDuration = new AnalyticsTimer();
         }
 
         public void Update()
         {
         }
 
+        private bool CheckAvailableTutorial()
+        {
+            int id = _dataManager.CachedUserLocalData.CurrentTutorialId;
+
+            TutorialData tutorial = _tutorials.Find((x) => !x.Ignore &&
+                x.TutorialId >= _dataManager.CachedUserLocalData.CurrentTutorialId);
+
+            if(tutorial != null)
+            {
+                _dataManager.CachedUserLocalData.CurrentTutorialId = tutorial.TutorialId;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                return true;
+            }
+            return false;
+        }
+
         public void SetupTutorialById(int id)
         {
-            CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
-            _currentTutorialStepIndex = 0;
-            _tutorialSteps = CurrentTutorial.TutorialDataSteps;
-            CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
-            FillTutorialDeck();
+            if (CheckAvailableTutorial())
+            {
+                id = _dataManager.CachedUserLocalData.CurrentTutorialId;
+                CurrentTutorial = _tutorials.Find(tutor => tutor.TutorialId == id);
+                _currentTutorialStepIndex = 0;
+                _tutorialSteps = CurrentTutorial.TutorialDataSteps;
+                CurrentTutorialDataStep = _tutorialSteps[_currentTutorialStepIndex];
+                FillTutorialDeck();
+            }
 
             IsTutorial = false;
         }
@@ -127,6 +150,7 @@ namespace Loom.ZombieBattleground
 
             IsTutorial = true;
 
+            TutorialDuration.StartTimer();
             _analyticsManager.SetEvent( AnalyticsManager.EventStartedTutorial);
         }
 
@@ -150,11 +174,20 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
+            if(!CheckAvailableTutorial())
+            {
+                _gameplayManager.IsTutorial = false;
+                _dataManager.CachedUserLocalData.Tutorial = false;
+                _gameplayManager.IsSpecificGameplayBattleground = false;
+            }
 
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
-            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial);
+            TutorialDuration.FinishTimer();
+            Dictionary<string, object> eventParameters = new Dictionary<string, object>();
+            eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDiffrence());
+            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial, eventParameters);
         }
 
         public void SkipTutorial(Enumerators.AppState state)
@@ -185,6 +218,7 @@ namespace Loom.ZombieBattleground
             if (status)
             {
                 _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+
                 GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.PlaySelection);
             }
             GameClient.Get<IAppStateManager>().SetPausingApp(false);

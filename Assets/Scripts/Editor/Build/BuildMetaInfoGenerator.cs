@@ -79,7 +79,10 @@ namespace Loom.ZombieBattleground.Editor
             PlayerSettings.applicationIdentifier = "games.loom.battleground2";
             PlayerSettings.productName = "Zombie Battleground Second PVP Build";
 #endif
-
+#if MAC_APPSTORE
+            PlayerSettings.applicationIdentifier = "games.loom.battlegroundmacos";
+            PlayerSettings.useMacAppStoreValidation = true;
+#endif
             BuildMetaInfo buildMetaInfo = GetBuildMetaInfo();
             buildMetaInfo.GitBranchName = manifest.GetValue<string>("scmBranch");
             buildMetaInfo.GitCommitHash = manifest.GetValue<string>("scmCommitId");

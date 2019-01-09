@@ -23,12 +23,16 @@ namespace Loom.ZombieBattleground.Data
 
         public Card GetCardFromName(string name)
         {
-            return Cards.First(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            Card card = Cards.FirstOrDefault(x => String.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            if (card == null)
+                throw new Exception($"Card '{name}' not found");
+
+            return card;
         }
 
         private void InitData()
         {
-            Cards = Cards.OrderBy(card => card.CardRank).ToList();
+            Cards = Cards.OrderBy(card => card.Cost).ToList();
             Sets =
                 Cards
                     .GroupBy(card => card.CardSetType)

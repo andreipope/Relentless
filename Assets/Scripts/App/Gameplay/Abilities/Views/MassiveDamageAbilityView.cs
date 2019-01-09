@@ -8,6 +8,8 @@ namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbilityView : AbilityViewBase<MassiveDamageAbility>
     {
+        private const int LawnmowerCardId = 248;
+
         private List<BoardUnitView> _unitsViews;
 
         private List<BoardObject> _targets;
@@ -21,6 +23,8 @@ namespace Loom.ZombieBattleground
         private GameObject _lineObject;
 
         private GameObject _cardDissapearingPrefab;
+
+        private BoardUnitView _unitView;
         #endregion
 
         public MassiveDamageAbilityView(MassiveDamageAbility ability) : base(ability)
@@ -54,52 +58,46 @@ namespace Loom.ZombieBattleground
 
                 Vector3 targetPosition = Vector3.zero;
 
-                switch (cardNameOfAbility)
+                if (Ability.BoardSpell != null && Ability.BoardSpell.Card.LibraryCard.MouldId == LawnmowerCardId)
                 {
-                    case Enumerators.CardNameOfAbility.None:
+                    CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
+                    VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
+                    _lineObject = VfxObject.transform.Find("Lawnmover/BurstToxic").gameObject;
+                    _cardDissapearingPrefab = VfxObject.transform.Find("Lawnmover/CardsDissapearing/Tears").gameObject;
+                    _unitsViews = new List<BoardUnitView>();
+                    foreach (BoardObject boardObject in _targets)
+                    {
+                        switch (boardObject)
                         {
-                            foreach (Enumerators.AbilityTargetType target in Ability.AbilityTargetTypes)
-                            {
-                                switch (target)
-                                {
-                                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                                        CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
-                                        break;
-                                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                                        foreach (BoardUnitView cardPlayer in Ability.PlayerCallerOfAbility.BoardCards)
-                                        {
-                                            CreateVfx(cardPlayer.Transform.position, true);
-                                        }
-                                        break;
-                                }
-                            }
+                            case BoardUnitModel unit:
+                                _unitsViews.Add(_battlegroundController.GetBoardUnitViewByModel(unit));
+                                break;
+                            default:
+                                break;
                         }
-                        break;
-                    case Enumerators.CardNameOfAbility.Lawnmover:
-                        {
-                            CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
-                            VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
-                            _lineObject = VfxObject.transform.Find("Lawnmover/BurstToxic").gameObject;
-                            _cardDissapearingPrefab = VfxObject.transform.Find("Lawnmover/CardsDissapearing/Tears").gameObject;
-                            _unitsViews = new List<BoardUnitView>();
-                            foreach (BoardObject boardObject in _targets)
-                            {
-                                switch (boardObject)
-                                {
-                                    case BoardUnitModel unit:
-                                        _unitsViews.Add(_battlegroundController.GetBoardUnitViewByModel(unit));
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
+                    }
 
-                            Ability.OnUpdateEvent += OnUpdateEventHandler;
-                        }
-                        break;
-                    default:
-                        break;
+                    Ability.OnUpdateEvent += OnUpdateEventHandler;
                 }
+                else
+                {
+                    foreach (Enumerators.AbilityTargetType target in Ability.AbilityTargetTypes)
+                    {
+                        switch (target)
+                        {
+                            case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                                CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
+                                break;
+                            case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                                foreach (BoardUnitView cardPlayer in Ability.PlayerCallerOfAbility.BoardCards)
+                                {
+                                    CreateVfx(cardPlayer.Transform.position, true);
+                                }
+                                break;
+                        }
+                    }
+                }
+
             }
             InternalTools.DoActionDelayed(Ability.InvokeVFXAnimationEnded, delayAfter);
         }
@@ -124,23 +122,30 @@ namespace Loom.ZombieBattleground
         #region Lawnmower
         private void OnUpdateEventHandler()
         {
-            BoardUnitView unitView;
-            for (int i = 0; i < _unitsViews.Count; i++)
-            {
-                unitView = _unitsViews[i];
-
-                if (_lineObject.transform.position.x + 1f < unitView.Transform.position.x)
-                {
-                    Ability.OneActionComleted(unitView.Model);
-                    CreateSubParticle(unitView.Transform.position);
-                    _unitsViews.Remove(unitView);
-                    _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
-                }
-            }
-
-            if (_unitsViews.Count == 0)
+            if (_unitsViews == null || _unitsViews.Count == 0 || _lineObject == null)
             {
                 Ability.OnUpdateEvent -= OnUpdateEventHandler;
+                return;
+            }
+
+            for (int i = 0; i < _unitsViews.Count; i++)
+            {
+                _unitView = _unitsViews[i];
+
+                if (_unitView != null && _unitView.GameObject != null)
+                {
+                    if (_lineObject.transform.position.x + 1f < _unitView.Transform.position.x)
+                    {
+                        Ability.OneActionComleted(_unitView.Model);
+                        CreateSubParticle(_unitView.Transform.position);
+                        _unitsViews.Remove(_unitView);
+                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
+                    }
+                }
+                else
+                {
+                    _unitsViews.Remove(_unitView);
+                }
             }
         }
 

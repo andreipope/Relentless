@@ -11,18 +11,26 @@ static class BattleCommandsHandler
     private static IGameplayManager _gameplayManager;
     private static SkillsController _skillController;
     private static BattlegroundController _battlegroundController;
+    private static BoardController _boardController;
     private static CardsController _cardsController;
     private static AIController _aiController;
+    private static IDataManager _dataManager;
+    private static IOverlordExperienceManager _overlordManager;
+    private static IUIManager _uiManager;
 
     public static void Initialize()
     {
         CommandHandlers.RegisterCommandHandlers(typeof(BattleCommandsHandler));
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
+        _dataManager = GameClient.Get<IDataManager>();
+        _overlordManager = GameClient.Get<IOverlordExperienceManager>();
+        _uiManager = GameClient.Get<IUIManager>();
         _skillController = _gameplayManager.GetController<SkillsController>();
         _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
         _aiController = _gameplayManager.GetController<AIController>();
+        _boardController = _gameplayManager.GetController<BoardController>();
     }
 
     [CommandHandler(Description = "Reduce the current def of the Player overlord")]
@@ -123,6 +131,132 @@ static class BattleCommandsHandler
         return deckNames;
     }
 
+    [CommandHandler(Description = "Will list down the cards that started in the Enemy Overlord's deck.")]
+    private static void EnemyShowDeck()
+    {
+        Player player = _gameplayManager.OpponentPlayer;
+        string cardsInDeck = "Cards In Deck = ";
+        string cardsInHand = "Cards In Hand = ";
+        for (var i = 0; i < player.CardsInDeck.Count; i++)
+        {
+            cardsInDeck += player.CardsInDeck[i].LibraryCard.Name + ",";
+        }
+
+        for (var i = 0; i < player.CardsInHand.Count; i++)
+        {
+            cardsInHand += player.CardsInHand[i].LibraryCard.Name + ",";
+        }
+
+        cardsInDeck = cardsInDeck.TrimEnd(',');
+        cardsInHand = cardsInHand.TrimEnd(',');
+        Debug.Log(cardsInDeck);
+        Debug.Log(cardsInHand);
+    }
+
+    [CommandHandler(Description = "Sets the number of goo vials / bottles for the player where x is the number of goo vials")]
+    private static void PlayerSetGooVial(int gooVials)
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
+        {
+            Debug.LogWarning("Please Wait For Your Turn");
+            return;
+        }
+
+        if (gooVials <= 0 || gooVials > player.MaxGooVials)
+        {
+            Debug.LogError("Vials should not be less than zero or more than " + player.MaxGooVials);
+            return;
+        }
+
+        player.GooVials = gooVials;
+    }
+
+    [CommandHandler(Description = "Sets the number of goo (max will be determined by current number of vials of course) for the player")]
+    private static void PlayerSetGooAmount(int gooAmount)
+    {
+        Player player = _gameplayManager.CurrentPlayer;
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
+        {
+            Debug.LogError("Please Wait For Your Turn");
+            return;
+        }
+
+        if (gooAmount < 0)
+        {
+            Debug.LogError("Goo Amount should not be less than zero");
+            return;
+        }
+
+        if (gooAmount > player.GooVials)
+        {
+            gooAmount = player.GooVials;
+        }
+
+        player.CurrentGoo = gooAmount;
+    }
+
+    [CommandHandler(Description = "Adds xp to an overlord. ")]
+    private static void AddXP([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int xpAmount)
+    {
+        Hero hero = _dataManager.CachedHeroesData.Heroes
+            .Find(x => x.Name == overlordName);
+
+        if (hero == null)
+        {
+            Debug.LogError(" Hero not found");
+            return;
+        }
+
+        if (xpAmount <= 0)
+        {
+            Debug.LogError("Xp Amount should be higher than zero");
+            return;
+        }
+
+        _overlordManager.InitializeExperienceInfoInMatch(hero);
+
+        _overlordManager.ApplyExperience(hero, xpAmount);
+        if (hero.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
+        {
+            _uiManager.DrawPopup<LevelUpPopup>();
+        }
+    }
+
+    [CommandHandler(Description = "Adds xp to an overlord. ")]
+    private static void SetOverlordLevel([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int level)
+    {
+        Hero hero = _dataManager.CachedHeroesData.Heroes
+            .Find(x => x.Name == overlordName);
+
+        if (hero == null)
+        {
+            Debug.LogError(" Hero not found");
+            return;
+        }
+
+        if (level <= 0 || level > 20)
+        {
+            Debug.LogError("Level cant be set less than 1 nor max than 20");
+            return;
+        }
+
+        hero.Level = level;
+
+        _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+    }
+
+    public static IEnumerable<string> OverlordsNames()
+    {
+        string[] overlordNames = new string[_dataManager.CachedHeroesData.Heroes.Count];
+        for (var i = 0; i < _dataManager.CachedHeroesData.Heroes.Count; i++)
+        {
+            overlordNames[i] = _dataManager.CachedHeroesData.Heroes[i].Name;
+        }
+        return overlordNames;
+    }
+
+
     [CommandHandler(Description = "Player Draw - Draw Card from Library with Card Name")]
     private static void PlayerDraw(string cardName)
     {
@@ -179,7 +313,7 @@ static class BattleCommandsHandler
             return;
         }
         WorkingCard workingCard = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
-        _aiController.PlayCardOnBoard(workingCard);
+        _aiController.PlayCardOnBoard(workingCard, true);
     }
 
     [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
@@ -197,7 +331,7 @@ static class BattleCommandsHandler
         {
             _cardsController.AddCardToHand(opponentPlayer, workingCard);
             workingCard = opponentPlayer.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
-            _aiController.PlayCardOnBoard(workingCard);
+            _aiController.PlayCardOnBoard(workingCard, true);
         }
         else
         {
@@ -285,7 +419,7 @@ static class BattleCommandsHandler
         player.BoardCards.Add(newUnit);
 
         _battlegroundController.PlayerBoardCards.Add(newUnit);
-        _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(player.BoardCards);
+        _boardController.UpdateBoard(player.BoardCards, true, null);
     }
 
 
@@ -562,5 +696,16 @@ static class BattleCommandsHandler
             return;
 
         unitModel.CurrentHp -= boardSkill.Skill.Value;
+    }
+
+    [CommandHandler(Description = "Unlocks current overlord abilities")]
+    private static void UnlockAllCurrentOverlordAbilities()
+    {
+        foreach (var skill in _gameplayManager.CurrentPlayer.SelfHero.Skills)
+        {
+            skill.Unlocked = true;
+        }
+
+        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
     }
 }

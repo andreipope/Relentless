@@ -1,6 +1,6 @@
-﻿using System;
-using Unity.Cloud.BugReporting;
-using Unity.Cloud.BugReporting.Plugin;
+using System;
+using Unity.Cloud.UserReporting;
+using Unity.Cloud.UserReporting.Plugin;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -22,7 +22,7 @@ namespace Assets.Editor.BugReporting
 
         #region Fields
 
-        private BugReport bugReport;
+        private UserReport bugReport;
 
         private bool creating;
 
@@ -43,11 +43,11 @@ namespace Assets.Editor.BugReporting
             this.creating = false;
             if (Application.isPlaying)
             {
-                if (UnityBugReporting.CurrentClient != null)
+                if (UnityUserReporting.CurrentClient != null)
                 {
-                    UnityBugReporting.CurrentClient.TakeScreenshot(2048, 2048, s => { });
-                    UnityBugReporting.CurrentClient.TakeScreenshot(512, 512, s => { });
-                    UnityBugReporting.CurrentClient.CreateBugReport((br) =>
+                    UnityUserReporting.CurrentClient.TakeScreenshot(2048, 2048, s => { });
+                    UnityUserReporting.CurrentClient.TakeScreenshot(512, 512, s => { });
+                    UnityUserReporting.CurrentClient.CreateUserReport((br) =>
                     {
                         this.SetThumbnail(br);
                         this.summary = string.Empty;
@@ -122,7 +122,7 @@ namespace Assets.Editor.BugReporting
             this.Repaint();
         }
 
-        private void SetThumbnail(BugReport bugReport)
+        private void SetThumbnail(UserReport bugReport)
         {
             if (bugReport != null)
             {
@@ -138,15 +138,15 @@ namespace Assets.Editor.BugReporting
             this.submitting = false;
             if (Application.isPlaying)
             {
-                if (UnityBugReporting.CurrentClient != null)
+                if (UnityUserReporting.CurrentClient != null)
                 {
                     this.bugReport.Summary = this.summary;
-                    this.bugReport.Fields.Add(new BugReportNamedValue("Notes", this.description));
-                    this.bugReport.Dimensions.Add(new BugReportNamedValue("DevLog", "True"));
+                    this.bugReport.Fields.Add(new UserReportNamedValue("Notes", this.description));
+                    this.bugReport.Dimensions.Add(new UserReportNamedValue("DevLog", "True"));
                     this.bugReport.IsHiddenWithoutDimension = true;
 
                     // Send
-                    UnityBugReporting.CurrentClient.SendBugReport(this.bugReport, (success, br2) =>
+                    UnityUserReporting.CurrentClient.SendUserReport(this.bugReport, (success, br2) =>
                     {
                         this.bugReport = null;
                         if (EditorUtility.DisplayDialog("Dev Log", "Dev log submitted. Would you like to view it?", "View", "Don't View"))

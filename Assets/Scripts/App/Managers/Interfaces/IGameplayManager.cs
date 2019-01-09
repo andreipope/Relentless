@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
 
         void StopGameplay();
 
+        AnalyticsTimer MatchDuration { get; set; }
+
         void EndGame(Enumerators.EndGameType endGameType, float timer = 4f);
 
         void ResetWholeGameplayScene();
@@ -72,5 +74,6 @@ namespace Loom.ZombieBattleground
         int OpponentIdCheat { get; set; }
         bool AvoidGooCost { get; set; }
         bool UseInifiniteAbility { get; set; }
+        bool UseBackendGameLogic { get; }
     }
 }

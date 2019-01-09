@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public class SkillCoolDownTimer
     private const float HalfCircleAngle = 180;
 
     private readonly ILoadObjectsManager _loadObjectsManager;
-    private float _angleSegmentOffset = 5f;
+    private float _angleSegmentOffset = 0f;
 
     private List<GameObject> _gapList = new List<GameObject>();
 
@@ -32,17 +32,28 @@ public class SkillCoolDownTimer
         SelfObject.transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
+    public void Close()
+    {
+        SelfObject.transform.eulerAngles = Vector3.zero;
+        DestroyGaps();
+    }
+
     private void Reset(int coolDown)
     {
         SelfObject.transform.eulerAngles = Vector3.zero;
         _coolDown = coolDown;
         _angleSegment = HalfCircleAngle / _coolDown;
 
+        CreateGaps();
+    }
+
+    private void CreateGaps()
+    {
         //Create gaps
         DestroyGaps();
         float gapAngle = _angleSegment;
         _gapList = new List<GameObject>();
-        for (int i = 0; i < _coolDown - 1; i++)
+        for (int i = 0; i < _coolDown; i++)
         {
             GameObject gapObj = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/SkillCoolDown_Gap"));
             gapObj.transform.eulerAngles = new Vector3(0, 0, gapAngle);

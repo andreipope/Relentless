@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -21,7 +22,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Protobuf.AffectObjectType.Types.Enum.Card);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
 
             if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
                 return;
@@ -38,8 +39,19 @@ namespace Loom.ZombieBattleground
             if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
                 return;
 
-            int gooCost = PlayerCallerOfAbility.BoardCards
-                .FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count * Value;
+            int gooCost = 0;
+
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay)
+            {
+                if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count > 0)
+                {
+                    gooCost = -Mathf.Abs(Value);
+                }
+            }
+            else
+            {
+                gooCost = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count * Value;
+            }
 
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
                 MainWorkingCard.InstanceCard.Cost + gooCost, BoardCard);
