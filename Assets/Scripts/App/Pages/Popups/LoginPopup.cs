@@ -468,10 +468,13 @@ namespace Loom.ZombieBattleground
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Debug.Log(e.ToString());
-                SetUIState(LoginState.ValidationFailed);
+                string msg = "The process could not be completed. Please try again.";
+                if (e.ToString().Contains("NotFound"))
+                    msg = "Please put correct Username or Password.";
+                SetUIState(LoginState.ValidationFailed, msg);
             }
 
             _loginButton.enabled = true;
@@ -505,19 +508,19 @@ namespace Loom.ZombieBattleground
             Hide();
         }
 
-        private void SetUIState(LoginState state)
+        private void SetUIState(LoginState state, string msg = "")
         {
-            if (Constants.AlwaysGuestLogin) 
+            if (Constants.AlwaysGuestLogin)
             {
-                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration) 
+                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration)
                 {
                     state = LoginState.LoginAsGuest;
                 }
             }
 
-            if (Self == null) 
+            if (Self == null)
                 return;
-            
+
             Debug.Log(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
@@ -555,7 +558,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.Show("The process could not be completed. Please try again.");
+                    popup.Show(msg);
                     _uiManager.GetPopup<WarningPopup>().ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
                     break;
                 case LoginState.RemoteVersionMismatch:
