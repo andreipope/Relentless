@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground
             {
                 if (e.Message == Constants.VaultEmptyErrorCode) 
                 {
-                    UpdatePrivateKeyProcess();
+                    UpdatePrivateKeyProcess(noOTP);
                 }
                 else 
                 {
@@ -341,12 +341,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void UpdatePrivateKeyProcess()
+        private async void UpdatePrivateKeyProcess(bool noOTP)
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                CreateVaultTokenData vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                CreateVaultTokenData vaultTokenData;
+                if (noOTP)
+                {
+                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                }
+                else
+                {
+                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                }
                 bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Encoding.UTF8.GetString(_backendDataControlMediator.UserDataModel.PrivateKey));
                 CompleteLoginFromCurrentSetUserData();
             }
@@ -389,9 +397,9 @@ namespace Loom.ZombieBattleground
             {
                 Debug.Log(e.ToString());
                 SetUIState(LoginState.ValidationFailed);
-            }
 
-            _registerButton.enabled = true;
+                _registerButton.enabled = true;
+            }
         }
 
         private async void LoginProcess(bool isGuest)
@@ -463,10 +471,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    CompleteLoginFromCurrentSetUserData();
-                    //TODO Remove the line above, and uncomment the one below
-                    //once Parth implements Create Vault Token for users without 2FA
-                    //ConfirmOTPProcess();
+                    ConfirmOTPProcess(true);
                 }
 
                 return;
@@ -475,14 +480,16 @@ namespace Loom.ZombieBattleground
             {
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
+
+                _loginButton.enabled = true;
             }
             catch (Exception e) 
             {
                 Debug.Log(e.ToString());
                 SetUIState(LoginState.ValidationFailed);
-            }
 
-            _loginButton.enabled = true;
+                _loginButton.enabled = true;
+            }
         }
 
         public async void CompleteLoginFromCurrentSetUserData () {

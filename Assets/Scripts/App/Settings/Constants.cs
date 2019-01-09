@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool AlwaysGuestLogin = false;
 
-        public const string VaultEmptyErrorCode = "404";
+        public const string VaultEmptyErrorCode = "NotFound";
 
         internal const string FacebookAppId =
 #if USE_STAGING_BACKEND
