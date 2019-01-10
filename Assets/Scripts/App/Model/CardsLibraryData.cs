@@ -29,6 +29,15 @@ namespace Loom.ZombieBattleground.Data
 
             return card;
         }
+        
+        public Card GetCardFromMouId(int mouId)
+        {
+            Card card =  Cards.First(x => x.MouldId == mouId);
+            if (card == null)
+                throw new Exception($"Card '{mouId}' not found");
+
+            return card;
+        }
 
         private void InitData()
         {
