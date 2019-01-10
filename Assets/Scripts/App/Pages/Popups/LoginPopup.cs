@@ -277,12 +277,30 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.InitiateRegistration);
         }
 
-        private void PressedRegisterHandler() 
+        private void PressedRegisterHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldRegister.text.Length > 0 && Utilites.ValidateEmail(_emailFieldRegister.text) && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
+            if (string.IsNullOrEmpty(_emailFieldRegister.text) || string.IsNullOrEmpty(_passwordFieldRegister.text) || string.IsNullOrEmpty(_confirmFieldRegister.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                return;
+            }
+
+            if (!Utilites.ValidateEmail(_emailFieldRegister.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                return;
+            }
+
+            if (_passwordFieldRegister.text != _confirmFieldRegister.text)
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Password Mismatch - Password and Confirm Password must be the same.");
+                return;
+            }
+
+            if (_emailFieldRegister.text.Length > 0 && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
             {
                 _registerButton.enabled = false;
                 RegisterProcess();
@@ -298,7 +316,19 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldLogin.text.Length > 0 && Utilites.ValidateEmail(_emailFieldLogin.text) && _passwordFieldLogin.text.Length > 0)
+            if (string.IsNullOrEmpty(_emailFieldLogin.text) || string.IsNullOrEmpty(_passwordFieldLogin.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                return;
+            }
+
+            if (!Utilites.ValidateEmail(_emailFieldLogin.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                return;
+            }
+
+            if (_emailFieldLogin.text.Length > 0 && _passwordFieldLogin.text.Length > 0)
             {
                 _loginButton.enabled = false;
                 LoginProcess(false);
@@ -441,7 +471,7 @@ namespace Loom.ZombieBattleground
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
 
-                if (authyId != 0) 
+                if (authyId != 0)
                 {
                     SetUIState(LoginState.PromptOTP);
                     return;
@@ -471,9 +501,11 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Debug.Log(e.ToString());
-                string msg = "The process could not be completed. Please try again.";
+
+                string msg = string.Empty;
                 if (e.ToString().Contains("NotFound"))
                     msg = "Please put correct Username or Password.";
+
                 SetUIState(LoginState.ValidationFailed, msg);
             }
 
@@ -558,6 +590,10 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+
+                    if (string.IsNullOrEmpty(msg))
+                        msg = "The process could not be completed. Please try again.";
+
                     popup.Show(msg);
                     _uiManager.GetPopup<WarningPopup>().ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
                     break;
