@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.9";
+        internal const string CurrentVersionBase = "0.1.10";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool MulliganEnabled = false;
 
-        public const bool AlwaysGuestLogin = false;
+        public const bool AlwaysGuestLogin = true;
 
         public const string VaultEmptyErrorCode = "404";
 

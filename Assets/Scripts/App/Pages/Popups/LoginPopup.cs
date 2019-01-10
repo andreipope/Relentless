@@ -530,7 +530,7 @@ namespace Loom.ZombieBattleground
         {
             if (Constants.AlwaysGuestLogin) 
             {
-                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration) 
+                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration || state == LoginState.LoginFromCurrentSetOfData)
                 {
                     state = LoginState.LoginAsGuest;
                 }
