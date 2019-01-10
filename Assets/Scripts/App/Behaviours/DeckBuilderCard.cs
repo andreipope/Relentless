@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
-        public HordeEditingPage page;
+        public HordeEditingPage Page;
 
         public IReadOnlyCard Card;
 
@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         public void OnScroll(PointerEventData eventData)
         {
-            page?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
+            Page?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
         }
 
         private void Awake()
@@ -28,18 +28,18 @@ namespace Loom.ZombieBattleground
 
         private void SingleClickAction()
         {
-            page?.SelectCard(this, Card);
+            Page?.SelectCard(this, Card);
         }
 
         private void DoubleClickAction()
         {
             if (!IsHordeItem)
             {
-                page?.AddCardToDeck(this, Card);
+                Page?.AddCardToDeck(this, Card);
             }
             else
             {
-                page?.RemoveCardFromDeck(this, Card);
+                Page?.RemoveCardFromDeck(this, Card);
             }
         }
     }
