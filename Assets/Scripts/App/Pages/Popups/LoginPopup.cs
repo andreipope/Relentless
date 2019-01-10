@@ -88,6 +88,8 @@ namespace Loom.ZombieBattleground
         private InputField _OTPFieldOTP;
         private Image _backgroundDarkImage;
 
+        private string _lastErrorMessage;
+
 
         private LoginState _state;
 
@@ -218,6 +220,11 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.LoginAsGuest);
         }
 
+        public void SetLoginFromDataState()
+        {
+            SetUIState(LoginState.LoginFromCurrentSetOfData);
+        }
+
         public void SetLoginFieldsData (string _email, string _password) 
         {
             _emailFieldLogin.text = _email;
@@ -328,6 +335,7 @@ namespace Loom.ZombieBattleground
                 else 
                 {
                     Debug.Log(e.ToString());
+                    _lastErrorMessage = e.Message;
                     SetUIState(LoginState.ValidationFailed);
                 }
             }
@@ -345,6 +353,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
         }
@@ -361,6 +370,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
         }
@@ -380,6 +390,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
 
@@ -471,23 +482,33 @@ namespace Loom.ZombieBattleground
             catch (Exception e) 
             {
                 Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
 
             _loginButton.enabled = true;
         }
 
-        public async void CompleteLoginFromCurrentSetUserData () {
+        private async void CompleteLoginFromCurrentSetUserData () {
             SetUIState(LoginState.ValidateAndLogin);
 
-            await _backendDataControlMediator.LoginAndLoadData();
+            try
+            {
+                await _backendDataControlMediator.LoginAndLoadData();
 
-            _backendDataControlMediator.UserDataModel.IsValid = true;
-            _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
+                _backendDataControlMediator.UserDataModel.IsValid = true;
+                _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
 
-            SuccessfulLogin();
+                SuccessfulLogin();
 
-            _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+                _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
+                SetUIState(LoginState.ValidationFailed);
+            }
         }
 
         private void SuccessfulLogin()
@@ -555,7 +576,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.Show("The process could not be completed. Please try again.");
+                    popup.Show("The process could not be completed with error:"+_lastErrorMessage+"\nPlease try again.");
                     _uiManager.GetPopup<WarningPopup>().ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
                     break;
                 case LoginState.RemoteVersionMismatch:
@@ -579,6 +600,10 @@ namespace Loom.ZombieBattleground
                     _lastPopupState = _state;
                     _backgroundGroup.gameObject.SetActive(false);
                     _OTPGroup.gameObject.SetActive(true);
+                    break;
+                case LoginState.LoginFromCurrentSetOfData:
+                    _lastPopupState = _state;
+                    CompleteLoginFromCurrentSetUserData();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_state), _state, null);
@@ -644,7 +669,8 @@ namespace Loom.ZombieBattleground
             LoginAsGuest,
             ForgotPassword,
             SuccessForgotPassword,
-            PromptOTP
+            PromptOTP,
+            LoginFromCurrentSetOfData
         }
     }
 }
