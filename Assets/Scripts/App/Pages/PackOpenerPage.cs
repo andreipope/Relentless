@@ -1,5 +1,8 @@
+//#define OPEN_PACK_MANAGER_INCLUDED
+
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -13,386 +16,605 @@ using Object = UnityEngine.Object;
 namespace Loom.ZombieBattleground
 {
     public class PackOpenerPage : IUIElement
-    {
+    {    
         private IUIManager _uiManager;
-
+        
         private ILoadObjectsManager _loadObjectsManager;
+        
+        private CardInfoPopupHandler _cardInfoPopupHandler;
 
-        private IDataManager _dataManager;
-
-        private IPlayerManager _playerManager;
-
-        private CardsController _cardsController;
-
+        #if OPEN_PACK_MANAGER_INCLUDED
+        private OpenPackPlasmaManager _openPackPlasmaManager;
+        #endif
+        
         private GameObject _selfPage;
-
-        private Button _buttonBack;
-
-        private Button _buttonBuy, _buttonCollection;
-
-        private GameObject _cardCreaturePrefab;
-
-        private GameObject _cardItemPrefab;
-
-        private GameObject _packOpenVfx;
-
-        private GameObject _cardPlaceholdersPrefab;
-
-        private GameObject _cardPlaceholders;
-
-        private Vector3 _centerPos;
-
-        private bool _lock;
-
-        private Transform _cardsContainer;
-
-        private GameObject _packsObject;
-
-        private TextMeshProUGUI _packsAmount;
-
-        private int _cardsTurned;
-
-        private Transform _cardPreview, _cardPreviewOriginal;
-
-        private bool _activatedTemporaryPack;
-
+        
+        private GameObject _gooPoolPrefab, _buttonOpenPackVFXPrefab, _cardCreaturePrefab, _cardItemPrefab;
+    
+        private GameObject _createdGooPool, _createdbuttonOpenPackVFX;
+    
+        private Image _rightPanelLight, _leftPanelLight;
+        
         private List<BoardCard> _createdBoardCards;
-
+        
+        private CardHighlightingVFXItem _createdHighlightingVFXItem;
+        
+        private Button _buttonBack, _buttonPlus, _buttonMinus, _buttonMax, _buttonOpenPack, _butttonPanelCollect, _buttonCollect;
+        
+        private TextMeshProUGUI _packsAmountText;
+        
+        private Transform _packTray, _trayStart, _trayEnd, _panelCollect, _greenPoolVFX;
+    
+        private Animator _gooPoolAnimator;
+        
+        private List<Transform> _cardPositions;
+    
+        private List<Card> _cardsToDisplayQueqe;
+    
+        private int _packToOpenAmount;
+    
+        private int _packBalanceAmount;
+        
+        private enum STATE
+        {
+            NONE,
+            READY,
+            TRAY_INSERTED,
+            CARD_EMERGED,
+        }
+    
+        private STATE _state;
+    
+        private bool _isTransitioningState;
+    
+#region IUIElement
+    
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _dataManager = GameClient.Get<IDataManager>();
-            _playerManager = GameClient.Get<IPlayerManager>();
-
-            _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
-
+            
+            #if OPEN_PACK_MANAGER_INCLUDED
+            _openPackPlasmaManager = GameClient.Get<OpenPackPlasmaManager>();
+            #endif
+            
+            _cardInfoPopupHandler = new CardInfoPopupHandler();
+            _cardInfoPopupHandler.Init();
+            _cardInfoPopupHandler.StateChanging += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
+            _cardInfoPopupHandler.StateChanged += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
             _createdBoardCards = new List<BoardCard>();
+            _cardsToDisplayQueqe = new List<Card>();            
         }
-
+    
         public void Update()
         {
-
+            if (_selfPage != null && _selfPage.activeInHierarchy)
+            {
+                _cardInfoPopupHandler.Update();
+                if (_cardInfoPopupHandler.IsInteractable)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    
+                        RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+                        if (hits.Length > 0)
+                        {
+                            foreach (RaycastHit2D hit in hits)
+                            {
+                                if (hit.collider != null)
+                                {
+                                    for (int i = 0; i < _createdBoardCards.Count; i++)
+                                    {
+                                        if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
+                                        {
+                                            _createdHighlightingVFXItem.SetActiveCard(_createdBoardCards[i]);
+                                            _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-
+    
         public void Show()
         {
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-
-            _cardCreaturePrefab =
+            
+            _createdHighlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
+            _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));                        
+            
+            _gooPoolPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/OpenPackGooPool");
+            _buttonOpenPackVFXPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/OpenPackButton");
+             _cardCreaturePrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             _cardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
-
-            _cardPlaceholdersPrefab =
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersPackOpener");
-
-            _buttonBuy = _selfPage.transform.Find("Button_Buy").GetComponent<Button>();
-            _buttonCollection = _selfPage.transform.Find("Button_Collection").GetComponent<Button>();
-
+            
+            
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
-            _packsObject = _selfPage.transform.Find("PackItem").gameObject;
-
-            _packsAmount = _packsObject.transform.Find("Amount/Value").GetComponent<TextMeshProUGUI>();
-
-            _buttonBack.onClick.AddListener(BackButtonHandler);
-            _buttonBuy.onClick.AddListener(BuyButtonHandler);
-            _buttonCollection.onClick.AddListener(CollectionButtonHandler);
-
+            _buttonPlus = _selfPage.transform.Find("BackgroundImage/LeftPanel/ButtonPlus").GetComponent<Button>();
+            _buttonMinus = _selfPage.transform.Find("BackgroundImage/LeftPanel/ButtonMinus").GetComponent<Button>();
+            _buttonMax = _selfPage.transform.Find("BackgroundImage/LeftPanel/ButtonMax").GetComponent<Button>();
+            _buttonOpenPack = _selfPage.transform.Find("BackgroundImage/RightPanel/ButtonOpenPacks").GetComponent<Button>();
+            _butttonPanelCollect = _selfPage.transform.Find("Panel_Collect").GetComponent<Button>();
+            _buttonCollect = _selfPage.transform.Find("Panel_Collect/ButtonCollect").GetComponent<Button>();
+            
+            _packsAmountText = _selfPage.transform.Find("BackgroundImage/LeftPanel/TextAmount").GetComponent<TextMeshProUGUI>();
+            _packTray = _selfPage.transform.Find("BackgroundImage/Tray").GetComponent<Transform>();
+            _trayStart =  _selfPage.transform.Find("BackgroundImage/tray_start").GetComponent<Transform>();
+            _trayEnd =  _selfPage.transform.Find("BackgroundImage/tray_end").GetComponent<Transform>();
+            _panelCollect = _selfPage.transform.Find("Panel_Collect").GetComponent<Transform>();
+    
+            _rightPanelLight = _selfPage.transform.Find("BackgroundImage/Glowing/Panel_right").GetComponent<Image>();
+            _leftPanelLight = _selfPage.transform.Find("BackgroundImage/Glowing/Panel_left").GetComponent<Image>();                       
+            
             InitObjects();
+            InitCardPositions();
+            InitState();            
+            RetrievePackBalanceAmount();           
         }
-
+        
         public void Hide()
         {
             Dispose();
-
+    
             if (_selfPage == null)
                 return;
-
+    
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
         }
-
+    
         public void Dispose()
         {
-            Object.Destroy(_cardPlaceholders);
+            DestroyCreatedObject();            
         }
-
-        private void CardClickeCheck()
-        {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
-            if (hit.collider != null)
-            {
-                foreach (BoardCard card in _createdBoardCards)
-                {
-                    if (hit.collider.gameObject == card.GameObject)
-                    {
-                        if (card.Transform.Find("Back").gameObject.activeSelf)
-                        {
-                            CardSelected(card);
-                        }
-                        else
-                        {
-                            _cardPreviewOriginal = card.Transform;
-                            CardPreview(true);
-                        }
-                    }
-                }
-            }
-            else if (_cardsTurned == 5)
-            {
-                MoveCardsToBottomAndDestroy();
-            }
-        }
-
-        private void CardPreview(bool isOpen)
-        {
-            if (isOpen)
-            {
-                _cardPreview = Object.Instantiate(_cardPreviewOriginal.gameObject).transform;
-                _cardPreview.name = "CardPreview";
-                _cardPreview.gameObject.SetLayerRecursively(11);
-
-                Sequence mySequence = DOTween.Sequence();
-                mySequence.Append(_cardPreview.DORotate(new Vector3(-20, 30, -20), .2f));
-                mySequence.Append(_cardPreview.DORotate(new Vector3(0, 0, 0), .4f));
-
-                Sequence mySequence2 = DOTween.Sequence();
-                mySequence2.Append(_cardPreview.DOMove(new Vector3(0, .3f, 5), .4f));
-                mySequence2.Append(_cardPreview.DOMove(new Vector3(0, -0.3f, 5), .2f));
-
-                Sequence mySequence3 = DOTween.Sequence();
-                mySequence3.Append(_cardPreview.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .4f));
-                mySequence3.Append(_cardPreview.DOScale(new Vector3(1f, 1f, 1f), .2f));
-
-                GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
-            }
-            else
-            {
-                GameClient.Get<ICameraManager>().FadeOut(null, 1);
-
-                Sequence sequence = DOTween.Sequence();
-                sequence.Append(_cardPreview.DOScale(_cardPreviewOriginal.localScale, .3f));
-                sequence.Join(_cardPreview.DOMove(_cardPreviewOriginal.position, .3f));
-                sequence.Join(_cardPreview.DORotate(_cardPreviewOriginal.eulerAngles, .3f));
-                sequence.OnComplete(
-                    () =>
-                    {
-                        Object.Destroy(_cardPreview.gameObject);
-                    });
-            }
-        }
-
-        private void MoveCardsToBottomAndDestroy()
-        {
-            foreach (Transform cardObj in _cardsContainer)
-            {
-                Sequence animationSequence5 = DOTween.Sequence();
-                animationSequence5.Append(cardObj.DOMove(_centerPos - Vector3.up * 9, .3f));
-                animationSequence5.OnComplete(
-                    () =>
-                    {
-                        Object.Destroy(cardObj.gameObject);
-                    });
-            }
-
-            if (_playerManager.LocalUser.PacksCount > 0)
-            {
-                _lock = false;
-            }
-
-            _packsObject.GetComponent<DragableObject>().Locked = _lock;
-            _cardsTurned = 0;
-        }
-
+    
+#endregion
+    
+#region private function
+    
         private void InitObjects()
-        {
-            _cardsContainer = new GameObject("CardsContainer").transform;
-            _centerPos = new Vector3(2.3f, -0.5f, 10);
-            _cardPlaceholders = Object.Instantiate(_cardPlaceholdersPrefab);
-
-            int packsCount = _playerManager.LocalUser.PacksCount > 99 ? 99 : _playerManager.LocalUser.PacksCount;
-            _packsAmount.text = packsCount.ToString();
-
-            _lock = false;
-
-            if (_playerManager.LocalUser.PacksCount > 0)
-            {
-                _packsObject.GetComponent<DragableObject>().OnItemEndDrag += PackOpenButtonHandler;
-            }
-            else
-            {
-                _lock = true;
-            }
-
-            _packsObject.GetComponent<DragableObject>().Locked = _lock;
+        { 
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
+            _buttonPlus.onClick.AddListener(ButtonPlusHandler);
+            _buttonMinus.onClick.AddListener(ButtonMinusHandler);
+            _buttonMax.onClick.AddListener(ButtonMaxHandler);
+            _buttonOpenPack.onClick.AddListener(ButtonOpenPackHandler);
+            _buttonCollect.onClick.AddListener(ButtonCollectHandler);
+            
+            _createdGooPool = Object.Instantiate(_gooPoolPrefab);
+            _gooPoolAnimator = _createdGooPool.transform.Find("OpenPack").GetComponent<Animator>();
+            _gooPoolAnimator.enabled = true;
+            _greenPoolVFX = _createdGooPool.transform.Find("OpenPack/OpenPack").GetComponent<Transform>();           
+                        
+            _createdGooPool.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
+            _createdGooPool.GetComponent<SortingGroup>().sortingOrder = 1;            
+            
+            _createdbuttonOpenPackVFX = Object.Instantiate(_buttonOpenPackVFXPrefab);
+            _createdbuttonOpenPackVFX.transform.position = _buttonOpenPack.transform.position;
+            _createdbuttonOpenPackVFX.SetActive(false);
         }
-
-        private void DetachAndAnimatePackItem(GameObject go)
+        
+        private void InitCardPositions()
         {
-            Sequence animationSequence = DOTween.Sequence();
-            animationSequence.Append(go.transform.DOMove(_centerPos, .3f));
-
-            animationSequence.OnComplete(
-                () =>
-                {
-                    Object.Destroy(go);
-                    GameClient.Get<ITimerManager>().AddTimer(
-                        x =>
-                        {
-                            PackItemAnimationComplete();
-                        },
-                        null,
-                        0.4f);
-                });
+            _cardPositions = new List<Transform>();
+            _cardPositions.Add(
+                _createdGooPool.transform.Find("OpenPack/Card/CreatureCard")
+            );
+            _cardPositions.Add(
+                _createdGooPool.transform.Find("OpenPack/Card (3)/CreatureCard")
+            );
+             _cardPositions.Add(
+                _createdGooPool.transform.Find("OpenPack/Card (5)/CreatureCard")
+            );
+             _cardPositions.Add(
+                _createdGooPool.transform.Find("OpenPack/Card (2)/CreatureCard")
+            );
+             _cardPositions.Add(
+                _createdGooPool.transform.Find("OpenPack/Card (1)/CreatureCard (1)")
+            );
         }
-
-        private void PackItemAnimationComplete()
+        
+        private void CreateCardsToDisplay()
         {
-            CardPack cardPack = new CardPack(Enumerators.CardPackType.DEFAULT);
-
-            if (!_dataManager.CachedUserLocalData.OpenedFirstPack)
+            DestroyBoardCards();   
+            
+            List<Card> cards = new List<Card>();
+            for (int i = 0; i < 5 && _cardsToDisplayQueqe.Count > 0 ; ++i)
             {
-                _activatedTemporaryPack = true;
-                _dataManager.CachedUserLocalData.OpenedFirstPack = true;
-                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                Card card = _cardsToDisplayQueqe[0];
+                cards.Add(card);
+                _cardsToDisplayQueqe.RemoveAt(0);
             }
-
-            List<Card> cardsInPack = cardPack.OpenPack(_activatedTemporaryPack);
-
-            _activatedTemporaryPack = false;
-
-            for (int i = 0; i < Constants.CardsInPack; i++)
+                    
+            for( int i=0; i<cards.Count; ++i)
             {
-                Card card = cardsInPack[i];
-
-                GameObject go;
-                switch (card.CardKind)
-                {
-                    case Enumerators.CardKind.CREATURE:
-                        go = Object.Instantiate(_cardCreaturePrefab);
-                        break;
-                    case Enumerators.CardKind.SPELL:
-                        go = Object.Instantiate(_cardItemPrefab);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                go.transform.SetParent(_cardsContainer);
-                go.transform.Find("Back").gameObject.SetActive(true);
-                go.transform.Find("Amount").gameObject.SetActive(false);
-
-                // todo imrpoveE!!!!
-                BoardCard boardCard = new BoardCard(go);
-
-                boardCard.Init(card);
-                boardCard.SetHighlightingEnabled(false);
-                boardCard.Transform.position = _centerPos;
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.Default.id;
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingOrder = 1;
-
-                Vector3 pos = _cardPlaceholders.transform.GetChild(i).position;
-                Vector3 rotation = _cardPlaceholders.transform.GetChild(i).eulerAngles;
-
-                go.transform.localScale = Vector3.one * .28f;
-                go.transform.DOMove(pos, 1.0f);
-                go.transform.DORotate(rotation, 1.0f);
-
+                Card card = cards[i];
+                BoardCard boardCard = CreateCard(card, Vector3.up * 12f);
+                boardCard.Transform.parent = _cardPositions[i];
+                boardCard.Transform.localPosition = Vector3.zero;
+                boardCard.Transform.localRotation = Quaternion.identity;
                 _createdBoardCards.Add(boardCard);
             }
         }
-
-        private void OnPackOpenVFXAnimationEventHandler(string name)
+        
+        private void InitState()
         {
-            if (_packOpenVfx == null)
-                return;
-
-            if (name == "EndPackOpen")
+            _state = STATE.NONE;
+            _isTransitioningState = false;
+            ChangeState(STATE.READY);
+        }
+        
+        private void DestroyBoardCards()
+        {
+            if (_createdBoardCards != null)
             {
-                Object.Destroy(_packOpenVfx);
+                foreach (BoardCard card in _createdBoardCards)
+                {
+                    if (card != null)
+                    {
+                        Object.Destroy(card.GameObject);
+                    }
+                }
+                _createdBoardCards.Clear();
+            }
+        }
+    
+        private void DestroyCreatedObject()
+        {
+            DestroyBoardCards();
+            if (_createdGooPool != null)
+            {
+                Object.Destroy(_createdGooPool);
+            }
+            if (_cardPositions != null)
+            {
+                _cardPositions.Clear();
+            }
+            if( _createdbuttonOpenPackVFX != null)
+            {
+                Object.Destroy(_createdbuttonOpenPackVFX);
             }
         }
 
-        private void CardSelected(BoardCard card)
+#if OPEN_PACK_MANAGER_INCLUDED
+        private async void RetrievePackBalanceAmount()
         {
-            GameObject go = card.GameObject;
-
-            if (!go.transform.Find("Back").gameObject.activeSelf)
-                return;
-
-            Sequence animationSequence3 = DOTween.Sequence();
-            animationSequence3.Append(
-                go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 90, go.transform.eulerAngles.z), .4f));
-            animationSequence3.Join(go.transform.DOScale(new Vector3(.4f, .4f, .4f), .2f));
-            animationSequence3.OnComplete(
-                () =>
-                {
-                    go.transform.Find("Back").gameObject.SetActive(false);
-                    Sequence animationSequence4 = DOTween.Sequence();
-                    animationSequence4.Append(
-                        go.transform.DORotate(new Vector3(go.transform.eulerAngles.x, 0, go.transform.eulerAngles.z),
-                            .3f));
-                    animationSequence4.Join(go.transform.DOScale(new Vector3(.35f, .35f, .35f), .2f));
-                    animationSequence4.AppendInterval(2f);
-
-                    _cardsTurned++;
-                    _dataManager.CachedCollectionData.ChangeAmount(card.LibraryCard.Name, 1);
-                });
+            _packsAmountText.text = "-";
+            _packBalanceAmount = 0;
+            _packBalanceAmount = await _openPackPlasmaManager.CallPackBalanceContract();
+            SetPackToOpenAmount(0);
         }
+        
+        private async void ProcessOpenPackLogic()
+        {            
+            int amount = _packToOpenAmount;     
+            _packBalanceAmount -= _packToOpenAmount;
+            List<Card> cards = await _openPackPlasmaManager.CallOpenPack(_packToOpenAmount);
+            _cardsToDisplayQueqe = cards; 
+            
+            ChangeState(STATE.CARD_EMERGED);       
+        }
+#else
+        private void RetrievePackBalanceAmount()
+        {
+            _packsAmountText.text = "-";
+            _packBalanceAmount = 5;
+            SetPackToOpenAmount(0);
+        }
+        
+        private void ProcessOpenPackLogic()
+        {            
+            int amount = _packToOpenAmount;     
+            _packBalanceAmount -= _packToOpenAmount;
+            List<Card> cards = RetrieveDummyCards();
+            _cardsToDisplayQueqe = cards; 
+            
+            ChangeState(STATE.CARD_EMERGED);       
+        }
+#endif
 
-        #region button handlers
-
-        private void BackButtonHandler()
+        private List<Card> RetrieveDummyCards()
+        {
+            List<Card> cards = new List<Card>();            
+            CardSet set = SetTypeUtility.GetCardSet(GameClient.Get<IDataManager>(), Enumerators.SetType.FIRE);
+            int amount = 15; 
+            foreach( Card card in set.Cards)
+            {
+                cards.Add(card);
+                if (cards.Count >= amount)
+                    break;
+            }
+            return cards;
+        }
+    
+        private void SetPackToOpenAmount( int amount)
+        {
+            _packToOpenAmount = amount;
+            _packsAmountText.text = amount.ToString();            
+        }
+        
+        private void ChangeStateCardInfoPopup(bool isStart)
+        {
+            //_buttonCollect.interactable = !isStart;
+        }
+    
+        private void SetButtonInteractable( bool isInteractable)
+        {
+            if(_buttonPlus != null)
+                _buttonPlus.interactable = isInteractable;
+            if(_buttonMinus != null)
+                _buttonMinus.interactable = isInteractable;
+            if(_buttonMax != null)
+                _buttonMax.interactable = isInteractable;
+            if(_buttonOpenPack != null)
+                _buttonOpenPack.interactable = isInteractable;
+        }
+        
+        private void RefreshAnimation()
+        {
+            _gooPoolAnimator.enabled = true;
+            _gooPoolAnimator.Play("TubeAnim", 0, 0f);
+            Sequence waitSeqence = DOTween.Sequence();
+            waitSeqence.AppendInterval(.1f);
+            waitSeqence.OnComplete(
+            ()=>
+            {
+                _gooPoolAnimator.enabled = false;
+            });  
+        }
+        
+        private void PlayCardsEmergeFromPoolAnimation()
+        {
+            _isTransitioningState = true;
+            _gooPoolAnimator.enabled = true;
+            _gooPoolAnimator.Play("TubeAnim", 0, 0f);
+            Sequence sequence = DOTween.Sequence();
+            sequence.AppendInterval(5f);
+            sequence.OnComplete(
+            ()=>
+            {   
+                foreach(BoardCard boardCard in _createdBoardCards)
+                {
+                    boardCard.Transform.parent = null;
+                }
+                RefreshAnimation();
+                _isTransitioningState = false;
+                _greenPoolVFX.gameObject.SetActive(false);
+                _panelCollect.gameObject.SetActive(true);
+                _buttonCollect.gameObject.SetActive(true);
+            });
+        }
+    
+#endregion
+    
+#region Button Handler
+    
+        private void ButtonBackHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            DOTween.KillAll();
-            if (_cardsContainer != null)
-            {
-                Object.Destroy(_cardsContainer.gameObject);
-            }
-
+            DOTween.KillAll();            
+            DestroyCreatedObject();
             GameClient.Get<IAppStateManager>().BackAppState();
         }
-
-        private void BuyButtonHandler()
+        
+        private void ButtonPlusHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
+            if (_packToOpenAmount >= _packBalanceAmount)
+                return;
+            SetPackToOpenAmount( _packToOpenAmount+1 );
         }
-
-        private void CollectionButtonHandler()
+    
+        private void ButtonMinusHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.ARMY);
+            if (_packToOpenAmount <= 0)
+                return;
+            SetPackToOpenAmount( _packToOpenAmount-1 );
         }
-
-        private void PackOpenButtonHandler(GameObject go)
+        
+        private void ButtonMaxHandler()
         {
-            if (_cardsContainer != null)
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            if (_packToOpenAmount >= _packBalanceAmount)
+                return;
+            SetPackToOpenAmount( _packBalanceAmount );
+        }
+        
+        private void ButtonOpenPackHandler()
+        {
+            GameClient.Get<ISoundManager>()
+                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+    
+            if (_state == STATE.READY)
             {
-                if (_cardsContainer.transform.childCount == 0 && !_lock)
+                if (_packToOpenAmount <= 0)
+                    return;
+                ChangeState(STATE.TRAY_INSERTED);
+            }
+            else if (_state == STATE.TRAY_INSERTED)
+            {
+                ProcessOpenPackLogic();                
+            }
+            
+        }
+        
+        private void ButtonCollectHandler()
+        {
+            _buttonCollect.gameObject.SetActive(false);
+            _createdHighlightingVFXItem.ChangeState(false);
+            int amount = _createdBoardCards.Count;
+            int lastIndex = amount - 1;
+            for(int i=0; i<amount ; ++i)
+            {
+                Transform displayBoardCard = _createdBoardCards[i].Transform;
+                Sequence hideCardSequence = DOTween.Sequence();
+                hideCardSequence.AppendInterval(.1f * i);
+                hideCardSequence.Append(displayBoardCard.DOMove(  - Vector3.up * 12f  , .4f));
+                
+                if( i == lastIndex)
                 {
-                    _playerManager.LocalUser.PacksCount--;
-                    int packsCount = _playerManager.LocalUser.PacksCount > 99 ?
-                        99 :
-                        _playerManager.LocalUser.PacksCount;
-                    _packsAmount.text = packsCount.ToString();
-                    _lock = true;
-                    _packsObject.GetComponent<DragableObject>().Locked = _lock;
-
-                    DetachAndAnimatePackItem(go);
+                    hideCardSequence.OnComplete(
+                    () =>
+                    {
+                        ChangeState(STATE.CARD_EMERGED);
+                    }
+                    );                        
                 }
             }
         }
-
-        #endregion
-
+    
+#endregion
+    
+#region STATE
+    
+        private void ChangeState( STATE newState )
+        {
+            switch (_state)
+            {
+                case STATE.NONE:
+                    if( newState == STATE.READY)
+                    {
+                        SetPackToOpenAmount(0);
+                        SetButtonInteractable(true);
+                        _isTransitioningState = false;
+                        _packTray.position = _trayStart.position;                        
+                        _createdbuttonOpenPackVFX.SetActive(false);                        
+                        _rightPanelLight.color = Color.clear;
+                        _leftPanelLight.color = Color.white;
+                        _panelCollect.gameObject.SetActive(false);
+                        RefreshAnimation();
+                        _state = newState;
+                    }
+                    break;
+                case STATE.READY:
+                    if (newState == STATE.TRAY_INSERTED)
+                    {
+                        SetButtonInteractable(false);
+                        _isTransitioningState = true;
+    
+                        Sequence sequence = DOTween.Sequence();
+                        sequence.AppendInterval(0.5f).OnComplete(
+                        ()=>
+                        {
+                            _leftPanelLight.color = Color.clear;
+                        });
+                        sequence.Append(
+                            _packTray
+                            .DOMove(_trayEnd.position, 1f)
+                            .SetEase(Ease.InCubic)
+                            .OnComplete(
+                            () =>
+                            {
+                                _rightPanelLight.color = Color.red;
+                                _isTransitioningState = false;
+                                _createdbuttonOpenPackVFX.SetActive(true);
+                                _buttonOpenPack.interactable = true;
+                                _state = newState;                                
+                            }
+                        ));
+                    }
+                    break;                    
+                case STATE.TRAY_INSERTED:
+                    if (newState == STATE.CARD_EMERGED)
+                    {
+                        CreateCardsToDisplay();
+                    
+                        _createdbuttonOpenPackVFX.SetActive(false);
+                        SetButtonInteractable(false);
+    
+                        PlayCardsEmergeFromPoolAnimation();
+                        
+                        _state = newState;
+                    }
+                    break;
+                case STATE.CARD_EMERGED:
+                    if (newState == STATE.CARD_EMERGED)
+                    {
+                        _panelCollect.gameObject.SetActive(false);
+                        if (_cardsToDisplayQueqe.Count <= 0)
+                        {
+                            ChangeState(STATE.READY);
+                        }
+                        else
+                        {
+                            CreateCardsToDisplay();
+                            
+                            _panelCollect.gameObject.SetActive(false);
+                            _greenPoolVFX.gameObject.SetActive(true);
+    
+                            PlayCardsEmergeFromPoolAnimation();
+                            
+                        }
+                    }
+                    else if (newState == STATE.READY)
+                    {
+                        SetPackToOpenAmount(0);
+                        SetButtonInteractable(true);
+                        _isTransitioningState = false;
+                        _packTray.position = _trayStart.position;                        
+                        _createdbuttonOpenPackVFX.SetActive(false);                        
+                        _rightPanelLight.color = Color.clear;
+                        _leftPanelLight.color = Color.white;
+                        _panelCollect.gameObject.SetActive(false);
+                        _greenPoolVFX.gameObject.SetActive(true);
+                        
+                        _state = newState;   
+                    }
+    
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+#endregion
+    
+#region Util
+    
+        private BoardCard CreateCard(IReadOnlyCard card, Vector3 worldPos)
+        {
+        
+            GameObject go;
+            BoardCard boardCard;
+            switch (card.CardKind)
+            {
+                case Enumerators.CardKind.CREATURE:
+                    go = Object.Instantiate(_cardCreaturePrefab);
+                    boardCard = new UnitBoardCard(go);
+                    break;
+                case Enumerators.CardKind.SPELL:
+                    go = Object.Instantiate(_cardItemPrefab);
+                    boardCard = new SpellBoardCard(go);
+                    break;
+                default:                
+                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+            }
+    
+            boardCard.Init(card);
+            boardCard.SetHighlightingEnabled(false);
+            boardCard.Transform.position = worldPos;
+            boardCard.Transform.localScale = Vector3.one * 0.32f;
+            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
+            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
+            
+            return boardCard;
+        
+        }
+    
+#endregion
+    
     }
 }
