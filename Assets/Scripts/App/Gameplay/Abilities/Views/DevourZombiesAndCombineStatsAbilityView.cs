@@ -2,6 +2,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -64,6 +65,12 @@ namespace Loom.ZombieBattleground
                     unitTransform.SetParent(VfxObject.transform.Find("Container"), false);
                     unitTransform.localPosition = Vector3.zero;
                     ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
+
+                    List<GameObject> allUnitObj = unitTransform.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
+                    foreach (GameObject child in allUnitObj)
+                    {
+                        child.layer = 0;
+                    }
                 }
             }
 

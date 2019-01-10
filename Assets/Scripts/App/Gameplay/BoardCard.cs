@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyCard LibraryCard;
 
+        protected const float cardToHandSoundKoef = 2f;
+
         protected ILoadObjectsManager LoadObjectsManager;
 
         protected ISoundManager SoundManager;
@@ -62,6 +64,8 @@ namespace Loom.ZombieBattleground
         protected TextMeshPro AmountText;
 
         protected TextMeshPro AmountTextForArmy;
+
+        protected Transform IconsForArmyPanel;
 
         protected Animator CardAnimator;
 
@@ -103,7 +107,7 @@ namespace Loom.ZombieBattleground
             CardAnimator = GameObject.GetComponent<Animator>();
             CardAnimator.enabled = false;
 
-            GlowObject = Transform.Find("Glow").gameObject;
+            GlowObject = Transform.Find("GlowContainer/Glow").gameObject;
             PictureSprite = Transform.Find("Picture").GetComponent<SpriteRenderer>();
             BackgroundSprite = Transform.Find("Frame").GetComponent<SpriteRenderer>();
 
@@ -112,6 +116,7 @@ namespace Loom.ZombieBattleground
             BodyText = Transform.Find("BodyText").GetComponent<TextMeshPro>();
             AmountText = Transform.Find("Amount/Text").GetComponent<TextMeshPro>();
             AmountTextForArmy = Transform.Find("AmountForArmy/Text").GetComponent<TextMeshPro>();
+            IconsForArmyPanel = Transform.Find("AmountForArmy/RankIcons");
 
             RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
@@ -289,7 +294,8 @@ namespace Loom.ZombieBattleground
                 CardAnimator.enabled = true;
                 CardAnimator.SetTrigger("DeckToHand");
 
-                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume);
+                SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE, Constants.CardsMoveSoundVolume * cardToHandSoundKoef);
+
             }
 
             IsNewCard = false;
@@ -438,9 +444,12 @@ namespace Loom.ZombieBattleground
 
             if (isArmy)
             {
-                offset = 1.1f;
-                offsetY = -0.3f;
+                offsetY = -0.17f;
                 AmountTextForArmy.text = amount.ToString();
+                if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+                {
+                    IconsForArmyPanel.Find("Icon_" + LibraryCard.CardRank.ToString())?.gameObject.SetActive(true);
+                }
             }
             InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
         }

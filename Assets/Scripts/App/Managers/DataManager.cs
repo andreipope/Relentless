@@ -94,6 +94,17 @@ namespace Loom.ZombieBattleground
 
         public UserInfo UserInfo { get; set; }
 
+        public GetVersionsResponse CachedVersions { get; set; }
+
+        public async Task LoadRemoteConfig()
+        {
+            CachedVersions = new GetVersionsResponse();
+            CachedVersions = await _backendFacade.GetVersions();
+            if (CachedVersions == null)
+                throw new Exception("CachedVersions == null");
+        }
+
+
         public async Task StartLoadCache()
         {
             Debug.Log("=== Start loading server ==== ");

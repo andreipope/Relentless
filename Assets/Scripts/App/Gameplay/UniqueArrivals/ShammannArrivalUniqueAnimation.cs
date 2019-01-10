@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class ShammannArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback)
+        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -33,8 +33,9 @@ namespace Loom.ZombieBattleground
 
                 Object.Destroy(animationVFX);
 
-                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
+                endArrivalCallback?.Invoke();
 
+                BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
                 IsPlaying = false;
             }, 3f);
         }

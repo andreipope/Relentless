@@ -1137,7 +1137,9 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.PlayCardFromHand,
                 Caller = card,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
+                checkForCardOwner = false,
+                workingCard = card.WorkingCard
             });
         }
 
@@ -1168,7 +1170,10 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         0,
-                        null,
+                        new List<AbilityData.VisualEffectInfo>()
+                        {
+                            new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, "Prefabs/VFX/ReanimateVFX")
+                        },
                         Enumerators.GameMechanicDescriptionType.Reanimate,
                         default(Enumerators.SetType),
                         default(Enumerators.AbilitySubTrigger),

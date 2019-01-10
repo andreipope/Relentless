@@ -953,7 +953,7 @@ namespace Loom.ZombieBattleground
                     _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
                     target, delay: 6f, isIgnoreCastVfx: true);
-                    _battlegroundController.DestroyBoardUnit(unit, false);
+                    _battlegroundController.DestroyBoardUnit(unit, false, true);
 
                     List<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
 
@@ -1011,13 +1011,22 @@ namespace Loom.ZombieBattleground
             List<BoardUnitView> opponentUnits =
                 InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
 
+            List<BoardUnitView> opponentUnitsTakenDamage = new List<BoardUnitView>();
+
             int unitAtk = 0;
 
             BoardUnitView opponentUnitView = null;
             BoardUnitView unitView = null;
 
+            Dictionary<BoardUnitView, int> unitAttacks = new Dictionary<BoardUnitView, int>();
+
+
+            Action<BoardUnitView> callback = null;
+
             for (int i = 0; i < units.Count; i++)
             {
+                callback = null;
+                opponentUnitView = null;
                 unitView = units[i];
                 unitAtk = units[i].Model.CurrentDamage;                   
 
@@ -1031,18 +1040,44 @@ namespace Loom.ZombieBattleground
                 {
                     opponentUnitView = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = opponentUnitView,
-                        HasValue = true,
-                        Value = -unitAtk
-                    });
-
                     opponentUnits.Remove(opponentUnitView);
-
-                    EpidemicUnit(owner, boardSkill, skill, unitView, opponentUnitView);
+                    opponentUnitsTakenDamage.Add(opponentUnitView);
                 }
+                else if(opponentUnitsTakenDamage.Count > 0)
+                {
+                    opponentUnitView = opponentUnitsTakenDamage[UnityEngine.Random.Range(0, opponentUnitsTakenDamage.Count)];
+                }
+
+                if (opponentUnitView != null)
+                {
+                    if(unitAttacks.ContainsKey(opponentUnitView))
+                    {
+                        
+                        unitAttacks[opponentUnitView] += unitAtk;
+                        TargetEffects.Find(x => x.Target == opponentUnitView).Value -= unitAtk;
+                    }
+                    else
+                    {
+                        unitAttacks.Add(opponentUnitView, unitAtk);
+                        TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = opponentUnitView,
+                            HasValue = true,
+                            Value = -unitAtk
+                        });
+                    }
+
+                    callback = (unit) =>
+                    {
+                        if (unitAttacks.ContainsKey(opponentUnitView))
+                        {
+                            _battleController.AttackUnitBySkill(owner, boardSkill, unit.Model, 0, unitAttacks[unit]);
+                            unitAttacks.Remove(unit);
+                        }
+                    };
+                }
+                EpidemicUnit(owner, boardSkill, skill, unitView, opponentUnitView, callback);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1052,11 +1087,9 @@ namespace Loom.ZombieBattleground
                 TargetEffects = TargetEffects
             });
         }
-
-        private void EpidemicUnit(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardUnitView unit, BoardUnitView target)
+    
+        private void EpidemicUnit(Player owner, BoardSkill boardSkill, HeroSkill skill, BoardUnitView unit, BoardUnitView target, Action<BoardUnitView> callback)
         {
-            int unitAtk = unit.Model.CurrentDamage;
-
             _vfxController.CreateVfx(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/InfectVFX"),
             unit, delay: 8f, isIgnoreCastVfx: true);
@@ -1066,19 +1099,22 @@ namespace Loom.ZombieBattleground
                 _vfxController.CreateVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Infect_ExplosionVFX"),
                 unit, delay: 6f, isIgnoreCastVfx: true);
-                _battlegroundController.DestroyBoardUnit(unit.Model, false);
+                _battlegroundController.DestroyBoardUnit(unit.Model, false, true);
 
-                _vfxController.CreateSkillVfx(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"),
-                _battlegroundController.GetBoardUnitViewByModel(unit.Model).Transform.position,
-                target,
-                (x) =>
+                if (target != null)
                 {
-                    _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                    target);
-                    _battleController.AttackUnitBySkill(owner, boardSkill, target.Model, 0, unitAtk);
-                }, true);
+                    _vfxController.CreateSkillVfx(
+                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"),
+                    _battlegroundController.GetBoardUnitViewByModel(unit.Model).Transform.position,
+                    target,
+                    (x) =>
+                    {
+                        callback?.Invoke(target);
+                        _vfxController.CreateVfx(
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
+                        target);
+                    }, true);
+                }
             }, 3.5f);
         }
 
@@ -1470,7 +1506,7 @@ namespace Loom.ZombieBattleground
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target).Transform.position + Vector3.up * 0.34f;
 
                 boardUnitModel.LastAttackingSetType = owner.SelfHero.HeroElement;
-                _battlegroundController.DestroyBoardUnit(boardUnitModel, false);
+                _battlegroundController.DestroyBoardUnit(boardUnitModel, false, true);
 
                 _soundManager.PlaySound(
                     Enumerators.SoundType.OVERLORD_ABILITIES,
@@ -1880,7 +1916,7 @@ namespace Loom.ZombieBattleground
                 unit.Model.CurrentHp += skill.Value;
 
                 position = unit.Transform.position;
-                position -= Vector3.up * 3.3f;
+                position -= Vector3.up * 3.65f;
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),

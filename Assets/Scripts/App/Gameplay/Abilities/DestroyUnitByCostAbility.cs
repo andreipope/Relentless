@@ -8,11 +8,15 @@ namespace Loom.ZombieBattleground
 {
     public class DestroyUnitByCostAbility : AbilityBase
     {
+        private const int TorchCardId = 147;
+
         public int Cost { get; }
 
         private BoardUnitModel _unit;
 
         private bool _isRandom;
+
+        private bool _checkForCardOwner;
 
         public DestroyUnitByCostAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -104,6 +108,13 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
+                WorkingCard card = BoardSpell?.Card;
+
+                if(card != null && card.LibraryCard.MouldId == TorchCardId)
+                {
+                    _checkForCardOwner = true;
+                }
+
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
@@ -115,7 +126,9 @@ namespace Loom.ZombieBattleground
                             ActionEffectType = Enumerators.ActionEffectType.DeathMark,
                             Target = unit
                         }
-                    }
+                    },
+                    checkForCardOwner = _checkForCardOwner,
+                    workingCard = card
                 });
             }
         }

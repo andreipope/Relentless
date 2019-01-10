@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float HeroDeathSoundVolume = 0.1f;
 
-        internal const float CardsMoveSoundVolume = 0.025f;
+        internal const float CardsMoveSoundVolume = 0.05f;
 
         internal const float BackgroundSoundVolume = 0.1f;
 
@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        public const float PvPCheckPlayerAvailableMaxTime = 30f;
+        public const float PvPCheckPlayerAvailableMaxTime = 10f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -153,11 +153,17 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
 
-        public const bool DisableKeepAlive = true;
-
         public const bool MulliganEnabled = false;
 
-        public const bool AlwaysGuestLogin = true;
+        public const bool AlwaysGuestLogin = false;
+
+        public const string VaultEmptyErrorCode = "404";
+
+        public const string MatchEmailPattern =
+        @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+        + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})$";
 
         internal const string FacebookAppId =
 #if USE_STAGING_BACKEND
