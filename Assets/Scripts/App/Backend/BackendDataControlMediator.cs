@@ -86,8 +86,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Debug.Log("User Id: " + UserDataModel.UserId);
             
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
-           /*Commented for pre-release
-            * 
+
             await _dataManager.LoadRemoteConfig();
             Version contentVersion = Version.Parse(_dataManager.CachedVersions.ContentVersion);
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(contentVersion))
@@ -116,7 +115,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 _uiManager.DrawPopup<UpdatePopup>(actions);
             }
-            */
+            
             try
             {
                 await _backendFacade.SignUp(UserDataModel.UserId);
