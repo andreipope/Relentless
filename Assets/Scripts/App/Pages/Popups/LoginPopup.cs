@@ -214,7 +214,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void SetLoginAsGuestState (string GUID = null) 
+        public void SetLoginAsGuestState (string GUID = null)
         {
             _lastGUID = GUID;
             SetUIState(LoginState.LoginAsGuest);
@@ -225,14 +225,14 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.LoginFromCurrentSetOfData);
         }
 
-        public void SetLoginFieldsData (string _email, string _password) 
+        public void SetLoginFieldsData (string _email, string _password)
         {
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
             SetUIState(LoginState.InitiateLogin);
         }
 
-        private void PressedSendOTPHandler() 
+        private void PressedSendOTPHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -252,7 +252,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldForgot.text.Length > 0 && Utilites.ValidateEmail(_emailFieldForgot.text)) 
+            if (_emailFieldForgot.text.Length > 0 && Utilites.ValidateEmail(_emailFieldForgot.text))
             {
                 ForgottenPasswordProcess();
             }
@@ -284,12 +284,30 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.InitiateRegistration);
         }
 
-        private void PressedRegisterHandler() 
+        private void PressedRegisterHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldRegister.text.Length > 0 && Utilites.ValidateEmail(_emailFieldRegister.text) && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
+            if (string.IsNullOrEmpty(_emailFieldRegister.text) || string.IsNullOrEmpty(_passwordFieldRegister.text) || string.IsNullOrEmpty(_confirmFieldRegister.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                return;
+            }
+
+            if (!Utilites.ValidateEmail(_emailFieldRegister.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                return;
+            }
+
+            if (_passwordFieldRegister.text != _confirmFieldRegister.text)
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Password Mismatch - Password and Confirm Password must be the same.");
+                return;
+            }
+
+            if (_emailFieldRegister.text.Length > 0 && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
             {
                 _registerButton.enabled = false;
                 RegisterProcess();
@@ -305,7 +323,19 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldLogin.text.Length > 0 && Utilites.ValidateEmail(_emailFieldLogin.text) && _passwordFieldLogin.text.Length > 0)
+            if (string.IsNullOrEmpty(_emailFieldLogin.text) || string.IsNullOrEmpty(_passwordFieldLogin.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                return;
+            }
+
+            if (!Utilites.ValidateEmail(_emailFieldLogin.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                return;
+            }
+
+            if (_emailFieldLogin.text.Length > 0 && _passwordFieldLogin.text.Length > 0)
             {
                 _loginButton.enabled = false;
                 LoginProcess(false);
@@ -336,11 +366,11 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                if (e.Message == Constants.VaultEmptyErrorCode) 
+                if (e.Message == Constants.VaultEmptyErrorCode)
                 {
                     UpdatePrivateKeyProcess(noOTP);
                 }
-                else 
+                else
                 {
                     Debug.Log(e.ToString());
                     _lastErrorMessage = e.Message;
@@ -391,7 +421,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void RegisterProcess () 
+        private async void RegisterProcess ()
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
@@ -435,7 +465,7 @@ namespace Loom.ZombieBattleground
                     publicKey = publicKeyFromGuID;
                     userId = userIDFromGuID;
                 }
-                else 
+                else
                 {
                     loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
 
@@ -468,7 +498,7 @@ namespace Loom.ZombieBattleground
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
 
-                if (authyId != 0) 
+                if (authyId != 0)
                 {
                     SetUIState(LoginState.PromptOTP);
                     return;
@@ -494,7 +524,7 @@ namespace Loom.ZombieBattleground
 
                 _loginButton.enabled = true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
@@ -543,7 +573,7 @@ namespace Loom.ZombieBattleground
 
         private void SetUIState(LoginState state)
         {
-            if (Constants.AlwaysGuestLogin) 
+            if (Constants.AlwaysGuestLogin)
             {
                 if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration || state == LoginState.LoginFromCurrentSetOfData)
                 {
@@ -551,9 +581,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (Self == null) 
+            if (Self == null)
                 return;
-            
+
             Debug.Log(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
