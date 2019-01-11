@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool AlwaysGuestLogin = true;
 
-        public const string VaultEmptyErrorCode = "404";
+        public const string VaultEmptyErrorCode = "NotFound";
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
