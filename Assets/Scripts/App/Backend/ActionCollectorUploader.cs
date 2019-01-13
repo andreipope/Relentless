@@ -6,6 +6,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using mixpanel;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -251,6 +252,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void MulliganHandler(List<WorkingCard> cards)
             {
+                Debug.Log("CARDS THAT ARE KEPT");
+                Debug.Log(JsonUtility.ToJson(cards));
+                Debug.Log(JsonUtility.ToJson(cards.Select(card => card.InstanceId)));
                 AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
 

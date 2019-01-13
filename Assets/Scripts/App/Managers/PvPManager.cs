@@ -290,6 +290,9 @@ namespace Loom.ZombieBattleground
                             {
                                 GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
 
+                                Debug.Log("THIS USER MULLIGAN");
+                                Debug.Log(JsonUtility.ToJson(getGameStateResponse));
+
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id == _backendDataControlMediator.UserDataModel.UserId);
 
@@ -300,6 +303,9 @@ namespace Loom.ZombieBattleground
                             if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                 GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
+
+                                Debug.Log("OPPONENT USER MULLIGAN");
+                                Debug.Log(JsonUtility.ToJson(getGameStateResponse));
 
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id != _backendDataControlMediator.UserDataModel.UserId);
