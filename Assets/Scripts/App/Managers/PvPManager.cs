@@ -13,7 +13,6 @@ using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.De
 using Random = UnityEngine.Random;
 using SystemText = System.Text;
 using Loom.Google.Protobuf.Collections;
-using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
