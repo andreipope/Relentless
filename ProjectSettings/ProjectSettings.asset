@@ -18,7 +18,7 @@ PlayerSettings:
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_ShowUnitySplashScreen: 1
-  m_ShowUnitySplashLogo: 1
+  m_ShowUnitySplashLogo: 0
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 0
   m_SplashScreenLogoStyle: 1
@@ -731,11 +731,11 @@ PlayerSettings:
     Build: 1
     Collab: 1
     UNet: 1
-  facebookSdkVersion: 7.9.4
+  facebookSdkVersion: plugin
   apiCompatibilityLevel: 3
   cloudProjectId: 227000ce-c46a-4627-abea-e35335a5bbf7
   projectName: battleground
-  organizationId: diana_shapira
+  organizationId: loom-network
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33441024055455006}
   - component: {fileID: 64840444229868988}
   - component: {fileID: 23977537879784802}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Frame (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 4449252575445136}
   - component: {fileID: 198520643967246022}
   - component: {fileID: 199328465444788200}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BorderSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 4649653823085490}
   - component: {fileID: 198798251670103862}
   - component: {fileID: 199166422427799374}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BorderFume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 4440836632935028}
   - component: {fileID: 198360880620080408}
   - component: {fileID: 199197180873634792}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Darken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 4341288156632280}
   - component: {fileID: 198911725269474268}
   - component: {fileID: 199588374176125674}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InnerGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   - component: {fileID: 4595137359830486}
   - component: {fileID: 198429153949219776}
   - component: {fileID: 199179161449013374}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pulse (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,9 +378,11 @@ MonoBehaviour:
   delayBeforeEffect: 4
   delayAfterEffect: 0
   delayForChangeState: 0
-  offset: {x: 0, y: 0, z: 2}
-  delayForSound: 0.75
   soundName: CZB_AUD_Leash_F1_EXP
+  delayForSound: 0.75
+  offset: {x: 0, y: 0, z: 2}
+  localOffset: {x: 0, y: 0, z: 0}
+  isRotate: 0
   positionInfo:
     type: 0
 --- !u!198 &198360880620080408
@@ -23655,7 +23657,7 @@ SpriteRenderer:
   m_Size: {x: 14.99, y: 21.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!331 &331089769502986106

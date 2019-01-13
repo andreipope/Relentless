@@ -13,6 +13,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "http://stage-auth.loom.games",
                         "ws://127.0.0.1:9999/queryws",
                         "ws://127.0.0.1:46657/websocket",
+                        "https://stage-vault.delegatecall.com/v1",
                         "v3"
                         )
                 },
@@ -22,6 +23,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "http://stage-auth.loom.games",
                         "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
                         "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
+                        "https://stage-vault.delegatecall.com/v1",
                         "v3"
                     )
                 },
@@ -31,6 +33,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "http://auth.loom.games",
                         "ws://gamechain.dappchains.com:9999/queryws",
                         "ws://gamechain.dappchains.com:46657/websocket",
+                        "https://vault.delegatecall.com/v1",
                         "v3"
                     )
                 }

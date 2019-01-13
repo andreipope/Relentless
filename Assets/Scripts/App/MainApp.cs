@@ -97,5 +97,10 @@ namespace Loom.ZombieBattleground
                 LevelLoaded?.Invoke(arg0.buildIndex);
             }
         }
+
+        private void OnApplicationQuit()
+        {
+            GameClient.Get<IAnalyticsManager>().SetEvent(AnalyticsManager.EventQuitToDesktop);
+        }
     }
 }

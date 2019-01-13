@@ -20,6 +20,7 @@ namespace Loom.ZombieBattleground
 
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
+        private BoardController _boardController;
         private SkillsController _skillsController;
         private BattleController _battleController;
         private BoardArrowController _boardArrowController;
@@ -47,6 +48,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
 
             _gameplayManager.GameStarted += GameStartedHandler;
             _gameplayManager.GameEnded += GameEndedHandler;
@@ -258,7 +260,7 @@ namespace Loom.ZombieBattleground
 
                         boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
 
-                        _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                        _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
 
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {

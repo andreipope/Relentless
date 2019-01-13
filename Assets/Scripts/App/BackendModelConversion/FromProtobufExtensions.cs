@@ -117,7 +117,8 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.UnitStatusType) skill.TargetUnitSpecialStatus,
                 skill.ElementTargets.Select(t => (Enumerators.SetType) t).ToList(),
                 skill.Unlocked,
-                skill.CanSelectTarget
+                skill.CanSelectTarget,
+                skill.SingleUse
             );
         }
 
@@ -191,7 +192,8 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardType) card.Type,
                 card.Abilities.Select(a => a.FromProtobuf()).ToList(),
                 card.CardViewInfo.FromProtobuf(),
-                (Enumerators.UniqueAnimationType) card.UniqueAnimationType
+                (Enumerators.UniqueAnimationType) card.UniqueAnimationType,
+                (Enumerators.SetType)card.HiddenSet
             );
         }
 

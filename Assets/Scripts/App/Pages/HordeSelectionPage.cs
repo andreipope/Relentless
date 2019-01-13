@@ -59,11 +59,15 @@ namespace Loom.ZombieBattleground
         private int _scrolledDeck = -1;
 
         // new horde deck object
+        private GameObject _newHordeDeckObjectLeft;
         private GameObject _newHordeDeckObject;
 
+        private Button _newHordeDeckButtonLeft;
         private Button _newHordeDeckButton;
 
         private IAnalyticsManager _analyticsManager;
+
+        private int _defaultSelectedDeck = 1;
 
         public void Init()
         {
@@ -119,6 +123,8 @@ namespace Loom.ZombieBattleground
             _battleButtonGlow = _selfPage.transform.Find("Button_Battle/Pulse").gameObject;
 
             // new horde deck object
+            _newHordeDeckObjectLeft = _containerOfDecks.transform.Find("Item_HordeSelectionNewHordeLeft").gameObject;
+            _newHordeDeckButtonLeft = _newHordeDeckObjectLeft.transform.Find("Image_BaackgroundGeneral").GetComponent<Button>();
             _newHordeDeckObject = _containerOfDecks.transform.Find("Item_HordeSelectionNewHorde").gameObject;
             _newHordeDeckButton = _newHordeDeckObject.transform.Find("Image_BaackgroundGeneral").GetComponent<Button>();
 
@@ -142,16 +148,26 @@ namespace Loom.ZombieBattleground
             _secondSkill.GetComponent<MultiPointerClickHandler>().DoubleClickReceived += () =>
                 SkillButtonOnDoubleClickHandler(1);
 
+            _newHordeDeckButtonLeft.onClick.AddListener(NewHordeDeckButtonOnClickHandler);
             _newHordeDeckButton.onClick.AddListener(NewHordeDeckButtonOnClickHandler);
 
             _battleButton.interactable = true;
 
             _gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
-            // todod improve I guess
-            _selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
-            _hordeSelection.gameObject.SetActive(false);
 
+            _defaultSelectedDeck = _dataManager.CachedUserLocalData.LastSelectedDeckId;
+            if (_defaultSelectedDeck > _dataManager.CachedDecksData.Decks.Count)
+            {
+                _defaultSelectedDeck = 1;
+            }
+
+            if (_dataManager.CachedDecksData.Decks.Count > 1)
+            {
+                _defaultSelectedDeck = Mathf.Clamp(_defaultSelectedDeck, 1, _defaultSelectedDeck);
+            }
+
+            _selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _defaultSelectedDeck);
             LoadDeckObjects();
         }
 
@@ -174,6 +190,8 @@ namespace Loom.ZombieBattleground
             ResetHordeDecks();
             _hordeDecks = new List<HordeDeckObject>();
 
+            _newHordeDeckObjectLeft.transform.localPosition = Vector3.zero;
+
             for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
             {
                 HordeDeckObject hordeDeck =
@@ -182,18 +200,17 @@ namespace Loom.ZombieBattleground
                         _dataManager.CachedDecksData.Decks[i],
                         _dataManager.CachedHeroesData.Heroes.Find(x =>
                             x.HeroId == _dataManager.CachedDecksData.Decks[i].HeroId),
-                        i);
+                        i+1);
                 hordeDeck.HordeDeckSelected += HordeDeckSelectedHandler;
 
                 _hordeDecks.Add(hordeDeck);
             }
 
-            _newHordeDeckObject.transform.localPosition = Vector3.right * HordeItemSpace * _hordeDecks.Count;
+            _newHordeDeckObject.transform.localPosition = Vector3.right * HordeItemSpace * (_hordeDecks.Count + 1);
         }
 
         private void ResetHordeDecks()
         {
-            _hordeSelection.gameObject.SetActive(false);
             if (_hordeDecks != null)
             {
                 foreach (HordeDeckObject element in _hordeDecks)
@@ -234,11 +251,9 @@ namespace Loom.ZombieBattleground
 
         private void HordeDeckSelectedHandler(HordeDeckObject horde)
         {
-            if (_hordeSelection.gameObject.activeSelf)
-            {
-                HordeDeckObject selectedHorde = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
-                selectedHorde.Deselect();
-            }
+            HordeDeckObject selectedHorde = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
+                if(selectedHorde != null)
+                    selectedHorde.Deselect();
 
             horde.Select();
 
@@ -251,8 +266,6 @@ namespace Loom.ZombieBattleground
 
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
-            _hordeSelection.gameObject.SetActive(true);
-            RepositionSelection();
             BattleButtonUpdate();
         }
 
@@ -273,14 +286,6 @@ namespace Loom.ZombieBattleground
             return _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
         }
 
-        private void RepositionSelection()
-        {
-            if(_hordeSelection.gameObject.activeSelf)
-            {
-                _hordeSelection.position = _hordeDecks.Find(x => x.SelfDeck == _selectedDeck).SelectionContainer.transform.position;
-            }
-        }
-
         private void BattleButtonUpdate()
         {
             bool canStartBattle =
@@ -299,13 +304,15 @@ namespace Loom.ZombieBattleground
 
         private void LoadDeckObjects()
         {
+            _hordeSelection.gameObject.SetActive(true);
             FillHordeDecks();
 
             _newHordeDeckObject.transform.SetAsLastSibling();
             _newHordeDeckObject.SetActive(true);
 
             HordeDeckObject deck =
-                _hordeDecks.Find(x => x.SelfDeck.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+                _hordeDecks.Find(x => x.SelfDeck.Id == _defaultSelectedDeck);
+
             if (deck != null)
             {
                 HordeDeckSelectedHandler(deck);
@@ -318,10 +325,17 @@ namespace Loom.ZombieBattleground
                 {
                     _selectedDeck =  _hordeDecks[0].SelfDeck;
                 }
+
+                if (deck == null)
+                {
+                    deck = _hordeDecks[0];
+                    HordeDeckSelectedHandler(deck);
+                }
             }
             else
             {
                 _selectedDeck = null;
+                _hordeSelection.gameObject.SetActive(false);
             }
 
             CenterTheSelectedDeck();
@@ -335,18 +349,14 @@ namespace Loom.ZombieBattleground
 
             _scrolledDeck = _hordeDecks.IndexOf(_hordeDecks.Find(x => x.IsSelected));
 
-            if (_scrolledDeck < 2)
+            if (_scrolledDeck < 1)
             {
                 _scrolledDeck = 0;
             }
-            else
-            {
-                _scrolledDeck--;
-            }
 
+            _scrolledDeck = Mathf.Clamp(_scrolledDeck, 0, _scrolledDeck);
             _containerOfDecks.transform.localPosition =
                 new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
-            RepositionSelection();
         }
 
         private void OpenAlertDialog(string msg)
@@ -362,9 +372,9 @@ namespace Loom.ZombieBattleground
             int oldIndex = _scrolledDeck;
             _scrolledDeck += direction;
 
-            if (_scrolledDeck > _hordeDecks.Count - 2)
+            if (_scrolledDeck > _hordeDecks.Count - 1)
             {
-                _scrolledDeck = _hordeDecks.Count - 2;
+                _scrolledDeck = _hordeDecks.Count - 1;
             }
 
             if (_scrolledDeck < 0)
@@ -374,9 +384,15 @@ namespace Loom.ZombieBattleground
 
             if (oldIndex != _scrolledDeck)
             {
+                _defaultSelectedDeck = _scrolledDeck + 1;
                 _containerOfDecks.transform.localPosition =
                     new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
-                RepositionSelection();
+
+                HordeDeckObject deck = _hordeDecks[_scrolledDeck];
+                if (deck != null)
+                {
+                    HordeDeckSelectedHandler(deck);
+                }
             }
         }
 
@@ -439,8 +455,6 @@ namespace Loom.ZombieBattleground
                 _hordePicture.sprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseHorde/hordeselect_deck_" +
                         SelfHero.HeroElement.ToString().ToLowerInvariant());
-
-                _buttonSelect.onClick.AddListener(SelectButtonOnClickHandler);
             }
 
             public event Action<HordeDeckObject> HordeDeckSelected;
@@ -579,6 +593,12 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
+            if (_hordeDecks.Count <= 1)
+            {
+                _uiManager.DrawPopup<WarningPopup>("Sorry, Not able to delete Last Deck.");
+                return;
+            }
+
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (deck != null)
             {

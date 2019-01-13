@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Loom.ZombieBattleground.BackendCommunication;
+using UnityEngine.Experimental.PlayerLoop;
 
 namespace Loom.ZombieBattleground
 {
@@ -28,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _buttonTutorial;
 
+        private BackendDataControlMediator _backendDataControlMediator;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -35,6 +39,7 @@ namespace Loom.ZombieBattleground
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
         public void Update()
@@ -99,8 +104,44 @@ namespace Loom.ZombieBattleground
 
         private void PvPModeButtonOnClickHandler()
         {
+            Version pvpVersion = Version.Parse(_dataManager.CachedVersions.PvpVersion);
+            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(pvpVersion))
+            {
+                Action[] actions = new Action[2];
+                actions[0] = () =>
+                {
+                    #if UNITY_EDITOR
+                    Debug.LogWarning("Version Mismatched");
+                    #elif UNITY_ANDROID
+                    Application.OpenURL(Constants.GameLinkForAndroid);
+                    #elif UNITY_IOS
+                    Application.OpenURL(Constants.GameLinkForIOS);
+                    #elif UNITY_STANDALONE_OSX
+                    Application.OpenURL(Constants.GameLinkForOSX);
+                    #elif UNITY_STANDALONE_WIN
+                    Application.OpenURL(Constants.GameLinkForWindows);
+                    #else
+                    Debug.LogWarning("Version Mismatched");
+                    #endif
+                };
+                actions[1] = () =>
+                {
+                    Application.Quit();
+                };
+
+                _uiManager.DrawPopup<UpdatePopup>(actions);
+                return;
+            }
+            
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);
+            if (!Constants.AlwaysGuestLogin && !_backendDataControlMediator.UserDataModel.IsRegistered)
+            {
+                _uiManager.GetPopup<LoginPopup>().Show();
+            }
+            else
+            {
+                _stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);
+            }
         }
 
         private void BackButtonOnClickHandler()

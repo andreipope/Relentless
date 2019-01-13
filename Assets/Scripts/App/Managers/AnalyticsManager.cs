@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -16,6 +15,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private GoogleAnalyticsV4 _googleAnalytics;
 
+    private IFacebookManager _fbManager;
+
     private int _startedMatchCounter;
 
     private int _finishedMatchCounter;
@@ -29,6 +30,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public const string EventDeckDeleted = "Delete Deck";
     public const string EventDeckEdited = "Edit Deck";
     public const string EventQuitMatch = "Quit Match";
+    public const string EventQuitToDesktop = "Quit App";
 
     public const string PropertyTesterKey = "Tester Key";
     public const string PropertyDAppChainWalletAddress = "DAppChainWallet Address";
@@ -69,7 +71,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 
-        Mixpanel.Track(title);
+        //Mixpanel.Track(title);
     }
 
     public void LogEvent(string eventAction, string eventLabel, long value)
@@ -133,6 +135,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
             Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Staging"));
         #endif
 
+        _fbManager = GameClient.Get<IFacebookManager>();
     }
 
     public void Update()
@@ -145,20 +148,33 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetEvent(string eventName)
     {
+        // Mixpanel
         Value props = new Value();
         FillBasicProps(props);
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);
+
+        // FB
+        _fbManager.LogEvent(eventName, null, new Dictionary<string, object>());
     }
 
-    public void SetEvent(string eventName, Value props)
+    public void SetEvent(string eventName, Dictionary<string, object> paramters)
     {
-        props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
+        // Mixpanel
+        Value props = new Value();
         FillBasicProps(props);
+
+        foreach (KeyValuePair<string, object> parameter in paramters)
+        {
+            props[parameter.Key] = parameter.Value.ToString();
+        }
 
         Mixpanel.Identify(_backendDataControlMediator.UserDataModel.UserId);
         Mixpanel.Track(eventName, props);
+
+        // FB
+        _fbManager.LogEvent(eventName, null, paramters);
     }
 
     public void SetPoepleProperty(string identityId, string property, string value)

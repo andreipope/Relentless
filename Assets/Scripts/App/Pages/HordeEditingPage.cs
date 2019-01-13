@@ -396,7 +396,7 @@ namespace Loom.ZombieBattleground
                 boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
                 DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                deckBuilderCard.Scene = this;
+                deckBuilderCard.Page = this;
                 deckBuilderCard.Card = card;
 
                 OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
@@ -485,7 +485,7 @@ namespace Loom.ZombieBattleground
                     boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
                     DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                    deckBuilderCard.Scene = this;
+                    deckBuilderCard.Page = this;
                     deckBuilderCard.Card = libraryCard;
                     deckBuilderCard.IsHordeItem = true;
 
@@ -631,7 +631,7 @@ namespace Loom.ZombieBattleground
                 foundItem = boardCard;
 
                 DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                deckBuilderCard.Scene = this;
+                deckBuilderCard.Page = this;
                 deckBuilderCard.Card = card;
                 deckBuilderCard.IsHordeItem = true;
 
@@ -1099,8 +1099,10 @@ namespace Loom.ZombieBattleground
             {
                 OnDoneButtonPressed();
             }
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            else
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            }
         }
 
         private void BuyButtonHandler()

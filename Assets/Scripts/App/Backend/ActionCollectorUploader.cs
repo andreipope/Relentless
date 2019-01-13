@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using mixpanel;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.BackendCommunication
@@ -55,17 +53,20 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             _analyticsManager.NotifyFinishedMatch(obj);
 
-            Value props = new Value();
-            props[AnalyticsManager.PropertyMatchDuration] = _gameplayManager.MatchDuration.GetTimeDiffrence();
-            props[AnalyticsManager.PropertyMatchType] = _matchManager.MatchType.ToString();
-            if (obj == Enumerators.EndGameType.CANCEL)
+            if (!_gameplayManager.IsTutorial)
             {
-                _analyticsManager.SetEvent(AnalyticsManager.EventQuitMatch, props);
-            }
-            else
-            {
-                props[AnalyticsManager.PropertyMatchResult] = obj.ToString();
-                _analyticsManager.SetEvent(AnalyticsManager.EventEndedMatch, props);
+                Dictionary<string, object> eventParameters = new Dictionary<string, object>();
+                eventParameters.Add(AnalyticsManager.PropertyMatchDuration, _gameplayManager.MatchDuration.GetTimeDiffrence());
+                eventParameters.Add(AnalyticsManager.PropertyMatchType, _matchManager.MatchType.ToString());
+                if (obj == Enumerators.EndGameType.CANCEL)
+                {
+                    _analyticsManager.SetEvent(AnalyticsManager.EventQuitMatch, eventParameters);
+                }
+                else
+                {
+                    eventParameters.Add(AnalyticsManager.PropertyMatchResult, obj.ToString());
+                    _analyticsManager.SetEvent(AnalyticsManager.EventEndedMatch, eventParameters);
+                }
             }
         }
 
@@ -79,10 +80,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             _analyticsManager.NotifyStartedMatch();
 
-            Value props = new Value();
-            props[AnalyticsManager.PropertyTimeToFindOpponent] = _matchManager.MatchType == Enumerators.MatchType.PVP ? _matchManager.FindOpponentTime.GetTimeDiffrence() : "0";
-            props[AnalyticsManager.PropertyMatchType] = _matchManager.MatchType.ToString();
-            _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch, props);
+            if (!_gameplayManager.IsTutorial)
+            {
+                Dictionary<string, object> eventParameters = new Dictionary<string, object>();
+                eventParameters.Add(AnalyticsManager.PropertyTimeToFindOpponent, _matchManager.MatchType == Enumerators.MatchType.PVP ? _matchManager.FindOpponentTime.GetTimeDiffrence() : "0");
+                eventParameters.Add(AnalyticsManager.PropertyMatchType, _matchManager.MatchType.ToString());
+                _analyticsManager.SetEvent(AnalyticsManager.EventStartedMatch, eventParameters);
+            }
         }
 
         private class PlayerEventListener : IDisposable
@@ -96,7 +100,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private readonly BattlegroundController _battlegroundController;
 
             private readonly IPvPManager _pvpManager;
-            
+
             private readonly SkillsController _skillsController;
 
             private readonly AbilitiesController _abilitiesController;

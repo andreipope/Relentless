@@ -14,5 +14,6 @@ namespace Loom.ZombieBattleground
 
         void InitializeExperienceInfoInMatch(Hero hero);
         void ApplyExperienceFromMatch(Hero hero);
+        void ApplyExperience(Hero hero, int experience);
     }
 }

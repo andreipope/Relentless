@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public bool EnableRpcLogging { get; set; } = false;
 
+        public IContractCallProxy ContractCallProxy => _contractCallProxy;
+
         public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory = null)
         {
             BackendEndpoint = backendEndpoint;
@@ -49,6 +51,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Logger?.Log("Auth Host: " + BackendEndpoint.AuthHost);
             Logger?.Log("Reader Host: " + BackendEndpoint.ReaderHost);
             Logger?.Log("Writer Host: " + BackendEndpoint.WriterHost);
+            Logger?.Log("Vault Host: " + BackendEndpoint.VaultHost);
             Logger?.Log("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
@@ -59,7 +62,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public void Dispose()
         {
             Contract?.Client?.Dispose();
-            _contractCallProxy.Dispose();
+            _contractCallProxy?.Dispose();
         }
 
         public async Task CreateContract(
@@ -98,7 +101,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
-                new NonceTxMiddleware(publicKey, client), new SignedTxMiddleware(privateKey)
+                new NonceTxMiddleware(publicKey, client),
+                new SignedTxMiddleware(privateKey)
             });
 
             client.Configuration.AutoReconnect = false;
@@ -267,6 +271,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string loginEndPoint = "/auth/email/login";
 
+        private const string signupEndPoint = "/auth/email/game_signup";
+
+        private const string forgottenPasswordEndPoint = "/auth/mlink/generate";
+
+        private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
+
+        private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
+
+        private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
+
         public async Task<UserInfo> GetUserInfo(string accessToken)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
@@ -309,15 +323,189 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
 
+            Debug.Log(httpResponseMessage.ReadToEnd());
             LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
                 httpResponseMessage.ReadToEnd());
             return loginData;
         }
 
-        private struct LoginRequest
+        public async Task<RegisterData> InitiateRegister(string email, string password)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + signupEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.email = email;
+            loginRequest.password = password;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(loginRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+
+            RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
+                httpResponseMessage.ReadToEnd());
+            return registerData;
+        }
+
+        public async Task<bool> InitiateForgottenPassword(string email)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email +"&kind=signup";
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception(
+                    $"{nameof(InitiateForgottenPassword)} failed with error code {httpResponseMessage.StatusCode}");
+                    
+            return true;
+        }
+
+        public async Task<CreateVaultTokenData> CreateVaultToken(string otp, string accessToken)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            VaultTokenRequest vaultTokenRequest = new VaultTokenRequest();
+            vaultTokenRequest.authy_token = otp;
+            vaultTokenRequest.access_token = accessToken;
+
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+
+            CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
+                httpResponseMessage.ReadToEnd());
+            return vaultTokenData;
+        }
+
+        public async Task<CreateVaultTokenData> CreateVaultTokenForNon2FAUsers(string accessToken)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenForNon2FAUsersEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            VaultTokenNon2FARequest vaultTokenRequest = new VaultTokenNon2FARequest();
+            vaultTokenRequest.access_token = accessToken;
+
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
+            Debug.Log(JsonConvert.SerializeObject(vaultTokenRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ReadToEnd());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CreateVaultTokenForNon2FAUsers)} failed with error code {httpResponseMessage.StatusCode}");
+
+            CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
+                httpResponseMessage.ReadToEnd());
+            return vaultTokenData;
+        }
+
+        public async Task<GetVaultDataResponse> GetVaultData(string vaultToken)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.GET;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + accessVaultEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+            Debug.Log(httpResponseMessage.StatusCode.ToString());
+            Debug.Log(httpResponseMessage.StatusCode);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode.ToString() == Constants.VaultEmptyErrorCode)
+                {
+                    throw new Exception(httpResponseMessage.StatusCode.ToString());
+                }
+                else 
+                {
+                    throw new Exception($"{nameof(GetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
+                }
+            }
+
+            GetVaultDataResponse getVaultDataResponse = JsonConvert.DeserializeObject<GetVaultDataResponse>(
+                httpResponseMessage.ReadToEnd());
+            return getVaultDataResponse;
+        }
+
+        public async Task<bool> SetVaultData(string vaultToken, string privateKey)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + accessVaultEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            VaultPrivateKeyRequest vaultPrivateKeyRequest = new VaultPrivateKeyRequest();
+            vaultPrivateKeyRequest.privatekey = privateKey;
+
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultPrivateKeyRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ToString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception($"{nameof(SetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
+            }
+
+            return true;
+        }
+
+        private struct LoginRequest 
         {
             public string email;
             public string password;
+        }
+
+        private struct VaultTokenRequest
+        {
+            public string authy_token;
+            public string access_token;
+        }
+
+        private struct VaultTokenNon2FARequest
+        {
+            public string access_token;
+        }
+
+        private struct VaultPrivateKeyRequest
+        {
+            public string privatekey;
         }
 
         private struct BetaKeyValidationResponse
@@ -327,6 +515,20 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         #endregion
+
+
+        #region VersionCheck
+
+        private const string GetVersionMethod = "GetVersions";
+
+        public async Task<GetVersionsResponse> GetVersions()
+        {
+            GetVersionsRequest request = new GetVersionsRequest();
+            return await _contractCallProxy.StaticCallAsync<GetVersionsResponse>(GetVersionMethod, request);
+        }
+
+        #endregion
+
 
         #region PVP
 

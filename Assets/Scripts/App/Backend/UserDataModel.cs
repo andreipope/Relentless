@@ -11,6 +11,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public bool IsValid;
 
+        public bool IsRegistered;
+
+        public string Email;
+
+        public string Password;
+
+        public string GUID;
+
+        public string AccessToken;
+
         public UserDataModel(string userId, byte[] privateKey)
         {
             UserId = userId;

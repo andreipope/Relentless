@@ -65,6 +65,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private BoardController _boardController;
+
         private IPlayerManager _playerManager;
 
         private ISoundManager _soundManager;
@@ -118,6 +120,7 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
 
@@ -210,52 +213,49 @@ namespace Loom.ZombieBattleground
                 DestroyCardPreview();
             }
 
-            if (boardUnitView.Model.ActionForDying == null)
-            {
-                boardUnitView.Model.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-            }
+            Action completeCallback = () => { };
 
-            boardUnitView.Model.ActionForDying.Action = (parameter, completeCallback) =>
-            {
-                boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
-                    boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
+            boardUnitView.Transform.position = new Vector3(boardUnitView.Transform.position.x,
+                boardUnitView.Transform.position.y, boardUnitView.Transform.position.z + 0.2f);
 
-                InternalTools.DoActionDelayed(() =>
+            InternalTools.DoActionDelayed(() =>
+            {
+                Action endOfDestroyAnimationCallback = () =>
                 {
-                    Action endOfDestroyAnimationCallback = () =>
-                        {
-                            boardUnitView.Model.InvokeUnitDied();
+                    boardUnitView.Transform.DOKill();
+                    Object.Destroy(boardUnitView.GameObject);
 
-                            boardUnitModel.OwnerPlayer.BoardCards.Remove(boardUnitView);
-                            boardUnitModel.OwnerPlayer.RemoveCardFromBoard(boardUnitModel.Card);
-                            boardUnitModel.OwnerPlayer.AddCardToGraveyard(boardUnitModel.Card);
+                    boardUnitView.WasDestroyed = true;
+                };
 
-                            boardUnitView.Transform.DOKill();
-                            Object.Destroy(boardUnitView.GameObject);
-                        };
+                Action endOfAnimationCallback = () =>
+                {
+                    boardUnitView.Model.InvokeUnitDied();
 
-                    if (withDeathEffect)
-                    {
-                        CreateDeathAnimation(boardUnitView, endOfDestroyAnimationCallback, completeCallback);
-                    }
-                    else
-                    {
-                        endOfDestroyAnimationCallback();
+                    boardUnitModel.OwnerPlayer.BoardCards.Remove(boardUnitView);
+                    boardUnitModel.OwnerPlayer.RemoveCardFromBoard(boardUnitModel.Card);
+                    boardUnitModel.OwnerPlayer.AddCardToGraveyard(boardUnitModel.Card);
+                };
 
-                        completeCallback?.Invoke();
-                    }
+                if (withDeathEffect)
+                {
+                    _vfxController.CreateDeathZombieAnimation(boardUnitView, endOfDestroyAnimationCallback, endOfAnimationCallback, completeCallback);
+                }
+                else
+                {
+                    endOfAnimationCallback();
+                    endOfDestroyAnimationCallback();
 
-                }, Time.deltaTime * 60f / 2f);
-            };
+                    _boardController.UpdateWholeBoard(null);
+
+                    completeCallback?.Invoke();
+                }
+
+            }, Time.deltaTime * 60f / 2f);
 
             _actionsQueueController.ForceContinueAction(boardUnitView.Model.ActionForDying);
         }
     
-        private void CreateDeathAnimation(BoardUnitView unitView, Action endOfDestroyAnimationCallback, Action completeCallback)
-        {
-            _vfxController.CreateDeathZombieAnimation(unitView, endOfDestroyAnimationCallback, completeCallback);
-        }
-
         public void CheckGameDynamic()
         {
             if (!_battleDynamic)
@@ -500,18 +500,23 @@ namespace Loom.ZombieBattleground
             if (boardCard == null)
                 return;
 
-            boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
+            if (!boardCard.WasDestroyed)
+            {
+                boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
                 boardCard.Transform.localPosition.y, -0.2f);
+            }
 
             PlayerBoardCards.Remove(boardCard);
             PlayerGraveyardCards.Add(boardCard);
 
             boardCard.SetHighlightingEnabled(false);
             boardCard.StopSleepingParticles();
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
 
-            Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
-
+            if (!boardCard.WasDestroyed)
+            {
+                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
+            }
         }
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
@@ -520,7 +525,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView boardCard = OpponentBoardCards.Find(x => x.Model.Card == card);
             if (boardCard != null)
             {
-                if (boardCard.Transform != null)
+                if (!boardCard.WasDestroyed)
                 {
                     boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
                         boardCard.Transform.localPosition.y, -0.2f);
@@ -530,7 +535,8 @@ namespace Loom.ZombieBattleground
 
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.StopSleepingParticles();
-                if (boardCard.GameObject != null)
+
+                if (!boardCard.WasDestroyed)
                 {
                     boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                     Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
@@ -551,114 +557,6 @@ namespace Loom.ZombieBattleground
                         _aiController.CurrentSpellCard = null;
                     });
             }
-        }
-
-        public void UpdatePositionOfBoardUnitsOfPlayer(List<BoardUnitView> cardsList, Action onComplete = null)
-        {
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            if (_rearrangingBottomRealTimeSequence != null)
-            {
-                _rearrangingBottomRealTimeSequence.onComplete?.Invoke();
-                _rearrangingBottomRealTimeSequence.onComplete = null;
-                _rearrangingBottomRealTimeSequence.Kill();
-                _rearrangingBottomRealTimeSequence = null;
-            }
-
-            float boardWidth = 0.0f;
-            float spacing = 0.2f;
-            float cardWidth = 0.0f;
-            for (int i = 0; i < cardsList.Count; i++)
-            {
-                cardWidth = 2.5f;
-                boardWidth += cardWidth;
-                boardWidth += spacing;
-            }
-
-            boardWidth -= spacing;
-
-            List<Vector2> newPositions = new List<Vector2>(cardsList.Count);
-            Vector3 pivot = PlayerBoardObject.transform.position;
-
-            for (int i = 0; i < cardsList.Count; i++)
-            {
-                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y - 1.7f));
-                pivot.x += boardWidth / cardsList.Count;
-            }
-
-            Sequence sequence = DOTween.Sequence();
-            for (int i = 0; i < cardsList.Count; i++)
-            {
-                BoardUnitView card = cardsList[i];
-                card.PositionOfBoard = newPositions[i];
-                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-            }
-
-            _rearrangingBottomRealTimeSequence = sequence;
-            sequence.AppendCallback(
-                () =>
-                {
-                    onComplete?.Invoke();
-                });
-
-        }
-
-        public void UpdatePositionOfBoardUnitsOfOpponent(Action onComplete = null)
-        {
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            if (_rearrangingTopRealTimeSequence != null)
-            {
-                _rearrangingTopRealTimeSequence.onComplete?.Invoke();
-                _rearrangingTopRealTimeSequence.onComplete = null;
-                _rearrangingTopRealTimeSequence.Kill();
-                _rearrangingTopRealTimeSequence = null;
-            }
-
-            List<BoardUnitView> opponentBoardCards = OpponentBoardCards;
-
-            float boardWidth = 0.0f;
-            float spacing = 0.2f;
-            float cardWidth = 0.0f;
-
-            for (int i = 0; i < opponentBoardCards.Count; i++)
-            {
-                cardWidth = 2.5f;
-                boardWidth += cardWidth;
-                boardWidth += spacing;
-            }
-
-            boardWidth -= spacing;
-
-            List<Vector2> newPositions = new List<Vector2>(opponentBoardCards.Count);
-            Vector3 pivot = OpponentBoardObject.transform.position;
-
-            for (int i = 0; i < opponentBoardCards.Count; i++)
-            {
-                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + 0.0f));
-                pivot.x += boardWidth / opponentBoardCards.Count;
-            }
-
-            Sequence sequence = DOTween.Sequence();
-            for (int i = 0; i < opponentBoardCards.Count; i++)
-            {
-                BoardUnitView card = opponentBoardCards[i];
-
-                if (card.Model.IsDead)
-                    continue;
-
-                card.PositionOfBoard = newPositions[i];
-                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
-            }
-
-            _rearrangingTopRealTimeSequence = sequence;
-            sequence.AppendCallback(
-                () =>
-                {
-                    onComplete?.Invoke();
-                });
         }
 
         // rewrite
@@ -858,6 +756,7 @@ namespace Loom.ZombieBattleground
         {
             float handWidth = 0.0f;
             float spacing = -1.0f;
+            float zPositionKoef = -0.1f;
 
             for (int i = 0; i < OpponentHandCards.Count; i++)
             {
@@ -882,7 +781,7 @@ namespace Loom.ZombieBattleground
                 OpponentHandCard card = OpponentHandCards[i];
                 float twist = startTwist - i * twistPerCard;
 
-                Vector3 movePosition = new Vector2(pivot.x - handWidth / 2, pivot.y);
+                Vector3 movePosition = new Vector3(pivot.x - handWidth / 2, pivot.y, i * zPositionKoef);
                 Vector3 rotatePosition = new Vector3(0, 0, twist);
 
                 if (isMove)
@@ -893,18 +792,32 @@ namespace Loom.ZombieBattleground
                         card.Transform.eulerAngles = Vector3.forward * 90f;
                     }
 
-                    card.Transform.DOMove(movePosition, 0.5f);
+                    card.Transform.DOMove(movePosition, 0.5f).OnComplete(() => UpdateOpponentHandCardLayer(card.GameObject));
                     card.Transform.DORotate(rotatePosition, 0.5f);
                 }
                 else
                 {
                     card.Transform.position = movePosition;
                     card.Transform.rotation = Quaternion.Euler(rotatePosition);
+                    UpdateOpponentHandCardLayer(card.GameObject);
                 }
 
                 pivot.x += handWidth / OpponentHandCards.Count;
+            }
+        }
 
-                card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
+        private void UpdateOpponentHandCardLayer(GameObject card)
+        {
+            if (card.layer == 0)
+            {
+                SortingGroup group = card.GetComponent<SortingGroup>();
+                group.sortingLayerID = SRSortingLayers.Default;
+                group.sortingOrder = -1;
+                List<GameObject> allUnitObj = card.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
+                foreach (GameObject child in allUnitObj)
+                {
+                    child.layer = LayerMask.NameToLayer("Battleground");
+                }
             }
         }
 
@@ -918,14 +831,18 @@ namespace Loom.ZombieBattleground
             if (boardUnitModel == null)
                 return null;
 
-            BoardUnitView cardToDestroy =
+            BoardUnitView unitView =
                 OpponentBoardCards
                     .Concat(OpponentBoardCards)
                     .Concat(OpponentGraveyardCards)
                     .Concat(PlayerBoardCards)
                     .Concat(PlayerGraveyardCards)
-                    .First(x => x.Model == boardUnitModel);
-            return cardToDestroy;
+                    .FirstOrDefault(x => x.Model == boardUnitModel);
+
+            if (unitView is default(BoardUnitView))
+                return null;
+
+            return unitView;
         }
 
         public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)
@@ -947,11 +864,18 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true)
+        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true, bool isForceDestroy = false)
         {
-            _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
+            if (!isForceDestroy && unit.HasBuffShield)
+            {
+                unit.UseShieldFromBuff();
+            }
+            else
+            {
+                _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
 
-            unit?.Die(withDeathEffect: withDeathEffect);
+                unit?.Die(withDeathEffect: withDeathEffect);
+            }
         }
 
         public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit, bool revertPositioning = false)
@@ -969,7 +893,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     OpponentBoardCards.Add(view);
-                }   
+                }
             }
             else
             {
@@ -1004,8 +928,7 @@ namespace Loom.ZombieBattleground
 
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
 
-            UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-            UpdatePositionOfBoardUnitsOfOpponent();
+            _boardController.UpdateWholeBoard(null);
         }
 
         public void DistractUnit(BoardUnitView boardUnit)

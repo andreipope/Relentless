@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         private BoardArrowController _boardArrowController;
 
+        private BoardController _boardController;
+
         private ulong _castedAbilitiesIds;
 
         private List<ActiveAbility> _activeAbilities;
@@ -49,6 +51,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
         }
 
         public void ResetAll()
@@ -480,15 +483,14 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction (true);
 
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer (_gameplayManager.CurrentPlayer
-                                       .BoardCards);
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent ();
+                                   _boardController.UpdateWholeBoard(() =>
+                                   {
+                                       onCompleteCallback?.Invoke(true);
 
-                                   onCompleteCallback?.Invoke (true);
+                                       ResolveAllAbilitiesOnUnit(boardObject);
 
-                                   ResolveAllAbilitiesOnUnit (boardObject);
-
-                                   completeCallback?.Invoke ();
+                                       completeCallback?.Invoke();
+                                   });
                                }
                                else if (isPlayer)
                                {
@@ -585,15 +587,15 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction(true);
 
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
-                                       .BoardCards);
-                                   _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                                   _boardController.UpdateWholeBoard(() =>
+                                   {
 
-                                   onCompleteCallback?.Invoke(true);
+                                       onCompleteCallback?.Invoke(true);
 
-                                   ResolveAllAbilitiesOnUnit(boardObject);
+                                       ResolveAllAbilitiesOnUnit(boardObject);
 
-                                   completeCallback?.Invoke();
+                                       completeCallback?.Invoke();
+                                   });
                                }
                            }
                            else
@@ -749,9 +751,7 @@ namespace Loom.ZombieBattleground
                 {
                     activeAbility.Ability.SelectedTargetAction(true);
 
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer
-                        .BoardCards);
-                    _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+                    _boardController.UpdateWholeBoard(null);
                 };
 
                 if (from != null && targets[0].BoardObject != null)
@@ -1126,8 +1126,7 @@ namespace Loom.ZombieBattleground
                 activeAbility.Ability.SelectedTargetAction(true);
             }
 
-            _battlegroundController.UpdatePositionOfBoardUnitsOfPlayer(_gameplayManager.CurrentPlayer.BoardCards);
-            _battlegroundController.UpdatePositionOfBoardUnitsOfOpponent();
+            _boardController.UpdateWholeBoard(null);
         }
 
         private void ProceedWithCardToGraveyard(BoardCard card)
@@ -1138,7 +1137,9 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.PlayCardFromHand,
                 Caller = card,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
+                checkForCardOwner = false,
+                workingCard = card.WorkingCard
             });
         }
 
@@ -1169,7 +1170,10 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         0,
-                        null,
+                        new List<AbilityData.VisualEffectInfo>()
+                        {
+                            new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, "Prefabs/VFX/ReanimateVFX")
+                        },
                         Enumerators.GameMechanicDescriptionType.Reanimate,
                         default(Enumerators.SetType),
                         default(Enumerators.AbilitySubTrigger),

@@ -113,6 +113,11 @@
       "type": "BLITZ"
     },
     {
+      "name": "Super Serum",
+      "tooltip": "Add 3 Atk and 3 Def to a zombie; End: -3 Def",
+      "type": "SUPER_SERUM"
+    },
+    {
       "name": "Feral",
       "tooltip": "Can attack when this zombie enters the battleground",
       "type": "FERAL"

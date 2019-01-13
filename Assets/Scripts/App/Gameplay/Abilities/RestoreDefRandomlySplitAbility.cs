@@ -61,16 +61,16 @@ namespace Loom.ZombieBattleground
                 switch (targetType)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        _targets.Add(GameplayManager.OpponentPlayer);
+                        _targets.Add(GetOpponentOverlord());
                         break;
                     case Enumerators.AbilityTargetType.PLAYER:
-                        _targets.Add(GameplayManager.CurrentPlayer);
+                        _targets.Add(PlayerCallerOfAbility);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _targets.AddRange(GameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model));
+                        _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _targets.AddRange(GameplayManager.OpponentPlayer.BoardCards.Select(x => x.Model));
+                        _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);
@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
 
                 defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, maxCount);
                 defenseValue = Mathf.Clamp(defenseValue, 0, deltaHealth);
-                
+
                 maxCount -= defenseValue;
 
                 if (defenseValue > 0)

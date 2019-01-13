@@ -8,6 +8,7 @@
   <projectSetting name="GooglePlayServices.AutoResolverEnabled" value="True" />
   <projectSetting name="GooglePlayServices.ExplodeAars" value="False" />
   <projectSetting name="GooglePlayServices.FetchDependenciesWithGradle" value="False" />
+  <projectSetting name="GooglePlayServices.PatchAndroidManifest" value="True" />
   <projectSetting name="GooglePlayServices.PrebuildWithGradle" value="False" />
   <projectSetting name="GooglePlayServices.UseGradleDaemon" value="True" />
   <projectSetting name="GooglePlayServices.VerboseLogging" value="True" />
