@@ -104,6 +104,7 @@ namespace Loom.ZombieBattleground
 
         private void PvPModeButtonOnClickHandler()
         {
+
             Version pvpVersion = Version.Parse(_dataManager.CachedVersions.PvpVersion);
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(pvpVersion))
             {

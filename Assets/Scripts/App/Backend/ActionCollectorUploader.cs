@@ -256,9 +256,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void MulliganHandler(List<WorkingCard> cards)
             {
-                Debug.Log("CARDS THAT ARE KEPT");
-                Debug.Log(JsonUtility.ToJson(cards));
-                Debug.Log(JsonUtility.ToJson(cards.Select(card => card.InstanceId)));
                 AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
 

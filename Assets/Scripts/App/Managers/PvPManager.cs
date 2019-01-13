@@ -13,6 +13,7 @@ using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.De
 using Random = UnityEngine.Random;
 using SystemText = System.Text;
 using Loom.Google.Protobuf.Collections;
+using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
@@ -227,6 +228,8 @@ namespace Loom.ZombieBattleground
             {
                 player.CardsInHand.Add(cardInstance.FromProtobuf(player));
             }
+
+            player.ThrowOnHandChanged();
         }
 
         private void UpdateCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
@@ -237,6 +240,12 @@ namespace Loom.ZombieBattleground
             {
                 player.CardsInDeck.Add(cardInstance.FromProtobuf(player));
             }
+
+            Debug.Log("Updating player cards");
+            Debug.Log(player.CardsInDeck.Count);
+            Debug.Log(cardsInDeck.Count);
+
+            player.InvokeDeckChangedEvent();
         }
 
         private void OnPlayerActionReceivedHandler(byte[] data)
@@ -290,22 +299,22 @@ namespace Loom.ZombieBattleground
                             {
                                 GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
 
-                                Debug.Log("THIS USER MULLIGAN");
-                                Debug.Log(JsonUtility.ToJson(getGameStateResponse));
-
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id == _backendDataControlMediator.UserDataModel.UserId);
+                                                                                                            
+                                for (int i = 0; i < 3; i++) {
+                                    playerState.CardsInDeck.Insert(0, playerState.CardsInHand[i]);
+                                }
 
                                 UpdateCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
+
+                                _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.CardsPreparingToHand);
                             }
                             return;
                         } else {
                             if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                 GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
-
-                                Debug.Log("OPPONENT USER MULLIGAN");
-                                Debug.Log(JsonUtility.ToJson(getGameStateResponse));
 
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id != _backendDataControlMediator.UserDataModel.UserId);

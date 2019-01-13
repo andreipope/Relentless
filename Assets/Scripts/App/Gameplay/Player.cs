@@ -412,6 +412,10 @@ namespace Loom.ZombieBattleground
             DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
+        public void InvokeDeckChangedEvent () {
+            DeckChanged?.Invoke(CardsInDeck.Count);
+        }
+
         public GameObject AddCardToHand(WorkingCard card, bool silent = false)
         {
             GameObject cardObject;
