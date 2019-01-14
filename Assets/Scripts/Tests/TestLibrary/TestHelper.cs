@@ -202,8 +202,6 @@ namespace Loom.ZombieBattleground.Test
                 Initialized = true;
 
                 await LetsThink();
-
-                Debug.Log("DOOONE");
             }
             else if (GetCurrentPageName() != "")
             {

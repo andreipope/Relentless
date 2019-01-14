@@ -87,7 +87,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
-            /*
             await _dataManager.LoadRemoteConfig();
             Version contentVersion = Version.Parse(_dataManager.CachedVersions.ContentVersion);
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(contentVersion))
@@ -115,7 +114,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 };
 
                 _uiManager.DrawPopup<UpdatePopup>(actions);
-            }*/
+            }
             
             try
             {
