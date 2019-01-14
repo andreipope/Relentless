@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                 _uiManager.DrawPopup<UpdatePopup>(actions);
             }
-            
+
             try
             {
                 await _backendFacade.SignUp(UserDataModel.UserId);

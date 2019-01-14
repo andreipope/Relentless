@@ -1035,13 +1035,12 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
-            WaitStart(1000);
+            WaitStart(250);
             await new WaitUntil(() =>
             {
                 return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());
             });
 
-            Debug.Log(!CheckCurrentPageName("MainMenuPage"));
             if (!CheckCurrentPageName("MainMenuPage"))
             {
                 Assert.Fail(
