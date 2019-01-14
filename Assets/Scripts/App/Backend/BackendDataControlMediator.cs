@@ -122,6 +122,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
+                Helpers.ExceptionReporter.LogException(e);
                 // Ignore
             }
             

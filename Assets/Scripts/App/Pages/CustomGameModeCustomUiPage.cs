@@ -118,6 +118,7 @@ namespace Loom.ZombieBattleground
                             }
                             catch (Exception e)
                             {
+                                Helpers.ExceptionReporter.LogException(e);
                                 Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
                             }
                         });

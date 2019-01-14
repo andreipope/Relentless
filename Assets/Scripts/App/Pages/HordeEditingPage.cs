@@ -760,6 +760,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
+                    Helpers.ExceptionReporter.LogException(e);
                     Debug.Log("Result === " + e);
 
                     success = false;
@@ -786,6 +787,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
+                    Helpers.ExceptionReporter.LogException(e);
                     Debug.Log("Result === " + e);
 
                     success = false;

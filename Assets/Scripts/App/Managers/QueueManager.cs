@@ -60,11 +60,13 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" Time out == " + exception);
                             ShowConnectionPopup();
                         }
                         catch (Exception exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" other == " + exception);
                             ShowConnectionPopup();
                         }
@@ -77,11 +79,13 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" Time out == " + exception);
                             ShowConnectionPopup();
                         }
                         catch (Exception exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" other == " + exception);
                             ShowConnectionPopup();
                         }

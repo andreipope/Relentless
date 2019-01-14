@@ -155,8 +155,9 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 Debug.Log("brain canceled!");
             }
 

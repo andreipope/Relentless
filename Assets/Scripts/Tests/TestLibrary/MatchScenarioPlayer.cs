@@ -171,6 +171,7 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 Debug.LogException(e);
             }
         }
