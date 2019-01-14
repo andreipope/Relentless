@@ -366,6 +366,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 if (e.Message == Constants.VaultEmptyErrorCode)
                 {
                     UpdatePrivateKeyProcess(noOTP);
@@ -398,6 +400,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
@@ -415,6 +419,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
@@ -435,6 +441,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
@@ -519,6 +527,8 @@ namespace Loom.ZombieBattleground
             }
             catch (GameVersionMismatchException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
 
@@ -526,6 +536,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
@@ -550,6 +562,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);

@@ -1,4 +1,4 @@
-﻿using Loom.Google.Protobuf;
+using Loom.Google.Protobuf;
 using Loom.Chaos.NaCl;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -13,6 +13,8 @@ using Loom.Client.Protobuf;
 #if UNITY_WEBGL && !UNITY_EDITOR
 using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
 #endif
+
+using UnityUserReporting = Unity.Cloud.UserReporting.Plugin.UnityUserReporting;
 
 namespace Loom.Client
 {
@@ -210,6 +212,8 @@ namespace Loom.Client
                     return result;
                 } catch (LoomException e)
                 {
+                    UnityUserReporting.CurrentClient.LogException(e);
+
                     if (this.TxMiddleware != null)
                     {
                         this.TxMiddleware.HandleTxException(e);

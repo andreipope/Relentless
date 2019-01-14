@@ -241,6 +241,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 Debug.Log("Result === " + e);
                 OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
                 return;

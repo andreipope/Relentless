@@ -20,8 +20,9 @@ namespace Loom.ZombieBattleground
             {
                 return base.ReadJson(reader, objectType, existingValue, serializer);
             }
-            catch (JsonSerializationException)
+            catch (JsonSerializationException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 return FallbackVersion;
             }
         }

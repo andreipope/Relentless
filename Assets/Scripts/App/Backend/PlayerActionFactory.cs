@@ -143,7 +143,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         {
                             InstanceId = new Data.InstanceId(player.InstanceId.Id).ToProtobuf(),
                             AffectObjectType = AffectObjectType.Types.Enum.Player,
-                            Parameter = new Parameter()
+                            Parameter = new Parameter
+                            {
+                                Defense = parametrizedAbility.Parameters.Defense
+                            }
                         };
                     }
                     else if (parametrizedAbility.BoardObject is HandBoardCard handCard)
