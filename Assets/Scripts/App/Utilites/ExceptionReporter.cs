@@ -8,5 +8,11 @@ namespace Loom.ZombieBattleground.Helpers
         {
             Unity.Cloud.UserReporting.Plugin.UnityUserReporting.CurrentClient.LogException(e);
         }
+
+        public static void LogException(string e)
+        {
+            UnityEngine.Debug.LogWarning(e);
+            Unity.Cloud.UserReporting.Plugin.UnityUserReporting.CurrentClient.LogException(new Exception(e));
+        }
     }
 }
