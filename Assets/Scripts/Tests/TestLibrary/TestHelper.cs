@@ -202,6 +202,8 @@ namespace Loom.ZombieBattleground.Test
                 Initialized = true;
 
                 await LetsThink();
+
+                Debug.Log("DOOONE");
             }
             else if (GetCurrentPageName() != "")
             {
@@ -372,6 +374,9 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 case "MainMenuPage":
+
+                    return;
+                case "LoadingPage":
 
                     return;
                 default:
@@ -1032,40 +1037,18 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
-            WaitStart(10);
-            GameObject pressAnyText = null;
+            WaitStart(1000);
             await new WaitUntil(() =>
             {
-                pressAnyText = GameObject.Find("PressAnyText");
-
-                return pressAnyText != null || CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") ||
-                    WaitTimeIsUp();
+                return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());
             });
 
-            if (pressAnyText != null)
-            {
-                pressAnyText.SetActive(false);
-                GameClient.Get<IUIManager>().DrawPopup<LoginPopup>();
-
-                await AssertLoggedInOrLoginFailed(
-                    CloseTermsPopupIfRequired,
-                    () =>
-                    {
-                        Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND");
-                        return Task.CompletedTask;
-                    },
-                    () => SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
-                    GoOnePageHigher);
-            }
-            else if (!CheckCurrentPageName("MainMenuPage") && !CheckCurrentPageName("GameplayPage"))
+            Debug.Log(!CheckCurrentPageName("MainMenuPage"));
+            if (!CheckCurrentPageName("MainMenuPage"))
             {
                 Assert.Fail(
-                    $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
+                    $"Login wasn't completed. Please ensure you have logged in previously, and that you're pointing to the Stage or Production server.");
             }
-
-            /* await CombinedCheck (
-                CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-                CheckCurrentPageName, "MainMenuPage", null); */
 
             await new WaitForUpdate();
         }
