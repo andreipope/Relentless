@@ -154,6 +154,10 @@ namespace Loom.ZombieBattleground
                 _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
                 await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, PvPTags, UseBackendGameLogic, DebugCheats);
             }
+            catch(Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+            }
             finally
             {
                 _matchmakingBusySemaphore.Release();
@@ -181,6 +185,10 @@ namespace Loom.ZombieBattleground
                 }
 
                 _queueManager.Clear();
+            }
+            catch(Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
             }
             finally
             {
