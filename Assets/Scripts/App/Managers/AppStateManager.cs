@@ -170,7 +170,14 @@ namespace Loom.ZombieBattleground
                 {
                     Func<Task> connectFunc = async () =>
                     {
-                        await _backendDataControlMediator.LoginAndLoadData();
+                        try
+                        {
+                            await _backendDataControlMediator.LoginAndLoadData();
+                        }
+                        catch(Exception e)
+                        {
+                            Helpers.ExceptionReporter.LogException(e);
+                        }
                         connectionPopup.Hide();
                     };
 
