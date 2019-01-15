@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
             Self.SetActive(true);
 
             int heroId = _gameplayManager.IsTutorial
-                ? _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId :
+                ? _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId :
                   _gameplayManager.CurrentPlayerDeck.HeroId;
 
             _currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];

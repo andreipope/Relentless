@@ -210,7 +210,7 @@ namespace Loom.ZombieBattleground
 
             if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground)
             {
-                if (!_tutorialManager.CurrentTutorialDataStep.IsLaunchAIBrain)
+                if (!_tutorialManager.CurrentTutorialStep.ToGameplayStep().LaunchAIBrain)
                     return;
             }
 
@@ -242,41 +242,34 @@ namespace Loom.ZombieBattleground
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+
+            await LetsWaitForQueue(cancellationToken);
+
+            await UseUnitsOnBoard(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            await UsePlayerSkills(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsWaitForQueue(cancellationToken);
+
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
             {
-                ((TutorialManager) _tutorialManager).Paused = true;
+                await UseUnitsOnBoard(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+
             }
             else
             {
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
-
-                await LetsWaitForQueue(cancellationToken);
-
-                await UseUnitsOnBoard(cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
-                await UsePlayerSkills(cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
-
-                await LetsWaitForQueue(cancellationToken);
-
-                if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
-                {
-                    await UseUnitsOnBoard(cancellationToken);
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    await LetsThink(cancellationToken);
-                    await LetsThink(cancellationToken);
-                    _battlegroundController.StopTurn();
-
-                }
-                else
-                {
-                    await LetsThink(cancellationToken);
-                    await LetsThink(cancellationToken);
-                    _battlegroundController.StopTurn();
-                }
+                _battlegroundController.StopTurn();
             }
         }
 

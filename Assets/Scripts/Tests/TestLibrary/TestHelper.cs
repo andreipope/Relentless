@@ -2023,9 +2023,8 @@ namespace Loom.ZombieBattleground.Test
                     boardUnit.tag = SRTags.OpponentOwned;
                     boardUnit.transform.position = Vector3.zero;
                     boardUnitViewElement.Model.OwnerPlayer = card.Owner;
-                        boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
-
-                        boardUnitViewElement.SetObjectInfo(workingCard);
+                    boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
+                    boardUnitViewElement.SetObjectInfo(workingCard);
                     _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
 
                     boardUnit.transform.position +=

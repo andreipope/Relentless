@@ -153,8 +153,6 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.GetController<InputController>().UnitSelectedEvent += UnitSelectedEventHandler;
                 _gameplayManager.GetController<InputController>().UnitDeselectedEvent += UnitDeselectedEventHandler;
                 _gameplayManager.GetController<InputController>().PlayerSelectedEvent += PlayerSelectedEventHandler;
-                _gameplayManager.GetController<InputController>().PlayerPointerEnteredEvent += PlayerSelectedEventHandler;
-                _gameplayManager.GetController<InputController>().UnitPointerEnteredEvent += UnitSelectedEventHandler;
             }
 
             EnableStepContent(CurrentTutorialStep);
@@ -196,8 +194,6 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.GetController<InputController>().UnitSelectedEvent -= UnitSelectedEventHandler;
                 _gameplayManager.GetController<InputController>().UnitDeselectedEvent -= UnitDeselectedEventHandler;
                 _gameplayManager.GetController<InputController>().PlayerSelectedEvent -= PlayerSelectedEventHandler;
-                _gameplayManager.GetController<InputController>().PlayerPointerEnteredEvent -= PlayerSelectedEventHandler;
-                _gameplayManager.GetController<InputController>().UnitPointerEnteredEvent -= UnitSelectedEventHandler;
             }
 
             _uiManager.HidePopup<TutorialAvatarPopup>();
