@@ -499,6 +499,7 @@ namespace Loom.ZombieBattleground
                                    _activeAbility.Ability.ActivateSelectTarget(
                                        callback: () =>
                                        {
+                                           _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
@@ -570,6 +571,8 @@ namespace Loom.ZombieBattleground
                                }
                                else
                                {
+                                   _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordCardPlayed);
+
                                    switch (target)
                                    {
                                        case BoardUnitModel unit:
@@ -1070,6 +1073,8 @@ namespace Loom.ZombieBattleground
         {
             if (isPlayer)
             {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
+
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
@@ -1104,6 +1109,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordCardPlayed);
+
                 if (activeAbility == null)
                     return;
 

@@ -50,12 +50,17 @@ namespace Loom.ZombieBattleground
                        List<BoardUnitView> filter = units.Where(unit =>
                                     unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
                                     (int)unit.Model.Card.LibraryCard.CardRank < (int)card.LibraryCard.CardRank).ToList();
-                       if (filter.Count > 0)
+
+                       if ((filter.Count > 0 && !_tutorialManager.IsTutorial) ||
+                           (_tutorialManager.IsTutorial &&
+                           _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.RankSystemHasEnabled))
                        {
                            DoRankUpgrades(filter, card);
 
                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero,
                             Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+
+                           _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.RanksUpdated);
                        }
                        else
                        {

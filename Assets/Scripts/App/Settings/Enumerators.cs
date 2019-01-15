@@ -566,28 +566,6 @@ namespace Loom.ZombieBattleground.Common
             BUFF
         }
 
-        public enum TutorialJanePoses
-        {
-            NORMAL,
-            THINKING,
-            POINTING,
-            THUMBS_UP,
-            KISS
-        }
-
-        public enum TutorialReportAction
-        {
-            NONE,
-            END_TURN,
-            MOVE_CARD,
-            ATTACK_CARD_CARD,
-            ATTACK_CARD_HERO,
-            USE_ABILITY,
-            HERO_DEATH,
-            START_TURN,
-            END_OF_RANK_UPGRADE
-        }
-
         public enum UnitStatusType
         {
             NONE,

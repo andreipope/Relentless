@@ -110,6 +110,8 @@ namespace Loom.ZombieBattleground
         private void HideButtonOnClickHandler()
         {
             _uiManager.HidePopup<TutorialAvatarPopup>();
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.AvatarTooltipClosed); 
         }
     }
 }
