@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground.Data
     {
         public Enumerators.Language AppLanguage;
 
-        public bool Tutorial = false;
+        public bool Tutorial = true;
 
         public int LastSelectedDeckId;
 
