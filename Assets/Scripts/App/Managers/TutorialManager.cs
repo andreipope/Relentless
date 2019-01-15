@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
-        private TutorialPopup _popup;
+        private TutorialAvatarPopup _popup;
 
         private TutorialBoardArrow _targettingArrow;
 
@@ -142,8 +142,8 @@ namespace Loom.ZombieBattleground
             _battlegroundController.SetupBattlegroundAsSpecific(CurrentTutorial.SpecificBattlegroundInfo);
 
             IsBubbleShow = true;
-            _uiManager.DrawPopup<TutorialPopup>();
-            _popup = _uiManager.GetPopup<TutorialPopup>();
+            _uiManager.DrawPopup<TutorialAvatarPopup>();
+            _popup = _uiManager.GetPopup<TutorialAvatarPopup>();
             UpdateTutorialVisual();
             _soundManager.PlaySound(Enumerators.SoundType.TUTORIAL, 0, CurrentTutorialDataStep.SoundName, Constants.TutorialSoundVolume, false);
 
@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
             if (!IsTutorial)
                 return;
 
-            _uiManager.HidePopup<TutorialPopup>();
+            _uiManager.HidePopup<TutorialAvatarPopup>();
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
@@ -385,35 +385,6 @@ namespace Loom.ZombieBattleground
             DestroySelectTarget();
 
             _popup.Show(CurrentTutorialDataStep.JaneText);
-            _popup.UpdatePose(CurrentTutorialDataStep.JanePose);
-
-            if (CurrentTutorialDataStep.IsFocusing)
-            {
-                if (CurrentTutorialDataStep.IsArrowEnabled)
-                {
-                    CreateSelectTarget();
-                }
-
-                _popup.ShowTutorialFocus(_currentTutorialStepIndex);
-
-                if (CurrentTutorialDataStep.IsShowNextButtonFocusing)
-                {
-                    _popup.ShowNextButton();
-                }
-            }
-            else
-            {
-                _popup.HideTutorialFocus();
-
-                if (CurrentTutorialDataStep.IsShowQuestion)
-                {
-                    _popup.ShowQuestion();
-                }
-                else if (CurrentTutorialDataStep.IsShowNextButton)
-                {
-                    _popup.ShowNextButton();
-                }
-            }
 
             ResetHelpArrows();
 

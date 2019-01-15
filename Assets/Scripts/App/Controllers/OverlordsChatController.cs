@@ -207,8 +207,6 @@ namespace Loom.ZombieBattleground
                 MonoBehaviour.Destroy(_selfObject);
 
                 OverlordSayPopupHided?.Invoke(this);
-
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.OverlordSayPopupHided);
             }
 
             public void Dispose()

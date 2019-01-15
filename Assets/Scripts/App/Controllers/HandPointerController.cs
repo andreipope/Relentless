@@ -103,9 +103,6 @@ namespace Loom.ZombieBattleground
 
             if(tutorialObjectIdStepOwner != 0)
             {
-                _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.Find(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                            _tutorialManager.GetCardNameById(tutorialObjectIdStepOwner)
-                                                                            .ToLowerInvariant());
                 _selfObject.transform.SetParent(_ownerUnit.Transform, false);
             }
 

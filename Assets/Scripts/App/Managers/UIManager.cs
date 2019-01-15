@@ -78,7 +78,6 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new UpdatePopup());
             _uiPopups.Add(new MulliganPopup());
             _uiPopups.Add(new LoadDataMessagePopup());
-            _uiPopups.Add(new TutorialProgressInfoPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
