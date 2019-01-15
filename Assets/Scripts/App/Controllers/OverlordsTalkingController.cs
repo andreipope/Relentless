@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
         private void GameStartedHandler()
         {
-            if (_tutorialManager.IsTutorial)
+            if(_tutorialManager.IsTutorial)
             {
                 _overlordsChatContainer = new GameObject("OverlordsTalkingContainer").transform;
             }
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
             }
             _overlordSayPopups.Clear();
 
-            if (_overlordsChatContainer != null)
+            if(_overlordsChatContainer != null)
             {
                 MonoBehaviour.Destroy(_overlordsChatContainer.gameObject);
             }
@@ -161,11 +161,11 @@ namespace Loom.ZombieBattleground
                 switch (Owner)
                 {
                     case Enumerators.TooltipOwner.EnemyOverlord:
-                        if (Align == Enumerators.TooltipAlign.CenterLeft)
+                        if(Align == Enumerators.TooltipAlign.CenterLeft)
                         {
                             position = Constants.LeftOpponentOverlordPositionForChat;
                         }
-                        else if (Align == Enumerators.TooltipAlign.CenterRight)
+                        else if(Align == Enumerators.TooltipAlign.CenterRight)
                         {
                             position = Constants.RightOpponentOverlordPositionForChat;
                         }
