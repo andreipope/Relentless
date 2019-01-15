@@ -80,9 +80,6 @@ namespace Loom.ZombieBattleground
                 {
                     _uiManager.SetPage<PackOpenerPage>();
                     break;
-                    //_uiManager.DrawPopup<WarningPopup>(
-                        //$"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
                 }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
