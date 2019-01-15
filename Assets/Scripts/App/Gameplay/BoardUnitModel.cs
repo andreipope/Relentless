@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 
+        public int TutorialObjectId;
+
         public BoardUnitModel()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();

@@ -269,7 +269,9 @@ namespace Loom.ZombieBattleground
                 new InputController(),
                 new OpponentController(),
                 new UniqueAnimationsController(),
-                new BoardController()
+                new BoardController(),
+                new OverlordsChatController(),
+                new HandPointerController()
             };
 
             foreach (IController controller in _controllers)
@@ -308,10 +310,20 @@ namespace Loom.ZombieBattleground
 
             if (IsTutorial)
             {
-                CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
+                CurrentTurnPlayer = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                    SpecificBattlegroundInfo.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 
                 GetController<PlayerController>().SetHand();
+
                 GetController<CardsController>().StartCardDistribution();
+
+                if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
+                {
+                    Debug.Log("_dataManager.CachedUserLocalData.Tutorial = " + _dataManager.CachedUserLocalData.Tutorial);
+                    Debug.Log("_tutorialManager.IsTutorial = " + _tutorialManager.IsTutorial);
+
+                    _tutorialManager.StartTutorial();
+                }
             }
             else
             {

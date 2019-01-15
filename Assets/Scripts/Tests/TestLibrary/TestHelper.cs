@@ -1932,6 +1932,7 @@ namespace Loom.ZombieBattleground.Test
             BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), _testBroker.GetPlayerBoardGameObject(_player).transform);
             boardUnitView.Model.OwnerPlayer = workingCard.Owner;
             boardUnitView.SetObjectInfo(workingCard);
+            boardUnitView.Model.TutorialObjectId = workingCard.TutorialObjectId;
 
             Debug.LogWarning("0");
 
@@ -1969,6 +1970,7 @@ namespace Loom.ZombieBattleground.Test
                         new BoardUnitView(targetCreatureModel, _testBroker.GetPlayerBoardGameObject(_opponent).transform);
                     boardUnitView.Model.OwnerPlayer = targetWorkingCard.Owner;
                     boardUnitView.SetObjectInfo(targetWorkingCard);
+                    boardUnitView.Model.TutorialObjectId = workingCard.TutorialObjectId;
 
                     fightTargetingArrow.OnCardSelected(targetCreatureView);
                 }
@@ -2021,8 +2023,9 @@ namespace Loom.ZombieBattleground.Test
                     boardUnit.tag = SRTags.OpponentOwned;
                     boardUnit.transform.position = Vector3.zero;
                     boardUnitViewElement.Model.OwnerPlayer = card.Owner;
+                        boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
-                    boardUnitViewElement.SetObjectInfo(workingCard);
+                        boardUnitViewElement.SetObjectInfo(workingCard);
                     _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
 
                     boardUnit.transform.position +=

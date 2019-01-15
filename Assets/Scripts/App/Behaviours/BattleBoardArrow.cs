@@ -47,13 +47,6 @@ namespace Loom.ZombieBattleground
                     creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, Enumerators.AffectObjectType.Character, SelectedCard.Model.Card.InstanceId);
                 }
             }
-            else
-            {
-                if (TutorialManager.IsTutorial)
-                {
-                    TutorialManager.ActivateSelectTarget();
-                }
-            }
 
             Dispose();
         }
@@ -63,7 +56,8 @@ namespace Loom.ZombieBattleground
             SelectedPlayer = null;
             SelectedPlayer?.SetGlowStatus(false);
 
-            if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnUnits)
+            if (TutorialManager.IsTutorial &&
+                !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
                 return;
 
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
@@ -113,7 +107,8 @@ namespace Loom.ZombieBattleground
             SelectedCard?.SetSelectedUnit(false);
             SelectedCard = null;
 
-            if (TutorialManager.IsTutorial && !TutorialManager.CurrentTutorialDataStep.BoardArrowCanUsableOnPlayer)
+            if (TutorialManager.IsTutorial &&
+                !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT))
                 return;
 
             if (player.Defense <= 0)

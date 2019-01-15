@@ -738,7 +738,7 @@ namespace Loom.ZombieBattleground
 
         private void OnMouseDown()
         {
-            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialDataStep.UnitsCanAttack)
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().UnitsCanAttack)
                 return;
 
             if (!_arrivalDone)
@@ -760,11 +760,6 @@ namespace Loom.ZombieBattleground
                 {
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
-
-                    if (_tutorialManager.IsTutorial)
-                    {
-                        _tutorialManager.DeactivateSelectTarget();
-                    }
                 }
 
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
