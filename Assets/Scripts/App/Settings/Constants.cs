@@ -148,6 +148,11 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
 
+        internal static Vector3 LeftPlayerOverlordPositionForChat = new Vector3(-3.95f, -4.65f, 0);
+        internal static Vector3 RightPlayerOverlordPositionForChat = new Vector3(3.95f, -4.65f, 0);
+        internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
+        internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
+
         internal const string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
         internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";

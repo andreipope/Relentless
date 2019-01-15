@@ -35,6 +35,10 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonOk;
 
+        private Button _packOpenButton;
+
+        private Image _openPacksImage;
+
         private TextMeshProUGUI _message;
 
         private SpriteRenderer _selectHeroSpriteRenderer;
@@ -102,9 +106,15 @@ namespace Loom.ZombieBattleground
                 .GetComponent<SpriteRenderer>();
             _message = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Message").GetComponent<TextMeshProUGUI>();
 
-            _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
+            _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
             _buttonOk.gameObject.SetActive(false);
+
+            _packOpenButton = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_OpenPacks").GetComponent<Button>();
+            _packOpenButton.onClick.AddListener(OpenPackButtonOnClickHandler);
+
+            _openPacksImage = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Image_OpenPacks").GetComponent<Image>();
+
             _experienceBar = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/ExperienceBar")
                 .GetComponent<Image>();
             _currentLevel = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/CurrentLevel")
@@ -121,7 +131,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(true);
 
             int heroId = _gameplayManager.IsTutorial
-                ? _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId : _gameplayManager.CurrentPlayerDeck.HeroId;
+                ? _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId :
+                  _gameplayManager.CurrentPlayerDeck.HeroId;
 
             _currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
             string heroName = _currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
@@ -217,6 +228,11 @@ namespace Loom.ZombieBattleground
             {
                 _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
             }
+        }
+
+        private void OpenPackButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
     }
 }

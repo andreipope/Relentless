@@ -36,12 +36,12 @@ GameObject:
   - component: {fileID: 4880798756063650}
   - component: {fileID: 212595288325851818}
   m_Layer: 0
-  m_Name: Arrow_Right
+  m_Name: Arrow_CenterRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1265109256785428
 GameObject:
   m_ObjectHideFlags: 1
@@ -52,12 +52,12 @@ GameObject:
   - component: {fileID: 4970391655635914}
   - component: {fileID: 212526373820302184}
   m_Layer: 0
-  m_Name: Arrow_Bottom
+  m_Name: Arrow_BottomMiddle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1304985656940826
 GameObject:
   m_ObjectHideFlags: 1
@@ -68,12 +68,12 @@ GameObject:
   - component: {fileID: 4177220235140176}
   - component: {fileID: 212986204964341874}
   m_Layer: 0
-  m_Name: Arrow_Left
+  m_Name: Arrow_CenterLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1407408047850250
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,12 +103,12 @@ GameObject:
   - component: {fileID: 4604404993211180}
   - component: {fileID: 212278280123952842}
   m_Layer: 0
-  m_Name: Arrow_Up
+  m_Name: Arrow_TopMiddle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1748032050933628
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -0.7180929, y: -0.45332652, z: -1.2321202, w: -0.459908}
+  m_margin: {x: 0.0016232729, y: 0.0014334619, z: -0.0027835965, w: -0.005148053}
   m_textInfo:
     textComponent: {fileID: 114486644251907890}
     characterCount: 24
@@ -570,6 +570,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1.3, y: 0.5}
+  m_AnchoredPosition: {x: 0.2554, y: 0.0135}
+  m_SizeDelta: {x: 3.2124, y: 1.3966}
   m_Pivot: {x: 0.5, y: 0.5}

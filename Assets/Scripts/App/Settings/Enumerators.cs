@@ -493,7 +493,7 @@ namespace Loom.ZombieBattleground.Common
         public enum SoundType
         {
             CLICK,
-           // OTHER,
+            // OTHER,
             BACKGROUND,
             BATTLEGROUND,
             BATTLEGROUND_TOUCH_EFFECT,
@@ -747,6 +747,103 @@ namespace Loom.ZombieBattleground.Common
             EndMatch,
             UnitCombat,
             LeaveMatch
+        }
+
+        public enum TooltipAlign
+        {
+            Undefined,
+
+            TopLeft,
+            TopMiddle,
+            TopRight,
+            CenterLeft,
+            CenterMiddle,
+            CenterRight,
+            BottomLeft,
+            BottomMiddle,
+            BottomRight
+        }
+
+        public enum TooltipOwner
+        {
+            Undefined,
+
+            EnemyOverlord,
+            EnemyBattleframe,
+            EnemyCardInHand,
+
+            PlayerOverlord,
+            PlayerBattleframe,
+            PlayerCardInHand,
+            PlayerGooBottles,
+            PlayerOverlordAbility
+        }
+
+        public enum TutorialActivityAction
+        {
+            Undefined,
+
+            PlayerOverlordTriedToAttackTargetWhenItsLimited,
+            EnemyOverlordDied,
+            EnemyOverlordCardPlayed,
+            EnemyOverlordSelected,
+
+            PlayerOverlordCardDrawed,
+            PlayerOverlordTriedToPlayUnsequentionalCard,
+            PlayerOverlordTriedToUseUnsequentionalBattleframe,
+            PlayerOverlordTriedToPlayCardWhenItsLimited,
+            PlayerOverlorDied,
+            PlayerOverlordAbilityUsed,
+            PlayerOverlordCardPlayed,
+            PlayerOverlordSelected,
+
+            EndMatchPopupAppear,
+
+            TapOnDisabledButtonWhenItsLimited,
+            TapOnEndTurnButtonWhenItsLimited,
+
+            EndTurn,
+            StartTurn,
+            RanksUpdated,
+
+            BattleframeAttacked,
+            BattleframeSelected,
+            BattleframeDeselected,
+
+            TapOnScreen,
+            AvatarTooltipClosed,
+
+            OverlordSayPopupHided
+        }
+
+        public enum TutorialActivityActionHandler
+        {
+            Undefined,
+
+            OverlordSayTooltip,
+            DrawDescriptionTooltips,
+        }
+
+        public enum TutorialHandPointerType
+        {
+            Single,
+            Animated
+        }
+
+        public enum TutorialAvatarPose
+        {
+            NORMAL,
+            THINKING,
+            POINTING,
+            THUMBS_UP,
+            KISS
+        }
+
+        public enum TutorialHandState
+        {
+            Drag,
+            Pointing,
+            Pressed
         }
     }
 }
