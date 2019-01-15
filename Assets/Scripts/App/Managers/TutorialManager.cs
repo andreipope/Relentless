@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
 
         private IAnalyticsManager _analyticsManager;
 
-        private OverlordsChatController _overlordsChatController;
+        private OverlordsTalkingController _overlordsChatController;
 
         private HandPointerController _handPointerController;
 
@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
-            _overlordsChatController = _gameplayManager.GetController<OverlordsChatController>();
+            _overlordsChatController = _gameplayManager.GetController<OverlordsTalkingController>();
             _handPointerController = _gameplayManager.GetController<HandPointerController>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();

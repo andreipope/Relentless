@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
                 new OpponentController(),
                 new UniqueAnimationsController(),
                 new BoardController(),
-                new OverlordsChatController(),
+                new OverlordsTalkingController(),
                 new HandPointerController()
             };
 

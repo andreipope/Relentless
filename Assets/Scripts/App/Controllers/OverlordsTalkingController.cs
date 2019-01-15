@@ -9,7 +9,7 @@ using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
-    public class OverlordsChatController : IController
+    public class OverlordsTalkingController : IController
     {
         private Transform _overlordsChatContainer;
 
