@@ -82,7 +82,9 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsGameStarted || _gameplayManager.IsGameEnded)
                 return;
 
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep != null && !_tutorialManager.CurrentTutorialDataStep.CanHandleInput)
+            if (_tutorialManager.IsTutorial &&
+                _tutorialManager.CurrentTutorialStep != null &&
+                !_tutorialManager.CurrentTutorialStep.ToGameplayStep().CanInteractWithGameplay)
                 return;
 
             _pointerEventSolver.Update();
@@ -207,6 +209,12 @@ namespace Loom.ZombieBattleground
 
         public void HandCardPreview(object[] param)
         {
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeSelected);
+                return;
+            }
+
             Vector3 cardPosition;
 
             if (!InternalTools.IsTabletScreen())
@@ -364,10 +372,6 @@ namespace Loom.ZombieBattleground
         private void PointerSolverDragStartedHandler()
         {
             _topmostBoardCard?.HandBoardCard?.OnSelected();
-            if (_tutorialManager.IsTutorial)
-            {
-                _tutorialManager.DeactivateSelectTarget();
-            }
 
             if (_boardArrowController.CurrentBoardArrow == null)
             {

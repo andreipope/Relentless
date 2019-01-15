@@ -779,7 +779,6 @@ namespace Loom.ZombieBattleground
 
             _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);

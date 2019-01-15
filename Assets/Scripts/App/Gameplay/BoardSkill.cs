@@ -167,11 +167,6 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
-
-                    if (_tutorialManager.IsTutorial)
-                    {
-                        _tutorialManager.DeactivateSelectTarget();
-                    }
                 }
             }
 
@@ -200,7 +195,10 @@ namespace Loom.ZombieBattleground
             _isAlreadyUsed = true;
             GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+            if (OwnerPlayer.IsLocalPlayer)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed);
+            }
 
             SkillUsed?.Invoke(this, target);
 
@@ -358,11 +356,6 @@ namespace Loom.ZombieBattleground
 
         private void DoOnUpSkillAction(Action completeCallback)
         {
-            if (OwnerPlayer.IsLocalPlayer && _tutorialManager.IsTutorial)
-            {
-                _tutorialManager.ActivateSelectTarget();
-            }
-
             if (!Skill.CanSelectTarget)
             {
                 _skillsController.DoSkillAction(this, completeCallback, OwnerPlayer);
@@ -390,11 +383,6 @@ namespace Loom.ZombieBattleground
 
         private bool IsSkillCanUsed()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.CanUseBoardSkill)
-            {
-                return true;
-            }
-
             if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn ||
                 _tutorialManager.IsTutorial)
             {

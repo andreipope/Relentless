@@ -5,29 +5,22 @@ namespace Loom.ZombieBattleground
     public interface ITutorialManager
     {
         TutorialData CurrentTutorial { get; }
-        TutorialDataStep CurrentTutorialDataStep { get; }
+        TutorialStep CurrentTutorialStep { get; }
 
         bool IsTutorial { get; }
 
-        bool IsBubbleShow { get; set; }
+        int TutorialsCount { get; }
 
         void StartTutorial();
+
         void SetupTutorialById(int id);
 
         void StopTutorial();
 
-        void ReportAction(Enumerators.TutorialReportAction action);
+        void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = -1);
 
-        void ActivateSelectTarget();
-
-        void DeactivateSelectTarget();
-
-        void NextButtonClickHandler();
-
-        void SkipTutorial(Enumerators.AppState state);
-
-        int TutorialsCount { get; }
-
-        AnalyticsTimer TutorialDuration { get; set; }
+        SpecificTurnInfo GetCurrentTurnInfo();
+        bool IsCompletedActivitiesForThisTurn();
+        string GetCardNameById(int id);
     }
 }

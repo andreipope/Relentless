@@ -499,7 +499,6 @@ namespace Loom.ZombieBattleground
                                    _activeAbility.Ability.ActivateSelectTarget(
                                        callback: () =>
                                        {
-                                           _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
@@ -1071,7 +1070,6 @@ namespace Loom.ZombieBattleground
         {
             if (isPlayer)
             {
-                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.MOVE_CARD);
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
