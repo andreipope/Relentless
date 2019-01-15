@@ -86,6 +86,8 @@ namespace Loom.ZombieBattleground
 
         private float _sineOffset = 0;
 
+        private bool _wasDisposed = false;
+
 
         public HandPointerPopup(Enumerators.TutorialHandPointerType type, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, int handOrder = 0)
         {
@@ -140,7 +142,7 @@ namespace Loom.ZombieBattleground
 
         private void Start()
         {
-            if (_selfObject == null)
+            if (_wasDisposed)
                 return;
 
             _selfObject.SetActive(true);
@@ -174,7 +176,7 @@ namespace Loom.ZombieBattleground
 
         private void Move()
         {
-            if (_selfObject == null)
+            if (_wasDisposed)
                 return;
 
             ChangeHandState(0);
@@ -192,7 +194,7 @@ namespace Loom.ZombieBattleground
 
         private void End()
         {
-            if (_selfObject == null)
+            if (_wasDisposed)
                 return;
 
             ChangeHandState(Enumerators.TutorialHandState.Pointing);
@@ -211,7 +213,7 @@ namespace Loom.ZombieBattleground
 
         private void ChangeHandState(Enumerators.TutorialHandState handState)
         {
-            if (_selfObject == null)
+            if (_wasDisposed)
                 return;
 
             _handRenderer.sprite = _handStates[(int)handState];
@@ -219,7 +221,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (_selfObject == null)
+            if (_wasDisposed)
                 return;
 
             if(_stayInEndPoint && _type == Enumerators.TutorialHandPointerType.Animated)
@@ -247,6 +249,8 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            _wasDisposed = true;
+
             if (_selfObject != null)
             {
                 MonoBehaviour.Destroy(_selfObject);
