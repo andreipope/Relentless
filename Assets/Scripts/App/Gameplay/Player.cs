@@ -344,7 +344,7 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> CardsInGraveyard { get; }
 
-        public List<WorkingCard> CardsInHand { get; }
+        public List<WorkingCard> CardsInHand { get; set; }
 
         public List<WorkingCard> CardsOnBoard { get; }
 
@@ -409,6 +409,10 @@ namespace Loom.ZombieBattleground
         {
             CardsInDeck.Remove(card);
 
+            DeckChanged?.Invoke(CardsInDeck.Count);
+        }
+
+        public void InvokeDeckChangedEvent () {
             DeckChanged?.Invoke(CardsInDeck.Count);
         }
 

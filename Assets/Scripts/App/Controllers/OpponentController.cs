@@ -109,7 +109,6 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
             _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
-            _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
             _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
@@ -133,7 +132,6 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
             _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
-            _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
             _pvpManager.PlayerLeftGameActionReceived -= OnPlayerLeftGameActionHandler;
@@ -215,11 +213,6 @@ namespace Loom.ZombieBattleground
                 TargetId = actionUseOverlordSkill.Target.InstanceId.FromProtobuf(),
                 AffectObjectType = (Enumerators.AffectObjectType) actionUseOverlordSkill.Target.AffectObjectType
             });
-        }
-
-        private void OnMulliganProcessHandler(PlayerActionMulligan actionMulligan)
-        {
-
         }
 
         private void OnRankBuffHandler(PlayerActionRankBuff actionRankBuff)

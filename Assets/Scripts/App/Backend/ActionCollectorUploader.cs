@@ -4,6 +4,7 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -145,6 +146,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Player.CardPlayed += CardPlayedHandler;
                     Player.CardAttacked += CardAttackedHandler;
                     Player.LeaveMatch += LeaveMatchHandler;
+                    GameClient.Get<IUIManager>().GetPopup<MulliganPopup>().MulliganCards += MulliganHandler;
 
                     if (_skillsController.PlayerPrimarySkill != null)
                     {
