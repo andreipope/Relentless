@@ -9,7 +9,7 @@ using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
-    public class OverlordsChatController : IController
+    public class OverlordsTalkingController : IController
     {
         private Transform _overlordsChatContainer;
 
@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
         {
             if(_tutorialManager.IsTutorial)
             {
-                _overlordsChatContainer = new GameObject("OverlordsChatContainer").transform;
+                _overlordsChatContainer = new GameObject("OverlordsTalkingContainer").transform;
             }
         }
 
@@ -76,12 +76,12 @@ namespace Loom.ZombieBattleground
 
         private void UpdatePopupsPositions()
         {
-            var sortingGroupsPopups = _overlordSayPopups.GroupBy(x => new { x.align, x.owner })
-                        .Select(g => new
+            var sortingGroupsPopups = _overlordSayPopups.GroupBy(popup => new { popup.Align, popup.Owner })
+                        .Select(group => new
                         {
-                            Name = g.Key,
-                            Count = g.Count(),
-                            Popups = g.Select(p => p)
+                            Name = group.Key,
+                            Count = group.Count(),
+                            Popups = group.Select(p => p)
                         });
 
             float height = 0;
@@ -91,8 +91,7 @@ namespace Loom.ZombieBattleground
                 foreach (OverlordSayPopup sayPopup in group.Popups)
                 {
                     sayPopup.UpdatePosition(height);
-                    height += sayPopup.heightPopup;
-
+                    height += sayPopup.HeightPopup;
                 }
             }
         }
@@ -101,15 +100,15 @@ namespace Loom.ZombieBattleground
         {
             public event Action<OverlordSayPopup> OverlordSayPopupHided;
 
-            public Enumerators.TooltipAlign align;
+            public Enumerators.TooltipAlign Align;
 
-            public Enumerators.TooltipOwner owner;
+            public Enumerators.TooltipOwner Owner;
 
-            public float heightPopup;
+            public float HeightPopup;
 
-            private const float durationOfShow = 2f;
-            private const float durationOfHide = 0.5f;
-            private const float minHeight = 2.85f;
+            private const float DurationOfShow = 2f;
+            private const float DurationOfHide = 0.5f;
+            private const float MinHeight = 2.85f;
 
             private readonly ITutorialManager _tutorialManager;
             private readonly ILoadObjectsManager _loadObjectsManager;
@@ -125,8 +124,8 @@ namespace Loom.ZombieBattleground
                 _tutorialManager = GameClient.Get<ITutorialManager>();
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
-                this.align = align;
-                this.owner = owner;
+                this.Align = align;
+                this.Owner = owner;
 
                 _selfObject = MonoBehaviour.Instantiate(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/OverlordSayTooltip"), parent, false);
@@ -147,49 +146,37 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                switch (owner)
-                {
-                    case Enumerators.TooltipOwner.PlayerOverlord:
-                   
-                        break;
-                    case Enumerators.TooltipOwner.EnemyOverlord:
-
-                        break;
-                    default:
-                        throw new NotImplementedException(nameof(owner) + " doesn't implemented");
-                }
-
-                heightPopup = _currentBattleground.sprite.bounds.size.y * _selfObject.transform.localScale.y;
+                HeightPopup = _currentBattleground.sprite.bounds.size.y * _selfObject.transform.localScale.y;
 
                 InternalTools.DoActionDelayed(() =>
                 {
-                    _textDescription.DOFade(0, durationOfHide);
-                    _currentBattleground.DOFade(0, durationOfHide).OnComplete(Hide);
-                }, durationOfShow);
+                    _textDescription.DOFade(0, DurationOfHide);
+                    _currentBattleground.DOFade(0, DurationOfHide).OnComplete(Hide);
+                }, DurationOfShow);
             }
 
             public void UpdatePosition(float height)
             {
                 Vector3 position = Vector3.zero;
-                switch (owner)
+                switch (Owner)
                 {
                     case Enumerators.TooltipOwner.EnemyOverlord:
-                        if(align == Enumerators.TooltipAlign.CenterLeft)
+                        if(Align == Enumerators.TooltipAlign.CenterLeft)
                         {
                             position = Constants.LeftOpponentOverlordPositionForChat;
                         }
-                        else if(align == Enumerators.TooltipAlign.CenterRight)
+                        else if(Align == Enumerators.TooltipAlign.CenterRight)
                         {
                             position = Constants.RightOpponentOverlordPositionForChat;
                         }
                         position.y -= height;
                         break;
                     case Enumerators.TooltipOwner.PlayerOverlord:
-                        if (align == Enumerators.TooltipAlign.CenterLeft)
+                        if (Align == Enumerators.TooltipAlign.CenterLeft)
                         {
                             position = Constants.LeftPlayerOverlordPositionForChat;
                         }
-                        else if (align == Enumerators.TooltipAlign.CenterRight)
+                        else if (Align == Enumerators.TooltipAlign.CenterRight)
                         {
                             position = Constants.RightPlayerOverlordPositionForChat;
                         }

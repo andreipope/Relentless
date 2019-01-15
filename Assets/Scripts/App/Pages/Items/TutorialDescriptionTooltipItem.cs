@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
         public int Id;
 
-        public bool isActiveInThisClick;
+        public bool IsActiveInThisClick;
 
         public Enumerators.TooltipOwner OwnerType;
 
@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfObject?.SetActive(true);
-            isActiveInThisClick = true;
+            IsActiveInThisClick = true;
         }
 
         public void Hide()

@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
                 new OpponentController(),
                 new UniqueAnimationsController(),
                 new BoardController(),
-                new OverlordsChatController(),
+                new OverlordsTalkingController(),
                 new HandPointerController()
             };
 
@@ -319,9 +319,6 @@ namespace Loom.ZombieBattleground
 
                 if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
                 {
-                    Debug.Log("_dataManager.CachedUserLocalData.Tutorial = " + _dataManager.CachedUserLocalData.Tutorial);
-                    Debug.Log("_tutorialManager.IsTutorial = " + _tutorialManager.IsTutorial);
-
                     _tutorialManager.StartTutorial();
                 }
             }
