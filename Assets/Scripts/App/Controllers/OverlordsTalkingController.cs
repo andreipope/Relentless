@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
         {
             if(_tutorialManager.IsTutorial)
             {
-                _overlordsChatContainer = new GameObject("OverlordsChatContainer").transform;
+                _overlordsChatContainer = new GameObject("OverlordsTalkingContainer").transform;
             }
         }
 
