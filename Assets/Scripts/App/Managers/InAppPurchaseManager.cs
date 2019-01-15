@@ -23,13 +23,7 @@ namespace Loom.ZombieBattleground
 
 
         private static IStoreController m_StoreController;       
-        private static IExtensionProvider m_StoreExtensionProvider; 
-
-
-        public const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
-        public const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
-        public const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
-        public const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
+        private static IExtensionProvider m_StoreExtensionProvider;
 
         public event Action<PurchaseEventArgs> ProcessPurchaseAction;
 
@@ -51,10 +45,10 @@ namespace Loom.ZombieBattleground
             
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-            builder.AddProduct(PRODUCT_BOOSTER_PACK_1, ProductType.Consumable);
-            builder.AddProduct(PRODUCT_BOOSTER_PACK_2, ProductType.Consumable);
-            builder.AddProduct(PRODUCT_BOOSTER_PACK_5, ProductType.Consumable);
-            builder.AddProduct(PRODUCT_BOOSTER_PACK_10, ProductType.Consumable);
+            builder.AddProduct(Constants.PRODUCT_BOOSTER_PACK_1, ProductType.Consumable);
+            builder.AddProduct(Constants.PRODUCT_BOOSTER_PACK_2, ProductType.Consumable);
+            builder.AddProduct(Constants.PRODUCT_BOOSTER_PACK_5, ProductType.Consumable);
+            builder.AddProduct(Constants.PRODUCT_BOOSTER_PACK_10, ProductType.Consumable);
 
             UnityPurchasing.Initialize(this, builder);
 
@@ -125,20 +119,18 @@ namespace Loom.ZombieBattleground
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
-        {
-
-            if (    String.Equals(args.purchasedProduct.definition.id, PRODUCT_BOOSTER_PACK_1, StringComparison.Ordinal) ||
-                    String.Equals(args.purchasedProduct.definition.id, PRODUCT_BOOSTER_PACK_2, StringComparison.Ordinal) ||
-                    String.Equals(args.purchasedProduct.definition.id, PRODUCT_BOOSTER_PACK_5, StringComparison.Ordinal) ||
-                    String.Equals(args.purchasedProduct.definition.id, PRODUCT_BOOSTER_PACK_10, StringComparison.Ordinal) 
-            )
+        {           
+            switch (args.purchasedProduct.definition.id)
             {
-                Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
-            }
-            
-            else
-            {
-                Debug.Log(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", args.purchasedProduct.definition.id));
+                case Constants.PRODUCT_BOOSTER_PACK_1:
+                case Constants.PRODUCT_BOOSTER_PACK_2:
+                case Constants.PRODUCT_BOOSTER_PACK_5:
+                case Constants.PRODUCT_BOOSTER_PACK_10:
+                    Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
+                    break;
+                default:
+                    Debug.Log(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", args.purchasedProduct.definition.id));
+                    break;
             }
             
             ProcessPurchaseAction?.Invoke( args );
