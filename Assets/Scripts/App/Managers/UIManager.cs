@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new DesintigrateCardPopup());
             _uiPopups.Add(new WarningPopup());
             _uiPopups.Add(new QuestionPopup());
-            _uiPopups.Add(new TutorialPopup());
+            _uiPopups.Add(new TutorialAvatarPopup());
             _uiPopups.Add(new PreparingForBattlePopup());
             _uiPopups.Add(new YouLosePopup());
             _uiPopups.Add(new YouWonPopup());
@@ -78,6 +78,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new UpdatePopup());
             _uiPopups.Add(new MulliganPopup());
             _uiPopups.Add(new LoadDataMessagePopup());
+            _uiPopups.Add(new TutorialProgressInfoPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {

@@ -35,6 +35,10 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonOk;
 
+        private Button _packOpenButton;
+
+        private Image _openPacksImage;
+
         private TextMeshProUGUI _message;
 
         private SpriteRenderer _selectHeroSpriteRenderer;
@@ -102,9 +106,15 @@ namespace Loom.ZombieBattleground
                 .GetComponent<SpriteRenderer>();
             _message = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Message").GetComponent<TextMeshProUGUI>();
 
-            _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
+            _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
             _buttonOk.gameObject.SetActive(false);
+
+            _packOpenButton = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_OpenPacks").GetComponent<Button>();
+            _packOpenButton.onClick.AddListener(OpenPackButtonOnClickHandler);
+
+            _openPacksImage = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Image_OpenPacks").GetComponent<Image>();
+
             _experienceBar = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/ExperienceBar")
                 .GetComponent<Image>();
             _currentLevel = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/CurrentLevel")
@@ -121,7 +131,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(true);
 
             int heroId = _gameplayManager.IsTutorial
-                ? _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId : _gameplayManager.CurrentPlayerDeck.HeroId;
+                ? _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId :
+                  _gameplayManager.CurrentPlayerDeck.HeroId;
 
             _currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
             string heroName = _currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
@@ -141,6 +152,11 @@ namespace Loom.ZombieBattleground
             _experienceBar.fillAmount = currentExperiencePercentage;
 
             FillingExperienceBar();
+
+            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorial.Id == 0)
+            {
+                EnablePackOpenerPart();
+            }
         }
 
         private void FillingExperienceBar()
@@ -160,6 +176,14 @@ namespace Loom.ZombieBattleground
             {
                 _buttonOk.gameObject.SetActive(true);
             }
+        }
+
+        private void EnablePackOpenerPart()
+        {
+            _packOpenButton.gameObject.SetActive(true);
+            _openPacksImage.gameObject.SetActive(true);
+            _buttonOk.interactable = false;
+            _gameplayManager.GetController<HandPointerController>().DrawPointer(Enumerators.TutorialHandPointerType.Single, new Vector3(-3, -4.7f, 0), handOrder: 31, appearDelay: 1f);
         }
 
         public void Show(object data)
@@ -217,6 +241,25 @@ namespace Loom.ZombieBattleground
             {
                 _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
             }
+        }
+
+        private void OpenPackButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            Hide();
+            _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+            {
+                if (_gameplayManager.IsTutorial)
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                }
+                else
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
+                }
+            };
+            _uiManager.DrawPopup<TutorialProgressInfoPopup>();
+            _gameplayManager.GetController<HandPointerController>().ResetAll();
         }
     }
 }
