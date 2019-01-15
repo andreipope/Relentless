@@ -552,6 +552,7 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
                             boardUnitView.Model.OwnerPlayer = card.WorkingCard.Owner;
                             boardUnitView.SetObjectInfo(card.WorkingCard);
+                            boardUnitView.Model.TutorialObjectId = card.WorkingCard.TutorialObjectId;
 
                             player.CardsInHand.Remove(card.WorkingCard);
                             player.AddCardToBoard(card.WorkingCard);
@@ -702,6 +703,7 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * player.BoardCards.Count, 0);
             boardUnitView.Model.OwnerPlayer = card.WorkingCard.Owner;
             boardUnitView.SetObjectInfo(card.WorkingCard);
+            boardUnitView.Model.TutorialObjectId = card.WorkingCard.TutorialObjectId;
 
             if (player.IsLocalPlayer)
             {
@@ -779,6 +781,7 @@ namespace Loom.ZombieBattleground
 
             _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
 
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
@@ -1165,6 +1168,7 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, unitYPositionOnBoard);
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
+            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             boardUnitView.PlayArrivalAnimation();
 

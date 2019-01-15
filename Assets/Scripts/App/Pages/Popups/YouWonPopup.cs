@@ -152,6 +152,11 @@ namespace Loom.ZombieBattleground
             _experienceBar.fillAmount = currentExperiencePercentage;
 
             FillingExperienceBar();
+
+            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorial.Id == 0)
+            {
+                EnablePackOpenerPart();
+            }
         }
 
         private void FillingExperienceBar()
@@ -171,6 +176,14 @@ namespace Loom.ZombieBattleground
             {
                 _buttonOk.gameObject.SetActive(true);
             }
+        }
+
+        private void EnablePackOpenerPart()
+        {
+            _packOpenButton.gameObject.SetActive(true);
+            _openPacksImage.gameObject.SetActive(true);
+            _buttonOk.interactable = false;
+            _gameplayManager.GetController<HandPointerController>().DrawPointer(Enumerators.TutorialHandPointerType.Single, new Vector3(-3, -4.7f, 0), handOrder: 31, appearDelay: 1f);
         }
 
         public void Show(object data)
@@ -233,6 +246,20 @@ namespace Loom.ZombieBattleground
         private void OpenPackButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            Hide();
+            _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+            {
+                if (_gameplayManager.IsTutorial)
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                }
+                else
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
+                }
+            };
+            _uiManager.DrawPopup<TutorialProgressInfoPopup>();
+            _gameplayManager.GetController<HandPointerController>().ResetAll();
         }
     }
 }

@@ -8,23 +8,35 @@ namespace Loom.ZombieBattleground
 {
     public class InputController : IController
     {
-        public Action<BoardUnitView> UnitSelectedEvent;
+        private const float maxTimeForHovering = 3f;
 
-        public Action<BoardUnitView> UnitDeselectedEvent;
+        public event Action<BoardUnitView> UnitSelectedEvent;
 
-        public Action<BoardUnitView> UnitSelectingEvent;
+        public event Action<BoardUnitView> UnitDeselectedEvent;
 
-        public Action<Player> PlayerSelectedEvent;
+        public event Action<BoardUnitView> UnitSelectingEvent;
 
-        public Action<Player> PlayerSelectingEvent;
+        public event Action<BoardUnitView> UnitPointerEnteredEvent;
 
-        public Action NoObjectsSelectedEvent;
+        public event Action<Player> PlayerSelectedEvent;
+
+        public event Action<Player> PlayerPointerEnteredEvent;
+
+        public event Action<Player> PlayerSelectingEvent;
+
+        public event Action NoObjectsSelectedEvent;
 
         private IGameplayManager _gameplayManager;
 
         private Camera _raysCamera;
 
         private List<BoardUnitView> _selectedUnitsList;
+
+        private GameObject _hoveringObject;
+
+        private float _timeHovering;
+
+        private bool _isHovering;
 
         public void Dispose()
         {
@@ -59,6 +71,8 @@ namespace Loom.ZombieBattleground
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
+                            GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen);
+
                             CastRay(touch.position, SRLayerMask.Battleground);
                             break;
                         case TouchPhase.Moved:
@@ -79,8 +93,16 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+
+                if(_gameplayManager.IsTutorial && !_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
+                {
+                    CastRay(Input.mousePosition, SRLayerMask.Battleground, isHovering: true);
+                }
+
                 if (Input.GetMouseButtonDown(0))
                 {
+                    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen);
+
                     CastRay(Input.mousePosition, SRLayerMask.Battleground);
                 }
                 else if (Input.GetMouseButton(0))
@@ -107,7 +129,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void CastRay(Vector3 origin, int layerMask, bool permanent = false)
+        private void CastRay(Vector3 origin, int layerMask, bool permanent = false, bool isHovering = false)
         {
             _raysCamera = Camera.main;
 
@@ -120,20 +142,22 @@ namespace Loom.ZombieBattleground
             {
                 foreach (RaycastHit2D hit in hits)
                 {
-                    CheckColliders(hit.collider, permanent);
+                    CheckColliders(hit.collider, permanent, isHovering);
                 }
             }
             else
             {
                 NoObjectsSelectedEvent?.Invoke();
+                ClearHovering();
             }
         }
 
-        private void CheckColliders(Collider2D collider, bool permanent = false)
+        private void CheckColliders(Collider2D collider, bool permanent = false, bool isHovering = false)
         {
             if (collider.name.Equals(Constants.PlayerBoard) ||
                 collider.name.Equals(Constants.OpponentBoard))
             {
+                ClearHovering();
                 NoObjectsSelectedEvent?.Invoke();
                 return;
             }
@@ -147,18 +171,25 @@ namespace Loom.ZombieBattleground
                 {
                     hasTarget = true;
 
-                    if (!permanent)
+                    if (isHovering)
                     {
-                        if (!_selectedUnitsList.Contains(unit))
-                        {
-                            _selectedUnitsList.Add(unit);
-                        }
-
-                        UnitSelectedEvent?.Invoke(unit);
+                        UpdateHovering(collider.gameObject, unit: unit);
                     }
                     else
                     {
-                        UnitSelectingEvent?.Invoke(unit);
+                        if (!permanent)
+                        {
+                            if (!_selectedUnitsList.Contains(unit))
+                            {
+                                _selectedUnitsList.Add(unit);
+                            }
+
+                            UnitSelectedEvent?.Invoke(unit);
+                        }
+                        else
+                        {
+                            UnitSelectingEvent?.Invoke(unit);
+                        }
                     }
 
                     break;
@@ -171,20 +202,26 @@ namespace Loom.ZombieBattleground
                 {
                     hasTarget = true;
 
-                    if (!permanent)
+                    if (isHovering)
                     {
-                        if (!_selectedUnitsList.Contains(unit))
-                        {
-                            _selectedUnitsList.Add(unit);
-                        }
-
-                        UnitSelectedEvent?.Invoke(unit);
+                        UpdateHovering(collider.gameObject, unit: unit);
                     }
                     else
                     {
-                        UnitSelectingEvent?.Invoke(unit);
-                    }
+                        if (!permanent)
+                        {
+                            if (!_selectedUnitsList.Contains(unit))
+                            {
+                                _selectedUnitsList.Add(unit);
+                            }
 
+                            UnitSelectedEvent?.Invoke(unit);
+                        }
+                        else
+                        {
+                            UnitSelectingEvent?.Invoke(unit);
+                        }
+                    }
                     break;
                 }
             }
@@ -194,13 +231,20 @@ namespace Loom.ZombieBattleground
             {
                 hasTarget = true;
 
-                if (!permanent)
+                if (isHovering)
                 {
-                    PlayerSelectedEvent?.Invoke(_gameplayManager.CurrentPlayer);
+                    UpdateHovering(collider.gameObject, _gameplayManager.CurrentPlayer);
                 }
                 else
                 {
-                    PlayerSelectingEvent?.Invoke(_gameplayManager.CurrentPlayer);
+                    if (!permanent)
+                    {
+                        PlayerSelectedEvent?.Invoke(_gameplayManager.CurrentPlayer);
+                    }
+                    else
+                    {
+                        PlayerSelectingEvent?.Invoke(_gameplayManager.CurrentPlayer);
+                    }
                 }
             }
 
@@ -208,20 +252,61 @@ namespace Loom.ZombieBattleground
             {
                 hasTarget = true;
 
-                if (!permanent)
+                if (isHovering)
                 {
-                    PlayerSelectedEvent?.Invoke(_gameplayManager.OpponentPlayer);
+                    UpdateHovering(collider.gameObject, _gameplayManager.OpponentPlayer);
                 }
                 else
                 {
-                    PlayerSelectingEvent?.Invoke(_gameplayManager.OpponentPlayer);
+                    if (!permanent)
+                    {
+                        PlayerSelectedEvent?.Invoke(_gameplayManager.OpponentPlayer);
+                    }
+                    else
+                    {
+                        PlayerSelectingEvent?.Invoke(_gameplayManager.OpponentPlayer);
+                    }
                 }
             }
 
             if (!hasTarget)
             {
                 NoObjectsSelectedEvent?.Invoke();
+                ClearHovering();
             }
+        }
+
+        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null)
+        {
+            if (_hoveringObject != obj)
+            {
+                _isHovering = false;
+                _hoveringObject = obj;
+                _timeHovering = 0;
+            }
+            else if(!_isHovering)
+            {
+                _timeHovering += Time.deltaTime;
+                if (_timeHovering >= maxTimeForHovering)
+                {
+                    if (unit != null)
+                    {
+                        UnitPointerEnteredEvent?.Invoke(unit);
+                    }
+                    else if(player != null)
+                    {
+                        PlayerPointerEnteredEvent?.Invoke(player);
+                    }
+                    _isHovering = true;
+                }
+            }
+        }
+
+        private void ClearHovering()
+        {
+            _isHovering = false;
+            _hoveringObject = null;
+            _timeHovering = 0;
         }
     }
 }

@@ -1,0 +1,116 @@
+using System;
+using System.Collections.Generic;
+using DG.Tweening;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Loom.ZombieBattleground
+{
+    public class TutorialProgressInfoPopup : IUIPopup
+    {
+        private const float DurationFilling = 1.5f;
+
+        public event Action PopupHiding;
+
+        private ILoadObjectsManager _loadObjectsManager;
+
+        private IUIManager _uiManager;
+
+        private ITutorialManager _tutorialManager;
+
+        private IDataManager _dataManager;
+
+        private TextMeshProUGUI _textProgress;
+
+        private Image _imageProgressBar;
+
+        public GameObject Self { get; private set; }
+
+        private float _startValueProgressBar;
+
+        private float _endValueProgressBar;
+
+        public void Init()
+        {
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _uiManager = GameClient.Get<IUIManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public void Hide()
+        {
+            if (Self == null)
+                return;
+            
+            Self.SetActive(false);
+            UnityEngine.Object.Destroy(Self);
+            Self = null;
+            PopupHiding?.Invoke();
+        }
+
+        public void SetMainPriority()
+        {
+        }
+
+        public void Show()
+        {
+            if (Self != null)
+            {
+                Hide();
+            }
+
+            Self = UnityEngine.Object.Instantiate(
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/TutorialProgressInfoPopup"));
+
+            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+
+            _textProgress = Self.transform.Find("Text_Progress").GetComponent<TextMeshProUGUI>();
+
+            _imageProgressBar = Self.transform.Find("Image_FillingProgressBar").GetComponent<Image>();
+
+            int id = _tutorialManager.CurrentTutorial.Id;
+
+            SetTextProgress(id);
+
+            float step = 1 / _tutorialManager.TutorialsCount;
+            _startValueProgressBar = step * id;
+            _endValueProgressBar = step * (id + 1);
+            _imageProgressBar.fillAmount = _startValueProgressBar;
+            _imageProgressBar.DOFillAmount(_endValueProgressBar, DurationFilling).OnComplete(() =>
+            {
+                SetTextProgress(id + 1);
+                InternalTools.DoActionDelayed(Hide, 1.5f);
+            });
+        }
+
+        public void Show(object data)
+        {
+            Show();
+        }
+
+        public void Update()
+        {
+        }
+
+        private void HideButtonOnClickHandler()
+        {
+            _uiManager.HidePopup<TutorialAvatarPopup>();
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.AvatarTooltipClosed);
+        }
+
+        private void SetTextProgress(int progress)
+        {
+            _textProgress.text = string.Format("{0}/{1}", progress, _tutorialManager.TutorialsCount);
+        }
+    }
+}
