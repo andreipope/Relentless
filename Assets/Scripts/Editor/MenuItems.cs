@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -211,7 +212,59 @@ namespace Loom.ZombieBattleground.Editor
                 Debug.Log("Clean Cache Failed");
             }
         }
+        [MenuItem("Utility/Build/Build Game With AltUnityTester")]
+        private static void BuildGameIncludingAltUnityTester()
+        {
+            var altUnityRunner =
+            AssetDatabase.LoadAssetAtPath<GameObject>(
+                AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("AltUnityRunnerPrefab")[0]));
+            var PreviousScenePath = SceneManager.GetActiveScene().path;
+            var SceneWithAltUnityRunner = EditorSceneManager.OpenScene("Assets/Scenes/APP_INIT.unity");
+            var AltUnityRunner = PrefabUtility.InstantiatePrefab(altUnityRunner);
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            EditorSceneManager.SaveOpenScenes();
 
+            string outputPath = Path.Combine("Builds", EditorUserBuildSettings.activeBuildTarget.ToString());
+
+            if (!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+
+            outputPath = Path.Combine(outputPath, PlayerSettings.productName);
+            switch (EditorUserBuildSettings.activeBuildTarget)
+            {
+                case BuildTarget.StandaloneWindows:
+                case BuildTarget.StandaloneWindows64:
+                    outputPath += ".exe";
+                    break;
+                case BuildTarget.Android:
+                    outputPath += ".apk";
+                    break;
+            }
+
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions
+            {
+                scenes = EditorBuildSettings.scenes.Select((scene, i) => scene.path).ToArray(),
+                locationPathName = outputPath,
+                target = EditorUserBuildSettings.activeBuildTarget,
+                targetGroup = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget),
+                options = BuildOptions.Development
+            };
+            BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            if (buildReport.summary.result != BuildResult.Succeeded)
+                throw new Exception("build failed");
+            GameObject newf=new GameObject();
+            var activeScene = EditorSceneManager.GetActiveScene();
+            altUnityRunner = activeScene.GetRootGameObjects()
+            .FirstOrDefault(gameObject => gameObject.name.Equals("AltUnityRunnerPrefab"));
+            if (altUnityRunner != null)
+            {
+                GameObject.DestroyImmediate(altUnityRunner,false);
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                EditorSceneManager.SaveOpenScenes();
+            }
+        }
         [MenuItem("Utility/Build/Build AssetBundles + Game")]
         public static void BuildAssetBundlesAndGame()
         {
@@ -235,6 +288,7 @@ namespace Loom.ZombieBattleground.Editor
             BuildAssetBundles(buildTarget);
             BuildGame(EditorUserBuildSettings.activeBuildTarget);
         }
+       
 
         private static void BuildGame(BuildTarget buildTarget)
         {
