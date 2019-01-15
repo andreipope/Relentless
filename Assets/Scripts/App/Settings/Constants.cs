@@ -171,5 +171,10 @@ namespace Loom.ZombieBattleground.Common
 #else
             "1985151694912169";
 #endif
+
+        internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
+        internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
+        internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
+        internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
     }
 }
