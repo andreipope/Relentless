@@ -838,5 +838,12 @@ namespace Loom.ZombieBattleground.Common
             THUMBS_UP,
             KISS
         }
+
+        public enum TutorialHandState
+        {
+            Drag,
+            Pointing,
+            Pressed
+        }
     }
 }

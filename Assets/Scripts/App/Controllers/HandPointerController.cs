@@ -159,12 +159,12 @@ namespace Loom.ZombieBattleground
             switch (_type)
             {
                 case Enumerators.TutorialHandPointerType.Single:
-                    ChangeHandState(0);
+                    ChangeHandState(Enumerators.TutorialHandState.Drag);
                     InternalTools.DoActionDelayed(End, interval);
                     break;
                 case Enumerators.TutorialHandPointerType.Animated:
-                    ChangeHandState(1);
-                    InternalTools.DoActionDelayed(() => ChangeHandState(2), interval);                   
+                    ChangeHandState(Enumerators.TutorialHandState.Pointing);
+                    InternalTools.DoActionDelayed(() => ChangeHandState(Enumerators.TutorialHandState.Pressed), interval);                   
                     InternalTools.DoActionDelayed(Move, interval * 2);
                     break;
                 default:
@@ -195,12 +195,12 @@ namespace Loom.ZombieBattleground
             if (_selfObject == null)
                 return;
 
-            ChangeHandState(1);
+            ChangeHandState(Enumerators.TutorialHandState.Pointing);
             _stayInEndPoint = true;
 
             if (_type == Enumerators.TutorialHandPointerType.Single)
             {
-                InternalTools.DoActionDelayed(() => ChangeHandState(2), interval);
+                InternalTools.DoActionDelayed(() => ChangeHandState(Enumerators.TutorialHandState.Pressed), interval);
             }
 
             if(!_appearOnce)
@@ -209,12 +209,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ChangeHandState(int index)
+        private void ChangeHandState(Enumerators.TutorialHandState handState)
         {
             if (_selfObject == null)
                 return;
 
-            _handRenderer.sprite = _handStates[index];
+            _handRenderer.sprite = _handStates[(int)handState];
         }
 
         public void Update()
