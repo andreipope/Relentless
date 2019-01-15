@@ -15,7 +15,7 @@ class CZBTutorialTests(CZBTests):
 
     def setUp(self):
         super(CZBTutorialTests, self).setUp()
-        self.pass_authentification()
+        # self.pass_authentification()
 
     # def test_tutorial(self):
     #     self.altdriver.wait_for_element('Button_Play').mobile_tap()
@@ -37,23 +37,23 @@ class CZBTutorialTests(CZBTests):
     #     self.altdriver.wait_for_element('Button_Continue').mobile_tap()
 
     def test_tutorial_without_waiting_audio(self):
-        self.altdriver.wait_for_element('Button_Play').mobile_tap()
-        time.sleep(1)
+        # self.altdriver.wait_for_element('Button_Play').mobile_tap()
+        time.sleep(5)
         self.go_though_all_steps_without_waiting_for_audio(1,37)
         
         self.driver.save_screenshot('./screenshots/Continue_Button_Tutorial1.png')
         self.altdriver.wait_for_element('Button_Continue').mobile_tap()
 
-    def test_second_tutorial_without_waiting_audio(self):
-        self.altdriver.wait_for_element('Button_Play').mobile_tap()
-        self.skip_tutorial()
-        self.altdriver.wait_for_element("NPC")
-        time.sleep(1)
+    # def test_second_tutorial_without_waiting_audio(self):
+    #     # self.altdriver.wait_for_element('Button_Play').mobile_tap()
+    #     self.skip_tutorial()
+    #     self.altdriver.wait_for_element("NPC")
+    #     time.sleep(1)
 
-        self.go_though_all_steps_without_waiting_for_audio(2,33)
+    #     self.go_though_all_steps_without_waiting_for_audio(2,33)
 
-        self.driver.save_screenshot('./screenshots/Continue_Button_Tutorial2.png')
-        self.altdriver.wait_for_element('Button_Continue').mobile_tap()
+    #     self.driver.save_screenshot('./screenshots/Continue_Button_Tutorial2.png')
+    #     self.altdriver.wait_for_element('Button_Continue').mobile_tap()
 
     text_first_tutorial_npc = {
         0: 'Welcome, welcome to <b><color=\"orange\"><u>Battleground</u></color></b>!',
@@ -324,7 +324,8 @@ class CZBTutorialTests(CZBTests):
         self.altdriver.wait_for_element('Button_Yes').mobile_tap()
     
     def verify_skip_tutorial_is_available(self,tutorial=1):
-        self.altdriver.wait_for_element('Button_Skip').mobile_tap()
+        button=self.altdriver.wait_for_element('Button_Skip')
+        button.mobile_tap()
         if tutorial==1:
             self.assertEqual(self.altdriver.wait_for_element('QuestionPopup(Clone)/Text_Message').get_component_property('TMPro.TextMeshProUGUI','text','Unity.TextMeshPro'),'Do you really want to skip \nBasic Tutorial?')
         else:

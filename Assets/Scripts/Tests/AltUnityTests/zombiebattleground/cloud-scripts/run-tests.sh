@@ -1,7 +1,7 @@
 #!/bin/bash
 export TESTPLATFORM=android
 # TEST=${TEST:="test-runner.py"} #Name of the test file
-TEST=${TEST:="tests/horde_tests.py"} #Name of the test file
+TEST=${TEST:="tests/tutorial_tests.py"} #Name of the test file
 
 ##### Cloud testrun dependencies start
 echo "Extracting tests.zip..."

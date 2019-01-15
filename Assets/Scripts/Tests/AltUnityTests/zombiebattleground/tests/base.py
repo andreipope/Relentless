@@ -99,3 +99,5 @@ class CZBTests(unittest.TestCase):
         self.altdriver.wait_for_element('Button_Yes').mobile_tap()
 
 
+if __name__ == '__main__':
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
