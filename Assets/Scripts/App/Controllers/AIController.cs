@@ -302,7 +302,7 @@ namespace Loom.ZombieBattleground
                 foreach (PlayCardActionInfo playCardActionInfo in _tutorialManager.GetCurrentTurnInfo().PlayCardsSequence)
                 {
                     WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.
-                                            Find(x => x.LibraryCard.Name.ToLowerInvariant() ==
+                                            Find(cardInHand => cardInHand.LibraryCard.Name.ToLowerInvariant() ==
                                                  _tutorialManager.GetCardNameById(playCardActionInfo.TutorialObjectId).
                                                  ToLowerInvariant());
 

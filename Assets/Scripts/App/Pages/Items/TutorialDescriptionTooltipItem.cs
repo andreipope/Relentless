@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
         private readonly ILoadObjectsManager _loadObjectsManager;
         private readonly IGameplayManager _gameplayManager;
 
-        private const float koefSize = 0.88f;
+        private const float KoefSize = 0.88f;
 
         private GameObject _selfObject;
 
@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
         public int Id;
 
-        public bool isActiveInThisClick;
+        public bool IsActiveInThisClick;
 
         public Enumerators.TooltipOwner OwnerType;
 
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
             {
                 _textDescription.autoSizeTextContainer = true;
                 Vector2 textSize = _textDescription.GetPreferredValues(description);
-                float value = (textSize.x > textSize.y ? textSize.y : textSize.x) * koefSize;
+                float value = (textSize.x > textSize.y ? textSize.y : textSize.x) * KoefSize;
                 _currentBattleground.transform.localScale = Vector3.one * value;
             }
 
@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
         public void Show()
         {
             _selfObject?.SetActive(true);
-            isActiveInThisClick = true;
+            IsActiveInThisClick = true;
         }
 
         public void Hide()
