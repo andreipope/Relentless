@@ -15,17 +15,16 @@ class CZBPlayTests(CZBTests):
 
     def setUp(self):
         super(CZBPlayTests, self).setUp()
-        self.altdriver.wait_for_element('PressAnyText').mobile_tap()
-        self.altdriver.wait_for_element('InputField_Beta').set_component_property('UnityEngine.UI.InputField','text', self.tester_key)
-        self.altdriver.find_element('Button_Beta').tap()
-        self.altdriver.wait_for_element('TermsPopup(Clone)/Toggle').tap()
-        self.altdriver.wait_for_element('Button_GotIt').tap()
-        self.driver.save_screenshot('./screenshots/login-before-credits-tests.png')
+        self.altdriver.wait_for_element('Button_Skip').mobile_tap()
+        time.sleep(1)
+        self.altdriver.wait_for_element("Button_Yes").mobile_tap()
+        self.altdriver.wait_for_element_to_not_be_present("LoadingGameplayPopup(Clone)")
+        self.altdriver.wait_for_element('Button_Back').mobile_tap()
 
 
     def test_start_match_versus_ai(self):
-        self.skip_both_tutorials()
-        time.sleep(5)
+        self.altdriver.wait_for_element('Button_Play').mobile_tap()
+        self.altdriver.wait_for_element('Button_SoloMode').mobile_tap()
         self.altdriver.wait_for_element('Button_Battle').mobile_tap()
         self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
         self.altdriver.wait_for_element('Button_Keep').mobile_tap()
