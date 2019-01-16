@@ -742,7 +742,7 @@ namespace Loom.ZombieBattleground.Common
             BottomRight
         }
 
-        public enum TooltipOwner
+        public enum TutorialObjectOwner
         {
             Undefined,
 
@@ -791,7 +791,12 @@ namespace Loom.ZombieBattleground.Common
             TapOnScreen,
             AvatarTooltipClosed,
 
-            OverlordSayPopupHided
+            OverlordSayPopupHided,
+
+            YouWonPopupOpened,
+            YouWonPopupClosed,
+
+            TutorialProgressInfoPopupClosed
         }
 
         public enum TutorialActivityActionHandler

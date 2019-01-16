@@ -338,8 +338,7 @@ namespace Loom.ZombieBattleground
             }
 
             if (_currentTutorialStepIndex + 1 >= _tutorialSteps.Count)
-            {
-                GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
+            {                
                 ClearToolTips();
             }
             else
@@ -375,11 +374,13 @@ namespace Loom.ZombieBattleground
                         foreach (HandPointerInfo handPointer in gameStep.HandPointers)
                         {
                             DrawPointer(handPointer.TutorialHandPointerType,
+                                        handPointer.TutorialHandPointerOwner,
                                         (Vector3)handPointer.StartPosition,
                                         (Vector3)handPointer.EndPosition,
                                         handPointer.AppearDelay,
                                         handPointer.AppearOnce,
-                                        handPointer.TutorialObjectIdStepOwner);
+                                        handPointer.TutorialObjectIdStepOwner,
+                                        handPointer.AboveUI);
                         }
                     }
 
@@ -401,9 +402,10 @@ namespace Loom.ZombieBattleground
                                                    tooltip.Description,
                                                    tooltip.TutorialTooltipAlign,
                                                    tooltip.TutorialTooltipOwner,
-                                                   tooltip.TutorialTooltipOwnerName,
+                                                   tooltip.TutorialTooltipOwnerId,
                                                    (Vector3)tooltip.Position,
-                                                   tooltip.Resizable);
+                                                   tooltip.Resizable,
+                                                   tooltip.AppearDelay);
                         }
                     }
 
@@ -433,6 +435,11 @@ namespace Loom.ZombieBattleground
                     if (gameStep.LaunchAIBrain)
                     {
                        await _gameplayManager.GetController<AIController>().LaunchAIBrain();
+                    }
+
+                    if(gameStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.YouWonPopupOpened)
+                    {
+                        GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
                     }
 
                     break;
@@ -472,8 +479,8 @@ namespace Loom.ZombieBattleground
 
         public void SetTooltipsPlayerIfHas(Player player, bool isActive)
         {
-            List<TutorialDescriptionTooltipItem> tooltips = _tutorialDescriptionTooltipItems.FindAll(x => x.OwnerType == Enumerators.TooltipOwner.PlayerOverlord ||
-                x.OwnerType == Enumerators.TooltipOwner.EnemyOverlord);
+            List<TutorialDescriptionTooltipItem> tooltips = _tutorialDescriptionTooltipItems.FindAll(x => x.OwnerType == Enumerators.TutorialObjectOwner.PlayerOverlord ||
+                x.OwnerType == Enumerators.TutorialObjectOwner.EnemyOverlord);
 
             if(tooltips.Count > 0)
             {
@@ -530,26 +537,32 @@ namespace Loom.ZombieBattleground
         }
 
         public void DrawPointer(Enumerators.TutorialHandPointerType type,
+                                Enumerators.TutorialObjectOwner owner,
                                 Vector3 begin,
                                 Vector3? end = null,
                                 float appearDelay = 0,
                                 bool appearOnce = false,
-                                int tutorialObjectIdStepOwner = 0)
+                                int tutorialObjectIdStepOwner = 0,
+                                bool aboveUI = false)
         {
-            _handPointerController.DrawPointer(type, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner);
+            _handPointerController.DrawPointer(type, owner, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner, aboveUI);
         }
 
         public void DrawDescriptionTooltip(int id,
                                            string description,
                                            Enumerators.TooltipAlign align,
-                                           Enumerators.TooltipOwner owner,
-                                           string ownerName,
+                                           Enumerators.TutorialObjectOwner owner,
+                                           int ownerId,
                                            Vector3 position,
-                                           bool resizable)
+                                           bool resizable,
+                                           float appearDelay)
         {
-            TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerName, position, resizable);
+            InternalTools.DoActionDelayed(() =>
+            {
+                TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerId, position, resizable);
 
-            _tutorialDescriptionTooltipItems.Add(tooltipItem);
+                _tutorialDescriptionTooltipItems.Add(tooltipItem);
+            }, appearDelay);
         }
 
         public void ActivateDescriptionTooltip(int id)
@@ -590,13 +603,22 @@ namespace Loom.ZombieBattleground
             _tutorialDescriptionTooltipItems.Clear();
         }
 
-        public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TooltipOwner owner, float appearDelay)
+        public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, float appearDelay)
         {
             InternalTools.DoActionDelayed(() =>
             {
                 _overlordsChatController.DrawOverlordSayPopup(description, align, owner);
-            }, appearDelay);
-            
+            }, appearDelay);           
+        }
+
+        public void ActivateSelectHandPointer(Enumerators.TutorialObjectOwner owner)
+        {
+            _handPointerController.ChangeVisibilitySelectHandPointer(owner, true);
+        }
+
+        public void DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner owner)
+        {
+            _handPointerController.ChangeVisibilitySelectHandPointer(owner, false);
         }
 
         private void DoActionByActivity(ActionActivityHandler activity)

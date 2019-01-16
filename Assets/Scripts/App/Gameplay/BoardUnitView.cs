@@ -760,6 +760,11 @@ namespace Loom.ZombieBattleground
                 {
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
+
+                    if(_tutorialManager.IsTutorial)
+                    {
+                        _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
+                    }
                 }
 
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
