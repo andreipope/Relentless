@@ -74,11 +74,11 @@ namespace Loom.Client
                 ulong nonce = await GetNonceFromNodeAsync();
                 this.NextNonce = nonce;
 
-                //Debug.Log($"NonceLog: unknown current nonce, got nonce {nonce}");
+                Debug.Log($"NonceLog: unknown current nonce, got nonce {nonce}");
             }
 
             this.NextNonce++;
-            //Debug.Log($"NonceLog: using nonce {this.NextNonce} for the call");
+            Debug.Log($"NonceLog: using nonce {this.NextNonce} for the call");
 
             return this.NextNonce.Value;
         }

@@ -564,7 +564,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                Debug.Log(e.ToString());
+                Debug.LogWarning(e);
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }

@@ -1039,14 +1039,6 @@ namespace Loom.ZombieBattleground.Test
         public async Task HandleLogin()
         {
             WaitStart(250);
-/*
-            await new WaitUntil(() =>
-            {
-
-                return CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") ||
-                    WaitTimeIsUp();
-            });
-*/
             await new WaitUntil(() =>
             {
                 return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());

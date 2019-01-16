@@ -49,12 +49,12 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(workingCard, position));
         }
 
-        public Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
+        public async Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
         {
-            throw new NotImplementedException();
+            await SendPlayerAction(_client.PlayerActionFactory.RankBuff(card, units));
         }
 
-        public Task CardAbilityUsed(
+        public async Task CardAbilityUsed(
             WorkingCard card,
             Enumerators.AbilityType abilityType,
             Enumerators.CardKind cardKind,
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Test
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
             IEnumerable<InstanceId> cards = null)
         {
-            throw new NotImplementedException();
+            await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards));
         }
 
         public async Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
