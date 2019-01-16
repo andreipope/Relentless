@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.Test
         /// When false, tests are executed as fast as possible.
         /// When true, they are executed slowly to easy debugging.
         /// </summary>
-        private const bool DebugTests = false;
+        private const bool DebugTests = true;
 
         /// <summary>
         /// To be in line with AI Brain, 1.1f was taken as value from AIController.
@@ -516,7 +516,7 @@ namespace Loom.ZombieBattleground.Test
             if (IsTestFailed)
                 return;
 
-            if (Constants.MulliganEnabled)
+            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 WaitStart(5);
 
@@ -1038,7 +1038,7 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
-            WaitStart(250);
+            WaitStart(1000);
             await new WaitUntil(() =>
             {
                 return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());
@@ -3037,7 +3037,7 @@ namespace Loom.ZombieBattleground.Test
         /// Makes specified number of moves (if timeout allows).
         /// </summary>
         /// <param name="maxTurns">Max number of turns.</param>
-        public async Task MakeMoves(int maxTurns = 100)
+        public async Task MakeMoves(int maxTurns = 100, bool quitIfNoCards = false)
         {
             if (IsGameEnded())
                 return;
@@ -3065,6 +3065,9 @@ namespace Loom.ZombieBattleground.Test
                 await WaitUntilInputIsUnblocked();
 
                 if (IsGameEnded())
+                    break;
+
+                if (PlayerIsOutOfCards())
                     break;
             }
         }
@@ -3156,6 +3159,11 @@ namespace Loom.ZombieBattleground.Test
             {
                 return false;
             }
+        }
+
+        public bool PlayerIsOutOfCards () 
+        {
+            return (_gameplayManager.CurrentPlayer.CardsInHand.Count <= 0 && _gameplayManager.CurrentPlayer.CardsInDeck.Count <= 0);
         }
 
         private async Task HandleConnectivityIssues()

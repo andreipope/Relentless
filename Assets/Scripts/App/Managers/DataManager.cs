@@ -120,9 +120,10 @@ namespace Loom.ZombieBattleground
 
             _localizationManager.ApplyLocalization();
 
-#if DEV_MODE
-            CachedUserLocalData.Tutorial = false;
-#endif
+            if (Constants.DevModeEnabled)
+            {
+                CachedUserLocalData.Tutorial = false;
+            }
 
             GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 

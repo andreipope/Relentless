@@ -289,15 +289,15 @@ namespace Loom.ZombieBattleground
 
         private void BattleButtonUpdate()
         {
-            bool canStartBattle =
-#if !DEV_MODE
-                _hordeDecks.Count != 0 &&
-                _selectedDeck.Id != -1 &&
-                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() ==
-                Constants.MinDeckSize;
-#else
-                true;
-#endif
+            bool canStartBattle = true;
+            if (!Constants.DevModeEnabled)
+            {
+                canStartBattle = _hordeDecks.Count != 0 &&
+                    _selectedDeck.Id != -1 &&
+                    _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() ==
+                    Constants.MinDeckSize;
+            }
+
             _battleButton.interactable = canStartBattle;
             _battleButtonGlow.SetActive(canStartBattle);
             _battleButtonWarning.gameObject.SetActive(!canStartBattle);
@@ -526,14 +526,15 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-#if !DEV_MODE
-            if (_hordeDecks.Count == 0 ||
-                _selectedDeck.Id == -1 ||
-                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() < Constants.MinDeckSize)
+            if (!Constants.DevModeEnabled)
             {
-                _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
+                if (_hordeDecks.Count == 0 ||
+                    _selectedDeck.Id == -1 ||
+                    _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() < Constants.MinDeckSize)
+                {
+                    _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
+                }
             }
-#endif
         }
 
         private void LeftArrowButtonOnClickHandler()
