@@ -1,5 +1,3 @@
-//#define OPEN_PACK_MANAGER_INCLUDED
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,20 +20,20 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
         
         private CardInfoPopupHandler _cardInfoPopupHandler;
-
-        #if OPEN_PACK_MANAGER_INCLUDED
-        private OpenPackPlasmaManager _openPackPlasmaManager;
-        #endif
         
         private GameObject _selfPage;
         
         private GameObject _gooPoolPrefab, _buttonOpenPackVFXPrefab, _cardCreaturePrefab, _cardItemPrefab;
+
+        private GameObject _vfxMinionPrefab, _vfxOfficerPrefab, _vfxCommanderPrefab, _vfxGeneralPrefab;
     
         private GameObject _createdGooPool, _createdbuttonOpenPackVFX;
     
         private Image _rightPanelLight, _leftPanelLight;
         
         private List<BoardCard> _createdBoardCards;
+        
+        private List<GameObject> _createdCardsVFX;
         
         private CardHighlightingVFXItem _createdHighlightingVFXItem;
         
@@ -48,6 +46,8 @@ namespace Loom.ZombieBattleground
         private Animator _gooPoolAnimator;
         
         private List<Transform> _cardPositions;
+        
+        private List<Transform> _cardsToReveal;
     
         private List<Card> _cardsToDisplayQueqe;
     
@@ -66,6 +66,8 @@ namespace Loom.ZombieBattleground
         private STATE _state;
     
         private bool _isTransitioningState;
+
+        private bool _isWaitingForTapToReveal;
     
 #region IUIElement
     
@@ -74,52 +76,65 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             
-            #if OPEN_PACK_MANAGER_INCLUDED
-            _openPackPlasmaManager = GameClient.Get<OpenPackPlasmaManager>();
-            #endif
-            
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
             _cardInfoPopupHandler.StateChanging += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
             _cardInfoPopupHandler.StateChanged += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
             _createdBoardCards = new List<BoardCard>();
-            _cardsToDisplayQueqe = new List<Card>();            
+            _cardsToDisplayQueqe = new List<Card>();
+            _createdCardsVFX = new List<GameObject>();
+            _cardsToReveal = new List<Transform>();
         }
     
         public void Update()
         {
-            if (_selfPage != null && _selfPage.activeInHierarchy)
+            if (_selfPage == null || !_selfPage.activeInHierarchy)
+                return;
+            
+            _cardInfoPopupHandler.Update();
+            if( _isWaitingForTapToReveal)
             {
-                _cardInfoPopupHandler.Update();
-                if (_cardInfoPopupHandler.IsInteractable)
+                if( _cardsToReveal.Count <= 0 )
                 {
-                    if (Input.GetMouseButtonDown(0))
+                    _isWaitingForTapToReveal = false;
+                    return;                    
+                }
+                if (Input.GetMouseButton(0))
+                {
+                    GameObject hitObject = RaycastFromMousePosition();
+                    if (hitObject == null)
+                        return;                    
+                    
+                    foreach (Transform cardTran in _cardsToReveal)
                     {
-                        Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    
-                        RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
-                        if (hits.Length > 0)
+                        if( hitObject == cardTran.gameObject)
                         {
-                            foreach (RaycastHit2D hit in hits)
-                            {
-                                if (hit.collider != null)
-                                {
-                                    for (int i = 0; i < _createdBoardCards.Count; i++)
-                                    {
-                                        if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
-                                        {
-                                            _createdHighlightingVFXItem.SetActiveCard(_createdBoardCards[i]);
-                                            _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
-                                        }
-                                    }
-                                }
-                            }
+                            _cardsToReveal.Remove(cardTran);
+                            RevealCard(cardTran);
+                            return;
                         }
                     }
                 }
-            }
+            }else if (_cardInfoPopupHandler.IsInteractable)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    GameObject hitObject = RaycastFromMousePosition();
+                    if (hitObject == null)
+                        return;
+                    
+                    for (int i = 0; i < _createdBoardCards.Count; i++)
+                    {
+                        if (hitObject == _createdBoardCards[i].GameObject)
+                        {
+                            _createdHighlightingVFXItem.SetActiveCard(_createdBoardCards[i]);
+                            _cardInfoPopupHandler.SelectCard(_createdBoardCards[i]);
+                        }
+                    }                                            
+                }
+            }            
         }
-    
+        
         public void Show()
         {
             _selfPage = Object.Instantiate(
@@ -135,6 +150,10 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
             _cardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             
+            _vfxMinionPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_MinionPackOpenerV2");
+            _vfxOfficerPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_OfficerPackOpenerV2");
+            _vfxCommanderPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_CommanderPackOpenerV2");
+            _vfxGeneralPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_GeneralPackOpenerV2");            
             
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _buttonPlus = _selfPage.transform.Find("BackgroundImage/LeftPanel/ButtonPlus").GetComponent<Button>();
@@ -198,8 +217,7 @@ namespace Loom.ZombieBattleground
             _createdGooPool.GetComponent<SortingGroup>().sortingOrder = 1;            
             
             _createdbuttonOpenPackVFX = Object.Instantiate(_buttonOpenPackVFXPrefab);
-            _createdbuttonOpenPackVFX.transform.position = _buttonOpenPack.transform.position;
-            _createdbuttonOpenPackVFX.SetActive(false);
+            _createdbuttonOpenPackVFX.transform.position = _buttonOpenPack.transform.position;            
         }
         
         private void InitCardPositions()
@@ -249,6 +267,7 @@ namespace Loom.ZombieBattleground
         {
             _state = STATE.NONE;
             _isTransitioningState = false;
+            _isWaitingForTapToReveal = false;
             ChangeState(STATE.READY);
         }
         
@@ -266,9 +285,25 @@ namespace Loom.ZombieBattleground
                 _createdBoardCards.Clear();
             }
         }
-    
+        
+        private void DestroyCardVFX()
+        {
+            if(_createdCardsVFX != null)
+            {
+                foreach(GameObject vfx in _createdCardsVFX)
+                {
+                    if(vfx != null)
+                    {
+                        Object.Destroy(vfx);
+                    }
+                }
+                _createdCardsVFX.Clear();
+            }
+        }
+
         private void DestroyCreatedObject()
         {
+            DestroyCardVFX();
             DestroyBoardCards();
             if (_createdGooPool != null)
             {
@@ -283,49 +318,45 @@ namespace Loom.ZombieBattleground
                 Object.Destroy(_createdbuttonOpenPackVFX);
             }
         }
-
-#if OPEN_PACK_MANAGER_INCLUDED
+        
         private async void RetrievePackBalanceAmount()
         {
-            _packsAmountText.text = "-";
-            _packBalanceAmount = 0;
-            _packBalanceAmount = await _openPackPlasmaManager.CallPackBalanceContract();
-            SetPackToOpenAmount(0);
-        }
-        
-        private async void ProcessOpenPackLogic()
-        {            
-            int amount = _packToOpenAmount;     
-            _packBalanceAmount -= _packToOpenAmount;
-            List<Card> cards = await _openPackPlasmaManager.CallOpenPack(_packToOpenAmount);
-            _cardsToDisplayQueqe = cards; 
+            _uiManager.DrawPopup<LoadingFiatPopup>();
             
-            ChangeState(STATE.CARD_EMERGED);       
-        }
-#else
-        private void RetrievePackBalanceAmount()
-        {
-            _packsAmountText.text = "-";
+            //Simulate request pack balance from plasma chain
+            await Task.Delay(TimeSpan.FromSeconds(1.0));            
             _packBalanceAmount = 5;
-            SetPackToOpenAmount(0);
+            
+            _uiManager.HidePopup<LoadingFiatPopup>();
         }
-        
-        private void ProcessOpenPackLogic()
-        {            
-            int amount = _packToOpenAmount;     
-            _packBalanceAmount -= _packToOpenAmount;
-            List<Card> cards = RetrieveDummyCards();
-            _cardsToDisplayQueqe = cards; 
+        private async Task RetriveCardsFromPack()
+        {
+            _uiManager.DrawPopup<LoadingFiatPopup>();
+            
+            //Simulate request pack balance from plasma chain
+            await Task.Delay(TimeSpan.FromSeconds(1.0));    
+            List<Card> cards = RetrieveDummyCards(5);
+            
+            _cardsToDisplayQueqe = cards;
+            _uiManager.HidePopup<LoadingFiatPopup>(); 
+        }
+
+        private async void ProcessOpenPackLogic()
+        {
+            if(_packBalanceAmount > 0 && _packToOpenAmount > 0)
+            {
+                _packBalanceAmount--;
+                _packToOpenAmount--;
+                await RetriveCardsFromPack();
+            }            
             
             ChangeState(STATE.CARD_EMERGED);       
         }
-#endif
 
-        private List<Card> RetrieveDummyCards()
+        private List<Card> RetrieveDummyCards(int amount)
         {
             List<Card> cards = new List<Card>();            
-            CardSet set = SetTypeUtility.GetCardSet(GameClient.Get<IDataManager>(), Enumerators.SetType.FIRE);
-            int amount = 15; 
+            CardSet set = SetTypeUtility.GetCardSet(GameClient.Get<IDataManager>(), Enumerators.SetType.FIRE);            
             foreach( Card card in set.Cards)
             {
                 cards.Add(card);
@@ -338,12 +369,12 @@ namespace Loom.ZombieBattleground
         private void SetPackToOpenAmount( int amount)
         {
             _packToOpenAmount = amount;
-            _packsAmountText.text = amount.ToString();            
+            _packsAmountText.text = amount.ToString();
+            _createdbuttonOpenPackVFX.gameObject.SetActive(_packToOpenAmount > 0 && _buttonCollect.IsInteractable());          
         }
         
         private void ChangeStateCardInfoPopup(bool isStart)
         {
-            //_buttonCollect.interactable = !isStart;
         }
     
         private void SetButtonInteractable( bool isInteractable)
@@ -354,8 +385,11 @@ namespace Loom.ZombieBattleground
                 _buttonMinus.interactable = isInteractable;
             if(_buttonMax != null)
                 _buttonMax.interactable = isInteractable;
-            if(_buttonOpenPack != null)
+            if (_buttonOpenPack != null)
+            {
                 _buttonOpenPack.interactable = isInteractable;
+                _createdbuttonOpenPackVFX.SetActive(isInteractable && _packToOpenAmount > 0);
+            }
         }
         
         private void RefreshAnimation()
@@ -363,7 +397,7 @@ namespace Loom.ZombieBattleground
             _gooPoolAnimator.enabled = true;
             _gooPoolAnimator.Play("TubeAnim", 0, 0f);
             Sequence waitSeqence = DOTween.Sequence();
-            waitSeqence.AppendInterval(.1f);
+            waitSeqence.AppendInterval(.2f);
             waitSeqence.OnComplete(
             ()=>
             {
@@ -376,27 +410,132 @@ namespace Loom.ZombieBattleground
             _isTransitioningState = true;
             _gooPoolAnimator.enabled = true;
             _gooPoolAnimator.Play("TubeAnim", 0, 0f);
+            
             Sequence sequence = DOTween.Sequence();
-            sequence.AppendInterval(5f);
+            sequence.AppendInterval(3.05f);
             sequence.OnComplete(
-            ()=>
-            {   
-                foreach(BoardCard boardCard in _createdBoardCards)
+            () =>
+            {
+                _gooPoolAnimator.enabled = false;
+                _isTransitioningState = false;                
+                
+                _cardsToReveal.Clear();
+                foreach( Transform cardPos in _cardPositions )
                 {
-                    boardCard.Transform.parent = null;
+                    _cardsToReveal.Add(cardPos.parent);
                 }
-                RefreshAnimation();
-                _isTransitioningState = false;
-                _greenPoolVFX.gameObject.SetActive(false);
-                _panelCollect.gameObject.SetActive(true);
-                _buttonCollect.gameObject.SetActive(true);
+                Vector3 pos = _cardsToReveal[0].position;
+                pos.y = _cardsToReveal[1].position.y;
+                _cardsToReveal[0].position = pos;
+                _isWaitingForTapToReveal = true;
             });
         }
-    
-#endregion
-    
-#region Button Handler
-    
+        
+        private void CreateCardVFX(BoardCard boardCard)
+        {
+            GameObject vfxPrefab;
+            switch(boardCard.LibraryCard.CardRank)
+            {
+                case Enumerators.CardRank.MINION:
+                    vfxPrefab = _vfxMinionPrefab;
+                    break;
+                case Enumerators.CardRank.OFFICER:
+                    vfxPrefab = _vfxOfficerPrefab;
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    vfxPrefab = _vfxCommanderPrefab;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    vfxPrefab = _vfxGeneralPrefab;
+                    break;
+                default:
+                    return;
+            }
+            
+            GameObject vfxParent = new GameObject("VFX");
+            vfxParent.transform.parent = boardCard.GameObject.transform;
+            vfxParent.transform.localPosition = Vector3.zero;
+            vfxParent.transform.localScale = Vector3.one;            
+            
+            GameObject vfx = Object.Instantiate(vfxPrefab);
+            vfx.transform.Find("MinionPlaceHolder").gameObject.SetActive(false);
+            vfx.transform.parent = vfxParent.transform;
+            vfx.transform.localPosition = Vector3.zero;
+            vfx.transform.localScale = Vector3.one;
+            _createdCardsVFX.Add(vfx);
+
+            vfxParent.transform.localScale = Vector3.one * 0.673f;
+            vfxParent.transform.localRotation = Quaternion.identity;
+        }
+        
+        private GameObject RaycastFromMousePosition()
+        {
+            Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            if (hits.Length > 0)
+            {
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider != null)
+                    {
+                        return hit.collider.gameObject;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private void RevealCard(Transform cardShirt)
+        {            
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(
+                cardShirt
+                .DORotate(Vector3.up * 90f, 0.1f, RotateMode.Fast)
+                .SetEase(Ease.InCubic)
+                .OnComplete(
+                () =>
+                {
+
+                }));
+            Transform cardFace = cardShirt.GetChild(0).GetChild(0);
+            cardFace.parent = null;
+            cardFace.localEulerAngles = Vector3.up * 90f;
+            sequence.Append(
+                cardFace
+                .DORotate(Vector3.zero, 0.2f, RotateMode.Fast)
+                .SetEase(Ease.OutCubic)
+                .OnComplete(
+                () =>
+                {
+                    foreach(BoardCard boardCard in _createdBoardCards)
+                    {
+                        if( boardCard.Transform == cardFace)
+                        {
+                            CreateCardVFX(boardCard);
+                            break;
+                        }
+                    }
+                    if ( !_isWaitingForTapToReveal)
+                    {
+                        Sequence sequence2 = DOTween.Sequence();
+                        sequence2.AppendInterval(0.2f);
+                        sequence2.OnComplete(() =>
+                        {
+                            RefreshAnimation();
+                            _isTransitioningState = false;
+                            _greenPoolVFX.gameObject.SetActive(false);
+                            _panelCollect.gameObject.SetActive(true);
+                            _buttonCollect.gameObject.SetActive(true);
+                        });
+                    }
+                }));
+        }
+
+        #endregion
+
+        #region Button Handler
+
         private void ButtonBackHandler()
         {
             GameClient.Get<ISoundManager>()
@@ -443,12 +582,7 @@ namespace Loom.ZombieBattleground
                 if (_packToOpenAmount <= 0)
                     return;
                 ChangeState(STATE.TRAY_INSERTED);
-            }
-            else if (_state == STATE.TRAY_INSERTED)
-            {
-                ProcessOpenPackLogic();                
-            }
-            
+            }            
         }
         
         private void ButtonCollectHandler()
@@ -466,12 +600,7 @@ namespace Loom.ZombieBattleground
                 
                 if( i == lastIndex)
                 {
-                    hideCardSequence.OnComplete(
-                    () =>
-                    {
-                        ChangeState(STATE.CARD_EMERGED);
-                    }
-                    );                        
+                    hideCardSequence.OnComplete(ProcessOpenPackLogic);                        
                 }
             }
         }
@@ -482,6 +611,7 @@ namespace Loom.ZombieBattleground
     
         private void ChangeState( STATE newState )
         {
+            _isWaitingForTapToReveal = false;
             switch (_state)
             {
                 case STATE.NONE:
@@ -490,8 +620,7 @@ namespace Loom.ZombieBattleground
                         SetPackToOpenAmount(0);
                         SetButtonInteractable(true);
                         _isTransitioningState = false;
-                        _packTray.position = _trayStart.position;                        
-                        _createdbuttonOpenPackVFX.SetActive(false);                        
+                        _packTray.position = _trayStart.position;                          
                         _rightPanelLight.color = Color.clear;
                         _leftPanelLight.color = Color.white;
                         _panelCollect.gameObject.SetActive(false);
@@ -520,9 +649,8 @@ namespace Loom.ZombieBattleground
                             {
                                 _rightPanelLight.color = Color.red;
                                 _isTransitioningState = false;
-                                _createdbuttonOpenPackVFX.SetActive(true);
-                                _buttonOpenPack.interactable = true;
-                                _state = newState;                                
+                                _state = newState;  
+                                ProcessOpenPackLogic();                              
                             }
                         ));
                     }
@@ -532,7 +660,6 @@ namespace Loom.ZombieBattleground
                     {
                         CreateCardsToDisplay();
                     
-                        _createdbuttonOpenPackVFX.SetActive(false);
                         SetButtonInteractable(false);
     
                         PlayCardsEmergeFromPoolAnimation();
@@ -555,8 +682,7 @@ namespace Loom.ZombieBattleground
                             _panelCollect.gameObject.SetActive(false);
                             _greenPoolVFX.gameObject.SetActive(true);
     
-                            PlayCardsEmergeFromPoolAnimation();
-                            
+                            PlayCardsEmergeFromPoolAnimation();                            
                         }
                     }
                     else if (newState == STATE.READY)
@@ -564,8 +690,7 @@ namespace Loom.ZombieBattleground
                         SetPackToOpenAmount(0);
                         SetButtonInteractable(true);
                         _isTransitioningState = false;
-                        _packTray.position = _trayStart.position;                        
-                        _createdbuttonOpenPackVFX.SetActive(false);                        
+                        _packTray.position = _trayStart.position;                          
                         _rightPanelLight.color = Color.clear;
                         _leftPanelLight.color = Color.white;
                         _panelCollect.gameObject.SetActive(false);
@@ -585,8 +710,7 @@ namespace Loom.ZombieBattleground
 #region Util
     
         private BoardCard CreateCard(IReadOnlyCard card, Vector3 worldPos)
-        {
-        
+        {        
             GameObject go;
             BoardCard boardCard;
             switch (card.CardKind)
@@ -610,8 +734,7 @@ namespace Loom.ZombieBattleground
             boardCard.Transform.Find("Amount").gameObject.SetActive(false);
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
-            return boardCard;
-        
+            return boardCard;        
         }
     
 #endregion
