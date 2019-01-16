@@ -189,8 +189,7 @@ namespace Loom.ZombieBattleground.Data
 
                 DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle,
 
-                // FIXME: reenable after backend update
-                //ForceFirstTurnUserId = debugCheatsConfiguration.ForceFirstTurnUserId ?? ""
+                ForceFirstTurnUserId = debugCheatsConfiguration.ForceFirstTurnUserId ?? ""
             };
         }
     }
