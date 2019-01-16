@@ -322,6 +322,7 @@ public class UserReportingScript : MonoBehaviour
             }
             catch (Exception e)
             {
+                UnityUserReporting.CurrentClient.LogException(e);
                 Debug.LogWarning("Error while getting call metrics:" + e);
             }
 

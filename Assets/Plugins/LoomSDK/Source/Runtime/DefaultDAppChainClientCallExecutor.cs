@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client.Internal.AsyncEx;
 using UnityEngine;
+using UnityUserReporting = Unity.Cloud.UserReporting.Plugin.UnityUserReporting;
 
 namespace Loom.Client
 {
@@ -101,10 +102,15 @@ namespace Loom.Client
                 }
             } catch (AggregateException e)
             {
+                UnityUserReporting.CurrentClient.LogException(e);
                 ExceptionDispatchInfo.Capture(e.InnerException).Throw();
             }
 
-            throw new TimeoutException();
+            TimeoutException ex = new TimeoutException();
+
+            UnityUserReporting.CurrentClient.LogException(ex);
+
+            throw ex;
 #endif
         }
 
@@ -136,6 +142,7 @@ namespace Loom.Client
                     return await task;
                 } catch (InvalidTxNonceException e)
                 {
+                    UnityUserReporting.CurrentClient.LogException(e);
                     badNonceCount++;
                     lastNonceException = e;
                 }

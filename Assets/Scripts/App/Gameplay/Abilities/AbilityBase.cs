@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AbilityEffectType AbilityEffectType;
 
-        public Enumerators.CardType TargetCardType = Enumerators.CardType.NONE;
+        public Enumerators.CardType TargetCardType = Enumerators.CardType.UNDEFINED;
 
         public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground
 
         protected ISoundManager SoundManager;
 
+        protected IPvPManager PvPManager;
+
         protected GameObject VfxObject;
 
         protected bool IsAbilityResolved;
@@ -100,6 +102,7 @@ namespace Loom.ZombieBattleground
             DataManager = GameClient.Get<IDataManager>();
             TimerManager = GameClient.Get<ITimerManager>();
             SoundManager = GameClient.Get<ISoundManager>();
+            PvPManager = GameClient.Get<IPvPManager>();
 
             AbilitiesController = GameplayManager.GetController<AbilitiesController>();
             ParticlesController = GameplayManager.GetController<ParticlesController>();

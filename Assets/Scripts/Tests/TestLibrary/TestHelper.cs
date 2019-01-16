@@ -90,6 +90,8 @@ namespace Loom.ZombieBattleground.Test
 
         public BattlegroundController BattlegroundController => _battlegroundController;
 
+        public BackendDataControlMediator BackendDataControlMediator => _backendDataControlMediator;
+
         GameplayQueueAction<object> _callAbilityAction;
 
         private Player _currentPlayer, _opponentPlayer;
@@ -101,6 +103,7 @@ namespace Loom.ZombieBattleground.Test
 
         private float _waitStartTime;
         private float _waitAmount;
+        private bool _waitUnscaledTime;
 
         private const int MinTurnForAttack = 0;
         public BoardCard CurrentSpellCard;
@@ -372,6 +375,9 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 case "MainMenuPage":
+
+                    return;
+                case "LoadingPage":
 
                     return;
                 default:
@@ -731,7 +737,7 @@ namespace Loom.ZombieBattleground.Test
             if (expectedPageName == _lastCheckedPageName)
                 return;
 
-            WaitStart(pageTransitionWaitTime);
+            WaitStart(pageTransitionWaitTime, true);
             bool transitionTimeout = false;
 
             GameObject errorTextObject = null;
@@ -1032,40 +1038,17 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
-            WaitStart(10);
-            GameObject pressAnyText = null;
+            WaitStart(250);
             await new WaitUntil(() =>
             {
-                pressAnyText = GameObject.Find("PressAnyText");
-
-                return pressAnyText != null || CheckCurrentPageName("MainMenuPage") || CheckCurrentPageName("GameplayPage") ||
-                    WaitTimeIsUp();
+                return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());
             });
 
-            if (pressAnyText != null)
-            {
-                pressAnyText.SetActive(false);
-                GameClient.Get<IUIManager>().DrawPopup<LoginPopup>();
-
-                await AssertLoggedInOrLoginFailed(
-                    CloseTermsPopupIfRequired,
-                    () =>
-                    {
-                        Assert.Fail("Wasn't able to login. Try using USE_STAGING_BACKEND");
-                        return Task.CompletedTask;
-                    },
-                    () => SubmitEmailPassword("wecib@cliptik.net", "somePassHere"), // motom@datasoma.com or wecib@cliptik.net
-                    GoOnePageHigher);
-            }
-            else if (!CheckCurrentPageName("MainMenuPage") && !CheckCurrentPageName("GameplayPage"))
+            if (!CheckCurrentPageName("MainMenuPage"))
             {
                 Assert.Fail(
-                    $"PressAnyText didn't appear and it went to weird page ({GetCurrentPageName()}). This sequence is not implemented.");
+                    $"Login wasn't completed. Please ensure you have logged in previously, and that you're pointing to the Stage or Production server.");
             }
-
-            /* await CombinedCheck (
-                CheckIfLoginErrorOccured, "", FailWithMessageCoroutine ("Wasn't able to login. Try using USE_STAGING_BACKEND"),
-                CheckCurrentPageName, "MainMenuPage", null); */
 
             await new WaitForUpdate();
         }
@@ -1243,14 +1226,14 @@ namespace Loom.ZombieBattleground.Test
         /// Sets tags to be used by the matchmaking system.
         /// </summary>
         /// <param name="tags">Tags</param>
-        public void SetPvPTags(string[] tags)
+        public void SetPvPTags(IList<string> tags)
         {
             if (IsTestFailed)
             {
                 return;
             }
 
-            if (tags == null || tags.Length <= 0)
+            if (tags == null || tags.Count <= 0)
             {
                 _pvpManager.PvPTags = null;
 
@@ -1771,8 +1754,7 @@ namespace Loom.ZombieBattleground.Test
 
             switch (card.LibraryCard.CardKind)
             {
-                case Enumerators.CardKind.CREATURE
-                    when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
+                case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
                         BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
@@ -2848,7 +2830,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Waits for a specific amount of time.
         /// </summary>
-        public async Task LetsThink(float thinkTime = DefaultThinkTime)
+        public async Task LetsThink(float thinkTime = DefaultThinkTime, bool forceRealtime = false)
         {
             if (thinkTime <= 0f)
             {
@@ -2857,7 +2839,14 @@ namespace Loom.ZombieBattleground.Test
             }
             else
             {
-                await new WaitForSeconds(thinkTime);
+                if (forceRealtime)
+                {
+                    await new WaitForSecondsRealtime(thinkTime);
+                }
+                else
+                {
+                    await new WaitForSeconds(thinkTime);
+                }
             }
         }
 
@@ -3136,16 +3125,6 @@ namespace Loom.ZombieBattleground.Test
                 if (IsGameEnded())
                     break;
             }
-
-            Debug.LogWarning("0");
-
-            await ClickGenericButton("Button_Continue");
-
-            Debug.LogWarning("1");
-
-            await AssertCurrentPageName("HordeSelectionPage");
-
-            Debug.LogWarning("2");
         }
 
         /// <summary>
@@ -3620,7 +3599,7 @@ namespace Loom.ZombieBattleground.Test
                 {
                     selectedHordeTransform.Find("Button_Select").GetComponent<Button>().onClick.Invoke();
 
-                    SelectedHordeIndex = i;
+                    SelectedHordeIndex = i - 1;
                     hordeSelected = true;
                 }
             }
@@ -3651,7 +3630,8 @@ namespace Loom.ZombieBattleground.Test
             }
 
             GameObject hordesParent = GameObject.Find("Panel_DecksContainer/Group");
-            Transform selectedHordeTransform = hordesParent.transform.GetChild(index);
+            // +1 to account for Item_HordeSelectionNewHordeLeft
+            Transform selectedHordeTransform = hordesParent.transform.GetChild(index + 1);
             selectedHordeTransform.Find("Button_Select").GetComponent<Button>().onClick.Invoke();
 
             await LetsThink();
@@ -3872,7 +3852,7 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            await client.Start();
+            await client.Start(contract => new DefaultContractCallProxy(contract));
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }
@@ -3972,9 +3952,11 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <remarks>Useful in case you have concern of getting a response for a request. To be coupled with WaitTimeIsUp.</remarks>
         /// <param name="waitAmount">Wait amount.</param>
-        private void WaitStart(int waitAmount)
+        private void WaitStart(int waitAmount, bool unscaledTime = false)
         {
-            _waitStartTime = Time.time;
+            _waitUnscaledTime = unscaledTime;
+
+            _waitStartTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
 
             _waitAmount = waitAmount;
         }
@@ -3986,7 +3968,8 @@ namespace Loom.ZombieBattleground.Test
         /// <returns><c>true</c>, if time is up, <c>false</c> otherwise.</returns>
         private bool WaitTimeIsUp(string dummyParameter = "")
         {
-            return Time.time > _waitStartTime + _waitAmount;
+            float baseTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
+            return baseTime > _waitStartTime + _waitAmount;
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)

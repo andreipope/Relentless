@@ -58,6 +58,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         }
                         catch (Exception e)
                         {
+                            Helpers.ExceptionReporter.LogException(e);
                             Debug.LogWarning("Unable to read call metrics: " + e);
                         }
                     }
@@ -94,8 +95,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 stopwatch.Restart();
                 await task;
             }
-            catch (TimeoutException)
+            catch (TimeoutException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 timedOut = true;
                 throw;
             }

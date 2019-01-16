@@ -6,14 +6,11 @@ namespace Loom.ZombieBattleground
 {
     public class SpecificBattlegroundInfo
     {
-        public int CurrentTurn;
-
         public SpecificBattlegroundOverlordInfo PlayerInfo;
         public SpecificBattlegroundOverlordInfo OpponentInfo;
 
         public SpecificBattlegroundInfo()
         {
-            CurrentTurn = Constants.FirstGameTurnIndex;
             PlayerInfo = new SpecificBattlegroundOverlordInfo();
             OpponentInfo = new SpecificBattlegroundOverlordInfo();
         }

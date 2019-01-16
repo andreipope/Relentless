@@ -344,7 +344,7 @@ namespace Loom.ZombieBattleground
 
         public List<WorkingCard> CardsInGraveyard { get; }
 
-        public List<WorkingCard> CardsInHand { get; }
+        public List<WorkingCard> CardsInHand { get; set; }
 
         public List<WorkingCard> CardsOnBoard { get; }
 
@@ -385,7 +385,20 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _cardsController.AddCardToHand(this);
+                // Backend already draws a card at the start
+                if (!_pvpManager.UseBackendGameLogic ||
+                    _pvpManager.UseBackendGameLogic && _battlegroundController.CurrentTurn != 1)
+                {
+                    IView cardView = _cardsController.AddCardToHand(this);
+                    (cardView as BoardCard)?.SetDefaultAnimation();
+                }
+
+                // Second player draw two cards on their first turn
+                if (_battlegroundController.CurrentTurn == 2)
+                {
+                    IView cardView = _cardsController.AddCardToHand(this);
+                    (cardView as BoardCard)?.SetDefaultAnimation();
+                }
             }
 
             TurnStarted?.Invoke();
@@ -412,26 +425,30 @@ namespace Loom.ZombieBattleground
             DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
-        public GameObject AddCardToHand(WorkingCard card, bool silent = false)
+        public void InvokeDeckChangedEvent () {
+            DeckChanged?.Invoke(CardsInDeck.Count);
+        }
+
+        public IView AddCardToHand(WorkingCard card, bool silent = false)
         {
-            GameObject cardObject;
+            IView cardView;
             CardsInHand.Add(card);
 
             if (IsLocalPlayer)
             {
-                cardObject = _cardsController.AddCardToHand(card, silent);
+                cardView = _cardsController.AddCardToHand(card, silent);
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(silent);
             }
             else
             {
-                cardObject = _cardsController.AddCardToOpponentHand(card, silent).GameObject;
+                cardView = _cardsController.AddCardToOpponentHand(card, silent);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
 
             HandChanged?.Invoke(CardsInHand.Count);
 
-            return cardObject;
+            return cardView;
         }
 
         public void AddCardToHandFromOpponentDeck(Player opponent, WorkingCard card)

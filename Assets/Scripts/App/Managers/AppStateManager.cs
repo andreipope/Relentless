@@ -70,12 +70,8 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
-
-                    //_uiManager.SetPage<ShopPage>();
-                    //break;
-                    _uiManager.DrawPopup<WarningPopup>(
-                        $"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
+                    _uiManager.SetPage<ShopPage>();
+                    break;
                 case Enumerators.AppState.PACK_OPENER:
                 {
                     //_uiManager.SetPage<PackOpenerPage>();
@@ -170,7 +166,14 @@ namespace Loom.ZombieBattleground
                 {
                     Func<Task> connectFunc = async () =>
                     {
-                        await _backendDataControlMediator.LoginAndLoadData();
+                        try
+                        {
+                            await _backendDataControlMediator.LoginAndLoadData();
+                        }
+                        catch(Exception e)
+                        {
+                            Helpers.ExceptionReporter.LogException(e);
+                        }
                         connectionPopup.Hide();
                     };
 

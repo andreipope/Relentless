@@ -1,4 +1,4 @@
-﻿#if !UNITY_WEBGL || UNITY_EDITOR
+#if !UNITY_WEBGL || UNITY_EDITOR
 
 using System.Threading.Tasks;
 using System;
@@ -7,6 +7,7 @@ using System.ComponentModel;
 using Loom.Newtonsoft.Json;
 using Loom.WebSocketSharp;
 using UnityEngine;
+using UnityUserReporting = Unity.Cloud.UserReporting.Plugin.UnityUserReporting;
 
 namespace Loom.Client.Internal
 {
@@ -32,7 +33,7 @@ namespace Loom.Client.Internal
                 // Just return Disconnected until we know anything better for sure.
                 if (!anyConnectionStateChangesReceived)
                     return RpcConnectionState.Disconnected;
-                
+
                 WebSocketState state = this.webSocket.ReadyState;
                 switch (state)
                 {
@@ -45,7 +46,7 @@ namespace Loom.Client.Internal
                     case WebSocketState.Closed:
                         return RpcConnectionState.Disconnected;
                     default:
-                        throw new InvalidEnumArgumentException(nameof(this.webSocket.ReadyState), (int) state, typeof(WebSocketState));
+                        throw new InvalidEnumArgumentException(nameof(this.webSocket.ReadyState), (int)state, typeof(WebSocketState));
                 }
             }
         }
@@ -87,12 +88,12 @@ namespace Loom.Client.Internal
                 this.webSocket.OnError -= WebSocketOnError;
                 this.webSocket.OnOpen -= WebSocketOnOpen;
                 this.webSocket.OnClose -= WebSocketOnClose;
-                ((IDisposable) this.webSocket).Dispose();
+                ((IDisposable)this.webSocket).Dispose();
             }
 
             this.disposed = true;
         }
-        
+
         public override Task ConnectAsync()
         {
             AssertNotAlreadyConnectedOrConnecting();
@@ -116,8 +117,9 @@ namespace Loom.Client.Internal
             {
                 this.webSocket.ConnectAsync();
             }
-            catch
+            catch (Exception e)
             {
+                UnityUserReporting.CurrentClient.LogException(e);
                 this.webSocket.OnOpen -= openHandler;
                 this.webSocket.OnClose -= closeHandler;
                 throw;
@@ -141,8 +143,9 @@ namespace Loom.Client.Internal
             {
                 this.webSocket.CloseAsync(CloseStatusCode.Normal, "Client disconnected.");
             }
-            catch
+            catch (Exception e)
             {
+                UnityUserReporting.CurrentClient.LogException(e);
                 this.webSocket.OnClose -= handler;
                 throw;
             }
@@ -224,18 +227,20 @@ namespace Loom.Client.Internal
                 }
                 catch (Exception ex)
                 {
+                    UnityUserReporting.CurrentClient.LogException(ex);
                     tcs.TrySetException(ex);
                 }
             };
-  
+
             this.webSocket.OnClose += closeHandler;
             this.webSocket.OnMessage += messageHandler;
             try
             {
                 await SendAsync(method, args, msgId);
             }
-            catch
+            catch (Exception e)
             {
+                UnityUserReporting.CurrentClient.LogException(e);
                 this.webSocket.OnClose -= closeHandler;
                 this.webSocket.OnMessage -= messageHandler;
                 throw;
@@ -322,6 +327,7 @@ namespace Loom.Client.Internal
             }
             catch (Exception ex)
             {
+                UnityUserReporting.CurrentClient.LogException(ex);
                 this.Logger.LogError(LogTag, "[WSSharpRPCClient_OnMessage error] " + ex);
             }
         }

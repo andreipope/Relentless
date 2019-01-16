@@ -371,7 +371,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardType
         {
-            NONE,
+            UNDEFINED,
             WALKER,
             FERAL,
             HEAVY,

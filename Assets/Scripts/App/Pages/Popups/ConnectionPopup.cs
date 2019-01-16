@@ -110,8 +110,10 @@ namespace Loom.ZombieBattleground
                     SetUIState(state);
                     await task;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Helpers.ExceptionReporter.LogException(e);
+
                     if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                     {
                         SetUIState(ConnectionState.ConnectionFailedInGame);
