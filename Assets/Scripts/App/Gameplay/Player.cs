@@ -386,12 +386,14 @@ namespace Loom.ZombieBattleground
                 }
 
                 // Backend already draws a card at the start
-                if (_pvpManager.UseBackendGameLogic && _battlegroundController.CurrentTurn != 1)
+                if (!_pvpManager.UseBackendGameLogic ||
+                    _pvpManager.UseBackendGameLogic && _battlegroundController.CurrentTurn != 1)
                 {
                     IView cardView = _cardsController.AddCardToHand(this);
                     (cardView as BoardCard)?.SetDefaultAnimation();
                 }
 
+                // Second player draw two cards on their first turn
                 if (_battlegroundController.CurrentTurn == 2)
                 {
                     IView cardView = _cardsController.AddCardToHand(this);
