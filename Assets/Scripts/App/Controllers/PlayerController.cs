@@ -82,14 +82,14 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsGameStarted || _gameplayManager.IsGameEnded)
                 return;
 
+            HandleInput();
+
             if (_tutorialManager.IsTutorial &&
                 _tutorialManager.CurrentTutorialStep != null &&
                 !_tutorialManager.CurrentTutorialStep.ToGameplayStep().CanInteractWithGameplay)
                 return;
 
             _pointerEventSolver.Update();
-
-            HandleInput();
         }
 
         public void ResetAll()
@@ -211,7 +211,18 @@ namespace Loom.ZombieBattleground
         {
             if (_tutorialManager.IsTutorial)
             {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeSelected);
+                int id = 0;
+
+                switch (param[0])
+                {
+                    case BoardUnitView unit:
+                        id = unit.Model.TutorialObjectId;
+                        break;
+                    default:
+                        break;
+                }
+
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeSelected, id);
                 return;
             }
 

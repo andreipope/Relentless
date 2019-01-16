@@ -769,6 +769,7 @@ namespace Loom.ZombieBattleground.Common
             PlayerOverlordCardDrawed,
             PlayerOverlordTriedToPlayUnsequentionalCard,
             PlayerOverlordTriedToUseUnsequentionalBattleframe,
+            PlayerOverlordTriedToUseWrongBattleframe,
             PlayerOverlordTriedToPlayCardWhenItsLimited,
             PlayerOverlorDied,
             PlayerOverlordAbilityUsed,
