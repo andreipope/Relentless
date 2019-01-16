@@ -3645,7 +3645,7 @@ namespace Loom.ZombieBattleground.Test
             await LetsThink();
         }
 
-        /// <summary>3
+        /// <summary>
         /// Removes a Horde by index.
         /// </summary>
         /// <param name="index">Index.</param>
