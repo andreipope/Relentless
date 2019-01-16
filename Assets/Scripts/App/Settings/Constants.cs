@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.9";
+        internal const string CurrentVersionBase = "0.1.10";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -151,11 +151,11 @@ namespace Loom.ZombieBattleground.Common
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
 
-        public const bool MulliganEnabled = false;
+        public const bool MulliganEnabled = true;
 
         public const bool AlwaysGuestLogin = false;
 
-        public const string VaultEmptyErrorCode = "404";
+        public const string VaultEmptyErrorCode = "NotFound";
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

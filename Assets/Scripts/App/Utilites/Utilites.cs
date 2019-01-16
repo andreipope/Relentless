@@ -138,8 +138,9 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            catch (CryptographicException)
+            catch (CryptographicException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 return null;
             }
 

@@ -104,6 +104,7 @@ namespace Loom.ZombieBattleground
 
         private void PvPModeButtonOnClickHandler()
         {
+
             Version pvpVersion = Version.Parse(_dataManager.CachedVersions.PvpVersion);
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(pvpVersion))
             {
@@ -132,7 +133,7 @@ namespace Loom.ZombieBattleground
                 _uiManager.DrawPopup<UpdatePopup>(actions);
                 return;
             }
-
+            
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (!Constants.AlwaysGuestLogin && !_backendDataControlMediator.UserDataModel.IsRegistered)
             {

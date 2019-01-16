@@ -200,6 +200,10 @@ namespace Loom.ZombieBattleground.Test
                     await onEndCallback(clients);
                 }
             }
+            catch(Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+            }
             finally
             {
                 await Cleanup();
@@ -222,6 +226,7 @@ namespace Loom.ZombieBattleground.Test
                     }
                     catch (Exception e)
                     {
+                        Helpers.ExceptionReporter.LogException(e);
                         Debug.LogException(e);
                     }
                 }

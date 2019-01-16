@@ -329,6 +329,7 @@ namespace Loom.ZombieBattleground
             }
             else if (exception is LoomException)
             {
+                Helpers.ExceptionReporter.LogException(exception);
                 Debug.Log("Exception not handled, restarting matchmaking:" + exception.Message);
                 await Task.Delay(1000);
                 await RegisterPlayerToPool();

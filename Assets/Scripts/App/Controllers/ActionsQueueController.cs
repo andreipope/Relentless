@@ -285,7 +285,11 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}");
+                string exception = $"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color> \n {ex.Message} ; {ex.StackTrace}";
+
+                Helpers.ExceptionReporter.LogException(new Exception(exception));
+
+                Debug.LogError(exception);
 
                 ActionDoneCallback();
                 throw;

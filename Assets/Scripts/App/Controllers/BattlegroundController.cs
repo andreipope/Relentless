@@ -821,7 +821,10 @@ namespace Loom.ZombieBattleground
         public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
         {
             if (boardUnitModel == null)
+            {
+                Helpers.ExceptionReporter.LogException("Trying to get BoardUnitView from 'null' BoardUnitModel");
                 return null;
+            }
 
             BoardUnitView unitView =
                 OpponentBoardCards
@@ -832,7 +835,10 @@ namespace Loom.ZombieBattleground
                     .FirstOrDefault(x => x.Model == boardUnitModel);
 
             if (unitView is default(BoardUnitView))
+            {
+                Helpers.ExceptionReporter.LogException("BoardUnitView couldnt found for BoardUnitModel");
                 return null;
+            }
 
             return unitView;
         }

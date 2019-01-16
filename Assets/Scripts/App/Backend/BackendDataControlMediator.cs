@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             LoadUserDataModel();
             Debug.Log("User Id: " + UserDataModel.UserId);
-
+            
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
             await _dataManager.LoadRemoteConfig();
@@ -122,10 +122,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
+                Helpers.ExceptionReporter.LogException(e);
                 // Ignore
             }
-
+            
             await _dataManager.StartLoadCache();
+            
         }
     }
 }
