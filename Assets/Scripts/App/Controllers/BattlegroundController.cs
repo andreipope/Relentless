@@ -835,12 +835,10 @@ namespace Loom.ZombieBattleground
             }
 
             BoardUnitView unitView =
-                OpponentBoardCards
-                    .Concat(OpponentBoardCards)
-                    .Concat(OpponentGraveyardCards)
-                    .Concat(PlayerBoardCards)
-                    .Concat(PlayerGraveyardCards)
-                    .FirstOrDefault(x => x.Model == boardUnitModel);
+                   _gameplayManager.CurrentPlayer.BoardCards
+                      .Concat(_gameplayManager.CurrentPlayer.BoardCards)
+                      .Concat(_gameplayManager.OpponentPlayer.BoardCards)
+                      .FirstOrDefault(x => x != null && x.Model == boardUnitModel);
 
             if (unitView is default(BoardUnitView))
             {
@@ -853,11 +851,11 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)
         {
-            BoardUnitView unit = PlayerBoardCards.Find(x => x.GameObject.Equals(unitObject));
+            BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.Find(x => x.GameObject.Equals(unitObject));
 
             if (unit == null)
             {
-                unit = OpponentBoardCards.Find(x => x.GameObject.Equals(unitObject));
+                unit = _gameplayManager.OpponentPlayer.BoardCards.Find(x => x.GameObject.Equals(unitObject));
             }
 
             return unit;
