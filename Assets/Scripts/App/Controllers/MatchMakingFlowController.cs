@@ -91,8 +91,7 @@ namespace Loom.ZombieBattleground
             Address? customGameModeAddress,
             IList<string> tags,
             bool useBackendGameLogic,
-            DebugCheatsConfiguration debugCheats
-            )
+            DebugCheatsConfiguration debugCheats)
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -106,27 +105,6 @@ namespace Loom.ZombieBattleground
 
             await SetState(MatchMakingState.RegisteringToPool);
             await RegisterPlayerToPool();
-        }
-
-        public async Task RegisterPlayerToPool ()
-        {
-            try
-            {
-                RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
-                    _userDataModel.UserId,
-                    _deckId,
-                    _customGameModeAddress,
-                    _tags,
-                    _useBackendGameLogic,
-                    _debugCheats
-                );
-
-                await SetState(MatchMakingState.WaitingPeriod);
-            }
-            catch (Exception e)
-            {
-                ErrorHandler(e);
-            }
         }
 
         public async Task Stop()
@@ -170,6 +148,27 @@ namespace Loom.ZombieBattleground
 
                     break;
                 }
+            }
+        }
+
+        private async Task RegisterPlayerToPool ()
+        {
+            try
+            {
+                RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
+                    _userDataModel.UserId,
+                    _deckId,
+                    _customGameModeAddress,
+                    _tags,
+                    _useBackendGameLogic,
+                    _debugCheats
+                );
+
+                await SetState(MatchMakingState.WaitingPeriod);
+            }
+            catch (Exception e)
+            {
+                ErrorHandler(e);
             }
         }
 
@@ -326,14 +325,10 @@ namespace Loom.ZombieBattleground
                 {
                     ErrorHandler(e);
                 }
-
-                return;
             }
             else
             {
-                Helpers.ExceptionReporter.LogException(exception);
-                Debug.Log("Exception not handled, restarting matchmaking:" + exception.Message);
-                await RegisterPlayerToPool();
+                throw exception;
             }
         }
 

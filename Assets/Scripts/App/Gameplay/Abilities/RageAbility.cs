@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitHpChangedHandler();
 
-            if (!GameplayManager.UseBackendGameLogic)
+            if (!PvPManager.UseBackendGameLogic)
             {
                 if (!_wasChanged)
                 {

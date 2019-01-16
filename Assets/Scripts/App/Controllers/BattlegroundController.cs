@@ -292,7 +292,7 @@ namespace Loom.ZombieBattleground
 
         public void InitializeBattleground()
         {
-            CurrentTurn = Constants.FirstGameTurnIndex;
+            CurrentTurn = 0;
 
 #if DEV_MODE
             _gameplayManager.OpponentPlayer.Defense = 99;
@@ -316,14 +316,6 @@ namespace Loom.ZombieBattleground
         public void StartGameplayTurns()
         {
             StartTurn();
-
-            if (!_gameplayManager.IsTutorial)
-            {
-                Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ?
-                    _gameplayManager.OpponentPlayer :
-                    _gameplayManager.CurrentPlayer;
-                _cardsController.AddCardToHand(player);
-            }
         }
 
         public void GameEndedHandler(Enumerators.EndGameType endGameType)

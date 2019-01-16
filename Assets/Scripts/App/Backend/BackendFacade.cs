@@ -40,10 +40,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public IContractCallProxy ContractCallProxy => _contractCallProxy;
 
-        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory = null)
+        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory)
         {
-            BackendEndpoint = backendEndpoint;
-            _contractCallProxyFactory = contractCallProxyFactory;
+            BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
+            _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
         }
 
         public void Init()
@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Contract oldContract = Contract;
             Contract = new Contract(client, contractAddr, callerAddr);
 
-            _contractCallProxy = _contractCallProxyFactory?.Invoke(Contract) ?? new DefaultContractCallProxy(Contract);
+            _contractCallProxy = _contractCallProxyFactory?.Invoke(Contract);
             ContractCreated?.Invoke(oldContract, Contract);
         }
 
