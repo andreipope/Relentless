@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.ClickGenericButton("Button_SoloMode");
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-                int selectedHordeIndex = 1;
+                int selectedHordeIndex = 0;
 
                 await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
                 TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground.Test
                     await TestHelper.ClickGenericButton("Button_SoloMode");
                     await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-                    int selectedHordeIndex = 1;
+                    int selectedHordeIndex = 0;
 
                     await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
                     TestHelper.RecordExpectedOverlordName(selectedHordeIndex);

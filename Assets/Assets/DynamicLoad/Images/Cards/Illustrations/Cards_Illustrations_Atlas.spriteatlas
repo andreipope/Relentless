@@ -259,7 +259,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1b3e38ecace8a0647b2d6cc6c1e149c6, type: 3}
   - {fileID: 21300000, guid: a0b32efcb8bb50f45a2a0bb088fd65bb, type: 3}
   - {fileID: 21300000, guid: 8619773d24b63f64eb6e1a1273932868, type: 3}
-  - {fileID: 21300000, guid: 6141c65d19be6064fa3d2108530316f5, type: 3}
   - {fileID: 21300000, guid: 9991df5de439a8e48bb8c41be4dd03e4, type: 3}
   - {fileID: 21300000, guid: 4642cc7d14366934e9418a396371bf54, type: 3}
   - {fileID: 21300000, guid: a3830dbd34628634f854dc51e38d6d65, type: 3}
@@ -522,7 +521,6 @@ SpriteAtlas:
   - Toxic_Minion_Ectoplasm
   - life_general_shammann
   - toxic_minion_ztink
-  - toxic_minion_ghoul
   - air_officer_zwoop
   - water_minion_zhatterer
   - toxic_minion_zlimey

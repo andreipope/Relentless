@@ -516,7 +516,7 @@ namespace Loom.ZombieBattleground.Test
             if (IsTestFailed)
                 return;
 
-            if (Constants.MulliganEnabled)
+            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 WaitStart(5);
 
