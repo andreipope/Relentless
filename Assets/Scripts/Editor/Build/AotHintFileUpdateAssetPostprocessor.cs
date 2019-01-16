@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground.Editor
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            if (importedAssets.Any(s => s.EndsWith("Zb.cs")))
+            if (importedAssets.Any(s => s.EndsWith("zb.cs")))
             {
                 EditorPrefs.SetBool(MustRegenerateAotHintKey, true);
             }
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground.Editor
             if (EditorPrefs.GetBool(MustRegenerateAotHintKey))
             {
                 EditorPrefs.SetBool(MustRegenerateAotHintKey, false);
-                Debug.Log("Zb.cs changed, updating AOT hint");
+                Debug.Log("zb.cs changed, updating AOT hint");
                 AotHintFileUpdater.UpdateAotHint();
             }
         }
