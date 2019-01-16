@@ -369,6 +369,7 @@ namespace Loom.ZombieBattleground
             if (_hordeDecks.Count < 1)
                 return;
 
+            int oldIndex = _scrolledDeck;
             _scrolledDeck += direction;
 
             if (_scrolledDeck > _hordeDecks.Count - 1)
@@ -381,14 +382,17 @@ namespace Loom.ZombieBattleground
                 _scrolledDeck = 0;
             }
 
-            _defaultSelectedDeck = _scrolledDeck + 1;
-            _containerOfDecks.transform.localPosition =
-                new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
-
-            HordeDeckObject deck = _hordeDecks.Find(x => x.SelfDeck.Id == _defaultSelectedDeck);
-            if (deck != null)
+            if (oldIndex != _scrolledDeck)
             {
-                HordeDeckSelectedHandler(deck);
+                _defaultSelectedDeck = _scrolledDeck + 1;
+                _containerOfDecks.transform.localPosition =
+                    new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
+
+                HordeDeckObject deck = _hordeDecks[_scrolledDeck];
+                if (deck != null)
+                {
+                    HordeDeckSelectedHandler(deck);
+                }
             }
         }
 

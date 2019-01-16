@@ -1099,8 +1099,10 @@ namespace Loom.ZombieBattleground
             {
                 OnDoneButtonPressed();
             }
-
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            else
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            }
         }
 
         private void BuyButtonHandler()

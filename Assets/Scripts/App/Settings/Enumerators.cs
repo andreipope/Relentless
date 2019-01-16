@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground.Common
             UseOverlordPower,
             UseOverlordPowerOnCard,
             UseOverlordPowerOnMultilpleCards,
-            UseOverlordPowerOnOverlord,
+            UseOverlordPowerOnOverlord,d
             UseOverlordPowerOnCardsWithOverlord,
             CardAttackCard,
             CardAttackOverlord,

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -25,6 +26,8 @@ namespace Loom.ZombieBattleground
 
         UserInfo UserInfo { get; set; }
 
+        GetVersionsResponse CachedVersions { get; set; }
+
         Task StartLoadCache();
 
         Task SaveCache(Enumerators.CacheDataType type);
@@ -44,5 +47,7 @@ namespace Loom.ZombieBattleground
         T DeserializeFromJson<T>(string json);
 
         string GetPersistentDataPath(string fileName);
+
+        Task LoadRemoteConfig();
     }
 }
