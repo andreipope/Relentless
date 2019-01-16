@@ -72,7 +72,7 @@ class CZBPlayTests(CZBTests):
                 self.altdriver.find_element('EndTurnButton/_1_btn_endturn/EndTurnGlowEffect')
                 return True
             except Exception:
-                print('YouWinPopup not found')
+                print('EndTurnButton not found')
             time.sleep(3)
             
 
