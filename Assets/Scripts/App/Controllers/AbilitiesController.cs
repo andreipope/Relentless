@@ -491,7 +491,7 @@ namespace Loom.ZombieBattleground
 
                                        completeCallback?.Invoke();
                                    });
-                               }d
+                               }
                                else if (isPlayer)
                                {
                                    BlockEndTurnButton = true;
