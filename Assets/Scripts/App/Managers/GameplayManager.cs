@@ -280,6 +280,10 @@ namespace Loom.ZombieBattleground
 
         private void StartInitializeGame()
         {
+            if (Constants.DevModeEnabled) {
+                AvoidGooCost = true;
+            }
+
             if (IsTutorial)
             {
                 IsSpecificGameplayBattleground = true;
