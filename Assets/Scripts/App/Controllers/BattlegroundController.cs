@@ -292,7 +292,7 @@ namespace Loom.ZombieBattleground
 
         public void InitializeBattleground()
         {
-            CurrentTurn = Constants.FirstGameTurnIndex;
+            CurrentTurn = 0;
 
             if (Constants.DevModeEnabled)
             {
@@ -317,14 +317,6 @@ namespace Loom.ZombieBattleground
         public void StartGameplayTurns()
         {
             StartTurn();
-
-            if (!_gameplayManager.IsTutorial)
-            {
-                Player player = _gameplayManager.CurrentTurnPlayer.IsLocalPlayer ?
-                    _gameplayManager.OpponentPlayer :
-                    _gameplayManager.CurrentPlayer;
-                _cardsController.AddCardToHand(player);
-            }
         }
 
         public void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -836,12 +828,10 @@ namespace Loom.ZombieBattleground
             }
 
             BoardUnitView unitView =
-                OpponentBoardCards
-                    .Concat(OpponentBoardCards)
-                    .Concat(OpponentGraveyardCards)
-                    .Concat(PlayerBoardCards)
-                    .Concat(PlayerGraveyardCards)
-                    .FirstOrDefault(x => x.Model == boardUnitModel);
+                   _gameplayManager.CurrentPlayer.BoardCards
+                      .Concat(_gameplayManager.CurrentPlayer.BoardCards)
+                      .Concat(_gameplayManager.OpponentPlayer.BoardCards)
+                      .FirstOrDefault(x => x != null && x.Model == boardUnitModel);
 
             if (unitView is default(BoardUnitView))
             {
@@ -854,11 +844,11 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)
         {
-            BoardUnitView unit = PlayerBoardCards.Find(x => x.GameObject.Equals(unitObject));
+            BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.Find(x => x.GameObject.Equals(unitObject));
 
             if (unit == null)
             {
-                unit = OpponentBoardCards.Find(x => x.GameObject.Equals(unitObject));
+                unit = _gameplayManager.OpponentPlayer.BoardCards.Find(x => x.GameObject.Equals(unitObject));
             }
 
             return unit;

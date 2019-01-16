@@ -11,5 +11,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public long? CustomRandomSeed { get; set; }
 
         public bool DisableDeckShuffle { get; set; }
+
+        public string ForceFirstTurnUserId { get; set; }
     }
 }

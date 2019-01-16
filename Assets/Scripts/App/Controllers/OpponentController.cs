@@ -140,7 +140,7 @@ namespace Loom.ZombieBattleground
 
         private void OnPlayerActionOutcomeReceived(PlayerActionOutcome outcome)
         {
-            if (!_gameplayManager.UseBackendGameLogic)
+            if (!_pvpManager.UseBackendGameLogic)
                 return;
 
             switch (outcome.OutcomeCase)

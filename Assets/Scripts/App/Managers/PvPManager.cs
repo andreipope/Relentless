@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
 
             if (_matchMakingFlowController != null)
             {
-                await _matchMakingFlowController.Update(Time.deltaTime);
+                await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Update(Time.deltaTime));
             }
         }
 
@@ -158,7 +158,9 @@ namespace Loom.ZombieBattleground
                 );
 
                 _matchMakingFlowController.MatchConfirmed += MatchMakingFlowControllerOnMatchConfirmed;
-                await _matchMakingFlowController.Start(deckId, CustomGameModeAddress, PvPTags, UseBackendGameLogic, DebugCheats);
+
+                await CallAndRestartMatchmakingOnException(() =>
+                    _matchMakingFlowController.Start(deckId, CustomGameModeAddress, PvPTags, UseBackendGameLogic, DebugCheats));
             }
             catch(Exception e)
             {
@@ -225,6 +227,21 @@ namespace Loom.ZombieBattleground
             _isCheckPlayerAvailableTimerStart = true;
 
             _queueManager.Active = true;
+        }
+
+        private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
+        {
+            try
+            {
+                await func();
+            }
+            catch (LoomException e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+                Debug.Log("Exception not handled, restarting matchmaking:" + e.Message);
+                await Task.Delay(1000); // avoids endless loop on repeated exceptions
+                await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Restart());
+            }
         }
 
         private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand) 

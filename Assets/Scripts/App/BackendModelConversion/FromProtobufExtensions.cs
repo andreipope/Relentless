@@ -199,7 +199,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static CardInstanceSpecificData FromProtobuf(this Protobuf.CardInstanceSpecificData card)
         {
-            return new CardInstanceSpecificData(
+           return new CardInstanceSpecificData(
                 card.Attack,
                 card.Defense,
                 (Enumerators.SetType) card.Set,

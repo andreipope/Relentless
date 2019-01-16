@@ -309,7 +309,7 @@ namespace Loom.ZombieBattleground
             SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume);
         }
 
-        public virtual void SetDefaultAnimation(int id)
+        public virtual void SetDefaultAnimation()
         {
             if (IsPreview)
                 return;
@@ -323,6 +323,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                int id = WorkingCard.Owner.CardsInHand.Count;
                 CardAnimator.SetFloat("Id", id);
             }
 
@@ -494,8 +495,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.InitialUnitType != Enumerators.CardType.WALKER &&
-                unit.Model.InitialUnitType != Enumerators.CardType.NONE)
+            if (unit.Model.InitialUnitType != Enumerators.CardType.WALKER)
             {
                 TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(unit.Model.InitialUnitType);
                 if (cardTypeInfo != null)
@@ -641,8 +641,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCard.WorkingCard.InstanceCard.CardType != Enumerators.CardType.WALKER &&
-                boardCard.WorkingCard.InstanceCard.CardType != Enumerators.CardType.NONE)
+            if (boardCard.WorkingCard.InstanceCard.CardType != Enumerators.CardType.WALKER)
             {
                 TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(boardCard.WorkingCard.InstanceCard.CardType);
                 if (cardTypeInfo != null)

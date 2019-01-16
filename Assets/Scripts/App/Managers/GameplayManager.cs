@@ -84,8 +84,6 @@ namespace Loom.ZombieBattleground
 
         public AnalyticsTimer MatchDuration { get; set; }
 
-        public bool UseBackendGameLogic => _pvpManager?.MatchMetadata?.UseBackendGameLogic ?? false;
-
         public T GetController<T>()
             where T : IController
         {
