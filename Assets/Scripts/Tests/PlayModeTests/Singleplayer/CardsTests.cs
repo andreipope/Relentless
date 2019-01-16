@@ -1,50 +1,29 @@
 using System.Collections;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
-    public class SanityChecks : BaseIntegrationTest
+    public class CardsTests : BaseIntegrationTest
     {
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator SkipTutorials()
+        public IEnumerator TutorialNonSkip()
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.ClickGenericButton("Button_Play");
+                await TestHelper.MainMenuTransition("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
-
-                #region Tutorial Skip
 
                 await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_Tutorial");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
-                await SkipTutorial(false);
-
-                #endregion
-            });
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator PlayThroughTutorials()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
 
                 #region Tutorial Non-Skip
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_Tutorial");
+                await TestHelper.MainMenuTransition("Button_Tutorial");
+
                 await TestHelper.AssertCurrentPageName("GameplayPage");
 
                 await PlayTutorial_Part1();
@@ -54,6 +33,7 @@ namespace Loom.ZombieBattleground.Test
                 await PlayTutorial_Part2();
 
                 await TestHelper.ClickGenericButton("Button_Continue");
+
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
                 #endregion
@@ -62,154 +42,31 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(500000)]
-        public IEnumerator CreateAHorde()
+        public IEnumerator TutorialSkip()
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.ClickGenericButton("Button_Play");
+                await TestHelper.MainMenuTransition("Button_Play");
 
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
                 await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
-                await TestHelper.SelectAHordeByName("Razu", false);
-                if (TestHelper.SelectedHordeIndex != -1)
-                {
-                    await TestHelper.RemoveAHorde(TestHelper.SelectedHordeIndex);
-                }
+                #region Tutorial Skip
 
-                await TestHelper.AddRazuHorde();
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-            });
-        }
+                await TestHelper.MainMenuTransition("Button_Tutorial");
 
-        [UnityTest]
-        [Timeout(900000)]
-        public IEnumerator PlayWithNewHorde()
-        {
-            return AsyncTest(async () =>
-            {
-                #region Solo Gameplay
-
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-                await TestHelper.SelectAHordeByName("Razu");
-                TestHelper.RecordExpectedOverlordName(TestHelper.SelectedHordeIndex);
-                await TestHelper.ClickGenericButton("Button_Battle");
                 await TestHelper.AssertCurrentPageName("GameplayPage");
-                await SoloGameplay(true);
-                await TestHelper.ClickGenericButton("Button_Continue");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+
+                await SkipTutorial(false);
 
                 #endregion
             });
-        }
-
-        [UnityTest]
-        [Timeout(900000)]
-        public IEnumerator PlayWithDefaultHorde()
-        {
-            return AsyncTest(async () =>
-            {
-                #region Solo Gameplay
-
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 1;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                await TestHelper.ClickGenericButton("Button_Battle");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
-                await SoloGameplay(true);
-                await TestHelper.ClickGenericButton("Button_Continue");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                #endregion
-            });
-        }
-
-        [UnityTest]
-        [Timeout(9000000)]
-        public IEnumerator PlayWithAllCards()
-        {
-            return AsyncTest(async () =>
-            {
-                #region Solo Gameplay
-
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                await TestHelper.ClickGenericButton("Button_Battle");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
-                await SoloGameplay(true);
-                await TestHelper.ClickGenericButton("Button_Continue");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                #endregion
-            });
-        }
-
-        private async Task SoloGameplay(bool assertOverlordName = false)
-        {
-            if (TestHelper.IsTestFailed)
-            {
-                return;
-            }
-
-            TestHelper.InitalizePlayer();
-
-            if (!TestHelper.IsTestFailed)
-                await TestHelper.WaitUntilPlayerOrderIsDecided();
-
-            if (assertOverlordName)
-            {
-                TestHelper.AssertOverlordName();
-            }
-
-            if (!TestHelper.IsTestFailed)
-                await TestHelper.AssertMulliganPopupCameUp(
-                    TestHelper.DecideWhichCardsToPick,
-                    null);
-
-            if (!TestHelper.IsTestFailed)
-                await TestHelper.WaitUntilOurFirstTurn();
-
-            if (!TestHelper.IsTestFailed)
-                await TestHelper.MakeMoves();
-
-            await new WaitForUpdate();
         }
 
         private async Task SkipTutorial(bool twoSteps = true)
         {
-            await new WaitForSeconds(8);
             await TestHelper.ClickGenericButton("Button_Skip");
 
             await TestHelper.RespondToYesNoOverlay(true);
@@ -232,10 +89,13 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await TestHelper.ClickGenericButton("Button_Next", count: 3);
+
             await TestHelper.ClickGenericButton("Button_Play");
+
             await TestHelper.ClickGenericButton("Button_Next", count: 4);
 
             await TestHelper.WaitUntilWeHaveACardAtHand();
+
             await TestHelper.PlayCardFromHandToBoard(new[]
             {
                 0

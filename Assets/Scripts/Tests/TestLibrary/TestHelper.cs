@@ -1035,7 +1035,7 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
-            WaitStart(250);
+            WaitStart(1000);
             await new WaitUntil(() =>
             {
                 return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());
@@ -3637,7 +3637,7 @@ namespace Loom.ZombieBattleground.Test
             await LetsThink();
         }
 
-        /// <summary>
+        /// <summary>3
         /// Removes a Horde by index.
         /// </summary>
         /// <param name="index">Index.</param>

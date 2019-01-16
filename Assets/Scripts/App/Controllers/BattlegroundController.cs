@@ -294,10 +294,11 @@ namespace Loom.ZombieBattleground
         {
             CurrentTurn = Constants.FirstGameTurnIndex;
 
-#if DEV_MODE
-            _gameplayManager.OpponentPlayer.Defense = 99;
-            _gameplayManager.CurrentPlayer.Defense = 99;
-#endif
+            if (Constants.DevModeEnabled)
+            {
+                _gameplayManager.OpponentPlayer.Defense = 99;
+                _gameplayManager.CurrentPlayer.Defense = 99;
+            }
 
             _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;
 

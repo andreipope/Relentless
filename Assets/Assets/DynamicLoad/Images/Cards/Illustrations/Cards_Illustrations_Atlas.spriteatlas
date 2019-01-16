@@ -133,6 +133,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 10b18d052d84a4749b8baa7968f7360b, type: 3}
   - {fileID: 21300000, guid: 0aa83515b407ef742b4aa1be8df2aac7, type: 3}
   - {fileID: 21300000, guid: 8b1eba25b17e18a428e020fd4d989b14, type: 3}
+  - {fileID: 21300000, guid: 227e7335ff1904d478977f6b38524c5d, type: 3}
   - {fileID: 21300000, guid: 6841e535161e10847aa211a998bb1ca9, type: 3}
   - {fileID: 21300000, guid: fc147545e0d00f2479b1a8c8b85cef20, type: 3}
   - {fileID: 21300000, guid: b93c596529f53a442bd23238aa610635, type: 3}
@@ -379,6 +380,7 @@ SpriteAtlas:
   - fire_general_zhampion
   - air_minion_soothsayer
   - life_commander_blight
+  - toxic_minion_ghoul
   - life_commander_rainz
   - toxic_minion_tumor
   - life_minion_amber
