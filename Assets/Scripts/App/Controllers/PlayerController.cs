@@ -118,12 +118,6 @@ namespace Loom.ZombieBattleground
                         {
                             for (int i = 0; i < card.Amount; i++)
                             {
-#if DEV_MODE
-
-// playerDeck.Add("Whizpar");
-// playerDeck.Add("Nail Bomb");
-#endif
-
                                 workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, player));
                             }
                         }
