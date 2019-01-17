@@ -742,7 +742,7 @@ namespace Loom.ZombieBattleground.Common
             BottomRight
         }
 
-        public enum TooltipOwner
+        public enum TutorialObjectOwner
         {
             Undefined,
 
@@ -769,6 +769,7 @@ namespace Loom.ZombieBattleground.Common
             PlayerOverlordCardDrawed,
             PlayerOverlordTriedToPlayUnsequentionalCard,
             PlayerOverlordTriedToUseUnsequentionalBattleframe,
+            PlayerOverlordTriedToUseWrongBattleframe,
             PlayerOverlordTriedToPlayCardWhenItsLimited,
             PlayerOverlorDied,
             PlayerOverlordAbilityUsed,
@@ -791,7 +792,12 @@ namespace Loom.ZombieBattleground.Common
             TapOnScreen,
             AvatarTooltipClosed,
 
-            OverlordSayPopupHided
+            OverlordSayPopupHided,
+
+            YouWonPopupOpened,
+            YouWonPopupClosed,
+
+            TutorialProgressInfoPopupClosed
         }
 
         public enum TutorialActivityActionHandler

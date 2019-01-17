@@ -26,6 +26,22 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void ChangeVisibilitySelectHandPointer(Enumerators.TutorialObjectOwner owner, bool state)
+        {
+            List<HandPointerPopup> sortingPopups = _handPointerPopups.FindAll(popup => popup.Owner == owner);
+            foreach (HandPointerPopup popup in sortingPopups)
+            {
+                if (state)
+                {
+                    popup.Activate();
+                }
+                else
+                {
+                    popup.Deactivate();
+                }
+            }
+        }
+
         public void Dispose()
         {
             ResetAll();
@@ -40,9 +56,9 @@ namespace Loom.ZombieBattleground
             _handPointerPopups.Clear();
         }
 
-        public void DrawPointer(Enumerators.TutorialHandPointerType type, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, int handOrder = 0)
+        public void DrawPointer(Enumerators.TutorialHandPointerType type, Enumerators.TutorialObjectOwner owner, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, bool aboveUI = false)
         {
-            HandPointerPopup popup = new HandPointerPopup(type, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner, handOrder);
+            HandPointerPopup popup = new HandPointerPopup(type, owner, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner, aboveUI);
             _handPointerPopups.Add(popup);
         }
     }
@@ -55,6 +71,9 @@ namespace Loom.ZombieBattleground
 
         private const float durationMove = 2f;
         private const float interval = 0.3f;
+        private const int SortingOrderAboveUI = 32;
+
+        public Enumerators.TutorialObjectOwner Owner;
 
         private Enumerators.TutorialHandPointerType _type;
 
@@ -88,17 +107,21 @@ namespace Loom.ZombieBattleground
 
         private bool _wasDisposed = false;
 
+        private List<Sequence> _allSequences;
 
-        public HandPointerPopup(Enumerators.TutorialHandPointerType type, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, int handOrder = 0)
+        public HandPointerPopup(Enumerators.TutorialHandPointerType type, Enumerators.TutorialObjectOwner owner, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, bool aboveUI = false)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
 
+            _allSequences = new List<Sequence>();
+
             _startPosition = begin;
             _appearDelay = appearDelay;
             _appearOnce = appearOnce;
             _type = type;
+            Owner = owner;
 
             _selfObject = MonoBehaviour.Instantiate(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/HandPointer"));
@@ -114,9 +137,9 @@ namespace Loom.ZombieBattleground
             _selfObject.SetActive(false);
 
             _handRenderer = _selfObject.transform.Find("Hand").GetComponent<SpriteRenderer>();
-            if (handOrder != 0)
+            if (aboveUI)
             {
-                _handRenderer.sortingOrder = handOrder;
+                _handRenderer.sortingOrder = SortingOrderAboveUI;
             }
             _handStates = _loadObjectsManager.GetObjectsByPath<Sprite>(new string[] {
                 "Images/Tutorial/tutorial_hand_drag",
@@ -140,7 +163,7 @@ namespace Loom.ZombieBattleground
 
         private void StartSequence()
         {
-            InternalTools.DoActionDelayed(Start, _appearDelay);
+            _allSequences.Add(InternalTools.DoActionDelayed(Start, _appearDelay));
         }
 
         private void Start()
@@ -165,12 +188,12 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.TutorialHandPointerType.Single:
                     ChangeHandState(Enumerators.TutorialHandState.Drag);
-                    InternalTools.DoActionDelayed(End, interval);
+                    _allSequences.Add(InternalTools.DoActionDelayed(End, interval));
                     break;
                 case Enumerators.TutorialHandPointerType.Animated:
                     ChangeHandState(Enumerators.TutorialHandState.Pointing);
-                    InternalTools.DoActionDelayed(() => ChangeHandState(Enumerators.TutorialHandState.Pressed), interval);                   
-                    InternalTools.DoActionDelayed(Move, interval * 2);
+                    _allSequences.Add(InternalTools.DoActionDelayed(() => ChangeHandState(Enumerators.TutorialHandState.Pressed), interval));
+                    _allSequences.Add(InternalTools.DoActionDelayed(Move, interval * 2));
                     break;
                 default:
                     break;
@@ -187,12 +210,15 @@ namespace Loom.ZombieBattleground
             _startPoint = _ownerUnit != null ? _ownerUnit.Transform.position + _startPosition : _startPosition;           
             _sideTurn = _startPoint.x > _endPosition.x ? 1 : -1;
             _sineOffset = 0;
-            _selfObject.transform.DOMove(_endPosition, durationMove)
+
+            Sequence moveSequence = DOTween.Sequence();
+            _allSequences.Add(moveSequence);
+            moveSequence.Append(_selfObject.transform.DOMove(_endPosition, durationMove)
                 .SetEase(Ease.InSine)
                 .OnComplete(() =>
                 {
-                    InternalTools.DoActionDelayed(End, interval);
-                });
+                    _allSequences.Add(InternalTools.DoActionDelayed(End, interval));
+                }));
         }
 
         private void End()
@@ -205,12 +231,12 @@ namespace Loom.ZombieBattleground
 
             if (_type == Enumerators.TutorialHandPointerType.Single)
             {
-                InternalTools.DoActionDelayed(() => ChangeHandState(Enumerators.TutorialHandState.Pressed), interval);
+                _allSequences.Add(InternalTools.DoActionDelayed(() => ChangeHandState(Enumerators.TutorialHandState.Pressed), interval));
             }
 
             if(!_appearOnce)
             {
-                InternalTools.DoActionDelayed(Start, interval * 2);
+                _allSequences.Add(InternalTools.DoActionDelayed(Start, interval * 2));
             }
         }
 
@@ -246,6 +272,39 @@ namespace Loom.ZombieBattleground
                 if (_selfObject.transform.position == _endPosition)
                 {
                     _isMove = false;
+                }
+            }
+
+            for (int i = 0; i < _allSequences.Count; i++)
+            {
+                if(_allSequences[i] == null || !_allSequences[i].active)
+                {
+                    _allSequences.Remove(_allSequences[i]);
+                }
+            }
+        }
+
+        public void Activate()
+        {
+            _wasDisposed = false;
+            StartSequence();
+        }
+
+        public void Deactivate()
+        {
+            _wasDisposed = true;
+            _isMove = false;
+            ClearSequences();
+            _selfObject?.SetActive(false);
+        }
+
+        private void ClearSequences()
+        {
+            if (_allSequences != null && _allSequences.Count > 0)
+            {
+                foreach (Sequence sequence in _allSequences)
+                {
+                    sequence?.Kill();
                 }
             }
         }

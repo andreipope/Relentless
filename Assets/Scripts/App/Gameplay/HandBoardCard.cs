@@ -162,6 +162,11 @@ public class HandBoardCard : OwnableBoardObject
             else
             {
                 ReturnToHandAnim();
+
+                if(_tutorialManager.IsTutorial)
+                {
+                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
+                }
             }
         }
         else

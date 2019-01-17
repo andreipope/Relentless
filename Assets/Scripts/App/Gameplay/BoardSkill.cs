@@ -167,6 +167,11 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
+
+                    if(_tutorialManager.IsTutorial)
+                    {
+                        _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerOverlordAbility);
+                    }
                 }
             }
 
@@ -356,6 +361,11 @@ namespace Loom.ZombieBattleground
 
         private void DoOnUpSkillAction(Action completeCallback)
         {
+            if(OwnerPlayer.IsLocalPlayer && _tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerOverlordAbility);
+            }
+
             if (!Skill.CanSelectTarget)
             {
                 _skillsController.DoSkillAction(this, completeCallback, OwnerPlayer);
@@ -384,7 +394,7 @@ namespace Loom.ZombieBattleground
         private bool IsSkillCanUsed()
         {
             if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn ||
-                _tutorialManager.IsTutorial)
+                (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().PlayerOverlordAbilityShouldBeUnlocked))
             {
                 return false;
             }

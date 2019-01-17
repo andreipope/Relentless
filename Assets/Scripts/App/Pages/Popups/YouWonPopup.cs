@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class YouWonPopup : IUIPopup
     {
+        private static Color ColorDisabledContinueButtonForTutorial = new Color32(159, 159, 159, 225);
+
         private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -48,6 +50,8 @@ namespace Loom.ZombieBattleground
         private TextMeshProUGUI _currentLevel;
 
         private TextMeshProUGUI _nextLevel;
+
+        private TextMeshProUGUI _continueText;
 
         public GameObject Self { get; private set; }
 
@@ -110,6 +114,8 @@ namespace Loom.ZombieBattleground
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
             _buttonOk.gameObject.SetActive(false);
 
+            _continueText = _buttonOk.transform.Find("Shifted/Text").GetComponent<TextMeshProUGUI>();
+
             _packOpenButton = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_OpenPacks").GetComponent<Button>();
             _packOpenButton.onClick.AddListener(OpenPackButtonOnClickHandler);
 
@@ -153,9 +159,13 @@ namespace Loom.ZombieBattleground
 
             FillingExperienceBar();
 
-            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorial.Id == 0)
+            if(_tutorialManager.IsTutorial)
             {
-                EnablePackOpenerPart();
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupOpened);
+                if(_tutorialManager.CurrentTutorial.Id == 0)
+                {
+                    EnablePackOpenerPart();
+                }
             }
         }
 
@@ -183,7 +193,8 @@ namespace Loom.ZombieBattleground
             _packOpenButton.gameObject.SetActive(true);
             _openPacksImage.gameObject.SetActive(true);
             _buttonOk.interactable = false;
-            _gameplayManager.GetController<HandPointerController>().DrawPointer(Enumerators.TutorialHandPointerType.Single, new Vector3(-3, -4.7f, 0), handOrder: 31, appearDelay: 1f);
+            _buttonOk.targetGraphic.color = ColorDisabledContinueButtonForTutorial;
+            _continueText.color = ColorDisabledContinueButtonForTutorial;
         }
 
         public void Show(object data)
@@ -233,9 +244,16 @@ namespace Loom.ZombieBattleground
 
             _uiManager.HidePopup<YouWonPopup>();
 
-            if (_gameplayManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
-                _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
+
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                };
+                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }
             else
             {
@@ -246,20 +264,19 @@ namespace Loom.ZombieBattleground
         private void OpenPackButtonOnClickHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            Hide();
-            _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+            _uiManager.HidePopup<YouWonPopup>();
+
+            if (_tutorialManager.IsTutorial)
             {
-                if (_gameplayManager.IsTutorial)
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
+
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
                 {
                     _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
-                }
-                else
-                {
-                    _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
-                }
-            };
-            _uiManager.DrawPopup<TutorialProgressInfoPopup>();
-            _gameplayManager.GetController<HandPointerController>().ResetAll();
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                };
+                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
+            }
         }
     }
 }

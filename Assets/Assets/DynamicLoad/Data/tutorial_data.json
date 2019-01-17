@@ -52,7 +52,7 @@
           "Id": 4,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerBattleframe",
-          "TutorialTooltipOwnerName": "Gloop",
+          "TutorialTooltipOwnerId": 1,
           "Description": "Defense was lowered\n by the\n counter-attack.",
           "Position": {
             "X": 3.65,
@@ -142,6 +142,7 @@
                 "Z": 0.0
               },
               "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
               "AppearDelay": 5.0
             }
           ],
@@ -183,7 +184,7 @@
               "Description": "Not bad for\n a slab of rock"
             }
           ],
-          "ActionToEndThisStep": "OverlordSayPopupHided"
+          "ActionToEndThisStep": "EndTurn"
         },
         {
           "ConnectedTurnIndex": 4,
@@ -209,10 +210,12 @@
               },
               "TutorialObjectIdStepOwner": 1,
               "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerBattleframe",
               "AppearDelay": 2.5
             }
           ],
           "SelectableTargets": [
+            "OPPONENT",
             "OPPONENT_CARD"
           ],
           "ActionToEndThisStep": "BattleframeAttacked",
@@ -248,6 +251,7 @@
                 "Z": 0.0
               },
               "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
               "AppearDelay": 5.0
             }
           ],
@@ -318,11 +322,13 @@
               },
               "TutorialObjectIdStepOwner": 2,
               "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerBattleframe",
               "AppearDelay": 2.5
             }
           ],
           "SelectableTargets": [
-            "OPPONENT"
+            "OPPONENT",
+            "OPPONENT_CARD"
           ],
           "ActionToEndThisStep": "BattleframeAttacked",
           "UnitsCanAttack": true,
@@ -332,7 +338,8 @@
           "TutorialObjectIdStepOwner": 1,
           "ConnectedTurnIndex": 6,
           "SelectableTargets": [
-            "OPPONENT"
+            "OPPONENT",
+            "OPPONENT_CARD"
           ],
           "HandPointers": [
             {
@@ -347,6 +354,7 @@
                 "Z": 0.0
               },
               "TutorialObjectIdStepOwner": 1,
+              "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated"
             },
           ],
@@ -368,7 +376,8 @@
                 "Y": -0.4,
                 "Z": 0.0
               },
-              "TutorialHandPointerType": "Animated"
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand"
             }
           ],
           "CanInteractWithGameplay": true,
@@ -435,6 +444,27 @@
             "DescriptionTooltipCloseText": "GOT IT!"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -3.0,
+                "Y": -4.7,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true,
+              "AppearDelay": 1.5
+            }
+          ],
+          "ActionToEndThisStep": "YouWonPopupClosed"
+        },
+        {
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
         }
       ],
       "SpecificBattlegroundInfo": {
@@ -444,7 +474,7 @@
           "Defense": 10,
           "MaximumDefense": 20,
           "CurrentGoo": 0,
-          "MaximumGoo": 10,
+          "MaximumGoo": 0,
           "CardsInHand": [
           ],
           "CardsInDeck": [
@@ -471,11 +501,11 @@
           "SecondaryOverlordAbility": "NONE"
         },
         "OpponentInfo": {
-          "OverlordId": 4,
+          "OverlordId": 0,
           "Defense": 5,
           "MaximumDefense": 20,
           "CurrentGoo": 0,
-          "MaximumGoo": 10,
+          "MaximumGoo": 0,
           "CardsInHand": [
           ],
           "CardsInDeck": [
@@ -561,7 +591,7 @@
           ],
           "ActionActivityHandlers": [
             {
-              "TutorialActivityAction": "TapOnEndTurnButtonWhenItsLimited",
+              "TutorialActivityAction": "PlayerOverlordTriedToUseUnsequentionalBattleframe",
               "TutorialActivityActionHandler": "OverlordSayTooltip",
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",

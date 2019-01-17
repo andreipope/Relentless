@@ -17,6 +17,10 @@ namespace Loom.ZombieBattleground
 
         void StopTutorial();
 
+        void ActivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
+
+        void DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
+
         void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = -1);
 
         SpecificTurnInfo GetCurrentTurnInfo();

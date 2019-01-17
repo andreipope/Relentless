@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
     public class OverlordSayTooltipInfo : TutorialActivityActionHandlerData
     {
         public Enumerators.TooltipAlign TutorialTooltipAlign;
-        public Enumerators.TooltipOwner TutorialTooltipOwner;
+        public Enumerators.TutorialObjectOwner TutorialTooltipOwner;
         public string Description;
         public float AppearDelay;
     }
@@ -233,11 +233,12 @@ namespace Loom.ZombieBattleground
     {
         public int Id;
         public Enumerators.TooltipAlign TutorialTooltipAlign;
-        public Enumerators.TooltipOwner TutorialTooltipOwner;
-        public string TutorialTooltipOwnerName;
+        public Enumerators.TutorialObjectOwner TutorialTooltipOwner;
+        public int TutorialTooltipOwnerId;
         public string Description;
         public FloatVector3 Position;
         public bool Resizable;
+        public float AppearDelay;
 
         public TutorialDescriptionTooltip()
         {
@@ -265,7 +266,9 @@ namespace Loom.ZombieBattleground
         public FloatVector3 StartPosition;
         public FloatVector3 EndPosition;
         public Enumerators.TutorialHandPointerType TutorialHandPointerType;
+        public Enumerators.TutorialObjectOwner TutorialHandPointerOwner;
         public bool AppearOnce;
+        public bool AboveUI;
         public float AppearDelay;
         public int TutorialObjectIdStepOwner;
 
@@ -274,6 +277,7 @@ namespace Loom.ZombieBattleground
             StartPosition = new FloatVector3();
             EndPosition = new FloatVector3();
             TutorialHandPointerType = Enumerators.TutorialHandPointerType.Single;
+            TutorialHandPointerOwner = Enumerators.TutorialObjectOwner.Undefined;
         }
     }
 

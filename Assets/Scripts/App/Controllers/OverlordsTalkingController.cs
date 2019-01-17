@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TooltipOwner owner)
+        public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner)
         {
             OverlordSayPopup overlordSayPopup = new OverlordSayPopup(description, align, owner, _overlordsChatContainer);
             overlordSayPopup.OverlordSayPopupHided += OverlordSayPopupHided;
@@ -102,11 +102,11 @@ namespace Loom.ZombieBattleground
 
             public Enumerators.TooltipAlign Align;
 
-            public Enumerators.TooltipOwner Owner;
+            public Enumerators.TutorialObjectOwner Owner;
 
             public float HeightPopup;
 
-            private const float DurationOfShow = 2f;
+            private const float DurationOfShow = 1.5f;
             private const float DurationOfHide = 0.5f;
             private const float MinHeight = 2.85f;
 
@@ -119,7 +119,7 @@ namespace Loom.ZombieBattleground
 
             private TextMeshPro _textDescription;
 
-            public OverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TooltipOwner owner, Transform parent)
+            public OverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, Transform parent)
             {
                 _tutorialManager = GameClient.Get<ITutorialManager>();
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
                 Vector3 position = Vector3.zero;
                 switch (Owner)
                 {
-                    case Enumerators.TooltipOwner.EnemyOverlord:
+                    case Enumerators.TutorialObjectOwner.EnemyOverlord:
                         if(Align == Enumerators.TooltipAlign.CenterLeft)
                         {
                             position = Constants.LeftOpponentOverlordPositionForChat;
@@ -171,7 +171,7 @@ namespace Loom.ZombieBattleground
                         }
                         position.y -= height;
                         break;
-                    case Enumerators.TooltipOwner.PlayerOverlord:
+                    case Enumerators.TutorialObjectOwner.PlayerOverlord:
                         if (Align == Enumerators.TooltipAlign.CenterLeft)
                         {
                             position = Constants.LeftPlayerOverlordPositionForChat;

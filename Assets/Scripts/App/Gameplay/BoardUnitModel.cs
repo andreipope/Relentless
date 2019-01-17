@@ -637,6 +637,21 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
+
+                            if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
+                            {
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
+                                     info.TargetType == Enumerators.SkillTargetType.OPPONENT))
+                                {
+                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    IsPlayable = true;
+                                    AttackedThisTurn = false;
+                                    IsAttacking = false;
+                                    completeCallback?.Invoke();
+                                    return;
+                                }
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetPlayer);
 
                             FightSequenceHandler.HandleAttackPlayer(
@@ -655,6 +670,7 @@ namespace Loom.ZombieBattleground
                         }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 case BoardUnitModel targetCardModel:
+
                     IsPlayable = false;
                     AttackedThisTurn = true;
 
@@ -668,6 +684,20 @@ namespace Loom.ZombieBattleground
                                 IsAttacking = false;
                                 completeCallback?.Invoke();
                                 return;
+                            }
+
+                            if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
+                            {
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
+                                     info.TargetTutorialObjectId == targetCardModel.TutorialObjectId))
+                                {
+                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    IsPlayable = true;
+                                    AttackedThisTurn = false;
+                                    IsAttacking = false;
+                                    completeCallback?.Invoke();
+                                    return;
+                                }
                             }
 
                             ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);

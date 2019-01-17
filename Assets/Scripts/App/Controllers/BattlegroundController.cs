@@ -458,13 +458,12 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsLocalPlayerTurn())
             {
                 TurnEnded?.Invoke();
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndTurn);
             }
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :
                 _gameplayManager.CurrentPlayer;
-
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndTurn);
         }
 
         public void StopTurn()

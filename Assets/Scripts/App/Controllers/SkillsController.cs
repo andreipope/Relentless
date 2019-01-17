@@ -110,20 +110,14 @@ namespace Loom.ZombieBattleground
             HeroSkill primary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.PrimarySkill);
             HeroSkill secondary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.SecondarySkill);
 
-            if (primary != null && secondary != null)
-            {
-                rootPage.SetupSkills(primary, secondary, false);
-                SetPlayerSkills(rootPage, primary, secondary);
-            }
+            rootPage.SetupSkills(primary, secondary, false);
+            SetPlayerSkills(rootPage, primary, secondary);
 
             primary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayerDeck.PrimarySkill);
             secondary = _gameplayManager.OpponentPlayer.SelfHero.GetSkill(_gameplayManager.OpponentPlayerDeck.SecondarySkill);
 
-            if (primary != null && secondary != null)
-            {
-                rootPage.SetupSkills(primary, secondary, true);
-                SetOpponentSkills(rootPage, primary, secondary);
-            }
+            rootPage.SetupSkills(primary, secondary, true);
+            SetOpponentSkills(rootPage, primary, secondary);
 
             _skillsInitialized = true;
         }
@@ -172,26 +166,38 @@ namespace Loom.ZombieBattleground
 
         public void SetPlayerSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            PlayerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
-                _gameplayManager.CurrentPlayer,
-                primary,
-                true);
-            PlayerSecondarySkill = new BoardSkill(rootPage.PlayerSecondarySkillHandler.gameObject,
-                _gameplayManager.CurrentPlayer,
-                secondary,
-                false);
+            if (primary != null)
+            {
+                PlayerPrimarySkill = new BoardSkill(rootPage.PlayerPrimarySkillHandler.gameObject,
+                    _gameplayManager.CurrentPlayer,
+                    primary,
+                    true);
+            }
+            if (secondary != null)
+            {
+                PlayerSecondarySkill = new BoardSkill(rootPage.PlayerSecondarySkillHandler.gameObject,
+                    _gameplayManager.CurrentPlayer,
+                    secondary,
+                    false);
+            }
         }
 
         public void SetOpponentSkills(GameplayPage rootPage, HeroSkill primary, HeroSkill secondary)
         {
-            OpponentPrimarySkill = new BoardSkill(rootPage.OpponentPrimarySkillHandler.gameObject,
-                _gameplayManager.OpponentPlayer,
-                primary,
-                true);
-            OpponentSecondarySkill = new BoardSkill(rootPage.OpponentSecondarySkillHandler.gameObject,
-                _gameplayManager.OpponentPlayer,
-                secondary,
-                false);
+            if (primary != null)
+            {
+                OpponentPrimarySkill = new BoardSkill(rootPage.OpponentPrimarySkillHandler.gameObject,
+                    _gameplayManager.OpponentPlayer,
+                    primary,
+                    true);
+            }
+            if (secondary != null)
+            {
+                OpponentSecondarySkill = new BoardSkill(rootPage.OpponentSecondarySkillHandler.gameObject,
+                    _gameplayManager.OpponentPlayer,
+                    secondary,
+                    false);
+            }
         }
 
         public void DoSkillAction(BoardSkill skill, Action completeCallback, BoardObject target = null)
