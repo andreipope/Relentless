@@ -154,9 +154,6 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.TurnStarted += TurnStartedHandler;
 
-                //_gameplayManager.GetController<InputController>().UnitSelectedEvent += UnitSelectedEventHandler;
-                //_gameplayManager.GetController<InputController>().UnitDeselectedEvent += UnitDeselectedEventHandler;
-                //_gameplayManager.GetController<InputController>().PlayerSelectedEvent += PlayerSelectedEventHandler;
                 _gameplayManager.GetController<InputController>().PlayerPointerEnteredEvent += PlayerSelectedEventHandler;
                 _gameplayManager.GetController<InputController>().UnitPointerEnteredEvent += UnitSelectedEventHandler;
             }
@@ -198,9 +195,6 @@ namespace Loom.ZombieBattleground
             {
                 _battlegroundController.TurnStarted -= TurnStartedHandler;
 
-                //_gameplayManager.GetController<InputController>().UnitSelectedEvent -= UnitSelectedEventHandler;
-                //_gameplayManager.GetController<InputController>().UnitDeselectedEvent -= UnitDeselectedEventHandler;
-                //_gameplayManager.GetController<InputController>().PlayerSelectedEvent -= PlayerSelectedEventHandler;
                 _gameplayManager.GetController<InputController>().PlayerPointerEnteredEvent -= PlayerSelectedEventHandler;
                 _gameplayManager.GetController<InputController>().UnitPointerEnteredEvent -= UnitSelectedEventHandler;
             }
