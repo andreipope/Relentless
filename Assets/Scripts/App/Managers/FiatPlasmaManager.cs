@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using System.Numerics;
+using System.Globalization;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.Protobuf;
@@ -17,12 +19,11 @@ namespace Loom.ZombieBattleground
     {
         #region Contract
         private TextAsset _abiFiatPurchase;
-        private const string _contractAddressFiatPurchase = "0x603d5461471f0aa882546a6d38ef70ce522f5923";    
         private EvmContract _fiatPurchaseContract;
         #endregion
         
         #region Key
-        private byte[] _privateKey
+        private byte[] PrivateKey
         {
             get
             {
@@ -30,22 +31,19 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        private byte[] _publicKey
+        private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(_privateKey); }
+            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
         }
-        #endregion
-    
-        #region Endpoint
-        private const string _chainid = "default";
-        private const string _endPointWebSocket = "wss://test-z-us1.dappchains.com/websocket";
-        private const string _endPointQueryWS = "wss://test-z-us1.dappchains.com/queryws";
         #endregion
         
         private BackendDataControlMediator _backendDataControlMediator;
-        private ILoadObjectsManager _loadObjectsManager;        
+        private ILoadObjectsManager _loadObjectsManager;   
+        
+        private bool _isEventTriggered = false;      
+        private string _eventResponse;           
     
-        public async void Init()
+        public void Init()
         {           
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -61,21 +59,88 @@ namespace Loom.ZombieBattleground
         {
         }
         
+         public async Task<string> CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
+        {
+            ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);
+            _fiatPurchaseContract = await GetContract
+            (
+                PrivateKey,
+                PublicKey,
+                _abiFiatPurchase.ToString(),
+                PlasmaChainEndpointsContainer.ContractAddressFiatPurchase
+            );
+            _fiatPurchaseContract.EventReceived += ContractEventReceived;
+            string responseEvent = "";
+            responseEvent = await CallRequestPacksContract(_fiatPurchaseContract, contractParams);             
+            return responseEvent;
+        }
+        
+        private async Task<string> CallRequestPacksContract(EvmContract contract, ContractRequest contractParams)
+        {              
+            if (contract == null)
+            {
+                throw new Exception("Contract not signed in!");
+            }
+            Debug.Log( $"Calling smart contract [requestPacks]");          
+
+            _isEventTriggered = false;
+            _eventResponse = "";  
+            try
+            {
+                
+                await contract.CallAsync
+                (
+                    "requestPacks",
+                    contractParams.UserId,
+                    contractParams.r,
+                    contractParams.s,
+                    contractParams.v,
+                    contractParams.hash,
+                    contractParams.amount,
+                    contractParams.TxID
+                );
+                Debug.Log($"Smart contract method [requestPacks] finished executing.");
+                for( int i=0; i<10; ++i)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    Debug.Log($"<color=green>Wait {i + 1} sec</color>");
+                    if( _isEventTriggered )
+                    {
+                        return _eventResponse;
+                    }
+                }
+                Debug.Log($"Wait for [requestPacks] response too long");
+            }
+            catch
+            {
+                Debug.Log($"smart contract [requestPacks] error or reverted");                
+            }
+            return "";
+        }
+        
+        private void ContractEventReceived(object sender, EvmChainEventArgs e)
+        {
+            Debug.LogFormat("Received smart contract event: " + e.EventName);
+            Debug.LogFormat("BlockHeight: " + e.BlockHeight);
+            _isEventTriggered = true;
+            _eventResponse = e.EventName;
+        }
+        
         private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
-            var writer = RpcClientFactory
+            IRpcClient writer = RpcClientFactory
                 .Configure()
                 .WithLogger(Debug.unityLogger)
-                .WithWebSocket(_endPointWebSocket)
+                .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
-            var reader = RpcClientFactory
+            IRpcClient reader = RpcClientFactory
                 .Configure()
                 .WithLogger(Debug.unityLogger)
-                .WithWebSocket(_endPointQueryWS)
+                .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     
-            var client = new DAppChainClient(writer, reader)
+            DAppChainClient client = new DAppChainClient(writer, reader)
                 { Logger = Debug.unityLogger };
     
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
@@ -88,54 +153,10 @@ namespace Loom.ZombieBattleground
                 new SignedTxMiddleware(privateKey)
             });
     
-            var contractAddr = Address.FromString(contractAddress, _chainid);
-            var callerAddr = Address.FromPublicKey(publicKey, _chainid);    
+            Address contractAddr = Address.FromString(contractAddress, PlasmaChainEndpointsContainer.Chainid);
+            Address callerAddr = Address.FromPublicKey(publicKey, PlasmaChainEndpointsContainer.Chainid);    
     
             return new EvmContract(client, contractAddr, callerAddr, abi);
-        } 
-        
-        public async void CallRequestPacksContract(ContractRequest contractParams)
-        {
-            _fiatPurchaseContract = await GetContract
-            (
-                _privateKey,
-                _publicKey,
-                _abiFiatPurchase.ToString(),
-                _contractAddressFiatPurchase
-            );
-            _fiatPurchaseContract.EventReceived += ContractEventReceived; 
-            CallRequestPacksContract(_fiatPurchaseContract, contractParams);
-        }
-        
-        private async void CallRequestPacksContract(EvmContract contract, ContractRequest contractParams)
-        {    
-            string methodName = "requestPacks";
-        
-            if (contract == null)
-            {
-                throw new Exception("Contract not signed in!");
-            }
-            Debug.Log( $"Calling smart contract [requestPacks]");
-            
-            await contract.CallAsync
-            (
-                methodName, 
-                contractParams.UserId,
-                contractParams.r,
-                contractParams.s,
-                contractParams.v,
-                contractParams.hash,
-                contractParams.amount,
-                contractParams.TxID
-            );
-        
-            Debug.Log($"Smart contract method [requestPacks] finished executing.");
-        }
-        
-        private void ContractEventReceived(object sender, EvmChainEventArgs e)
-        {
-            Debug.LogFormat("Received smart contract event: " + e.EventName);
-            Debug.LogFormat("BlockHeight: " + e.BlockHeight);                  
         }
         
         public class ContractRequest
@@ -148,6 +169,83 @@ namespace Loom.ZombieBattleground
             public int []amount;
             public int TxID;
             
-        }        
+        }    
+        
+#region Util
+        private ContractRequest ParseContractRequestFromFiatTransactionResponse(FiatBackendManager.FiatTransactionResponse fiatResponse)
+        {
+            string log = "ContractRequest Params: \n";
+            int UserId = fiatResponse.UserId;
+            string hash = fiatResponse.VerifyHash.hash.Substring(2);
+            int TxID = fiatResponse.TxID;
+            string sig = fiatResponse.VerifyHash.signature;
+            string r = Slice(sig, 2, 66);
+            string s = "" + Slice(sig, 66, 130);
+            string vStr = Slice(sig, 130, 132);
+            BigInteger v = HexStringToBigInteger(vStr);
+            
+            List<int> amountList = new List<int>();
+            amountList.Add( fiatResponse.Booster);
+            amountList.Add( fiatResponse.Super);
+            amountList.Add( fiatResponse.Air);
+            amountList.Add( fiatResponse.Earth);
+            amountList.Add( fiatResponse.Fire);
+            amountList.Add( fiatResponse.Life);
+            amountList.Add( fiatResponse.Toxic);
+            amountList.Add( fiatResponse.Water);        
+            amountList.Add( fiatResponse.Small);
+            amountList.Add( fiatResponse.Minion);
+
+            log += "UserId: " + UserId + "\n";
+            log += "r: " + r + "\n";
+            log += "s: " + s + "\n";
+            log += "v: " + v + "\n";
+            log += "hash: " + hash + "\n";
+            string amountStr = "[";
+            for(int i=0; i<amountList.Count;++i)
+            {
+                amountStr += amountList[i] + " ";
+            }
+            amountStr += "]";
+            log += "amount: " + amountStr + "\n";
+            log += "TxID: " + TxID + "\n";
+            Debug.Log(log);
+    
+            ContractRequest contractParams = new ContractRequest();
+            contractParams.UserId = UserId;
+            contractParams.r = HexStringToByte(r);
+            contractParams.s = HexStringToByte(s);
+            contractParams.v = (sbyte)v;
+            contractParams.hash = HexStringToByte(hash);
+            contractParams.amount = amountList.ToArray();
+            contractParams.TxID = TxID;
+            return contractParams;
+        }
+        public string Slice(string source, int start, int end)
+        {
+            if (end < 0) 
+            {
+                end = source.Length + end;
+            }
+            int len = end - start;
+            return source.Substring(start, len);
+        }
+        
+        public BigInteger HexStringToBigInteger(string hexString)
+        {
+            BigInteger b = BigInteger.Parse(hexString,NumberStyles.AllowHexSpecifier);
+            return b;
+        }
+    
+        public Byte[] HexStringToByte(string str)
+        {
+            string hex = str; 
+            byte[] bytes = new byte[hex.Length / 2];
+            
+            for (int i = 0; i < hex.Length; i += 2)
+                bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
+        }
+#endregion     
     }
 }

@@ -30,11 +30,11 @@ namespace Loom.ZombieBattleground.Data
             return card;
         }
         
-        public Card GetCardFromMouId(int mouId)
+        public Card GetCardFromMouldId(int mouldId)
         {
-            Card card =  Cards.First(x => x.MouldId == mouId);
+            Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
             if (card == null)
-                throw new Exception($"Card '{mouId}' not found");
+                throw new Exception($"Card '{mouldId}' not found");
 
             return card;
         }
@@ -49,19 +49,14 @@ namespace Loom.ZombieBattleground.Data
                     .OrderBy(set => set.Name)
                     .ToList();
 
-            int id = 0;
             foreach (CardSet set in Sets)
             {
                 foreach (Card card in set.Cards)
                 {
-                    // FIXME: why are we setting mould IDs manually?
                     if (card.CardSetType != Enumerators.SetType.OTHERS)
                     {
-                        card.MouldId = id;
                         CardsInActiveSetsCount++;
                     }
-
-                    id++;
                 }
             }
         }

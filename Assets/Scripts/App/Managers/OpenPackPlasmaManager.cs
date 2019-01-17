@@ -23,20 +23,13 @@ namespace Loom.ZombieBattleground
         #region Contract
         private TextAsset _abiCardFaucet;
         private TextAsset _abiBoosterPack;
-          
-        private const string _contractAddressCardFaucet = "0xd80d93138f1121e3b5153ffe3cb9ae7408a576bb";  
-        private const string _contractAddressBoosterPack = "0x2fa54683d976c72806d2e54d1d61a476848e4da9"; 
-           
-        private EvmContract _cardFaucetContract;
-        private EvmContract _boosterPackContract;
         
-        private const string _chainid = "default";
-        private const string _endPointWebSocket = "wss://test-z-us1.dappchains.com/websocket";
-        private const string _endPointQueryWS = "wss://test-z-us1.dappchains.com/queryws";       
-        #endregion
+        private EvmContract _cardFaucetContract;
+        private EvmContract _boosterPackContract;    
+        #endregion    
         
         #region Key
-        private byte[] _privateKey
+        private byte[] PrivateKey
         {
             get
             {
@@ -44,9 +37,9 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        private byte[] _publicKey
+        private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(_privateKey); }
+            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
         }
         #endregion
         
@@ -58,7 +51,7 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;  
         private IDataManager _dataManager;      
     
-        public async void Init()
+        public void Init()
         {           
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -80,10 +73,10 @@ namespace Loom.ZombieBattleground
         public async Task<int> CallPackBalanceContract()
         {
              _boosterPackContract = await GetContract(
-                _privateKey,
-                _publicKey,
+                PrivateKey,
+                PublicKey,
                 _abiBoosterPack.ToString(),
-                _contractAddressBoosterPack
+                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
             );
             int amount = await CallBalanceContract(_boosterPackContract);
             return amount;
@@ -92,16 +85,16 @@ namespace Loom.ZombieBattleground
         public async Task<List<Card>> CallOpenPack(int packToOpenAmount)
         {
              _cardFaucetContract = await GetContract(
-                _privateKey,
-                _publicKey,
+                PrivateKey,
+                PublicKey,
                 _abiCardFaucet.ToString(),
-                _contractAddressCardFaucet
+                PlasmaChainEndpointsContainer.ContractAddressCardFaucet
             );
             _boosterPackContract = await GetContract(
-                _privateKey,
-                _publicKey,
+                PrivateKey,
+                PublicKey,
                 _abiBoosterPack.ToString(),
-                _contractAddressBoosterPack
+                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
             );
 
             _cardFaucetContract.EventReceived += ContractEventReceived;
@@ -130,19 +123,19 @@ namespace Loom.ZombieBattleground
         
         private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
-            var writer = RpcClientFactory
+            IRpcClient writer = RpcClientFactory
                 .Configure()
                 .WithLogger(Debug.unityLogger)
-                .WithWebSocket(_endPointWebSocket)
+                .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
-            var reader = RpcClientFactory
+            IRpcClient reader = RpcClientFactory
                 .Configure()
                 .WithLogger(Debug.unityLogger)
-                .WithWebSocket(_endPointQueryWS)
+                .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     
-            var client = new DAppChainClient(writer, reader)
+            DAppChainClient client = new DAppChainClient(writer, reader)
                 { Logger = Debug.unityLogger };
     
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
@@ -155,8 +148,8 @@ namespace Loom.ZombieBattleground
                 new SignedTxMiddleware(privateKey)
             });
     
-            var contractAddr = Address.FromString(contractAddress, _chainid);
-            var callerAddr = Address.FromPublicKey(publicKey, _chainid);    
+            Address contractAddr = Address.FromString(contractAddress, PlasmaChainEndpointsContainer.Chainid);
+            Address callerAddr = Address.FromPublicKey(publicKey, PlasmaChainEndpointsContainer.Chainid);    
     
             return new EvmContract(client, contractAddr, callerAddr, abi);
         }
@@ -171,7 +164,7 @@ namespace Loom.ZombieBattleground
             Debug.Log("Calling smart contract [balanceOf]");
             int result = await contract.StaticCallSimpleTypeOutputAsync<int>(
                 "balanceOf",
-                 Address.FromPublicKey(_publicKey).ToString()
+                 Address.FromPublicKey(PublicKey).ToString()
             );        
             Debug.Log("<color=green>" + "balanceOf RESULT: " + result + "</color>");
         
@@ -189,7 +182,7 @@ namespace Loom.ZombieBattleground
     
             int amountToApprove = 1;
         
-            await contract.CallAsync("approve", _contractAddressCardFaucet , amountToApprove);
+            await contract.CallAsync("approve", PlasmaChainEndpointsContainer.ContractAddressCardFaucet , amountToApprove);
         
             Debug.Log("Smart contract method [approve] finished executing.");
         }
@@ -225,9 +218,9 @@ namespace Loom.ZombieBattleground
 
             if ((int)onOpenBoosterPackEvent.CardId % 10 == 0)
             {
-                int mouId = (int)onOpenBoosterPackEvent.CardId / 10;
-                Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouId(mouId);
-                Debug.Log($"<color=blue>MouId: {mouId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
+                int mouldId = (int)onOpenBoosterPackEvent.CardId / 10;
+                Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
+                Debug.Log($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
                 CardsReceived.Add(card);
             }
         }                   
