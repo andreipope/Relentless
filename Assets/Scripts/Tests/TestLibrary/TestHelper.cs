@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace Loom.ZombieBattleground.Test
         /// When false, tests are executed as fast as possible.
         /// When true, they are executed slowly to easy debugging.
         /// </summary>
-        private const bool DebugTests = false;
+        private const bool DebugTests = true;
 
         /// <summary>
         /// To be in line with AI Brain, 1.1f was taken as value from AIController.
@@ -516,7 +517,7 @@ namespace Loom.ZombieBattleground.Test
             if (IsTestFailed)
                 return;
 
-            if (Constants.MulliganEnabled)
+            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 WaitStart(5);
 
@@ -1038,7 +1039,13 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
-            WaitStart(250);
+            BackendDataControlMediator.UserDataModel =
+                new UserDataModel("Test_" + GetTestName(), CryptoUtils.GeneratePrivateKey())
+                {
+                    IsRegistered = true
+                };
+
+            WaitStart(1000);
             await new WaitUntil(() =>
             {
                 return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());
@@ -1255,7 +1262,7 @@ namespace Loom.ZombieBattleground.Test
             return _pvpManager.PvPTags;
         }
 
-        public DebugCheatsConfiguration DebugCheatsConfiguration
+        public DebugCheatsConfiguration DebugCheats
         {
             get => _pvpManager.DebugCheats;
             set => _pvpManager.DebugCheats = value;
@@ -2961,6 +2968,8 @@ namespace Loom.ZombieBattleground.Test
             await new WaitUntil(() => IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") == null);
 
             await HandleConnectivityIssues();
+
+            await new WaitUntil(() => _playerController.IsActive);
         }
 
         /// <summary>
@@ -3037,7 +3046,7 @@ namespace Loom.ZombieBattleground.Test
         /// Makes specified number of moves (if timeout allows).
         /// </summary>
         /// <param name="maxTurns">Max number of turns.</param>
-        public async Task MakeMoves(int maxTurns = 100)
+        public async Task MakeMoves(int maxTurns = 100, bool quitIfNoCards = false)
         {
             if (IsGameEnded())
                 return;
@@ -3066,6 +3075,9 @@ namespace Loom.ZombieBattleground.Test
 
                 if (IsGameEnded())
                     break;
+
+                if (PlayerIsOutOfCards())
+                    break;
             }
         }
 
@@ -3083,17 +3095,17 @@ namespace Loom.ZombieBattleground.Test
 
             InitalizePlayer();
 
-            Debug.Log("!a -3");
+            //Debug.Log("!a -3");
 
             await WaitUntilPlayerOrderIsDecided();
 
-            Debug.Log("!a -2");
+            //Debug.Log("!a -2");
 
             await AssertMulliganPopupCameUp(
                 DecideWhichCardsToPick,
                 null);
 
-            Debug.Log("!a -1");
+            //Debug.Log("!a -1");
 
             await WaitUntilOurFirstTurn();
 
@@ -3102,25 +3114,25 @@ namespace Loom.ZombieBattleground.Test
             {
                 await LetsThink();
 
-                Debug.Log("!a 0");
+                //Debug.Log("!a 0");
 
                 await TaskAsIEnumerator(currentTurnTask());
 
-                Debug.Log("!a 1");
+                //Debug.Log("!a 1");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilOurTurnStarts();
 
-                Debug.Log("!a 2");
+                //Debug.Log("!a 2");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilInputIsUnblocked();
 
-                Debug.Log("!a 3");
+                //Debug.Log("!a 3");
 
                 if (IsGameEnded())
                     break;
@@ -3156,6 +3168,11 @@ namespace Loom.ZombieBattleground.Test
             {
                 return false;
             }
+        }
+
+        public bool PlayerIsOutOfCards () 
+        {
+            return (_gameplayManager.CurrentPlayer.CardsInHand.Count <= 0 && _gameplayManager.CurrentPlayer.CardsInDeck.Count <= 0);
         }
 
         private async Task HandleConnectivityIssues()
@@ -3852,7 +3869,7 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            await client.Start(contract => new DefaultContractCallProxy(contract));
+            await client.Start(contract => new DefaultContractCallProxy(contract), enabledLogs: false);
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }
@@ -3861,7 +3878,7 @@ namespace Loom.ZombieBattleground.Test
         /// Starts matchmaking flow for the simulated game client of the opponent.
         /// </summary>
         /// <returns></returns>
-        public async Task MatchmakeOpponentDebugClient()
+        public async Task MatchmakeOpponentDebugClient(Action<DebugCheatsConfiguration> modifyDebugCheatsAction = null)
         {
             MultiplayerDebugClient client = _opponentDebugClient;
             bool matchConfirmed = false;
@@ -3875,9 +3892,12 @@ namespace Loom.ZombieBattleground.Test
 
             client.DebugCheats = new Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration
             {
-                Enabled = DebugCheatsConfiguration.Enabled,
-                CustomRandomSeed = DebugCheatsConfiguration.CustomRandomSeed
+                Enabled = DebugCheats.Enabled,
+                CustomRandomSeed = DebugCheats.CustomRandomSeed,
+                ForceFirstTurnUserId = DebugCheats.ForceFirstTurnUserId
             };
+
+            modifyDebugCheatsAction?.Invoke(client.DebugCheats);
 
             // TODO: add customization
             client.DeckId = 1;

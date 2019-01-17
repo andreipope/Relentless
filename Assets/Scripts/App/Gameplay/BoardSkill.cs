@@ -331,9 +331,10 @@ namespace Loom.ZombieBattleground
                 return;
 
             SetHighlightingEnabled(false);
-#if DEV_MODE
-            _cooldown = 0;
-#endif
+            if (Constants.DevModeEnabled)
+            {
+                _cooldown = 0;
+            }
             if (!_usedInThisTurn)
             {
                 _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);

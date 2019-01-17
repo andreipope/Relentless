@@ -348,23 +348,29 @@ namespace Loom.ZombieBattleground
 
         public virtual bool CanBePlayed(Player owner)
         {
-#if !DEV_MODE
-            return PlayerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
-#else
-            return true;
-#endif
+            if (!Constants.DevModeEnabled)
+            {
+                return PlayerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public virtual bool CanBeBuyed(Player owner)
         {
-#if !DEV_MODE
-            if (GameplayManager.AvoidGooCost)
-                return true;
+            if (!Constants.DevModeEnabled)
+            {
+                if (GameplayManager.AvoidGooCost)
+                    return true;
 
-            return owner.CurrentGoo >= ManaCost;
-#else
-            return true;
-#endif
+                return owner.CurrentGoo >= ManaCost;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public void SetHighlightingEnabled(bool enabled)
