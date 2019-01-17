@@ -368,7 +368,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                if (e.Message == Constants.VaultEmptyErrorCode)
+                if (e.Message == Constants.VaultEmptyErrorCode || e.Message.Contains("Base-64"))
                 {
                     UpdatePrivateKeyProcess(noOTP);
                 }
@@ -395,7 +395,7 @@ namespace Loom.ZombieBattleground
                 {
                     vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
                 }
-                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Encoding.UTF8.GetString(_backendDataControlMediator.UserDataModel.PrivateKey));
+                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Convert.ToBase64String(_backendDataControlMediator.UserDataModel.PrivateKey));
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
