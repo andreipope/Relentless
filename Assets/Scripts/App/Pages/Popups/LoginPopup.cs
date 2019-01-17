@@ -540,6 +540,10 @@ namespace Loom.ZombieBattleground
 
                 Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
+                if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
+                {
+                    _lastErrorMessage = "\n Put correct Username or Password. \n";
+                }
                 SetUIState(LoginState.ValidationFailed);
 
                 _loginButton.enabled = true;
