@@ -62,6 +62,9 @@ namespace Loom.ZombieBattleground
             AddService<IQueueManager>(new QueueManager());
             AddService<DebugCommandsManager>( new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
+            AddService<FiatBackendManager>(new FiatBackendManager());
+            AddService<FiatPlasmaManager>(new FiatPlasmaManager());
+            AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
