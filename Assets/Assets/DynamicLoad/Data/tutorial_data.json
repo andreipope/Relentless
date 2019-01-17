@@ -750,5 +750,535 @@
       ],
       "PlayerOrderScreenShouldAppear": false
     }
+  },
+  {
+    "id": 1,
+    "Name": "Abilities",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "TutorialTooltipOwnerId": 51,
+          "Description": "Feral zombies can\n attack the turn they\n are played.",
+          "Position": {
+            "X": 3.5,
+            "Y": 0.3,
+            "Z": 0.0
+          },
+          "AppearDelay": 1.5
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "PlayerCardInHand",
+          "Description": "This is how much\n goo your card costs.",
+          "Position": {
+            "X": 9.8,
+            "Y": -6.0,
+            "Z": 0.0
+          },
+          "Resizable": false,
+          "AppearDelay": 2.3
+        },
+        {
+          "Id": 3,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "PlayerGooBottles",
+          "Description": "You’ve earned a goo\n bottle.",
+          "Position": {
+            "X": -7.25,
+            "Y": -3.67,
+            "Z": 0.0
+          },
+          "Resizable": false,
+          "AppearDelay": 2.0
+        },
+        {
+          "Id": 4,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "PlayerGooBottles",
+          "Description": "You’ve earned another goo\n bottle, and goo you spent\n before is replenished.",
+          "Position": {
+            "X": -6.77,
+            "Y": -3.2,
+            "Z": 0.0
+          },
+          "Resizable": true,
+          "AppearDelay": 1.0
+        },
+        {
+          "Id": 5,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "PlayerBattleframe",
+          "Description": "Entry effects happen\n as you play cards,\n just like Items.",
+          "Position": {
+            "X": 3.5,
+            "Y": 0.3,
+            "Z": 0.0
+          },
+          "TutorialTooltipOwnerId": 2,
+          "Resizable": false
+        },
+        {
+          "Id": 6,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "TutorialTooltipOwnerId": 52,
+          "Description": "Heavy zombies need\n to be attacked first.",
+          "Position": {
+            "X": 3.4,
+            "Y": 0.3,
+            "Z": 0.0
+          },
+          "Resizable": false
+        },
+        {
+          "Id": 7,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "PlayerOverlordAbility",
+          "Description": "Overlords have unique\n abilities that can be\n used on cooldown.",
+          "Position": {
+            "X": 5.8,
+            "Y": -5.0,
+            "Z": 0.0
+          },
+          "Resizable": true
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Zombies are not all just claws and\n flesh. They have abilities too!",
+            "DescriptionTooltipCloseText": "LET’S BEGIN"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "EnemyOverlord",
+              "Description": "CRUSH YOU!"
+            }
+          ],
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Not if I melt\n you first!"
+            }
+          ],
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "ConnectedTurnIndex": 1,
+          "LaunchGameplayManually": true,
+          "LaunchAIBrain": true,
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 1,
+          "TutorialObjectIdStepOwner": 51,
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Pesky Ferals..."
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "TutorialDescriptionTooltipsToActivate": [
+            2,
+            3
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "AppearDelay": 10.0
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "CanInteractWithGameplay": true,
+          "CanEndTurn": true,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "We’re done here\n lets move it on!",
+              "AppearDelay": 10.0
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 9.0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Single",
+              "AppearDelay": 2.0
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "LaunchAIBrain": true,
+          "ConnectedTurnIndex": 3,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "EnemyOverlord",
+              "Description": "You. No hurt me.",
+              "AppearDelay": 1.0
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialDescriptionTooltipsToActivate": [
+            4
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Time to end this.",
+              "AppearDelay": 1.0
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "AppearDelay": 10.0
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 2,
+          "TutorialDescriptionTooltipsToActivate": [
+            5
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 52,
+          "TutorialDescriptionTooltipsToActivate": [
+            6
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 2,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0.0,
+                "Y": 1.13,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 1.25,
+                "Y": 3.2,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 2,
+              "TutorialHandPointerType": "Animated",
+            }
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            6,
+            7
+          ],
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 1,
+          "CanInteractWithGameplay": true,
+          "TutorialDescriptionTooltipsToDeactivate": [
+            5
+          ],
+          "UnitsCanAttack": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0.0,
+                "Y": 1.13,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": 7.0,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 1,
+              "TutorialHandPointerType": "Animated",
+            }
+          ],
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "CanInteractWithGameplay": true,
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
+          "SelectableTargets": [
+            "OPPONENT"
+          ],
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "My Poison Dart\n will end him.",
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 2.53,
+                "Y": -3.9,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": 7.0,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            7
+          ],
+          "ActionToEndThisStep": "EnemyOverlordDied"
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Good job Zombie Slayer!",
+            "DescriptionTooltipCloseText": "END"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+        }
+      ],
+      "SpecificBattlegroundInfo": {
+        "RankSystemHasEnabled": false,
+        "PlayerInfo": {
+          "OverlordId": 4,
+          "Defense": 10,
+          "MaximumDefense": 20,
+          "CurrentGoo": 4,
+          "MaximumGoo": 4,
+          "CardsInHand": [
+          ],
+          "CardsInDeck": [
+            {
+              "Name": "Zwoop",
+              "TutorialObjectId": 1
+            },
+            {
+              "Name": "Bane",
+              "TutorialObjectId": 2
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "POISON_DART",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "OpponentInfo": {
+          "OverlordId": 4,
+          "Defense": 5,
+          "MaximumDefense": 20,
+          "CurrentGoo": 4,
+          "MaximumGoo": 4,
+          "CardsInHand": [
+          ],
+          "CardsInDeck": [
+            {
+              "Name": "Shale",
+              "TutorialObjectId": 51
+            },
+            {
+              "Name": "Hardy",
+              "TutorialObjectId": 52
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "GameplayBeginManually": true
+      },
+      "SpecificTurnInfos": [
+        {
+          "TurnIndex": 1,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 51
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "PLAYER"
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "BattleframeAttacked",            
+          ],
+          "ActionActivityHandlers": [
+          ]
+        },
+        {
+          "TurnIndex": 2,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 2
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed"          
+          ],
+          "ActionActivityHandlers": [
+          ]
+        },
+        {
+          "TurnIndex": 3,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 52
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "PLAYER"
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "BattleframeAttacked",            
+          ],
+          "ActionActivityHandlers": [
+          ]
+        },
+        {
+          "TurnIndex": 4,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 2
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 2,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 52
+            },
+            {
+              "TutorialObjectId": 1,
+              "TargetType": "OPPONENT"
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked",
+            "BattleframeAttacked",
+            "PlayerOverlordAbilityUsed"
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToUseWrongBattleframe",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterRight",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Nah, let’s use the Feral"
+              }
+            },
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToUseUnsequentionalBattleframe",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterRight",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "END IT!"
+              }
+            }
+          ]
+        },
+      ],
+      "PlayerOrderScreenShouldAppear": false
+    }
   }
 ]
