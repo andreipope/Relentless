@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (!Active)
+            if (!Active || !_backendFacade.IsConnected)
                 return;
 
             while (_tasks.Count > 0)
