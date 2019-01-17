@@ -3,7 +3,7 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -17,7 +17,7 @@ MonoBehaviour:
   EnableIfDefined: 
   DisableIfDefined: FINAL_BUILD
   OnlyInDevBuilds: 0
-  ShowOnException: 1
+  ShowOnException: 0
   TouchDetector: 1
   OpenAndCloseKeys: "~\\`|\xA7\xB1"
   ShowSeparateExceptionButton: 1
