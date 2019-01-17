@@ -296,6 +296,12 @@ namespace Loom.ZombieBattleground
             BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, model.CardId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
+            if(attackerUnit == null || target == null)
+            {
+                Helpers.ExceptionReporter.LogException("GotActionCardAttack Has Error: attackerUnit: " + attackerUnit + "; target: " + target);
+                return;
+            }
+
             Action callback = () =>
             {
                 attackerUnit.DoCombat(target);
@@ -363,6 +369,12 @@ namespace Loom.ZombieBattleground
 
             BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+
+            if (target == null)
+            {
+                Helpers.ExceptionReporter.LogException("GotActionUseOverlordSkill Has Error: target: " + target);
+                return;
+            }
 
             Action callback = () =>
             {
