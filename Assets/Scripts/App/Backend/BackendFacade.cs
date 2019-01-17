@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
 
-        private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
+        private const string accessVaultEndPoint = "/entcubbyhole/protected/loomauth";
 
         private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
 
