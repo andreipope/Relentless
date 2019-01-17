@@ -79,7 +79,6 @@ namespace Loom.ZombieBattleground
                             x.Model.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        Debug.LogError(_gameplayManager.OpponentPlayer.BoardCards.Count);
                         unit = _gameplayManager.OpponentPlayer.BoardCards.Find((x) =>
                             x.Model.TutorialObjectId == ownerId);
                         break;

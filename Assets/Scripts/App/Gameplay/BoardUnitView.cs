@@ -741,6 +741,14 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().UnitsCanAttack)
                 return;
 
+            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != Model.TutorialObjectId &&
+                Model.OwnerPlayer.IsLocalPlayer)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseWrongBattleframe);
+                return;
+            }            
+
             if (!_arrivalDone)
                 return;
 

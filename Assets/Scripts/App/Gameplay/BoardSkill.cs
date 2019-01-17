@@ -394,7 +394,7 @@ namespace Loom.ZombieBattleground
         private bool IsSkillCanUsed()
         {
             if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn ||
-                _tutorialManager.IsTutorial)
+                (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().PlayerOverlordAbilityShouldBeUnlocked))
             {
                 return false;
             }

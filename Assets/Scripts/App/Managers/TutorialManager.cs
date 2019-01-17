@@ -341,7 +341,6 @@ namespace Loom.ZombieBattleground
             switch (action)
             {
                 case Enumerators.TutorialActivityAction.BattleframeSelected:
-                    Debug.LogError(3333);
                     SetTooltipsStateIfHas(sender, true);
                     break;
                 case Enumerators.TutorialActivityAction.EnemyOverlordSelected:
@@ -455,6 +454,14 @@ namespace Loom.ZombieBattleground
                     if(!string.IsNullOrEmpty(gameStep.SoundToPlay))
                     {
                         PlayTutorialSound(gameStep.SoundToPlay, gameStep.SoundToPlayBeginDelay);
+                    }
+
+                    if(gameStep.PlayerOverlordAbilityShouldBeUnlocked)
+                    {
+                        if (CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility != Enumerators.OverlordSkill.NONE)
+                        {
+                            _gameplayManager.GetController<SkillsController>().PlayerPrimarySkill.SetCoolDown(0);
+                        }
                     }
 
                     if (gameStep.LaunchAIBrain)

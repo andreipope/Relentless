@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
 
             SetTextProgress(id);
 
-            float step = 1 / _tutorialManager.TutorialsCount;
+            float step = 1f / _tutorialManager.TutorialsCount;
             _startValueProgressBar = step * id;
             _endValueProgressBar = step * (id + 1);
             _imageProgressBar.fillAmount = _startValueProgressBar;

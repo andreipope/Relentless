@@ -244,9 +244,16 @@ namespace Loom.ZombieBattleground
 
             _uiManager.HidePopup<YouWonPopup>();
 
-            if (_gameplayManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
-                _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
+
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                };
+                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }
             else
             {
@@ -269,7 +276,6 @@ namespace Loom.ZombieBattleground
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
-                _gameplayManager.GetController<HandPointerController>().ResetAll();
             }
         }
     }
