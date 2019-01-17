@@ -221,12 +221,21 @@ namespace Loom.ZombieBattleground
         public void CrossfaidSound(Enumerators.SoundType soundType, Transform parent = null, bool isLoop = false)
         {
             List<SoundContainer> oldContainers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
-            float volumeStep = oldContainers[0].AudioSource.volume / 15f;
-            FadeSound(oldContainers, volumeStep: volumeStep);
 
-            SoundContainer soundContainer = CreateSound(soundType, 128, 0, parent, isLoop);
-            soundContainer.AudioSource.time = Mathf.Min(oldContainers[0].AudioSource.time, soundContainer.AudioSource.clip.length - 0.01f);
-            FadeSound(soundContainer, true, volumeStep, oldContainers[0].AudioSource.volume);
+            if (oldContainers.Count > 0)
+            {
+                float volumeStep = oldContainers[0].AudioSource.volume / 15f;
+                FadeSound(oldContainers, volumeStep: volumeStep);
+
+                SoundContainer soundContainer = CreateSound(soundType, 128, 0, parent, isLoop);
+                soundContainer.AudioSource.time = Mathf.Min(oldContainers[0].AudioSource.time, soundContainer.AudioSource.clip.length - 0.01f);
+                FadeSound(soundContainer, true, volumeStep, oldContainers[0].AudioSource.volume);
+            }
+            else
+            {
+                SoundContainer soundContainer = CreateSound(soundType, 128, 0, parent, isLoop);
+                FadeSound(soundContainer, true, Constants.BackgroundSoundVolume / 15f, Constants.BackgroundSoundVolume);
+            }
         }
 
         public void PlaySound(
