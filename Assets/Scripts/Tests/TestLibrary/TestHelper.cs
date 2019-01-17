@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Time scale to use during tests.
         /// </summary>
-        public const int TestTimeScale = DebugTests ? 1 : 50;
+        public const int TestTimeScale = DebugTests ? 1 : 20;
 
         private static TestHelper _instance;
 
@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground.Test
 
         private Player _currentPlayer, _opponentPlayer;
 
-        private int pageTransitionWaitTime = 30;
+        private int pageTransitionWaitTime = 200;
         private int turnWaitTime = 300;
 
         private string _recordedExpectedValue, _recordedActualValue;
@@ -733,6 +733,8 @@ namespace Loom.ZombieBattleground.Test
 
             if (expectedPageName == _lastCheckedPageName)
                 return;
+
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = 0;
 
             WaitStart(pageTransitionWaitTime);
             bool transitionTimeout = false;
@@ -3624,15 +3626,11 @@ namespace Loom.ZombieBattleground.Test
             {
                 return;
             }
-
-            if (index + 1 >= GetNumberOfHordes())
+            for (int i = 0; i < index; i++)
             {
-                Assert.Fail("Horde removal index is too high");
+                GameObject.Find("Button_RightArrow").GetComponent<Button>().onClick.Invoke();
+                await LetsThink();
             }
-
-            GameObject hordesParent = GameObject.Find("Panel_DecksContainer/Group");
-            Transform selectedHordeTransform = hordesParent.transform.GetChild(index);
-            selectedHordeTransform.Find("Button_Select").GetComponent<Button>().onClick.Invoke();
 
             await LetsThink();
         }
@@ -3648,7 +3646,6 @@ namespace Loom.ZombieBattleground.Test
             {
                 return;
             }
-
             await SelectAHordeByIndex(index);
 
             GameObject.Find("Button_Delete").GetComponent<Button>().onClick.Invoke();
@@ -3672,7 +3669,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
             }
 
-            for (int i = GetNumberOfHordes() - 2; i >= 1; i--)
+            for (int i = 0; i < GetNumberOfHordes() - 3; i++)
             {
                 await RemoveAHorde(1);
 
