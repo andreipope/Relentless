@@ -565,11 +565,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             bool useBackendGameLogic,
             DebugCheatsConfiguration debugCheats = null)
         {
-            if (pvpTags != null && pvpTags.Count != 0)
-            {
-                Debug.Log("PvPTags: " + String.Join(", ", pvpTags));
-            }
-
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 RegistrationData = new PlayerProfileRegistrationData
@@ -592,11 +587,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags)
         {
-            if (pvpTags != null && pvpTags.Count != 0)
-            {
-                Debug.Log("PvPTags: " + String.Join(", ", pvpTags));
-            }
-
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,

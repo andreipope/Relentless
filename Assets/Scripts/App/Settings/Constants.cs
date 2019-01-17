@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const string VaultEmptyErrorCode = "NotFound";
 
-        public const bool DevModeEnabled = true;
+        public const bool DevModeEnabled = false;
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

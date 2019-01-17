@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -1038,6 +1039,12 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>The login.</remarks>
         public async Task HandleLogin()
         {
+            BackendDataControlMediator.UserDataModel =
+                new UserDataModel("Test_" + GetTestName(), CryptoUtils.GeneratePrivateKey())
+                {
+                    IsRegistered = true
+                };
+
             WaitStart(1000);
             await new WaitUntil(() =>
             {
@@ -1255,7 +1262,7 @@ namespace Loom.ZombieBattleground.Test
             return _pvpManager.PvPTags;
         }
 
-        public DebugCheatsConfiguration DebugCheatsConfiguration
+        public DebugCheatsConfiguration DebugCheats
         {
             get => _pvpManager.DebugCheats;
             set => _pvpManager.DebugCheats = value;
@@ -2961,6 +2968,8 @@ namespace Loom.ZombieBattleground.Test
             await new WaitUntil(() => IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") == null);
 
             await HandleConnectivityIssues();
+
+            await new WaitUntil(() => _playerController.IsActive);
         }
 
         /// <summary>
@@ -3086,17 +3095,17 @@ namespace Loom.ZombieBattleground.Test
 
             InitalizePlayer();
 
-            Debug.Log("!a -3");
+            //Debug.Log("!a -3");
 
             await WaitUntilPlayerOrderIsDecided();
 
-            Debug.Log("!a -2");
+            //Debug.Log("!a -2");
 
             await AssertMulliganPopupCameUp(
                 DecideWhichCardsToPick,
                 null);
 
-            Debug.Log("!a -1");
+            //Debug.Log("!a -1");
 
             await WaitUntilOurFirstTurn();
 
@@ -3105,25 +3114,25 @@ namespace Loom.ZombieBattleground.Test
             {
                 await LetsThink();
 
-                Debug.Log("!a 0");
+                //Debug.Log("!a 0");
 
                 await TaskAsIEnumerator(currentTurnTask());
 
-                Debug.Log("!a 1");
+                //Debug.Log("!a 1");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilOurTurnStarts();
 
-                Debug.Log("!a 2");
+                //Debug.Log("!a 2");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilInputIsUnblocked();
 
-                Debug.Log("!a 3");
+                //Debug.Log("!a 3");
 
                 if (IsGameEnded())
                     break;
@@ -3860,7 +3869,7 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            await client.Start(contract => new DefaultContractCallProxy(contract));
+            await client.Start(contract => new DefaultContractCallProxy(contract), enabledLogs: false);
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }
@@ -3869,7 +3878,7 @@ namespace Loom.ZombieBattleground.Test
         /// Starts matchmaking flow for the simulated game client of the opponent.
         /// </summary>
         /// <returns></returns>
-        public async Task MatchmakeOpponentDebugClient()
+        public async Task MatchmakeOpponentDebugClient(Action<DebugCheatsConfiguration> modifyDebugCheatsAction = null)
         {
             MultiplayerDebugClient client = _opponentDebugClient;
             bool matchConfirmed = false;
@@ -3883,9 +3892,12 @@ namespace Loom.ZombieBattleground.Test
 
             client.DebugCheats = new Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration
             {
-                Enabled = DebugCheatsConfiguration.Enabled,
-                CustomRandomSeed = DebugCheatsConfiguration.CustomRandomSeed
+                Enabled = DebugCheats.Enabled,
+                CustomRandomSeed = DebugCheats.CustomRandomSeed,
+                ForceFirstTurnUserId = DebugCheats.ForceFirstTurnUserId
             };
+
+            modifyDebugCheatsAction?.Invoke(client.DebugCheats);
 
             // TODO: add customization
             client.DeckId = 1;

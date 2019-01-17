@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground.Test
         private async Task PlayNextOpponentClientTurn(bool isFirstTurn)
         {
 #if DEBUG_SCENARIO_PLAYER
-            Debug.Log($"[ScenarioPlayer]: PlayNextDebugClientTurn, current turn {_currentTurn}");
+            Debug.Log($"[ScenarioPlayer]: PlayNextOpponentClientTurn, current turn {_currentTurn}");
 #endif
             bool success = CreateTurn(_opponentQueueProxy,
                 proxy =>
