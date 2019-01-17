@@ -87,35 +87,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             
             await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
-            await _dataManager.LoadRemoteConfig();
-            Version contentVersion = Version.Parse(_dataManager.CachedVersions.ContentVersion);
-            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(contentVersion))
-            {
-                Action[] actions = new Action[2];
-                actions[0] = () =>
-                {
-                    #if UNITY_EDITOR
-                    Debug.LogWarning("Version Mismatched");
-                    #elif UNITY_ANDROID
-                    Application.OpenURL(Constants.GameLinkForAndroid);
-                    #elif UNITY_IOS
-                    Application.OpenURL(Constants.GameLinkForIOS);
-                    #elif UNITY_STANDALONE_OSX
-                    Application.OpenURL(Constants.GameLinkForOSX);
-                    #elif UNITY_STANDALONE_WIN
-                    Application.OpenURL(Constants.GameLinkForWindows);
-                    #else
-                    Debug.LogWarning("Version Mismatched");
-                    #endif
-                };
-                actions[1] = () =>
-                {
-                    Application.Quit();
-                };
-
-                _uiManager.DrawPopup<UpdatePopup>(actions);
-            }
-
             try
             {
                 await _backendFacade.SignUp(UserDataModel.UserId);
