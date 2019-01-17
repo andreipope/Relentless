@@ -1,4 +1,4 @@
-using Loom.Google.Protobuf;
+﻿using Loom.Google.Protobuf;
 using Loom.Chaos.NaCl;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -189,20 +189,8 @@ namespace Loom.Client
                     if (result == null)
                         return null;
 
-                    if (result.CheckTx.Code != 0)
-                    {
-                        if ((result.CheckTx.Code == 1) && (result.CheckTx.Error.StartsWith("sequence number does not match")))
-                        {
-                            throw new InvalidTxNonceException(result.CheckTx.Code, result.CheckTx.Error);
-                        }
-
-                        throw new TxCommitException(result.CheckTx.Code, result.CheckTx.Error);
-                    }
-
-                    if (result.DeliverTx.Code != 0)
-                    {
-                        throw new TxCommitException(result.DeliverTx.Code, result.DeliverTx.Error);
-                    }
+                    CheckForTxError(result.CheckTx);
+                    CheckForTxError(result.DeliverTx);
 
                     if (this.TxMiddleware != null)
                     {
@@ -218,6 +206,7 @@ namespace Loom.Client
                     {
                         this.TxMiddleware.HandleTxException(e);
                     }
+
                     throw;
                 }
             });
@@ -342,6 +331,19 @@ namespace Loom.Client
             if (rpcClient.ConnectionState != RpcConnectionState.Connected)
             {
                 await rpcClient.ConnectAsync();
+            }
+        }
+
+        private void CheckForTxError(BroadcastTxResult.TxResult result)
+        {
+            if (result.Code != 0)
+            {
+                if ((result.Code == 1) && (result.Error.StartsWith("sequence number does not match")))
+                {
+                    throw new InvalidTxNonceException(result.Code, result.Error);
+                }
+
+                throw new TxCommitException(result.Code, result.Error);
             }
         }
 

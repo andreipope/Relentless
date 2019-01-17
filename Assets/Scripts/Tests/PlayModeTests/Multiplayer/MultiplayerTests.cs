@@ -18,47 +18,61 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await StartOnlineMatch();
-                TestHelper.DebugCheatsConfiguration.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                Deck deck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                {
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => player.CardPlay(new InstanceId(36), 0),
-                    opponent => opponent.CardPlay(new InstanceId(2), 0),
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                };
+                   {
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => player.CardPlay(new InstanceId(36), 0),
+                       opponent => opponent.CardPlay(new InstanceId(2), 0),
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                   };
 
-                MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
-                await TestHelper.MatchmakeOpponentDebugClient();
-
-                await matchScenarioPlayer.Play();
+                await GenericPvPTest(
+                    turns,
+                    () =>
+                    {
+                        TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.CustomDeck = deck;
+                    },
+                    cheats => cheats.CustomDeck = deck
+                );
 
                 await TestHelper.ClickGenericButton("Button_Continue");
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");
@@ -72,7 +86,7 @@ namespace Loom.ZombieBattleground.Test
             return AsyncTest(async () =>
             {
                 await StartOnlineMatch();
-                TestHelper.DebugCheatsConfiguration.ForceFirstTurnUserId = TestHelper.BackendDataControlMediator.UserDataModel.UserId;
+                TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.BackendDataControlMediator.UserDataModel.UserId;
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
@@ -309,6 +323,21 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
+        private async Task GenericPvPTest(IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns, Action setupAction, Action<DebugCheatsConfiguration> modifyOpponentDebugCheats)
+        {
+            await TestHelper.CreateAndConnectOpponentDebugClient();
+
+            setupAction?.Invoke();
+
+            await StartOnlineMatch(createOpponent: false);
+
+            MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
+            await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
+            await TestHelper.WaitUntilPlayerOrderIsDecided();
+
+            await matchScenarioPlayer.Play();
+        }
+
         private async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
         {
             await TestHelper.HandleLogin();
@@ -334,8 +363,8 @@ namespace Loom.ZombieBattleground.Test
             tags.Insert(1, TestHelper.GetTestName());
 
             TestHelper.SetPvPTags(tags);
-            TestHelper.DebugCheatsConfiguration.Enabled = true;
-            TestHelper.DebugCheatsConfiguration.CustomRandomSeed = 0;
+            TestHelper.DebugCheats.Enabled = true;
+            TestHelper.DebugCheats.CustomRandomSeed = 0;
 
             await TestHelper.LetsThink();
 
