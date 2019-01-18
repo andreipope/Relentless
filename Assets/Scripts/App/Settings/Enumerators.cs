@@ -776,6 +776,8 @@ namespace Loom.ZombieBattleground.Common
             PlayerOverlordCardPlayed,
             PlayerOverlordSelected,
 
+            PlayerCreatedNewCardAndMovedToHand,
+
             EndMatchPopupAppear,
 
             TapOnDisabledButtonWhenItsLimited,

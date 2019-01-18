@@ -10,6 +10,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using System.Globalization;
 using Newtonsoft.Json.Converters;
 using Loom.ZombieBattleground.Helpers;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -458,6 +459,18 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
+                    if (gameStep.MatchShouldBePaused)
+                    {
+                        Time.timeScale = 0;
+                    }
+                    else
+                    {
+                        if (Time.timeScale == 0)
+                        {
+                            Time.timeScale = 1;
+                        }
+                    }
+
                     if (gameStep.LaunchAIBrain)
                     {
                        await _gameplayManager.GetController<AIController>().LaunchAIBrain();
@@ -480,8 +493,16 @@ namespace Loom.ZombieBattleground
 
             List<SpecificBattlegroundInfo.OverlordCardInfo> cards = new List<SpecificBattlegroundInfo.OverlordCardInfo>();
 
+            
+
             cards.AddRange(battleInfo.PlayerInfo.CardsInDeck);
             cards.AddRange(battleInfo.PlayerInfo.CardsInHand);
+            cards.AddRange(battleInfo.PlayerInfo.CardsOnBoard.Select((info) => new SpecificBattlegroundInfo.OverlordCardInfo()
+            {
+                Name = info.Name,
+                TutorialObjectId = info.TutorialObjectId
+            })
+            .ToList());
             cards.AddRange(battleInfo.OpponentInfo.CardsInDeck);
             cards.AddRange(battleInfo.OpponentInfo.CardsInHand);
 

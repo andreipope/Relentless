@@ -742,6 +742,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != 0 &&
                 _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != Model.TutorialObjectId &&
                 Model.OwnerPlayer.IsLocalPlayer)
             {

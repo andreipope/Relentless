@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private IGameplayManager _gameplayManager;
 
+        private ITutorialManager _tutorialManager;
+
         private GameObject _overflowObject;
 
         private GameObject _vialGooPrefab;
@@ -70,8 +72,19 @@ namespace Loom.ZombieBattleground
                                                                   -90);
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
+
+            _gameplayManager.GetController<InputController>().ManaBarSelected += ManaBarSelectedEventHandler;
+        }
+
+        private void ManaBarSelectedEventHandler(GameObject obj)
+        {
+            if(_selfObject == obj)
+            {
+
+            }
         }
 
         public void SetGoo(int gooValue)

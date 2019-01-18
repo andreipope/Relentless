@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
         public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
 
+        private const int DefaultIndexCustomCardForTutorial = -1;
+
         private IGameplayManager _gameplayManager;
 
         private ITimerManager _timerManager;
@@ -956,6 +958,10 @@ namespace Loom.ZombieBattleground
 
             Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
             WorkingCard workingCard = new WorkingCard(card, card, player);
+            if(_tutorialManager.IsTutorial)
+            {
+                workingCard.TutorialObjectId = DefaultIndexCustomCardForTutorial;
+            }
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
                 return workingCard;
@@ -968,6 +974,17 @@ namespace Loom.ZombieBattleground
                 boardCard.Transform.localScale = Vector3.zero;
 
                 boardCard.Transform.DOScale(Vector3.one * .3f, animationDuration);
+
+                if(_tutorialManager.IsTutorial)
+                {
+                    _timerManager.AddTimer(
+                        x =>
+                        {
+                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCreatedNewCardAndMovedToHand);
+                        },
+                        null,
+                        animationDuration - Time.deltaTime);
+                }
 
                 _timerManager.AddTimer(
                     x =>

@@ -384,7 +384,7 @@ namespace Loom.ZombieBattleground
         {
             _topmostBoardCard?.HandBoardCard?.OnSelected();
 
-            if(_tutorialManager.IsTutorial)
+            if(_tutorialManager.IsTutorial && _topmostBoardCard?.HandBoardCard != null)
             {
                 _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
             }

@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsActiveInThisClick;
 
+        public bool NotDestroyed => _selfObject != null;
+
         public Enumerators.TutorialObjectOwner OwnerType;
 
         public TutorialDescriptionTooltipItem(int id, string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, int ownerId, Vector3 position, bool resizable)
@@ -105,7 +107,10 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
-            _selfObject?.SetActive(false);
+            if (_selfObject != null)
+            {
+                _selfObject.SetActive(false);
+            }
         }
 
         public void Dispose()

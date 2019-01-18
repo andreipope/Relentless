@@ -24,6 +24,10 @@ namespace Loom.ZombieBattleground
 
         public event Action<Player> PlayerSelectingEvent;
 
+        public event Action<GameObject> ManaBarSelected;
+
+        public event Action<GameObject> ManaBarPointerEntered;
+
         public event Action NoObjectsSelectedEvent;
 
         private IGameplayManager _gameplayManager;
@@ -162,6 +166,21 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            if(_gameplayManager.IsTutorial)
+            {
+                if(collider.name.Equals(Constants.PlayerManaBar))
+                {
+                    if (isHovering)
+                    {
+                        UpdateHovering(collider.gameObject, isManaBar: true);
+                    }
+                    else
+                    {
+                        ManaBarSelected?.Invoke(collider.gameObject);
+                    }
+                }
+            }
+
             // check on units
             bool hasTarget = false;
 
@@ -276,7 +295,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null)
+        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, bool isManaBar = false)
         {
             if (_hoveringObject != obj)
             {
@@ -296,6 +315,10 @@ namespace Loom.ZombieBattleground
                     else if(player != null)
                     {
                         PlayerPointerEnteredEvent?.Invoke(player);
+                    }
+                    else if(isManaBar)
+                    {
+                        ManaBarPointerEntered?.Invoke(obj);
                     }
                     _isHovering = true;
                 }
