@@ -55,6 +55,7 @@ namespace Loom.ZombieBattleground
             UnityEngine.Object.Destroy(Self);
             Self = null;
             PopupHiding?.Invoke();
+            PopupHiding = null;
         }
 
         public void SetMainPriority()

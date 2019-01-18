@@ -773,6 +773,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerCardInHand",
+          "TutorialTooltipOwnerId": 1,
           "Description": "This is how much\n goo your card costs.",
           "Position": {
             "X": 9.8,
@@ -798,7 +799,6 @@
         {
           "Id": 4,
           "TutorialTooltipAlign": "BottomMiddle",
-          "TutorialTooltipOwner": "PlayerGooBottles",
           "Description": "You’ve earned another goo\n bottle, and goo you spent\n before is replenished.",
           "Position": {
             "X": -6.77,
@@ -912,6 +912,8 @@
           "ConnectedTurnIndex": 2,
           "UnitsCanAttack": true,
           "CanInteractWithGameplay": true,
+
+
           "HandPointers": [
             {
               "StartPosition": {
@@ -1106,6 +1108,7 @@
                 "Z": 0.0
               },
               "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerOverlordAbility"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -1203,7 +1206,7 @@
           "TurnIndex": 2,
           "PlayCardsSequence": [
             {
-              "TutorialObjectId": 2
+              "TutorialObjectId": 1
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
@@ -1301,7 +1304,6 @@
         {
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
-          "TutorialTooltipOwner": "PlayerCardInHand",
           "Description": "Gives you the ability\n to Overflow your goo.",
           "Position": {
             "X": 4.3,
@@ -1392,6 +1394,8 @@
           "ActionToEndThisStep": "BattleframeAttacked",
         },
         {
+          "ConnectedTurnIndex": 2,
+          "CanInteractWithGameplay": true,
           "CanEndTurn": true,
           "ActionToEndThisStep": "EndTurn"
         },
@@ -1594,7 +1598,11 @@
             {
               "TutorialObjectId": 52
             }
-          ]
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed"     
+          ],
         },
         {
           "TurnIndex": 2,
@@ -1607,7 +1615,6 @@
             {
               "TutorialObjectId": 20,
               "TargetType": "OPPONENT_CARD",
-              //"TargetTutorialObjectId": 51
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
@@ -1644,7 +1651,7 @@
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
+            "EnemyOverlordCardPlayed",
             "BattleframeAttacked"
           ],
         },
@@ -1662,12 +1669,10 @@
             {
               "TutorialObjectId": 20,
               "TargetType": "OPPONENT_CARD",
-              //"TargetTutorialObjectId": 53
             },
             {
               "TutorialObjectId": 10,
               "TargetType": "OPPONENT_CARD",
-              //"TargetTutorialObjectId": 52
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
@@ -1691,9 +1696,9 @@
         {
           "TurnIndex": 5,
           "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
-            "PlayerOverlordCardPlayed",
-            "BattleframeAttacked"
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed"
           ],
           "UseBattleframesSequence": [
             {

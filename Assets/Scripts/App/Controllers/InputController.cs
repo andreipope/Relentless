@@ -8,8 +8,6 @@ namespace Loom.ZombieBattleground
 {
     public class InputController : IController
     {
-        private const float maxTimeForHovering = 3f;
-
         public event Action<BoardUnitView> UnitSelectedEvent;
 
         public event Action<BoardUnitView> UnitDeselectedEvent;
@@ -166,10 +164,14 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            bool hasPoinerTarget = false;
+
             if(_gameplayManager.IsTutorial)
             {
-                if(collider.name.Equals(Constants.PlayerManaBar))
+                if (collider.name.Equals(Constants.PlayerManaBar))
                 {
+                    hasPoinerTarget = true;
+
                     if (isHovering)
                     {
                         UpdateHovering(collider.gameObject, isManaBar: true);
@@ -177,6 +179,20 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         ManaBarSelected?.Invoke(collider.gameObject);
+                    }
+                }
+                else
+                {
+                    BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+
+                    if (boardCard != null)
+                    {
+                        hasPoinerTarget = true;
+
+                        if (isHovering)
+                        {
+                            UpdateHovering(collider.gameObject, boardCard: boardCard);
+                        }
                     }
                 }
             }
@@ -189,6 +205,7 @@ namespace Loom.ZombieBattleground
                 if (unit.GameObject == collider.gameObject)
                 {
                     hasTarget = true;
+                    hasPoinerTarget = true;
 
                     if (isHovering)
                     {
@@ -220,6 +237,7 @@ namespace Loom.ZombieBattleground
                 if (unit.GameObject == collider.gameObject)
                 {
                     hasTarget = true;
+                    hasPoinerTarget = true;
 
                     if (isHovering)
                     {
@@ -249,6 +267,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.CurrentPlayer.AvatarObject == collider.gameObject)
             {
                 hasTarget = true;
+                hasPoinerTarget = true;
 
                 if (isHovering)
                 {
@@ -270,6 +289,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.OpponentPlayer.AvatarObject == collider.gameObject)
             {
                 hasTarget = true;
+                hasPoinerTarget = true;
 
                 if (isHovering)
                 {
@@ -291,11 +311,14 @@ namespace Loom.ZombieBattleground
             if (!hasTarget)
             {
                 NoObjectsSelectedEvent?.Invoke();
+            }
+            if(!hasPoinerTarget)
+            {
                 ClearHovering();
             }
         }
 
-        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, bool isManaBar = false)
+        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCard boardCard = null, bool isManaBar = false)
         {
             if (_hoveringObject != obj)
             {
@@ -306,7 +329,7 @@ namespace Loom.ZombieBattleground
             else if(!_isHovering)
             {
                 _timeHovering += Time.deltaTime;
-                if (_timeHovering >= maxTimeForHovering)
+                if (_timeHovering >= Constants.MaxTimeForHovering)
                 {
                     if (unit != null)
                     {
@@ -315,6 +338,10 @@ namespace Loom.ZombieBattleground
                     else if(player != null)
                     {
                         PlayerPointerEnteredEvent?.Invoke(player);
+                    }
+                    else if(boardCard != null)
+                    {
+                        GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
                     }
                     else if(isManaBar)
                     {

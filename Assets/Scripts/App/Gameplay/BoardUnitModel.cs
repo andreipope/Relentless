@@ -692,7 +692,7 @@ namespace Loom.ZombieBattleground
                                 if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
                                      info.TutorialObjectId == TutorialObjectId &&
                                      (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
-                                         info.TargetTutorialObjectId == 0)))
+                                         info.TargetTutorialObjectId == 0 && info.TargetType != Enumerators.SkillTargetType.OPPONENT)))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
@@ -757,7 +757,6 @@ namespace Loom.ZombieBattleground
                 CurrentDamage <= 0 || IsStun ||
                 CantAttackInThisTurnBlocker  || !CanAttackByDefault)
             {
-                Debug.LogError(4444);
                 return false;
             }
 

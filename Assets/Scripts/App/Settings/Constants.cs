@@ -90,6 +90,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float DelayBetweenGameplayActions = 0.1f;
 
+        internal const float MaxTimeForHovering = 3f;
+
         internal const int DelayBetweenAiActions = 1100;
 
         internal const float ZombieDeathVoDelayBeforeFadeout = 3f;

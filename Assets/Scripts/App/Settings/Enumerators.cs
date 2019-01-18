@@ -775,6 +775,8 @@ namespace Loom.ZombieBattleground.Common
             PlayerOverlordAbilityUsed,
             PlayerOverlordCardPlayed,
             PlayerOverlordSelected,
+            PlayerManaBarSelected,
+            PlayerCardInHandSelected,
 
             PlayerCreatedNewCardAndMovedToHand,
 

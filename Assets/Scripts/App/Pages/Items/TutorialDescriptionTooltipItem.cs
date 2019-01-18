@@ -86,12 +86,12 @@ namespace Loom.ZombieBattleground
                         break;
                     default: break;
                 }
+            }
 
-                if(unit != null)
-                {
-                    _selfObject.transform.SetParent(unit.Transform, false);
-                    _selfObject.transform.localPosition = position;
-                }
+            if (unit != null)
+            {
+                _selfObject.transform.SetParent(unit.Transform, false);
+                _selfObject.transform.localPosition = position;
             }
             else
             {

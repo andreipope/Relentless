@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
 
         private void PlayerSelectedEventHandler(Player player)
         {
-            SetTooltipsPlayerIfHas(player.IsLocalPlayer ? Enumerators.TutorialActivityAction.PlayerOverlordSelected : Enumerators.TutorialActivityAction.EnemyOverlordSelected);
+            SetTooltipsByOwnerIfHas(player.IsLocalPlayer ? Enumerators.TutorialObjectOwner.PlayerOverlord : Enumerators.TutorialObjectOwner.EnemyOverlord);
         }
 
         private void UnitSelectedEventHandler(BoardUnitView unit)
@@ -333,6 +333,7 @@ namespace Loom.ZombieBattleground
 
         private void CheckTooltips(Enumerators.TutorialActivityAction action, int sender = 0)
         {
+            Enumerators.TutorialObjectOwner owner;
             switch (action)
             {
                 case Enumerators.TutorialActivityAction.BattleframeSelected:
@@ -340,7 +341,21 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.TutorialActivityAction.EnemyOverlordSelected:
                 case Enumerators.TutorialActivityAction.PlayerOverlordSelected:
-                    SetTooltipsPlayerIfHas(action);
+                    {
+                        owner = action == Enumerators.TutorialActivityAction.PlayerOverlordSelected ?
+                            Enumerators.TutorialObjectOwner.PlayerOverlord :
+                            Enumerators.TutorialObjectOwner.EnemyOverlord;
+                        SetTooltipsByOwnerIfHas(owner);
+                    }
+                    break;
+                case Enumerators.TutorialActivityAction.PlayerManaBarSelected:
+                    if (action == Enumerators.TutorialActivityAction.PlayerManaBarSelected)
+                    {
+                        SetTooltipsByOwnerIfHas(Enumerators.TutorialObjectOwner.PlayerGooBottles);
+                    }
+                    break;
+                case Enumerators.TutorialActivityAction.PlayerCardInHandSelected:
+                    SetTooltipsByOwnerIfHas(Enumerators.TutorialObjectOwner.PlayerCardInHand);
                     break;
                 default:
                     break;
@@ -522,14 +537,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetTooltipsPlayerIfHas(Enumerators.TutorialActivityAction action)
+        public void SetTooltipsByOwnerIfHas(Enumerators.TutorialObjectOwner owner)
         {
             if (_gameplayManager.GetController<BoardArrowController>().CurrentBoardArrow != null)
                 return;
-
-            Enumerators.TutorialObjectOwner owner = action == Enumerators.TutorialActivityAction.PlayerOverlordSelected ?
-                Enumerators.TutorialObjectOwner.PlayerOverlord :
-                Enumerators.TutorialObjectOwner.EnemyOverlord;
 
             List<TutorialDescriptionTooltipItem> tooltips = _tutorialDescriptionTooltipItems.FindAll(x => x.OwnerType == owner);
 
