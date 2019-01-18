@@ -305,6 +305,9 @@ namespace Loom.ZombieBattleground
 
         private void LoadDeckObjects()
         {
+            if (_selfPage == null)
+                return;
+
             _hordeSelection.gameObject.SetActive(true);
             FillHordeDecks();
 
