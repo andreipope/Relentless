@@ -3,6 +3,7 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -224,6 +225,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         InstanceId = target.ToProtobuf(),
                         AffectObjectType = (Protobuf.AffectObjectType.Types.Enum) type,
                         Parameter = new Parameter()
+                    }
+                }
+            };
+        }
+
+        public PlayerAction CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> cards)
+        {
+            return new PlayerAction
+            {
+                ActionType = PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard,
+                PlayerId = _playerId,
+                CheatDestroyCardsOnBoard = new PlayerActionCheatDestroyCardsOnBoard
+                {
+                    DestroyedCards =
+                    {
+                        cards.Select(card => card.ToProtobuf())
                     }
                 }
             };

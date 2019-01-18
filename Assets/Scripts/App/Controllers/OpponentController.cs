@@ -111,6 +111,7 @@ namespace Loom.ZombieBattleground
             _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
             _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
+            _pvpManager.CheatDestroyCardsOnBoardActionReceived += OnCheatDestroyCardsOnBoardActionHandler;
             _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
             _pvpManager.PlayerActionOutcomeReceived += OnPlayerActionOutcomeReceived;
         }
@@ -134,6 +135,7 @@ namespace Loom.ZombieBattleground
             _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
             _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
+            _pvpManager.CheatDestroyCardsOnBoardActionReceived -= OnCheatDestroyCardsOnBoardActionHandler;
             _pvpManager.PlayerLeftGameActionReceived -= OnPlayerLeftGameActionHandler;
             _pvpManager.PlayerActionOutcomeReceived -= OnPlayerActionOutcomeReceived;
         }
@@ -223,12 +225,17 @@ namespace Loom.ZombieBattleground
                 );
         }
 
+        private void OnCheatDestroyCardsOnBoardActionHandler(PlayerActionCheatDestroyCardsOnBoard actionCheatDestroyCardsOnBoard)
+        {
+            GotCheatDestroyCardsOnBoard(actionCheatDestroyCardsOnBoard.DestroyedCards.Select(id => id.FromProtobuf()));
+        }
+
         #endregion
 
 
         #region Actions
 
-        public void GotActionEndTurn(EndTurnModel model)
+        private void GotActionEndTurn(EndTurnModel model)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -236,7 +243,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController.EndTurn();
         }
 
-        public void GotActionPlayCard(WorkingCard card, int position)
+        private void GotActionPlayCard(WorkingCard card, int position)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -288,7 +295,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        public void GotActionCardAttack(CardAttackModel model)
+        private void GotActionCardAttack(CardAttackModel model)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -319,7 +326,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void GotActionUseCardAbility(UseCardAbilityModel model)
+        private void GotActionUseCardAbility(UseCardAbilityModel model)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -362,7 +369,7 @@ namespace Loom.ZombieBattleground
                                                       _gameplayManager.OpponentPlayer);
         }
 
-        public void GotActionUseOverlordSkill(UseOverlordSkillModel model)
+        private void GotActionUseOverlordSkill(UseOverlordSkillModel model)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -398,7 +405,7 @@ namespace Loom.ZombieBattleground
             skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
         }
 
-        public void GotActionMulligan(MulliganModel model)
+        private void GotActionMulligan(MulliganModel model)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -406,7 +413,7 @@ namespace Loom.ZombieBattleground
             // todo implement logic..
         }
 
-        public void GotActionRankBuff(WorkingCard card, IList<Unit> targets)
+        private void GotActionRankBuff(WorkingCard card, IList<Unit> targets)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -416,6 +423,22 @@ namespace Loom.ZombieBattleground
                 .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
 
             _ranksController.BuffAllyManually(units, card);
+        }
+
+        private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)
+        {
+            foreach (InstanceId cardId in cards)
+            {
+                BoardUnitModel card = (BoardUnitModel) _battlegroundController.GetTargetById(cardId, Enumerators.AffectObjectType.Character);
+                if (card == null)
+                {
+                    Debug.LogError($"Card {cardId} not found on board");
+                }
+                else
+                {
+                    card.Die(withDeathEffect: false);
+                }
+            }
         }
 
         #endregion

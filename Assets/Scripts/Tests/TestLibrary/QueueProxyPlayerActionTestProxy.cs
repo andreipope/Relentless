@@ -13,6 +13,7 @@ namespace Loom.ZombieBattleground.Test
     public class QueueProxyPlayerActionTestProxy
     {
         private readonly Func<Queue<Func<Task>>> _getQueueFunc;
+        private readonly MatchScenarioPlayer _matchScenarioPlayer;
 
         protected Queue<Func<Task>> Queue => _getQueueFunc();
 
@@ -21,10 +22,16 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public IPlayerActionTestProxy Proxy { get; }
 
-        public QueueProxyPlayerActionTestProxy(Func<Queue<Func<Task>>> queueFunc, IPlayerActionTestProxy proxy)
+        public QueueProxyPlayerActionTestProxy(MatchScenarioPlayer matchScenarioPlayer, Func<Queue<Func<Task>>> queueFunc, IPlayerActionTestProxy proxy)
         {
+            _matchScenarioPlayer = matchScenarioPlayer;
             _getQueueFunc = queueFunc;
             Proxy = proxy;
+        }
+
+        public void AbortNextTurns()
+        {
+            _matchScenarioPlayer.AbortNextMoves();
         }
 
         public void EndTurn()

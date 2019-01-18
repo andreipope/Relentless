@@ -369,6 +369,39 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 EditorGUI.EndDisabledGroup();
             }
             GUILayout.EndHorizontal();
+
+            // Cheats Card Destroy
+            GUILayout.BeginHorizontal();
+            {
+                IList<CardInstance> cardsInPlay =
+                    GetCurrentPlayerState(_currentGameState.Instance).CardsInPlay
+                        .Concat(GetOpponentPlayerState(_currentGameState.Instance).CardsInPlay)
+                        .ToList();
+
+                GUILayout.Label("<i>(Cheat) Card To Destroy</i>", Styles.RichLabel, GUILayout.ExpandWidth(false));
+                _gameActionsState.CardToDestroyIndex =
+                    EditorGUILayout.Popup(
+                        _gameActionsState.CardToDestroyIndex,
+                        cardsInPlay.Select(SimpleFormatCardInstance).ToArray()
+                    );
+
+                EditorGUI.BeginDisabledGroup(cardsInPlay.Count == 0);
+                if (GUILayout.Button("Destroy"))
+                {
+                    EnqueueAsyncTask(async () =>
+                    {
+                        await DebugClient.BackendFacade.SendPlayerAction(
+                            DebugClient.MatchRequestFactory.CreateAction(
+                                DebugClient.PlayerActionFactory.CheatDestroyCardsOnBoard(new []{ new Data.InstanceId(cardsInPlay[_gameActionsState.CardToDestroyIndex].InstanceId.Id) })
+                            )
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
+                EditorGUI.EndDisabledGroup();
+            }
+            GUILayout.EndHorizontal();
         }
 
         private async Task UpdateCurrentGameState()
@@ -462,6 +495,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     EditorGUILayout.EndHorizontal();
 
                     debugCheats.DisableDeckShuffle = EditorGUILayout.ToggleLeft("Disable Deck Shuffling", debugCheats.DisableDeckShuffle);
+                    debugCheats.IgnoreGooRequirements = EditorGUILayout.ToggleLeft("Ignore Goo Requirements", debugCheats.IgnoreGooRequirements);
                 }
                 EditorGUI.EndDisabledGroup();
             }
@@ -691,6 +725,8 @@ namespace Loom.ZombieBattleground.Editor.Tools
             public int CardAttackAttackerIndex;
             public int CardAttackTargetIndex;
             public Enumerators.AffectObjectType CardAttackAffectObjectType;
+
+            public int CardToDestroyIndex;
         }
 
         [Serializable]

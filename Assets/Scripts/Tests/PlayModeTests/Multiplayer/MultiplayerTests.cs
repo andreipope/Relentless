@@ -70,9 +70,81 @@ namespace Loom.ZombieBattleground.Test
                     {
                         TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
                         TestHelper.DebugCheats.CustomDeck = deck;
+                        TestHelper.DebugCheats.DisableDeckShuffle = true;
                     },
                     cheats => cheats.CustomDeck = deck
                 );
+
+                await TestHelper.ClickGenericButton("Button_Continue");
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Zhatterer()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Znowman", 1),
+                        new DeckCardData("Zhatterer", 1),
+                        new DeckCardData("Slab", 28)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                Deck localDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Znowman", 1),
+                        new DeckCardData("Zhatterer", 1),
+                        new DeckCardData("Slab", 28)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       // znowman
+                       player => player.CardPlay(new InstanceId(32), 0),
+                       // slab
+                       opponent => opponent.CardPlay(new InstanceId(5), 0),
+                       // znowman attacks slab
+                       player => player.CardAttack(new InstanceId(32), Enumerators.AffectObjectType.Character, new InstanceId(5)),
+                   };
+
+                await GenericPvPTest(
+                    turns,
+                    () =>
+                    {
+                        TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.CustomDeck = localDeck;
+                        TestHelper.DebugCheats.DisableDeckShuffle = true;
+                    },
+                    cheats => cheats.CustomDeck = opponentDeck
+                );
+
+                await Task.Delay(5000);
 
                 await TestHelper.ClickGenericButton("Button_Continue");
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");

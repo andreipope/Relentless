@@ -13,5 +13,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public bool DisableDeckShuffle { get; set; }
 
         public string ForceFirstTurnUserId { get; set; }
+
+        public bool IgnoreGooRequirements { get; set; }
     }
 }
