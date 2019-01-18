@@ -453,7 +453,7 @@ namespace Loom.ZombieBattleground
                 if (e.Message.Contains("BadRequest"))
                 {
                     errorMsg = "This email already exists, \n " +
-                               "Please try different email to register or \n " +
+                               "Please try a different email to register or \n " +
                                "login to your existing account.";
                 }
 
