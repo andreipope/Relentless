@@ -44,8 +44,6 @@ public class UserReportingScript : MonoBehaviour
     [Tooltip("The user report button used to create a user report.")]
     public Button UserReportButton;
 
-    public GameObject HiddenUI;
-
     public Button BugReportFormCancelButton;
 
     public Button BugReportFormExitButton;
@@ -517,12 +515,6 @@ public class UserReportingScript : MonoBehaviour
         // Update Client
         UnityUserReporting.CurrentClient.IsSelfReporting = this.IsSelfReporting;
         UnityUserReporting.CurrentClient.SendEventsToAnalytics = this.SendEventsToAnalytics;
-
-        // Update UI
-        if (this.HiddenUI != null)
-        {
-            HiddenUI.gameObject.SetActive(_afpsCounter.OperationMode == OperationMode.Normal);
-        }
 
         if (this.UserReportForm != null)
         {

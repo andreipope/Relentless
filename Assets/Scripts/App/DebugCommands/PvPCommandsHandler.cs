@@ -1,7 +1,7 @@
 using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Opencoding.CommandHandlerSystem;
+using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
@@ -11,7 +11,6 @@ namespace Loom.ZombieBattleground
         private static IPvPManager _pvpManager;
         private static IQueueManager _queueManager;
         private static BackendDataControlMediator _backendDataControlMediator;
-        private static ActionCollectorUploader _actionCollectorUploader;
 
         public static void Initialize()
         {
@@ -20,7 +19,6 @@ namespace Loom.ZombieBattleground
             _pvpManager = GameClient.Get<IPvPManager>();
             _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            _actionCollectorUploader = GameClient.Get<ActionCollectorUploader>();
         }
 
         [CommandHandler(Description = "Whether to use backend-based game logic, or trust the clients")]
@@ -38,6 +36,12 @@ namespace Loom.ZombieBattleground
         [CommandHandler]
         private static void DestroyCardOnBoard(int cardId)
         {
+            if (!_pvpManager.DebugCheats.Enabled)
+            {
+                Debug.LogError("Cheat must be enabled, use EnableCheats before match");
+                return;
+            }
+
             MatchRequestFactory matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
             PlayerActionFactory playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
             PlayerAction action = playerActionFactory.CheatDestroyCardsOnBoard(new[] { new InstanceId(cardId) });

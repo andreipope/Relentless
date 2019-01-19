@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 await TestHelper.PerTestSetup();
 
-                TestHelper.DebugCheats = new DebugCheatsConfiguration();
+                TestHelper.DebugCheats.CopyFrom(new DebugCheatsConfiguration());
             });
         }
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                TestHelper.DebugCheats = new DebugCheatsConfiguration();
+                TestHelper.DebugCheats.CopyFrom(new DebugCheatsConfiguration());
 
                 if (false && TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
                 {

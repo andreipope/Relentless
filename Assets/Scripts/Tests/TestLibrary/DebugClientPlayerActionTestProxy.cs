@@ -75,6 +75,11 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardAttack(attacker, type, target));
         }
 
+        public async Task CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        {
+            await SendPlayerAction(_client.PlayerActionFactory.CheatDestroyCardsOnBoard(targets));
+        }
+
         public async Task<bool> GetIsCurrentTurn()
         {
             GetGameStateResponse gameStateResponse = await _client.BackendFacade.GetGameState(_client.MatchMakingFlowController.MatchMetadata.Id);

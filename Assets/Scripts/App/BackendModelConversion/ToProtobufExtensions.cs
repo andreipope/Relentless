@@ -184,8 +184,8 @@ namespace Loom.ZombieBattleground.Data
                 UseCustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed != null,
                 CustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed ?? 0,
 
-                UseCustomDeck = debugCheatsConfiguration.CustomDeck != null,
-                CustomDeck = debugCheatsConfiguration.CustomDeck?.ToProtobuf(),
+                UseCustomDeck = debugCheatsConfiguration.UseCustomDeck,
+                CustomDeck = debugCheatsConfiguration.UseCustomDeck ? debugCheatsConfiguration.CustomDeck?.ToProtobuf() : null,
 
                 DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle,
 

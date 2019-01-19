@@ -6,6 +6,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
     {
         public bool Enabled { get; set; }
 
+        public bool UseCustomDeck { get; set; }
+
         public Deck CustomDeck { get; set; }
 
         public long? CustomRandomSeed { get; set; }
@@ -15,5 +17,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public string ForceFirstTurnUserId { get; set; }
 
         public bool IgnoreGooRequirements { get; set; }
+
+        public void CopyFrom(DebugCheatsConfiguration other)
+        {
+            Enabled = other.Enabled;
+            UseCustomDeck = other.UseCustomDeck;
+            CustomDeck = other.CustomDeck;
+            CustomRandomSeed = other.CustomRandomSeed;
+            DisableDeckShuffle = other.DisableDeckShuffle;
+            ForceFirstTurnUserId = other.ForceFirstTurnUserId;
+            IgnoreGooRequirements = other.IgnoreGooRequirements;
+        }
     }
 }

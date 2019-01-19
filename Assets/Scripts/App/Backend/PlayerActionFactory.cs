@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> cards)
+        public PlayerAction CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
         {
             return new PlayerAction
             {
@@ -240,7 +240,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     DestroyedCards =
                     {
-                        cards.Select(card => card.ToProtobuf())
+                        targets.Select(card => card.ToProtobuf())
                     }
                 }
             };

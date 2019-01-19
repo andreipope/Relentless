@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Protobuf;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using NotImplementedException = System.NotImplementedException;
 
@@ -14,10 +16,17 @@ namespace Loom.ZombieBattleground.Test
     public class LocalClientPlayerActionTestProxy : IPlayerActionTestProxy
     {
         private readonly TestHelper _testHelper;
+        private readonly IPvPManager _pvpManager;
+        private readonly IQueueManager _queueManager;
+        private readonly BackendDataControlMediator _backendDataControlMediator;
 
         public LocalClientPlayerActionTestProxy(TestHelper testHelper)
         {
             _testHelper = testHelper;
+
+            _pvpManager = GameClient.Get<IPvPManager>();
+            _queueManager = GameClient.Get<IQueueManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
         public async Task EndTurn()
@@ -68,6 +77,14 @@ namespace Loom.ZombieBattleground.Test
             boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetById(target, type));
 
             return Task.CompletedTask;
+        }
+
+        public async Task CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        {
+            MatchRequestFactory matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
+            PlayerActionFactory playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
+            PlayerAction action = playerActionFactory.CheatDestroyCardsOnBoard(targets);
+            _queueManager.AddAction(matchRequestFactory.CreateAction(action));
         }
 
         public Task<bool> GetIsCurrentTurn()

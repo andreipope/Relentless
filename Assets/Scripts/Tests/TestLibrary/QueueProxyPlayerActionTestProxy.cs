@@ -79,5 +79,10 @@ namespace Loom.ZombieBattleground.Test
         {
             Queue.Enqueue(() => Proxy.CardAttack(attacker, type, target));
         }
+
+        public void CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        {
+            Queue.Enqueue(() => Proxy.CheatDestroyCardsOnBoard(targets));
+        }
     }
 }
