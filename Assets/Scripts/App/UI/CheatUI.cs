@@ -241,29 +241,6 @@ namespace Loom.ZombieBattleground
                 GUILayout.EndArea();
             }
 
-            private static T DrawEnumPopup<T>(T value, IMGUIPopup popup)
-            {
-                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.OverlordSkill));
-                for (int i = 0; i < values.Length; i++)
-                {
-                    if (value.Equals(values[i]))
-                    {
-                        popup.SelectedItemIndex = i;
-                        break;
-                    }
-                }
-
-                Rect rect = GUILayoutUtility.GetRect(GUIContent.none, GUI.skin.button);
-                int selectedIndex = popup.List(
-                    rect,
-                    values.Select(v => new GUIContent(v.ToString())).ToArray(),
-                    GUI.skin.button,
-                    GUI.skin.button
-                );
-
-                return values[selectedIndex];
-            }
-
             private void DrawCustomDeckCard(DeckCardData deckCard, out bool isRemoved)
             {
                 isRemoved = false;
@@ -293,8 +270,30 @@ namespace Loom.ZombieBattleground
                 }
                 GUILayout.EndHorizontal();
             }
-        }
 
+            private static T DrawEnumPopup<T>(T value, IMGUIPopup popup)
+            {
+                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.OverlordSkill));
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (value.Equals(values[i]))
+                    {
+                        popup.SelectedItemIndex = i;
+                        break;
+                    }
+                }
+
+                Rect rect = GUILayoutUtility.GetRect(GUIContent.none, GUI.skin.button);
+                int selectedIndex = popup.List(
+                    rect,
+                    values.Select(v => new GUIContent(v.ToString())).ToArray(),
+                    GUI.skin.button,
+                    GUI.skin.button
+                );
+
+                return values[selectedIndex];
+            }
+        }
 
         private class CheatsConfigurationModel
         {
