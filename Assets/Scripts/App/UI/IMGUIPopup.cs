@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
             if (isVisible)
             {
                 // Draw a Box
-                Rect listRect = new Rect(box.x, box.y + box.height, box.width, box.height * items.Length);
+                Rect listRect = new Rect(box.x + box.width, box.y, box.width, box.height * items.Length);
                 GUI.Box(listRect, "", boxStyle);
 
                 // Draw a SelectionGrid and listen for user selection
@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
             }
 
             // Draw a button. If the button is clicked
-            if (GUI.Button(new Rect(box.x, box.y, box.width, box.height), items[SelectedItemIndex]))
+            if (GUI.Button(box, items[SelectedItemIndex]))
             {
                 // If the button was not clicked before, set the current instance to be the active instance
                 if (!isClicked)

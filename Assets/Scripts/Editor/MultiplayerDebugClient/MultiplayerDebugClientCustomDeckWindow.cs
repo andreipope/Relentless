@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
@@ -78,19 +79,14 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         foreach (DeckCardData deckCard in customDeck.Cards)
                         {
-                            DrawCustomDeckCard(deckCard, out bool isRemoved);
-                            if (isRemoved)
-                            {
-                                customDeck.Cards.Remove(deckCard);
-                                GUIUtility.ExitGUI();
-                            }
+                            DrawCustomDeckCard(customDeck, deckCard);
                         }
                     }
                     EditorGUILayout.EndScrollView();
 
                     EditorGUILayout.BeginHorizontal();
                     {
-                        if (GUILayout.Button("Reset"))
+                        if (GUILayout.Button("Set All Amounts to 0"))
                         {
                             foreach (DeckCardData card in customDeck.Cards)
                             {
@@ -98,35 +94,46 @@ namespace Loom.ZombieBattleground.Editor.Tools
                             }
                         }
 
-                        if (GUILayout.Button("Close"))
+                        if (GUILayout.Button("Remove All"))
                         {
-                            Close();
+                            customDeck.Cards.Clear();
                         }
                     }
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.LabelField("Card Library", EditorStyles.boldLabel);
-                    _cardLibraryScrollPosition = EditorGUILayout.BeginScrollView(_cardLibraryScrollPosition, GUILayout.MaxHeight(300f));
+                    EditorGUILayout.BeginVertical();
                     {
-                        foreach (Card card in cardLibrary.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                        _cardLibraryScrollPosition = EditorGUILayout.BeginScrollView(_cardLibraryScrollPosition, GUILayout.MaxHeight(300f));
                         {
-                            EditorGUILayout.BeginHorizontal();
+                            foreach (Card card in cardLibrary.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
                             {
-                                GUILayout.Label(_cardNameToDescription[card.Name]);
-                                GUILayout.FlexibleSpace();
-                                if (GUILayout.Button("Add", GUILayout.Width(70)))
+                                EditorGUILayout.BeginHorizontal();
                                 {
-                                    if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
+                                    GUILayout.Label(_cardNameToDescription[card.Name]);
+
+                                    GUILayout.FlexibleSpace();
+                                    if (GUILayout.Button("Add", GUILayout.Width(70)))
                                     {
-                                        DeckCardData deckCardData = new DeckCardData(card.Name, 0);
-                                        customDeck.Cards.Add(deckCardData);
+                                        if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
+                                        {
+                                            DeckCardData deckCardData = new DeckCardData(card.Name, 0);
+                                            customDeck.Cards.Add(deckCardData);
+                                        }
                                     }
                                 }
+                                EditorGUILayout.EndHorizontal();
                             }
-                            EditorGUILayout.EndHorizontal();
+                        }
+                        EditorGUILayout.EndScrollView();
+
+                        if (GUILayout.Button("Close"))
+                        {
+                            Close();
                         }
                     }
-                    EditorGUILayout.EndScrollView();
+
+                    EditorGUILayout.EndVertical();
                 }
                 EditorGUILayout.EndVertical();
 
@@ -153,14 +160,25 @@ namespace Loom.ZombieBattleground.Editor.Tools
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawCustomDeckCard(DeckCardData deckCard, out bool isRemoved)
+        private void DrawCustomDeckCard(Deck customDeck, DeckCardData deckCard)
         {
-            isRemoved = false;
+            int deckCardIndex = customDeck.Cards.IndexOf(deckCard);
+
+            void MoveCard(int direction)
+            {
+                int newDeckCardIndex = deckCardIndex + direction;
+                DeckCardData otherCard = customDeck.Cards[newDeckCardIndex];
+                customDeck.Cards[newDeckCardIndex] = deckCard;
+                customDeck.Cards[deckCardIndex] = otherCard;
+
+                GUIUtility.ExitGUI();
+            }
+
             EditorGUILayout.BeginHorizontal();
             {
                 GUILayout.Label(_cardNameToDescription[deckCard.CardName]);
                 GUILayout.FlexibleSpace();
-                string amountString = EditorGUILayout.TextField(deckCard.Amount.ToString(), GUILayout.Width(50));
+                string amountString = EditorGUILayout.TextField(deckCard.Amount.ToString(), GUILayout.Width(35));
                 if (int.TryParse(amountString, out int newAmount))
                 {
                     deckCard.Amount = newAmount;
@@ -175,9 +193,28 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     deckCard.Amount = Mathf.Max(deckCard.Amount - 1, 0);
                 }
 
-                if (GUILayout.Button("Remove", GUILayout.Width(70)))
+                GUILayout.Space(5f);
+
+                GUI.enabled = deckCardIndex > 0;
+                if (GUILayout.Button("↑", GUILayout.Width(30)))
                 {
-                    isRemoved = true;
+                    MoveCard(-1);
+                }
+
+                GUI.enabled = deckCardIndex < customDeck.Cards.Count - 1;
+                if (GUILayout.Button("↓", GUILayout.Width(30)))
+                {
+                    MoveCard(1);
+                }
+
+                GUI.enabled = true;
+
+                GUILayout.Space(5f);
+
+                if (GUILayout.Button("x", GUILayout.Width(30)))
+                {
+                    customDeck.Cards.Remove(deckCard);
+                    GUIUtility.ExitGUI();
                 }
             }
             EditorGUILayout.EndHorizontal();

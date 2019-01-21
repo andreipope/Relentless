@@ -26,10 +26,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
         [SerializeField]
         private PlayerActionLogView _playerActionLogView = new PlayerActionLogView();
 
-        private readonly Queue<Func<Task>> _asyncTaskQueue = new Queue<Func<Task>>();
-        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
-
+        [SerializeField]
         private Vector2 _scrollPosition;
+
+        [SerializeField]
         private bool _isDebugCheatsExpanded;
 
         private GameStateWrapper _initialGameState;
@@ -38,6 +38,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
         private GameActionsState _gameActionsState = new GameActionsState();
 
         private MultiplayerDebugClientWrapper _debugClientWrapper = new MultiplayerDebugClientWrapper(new MultiplayerDebugClient("Window"));
+
+        private readonly Queue<Func<Task>> _asyncTaskQueue = new Queue<Func<Task>>();
+        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         public MultiplayerDebugClient DebugClient => _debugClientWrapper?.Instance;
 

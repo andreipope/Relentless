@@ -5,6 +5,7 @@ using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEditor;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -21,9 +22,13 @@ namespace Loom.ZombieBattleground
 
         private void OnGUI()
         {
-            UpdateGUIScale();
+            GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            GUILayout.BeginArea(new Rect(20, 20, 200, 200), "Cheats", GUI.skin.window);
+            Rect cheatsRect = new Rect(20, 20, 200, 120);
+            GUI.Label(cheatsRect, "", Styles.OpaqueWindow);
+            GUI.Label(cheatsRect, "", Styles.OpaqueWindow);
+            GUI.Label(cheatsRect, "", Styles.OpaqueWindow);
+            GUILayout.BeginArea(cheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
 
@@ -98,17 +103,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static void UpdateGUIScale() {
-            float scaleFactor = UIScaleFactor;
-
-            Vector3 scale;
-            scale.x = scaleFactor;
-            scale.y = scaleFactor;
-            scale.z = 1f;
-
-            GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, scale);
-        }
-
         private static float UIScaleFactor => Screen.dpi / 96f;
 
         private class CustomDeckEditor
@@ -154,110 +148,123 @@ namespace Loom.ZombieBattleground
                 if (!_visible)
                     return;
 
+                const float customDeckScreenHeightRatio = 2f / 3f;
                 Deck customDeck = _cheatUI._pvpManager.DebugCheats.CustomDeck;
-                const float width = 600;
-                Rect addedCardsRect = new Rect(Screen.width / 2f / UIScaleFactor - width / 2f, 0f, width, Screen.height / 2f / UIScaleFactor);
-                GUI.Label(addedCardsRect, "", GUI.skin.window);
-                GUI.Label(addedCardsRect, "", GUI.skin.window);
-                GUI.Label(addedCardsRect, "", GUI.skin.window);
-                GUILayout.BeginArea(addedCardsRect, "Custom Deck", GUI.skin.window);
+                GUILayout.BeginHorizontal(GUILayout.Width(Screen.width / UIScaleFactor));
                 {
-                    _customDeckScrollPosition = GUILayout.BeginScrollView(_customDeckScrollPosition);
+                    GUILayout.FlexibleSpace();
+                    GUILayout.BeginVertical(GUILayout.Width(700f));
                     {
-                        foreach (DeckCardData deckCard in customDeck.Cards)
+                        // Custom Deck
+                        GUILayout.BeginVertical("Custom Deck", Styles.OpaqueWindow, GUILayout.Height(Screen.height * customDeckScreenHeightRatio / UIScaleFactor));
                         {
-                            DrawCustomDeckCard(deckCard, out bool isRemoved);
-                            if (isRemoved)
+                            _customDeckScrollPosition = GUILayout.BeginScrollView(_customDeckScrollPosition);
                             {
-                                customDeck.Cards.Remove(deckCard);
-                                GUIUtility.ExitGUI();
+                                foreach (DeckCardData deckCard in customDeck.Cards)
+                                {
+                                    DrawCustomDeckCard(customDeck, deckCard);
+                                }
                             }
-                        }
-                    }
-                    GUILayout.EndScrollView();
+                            GUILayout.EndScrollView();
 
-                    GUILayout.BeginHorizontal();
-                    {
-                        if (GUILayout.Button("Reset"))
-                        {
-                            foreach (DeckCardData card in customDeck.Cards)
-                            {
-                                card.Amount = 0;
-                            }
-                        }
-
-                        if (GUILayout.Button("Close"))
-                        {
-                            Close();
-                        }
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndArea();
-
-                Rect cardLibraryRect = new Rect(Screen.width / 2f / UIScaleFactor - width / 2f, Screen.height / 2f / UIScaleFactor, width, Screen.height / 2f / UIScaleFactor);
-                GUI.Label(cardLibraryRect, "", GUI.skin.window);
-                GUI.Label(cardLibraryRect, "", GUI.skin.window);
-                GUI.Label(cardLibraryRect, "", GUI.skin.window);
-                GUILayout.BeginArea(cardLibraryRect, "Card Library", GUI.skin.window);
-                {
-                    _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
-                    {
-                        CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
-                        foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
-                        {
                             GUILayout.BeginHorizontal();
                             {
-                                GUILayout.Label(_cardNameToDescription[card.Name]);
-                                GUILayout.FlexibleSpace();
-                                if (GUILayout.Button("Add", GUILayout.Width(70)))
+                                if (GUILayout.Button("Set All Amounts to 0"))
                                 {
-                                    if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
+                                    foreach (DeckCardData card in customDeck.Cards)
                                     {
-                                        DeckCardData deckCardData = new DeckCardData(card.Name, 0);
-                                        customDeck.Cards.Add(deckCardData);
+                                        card.Amount = 0;
                                     }
+                                }
+
+                                if (GUILayout.Button("Remove All"))
+                                {
+                                    customDeck.Cards.Clear();
                                 }
                             }
                             GUILayout.EndHorizontal();
                         }
+                        GUILayout.EndVertical();
+
+                        // Card Library
+                        GUILayout.BeginVertical("Card Library", Styles.OpaqueWindow, GUILayout.Height(Screen.height * (1f - customDeckScreenHeightRatio) / UIScaleFactor));
+                        {
+                            _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
+                            {
+                                CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
+                                foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                                {
+                                    GUILayout.BeginHorizontal();
+                                    {
+                                        GUILayout.Label(_cardNameToDescription[card.Name]);
+                                        GUILayout.FlexibleSpace();
+                                        if (GUILayout.Button("Add", GUILayout.Width(70)))
+                                        {
+                                            if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
+                                            {
+                                                DeckCardData deckCardData = new DeckCardData(card.Name, 0);
+                                                customDeck.Cards.Add(deckCardData);
+                                            }
+                                        }
+                                    }
+                                    GUILayout.EndHorizontal();
+                                }
+                            }
+                            GUILayout.EndScrollView();
+
+                            if (GUILayout.Button("Close"))
+                            {
+                                Close();
+                            }
+                        }
+                        GUILayout.EndVertical();
                     }
-                    GUILayout.EndScrollView();
-                }
-                GUILayout.EndArea();
+                    GUILayout.EndVertical();
 
-                Rect auxRect = new Rect(addedCardsRect.xMax, 0f, 200, Screen.height / UIScaleFactor);
-                GUI.Label(auxRect, "", GUI.skin.window);
-                GUI.Label(auxRect, "", GUI.skin.window);
-                GUI.Label(auxRect, "", GUI.skin.window);
-                GUILayout.BeginArea(auxRect, "Custom Deck Settings", GUI.skin.window);
-                {
-                    GUILayout.Space(10);
-
-                    GUILayout.Label("Primary Skill");
-                    customDeck.PrimarySkill = DrawEnumPopup(customDeck.PrimarySkill, _primarySkillPopup);
-
-                    GUILayout.Label("Secondary Skill");
-                    customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
-
-                    GUILayout.Label("Hero Id");
-                    string heroIdString = GUILayout.TextField(customDeck.HeroId.ToString());
-                    if (int.TryParse(heroIdString, out int newHeroId))
+                    GUILayout.BeginVertical("Deck Properties", Styles.OpaqueWindow, GUILayout.Width(150f));
                     {
-                        customDeck.HeroId = newHeroId;
+                        // Options
+                        GUILayout.Space(10);
+
+                        GUILayout.Label("Primary Skill");
+                        customDeck.PrimarySkill = DrawEnumPopup(customDeck.PrimarySkill, _primarySkillPopup);
+
+                        GUILayout.Label("Secondary Skill");
+                        customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
+
+                        GUILayout.Label("Hero Id");
+                        string heroIdString = GUILayout.TextField(customDeck.HeroId.ToString());
+                        if (int.TryParse(heroIdString, out int newHeroId))
+                        {
+                            customDeck.HeroId = newHeroId;
+                        }
                     }
+                    GUILayout.EndVertical();
+
+                    GUILayout.FlexibleSpace();
                 }
-                GUILayout.EndArea();
+                GUILayout.EndHorizontal();
             }
 
-            private void DrawCustomDeckCard(DeckCardData deckCard, out bool isRemoved)
+            private void DrawCustomDeckCard(Deck customDeck, DeckCardData deckCard)
             {
-                isRemoved = false;
+                int deckCardIndex = customDeck.Cards.IndexOf(deckCard);
+    
+                void MoveCard(int direction)
+                {
+                    int newDeckCardIndex = deckCardIndex + direction;
+                    DeckCardData otherCard = customDeck.Cards[newDeckCardIndex];
+                    customDeck.Cards[newDeckCardIndex] = deckCard;
+                    customDeck.Cards[deckCardIndex] = otherCard;
+    
+                    GUIUtility.ExitGUI();
+                }
+    
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(_cardNameToDescription[deckCard.CardName]);
                     GUILayout.FlexibleSpace();
-                    string amountString = GUILayout.TextField(deckCard.Amount.ToString(), GUILayout.Width(50));
+                    string amountString = GUILayout.TextField(deckCard.Amount.ToString(), GUILayout.Width(35));
                     if (int.TryParse(amountString, out int newAmount))
                     {
                         deckCard.Amount = newAmount;
@@ -266,15 +273,34 @@ namespace Loom.ZombieBattleground
                     {
                         deckCard.Amount++;
                     }
-
+    
                     if (GUILayout.Button("-", GUILayout.Width(30)))
                     {
                         deckCard.Amount = Mathf.Max(deckCard.Amount - 1, 0);
                     }
-
-                    if (GUILayout.Button("Remove", GUILayout.Width(70)))
+    
+                    GUILayout.Space(5f);
+    
+                    GUI.enabled = deckCardIndex > 0;
+                    if (GUILayout.Button("↑", GUILayout.Width(30)))
                     {
-                        isRemoved = true;
+                        MoveCard(-1);
+                    }
+    
+                    GUI.enabled = deckCardIndex < customDeck.Cards.Count - 1;
+                    if (GUILayout.Button("↓", GUILayout.Width(30)))
+                    {
+                        MoveCard(1);
+                    }
+    
+                    GUI.enabled = true;
+    
+                    GUILayout.Space(5f);
+    
+                    if (GUILayout.Button("X", GUILayout.Width(30)))
+                    {
+                        customDeck.Cards.Remove(deckCard);
+                        GUIUtility.ExitGUI();
                     }
                 }
                 GUILayout.EndHorizontal();
@@ -307,6 +333,17 @@ namespace Loom.ZombieBattleground
         private class CheatsConfigurationModel
         {
             public DebugCheatsConfiguration DebugCheatsConfiguration;
+        }
+
+        private static class Styles
+        {
+            public static GUIStyle OpaqueWindow;
+
+            static Styles()
+            {
+                OpaqueWindow = new GUIStyle(GUI.skin.window);
+                OpaqueWindow.normal.background = Resources.Load<Texture2D>("GUI/skin-window-opaque");
+            }
         }
     }
 }
