@@ -796,6 +796,9 @@ namespace Loom.ZombieBattleground.Common
             BattleframeSelected,
             BattleframeDeselected,
 
+            PlayerBattleframeDied,
+            EnemyBattleframeDied,
+
             TapOnScreen,
             AvatarTooltipClosed,
 

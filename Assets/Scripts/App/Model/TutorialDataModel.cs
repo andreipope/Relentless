@@ -95,6 +95,7 @@ namespace Loom.ZombieBattleground
         public int TutorialObjectIdStepOwner;
 
         public List<Enumerators.SkillTargetType> SelectableTargets;
+        public List<Enumerators.TutorialActivityAction> RequiredActivitiesToDoneDuringStep;
 
         public bool MatchShouldBePaused;
         public bool AIShouldBePaused;
@@ -114,6 +115,7 @@ namespace Loom.ZombieBattleground
         public TutorialGameplayStep()
         {
             SelectableTargets = new List<Enumerators.SkillTargetType>();
+            RequiredActivitiesToDoneDuringStep = new List<Enumerators.TutorialActivityAction>();
 
             OverlordSayTooltips = new List<OverlordSayTooltipInfo>();
         }

@@ -235,6 +235,18 @@ namespace Loom.ZombieBattleground
                     boardUnitModel.OwnerPlayer.BoardCards.Remove(boardUnitView);
                     boardUnitModel.OwnerPlayer.RemoveCardFromBoard(boardUnitModel.Card);
                     boardUnitModel.OwnerPlayer.AddCardToGraveyard(boardUnitModel.Card);
+
+                    if(_tutorialManager.IsTutorial)
+                    {
+                        if (boardUnitModel.OwnerPlayer.IsLocalPlayer)
+                        {
+                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerBattleframeDied);
+                        }
+                        else
+                        {
+                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyBattleframeDied);
+                        }
+                    }
                 };
 
                 if (withDeathEffect)

@@ -491,6 +491,11 @@ namespace Loom.ZombieBattleground
                        await _gameplayManager.GetController<AIController>().LaunchAIBrain();
                     }
 
+                    if(_gameplayManager.GetController<AIController>().IsBrainWorking)
+                    {
+                        await _gameplayManager.GetController<AIController>().SetTutorialStep();
+                    }
+
                     if(gameStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.YouWonPopupOpened)
                     {
                         GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
