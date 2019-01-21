@@ -486,7 +486,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
-                    if (gameStep.LaunchAIBrain)
+                    if (gameStep.LaunchAIBrain || (!gameStep.AIShouldBePaused && _gameplayManager.GetController<AIController>().AIPaused))
                     {
                        await _gameplayManager.GetController<AIController>().LaunchAIBrain();
                     }

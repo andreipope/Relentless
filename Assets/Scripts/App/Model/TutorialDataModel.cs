@@ -97,6 +97,7 @@ namespace Loom.ZombieBattleground
         public List<Enumerators.SkillTargetType> SelectableTargets;
 
         public bool MatchShouldBePaused;
+        public bool AIShouldBePaused;
         public bool PlayerOverlordAbilityShouldBeUnlocked;
         public string SoundToPlay;
         public float SoundToPlayBeginDelay;
@@ -127,6 +128,8 @@ namespace Loom.ZombieBattleground
         public bool RankSystemHasEnabled;
 
         public bool GameplayBeginManually;
+
+        public bool AISpecificOrderEnabled;
 
         public SpecificBattlegroundOverlordInfo PlayerInfo;
         public SpecificBattlegroundOverlordInfo OpponentInfo;

@@ -59,6 +59,11 @@ namespace Loom.ZombieBattleground
             {
                 OneActionComleted(_targets[i]);
             }
+
+            if (TutorialManager.IsTutorial && AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            {
+                TutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.DeathAbilityCompleted);
+            }
         }
 
         public override void Action(object info = null)

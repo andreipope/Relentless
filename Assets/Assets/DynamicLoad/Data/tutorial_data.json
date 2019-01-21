@@ -880,7 +880,7 @@
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
         },
         {
           "ConnectedTurnIndex": 1,
@@ -1449,6 +1449,17 @@
           ],
           "LaunchAIBrain": true,
           "ConnectedTurnIndex": 5,
+          //"ActionToEndThisStep": "EndTurn"
+          "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted"
+        },
+        {
+          
+          "ConnectedTurnIndex": 5,
+          "AIShouldBePaused": true,
+          "ActionToEndThisStep": "DeathAbilityCompleted"
+        },
+        {
+          "ConnectedTurnIndex": 5,
           "ActionToEndThisStep": "EndTurn"
         },
         {
@@ -1508,7 +1519,8 @@
         }
       ],
       "SpecificBattlegroundInfo": {
-        "RankSystemHasEnabled": false,
+        "RankSystemHasEnabled": true,
+        "AISpecificOrderEnabled": true,
         "PlayerInfo": {
           "OverlordId": 4,
           "Defense": 10,
@@ -1579,6 +1591,10 @@
             {
               "Name": "Spiker",
               "TutorialObjectId": 56
+            },
+            {
+              "Name": "Spiker",
+              "TutorialObjectId": 57
             }
           ],
           "CardsOnBoard": [
@@ -1638,6 +1654,9 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 53
+            },
+            {
+              "TutorialObjectId": 54
             }
           ],
           "UseBattleframesSequence": [
@@ -1705,6 +1724,21 @@
               "TutorialObjectId": 52,
               "TargetType": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 53,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 54,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
             }
           ],
           "PlayCardsSequence": [
@@ -1712,6 +1746,9 @@
               "TutorialObjectId": 55,
               "TargetType": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 56,
             }
           ],
         },

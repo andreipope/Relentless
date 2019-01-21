@@ -783,7 +783,7 @@ namespace Loom.ZombieBattleground
 
             _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
 
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordCardPlayedStarted);
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
