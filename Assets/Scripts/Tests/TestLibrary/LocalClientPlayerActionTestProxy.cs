@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground.Test
 
         public Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Doesn't makes sense for local player - sent automatically by the local player");
         }
 
         public Task CardAbilityUsed(
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground.Test
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
             IEnumerable<InstanceId> cards = null)
         {
-            throw new NotImplementedException("Doesn't makes sense - sent as part of other actions");
+            throw new NotImplementedException("Doesn't makes sense for local player - sent automatically as part of card play");
         }
 
         public Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)

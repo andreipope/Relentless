@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.TestTools;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -145,7 +146,72 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        private async Task SoloGameplay(bool assertOverlordName = false)
+        [UnityTest]
+        [Timeout(9000000)]
+        public IEnumerator PlayWithAllCards()
+        {
+            return AsyncTest(async () =>
+            {
+                #region Solo Gameplay
+
+                int _cardsIndex = 0;
+                int _cardsPerDeck = 5;
+
+                IDataManager _dataManager = GameClient.Get<IDataManager>();
+
+                for (int i = 0; i < Mathf.CeilToInt((float)_dataManager.CachedCardsLibraryData.Cards.Count / (float)_cardsPerDeck); i++)
+                {
+                    await TestHelper.ClickGenericButton("Button_Play");
+
+                    await TestHelper.AssertIfWentDirectlyToTutorial(
+                        TestHelper.GoBackToMainAndPressPlay);
+
+                    await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                    await TestHelper.ClickGenericButton("Button_SoloMode");
+                    await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+
+                    int selectedHordeIndex = 0;
+
+                    await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
+                    TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
+
+                    await TestHelper.ClickGenericButton("Button_Battle");
+
+                    PopulateDeckWithCardsFromIndex(_cardsIndex, _cardsPerDeck);
+                    _cardsIndex += _cardsPerDeck;
+
+                    await TestHelper.AssertCurrentPageName("GameplayPage");
+                    await SoloGameplay(false, true);
+
+                    await TestHelper.ClickGenericButton("Button_Settings");
+                    await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
+                    await TestHelper.RespondToYesNoOverlay(true);
+                }
+
+                #endregion
+            });
+        }
+
+        private void PopulateDeckWithCardsFromIndex (int index, int amount = 5) 
+        {
+            IGameplayManager _gameplayManager = GameClient.Get<IGameplayManager>();
+            IDataManager _dataManager = GameClient.Get<IDataManager>();
+
+            _gameplayManager.CurrentPlayerDeck.Cards = new List<Data.DeckCardData>();
+
+            for (int i = 0; i < amount; i++)
+            {
+                if (index >= _dataManager.CachedCardsLibraryData.Cards.Count) {
+                    index = 0;
+                }
+
+                _gameplayManager.CurrentPlayerDeck.AddCard(_dataManager.CachedCardsLibraryData.Cards[index].Name);
+
+                index++;
+            }
+        }
+
+        private async Task SoloGameplay(bool assertOverlordName = false, bool quitIfNoCards = false)
         {
             if (TestHelper.IsTestFailed)
             {
@@ -171,7 +237,7 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.WaitUntilOurFirstTurn();
 
             if (!TestHelper.IsTestFailed)
-                await TestHelper.MakeMoves();
+                await TestHelper.MakeMoves(100, quitIfNoCards);
 
             await new WaitForUpdate();
         }

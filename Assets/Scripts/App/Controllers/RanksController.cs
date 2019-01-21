@@ -49,7 +49,8 @@ namespace Loom.ZombieBattleground
 
                        List<BoardUnitView> filter = units.Where(unit =>
                                     unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
-                                    (int)unit.Model.Card.LibraryCard.CardRank < (int)card.LibraryCard.CardRank).ToList();
+                                    (int)unit.Model.Card.LibraryCard.CardRank < (int)card.LibraryCard.CardRank &&
+                                    !unit.WasDestroyed && !unit.Model.IsDead).ToList();
                        if (filter.Count > 0)
                        {
                            DoRankUpgrades(filter, card);
@@ -266,6 +267,12 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitView unit in units)
                 {
+                    if (unit == null)
+                    {
+                        Helpers.ExceptionReporter.LogException("Tried to Buff Null Unit in Ranks System");
+                        continue;
+                    }
+
                     unit.Model.ApplyBuff(buff);
                 }
             }

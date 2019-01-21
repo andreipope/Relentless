@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         popup.SetLoginFieldsData(_backendDataControlMediator.UserDataModel.Email, _backendDataControlMediator.UserDataModel.Password);
-                        popup.CompleteLoginFromCurrentSetUserData();
+                        popup.SetLoginFromDataState();
                     }
                 }
                 else

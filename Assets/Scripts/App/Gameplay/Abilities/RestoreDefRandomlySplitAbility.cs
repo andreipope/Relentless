@@ -4,6 +4,7 @@ using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -56,24 +57,32 @@ namespace Loom.ZombieBattleground
 
         private void FillRandomTargets()
         {
-            foreach (Enumerators.AbilityTargetType targetType in TargetTypes)
+            if (PredefinedTargets != null)
             {
-                switch (targetType)
+                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
+            }
+            else
+            {
+                _targets = new List<BoardObject>();
+                foreach (Enumerators.AbilityTargetType targetType in TargetTypes)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        _targets.Add(GetOpponentOverlord());
-                        break;
-                    case Enumerators.AbilityTargetType.PLAYER:
-                        _targets.Add(PlayerCallerOfAbility);
-                        break;
-                    case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
-                        break;
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);
+                    switch (targetType)
+                    {
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                            _targets.Add(GetOpponentOverlord());
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER:
+                            _targets.Add(PlayerCallerOfAbility);
+                            break;
+                        case Enumerators.AbilityTargetType.PLAYER_CARD:
+                            _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);
+                    }
                 }
             }
         }
@@ -83,7 +92,17 @@ namespace Loom.ZombieBattleground
             if (_targets.Count == 0)
                 return;
 
-            List<ParametrizedAbilityBoardObject> abilityTargets = new List<ParametrizedAbilityBoardObject>();    
+            if (PredefinedTargets != null)
+            {
+                foreach (var target in PredefinedTargets)
+                {
+                    RestoreDefenseOfTarget(target.BoardObject, target.Parameters.Defense);
+                }
+
+                return;
+            }
+
+            List<ParametrizedAbilityBoardObject> abilityTargets = new List<ParametrizedAbilityBoardObject>();
 
             int maxCount = Count;
             int defenseValue = 0;

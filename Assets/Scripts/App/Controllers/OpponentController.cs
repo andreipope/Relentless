@@ -109,7 +109,6 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardAttackedActionReceived += OnCardAttackedHandler;
             _pvpManager.CardAbilityUsedActionReceived += OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived += OnOverlordSkillUsedHandler;
-            _pvpManager.MulliganProcessUsedActionReceived += OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived += OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived += OnRankBuffHandler;
             _pvpManager.PlayerLeftGameActionReceived += OnPlayerLeftGameActionHandler;
@@ -133,7 +132,6 @@ namespace Loom.ZombieBattleground
             _pvpManager.CardAttackedActionReceived -= OnCardAttackedHandler;
             _pvpManager.CardAbilityUsedActionReceived -= OnCardAbilityUsedHandler;
             _pvpManager.OverlordSkillUsedActionReceived -= OnOverlordSkillUsedHandler;
-            _pvpManager.MulliganProcessUsedActionReceived -= OnMulliganProcessHandler;
             _pvpManager.LeaveMatchReceived -= OnLeaveMatchHandler;
             _pvpManager.RankBuffActionReceived -= OnRankBuffHandler;
             _pvpManager.PlayerLeftGameActionReceived -= OnPlayerLeftGameActionHandler;
@@ -142,7 +140,7 @@ namespace Loom.ZombieBattleground
 
         private void OnPlayerActionOutcomeReceived(PlayerActionOutcome outcome)
         {
-            if (!_gameplayManager.UseBackendGameLogic)
+            if (!_pvpManager.UseBackendGameLogic)
                 return;
 
             switch (outcome.OutcomeCase)
@@ -215,11 +213,6 @@ namespace Loom.ZombieBattleground
                 TargetId = actionUseOverlordSkill.Target.InstanceId.FromProtobuf(),
                 AffectObjectType = (Enumerators.AffectObjectType) actionUseOverlordSkill.Target.AffectObjectType
             });
-        }
-
-        private void OnMulliganProcessHandler(PlayerActionMulligan actionMulligan)
-        {
-
         }
 
         private void OnRankBuffHandler(PlayerActionRankBuff actionRankBuff)
@@ -303,6 +296,12 @@ namespace Loom.ZombieBattleground
             BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, model.CardId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
+            if(attackerUnit == null || target == null)
+            {
+                Helpers.ExceptionReporter.LogException("GotActionCardAttack Has Error: attackerUnit: " + attackerUnit + "; target: " + target);
+                return;
+            }
+
             Action callback = () =>
             {
                 attackerUnit.DoCombat(target);
@@ -370,6 +369,12 @@ namespace Loom.ZombieBattleground
 
             BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+
+            if (target == null)
+            {
+                Helpers.ExceptionReporter.LogException("GotActionUseOverlordSkill Has Error: target: " + target);
+                return;
+            }
 
             Action callback = () =>
             {

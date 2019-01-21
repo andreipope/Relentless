@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
@@ -68,14 +68,6 @@ namespace Loom.ZombieBattleground
 
                 return _instance;
             }
-        }
-
-        // ReSharper disable once UnusedMember.Global
-        public bool CheckBackendVersionMatch(Version backendVersion)
-        {
-            Version localVersion = Version;
-            return localVersion.Major >= backendVersion.Major && localVersion.Minor >= backendVersion.Minor &&
-                localVersion.Build >= backendVersion.Build;
         }
     }
 }

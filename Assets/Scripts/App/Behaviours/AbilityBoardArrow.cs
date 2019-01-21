@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
                 PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if (TargetUnitType == Enumerators.CardType.NONE || unit.Model.InitialUnitType == TargetUnitType)
+                if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
                     if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
                         unit.Model.UnitStatus == TargetUnitStatusType)

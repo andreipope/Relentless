@@ -40,10 +40,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public IContractCallProxy ContractCallProxy => _contractCallProxy;
 
-        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory = null)
+        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory)
         {
-            BackendEndpoint = backendEndpoint;
-            _contractCallProxyFactory = contractCallProxyFactory;
+            BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
+            _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
         }
 
         public void Init()
@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Contract oldContract = Contract;
             Contract = new Contract(client, contractAddr, callerAddr);
 
-            _contractCallProxy = _contractCallProxyFactory?.Invoke(Contract) ?? new DefaultContractCallProxy(Contract);
+            _contractCallProxy = _contractCallProxyFactory?.Invoke(Contract);
             ContractCreated?.Invoke(oldContract, Contract);
         }
 
@@ -277,7 +277,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
 
-        private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
+        private const string accessVaultEndPoint = "/entcubbyhole/protected/loomauth";
+
+        private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
 
         public async Task<UserInfo> GetUserInfo(string accessToken)
         {
@@ -347,7 +349,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Debug.Log(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+                throw new Exception($"{nameof(InitiateRegister)} failed with error code {httpResponseMessage.StatusCode}");
 
             RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
                 httpResponseMessage.ReadToEnd());
@@ -386,10 +388,37 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
+            Debug.Log(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+
+            CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
+                httpResponseMessage.ReadToEnd());
+            return vaultTokenData;
+        }
+
+        public async Task<CreateVaultTokenData> CreateVaultTokenForNon2FAUsers(string accessToken)
+        {
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenForNon2FAUsersEndPoint;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+
+            VaultTokenNon2FARequest vaultTokenRequest = new VaultTokenNon2FARequest();
+            vaultTokenRequest.access_token = accessToken;
+
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
+            Debug.Log(JsonConvert.SerializeObject(vaultTokenRequest));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ReadToEnd());
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CreateVaultTokenForNon2FAUsers)} failed with error code {httpResponseMessage.StatusCode}");
 
             CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
                 httpResponseMessage.ReadToEnd());
@@ -410,6 +439,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
             Debug.Log(httpResponseMessage.ToString());
+            Debug.Log(httpResponseMessage.StatusCode.ToString());
+            Debug.Log(httpResponseMessage.StatusCode);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -419,7 +450,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
                 else 
                 {
-                    throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+                    throw new Exception($"{nameof(GetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
                 }
             }
 
@@ -431,7 +462,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<bool> SetVaultData(string vaultToken, string privateKey)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Method = WebRequestMethod.GET;
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = BackendEndpoint.VaultHost + accessVaultEndPoint;
             webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
 
@@ -449,7 +480,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
+                throw new Exception($"{nameof(SetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
             }
 
             return true;
@@ -464,6 +495,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private struct VaultTokenRequest
         {
             public string authy_token;
+            public string access_token;
+        }
+
+        private struct VaultTokenNon2FARequest
+        {
             public string access_token;
         }
 
@@ -529,11 +565,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             bool useBackendGameLogic,
             DebugCheatsConfiguration debugCheats = null)
         {
-            if (pvpTags != null && pvpTags.Count != 0)
-            {
-                Debug.Log("PvPTags: " + String.Join(", ", pvpTags));
-            }
-
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 RegistrationData = new PlayerProfileRegistrationData
@@ -556,11 +587,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags)
         {
-            if (pvpTags != null && pvpTags.Count != 0)
-            {
-                Debug.Log("PvPTags: " + String.Join(", ", pvpTags));
-            }
-
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,
@@ -639,6 +665,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
                 catch (Exception e)
                 {
+                    Helpers.ExceptionReporter.LogException(e);
                     Debug.Log("Unsubscribe Error " + e);
                 }
 

@@ -241,6 +241,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 Debug.Log("Result === " + e);
                 OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
                 return;
@@ -288,15 +289,15 @@ namespace Loom.ZombieBattleground
 
         private void BattleButtonUpdate()
         {
-            bool canStartBattle =
-#if !DEV_MODE
-                _hordeDecks.Count != 0 &&
-                _selectedDeck.Id != -1 &&
-                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() ==
-                Constants.MinDeckSize;
-#else
-                true;
-#endif
+            bool canStartBattle = true;
+            if (!Constants.DevModeEnabled)
+            {
+                canStartBattle = _hordeDecks.Count != 0 &&
+                    _selectedDeck.Id != -1 &&
+                    _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() ==
+                    Constants.MinDeckSize;
+            }
+
             _battleButton.interactable = canStartBattle;
             _battleButtonGlow.SetActive(canStartBattle);
             _battleButtonWarning.gameObject.SetActive(!canStartBattle);
@@ -369,6 +370,7 @@ namespace Loom.ZombieBattleground
             if (_hordeDecks.Count < 1)
                 return;
 
+            int oldIndex = _scrolledDeck;
             _scrolledDeck += direction;
 
             if (_scrolledDeck > _hordeDecks.Count - 1)
@@ -381,14 +383,17 @@ namespace Loom.ZombieBattleground
                 _scrolledDeck = 0;
             }
 
-            _defaultSelectedDeck = _scrolledDeck + 1;
-            _containerOfDecks.transform.localPosition =
-                new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
-
-            HordeDeckObject deck = _hordeDecks.Find(x => x.SelfDeck.Id == _defaultSelectedDeck);
-            if (deck != null)
+            if (oldIndex != _scrolledDeck)
             {
-                HordeDeckSelectedHandler(deck);
+                _defaultSelectedDeck = _scrolledDeck + 1;
+                _containerOfDecks.transform.localPosition =
+                    new Vector3(HordeContainerXoffset - HordeItemSpace * _scrolledDeck, 420, 0);
+
+                HordeDeckObject deck = _hordeDecks[_scrolledDeck];
+                if (deck != null)
+                {
+                    HordeDeckSelectedHandler(deck);
+                }
             }
         }
 
@@ -521,14 +526,15 @@ namespace Loom.ZombieBattleground
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-#if !DEV_MODE
-            if (_hordeDecks.Count == 0 ||
-                _selectedDeck.Id == -1 ||
-                _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() < Constants.MinDeckSize)
+            if (!Constants.DevModeEnabled)
             {
-                _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
+                if (_hordeDecks.Count == 0 ||
+                    _selectedDeck.Id == -1 ||
+                    _hordeDecks.First(o => o.SelfDeck.Id == _selectedDeck.Id).SelfDeck.GetNumCards() < Constants.MinDeckSize)
+                {
+                    _uiManager.DrawPopup<WarningPopup>("Select a valid horde with " + Constants.MinDeckSize + " cards.");
+                }
             }
-#endif
         }
 
         private void LeftArrowButtonOnClickHandler()

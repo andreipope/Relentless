@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.9";
+        internal const string CurrentVersionBase = "0.1.10";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -82,8 +82,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaximumPlayerGoo = 10;
 
-        internal const int FirstGameTurnIndex = 1;
-
         internal const int DefaultCardsInHandAtStartGame = 3;
 
         internal const float DelayBetweenGameplayActions = 0.1f;
@@ -139,7 +137,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        public const float PvPCheckPlayerAvailableMaxTime = 10f;
+        public const float PvPCheckPlayerAvailableMaxTime = 30f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -157,7 +155,15 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool AlwaysGuestLogin = false;
 
-        public const string VaultEmptyErrorCode = "404";
+        public const string VaultEmptyErrorCode = "NotFound";
+
+        public const bool DevModeEnabled = false;
+
+        public const string MatchEmailPattern =
+        @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+        + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})$";
 
         internal const string FacebookAppId =
 #if USE_STAGING_BACKEND

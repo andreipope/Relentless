@@ -6,6 +6,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.View;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -196,9 +197,11 @@ namespace Loom.ZombieBattleground
         public void CardsDistribution(List<WorkingCard> mulliganCards)
         {
             Player player = _gameplayManager.CurrentPlayer;
-            List<WorkingCard> randomCards = InternalTools.GetRandomElementsFromList(
-                player.CardsInDeck.Except(player.CardsPreparingToHand).ToList(),
-                mulliganCards.Count);
+            List<WorkingCard> randomCards = new List<WorkingCard>();
+            for (int i = 0; i < mulliganCards.Count; i++) 
+            {
+                randomCards.Add(player.CardsInDeck[i]);
+            }
             player.CardsPreparingToHand = player.CardsPreparingToHand.Except(mulliganCards).ToList();
             player.CardsPreparingToHand.AddRange(randomCards);
 
@@ -210,7 +213,7 @@ namespace Loom.ZombieBattleground
             player.CardsPreparingToHand.Add(card);
         }
 
-        public void AddCardToHand(Player player, WorkingCard card = null, bool removeCardsFromDeck = true)
+        public IView AddCardToHand(Player player, WorkingCard card = null, bool removeCardsFromDeck = true)
         {
             if (card == null)
             {
@@ -222,14 +225,14 @@ namespace Loom.ZombieBattleground
                         player.Defense -= player.DamageByNoMoreCardsInDeck;
                         _vfxController.SpawnGotDamageEffect(player, -player.DamageByNoMoreCardsInDeck);
                     }
-                    return;
+                    return null;
                 }
 
                 card = player.CardsInDeck[0];
             }
 
             if (CheckIsMoreThanMaxCards(card, player))
-                return;
+                return null;
 
             /*
             if (_matchManager.MatchType == Enumerators.MatchType.PVP)
@@ -242,7 +245,8 @@ namespace Loom.ZombieBattleground
                 player.RemoveCardFromDeck(card);
             }
 
-            player.AddCardToHand(card);
+            IView cardView = player.AddCardToHand(card);
+            return cardView;
         }
 
         public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
@@ -284,13 +288,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public GameObject AddCardToHand(WorkingCard card, bool silent = false)
+        public BoardCard AddCardToHand(WorkingCard card, bool silent = false)
         {
             BoardCard boardCard = CreateBoardCard(card);
 
             if (_battlegroundController.CurrentTurn == 0)
             {
-                boardCard.SetDefaultAnimation(boardCard.WorkingCard.Owner.CardsInHand.Count);
+                boardCard.SetDefaultAnimation();
             }
 
             _battlegroundController.PlayerHandCards.Add(boardCard);
@@ -313,7 +317,7 @@ namespace Loom.ZombieBattleground
                 boardCard.HandBoardCard.CheckStatusOfHighlight();
             }
 
-            return boardCard.GameObject;
+            return boardCard;
         }
 
         public OpponentHandCard AddCardToOpponentHand(WorkingCard card, bool silent = false)
@@ -863,12 +867,12 @@ namespace Loom.ZombieBattleground
             if (CheckIsMoreThanMaxCards(workingCard, player))
                 return;
 
-            GameObject cardObject = player.AddCardToHand(workingCard, true);
-            cardObject.transform.position = cardPosition;
+            IView cardView = player.AddCardToHand(workingCard, true);
+            cardView.Transform.position = cardPosition;
 
             if (player.IsLocalPlayer)
             {
-                cardObject.transform.localScale =
+                cardView.Transform.localScale =
                     new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand         
             }
         }

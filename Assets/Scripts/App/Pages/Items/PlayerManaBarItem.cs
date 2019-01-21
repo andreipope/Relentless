@@ -149,13 +149,14 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            item.glow.Play();
+            item.ChangeStateParticles(true);
         }
 
         public void Disactive(GooBottleItem item)
         {
             if (item.selfAnimator.gameObject.activeInHierarchy) {
 			    item.selfAnimator.SetBool("IsFull", false);
+                item.ChangeStateParticles(false);
             }
         }
 
@@ -278,11 +279,28 @@ namespace Loom.ZombieBattleground
 
             public ParticleSystem glow;
 
+            private ParticleSystem _buble;
+
             public GooBottleItem(GameObject gameObject)
             {
                 Self = gameObject;
                 selfAnimator = Self.GetComponent<Animator>();
                 glow = Self.transform.Find("GlowBottle").GetComponent<ParticleSystem>();
+                _buble = Self.transform.Find("New Sprite Mask/Buble").GetComponent<ParticleSystem>();
+            }
+
+            public void ChangeStateParticles(bool state)
+            {
+                if(state)
+                {
+                    glow.Play();
+                    _buble.Play();
+                }
+                else
+                {
+                    glow.Stop();
+                    _buble.Stop();
+                }
             }
         }
     }

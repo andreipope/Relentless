@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Text;
 using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -136,8 +138,9 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            catch (CryptographicException)
+            catch (CryptographicException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 return null;
             }
 
@@ -200,6 +203,11 @@ namespace Loom.ZombieBattleground
             }
             byte[] converted = Convert.FromBase64String(output); 
             return converted;
+        }
+
+        public static bool ValidateEmail(string email)
+        {
+            return email != null ? Regex.IsMatch(email, Constants.MatchEmailPattern) : false;
         }
 
         #endregion cryptography
