@@ -368,7 +368,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                if (e.Message == Constants.VaultEmptyErrorCode || e.Message.Contains("Base-64"))
+                if (e.Message == Constants.VaultEmptyErrorCode)
                 {
                     UpdatePrivateKeyProcess(noOTP, vaultTokenData);
                 }
