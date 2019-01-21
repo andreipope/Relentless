@@ -41,7 +41,14 @@ namespace Loom.ZombieBattleground
                             _customDeckEditor = new CustomDeckEditor(this);
                         }
 
-                        _customDeckEditor.Show();
+                        if (_customDeckEditor.Visible)
+                        {
+                            _customDeckEditor.Close();
+                        }
+                        else
+                        {
+                            _customDeckEditor.Show();
+                        }
                     }
                 }
                 GUILayout.EndHorizontal();
@@ -114,6 +121,8 @@ namespace Loom.ZombieBattleground
             private Vector2 _customDeckScrollPosition;
             private Vector2 _cardLibraryScrollPosition;
 
+            public bool Visible => _visible;
+
             public CustomDeckEditor(CheatUI cheatUI)
             {
                 _cheatUI = cheatUI;
@@ -129,7 +138,7 @@ namespace Loom.ZombieBattleground
                         new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.OverlordSkill.NONE, Enumerators.OverlordSkill.NONE);
                 }
 
-                foreach (Card card in cardsLibraryData.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                foreach (Card card in cardsLibraryData.Cards)
                 {
                     _cardNameToDescription[card.Name] = $"{card.Name} (set: {card.CardSetType}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Health})";
                 }
@@ -195,7 +204,7 @@ namespace Loom.ZombieBattleground
                     _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                     {
                         CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
-                        foreach (Card card in cardLibrary.Cards)
+                        foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
                         {
                             GUILayout.BeginHorizontal();
                             {

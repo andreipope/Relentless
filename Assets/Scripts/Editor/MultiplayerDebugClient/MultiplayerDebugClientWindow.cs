@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         private MultiplayerDebugClientWrapper _debugClientWrapper = new MultiplayerDebugClientWrapper(new MultiplayerDebugClient("Window"));
 
-        private MultiplayerDebugClient DebugClient => _debugClientWrapper?.Instance;
+        public MultiplayerDebugClient DebugClient => _debugClientWrapper?.Instance;
 
         [MenuItem("Window/ZombieBattleground/Open New Multiplayer Debug Client")]
         private static void OpenWindow()
@@ -463,31 +463,14 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                     EditorGUILayout.BeginHorizontal();
                     {
-                        GUILayout.Space(EditorGUI.indentLevel * 15f);
-                        GUILayout.Label("Custom Deck: ", GUILayout.ExpandWidth(false));
+                        debugCheats.UseCustomDeck = EditorGUILayout.ToggleLeft("Use Custom Deck", debugCheats.UseCustomDeck, GUILayout.ExpandWidth(false));
 
-                        EditorGUI.BeginDisabledGroup(debugCheats.CustomDeck == null);
+                        EditorGUI.BeginDisabledGroup(!debugCheats.UseCustomDeck);
                         {
-                            if (GUILayout.Button("Clear Custom Deck", GUILayout.ExpandWidth(false)))
+                            if (GUILayout.Button("Edit", GUILayout.Width(80f)))
                             {
-                                debugCheats.CustomDeck = null;
-                            }
-                        }
-                        EditorGUI.EndDisabledGroup();
-
-                        EditorGUI.BeginDisabledGroup(debugCheats.CustomDeck != null);
-                        {
-                            if (GUILayout.Button("Set Random Deck", GUILayout.ExpandWidth(false)))
-                            {
-                                debugCheats.CustomDeck =
-                                    new Data.Deck(
-                                        -1,
-                                        0,
-                                        "super deck",
-                                        new List<DeckCardData>(InternalTools.GetRandomElementsFromList(DebugClient.CardLibrary, 10).Select(card => new DeckCardData(card.Name, 3))),
-                                        Enumerators.OverlordSkill.POISON_DART,
-                                        Enumerators.OverlordSkill.TOXIC_POWER
-                                    );
+                                MultiplayerDebugClientCustomDeckWindow customDeckWindow = GetWindow<MultiplayerDebugClientCustomDeckWindow>(GetType());
+                                customDeckWindow.Init(this);
                             }
                         }
                         EditorGUI.EndDisabledGroup();
@@ -594,6 +577,14 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     PlayerState playerState = gameState.PlayerStates[i];
                     EditorGUILayout.BeginVertical(GUI.skin.box);
                     {
+                        if (playerState.Id == DebugClient.UserDataModel.UserId)
+                        {
+                            playerState = GetCurrentPlayerState(gameState);
+                        }
+                        else
+                        {
+                            playerState = GetOpponentPlayerState(gameState);
+                        }
                         DrawPlayer(playerState, i == gameState.CurrentPlayerIndex);
                     }
                     EditorGUILayout.EndVertical();
@@ -668,7 +659,37 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         private PlayerState GetOpponentPlayerState(GameState gameState)
         {
-            return gameState.PlayerStates.First(state => state.Id != DebugClient.UserDataModel.UserId);
+            PlayerState truePlayerState = gameState.PlayerStates.First(state => state.Id != DebugClient.UserDataModel.UserId);
+            if (!DebugClient.UseBackendGameLogic)
+            {
+                IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+                Player localPlayer = gameplayManager.CurrentPlayer;
+                if (localPlayer == null)
+                    return truePlayerState;
+
+                PlayerState playerState = new PlayerState
+                {
+                    Id = truePlayerState.Id,
+                    Defense = localPlayer.Defense,
+                    GooVials = localPlayer.GooVials,
+                    TurnTime = (int) localPlayer.TurnTime,
+                    CardsInPlay =
+                    {
+                        localPlayer.CardsOnBoard.Select(card => card.ToProtobuf()).ToArray()
+                    },
+                    CardsInDeck =
+                    {
+                        localPlayer.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
+                    },
+                    CardsInHand =
+                    {
+                        localPlayer.CardsInHand.Select(card => card.ToProtobuf()).ToArray()
+                    }
+                };
+                return playerState;
+            }
+
+            return truePlayerState;
         }
 
         private static string SimpleFormatCardInstance(CardInstance cardInstance)

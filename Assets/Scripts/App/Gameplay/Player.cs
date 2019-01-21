@@ -493,6 +493,11 @@ namespace Loom.ZombieBattleground
 
         public void AddCardToBoard(WorkingCard card)
         {
+            if (CardsOnBoard.Contains(card))
+            {
+                Debug.LogWarning($"Attempt to add card {card} to CardsOnBoard when it is already added");
+                return;
+            }
             CardsOnBoard.Add(card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }

@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground.Test
         /// When false, tests are executed as fast as possible.
         /// When true, they are executed slowly to easy debugging.
         /// </summary>
-        private const bool DebugTests = true;
+        private const bool DebugTests = false;
 
         /// <summary>
         /// To be in line with AI Brain, 1.1f was taken as value from AIController.
@@ -1265,7 +1265,6 @@ namespace Loom.ZombieBattleground.Test
         public DebugCheatsConfiguration DebugCheats
         {
             get => _pvpManager.DebugCheats;
-            set => _pvpManager.DebugCheats = value;
         }
 
         #endregion
@@ -3114,25 +3113,25 @@ namespace Loom.ZombieBattleground.Test
             {
                 await LetsThink();
 
-                //Debug.Log("!a 0");
+                Debug.Log("!a 0");
 
                 await TaskAsIEnumerator(currentTurnTask());
 
-                //Debug.Log("!a 1");
+                Debug.Log("!a 1");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilOurTurnStarts();
 
-                //Debug.Log("!a 2");
+                Debug.Log("!a 2");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilInputIsUnblocked();
 
-                //Debug.Log("!a 3");
+                Debug.Log("!a 3");
 
                 if (IsGameEnded())
                     break;
@@ -3894,7 +3893,8 @@ namespace Loom.ZombieBattleground.Test
             {
                 Enabled = DebugCheats.Enabled,
                 CustomRandomSeed = DebugCheats.CustomRandomSeed,
-                ForceFirstTurnUserId = DebugCheats.ForceFirstTurnUserId
+                ForceFirstTurnUserId = DebugCheats.ForceFirstTurnUserId,
+                DisableDeckShuffle = DebugCheats.DisableDeckShuffle
             };
 
             modifyDebugCheatsAction?.Invoke(client.DebugCheats);
@@ -3975,9 +3975,7 @@ namespace Loom.ZombieBattleground.Test
         private void WaitStart(int waitAmount, bool unscaledTime = false)
         {
             _waitUnscaledTime = unscaledTime;
-
             _waitStartTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
-
             _waitAmount = waitAmount;
         }
 
