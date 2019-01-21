@@ -56,18 +56,14 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.MAIN_MENU:
                     _uiManager.SetPage<MainMenuPage>();
-                    if (AppState == Enumerators.AppState.GAMEPLAY && GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
-                    {
-                        _uiManager.DrawPopup<QuestionPopup>("Would you like to play another PvP game?");
-                        QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                        popup.ConfirmationReceived += DecideToPlayAgain;
-                    }
+                    CheckIfPlayAgainOptionShouldBeAvailable();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
                     _uiManager.SetPage<OverlordSelectionPage>();
                     break;
                 case Enumerators.AppState.HordeSelection:
                     _uiManager.SetPage<HordeSelectionPage>();
+                    CheckIfPlayAgainOptionShouldBeAvailable();
                     break;
                 case Enumerators.AppState.ARMY:
                     _uiManager.SetPage<ArmyPage>();
@@ -108,6 +104,16 @@ namespace Loom.ZombieBattleground
             AppState = stateTo;
 
             UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+        }
+
+        private void CheckIfPlayAgainOptionShouldBeAvailable() 
+        {
+            if (AppState == Enumerators.AppState.GAMEPLAY && GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                _uiManager.DrawPopup<QuestionPopup>("Would you like to play another PvP game?");
+                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived += DecideToPlayAgain;
+            }
         }
 
         private void DecideToPlayAgain(bool decision)
