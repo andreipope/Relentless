@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -36,10 +37,14 @@ namespace Loom.ZombieBattleground
             if (!IsHordeItem)
             {
                 Scene.AddCardToDeck(this, Card);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardAdded);
             }
             else
             {
                 Scene.RemoveCardFromDeck(this, Card);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardRemoved);
             }
         }
     }

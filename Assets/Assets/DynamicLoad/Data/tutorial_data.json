@@ -164,7 +164,7 @@
                 "Y": 1.6,
                 "Z": 0.0
               },
-              "TutorialHandPointerType": "Single",
+              "TutorialHandPointerType": "Single"
             }
           ],
           "CanEndTurn": true,
@@ -273,7 +273,7 @@
                 "Y": 1.6,
                 "Z": 0.0
               },
-              "TutorialHandPointerType": "Single",
+              "TutorialHandPointerType": "Single"
             }
           ],
           "CanEndTurn": true,
@@ -283,7 +283,7 @@
           "UnitsCanAttack": true,
           "LaunchAIBrain": true,
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
-          "ConnectedTurnIndex": 5,
+          "ConnectedTurnIndex": 5
         },
         {
           "ConnectedTurnIndex": 5,
@@ -356,7 +356,7 @@
               "TutorialObjectIdStepOwner": 1,
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated"
-            },
+            }
           ],
           "ActionToEndThisStep": "BattleframeAttacked",
           "UnitsCanAttack": true,
@@ -435,7 +435,7 @@
           "ActionToEndThisStep": "EnemyOverlordDied"
         },
         {
-           "ActionToEndThisStep": "OverlordSayPopupHided"
+          "ActionToEndThisStep": "OverlordSayPopupHided"
         },
         {
           "TutorialAvatar": {
@@ -638,7 +638,7 @@
             {
               "TutorialObjectId": 2,
               "TargetType": "OPPONENT"
-            },          
+            }
           ],
           "PlayCardsSequence": [
             {
@@ -701,19 +701,19 @@
                 "TutorialTooltipOwner": "PlayerOverlord",
                 "Description": "An Item. Didn’t\n know you were smart\n enough to play those..."
               }
-            },
+            }
           ]
         },
         {
           "TurnIndex": 8,
-          "RequiredActivitiesToDoneDuringTurn":[
+          "RequiredActivitiesToDoneDuringTurn": [
             "BattleframeAttacked"
           ],
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 4,
               "TargetType": "OPPONENT"
-            },
+            }
           ],
           "ActionActivityHandlers": [
             {
@@ -752,7 +752,7 @@
     }
   },
   {
-    "id": 1,
+    "Id": 1,
     "Name": "Abilities",
     "TutorialContent": {
       "TutorialDescriptionTooltips": [
@@ -1037,7 +1037,7 @@
                 "Z": 0.0
               },
               "TutorialObjectIdStepOwner": 2,
-              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerType": "Animated"
             }
           ],
           "TutorialDescriptionTooltipsToDeactivate": [
@@ -1071,7 +1071,7 @@
                 "Z": 0.0
               },
               "TutorialObjectIdStepOwner": 1,
-              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerType": "Animated"
             }
           ],
           "SelectableTargets": [
@@ -1090,7 +1090,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My Poison Dart\n will end him.",
+              "Description": "My Poison Dart\n will end him."
             }
           ],
           "HandPointers": [
@@ -1105,7 +1105,7 @@
                 "Y": 7.0,
                 "Z": 0.0
               },
-              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerType": "Animated"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -1194,7 +1194,7 @@
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
-            "BattleframeAttacked",            
+            "BattleframeAttacked"
           ],
           "ActionActivityHandlers": [
           ]
@@ -1207,7 +1207,7 @@
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed"          
+            "PlayerOverlordCardPlayed"
           ],
           "ActionActivityHandlers": [
           ]
@@ -1227,7 +1227,7 @@
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
-            "BattleframeAttacked",            
+            "BattleframeAttacked"
           ],
           "ActionActivityHandlers": [
           ]
@@ -1276,9 +1276,327 @@
               }
             }
           ]
-        },
+        }
       ],
       "PlayerOrderScreenShouldAppear": false
+    }
+  },
+  {
+    "Id": 6,
+    "Name": "Deck Building",
+    "TutorialContent": {
+      "HasBlockedInteractivityInGameScreens": true,
+      "TutorialSteps": [
+        {
+          "OpenScreen": "MainMenuPage",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Army",
+            "Button_Settings",
+            "Button_Credits",
+            "Button_OpenPacks",
+            "Button_Shop"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -2.8,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "PlaySelectionPage",
+          "BlockedButtons": [
+            "Button_Tutorial",
+            "Button_PvPMode",
+            "Button_Back"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -4.5,
+                "Y": -2.2,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "HordeSelectionPage",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_Battle",
+            "Button_Army",
+            "Pulse",
+            "Button_Edit",
+            "Button_Delete",
+            "Image_Skill",
+            "Image_Skill",
+            "Button_LeftArrow",
+            "Button_RightArrow"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.5,
+                "Y": 1.75,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "OverlordSelectionPage",
+          "BlockedButtons": [
+            "Button_Back"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -5.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "OverlordAbilityPopup",
+          "BlockedButtons": [
+            "Button_Cancel"
+          ],
+          "ActionToEndThisStep": "PopupClosed",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 2.5,
+                "Y": -5.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "ActionToEndThisStep": "CardDragged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -1.5,
+                "Z": 0
+              },
+              "EndPosition": {
+                "X": 0,
+                "Y": 3.8,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Animated",
+              "AboveUI": true
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            0
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "ActionToEndThisStep": "CardRemoved",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -7.8,
+                "Y": 4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            0
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "ActionToEndThisStep": "CardAdded",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            2
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "ActionToEndThisStep": "HordeFilled",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            2
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back"
+          ],
+          "ActionToEndThisStep": "HordeSaved",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 9,
+                "Y": 8,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "HordeSelectionPage",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_Army",
+            "Button_Edit",
+            "Button_Delete",
+            "Image_Skill",
+            "Image_Skill",
+            "Button_LeftArrow",
+            "Button_RightArrow"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 8.3,
+                "Y": -4.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ],
+          "ConnectedActivities": [
+            0
+          ]
+        }
+      ],
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 0,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Add cards to your\ndeck by dragging\nthem to the top.",
+          "Position": {
+            "X": 2.8,
+            "Y": -2.5,
+            "Z": 0.0
+          }
+        },
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Remove cards from\nyour deck by double\ntapping on them.",
+          "Position": {
+            "X": -4.5,
+            "Y": 2.6,
+            "Z": 0
+          }
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "You can also add\ncards by double\ntapping them.",
+          "Position": {
+            "X": 2.8,
+            "Y": -2.5,
+            "Z": 0.0
+          }
+        },
+        {
+          "Id": 3,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "It's time to BATTLE!",
+          "Position": {
+            "X": 8,
+            "Y": -4.5,
+            "Z": 0.0
+          }
+        }
+      ],
+      "ActionActivityHandlers": [
+        {
+          "TutorialActivityAction": "IncorrectButtonTapped",
+          "TutorialActivityActionHandler": "DrawDescriptionTooltips",
+          "Id": 0,
+          "TutorialActivityActionHandlerData": {
+            "TutorialDescriptionTooltipsToActivate": [
+              3
+            ]
+          },
+          "HasSpecificConnection": true
+        }
+      ]
     }
   }
 ]
