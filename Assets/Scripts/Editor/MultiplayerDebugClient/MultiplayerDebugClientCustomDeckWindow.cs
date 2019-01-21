@@ -33,10 +33,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
             Preload();
         }
 
-        private void Preload()
+        private bool Preload()
         {
-            if (_ownerWindow == null || Client == null)
-                return;
+            if (_ownerWindow == null || Client?.CardLibrary == null)
+                return false;
 
             List<Card> cardLibrary = Client.CardLibrary;
             if (Client.DebugCheats.CustomDeck == null)
@@ -54,11 +54,17 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         $"{card.Name} (set: {card.CardSetType}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Health})";
                 }
             }
+
+            return true;
         }
 
         private void OnGUI()
         {
-            Preload();
+            if (!Preload())
+            {
+                EditorGUILayout.LabelField("Client not ready");
+                return;
+            }
 
             List<Card> cardLibrary = Client.CardLibrary;
             Deck customDeck = Client.DebugCheats.CustomDeck;

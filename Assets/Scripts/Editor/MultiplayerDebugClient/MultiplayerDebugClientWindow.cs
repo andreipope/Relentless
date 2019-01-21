@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             // Card Play
             GUILayout.BeginHorizontal();
             {
-                IList<CardInstance> cardsInHand = GetCurrentPlayerState(_currentGameState.Instance).CardsInHand;
+                IList<CardInstance> cardsInHand = currentPlayerState.CardsInHand;
 
                 GUILayout.Label("<i>Card To Play</i>", Styles.RichLabel, GUILayout.ExpandWidth(false));
                 _gameActionsState.CardPlayCardIndex =
@@ -374,8 +374,8 @@ namespace Loom.ZombieBattleground.Editor.Tools
             GUILayout.BeginHorizontal();
             {
                 IList<CardInstance> cardsInPlay =
-                    GetCurrentPlayerState(_currentGameState.Instance).CardsInPlay
-                        .Concat(GetOpponentPlayerState(_currentGameState.Instance).CardsInPlay)
+                    currentPlayerState.CardsInPlay
+                        .Concat(opponentPlayerState.CardsInPlay)
                         .ToList();
 
                 GUILayout.Label("<i>(Cheat) Card To Destroy</i>", Styles.RichLabel, GUILayout.ExpandWidth(false));
@@ -654,7 +654,18 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         private PlayerState GetCurrentPlayerState(GameState gameState)
         {
-            return gameState.PlayerStates.First(state => state.Id == DebugClient.UserDataModel.UserId);
+            PlayerState truePlayerState = gameState.PlayerStates.First(state => state.Id == DebugClient.UserDataModel.UserId);
+            if (!DebugClient.UseBackendGameLogic)
+            {
+                IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
+                Player opponentPlayer = gameplayManager.OpponentPlayer;
+                if (opponentPlayer == null)
+                    return truePlayerState;
+
+                return CreateFakePlayerStateFromPlayer(truePlayerState, opponentPlayer, true);
+            }
+
+            return truePlayerState;
         }
 
         private PlayerState GetOpponentPlayerState(GameState gameState)
@@ -667,29 +678,34 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 if (localPlayer == null)
                     return truePlayerState;
 
-                PlayerState playerState = new PlayerState
-                {
-                    Id = truePlayerState.Id,
-                    Defense = localPlayer.Defense,
-                    GooVials = localPlayer.GooVials,
-                    TurnTime = (int) localPlayer.TurnTime,
-                    CardsInPlay =
-                    {
-                        localPlayer.CardsOnBoard.Select(card => card.ToProtobuf()).ToArray()
-                    },
-                    CardsInDeck =
-                    {
-                        localPlayer.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
-                    },
-                    CardsInHand =
-                    {
-                        localPlayer.CardsInHand.Select(card => card.ToProtobuf()).ToArray()
-                    }
-                };
-                return playerState;
+                return CreateFakePlayerStateFromPlayer(truePlayerState, localPlayer, false);
             }
 
             return truePlayerState;
+        }
+
+        private static PlayerState CreateFakePlayerStateFromPlayer(PlayerState truePlayerState, Player player, bool useBoardCards)
+        {
+            PlayerState playerState = new PlayerState
+            {
+                Id = truePlayerState.Id,
+                Defense = player.Defense,
+                GooVials = player.GooVials,
+                TurnTime = (int) player.TurnTime,
+                CardsInPlay =
+                {
+                    !useBoardCards ? player.CardsOnBoard.Select(card => card.ToProtobuf()).ToArray() : player.BoardCards.Select(card => card.Model.Card.ToProtobuf()).ToArray()
+                },
+                CardsInDeck =
+                {
+                    player.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
+                },
+                CardsInHand =
+                {
+                    player.CardsInHand.Select(card => card.ToProtobuf()).ToArray()
+                }
+            };
+            return playerState;
         }
 
         private static string SimpleFormatCardInstance(CardInstance cardInstance)

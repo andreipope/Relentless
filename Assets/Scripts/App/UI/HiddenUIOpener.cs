@@ -21,6 +21,7 @@ namespace Loom.ZombieBattleground
         void Start()
         {
             DontDestroyOnLoad(gameObject);
+            _isVisible = HiddenUI.gameObject.activeInHierarchy;
             _afpsCounter = FindObjectOfType<AFPSCounter>();
             if (_afpsCounter == null)
                 throw new Exception("AFPSCounter instance not found in scene");
