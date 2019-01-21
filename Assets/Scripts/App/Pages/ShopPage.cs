@@ -1,15 +1,13 @@
-//#define HAS_IAP_PLUGIN_INCLUDED
-
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-#if HAS_IAP_PLUGIN_INCLUDED
 using UnityEngine.Purchasing;
-#endif
 using Object = UnityEngine.Object;
 using Newtonsoft.Json;
 
@@ -60,12 +58,12 @@ namespace Loom.ZombieBattleground
         private IPlayerManager _playerManager;
 
         private ISoundManager _soundManager;
-        
-#if HAS_IAP_PLUGIN_INCLUDED
+
         private IInAppPurchaseManager _inAppPurchaseManager;
 
         private FiatBackendManager _fiatBackendManager;
-#endif
+
+        private FiatPlasmaManager _fiatPlasmaManager;
 
         private GameObject _selfPage;
 
@@ -96,26 +94,27 @@ namespace Loom.ZombieBattleground
 
         private Sequence _shopSelectScrollSequence;
 
+        event Action _finishRequestPack;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-
-#if HAS_IAP_PLUGIN_INCLUDED
             _fiatBackendManager = GameClient.Get<FiatBackendManager>();
+            _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
             
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
-#if UNITY_IOS || UNITY_ANDROID
-            _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;            
-#endif
-#endif
+            #if UNITY_IOS || UNITY_ANDROID
+            _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
+            #endif
+            _finishRequestPack += OnFinishRequestPack;
 
             _selectedColor = Color.white;
             _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
 
-            Hide();
+            Hide();       
         }
 
         public void Update()
@@ -358,7 +357,7 @@ namespace Loom.ZombieBattleground
             _shopSelectScrollSequence?.Kill();
         }
 
-#region Buttons Handlers
+        #region Buttons Handlers
 
         public void OpenButtonHandler()
         {
@@ -394,10 +393,11 @@ namespace Loom.ZombieBattleground
             }
 
             string productID = _productID[id];
-            #if HAS_IAP_PLUGIN_INCLUDED
-            _inAppPurchaseManager.BuyProductID( productID );
-            #endif
-
+            _inAppPurchaseManager.BuyProductID( productID );            
+        }
+        
+        private void PackMoveAnimation()
+        {
             _playerManager.LocalUser.Wallet -= _costs[_currentPackId];
             _wallet.text = _playerManager.LocalUser.Wallet.ToString("0.00") + " $";
             GameObject prefab;
@@ -428,10 +428,10 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
-      
-#if HAS_IAP_PLUGIN_INCLUDED  
+
         private async void RequestFiatValidation(string productId, string purchaseToken, string storeTxId, string storeName)
         {
+            _uiManager.DrawPopup<LoadingFiatPopup>("Request Fiat Validation");
             FiatBackendManager.FiatValidationResponse response = await _fiatBackendManager.CallFiatValidation
             (
                 productId,
@@ -439,49 +439,81 @@ namespace Loom.ZombieBattleground
                 storeTxId,
                 storeName
             );
-            Debug.Log("msg: " + response.msg);
-            Debug.Log("tx_id: " + response.tx_id);
-
-            _fiatBackendManager.CallFiatTransaction();            
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            RequestFiatTransaction();           
         }
         
-        private async void TestRequestFiatValidation()
+        private async void RequestFiatTransaction()
         {
-            RequestFiatValidation
-            (
-                "booster_pack_1",
-                "epgecdfbnjpniiigemenbbcn.AO-J1OxgDxU79uuUCxDQ27Ild4qs1z9-A2_h8QXxk0CICVA9UfeItYcD8IL0zpaBxprfdljAMa7TaGkK_YpVyo7wPWHYr8kc6H6CCD_3T2cNBEbk9nZBBzMvc1bwOSaZfDNXlamF6bIm",
-                "GPA.3394-9641-8410-18820",
-                "GooglePlay"
-            );
+            _uiManager.DrawPopup<LoadingFiatPopup>("Request Fiat Transaction");
+            Debug.Log("Call FiatTransaction request");
+            List<FiatBackendManager.FiatTransactionResponse> recordList = await _fiatBackendManager.CallFiatTransaction();
+            recordList.Sort( (FiatBackendManager.FiatTransactionResponse resA, FiatBackendManager.FiatTransactionResponse resB)=>
+            {
+                return resB.TxID - resA.TxID;
+            });
+            string log = "TxID: ";
+            foreach( var i in recordList)
+            {
+                log += i.TxID + ", ";
+            }
+            Debug.Log(log);
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            RequestPack(recordList);            
+        }
+        
+        private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> sortedRecordList)
+        {            
+            Debug.Log("<color=green>START REQUEST for packs</color>"); 
+            List<FiatBackendManager.FiatTransactionResponse> requestList = new List<FiatBackendManager.FiatTransactionResponse>();
+            for (int i = 0; i < sortedRecordList.Count; ++i)
+            {
+                requestList.Add(sortedRecordList[i]);
+            }
+
+            for (int i = 0; i < requestList.Count; ++i)
+            {
+                FiatBackendManager.FiatTransactionResponse record = requestList[i];
+                
+                _uiManager.DrawPopup<LoadingFiatPopup>($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
+
+                string eventResponse = "";
+
+                eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
+                Debug.Log($"<color=green>Contract [requestPacks] success call.</color>");
+                Debug.Log($"<color=green>EVENT RESPONSE: {eventResponse}</color>");
+                if (!string.IsNullOrEmpty(eventResponse))
+                {
+                    Debug.Log("<color=green>FINISH REQUEST for packs</color>");
+                    await _fiatBackendManager.CallFiatClaim
+                    (
+                        record.UserId,
+                        new List<int>
+                        {
+                            record.TxID
+                        }
+                    );                    
+                }
+                _uiManager.HidePopup<LoadingFiatPopup>();
+            }
+            
+            _finishRequestPack();
         }
 
+        private void OnFinishRequestPack()
+        {
+            Debug.Log("SUCCESSFULLY REQUEST for packs");
+            PackMoveAnimation();
+        }
 
 #if UNITY_IOS || UNITY_ANDROID
         private void OnProcessPurchase(PurchaseEventArgs args)
         {
-            //todo parse receipt
-
-            string receiptJson = args.purchasedProduct.receipt;
-            IAPReceipt receipt = null;
-            try
-            {
-                receipt = JsonConvert.DeserializeObject<IAPReceipt>(receiptJson);
-                Debug.Log("receipt.TransactionID: " + receipt.TransactionID);
-                Debug.Log("receipt.Store: " + receipt.Store);
-                return;
-            }
-            catch
-            {
-                Debug.LogError("Cannot deserialize args.purchasedProduct.receipt");
-                return;
-            }
-            
             Product product = args.purchasedProduct;
             string productId = product.definition.id;
-            string purchaseToken = "";
+            string purchaseToken = ParsePurchaseTokenFromReceipt(args.purchasedProduct.receipt);
             string storeTxId = product.transactionID;
-            string storeName = product.definition.storeSpecificId;
+            string storeName = product.definition.storeSpecificId;            
 
             RequestFiatValidation
             (
@@ -491,7 +523,70 @@ namespace Loom.ZombieBattleground
                 storeName                
             );                    
         }
+
+        private string ParsePurchaseTokenFromReceipt( string receiptString  )
+        {
+            string payload = "";   
+            string purchaseToken = "";
+            
+            try
+            {
+                IAPReceipt2 receipt = JsonConvert.DeserializeObject<IAPReceipt2>(receiptString);                
+                
+                Debug.Log("IAPReceipt");
+                string log = "";
+                log += "receipt.TransactionID: " + receipt.TransactionID;
+                log += "\n";
+                log += "receipt.Store: " + receipt.Store;
+                log += "\n";
+                log += "Payload: " + receipt.Payload;
+                Debug.Log(log);  
+                payload = receipt.Payload;
+            }
+            catch
+            {
+                Debug.LogError("Cannot deserialize args.purchasedProduct.receipt 2");                
+            }
+            
+            if( !string.IsNullOrEmpty(payload) )
+            {
+                string json = "";
+                try
+                {
+                    ReceiptPayloadStr rPayload = JsonConvert.DeserializeObject<ReceiptPayloadStr>(payload);
+                    Debug.Log("json: " + rPayload.json);
+                    json = rPayload.json;
+                }
+                catch
+                {
+                    Debug.LogError("Cannot deserialize payload str");
+                }
+                
+                if (!string.IsNullOrEmpty(json))
+                {
+                    try
+                    {
+                        ReceiptJSON rJson = JsonConvert.DeserializeObject<ReceiptJSON>(json);
+                        purchaseToken = rJson.purchaseToken;
+                        Debug.Log("purchaseToken: " + purchaseToken);
+                    }
+                    catch
+                    {
+                        Debug.LogError("Cannot deserialize rJson");
+                    }
+                }
+            }
+
+            return purchaseToken;
+        }
+
         public class IAPReceipt
+        {
+            public string Store;
+            public string TransactionID;
+            public ReceiptPayload Payload;
+        }
+        public class IAPReceipt2
         {
             public string Store;
             public string TransactionID;
@@ -501,16 +596,15 @@ namespace Loom.ZombieBattleground
         {
             public ReceiptJSON json;
         }
+         public class ReceiptPayloadStr
+        {
+            public string json;
+        }
         public class ReceiptJSON
         {
             public string productId;
-            public DeveloperPayload developerPayload;
-        }
-        public class DeveloperPayload
-        {
             public string purchaseToken;
         }
-#endif
 #endif
 
         private void ChooseItemHandler(int id)
@@ -551,7 +645,7 @@ namespace Loom.ZombieBattleground
             SwitchShopObject(1);
         }
 
-#endregion
+        #endregion
 
         public class ShopObject
         {

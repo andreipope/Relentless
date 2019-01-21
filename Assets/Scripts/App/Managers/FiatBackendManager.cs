@@ -72,6 +72,40 @@ namespace Loom.ZombieBattleground
             return fiatResponseList;          
         }
         
+        [Serializable]
+        public class FiatClaimRequestBody
+        {
+            public int user_id;
+            public int[] transaction_ids;
+        }
+
+        public async Task<bool> CallFiatClaim(int userId, List<int> transactionIds)
+        {
+            Debug.Log("CallFiatClaim");
+
+            UnityWebRequest request = new UnityWebRequest
+            (
+                PlasmaChainEndpointsContainer.FiatClaimURL,
+                "POST"
+            );
+            FiatClaimRequestBody body = new FiatClaimRequestBody();
+            body.user_id = userId;
+            body.transaction_ids = transactionIds.ToArray();
+            string jsonString = JsonUtility.ToJson(body);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes
+            (
+                jsonString                
+            );
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            
+            AddAuthorizationHeader(request);
+            request.SetRequestHeader("Content-Type", "application/json");
+            
+            await request.SendWebRequest();
+            Debug.Log("FiatClaim Response Code: " + request.responseCode);           
+            return (request.responseCode == 200);
+        }
+
         private void AddAuthorizationHeader(UnityWebRequest request)
         {
             request.SetRequestHeader

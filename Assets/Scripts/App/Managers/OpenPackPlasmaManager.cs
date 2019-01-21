@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
     public class OpenPackPlasmaManager : IService 
     {    
-    	public List<Card> CardsReceived { get; private set; }
+        public List<Card> CardsReceived { get; private set; }
         
         #region Contract
         private TextAsset _abiCardFaucet;

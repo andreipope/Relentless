@@ -65,6 +65,7 @@ namespace Loom.ZombieBattleground
             AddService<FiatBackendManager>(new FiatBackendManager());
             AddService<FiatPlasmaManager>(new FiatPlasmaManager());
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
+            AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()

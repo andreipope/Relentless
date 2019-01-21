@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
         
         private ILoadObjectsManager _loadObjectsManager;
+
+        private OpenPackPlasmaManager _openPackPlasmaManager;
         
         private CardInfoPopupHandler _cardInfoPopupHandler;
         
@@ -75,6 +77,7 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _openPackPlasmaManager = GameClient.Get<OpenPackPlasmaManager>();
             
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -321,22 +324,14 @@ namespace Loom.ZombieBattleground
         
         private async void RetrievePackBalanceAmount()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>();
-            
-            //Simulate request pack balance from plasma chain
-            await Task.Delay(TimeSpan.FromSeconds(1.0));            
-            _packBalanceAmount = 5;
-            
+            _uiManager.DrawPopup<LoadingFiatPopup>();            
+            _packBalanceAmount = await _openPackPlasmaManager.CallPackBalanceContract();            
             _uiManager.HidePopup<LoadingFiatPopup>();
         }
         private async Task RetriveCardsFromPack()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>();
-            
-            //Simulate request pack balance from plasma chain
-            await Task.Delay(TimeSpan.FromSeconds(1.0));    
-            List<Card> cards = RetrieveDummyCards(5);
-            
+            _uiManager.DrawPopup<LoadingFiatPopup>();            
+            List<Card> cards = await _openPackPlasmaManager.CallOpenPack(1);            
             _cardsToDisplayQueqe = cards;
             _uiManager.HidePopup<LoadingFiatPopup>(); 
         }
