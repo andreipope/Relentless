@@ -349,7 +349,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Debug.Log(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+                throw new Exception($"{nameof(InitiateRegister)} failed with error code {httpResponseMessage.StatusCode}");
 
             RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
                 httpResponseMessage.ReadToEnd());
@@ -388,7 +388,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
+            Debug.Log(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
