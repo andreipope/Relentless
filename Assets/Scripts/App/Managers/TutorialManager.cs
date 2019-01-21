@@ -612,12 +612,21 @@ namespace Loom.ZombieBattleground
                                            bool resizable,
                                            float appearDelay)
         {
-            InternalTools.DoActionDelayed(() =>
+            if (appearDelay > 0)
+            {
+                InternalTools.DoActionDelayed(() =>
+                {
+                    TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerId, position, resizable);
+
+                    _tutorialDescriptionTooltipItems.Add(tooltipItem);
+                }, appearDelay);
+            }
+            else
             {
                 TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerId, position, resizable);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
-            }, appearDelay);
+            }
         }
 
         public void ActivateDescriptionTooltip(int id)

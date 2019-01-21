@@ -975,28 +975,19 @@ namespace Loom.ZombieBattleground
 
                 boardCard.Transform.DOScale(Vector3.one * .3f, animationDuration);
 
-                if(_tutorialManager.IsTutorial)
+                InternalTools.DoActionDelayed(() =>
                 {
-                    _timerManager.AddTimer(
-                        x =>
-                        {
-                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCreatedNewCardAndMovedToHand);
-                        },
-                        null,
-                        animationDuration - Time.deltaTime);
-                }
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCreatedNewCardAndMovedToHand);
+                }, animationDuration - Time.deltaTime);
 
-                _timerManager.AddTimer(
-                    x =>
-                    {
-                        _battlegroundController.PlayerHandCards.Add(boardCard);
+                InternalTools.DoActionDelayed(() =>
+                {
+                    _battlegroundController.PlayerHandCards.Add(boardCard);
 
-                        player.CardsInHand.Add(workingCard);
+                    player.CardsInHand.Add(workingCard);
 
-                        _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-                    },
-                    null,
-                    animationDuration);
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+                }, animationDuration);
             }
             else
             {

@@ -327,17 +327,10 @@ namespace Loom.ZombieBattleground
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-
-                await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
-                _battlegroundController.StopTurn();
             }
-            else
-            {
-                await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
-                _battlegroundController.StopTurn();
-            }
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            _battlegroundController.StopTurn();
         }
 
         private bool CheckTutorialAIStepPaused()
@@ -348,7 +341,7 @@ namespace Loom.ZombieBattleground
             {
                 return false;
             }
-            AIPaused =  _tutorialManager.CurrentTutorialStep.ToGameplayStep().AIShouldBePaused;
+            AIPaused = _tutorialManager.CurrentTutorialStep.ToGameplayStep().AIShouldBePaused;
             return AIPaused;
         }
 
@@ -397,7 +390,7 @@ namespace Loom.ZombieBattleground
 
                         await LetsThink(cancellationToken);
                         await LetsThink(cancellationToken);
-                    }                  
+                    }
                 }
 
                 return;

@@ -326,7 +326,7 @@ namespace Loom.ZombieBattleground
                 _hoveringObject = obj;
                 _timeHovering = 0;
             }
-            else if(!_isHovering)
+            else if (!_isHovering)
             {
                 _timeHovering += Time.deltaTime;
                 if (_timeHovering >= Constants.MaxTimeForHovering)
@@ -335,15 +335,15 @@ namespace Loom.ZombieBattleground
                     {
                         UnitPointerEnteredEvent?.Invoke(unit);
                     }
-                    else if(player != null)
+                    else if (player != null)
                     {
                         PlayerPointerEnteredEvent?.Invoke(player);
                     }
-                    else if(boardCard != null)
+                    else if (boardCard != null)
                     {
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
                     }
-                    else if(isManaBar)
+                    else if (isManaBar)
                     {
                         ManaBarPointerEntered?.Invoke(obj);
                     }
