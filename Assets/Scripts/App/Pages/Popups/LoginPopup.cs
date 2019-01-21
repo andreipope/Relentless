@@ -555,7 +555,7 @@ namespace Loom.ZombieBattleground
                 _lastErrorMessage = e.Message;
                 if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
                 {
-                    _lastErrorMessage = "\n Put correct Username or Password. \n";
+                    _lastErrorMessage = "\n The Username and/or Password are not correct. \n";
                 }
                 SetUIState(LoginState.ValidationFailed);
 
