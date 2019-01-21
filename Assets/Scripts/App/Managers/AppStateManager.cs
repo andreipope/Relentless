@@ -76,11 +76,11 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
-                    _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
+                    _uiManager.SetPage<ShopPage>();
+                    break;
                 case Enumerators.AppState.PACK_OPENER:
-                    _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
+                    _uiManager.SetPage<PackOpenerPage>();
+                    break;
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
