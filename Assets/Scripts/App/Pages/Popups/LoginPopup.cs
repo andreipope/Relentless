@@ -375,8 +375,13 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     Debug.Log(e.ToString());
+                    string errorMsg = string.Empty;
+                    if (e.Message.Contains("Forbidden"))
+                    {
+                        errorMsg = "Invalid OTP. \n Please Enter correct OTP.";
+                    }
                     _lastErrorMessage = e.Message;
-                    SetUIState(LoginState.ValidationFailed);
+                    SetUIState(LoginState.ValidationFailed, errorMsg);
                 }
             }
         }
@@ -444,8 +449,16 @@ namespace Loom.ZombieBattleground
                 Helpers.ExceptionReporter.LogException(e);
 
                 Debug.Log(e.ToString());
+                string errorMsg = string.Empty;
+                if (e.Message.Contains("BadRequest"))
+                {
+                    errorMsg = "This email already exists, \n " +
+                               "Please try a different email to register or \n " +
+                               "login to your existing account.";
+                }
+
                 _lastErrorMessage = e.Message;
-                SetUIState(LoginState.ValidationFailed);
+                SetUIState(LoginState.ValidationFailed, errorMsg);
 
                 _registerButton.enabled = true;
             }
@@ -589,7 +602,7 @@ namespace Loom.ZombieBattleground
             Hide();
         }
 
-        private void SetUIState(LoginState state)
+        private void SetUIState(LoginState state, string errorMsg = "")
         {
             if (Constants.AlwaysGuestLogin)
             {
@@ -639,7 +652,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.Show("The process could not be completed with error:"+_lastErrorMessage+"\nPlease try again.");
+                    string msgToShow = "The process could not be completed with error:" + _lastErrorMessage +
+                                       "\nPlease try again.";
+                    if (!string.IsNullOrEmpty(errorMsg))
+                        msgToShow = errorMsg;
+                    popup.Show(msgToShow);
                     _uiManager.GetPopup<WarningPopup>().ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
                     break;
                 case LoginState.RemoteVersionMismatch:
