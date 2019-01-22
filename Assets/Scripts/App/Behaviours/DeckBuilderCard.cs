@@ -34,6 +34,11 @@ namespace Loom.ZombieBattleground
 
         private void DoubleClickAction()
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial &&
+                !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
+                GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked)
+                return;
+
             if (!IsHordeItem)
             {
                 Page?.AddCardToDeck(this, Card);

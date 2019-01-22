@@ -1357,14 +1357,14 @@
               "AppearDelay": 2.5
             }
           ],
-          "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand",
+          "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand"
         },
         {
           "MatchShouldBePaused": true,
           "TutorialDescriptionTooltipsToActivate": [
             2
           ],
-          "ActionToEndThisStep": "TapOnScreen",
+          "ActionToEndThisStep": "TapOnScreen"
         },
         {
           "ConnectedTurnIndex": 2,
@@ -1391,7 +1391,7 @@
           "SelectableTargets": [
             "OPPONENT_CARD"
           ],
-          "ActionToEndThisStep": "BattleframeAttacked",
+          "ActionToEndThisStep": "BattleframeAttacked"
         },
         {
           "ConnectedTurnIndex": 2,
@@ -1573,7 +1573,7 @@
             {
               "Name": "Crumbz",
               "TutorialObjectId": 52
-            },
+            }
           ],
           "CardsInDeck": [
             {
@@ -1618,7 +1618,7 @@
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
             "EnemyOverlordCardPlayed"
-          ],
+          ]
         },
         {
           "TurnIndex": 2,
@@ -1630,7 +1630,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD",
+              "TargetType": "OPPONENT_CARD"
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
@@ -1646,7 +1646,7 @@
                 "TutorialTooltipOwner": "PlayerOverlord",
                 "Description": "Save it for Cherno-bill."
               }
-            },
+            }
           ]
         },
         {
@@ -1662,17 +1662,17 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER",
+              "TargetType": "PLAYER"
             },
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER",
+              "TargetType": "PLAYER"
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
             "BattleframeAttacked"
-          ],
+          ]
         },
         {
           "TurnIndex": 4,
@@ -1687,11 +1687,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD",
+              "TargetType": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 10,
-              "TargetType": "OPPONENT_CARD",
+              "TargetType": "OPPONENT_CARD"
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
@@ -1709,7 +1709,7 @@
                 "TutorialTooltipOwner": "PlayerOverlord",
                 "Description": "Time for goo to overflow."
               }
-            },
+            }
           ]
         },
         {
@@ -1748,9 +1748,9 @@
               "TargetTutorialObjectId": 1
             },
             {
-              "TutorialObjectId": 56,
+              "TutorialObjectId": 56
             }
-          ],
+          ]
         },
         {
           "TurnIndex": 6,
@@ -1770,7 +1770,7 @@
               "TutorialObjectId": 20,
               "TargetType": "OPPONENT"
             }
-          ],
+          ]
         }
       ],
       "ActionActivityHandlers": [
@@ -2004,7 +2004,8 @@
               "TutorialHandPointerType": "Single",
               "AboveUI": true
             }
-          ]
+          ],
+          "CardsInteractingLocked": true
         },
         {
           "OpenScreen": "HordeSelectionPage",
@@ -2076,7 +2077,7 @@
           "Description": "It's time to BATTLE!",
           "Position": {
             "X": 8,
-            "Y": -4.5,
+            "Y": -0.5,
             "Z": 0.0
           }
         }

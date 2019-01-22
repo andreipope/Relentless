@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
             BlockedButtons = new List<string>();
         }
 
-        public void CheckNextTutorial()
+        public bool CheckNextTutorial()
         {
             SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
@@ -124,7 +124,11 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
                 StartTutorial();
+
+                return true;
             }
+
+            return false;
         }
 
         public void Update()
@@ -143,7 +147,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsButtonBlockedInTutorial(string name)
         {
-            if (!_gameplayManager.IsTutorial)
+            if (!IsTutorial)
                 return false;
             return BlockedButtons.Contains(name);
         }

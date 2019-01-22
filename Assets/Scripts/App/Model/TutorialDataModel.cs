@@ -315,6 +315,7 @@ namespace Loom.ZombieBattleground
         public string OpenScreen;
         public List<string> BlockedButtons;
         public List<int> ConnectedActivities;
+        public bool CardsInteractingLocked;
 
         public TutorialMenuStep()
         {

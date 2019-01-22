@@ -672,7 +672,7 @@ namespace Loom.ZombieBattleground
                 Canvas.ForceUpdateCanvases();
             }
 
-            if(_currentDeck.GetNumCards() >= Constants.DeckMaxSize)
+            if(_currentDeck.GetNumCards() >= Constants.DeckMaxSize/2)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
             }      
@@ -1019,7 +1019,9 @@ namespace Loom.ZombieBattleground
 
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
-            if (_isDragging)
+            if (_isDragging || (GameClient.Get<ITutorialManager>().IsTutorial &&
+                !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
+                GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
                 return;
             
 

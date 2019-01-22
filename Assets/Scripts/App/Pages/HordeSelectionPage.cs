@@ -290,7 +290,7 @@ namespace Loom.ZombieBattleground
         private void BattleButtonUpdate()
         {
             bool canStartBattle = true;
-            if (!Constants.DevModeEnabled)
+            if (!Constants.DevModeEnabled && !GameClient.Get<ITutorialManager>().IsTutorial)
             {
                 canStartBattle = _hordeDecks.Count != 0 &&
                     _selectedDeck.Id != -1 &&
