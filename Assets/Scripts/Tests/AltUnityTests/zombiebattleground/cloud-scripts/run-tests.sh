@@ -1,7 +1,7 @@
 #!/bin/bash
 export TESTPLATFORM=android
 # TEST=${TEST:="test-runner.py"} #Name of the test file
-TEST=${TEST:="tests/tutorial_tests.py"} #Name of the test file
+TEST=${TEST:="tests/gameplay_tests_in_progress.py"} #Name of the test file
 
 ##### Cloud testrun dependencies start
 echo "Extracting tests.zip..."
@@ -14,6 +14,7 @@ sudo python get-pip.py
 echo "Installing Appium Python Client 0.24 and xmlrunner 1.7.7"
 chmod 0755 requirements.txt
 sudo pip install -r requirements.txt
+sudo pip install -e altunitybindings
 
 ## AltUnityTester - Forward abd port from device
 echo "Forwarding AltUnityTester port 13000 from device to localhost..."

@@ -45,6 +45,7 @@ class CZBTests(unittest.TestCase):
         self.desired_caps['platformName'] = 'Android'
         self.desired_caps['deviceName'] = 'device'
         self.desired_caps['app'] = PATH('../application.apk')
+        self.desired_caps['androidInstallTimeout'] = 300000
 
     def setup_ios(self):
         try:

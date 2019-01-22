@@ -60,11 +60,12 @@ TypeCache.asset.meta
 
 # AltUnityTester
 Assets/Scripts/Tests/AltUnityTests/screenshots
-Assets/Scripts/Tests/AltUnityTests/test-package*.zip
+Assets/Scripts/Tests/AltUnityTests/cloud-scripts/test-package*.zip
 Assets/Scripts/Tests/AltUnityTests/*.apk
 Assets/Scripts/Tests/AltUnityTests/*.ipa
 Assets/Scripts/Tests/AltUnityTests/test-reports/
 Assets/Scripts/Tests/AltUnityTests/run-tests.sh
-Assets/Scripts/Tests/AltUnityTests/*.pyc
-Assets/Scripts/Tests/AltUnityTests/*.xml
+*.pyc
+Assets/Scripts/Tests/AltUnityTests/*.zip
+Assets/Scripts/Tests/AltUnityTests/test-reports
 Assets/Scripts/Tests/AltUnityTests/.vscode
