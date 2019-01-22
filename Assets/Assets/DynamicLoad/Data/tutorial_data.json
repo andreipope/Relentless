@@ -749,8 +749,7 @@
         }
       ],
       "PlayerOrderScreenShouldAppear": false
-    },
-    "Ignore": true
+    }
   },
   {
     "Id": 1,
@@ -1283,8 +1282,7 @@
         }
       ],
       "PlayerOrderScreenShouldAppear": false
-    },
-    "Ignore": true
+    }
   },
   {
     "Id": 2,
@@ -1778,8 +1776,7 @@
       "ActionActivityHandlers": [
       ],
       "PlayerOrderScreenShouldAppear": false
-    },
-    "Ignore": true
+    }
   },
   {
     "Id": 3,
