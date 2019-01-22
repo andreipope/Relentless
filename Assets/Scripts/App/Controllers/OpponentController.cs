@@ -256,7 +256,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.transform.position = Vector3.zero;
                         boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
                         boardUnitViewElement.SetObjectInfo(workingCard);
-                        boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
+                        boardUnitViewElement.Model.TutorialObjectId = workingCard.TutorialObjectId;
 
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
