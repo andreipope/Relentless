@@ -810,5 +810,10 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"{{InstanceId: {InstanceId}, IsLocalPlayer: {IsLocalPlayer}}}";
+        }
     }
 }

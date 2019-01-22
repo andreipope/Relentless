@@ -56,10 +56,9 @@ namespace Loom.ZombieBattleground.Test
         }
 
         public Task CardAbilityUsed(
-            WorkingCard card,
+            InstanceId card,
             Enumerators.AbilityType abilityType,
             Enumerators.CardKind cardKind,
-            Enumerators.AffectObjectType affectObjectType,
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
             IEnumerable<InstanceId> cards = null)
         {

@@ -24,11 +24,7 @@ namespace Loom.ZombieBattleground
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            Rect cheatsRect = new Rect(20, 20, 200, 120);
-            GUI.Label(cheatsRect, "", Styles.OpaqueWindow);
-            GUI.Label(cheatsRect, "", Styles.OpaqueWindow);
-            GUI.Label(cheatsRect, "", Styles.OpaqueWindow);
-            GUILayout.BeginArea(cheatsRect, "PvP Cheats", Styles.OpaqueWindow);
+            GUILayout.BeginArea(new Rect(20, 20, 200, 120), "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
 
@@ -148,7 +144,7 @@ namespace Loom.ZombieBattleground
                 if (!_visible)
                     return;
 
-                const float customDeckScreenHeightRatio = 2f / 3f;
+                const float customDeckScreenHeightRatio = 1f / 3f;
                 Deck customDeck = _cheatUI._pvpManager.DebugCheats.CustomDeck;
                 GUILayout.BeginHorizontal(GUILayout.Width(Screen.width / UIScaleFactor));
                 {

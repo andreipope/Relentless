@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction Mulligan(IEnumerable<Data.InstanceId> cards)
+        public PlayerAction Mulligan(IEnumerable<InstanceId> cards)
         {
             return new PlayerAction
             {
@@ -71,14 +71,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction RankBuff(WorkingCard card, IEnumerable<Data.InstanceId> units)
+        public PlayerAction RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
         {
             PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
             {
                 Card = card.ToProtobuf()
             };
 
-            foreach (Data.InstanceId unit in units)
+            foreach (InstanceId unit in units)
             {
                 Protobuf.Unit protoUnit = new Protobuf.Unit
                 {
@@ -99,12 +99,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         public PlayerAction CardAbilityUsed(
-            WorkingCard card,
+            InstanceId card,
             Enumerators.AbilityType abilityType,
             Enumerators.CardKind cardKind,
-            Enumerators.AffectObjectType affectObjectType,
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
-            IEnumerable<Data.InstanceId> cards = null
+            IEnumerable<InstanceId> cards = null
         )
         {
             PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed
@@ -142,7 +141,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     {
                         targetUnit = new Protobuf.Unit
                         {
-                            InstanceId = new Data.InstanceId(player.InstanceId.Id).ToProtobuf(),
+                            InstanceId = new InstanceId(player.InstanceId.Id).ToProtobuf(),
                             AffectObjectType = AffectObjectType.Types.Enum.Player,
                             Parameter = new Parameter
                             {
@@ -171,7 +170,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             if (cards != null)
             {
-                foreach (Data.InstanceId otherCard in cards)
+                foreach (InstanceId otherCard in cards)
                 {
                     targetUnit = new Protobuf.Unit
                     {
@@ -192,7 +191,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, Data.InstanceId targetInstanceId)
+        public PlayerAction OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId target)
         {
             return new PlayerAction
             {
@@ -203,7 +202,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     SkillId = skillId.Id,
                     Target = new Protobuf.Unit
                     {
-                        InstanceId = targetInstanceId.ToProtobuf(),
+                        InstanceId = target.ToProtobuf(),
                         AffectObjectType = (AffectObjectType.Types.Enum) affectObjectType,
                         Parameter = new Parameter()
                     }
@@ -211,7 +210,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction CardAttack(Data.InstanceId attacker, Enumerators.AffectObjectType type, Data.InstanceId target)
+        public PlayerAction CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
         {
             return new PlayerAction
             {
@@ -223,14 +222,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Target = new Protobuf.Unit
                     {
                         InstanceId = target.ToProtobuf(),
-                        AffectObjectType = (Protobuf.AffectObjectType.Types.Enum) type,
+                        AffectObjectType = (AffectObjectType.Types.Enum) type,
                         Parameter = new Parameter()
                     }
                 }
             };
         }
 
-        public PlayerAction CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        public PlayerAction CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
         {
             return new PlayerAction
             {

@@ -14,10 +14,9 @@ namespace Loom.ZombieBattleground.Test
         Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units);
 
         Task CardAbilityUsed(
-            WorkingCard card,
+            InstanceId card,
             Enumerators.AbilityType abilityType,
             Enumerators.CardKind cardKind,
-            Enumerators.AffectObjectType affectObjectType,
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
             IEnumerable<InstanceId> cards = null
         );

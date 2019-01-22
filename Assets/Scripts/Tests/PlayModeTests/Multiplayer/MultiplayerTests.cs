@@ -82,19 +82,20 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Zhatterer()
+        public IEnumerator Cynderman()
         {
             return AsyncTest(async () =>
             {
+                PvPTestHelper pvpTestHelper = new PvPTestHelper();
+
                 Deck opponentDeck = new Deck(
                     0,
                     0,
                     "test deck",
                     new List<DeckCardData>
                     {
-                        new DeckCardData("Znowman", 1),
-                        new DeckCardData("Zhatterer", 1),
-                        new DeckCardData("Slab", 28)
+                        new DeckCardData("Cynderman", 2),
+                        new DeckCardData("Slab", 2)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -106,14 +107,15 @@ namespace Loom.ZombieBattleground.Test
                     "test deck2",
                     new List<DeckCardData>
                     {
-                        new DeckCardData("Znowman", 1),
-                        new DeckCardData("Zhatterer", 1),
-                        new DeckCardData("Slab", 28)
+                        new DeckCardData("Cynderman", 2),
+                        new DeckCardData("Slab", 2)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
                 );
 
+                InstanceId slabId = new InstanceId(4);
+                InstanceId cyndermanId = new InstanceId(6);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        opponent => {},
@@ -125,8 +127,13 @@ namespace Loom.ZombieBattleground.Test
                        opponent => {},
                        player => {},
                        opponent => {},
-                       // znowman
-                       player => player.CardPlay(new InstanceId(32), 0),
+                       player => {},
+                       opponent => opponent.CardPlay(slabId, 0),
+                       player =>
+                       {
+                           //player.CardAbilityUsed();
+                           player.CardPlay(new InstanceId(32), 0);
+                       },
                        // slab
                        opponent => opponent.CardPlay(new InstanceId(5), 0),
                        // znowman attacks slab

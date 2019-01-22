@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
             GotActionUseCardAbility(new UseCardAbilityModel
             {
                 CardKind = (Enumerators.CardKind) actionUseCardAbility.CardKind,
-                Card = actionUseCardAbility.Card.FromProtobuf(_gameplayManager.OpponentPlayer),
+                Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
                 AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType
             });
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card.InstanceId);
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card);
 
             if (boardObjectCaller == null)
             {
@@ -362,10 +362,23 @@ namespace Loom.ZombieBattleground
                 });
             }
 
+            WorkingCard workingCard;
+            switch (boardObjectCaller)
+            {
+                case BoardSpell boardSpell:
+                    workingCard = boardSpell.Card;
+                    break;
+                case BoardUnitModel boardUnitModel:
+                    workingCard = boardUnitModel.Card;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(boardObjectCaller));
+            }
+
             _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
                                                       boardObjectCaller,
                                                       parametrizedAbilityObjects,
-                                                      model.Card,
+                                                      workingCard,
                                                       _gameplayManager.OpponentPlayer);
         }
 
@@ -475,7 +488,7 @@ namespace Loom.ZombieBattleground
 
     public class UseCardAbilityModel
     {
-        public WorkingCard Card;
+        public InstanceId Card;
         public Enumerators.CardKind CardKind;
         public Enumerators.AbilityType AbilityType;
         public List<Unit> Targets;

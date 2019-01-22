@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                 GUILayout.Space(5f);
 
-                if (GUILayout.Button("x", GUILayout.Width(30)))
+                if (GUILayout.Button("X", GUILayout.Width(30)))
                 {
                     customDeck.Cards.Remove(deckCard);
                     GUIUtility.ExitGUI();

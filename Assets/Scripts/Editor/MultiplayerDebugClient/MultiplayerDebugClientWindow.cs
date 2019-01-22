@@ -56,6 +56,16 @@ namespace Loom.ZombieBattleground.Editor.Tools
             titleContent = new GUIContent("MP Debug Client");
         }
 
+        private void OnEnable()
+        {
+            EditorApplication.quitting += () =>
+            {
+                _initialGameState.OnBeforeSerialize();
+                _currentGameState.OnBeforeSerialize();
+                _debugClientWrapper.OnBeforeSerialize();
+            };
+        }
+
         private async void Update()
         {
             await _updateSemaphore.WaitAsync();
