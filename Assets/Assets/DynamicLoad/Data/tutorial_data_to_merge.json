@@ -1107,8 +1107,12 @@
                 "Y": 7.0,
                 "Z": 0.0
               },
+<<<<<<< HEAD
               "TutorialHandPointerType": "Animated",
               "TutorialHandPointerOwner": "PlayerOverlordAbility"
+=======
+              "TutorialHandPointerType": "Animated"
+>>>>>>> e9710290da7891b77d825c859e22683fb3c9925a
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -1285,6 +1289,7 @@
     }
   },
   {
+<<<<<<< HEAD
     "Id": 2,
     "Name": "Overflow",
     "TutorialContent": {
@@ -1453,7 +1458,7 @@
           "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted"
         },
         {
-
+          
           "ConnectedTurnIndex": 5,
           "AIShouldBePaused": true,
           "ActionToEndThisStep": "DeathAbilityCompleted"
@@ -1617,7 +1622,7 @@
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
-            "EnemyOverlordCardPlayed"
+            "EnemyOverlordCardPlayed"     
           ],
         },
         {
@@ -1635,7 +1640,7 @@
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "PlayerOverlordCardPlayed",
-            "BattleframeAttacked"
+            "BattleframeAttacked"     
           ],
           "ActionActivityHandlers": [
             {
@@ -1776,10 +1781,8 @@
       "ActionActivityHandlers": [
       ],
       "PlayerOrderScreenShouldAppear": false
-    }
-  },
-  {
-    "Id": 3,
+=======
+    "Id": 6,
     "Name": "Deck Building",
     "TutorialContent": {
       "HasBlockedInteractivityInGameScreens": true,
@@ -2094,6 +2097,7 @@
           "HasSpecificConnection": true
         }
       ]
+>>>>>>> e9710290da7891b77d825c859e22683fb3c9925a
     }
   }
 ]

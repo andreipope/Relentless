@@ -78,6 +78,10 @@ namespace Loom.ZombieBattleground
 
         public List<HandPointerInfo> HandPointers;
 
+        public string SoundToPlay;
+
+        public float SoundToPlayBeginDelay;
+
         public TutorialStep()
         {
             TutorialDescriptionTooltipsToActivate = new List<int>();
@@ -99,8 +103,6 @@ namespace Loom.ZombieBattleground
         public bool MatchShouldBePaused;
         public bool AIShouldBePaused;
         public bool PlayerOverlordAbilityShouldBeUnlocked;
-        public string SoundToPlay;
-        public float SoundToPlayBeginDelay;
         public bool CanEndTurn;
         public bool UnitsCanAttack;
         public bool CanInteractWithGameplay;
@@ -198,6 +200,8 @@ namespace Loom.ZombieBattleground
 
     public class ActionActivityHandler
     {
+        public int Id;
+
         public Enumerators.TutorialActivityAction TutorialActivityAction;
 
         public Enumerators.TutorialActivityActionHandler TutorialActivityActionHandler;
@@ -206,6 +210,8 @@ namespace Loom.ZombieBattleground
         public TutorialActivityActionHandlerData TutorialActivityActionHandlerData;
 
         public Enumerators.TutorialActivityAction ConnectedTutorialActivityAction;
+
+        public bool HasSpecificConnection;
     }
 
     public abstract class TutorialActivityActionHandlerData { }
@@ -306,11 +312,14 @@ namespace Loom.ZombieBattleground
 
     public class TutorialMenuStep : TutorialStep
     {
+        public string OpenScreen;
         public List<string> BlockedButtons;
+        public List<int> ConnectedActivities;
 
         public TutorialMenuStep()
         {
             BlockedButtons = new List<string>();
+            ConnectedActivities = new List<int>();
         }
     }
 }

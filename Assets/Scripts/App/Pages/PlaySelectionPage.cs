@@ -86,6 +86,12 @@ namespace Loom.ZombieBattleground
 
         private void TutorialButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonTutorial.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
@@ -97,6 +103,12 @@ namespace Loom.ZombieBattleground
 
         private void SoloModeButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSoloMode.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.LOCAL;
             _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
@@ -104,6 +116,12 @@ namespace Loom.ZombieBattleground
 
         private void PvPModeButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonPvPMode.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             Version pvpVersion = Version.Parse(_dataManager.CachedVersions.PvpVersion);
             if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(pvpVersion))
             {
@@ -146,6 +164,12 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_backButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }
