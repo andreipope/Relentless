@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string BattlegroundTouchZone = "BattlegroundTouchZona";
 
+        internal const string PlayerManaBar = "PlayerManaBar";
+
         internal const string ContentFolderName = "SpreadsheetsData/";
 
         internal const string CardSoundPlay = "P";
@@ -87,6 +89,8 @@ namespace Loom.ZombieBattleground.Common
         internal const int DefaultCardsInHandAtStartGame = 3;
 
         internal const float DelayBetweenGameplayActions = 0.1f;
+
+        internal const float MaxTimeForHovering = 3f;
 
         internal const int DelayBetweenAiActions = 1100;
 

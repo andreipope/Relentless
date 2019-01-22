@@ -25,6 +25,10 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _textProgress;
 
+        private TextMeshProUGUI _textInfo;
+
+        private TextMeshProUGUI _textTitle;
+
         private Image _imageProgressBar;
 
         public GameObject Self { get; private set; }
@@ -55,6 +59,7 @@ namespace Loom.ZombieBattleground
             UnityEngine.Object.Destroy(Self);
             Self = null;
             PopupHiding?.Invoke();
+            PopupHiding = null;
         }
 
         public void SetMainPriority()
@@ -74,12 +79,18 @@ namespace Loom.ZombieBattleground
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _textProgress = Self.transform.Find("Text_Progress").GetComponent<TextMeshProUGUI>();
+            _textInfo = Self.transform.Find("Text_Info").GetComponent<TextMeshProUGUI>();
+            _textTitle = Self.transform.Find("Text_Title").GetComponent<TextMeshProUGUI>();
 
             _imageProgressBar = Self.transform.Find("Image_FillingProgressBar").GetComponent<Image>();
 
             int id = _tutorialManager.CurrentTutorial.Id;
 
             SetTextProgress(id);
+
+            _textInfo.text = string.Format("FINISH ALL {0} TUTORIALS TO STAT PVP", _tutorialManager.TutorialsCount.ToString());
+
+            _textTitle.text = _tutorialManager.CurrentTutorial.Name;
 
             float step = 1f / _tutorialManager.TutorialsCount;
             _startValueProgressBar = step * id;

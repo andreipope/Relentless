@@ -640,7 +640,8 @@ namespace Loom.ZombieBattleground.Common
         {
             DoNothing,
             Normal,
-            DontAttack
+            DontAttack,
+            Tutorial
         }
 
         public enum StartingTurn
@@ -763,6 +764,7 @@ namespace Loom.ZombieBattleground.Common
 
             PlayerOverlordTriedToAttackTargetWhenItsLimited,
             EnemyOverlordDied,
+            EnemyOverlordCardPlayedStarted,
             EnemyOverlordCardPlayed,
             EnemyOverlordSelected,
 
@@ -775,6 +777,11 @@ namespace Loom.ZombieBattleground.Common
             PlayerOverlordAbilityUsed,
             PlayerOverlordCardPlayed,
             PlayerOverlordSelected,
+            PlayerManaBarSelected,
+            PlayerCardInHandSelected,
+            DeathAbilityCompleted,
+
+            PlayerCreatedNewCardAndMovedToHand,
 
             EndMatchPopupAppear,
 

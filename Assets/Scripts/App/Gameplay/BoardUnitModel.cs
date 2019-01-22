@@ -644,6 +644,7 @@ namespace Loom.ZombieBattleground
                                      info.TargetType == Enumerators.SkillTargetType.OPPONENT))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
                                     IsPlayable = true;
                                     AttackedThisTurn = false;
                                     IsAttacking = false;
@@ -688,10 +689,13 @@ namespace Loom.ZombieBattleground
 
                             if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
                             {
-                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
-                                     info.TargetTutorialObjectId == targetCardModel.TutorialObjectId))
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
+                                     info.TutorialObjectId == TutorialObjectId &&
+                                     (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
+                                         info.TargetTutorialObjectId == 0 && info.TargetType != Enumerators.SkillTargetType.OPPONENT)))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
                                     IsPlayable = true;
                                     AttackedThisTurn = false;
                                     IsAttacking = false;

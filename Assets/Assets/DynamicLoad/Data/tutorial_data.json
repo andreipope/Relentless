@@ -773,6 +773,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerCardInHand",
+          "TutorialTooltipOwnerId": 1,
           "Description": "This is how much\n goo your card costs.",
           "Position": {
             "X": 9.8,
@@ -798,7 +799,6 @@
         {
           "Id": 4,
           "TutorialTooltipAlign": "BottomMiddle",
-          "TutorialTooltipOwner": "PlayerGooBottles",
           "Description": "You’ve earned another goo\n bottle, and goo you spent\n before is replenished.",
           "Position": {
             "X": -6.77,
@@ -880,7 +880,7 @@
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
         },
         {
           "ConnectedTurnIndex": 1,
@@ -912,6 +912,8 @@
           "ConnectedTurnIndex": 2,
           "UnitsCanAttack": true,
           "CanInteractWithGameplay": true,
+
+
           "HandPointers": [
             {
               "StartPosition": {
@@ -1106,6 +1108,7 @@
                 "Z": 0.0
               },
               "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerOverlordAbility"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -1203,7 +1206,7 @@
           "TurnIndex": 2,
           "PlayCardsSequence": [
             {
-              "TutorialObjectId": 2
+              "TutorialObjectId": 1
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
@@ -1277,6 +1280,500 @@
             }
           ]
         },
+      ],
+      "PlayerOrderScreenShouldAppear": false
+    }
+  },
+  {
+    "Id": 2,
+    "Name": "Overflow",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "TutorialTooltipOwnerId": 52,
+          "Description": "Death effect\n happens when the\n zombie is\n destroyed.",
+          "Position": {
+            "X": 3.4,
+            "Y": 0.3,
+            "Z": 0.0
+          }
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "CenterLeft",
+          "Description": "Gives you the ability\n to Overflow your goo.",
+          "Position": {
+            "X": 4.3,
+            "Y": 0.3,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Goo-Carriers give you extra goo to spend. This effect is called Overflow.",
+            "DescriptionTooltipCloseText": "LET’S BEGIN"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ConnectedTurnIndex": 1,
+          "LaunchGameplayManually": true,
+          "LaunchAIBrain": true,
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
+        },
+        {
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
+        },
+        {
+          "TutorialObjectIdStepOwner": 52,
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "CanInteractWithGameplay": true,
+          "ConnectedTurnIndex": 2,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 2.5
+            }
+          ],
+          "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand",
+        },
+        {
+          "MatchShouldBePaused": true,
+          "TutorialDescriptionTooltipsToActivate": [
+            2
+          ],
+          "ActionToEndThisStep": "TapOnScreen",
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "TutorialObjectIdStepOwner": 20,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": -1.32,
+                "Y": 3.04,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 20,
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerBattleframe"
+            }
+          ],
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked",
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "CanInteractWithGameplay": true,
+          "CanEndTurn": true,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "LaunchAIBrain": true,
+          "ConnectedTurnIndex": 3,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Time for goo to overflow."
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "CanEndTurn": true,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
+          ],
+          "LaunchAIBrain": true,
+          "ConnectedTurnIndex": 5,
+          //"ActionToEndThisStep": "EndTurn"
+          "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted"
+        },
+        {
+          
+          "ConnectedTurnIndex": 5,
+          "AIShouldBePaused": true,
+          "ActionToEndThisStep": "DeathAbilityCompleted"
+        },
+        {
+          "ConnectedTurnIndex": 5,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 6,
+          "CanInteractWithGameplay": true,
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": -1.55,
+                "Y": 3.0,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 1.0
+            }
+          ],
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Let’s finish this."
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 6,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "SelectableTargets": [
+            "OPPONENT"
+          ],
+          "ActionToEndThisStep": "EnemyOverlordDied"
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Good job Zombie Slayer!",
+            "DescriptionTooltipCloseText": "END"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+        }
+      ],
+      "SpecificBattlegroundInfo": {
+        "RankSystemHasEnabled": true,
+        "AISpecificOrderEnabled": true,
+        "PlayerInfo": {
+          "OverlordId": 4,
+          "Defense": 10,
+          "MaximumDefense": 20,
+          "CurrentGoo": 8,
+          "MaximumGoo": 8,
+          "CardsInHand": [
+            {
+              "Name": "Cherno-bill",
+              "TutorialObjectId": 1
+            }
+          ],
+          "CardsInDeck": [
+            {
+              "Name": "Germ",
+              "TutorialObjectId": 10
+            },
+            {
+              "Name": "Germ",
+              "TutorialObjectId": 11
+            },
+            {
+              "Name": "Nail Bomb",
+              "TutorialObjectId": 12
+            }
+          ],
+          "CardsOnBoard": [
+            {
+              "Name": "GooZilla",
+              "IsManuallyPlayable": true,
+              "TutorialObjectId": 20,
+              "BuffedHealth": 4,
+              "BuffedDamage": 4
+            }
+          ],
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "OpponentInfo": {
+          "OverlordId": 0,
+          "Defense": 10,
+          "MaximumDefense": 20,
+          "CurrentGoo": 8,
+          "MaximumGoo": 8,
+          "CardsInHand": [
+            {
+              "Name": "Crumbz",
+              "TutorialObjectId": 51
+            },
+            {
+              "Name": "Crumbz",
+              "TutorialObjectId": 52
+            },
+          ],
+          "CardsInDeck": [
+            {
+              "Name": "Golem",
+              "TutorialObjectId": 53
+            },
+            {
+              "Name": "Hardy",
+              "TutorialObjectId": 54
+            },
+            {
+              "Name": "Earthshaker",
+              "TutorialObjectId": 55
+            },
+            {
+              "Name": "Spiker",
+              "TutorialObjectId": 56
+            },
+            {
+              "Name": "Spiker",
+              "TutorialObjectId": 57
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "GameplayBeginManually": true
+      },
+      "SpecificTurnInfos": [
+        {
+          "TurnIndex": 1,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 51
+            },
+            {
+              "TutorialObjectId": 52
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed"     
+          ],
+        },
+        {
+          "TurnIndex": 2,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 10
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 20,
+              "TargetType": "OPPONENT_CARD",
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked"     
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Save it for Cherno-bill."
+              }
+            },
+          ]
+        },
+        {
+          "TurnIndex": 3,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 53
+            },
+            {
+              "TutorialObjectId": 54
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "PLAYER",
+            },
+            {
+              "TutorialObjectId": 52,
+              "TargetType": "PLAYER",
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "BattleframeAttacked"
+          ],
+        },
+        {
+          "TurnIndex": 4,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": -1
+            },
+            {
+              "TutorialObjectId": 1
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 20,
+              "TargetType": "OPPONENT_CARD",
+            },
+            {
+              "TutorialObjectId": 10,
+              "TargetType": "OPPONENT_CARD",
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked",
+            "BattleframeAttacked"
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Time for goo to overflow."
+              }
+            },
+          ]
+        },
+        {
+          "TurnIndex": 5,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed"
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 52,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 53,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 54,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            }
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 55,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 56,
+            }
+          ],
+        },
+        {
+          "TurnIndex": 6,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked"
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 12,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 55
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 20,
+              "TargetType": "OPPONENT",
+            }
+          ],
+        }
+      ],
+      "ActionActivityHandlers": [
       ],
       "PlayerOrderScreenShouldAppear": false
     }

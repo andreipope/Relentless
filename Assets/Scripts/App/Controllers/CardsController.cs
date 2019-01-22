@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
         public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
 
+        private const int DefaultIndexCustomCardForTutorial = -1;
+
         private IGameplayManager _gameplayManager;
 
         private ITimerManager _timerManager;
@@ -781,7 +783,7 @@ namespace Loom.ZombieBattleground
 
             _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
 
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordCardPlayedStarted);
 
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
@@ -956,6 +958,10 @@ namespace Loom.ZombieBattleground
 
             Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
             WorkingCard workingCard = new WorkingCard(card, card, player);
+            if(_tutorialManager.IsTutorial)
+            {
+                workingCard.TutorialObjectId = DefaultIndexCustomCardForTutorial;
+            }
 
             if (CheckIsMoreThanMaxCards(workingCard, player))
                 return workingCard;
@@ -969,17 +975,19 @@ namespace Loom.ZombieBattleground
 
                 boardCard.Transform.DOScale(Vector3.one * .3f, animationDuration);
 
-                _timerManager.AddTimer(
-                    x =>
-                    {
-                        _battlegroundController.PlayerHandCards.Add(boardCard);
+                InternalTools.DoActionDelayed(() =>
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCreatedNewCardAndMovedToHand);
+                }, animationDuration - Time.deltaTime);
 
-                        player.CardsInHand.Add(workingCard);
+                InternalTools.DoActionDelayed(() =>
+                {
+                    _battlegroundController.PlayerHandCards.Add(boardCard);
 
-                        _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-                    },
-                    null,
-                    animationDuration);
+                    player.CardsInHand.Add(workingCard);
+
+                    _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
+                }, animationDuration);
             }
             else
             {

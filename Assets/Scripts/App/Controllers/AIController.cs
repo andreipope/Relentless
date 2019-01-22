@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsBrainWorking = false;
 
+        public bool AIPaused = false;
+
         private const int MinTurnForAttack = 0;
 
         private readonly Random _random = new Random();
@@ -120,7 +122,16 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
 
-            SetAiBrainType(Enumerators.AiBrainType.Normal);
+            if (_gameplayManager.IsTutorial &&
+                _tutorialManager.CurrentTutorial != null &&
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.AISpecificOrderEnabled)
+            {
+                SetAiBrainType(Enumerators.AiBrainType.Tutorial);
+            }
+            else
+            {
+                SetAiBrainType(Enumerators.AiBrainType.Normal);
+            }
 
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
@@ -147,6 +158,9 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.AiBrainType.Normal:
                         await DoAiBrain(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    case Enumerators.AiBrainType.Tutorial:
+                        await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
                         break;
                     case Enumerators.AiBrainType.DontAttack:
                         await DontAttackAiBrain(_aiBrainCancellationTokenSource.Token);
@@ -270,6 +284,67 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private async Task DoAiBrainForTutorial(CancellationToken cancellationToken)
+        {
+            await LetsThink(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsWaitForQueue(cancellationToken);
+
+            foreach (Enumerators.TutorialActivityAction activityAction in _tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn)
+            {
+                switch (activityAction)
+                {
+                    case Enumerators.TutorialActivityAction.EnemyOverlordCardPlayed:
+                        await PlayCardsFromHand(cancellationToken);
+
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+
+                        await LetsWaitForQueue(cancellationToken);
+                        break;
+                    case Enumerators.TutorialActivityAction.BattleframeAttacked:
+                        await UseUnitsOnBoard(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await UsePlayerSkills(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        await LetsWaitForQueue(cancellationToken);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (CheckTutorialAIStepPaused())
+                    return;
+            }
+
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
+            {
+                await UseUnitsOnBoard(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            _battlegroundController.StopTurn();
+        }
+
+        private bool CheckTutorialAIStepPaused()
+        {
+            if (!_tutorialManager.IsTutorial ||
+                _tutorialManager.CurrentTutorialStep == null ||
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep() == null)
+            {
+                return false;
+            }
+            AIPaused = _tutorialManager.CurrentTutorialStep.ToGameplayStep().AIShouldBePaused;
+            return AIPaused;
+        }
+
         private async Task DoNothingAiBrain(CancellationToken cancellationToken)
         {
             await LetsThink(cancellationToken);
@@ -301,6 +376,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (PlayCardActionInfo playCardActionInfo in _tutorialManager.GetCurrentTurnInfo().PlayCardsSequence)
                 {
+                    if (CheckTutorialAIStepPaused())
+                        return;
+
                     WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.
                                             Find(cardInHand => cardInHand.LibraryCard.Name.ToLowerInvariant() ==
                                                  _tutorialManager.GetCardNameById(playCardActionInfo.TutorialObjectId).
@@ -372,6 +450,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (UseBattleframeActionInfo frame in _tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence)
                 {
+                    if (CheckTutorialAIStepPaused())
+                        return;
+
                     BoardUnitModel unit = GetUnitsOnBoard().Find(x => !x.AttackedThisTurn &&
                                                                        x.Card.LibraryCard.Name.ToLowerInvariant() ==
                                                                        _tutorialManager.GetCardNameById(frame.TutorialObjectId).

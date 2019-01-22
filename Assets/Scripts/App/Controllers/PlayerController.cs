@@ -39,6 +39,12 @@ namespace Loom.ZombieBattleground
 
         private bool _cardsZooming;
 
+        private bool _isHovering;
+
+        private float _timeHovering;
+
+        private BoardCard _hoveringBoardCard;
+
         private BoardCard _topmostBoardCard;
 
         private BoardUnitView _selectedBoardUnitView;
@@ -378,13 +384,73 @@ namespace Loom.ZombieBattleground
             {
                 _battlegroundController.DestroyCardPreview();
             }
+
+            if(_tutorialManager.IsTutorial && !Application.isMobilePlatform && _boardArrowController.CurrentBoardArrow == null)
+            {
+                CastRay(mousePos);
+            }
+        }
+
+        private void CastRay(Vector3 point)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            hits = hits.Where(hit => !hit.collider.name.Equals(Constants.BattlegroundTouchZone)).ToArray();
+
+            if (hits.Length > 0 && !IsCardSelected)
+            {
+                foreach (RaycastHit2D hit in hits)
+                {
+                    CheckColliders(hit.collider);
+                }
+            }
+            else
+            {
+                ClearHovering();
+            }
+        }
+
+        private void CheckColliders(Collider2D collider)
+        {
+            BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+
+            if (boardCard != null)
+            {
+                UpdateHovering(boardCard);
+            }
+        }
+
+        private void UpdateHovering(BoardCard boardCard)
+        {
+            if (_hoveringBoardCard != boardCard)
+            {
+                _isHovering = false;
+                _hoveringBoardCard = boardCard;
+                _timeHovering = 0;
+            }
+            else if (!_isHovering)
+            {
+                _timeHovering += Time.deltaTime;
+                if (_timeHovering >= Constants.MaxTimeForHovering)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.WorkingCard.TutorialObjectId);
+
+                    _isHovering = true;
+                }
+            }
+        }
+
+        private void ClearHovering()
+        {
+            _isHovering = false;
+            _hoveringBoardCard = null;
+            _timeHovering = 0;
         }
 
         private void PointerSolverDragStartedHandler()
         {
             _topmostBoardCard?.HandBoardCard?.OnSelected();
 
-            if(_tutorialManager.IsTutorial)
+            if(_tutorialManager.IsTutorial && _topmostBoardCard?.HandBoardCard != null)
             {
                 _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
             }
@@ -409,6 +475,10 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.CardsZoomed = true;
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+            }
+            else
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
             }
         }
 

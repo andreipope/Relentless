@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private IGameplayManager _gameplayManager;
 
+        private ITutorialManager _tutorialManager;
+
         private GameObject _overflowObject;
 
         private GameObject _vialGooPrefab;
@@ -43,6 +45,8 @@ namespace Loom.ZombieBattleground
         private string _name;
 
         private bool _isInOverflow, _isAfterOverflow;
+
+        private bool _isLocalOwner;
 
         public PlayerManaBarItem(GameObject gameObject, string overflowPrefabName, Vector3 overflowPos, string name, string objectName)
         {
@@ -61,7 +65,7 @@ namespace Loom.ZombieBattleground
                     _gooBottles.Add(new GooBottleItem(bottle));
                 }
             }
-
+            
             _isInOverflow = false;
             _isAfterOverflow = false;
             _name = name;
@@ -69,9 +73,24 @@ namespace Loom.ZombieBattleground
                                                                   _arrowObject.transform.localEulerAngles.y,
                                                                   -90);
 
+            _isLocalOwner = objectName == Constants.Player;
+
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
+            _gameplayManager.GameInitialized += GameInitializedHandler;
+        }
+
+        private void ManaBarSelectedEventHandler(GameObject obj)
+        {
+            if(_selfObject == obj)
+            {
+                if (_isLocalOwner)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerManaBarSelected);
+                }
+            }
         }
 
         public void SetGoo(int gooValue)
@@ -269,6 +288,15 @@ namespace Loom.ZombieBattleground
             _isInOverflow = false;
 
             _gameplayManager.GameEnded -= GameEndedHandler;
+        }
+
+        private void GameInitializedHandler()
+        {
+            if (_tutorialManager.IsTutorial)
+            {
+                _gameplayManager.GetController<InputController>().ManaBarSelected += ManaBarSelectedEventHandler;
+                _gameplayManager.GetController<InputController>().ManaBarPointerEntered += ManaBarSelectedEventHandler;
+            }          
         }
 
         public struct GooBottleItem

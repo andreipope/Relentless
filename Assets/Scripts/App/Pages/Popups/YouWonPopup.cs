@@ -164,6 +164,7 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupOpened);
                 if(_tutorialManager.CurrentTutorial.Id == 0)
                 {
+                    _message.gameObject.SetActive(false);
                     EnablePackOpenerPart();
                 }
             }
