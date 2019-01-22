@@ -98,6 +98,16 @@ public class HandBoardCard : OwnableBoardObject
         if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
             Enabled)
         {
+            if (_tutorialManager.IsTutorial && CardView.CanBeBuyed(OwnerPlayer))
+            {
+                if (!_tutorialManager.GetCurrentTurnInfo().PlayCardsSequence.Exists(info =>
+                    info.TutorialObjectId == CardView.WorkingCard.TutorialObjectId))
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToPlayUnsequentionalCard);
+                    return;
+                }
+            }
+
             StartedDrag = true;
             InitialPos = Transform.position;
             InitialRotation = Transform.eulerAngles;
@@ -163,15 +173,20 @@ public class HandBoardCard : OwnableBoardObject
             {
                 ReturnToHandAnim();
 
-                if (_tutorialManager.IsTutorial)
+                if(_tutorialManager.IsTutorial)
                 {
-                    _tutorialManager.ActivateSelectTarget();
+                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
                 }
             }
         }
         else
         {
             ReturnToHandAnim();
+
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
+            }
         }
     }
 

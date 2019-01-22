@@ -316,6 +316,11 @@ namespace Loom.ZombieBattleground
 
         public void StartGameplayTurns()
         {
+            if (_gameplayManager.IsTutorial && 
+               _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.GameplayBeginManually &&
+               !_tutorialManager.CurrentTutorialStep.ToGameplayStep().LaunchGameplayManually)
+                return;
+
             StartTurn();
         }
 
@@ -343,13 +348,6 @@ namespace Loom.ZombieBattleground
             CurrentTurn++;
 
             _gameplayManager.CurrentTurnPlayer.Turn++;
-
-            if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
-            {
-                Debug.Log("_dataManager.CachedUserLocalData.Tutorial = " + _dataManager.CachedUserLocalData.Tutorial);
-                Debug.Log("_tutorialManager.IsTutorial = " + _tutorialManager.IsTutorial);
-                _tutorialManager.StartTutorial();
-            }
 
             _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(_gameplayManager.IsLocalPlayerTurn());
 
@@ -406,7 +404,7 @@ namespace Loom.ZombieBattleground
 
             _playerController.UpdateHandCardsHighlight();
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.START_TURN);
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.StartTurn);
 
             TurnStarted?.Invoke();
         }
@@ -453,13 +451,12 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsLocalPlayerTurn())
             {
                 TurnEnded?.Invoke();
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndTurn);
             }
 
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :
                 _gameplayManager.CurrentPlayer;
-
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.END_TURN);
         }
 
         public void StopTurn()
@@ -975,6 +972,7 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
+            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             boardUnitView.PlayArrivalAnimation();
 
@@ -1148,42 +1146,56 @@ namespace Loom.ZombieBattleground
 
         private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
         {
-            _gameplayManager.OpponentPlayer.Defense = specificBattlegroundInfo.OpponentInfo.Health;
+            _gameplayManager.OpponentPlayer.Defense = specificBattlegroundInfo.OpponentInfo.Defense;
             _gameplayManager.OpponentPlayer.GooVials = specificBattlegroundInfo.OpponentInfo.MaximumGoo;
             _gameplayManager.OpponentPlayer.CurrentGoo = specificBattlegroundInfo.OpponentInfo.CurrentGoo;
-            _gameplayManager.GetController<AIController>().SetAiType(specificBattlegroundInfo.OpponentInfo.AIType);
 
-            _gameplayManager.CurrentPlayer.Defense = specificBattlegroundInfo.PlayerInfo.Health;
+            _gameplayManager.CurrentPlayer.Defense = specificBattlegroundInfo.PlayerInfo.Defense;
             _gameplayManager.CurrentPlayer.GooVials = specificBattlegroundInfo.PlayerInfo.MaximumGoo;
             _gameplayManager.CurrentPlayer.CurrentGoo = specificBattlegroundInfo.PlayerInfo.CurrentGoo;
         }
 
-        private void SetupOverlordsHandsAsSpecific(List<string> playerCards, List<string> opponentCards)
+        private void SetupOverlordsHandsAsSpecific(List<SpecificBattlegroundInfo.OverlordCardInfo> playerCards,
+                                                    List<SpecificBattlegroundInfo.OverlordCardInfo> opponentCards)
         {
-            foreach (string cardName in playerCards)
-                _gameplayManager.CurrentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromCardName(cardName, _gameplayManager.CurrentPlayer), true);
+            WorkingCard card;
+            foreach (SpecificBattlegroundInfo.OverlordCardInfo cardInfo in playerCards)
+            {
+                card = _cardsController.GetWorkingCardFromCardName(cardInfo.Name, _gameplayManager.CurrentPlayer);
+                card.TutorialObjectId = cardInfo.TutorialObjectId;
+                _gameplayManager.CurrentPlayer.AddCardToHand(card, true);
+            }
 
-            foreach (string cardName in opponentCards)
-                _gameplayManager.OpponentPlayer.AddCardToHand(_cardsController.GetWorkingCardFromCardName(cardName, _gameplayManager.OpponentPlayer), true);
+            foreach (SpecificBattlegroundInfo.OverlordCardInfo cardInfo in opponentCards)
+            {
+                card = _cardsController.GetWorkingCardFromCardName(cardInfo.Name, _gameplayManager.OpponentPlayer);
+                card.TutorialObjectId = cardInfo.TutorialObjectId;
+                _gameplayManager.OpponentPlayer.AddCardToHand(card, true);
+            }
         }
 
-        private void SetupOverlordsDecksAsSpecific(List<string> playerCards, List<string> opponentCards)
+        private void SetupOverlordsDecksAsSpecific(List<SpecificBattlegroundInfo.OverlordCardInfo> playerCards,
+                                                   List<SpecificBattlegroundInfo.OverlordCardInfo> opponentCards)
         {
             List<WorkingCard> workingPlayerCards =
                 playerCards
-                    .Select(cardName =>
+                    .Select(cardInfo =>
                     {
-                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
-                        return new WorkingCard(card, card, _gameplayManager.CurrentPlayer);
+                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
+                        WorkingCard workingCard = new WorkingCard(card, card, _gameplayManager.CurrentPlayer);
+                        workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
+                        return workingCard;
                     })
                     .ToList();
 
             List<WorkingCard> workingOpponentCards =
                 opponentCards
-                    .Select(cardName =>
+                    .Select(cardInfo =>
                     {
-                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
-                        return new WorkingCard(card, card, _gameplayManager.OpponentPlayer);
+                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
+                        WorkingCard workingCard = new WorkingCard(card, card, _gameplayManager.OpponentPlayer);
+                        workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
+                        return workingCard;
                     })
                     .ToList();
 
@@ -1204,13 +1216,21 @@ namespace Loom.ZombieBattleground
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in playerCards)
             {
                 workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name);
+                workingUnitView.Model.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+                workingUnitView.Model.CurrentHp += cardInfo.BuffedHealth;
+                workingUnitView.Model.BuffedHp += cardInfo.BuffedHealth;
+                workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
+                workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
+                PlayerBoardCards.Add(workingUnitView);
             }
 
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
             {
                 workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name);
+                workingUnitView.Model.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
+                OpponentBoardCards.Add(workingUnitView);
             }
         }
 

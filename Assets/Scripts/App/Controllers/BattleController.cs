@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
 
             _vfxController.SpawnGotDamageEffect(attackedPlayer, -damageAttacking);
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_HERO);
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeAttacked, attackingUnitModel.TutorialObjectId);
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
                     }
                 });
 
-                _tutorialManager.ReportAction(Enumerators.TutorialReportAction.ATTACK_CARD_CARD);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeAttacked, attackingUnitModel.TutorialObjectId);
 
                 if (attackingUnitModel.OwnerPlayer == _gameplayManager.CurrentPlayer)
                 {

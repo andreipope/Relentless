@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
+                    heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
                 }
             }
             else
@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.MatchType.LOCAL:
                         if (_gameplayManager.IsTutorial)
                         {
-                            heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
+                            heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                         }
                         else
                         {
@@ -253,6 +253,9 @@ namespace Loom.ZombieBattleground
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
 #endif
+
+            _gameplayManager.GetController<InputController>().PlayerSelectedEvent += PlayerSelectedEventHandler;
+
         }
 
         public event Action TurnStarted;
@@ -394,7 +397,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 // Second player draw two cards on their first turn
-                if (_battlegroundController.CurrentTurn == 2)
+                if (_battlegroundController.CurrentTurn == 2 && !_gameplayManager.IsTutorial)
                 {
                     IView cardView = _cardsController.AddCardToHand(this);
                     (cardView as BoardCard)?.SetDefaultAnimation();
@@ -637,6 +640,8 @@ namespace Loom.ZombieBattleground
             _deathAnimator.Play(0);
             _regularAnimator.Play(0);
 
+            _gameplayManager.GetController<InputController>().PlayerSelectedEvent -= PlayerSelectedEventHandler;
+
             FadeTool overlordFactionFrameFadeTool = _overlordFactionFrameAnimator.transform.GetComponent<FadeTool>();
             if (overlordFactionFrameFadeTool != null)
                 overlordFactionFrameFadeTool.FadeIn();
@@ -695,7 +700,14 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.HERO_DEATH);
+                if (IsLocalPlayer)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlorDied);
+                }
+                else
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordDied);
+                }
             }
         }
 
@@ -801,6 +813,19 @@ namespace Loom.ZombieBattleground
                 PlayerDie();
 
                 _isDead = true;
+            }
+        }
+
+
+        private void PlayerSelectedEventHandler(Player player)
+        {
+            if (IsLocalPlayer)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordSelected);
+            }
+            else
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordSelected);
             }
         }
 
