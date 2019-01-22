@@ -115,6 +115,18 @@ namespace Loom.ZombieBattleground
             BlockedButtons = new List<string>();
         }
 
+        public void CheckNextTutorial()
+        {
+            SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
+
+            if (!CurrentTutorial.IsGameplayTutorial())
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+
+                StartTutorial();
+            }
+        }
+
         public void Update()
         {
             if (!IsTutorial)
@@ -156,8 +168,6 @@ namespace Loom.ZombieBattleground
 
         public bool CheckAvailableTutorial()
         {
-            int id = _dataManager.CachedUserLocalData.CurrentTutorialId;
-
             TutorialData tutorial = _tutorials.Find((x) => !x.Ignore &&
                 x.Id >= _dataManager.CachedUserLocalData.CurrentTutorialId);
 
@@ -231,15 +241,15 @@ namespace Loom.ZombieBattleground
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
-            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count - 1)
+            _dataManager.CachedUserLocalData.CurrentTutorialId++;
+
+            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
                 _gameplayManager.IsTutorial = false;
                 _dataManager.CachedUserLocalData.Tutorial = false;
                 _gameplayManager.IsSpecificGameplayBattleground = false;
             }
-
-            _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
             if (!CheckAvailableTutorial())
             {
@@ -262,7 +272,6 @@ namespace Loom.ZombieBattleground
 
         public SpecificTurnInfo GetCurrentTurnInfo()
         {
-            Debug.Log("IS TUTORIAL: " + IsTutorial);
             if (!IsTutorial)
                 return null;
 
@@ -276,6 +285,9 @@ namespace Loom.ZombieBattleground
 
         public bool IsCompletedActivitiesForThisTurn()
         {
+            if (!IsTutorial)
+                return true;
+
             foreach (Enumerators.TutorialActivityAction activityAction in GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn)
             {
                 if (!_activitiesDoneDuringThisTurn.Contains(activityAction))

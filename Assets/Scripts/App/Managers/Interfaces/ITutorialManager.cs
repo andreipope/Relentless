@@ -28,5 +28,6 @@ namespace Loom.ZombieBattleground
         string GetCardNameById(int id);
 
         bool IsButtonBlockedInTutorial(string name);
+        void CheckNextTutorial();
     }
 }

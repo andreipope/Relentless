@@ -255,6 +255,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.APP_INIT:
                     {
                         _appStateManager.ChangeAppState(_finishMatchAppState);
+
+                        _tutorialManager.CheckNextTutorial();
                     }
                     break;
             }
