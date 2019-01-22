@@ -72,14 +72,33 @@ namespace Loom.ZombieBattleground
         
         public async Task<int> CallPackBalanceContract()
         {
-             _boosterPackContract = await GetContract(
-                PrivateKey,
-                PublicKey,
-                _abiBoosterPack.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
-            );
-            int amount = await CallBalanceContract(_boosterPackContract);
-            return amount;
+            Debug.Log("CallPackBalanceContract");
+            Debug.Log($"PrivateKey: {PrivateKey}");
+            Debug.Log($"PublicKey: {PublicKey}");
+            Debug.Log($"_abiBoosterPack: {_abiBoosterPack != null}");
+
+            try
+            {
+                _boosterPackContract = await GetContract(
+                    PrivateKey,
+                    PublicKey,
+                    _abiBoosterPack.ToString(),
+                    PlasmaChainEndpointsContainer.ContractAddressBoosterPack
+                );
+            }catch
+            {
+                Debug.Log("GetContract _boosterPackContract error");
+                return -1;
+            }
+            try
+            {
+                int amount = await CallBalanceContract(_boosterPackContract);
+                return amount;
+            }catch
+            {
+                Debug.Log("CallBalanceContract(_boosterPackContract) error");
+                return -1;
+            }
         }
 
         public async Task<List<Card>> CallOpenPack(int packToOpenAmount)
