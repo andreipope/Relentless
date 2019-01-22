@@ -819,6 +819,8 @@ namespace Loom.ZombieBattleground.Common
             HordeFilled,
 
             IncorrectButtonTapped,
+
+            BattleStarted
         }
 
         public enum TutorialActivityActionHandler

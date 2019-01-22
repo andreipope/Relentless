@@ -84,6 +84,10 @@ namespace Loom.ZombieBattleground
 
         public AnalyticsTimer MatchDuration { get; set; }
 
+        public Action TutorialStartAction { get; private set; }
+
+        public Action TutorialGameplayBeginAction { get; private set; }
+
         public T GetController<T>()
             where T : IController
         {
@@ -138,6 +142,8 @@ namespace Loom.ZombieBattleground
             StartingTurn = Enumerators.StartingTurn.UnDecided;
             PlayerMoves = null;
 
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
             //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
@@ -315,13 +321,57 @@ namespace Loom.ZombieBattleground
                 CurrentTurnPlayer = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                                     SpecificBattlegroundInfo.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 
-                GetController<PlayerController>().SetHand();
+                StartingTurn = CurrentTurnPlayer == CurrentPlayer ?
+                    Enumerators.StartingTurn.Player : Enumerators.StartingTurn.Enemy;
 
-                GetController<CardsController>().StartCardDistribution();
-
-                if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
+                TutorialGameplayBeginAction = () =>
                 {
-                    _tutorialManager.StartTutorial();
+                    GetController<PlayerController>().SetHand();
+                    GetController<CardsController>().StartCardDistribution();
+
+                    if (!_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().GameplayFlowBeginsManually)
+                    {
+                        if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
+                        {
+                            _tutorialManager.StartTutorial();
+                        }
+                    }
+
+                    if (_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                        _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
+                    {
+                        OpponentPlayer.SetFirstHandForLocalMatch(false);
+                    }
+                };
+
+                TutorialStartAction = () =>
+                {
+                    if (_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().PlayerOrderScreenShouldAppear)
+                    {
+                        _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
+                        {
+                            CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                        });
+                    }
+                    else
+                    {
+                        TutorialGameplayBeginAction();
+                    }
+                };
+
+                if (_tutorialManager.CurrentTutorial.IsGameplayTutorial())
+                {
+                    if (!_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().GameplayFlowBeginsManually)
+                    {
+                        TutorialStartAction();
+                    }
+                    else
+                    {
+                        if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
+                        {
+                            _tutorialManager.StartTutorial();
+                        }
+                    }
                 }
             }
             else
@@ -361,7 +411,7 @@ namespace Loom.ZombieBattleground
                             $"Player ID {OpponentPlayer.InstanceId}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
                             String.Join(
                                 "\n",
-                                (IList<WorkingCard>) opponentCardsInHand
+                                (IList<WorkingCard>)opponentCardsInHand
                                     .OrderBy(card => card.InstanceId)
                                     .ToArray()
                             )

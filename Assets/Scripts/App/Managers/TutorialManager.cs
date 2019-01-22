@@ -161,7 +161,7 @@ namespace Loom.ZombieBattleground
                 _tutorialSteps = CurrentTutorial.TutorialContent.TutorialSteps;
                 CurrentTutorialStep = _tutorialSteps[_currentTutorialStepIndex];
 
-                if (CurrentTutorial.IsGameplayTutorial())
+                if (CurrentTutorial.IsGameplayTutorial() && !CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
                 {
                     FillTutorialDeck();
                 }
@@ -195,7 +195,10 @@ namespace Loom.ZombieBattleground
 
             if (CurrentTutorial.IsGameplayTutorial())
             {
-                _battlegroundController.SetupBattlegroundAsSpecific(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo);
+                if (!CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
+                {
+                    _battlegroundController.SetupBattlegroundAsSpecific(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo);
+                }
 
                 _battlegroundController.TurnStarted += TurnStartedHandler;
 
@@ -289,10 +292,13 @@ namespace Loom.ZombieBattleground
             if (!IsTutorial)
                 return true;
 
-            foreach (Enumerators.TutorialActivityAction activityAction in GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn)
+            if (GetCurrentTurnInfo() != null)
             {
-                if (!_activitiesDoneDuringThisTurn.Contains(activityAction))
-                    return false;
+                foreach (Enumerators.TutorialActivityAction activityAction in GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn)
+                {
+                    if (!_activitiesDoneDuringThisTurn.Contains(activityAction))
+                        return false;
+                }
             }
 
             return true;
@@ -549,7 +555,9 @@ namespace Loom.ZombieBattleground
 
                     if (gameStep.PlayerOverlordAbilityShouldBeUnlocked)
                     {
-                        if (CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility != Enumerators.OverlordSkill.NONE)
+                        if (!CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization &&
+                            CurrentTutorial.TutorialContent.ToGameplayContent().
+                            SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility != Enumerators.OverlordSkill.NONE)
                         {
                             _gameplayManager.GetController<SkillsController>().PlayerPrimarySkill.SetCoolDown(0);
                         }
@@ -577,18 +585,26 @@ namespace Loom.ZombieBattleground
                         GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
                     }
 
+                    if (CurrentTutorial.TutorialContent.ToGameplayContent().GameplayFlowBeginsManually && gameStep.BeginGameplayFlowManually)
+                    {
+                        (_gameplayManager as GameplayManager).TutorialStartAction?.Invoke();
+                    }
+
                     break;
                 case TutorialMenuStep menuStep:
 
                     BlockedButtons.Clear();
 
-                    if (menuStep.OpenScreen.EndsWith("Popup"))
+                    if (!string.IsNullOrEmpty(menuStep.OpenScreen))
                     {
-                        _uiManager.DrawPopupByName(menuStep.OpenScreen);
-                    }
-                    else if (menuStep.OpenScreen.EndsWith("Page"))
-                    {
-                        _uiManager.SetPageByName(menuStep.OpenScreen);
+                        if (menuStep.OpenScreen.EndsWith("Popup"))
+                        {
+                            _uiManager.DrawPopupByName(menuStep.OpenScreen);
+                        }
+                        else if (menuStep.OpenScreen.EndsWith("Page"))
+                        {
+                            _uiManager.SetPageByName(menuStep.OpenScreen);
+                        }
                     }
 
                     if (menuStep.BlockedButtons != null)

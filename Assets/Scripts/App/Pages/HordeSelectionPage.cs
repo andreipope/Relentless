@@ -534,6 +534,8 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+            
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_selectedDeck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _selectedDeck;

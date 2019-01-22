@@ -749,7 +749,8 @@
         }
       ],
       "PlayerOrderScreenShouldAppear": false
-    }
+    },
+    "Ignore": true
   },
   {
     "Id": 1,
@@ -1282,7 +1283,8 @@
         }
       ],
       "PlayerOrderScreenShouldAppear": false
-    }
+    },
+    "Ignore": true
   },
   {
     "Id": 2,
@@ -1776,7 +1778,8 @@
       "ActionActivityHandlers": [
       ],
       "PlayerOrderScreenShouldAppear": false
-    }
+    },
+    "Ignore": true
   },
   {
     "Id": 3,
@@ -2019,7 +2022,7 @@
             "Button_LeftArrow",
             "Button_RightArrow"
           ],
-          "ActionToEndThisStep": "ScreenChanged",
+          "ActionToEndThisStep": "BattleStarted",
           "HandPointers": [
             {
               "StartPosition": {
@@ -2095,6 +2098,101 @@
           "HasSpecificConnection": true
         }
       ]
+    }
+  },
+  {
+    "Id": 4,
+    "Name": "Normal Battle",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 0,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "You go first.",
+          "Position": {
+            "X": 10.5,
+            "Y": -4.5,
+            "Z": 0
+          },
+          "AppearDelay": 2
+        },
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Drag cards that you\nwant replaced to\nthe top. Press KEEP\nwhen you're done.",
+          "Position": {
+            "X": 9.5,
+            "Y": 1,
+            "Z": 0
+          }
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Use everything you've learned\nand make me proud!",
+            "DescriptionTooltipCloseText": "BATTLE!"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "TutorialDescriptionTooltipsToActivate": [
+            0
+          ],
+          "ActionToEndThisStep": "PopupClosed",
+          "BeginGameplayFlowManually": true
+        },
+        {
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            0
+          ],
+          "ActionToEndThisStep": "PopupClosed"
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Threre's nothing more I can teach\nyou. Congratulations!",
+            "DescriptionTooltipCloseText": "CONTINUE"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
+          ]
+        },
+        {
+          "ActionToEndThisStep": "EndMatchPopupAppear",
+          "CanEndTurn": true,
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true,
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ]
+        },
+        {
+          "BattleShouldBeWonBlocker": true,
+          "ActionToEndThisStep": "YouWonPopupClosed",
+          "BlockedButtons": []
+        }
+      ],
+      "SpecificBattlegroundInfo": {
+        "RankSystemHasEnabled": true,
+        "AISpecificOrderEnabled": false,
+        "DisabledInitialization": true,
+        "PlayerTurnFirst": true
+      },
+      "SpecificTurnInfos": [],
+      "PlayerOrderScreenShouldAppear": true,
+      "MulliganScreenShouldAppear": true,
+      "DisabledSpecificTurnInfos": true,
+      "GameplayFlowBeginsManually": true
     }
   }
 ]
