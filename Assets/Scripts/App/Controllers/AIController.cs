@@ -375,9 +375,6 @@ namespace Loom.ZombieBattleground
         {
             if (_tutorialManager.IsTutorial)
             {
-                Debug.Log(_tutorialManager);
-                Debug.Log(_tutorialManager.GetCurrentTurnInfo());
-                Debug.Log(_tutorialManager.GetCurrentTurnInfo().PlayCardsSequence);
                 foreach (PlayCardActionInfo playCardActionInfo in _tutorialManager.GetCurrentTurnInfo().PlayCardsSequence)
                 {
                     if (CheckTutorialAIStepPaused())

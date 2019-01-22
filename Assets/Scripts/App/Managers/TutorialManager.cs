@@ -115,22 +115,6 @@ namespace Loom.ZombieBattleground
             BlockedButtons = new List<string>();
         }
 
-        public bool CheckNextTutorial()
-        {
-            SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
-
-            if (!CurrentTutorial.IsGameplayTutorial())
-            {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
-
-                StartTutorial();
-
-                return true;
-            }
-
-            return false;
-        }
-
         public void Update()
         {
             if (!IsTutorial)
@@ -147,7 +131,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsButtonBlockedInTutorial(string name)
         {
-            if (!IsTutorial)
+            if (!_gameplayManager.IsTutorial)
                 return false;
             return BlockedButtons.Contains(name);
         }
@@ -172,6 +156,8 @@ namespace Loom.ZombieBattleground
 
         public bool CheckAvailableTutorial()
         {
+            int id = _dataManager.CachedUserLocalData.CurrentTutorialId;
+
             TutorialData tutorial = _tutorials.Find((x) => !x.Ignore &&
                 x.Id >= _dataManager.CachedUserLocalData.CurrentTutorialId);
 
@@ -245,15 +231,15 @@ namespace Loom.ZombieBattleground
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
-            _dataManager.CachedUserLocalData.CurrentTutorialId++;
-
-            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
+            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count - 1)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
                 _gameplayManager.IsTutorial = false;
                 _dataManager.CachedUserLocalData.Tutorial = false;
                 _gameplayManager.IsSpecificGameplayBattleground = false;
             }
+
+            _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
             if (!CheckAvailableTutorial())
             {
@@ -278,20 +264,12 @@ namespace Loom.ZombieBattleground
         {
             if (!IsTutorial)
                 return null;
-
-            Debug.Log(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Count);
-            Debug.Log(_battlegroundController.CurrentTurn);
-            foreach (SpecificTurnInfo turn in CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos) {
-                Debug.Log(turn.TurnIndex);
-            }
+                
             return CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Find(x => x.TurnIndex == _battlegroundController.CurrentTurn);
         }
 
         public bool IsCompletedActivitiesForThisTurn()
         {
-            if (!IsTutorial)
-                return true;
-
             foreach (Enumerators.TutorialActivityAction activityAction in GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn)
             {
                 if (!_activitiesDoneDuringThisTurn.Contains(activityAction))
