@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground.Test
                     Enumerators.OverlordSkill.NONE
                 );
 
+                InstanceId playerSlabId = new InstanceId(36);
+                InstanceId opponentSlabId = new InstanceId(2);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        opponent => {},
@@ -41,27 +43,27 @@ namespace Loom.ZombieBattleground.Test
                        opponent => {},
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(new InstanceId(36), 0),
-                       opponent => opponent.CardPlay(new InstanceId(2), 0),
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                       opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                       opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardPlay(playerSlabId, 0),
+                       opponent => opponent.CardPlay(opponentSlabId, 0),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(new InstanceId(36), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                    };
 
                 await GenericPvPTest(
@@ -69,14 +71,16 @@ namespace Loom.ZombieBattleground.Test
                     () =>
                     {
                         TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.UseCustomDeck = true;
                         TestHelper.DebugCheats.CustomDeck = deck;
                         TestHelper.DebugCheats.DisableDeckShuffle = true;
                     },
-                    cheats => cheats.CustomDeck = deck
+                    cheats =>
+                    {
+                        cheats.UseCustomDeck = true;
+                        cheats.CustomDeck = deck;
+                    }
                 );
-
-                await TestHelper.ClickGenericButton("Button_Continue");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
             });
         }
 
@@ -161,6 +165,9 @@ namespace Loom.ZombieBattleground.Test
                         cheats.CustomDeck = opponentDeck;
                     }
                 );
+
+                Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerSlabId)).CurrentHp);
+                Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(opponentSlabId)).CurrentHp);
             });
         }
 
