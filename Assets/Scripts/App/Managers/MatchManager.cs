@@ -262,6 +262,7 @@ namespace Loom.ZombieBattleground
 
         private void ForceStartGameplay(bool force = false)
         {
+            Debug.Log(_gameplayManager.IsTutorial);
             if (_gameplayManager.IsTutorial)
             {
                 _tutorialManager.SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);

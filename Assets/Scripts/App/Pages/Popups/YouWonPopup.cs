@@ -254,12 +254,15 @@ namespace Loom.ZombieBattleground
                     if (_tutorialManager.CurrentTutorial.Id < 2)
                     {
                         _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     }
                     else
                     {
                         _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+                        _gameplayManager.IsTutorial = false;
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                        GameClient.Get<ITutorialManager>().StopTutorial();
                     }
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }

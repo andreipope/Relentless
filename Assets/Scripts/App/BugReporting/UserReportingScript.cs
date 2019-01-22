@@ -519,10 +519,8 @@ public class UserReportingScript : MonoBehaviour
         UnityUserReporting.CurrentClient.SendEventsToAnalytics = this.SendEventsToAnalytics;
 
         // Update UI
-        Debug.Log(this.HiddenUI);
         if (this.HiddenUI != null)
         {
-            Debug.Log(_afpsCounter.OperationMode == OperationMode.Normal);
             HiddenUI.gameObject.SetActive(_afpsCounter.OperationMode == OperationMode.Normal);
         }
 

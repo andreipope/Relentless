@@ -599,6 +599,7 @@ namespace Loom.ZombieBattleground
                 {
                     _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
 
+                    GameClient.Get<IGameplayManager>().IsTutorial = true;
                     GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                 }
                 else

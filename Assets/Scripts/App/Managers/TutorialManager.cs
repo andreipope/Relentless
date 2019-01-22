@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground
         {
             if (!_gameplayManager.IsTutorial)
                 return false;
-           return BlockedButtons.Contains(name);
+            return BlockedButtons.Contains(name);
         }
 
         public void SetupTutorialById(int id)
@@ -262,10 +262,16 @@ namespace Loom.ZombieBattleground
 
         public SpecificTurnInfo GetCurrentTurnInfo()
         {
+            Debug.Log("IS TUTORIAL: " + IsTutorial);
             if (!IsTutorial)
                 return null;
 
-            return CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Find(x => x.TurnIndex == _battlegroundController.CurrentTurn - 1);
+            Debug.Log(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Count);
+            Debug.Log(_battlegroundController.CurrentTurn);
+            foreach (SpecificTurnInfo turn in CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos) {
+                Debug.Log(turn.TurnIndex);
+            }
+            return CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Find(x => x.TurnIndex == _battlegroundController.CurrentTurn);
         }
 
         public bool IsCompletedActivitiesForThisTurn()
@@ -360,13 +366,13 @@ namespace Loom.ZombieBattleground
                 if (CurrentTutorialStep.ToMenuStep().ConnectedActivities != null)
                 {
                     ActionActivityHandler handler;
-                    foreach(int id in CurrentTutorialStep.ToMenuStep().ConnectedActivities)
+                    foreach (int id in CurrentTutorialStep.ToMenuStep().ConnectedActivities)
                     {
                         handler = CurrentTutorial.TutorialContent.ActionActivityHandlers.Find(x => x.Id == id && x.HasSpecificConnection);
 
-                        if(handler != null)
+                        if (handler != null)
                         {
-                            if(handler.TutorialActivityAction == action)
+                            if (handler.TutorialActivityAction == action)
                             {
                                 DoActionByActivity(handler);
                                 break;
@@ -430,12 +436,12 @@ namespace Loom.ZombieBattleground
             }
 
             if (_currentTutorialStepIndex + 1 >= _tutorialSteps.Count)
-            {                
+            {
                 ClearToolTips();
 
                 if (!CurrentTutorial.IsGameplayTutorial())
                 {
-                    //StopTutorial();
+                    StopTutorial();
                 }
             }
             else
@@ -448,7 +454,7 @@ namespace Loom.ZombieBattleground
 
         private TutorialStep GetNextNotDoneStep()
         {
-            for(int i = _currentTutorialStepIndex + 1; i < _tutorialSteps.Count; i++)
+            for (int i = _currentTutorialStepIndex + 1; i < _tutorialSteps.Count; i++)
             {
                 if (!_tutorialSteps[i].IsDone)
                 {
@@ -585,7 +591,7 @@ namespace Loom.ZombieBattleground
             GameObject buttonObject;
             Button buttonComponent;
 
-            foreach(string button in buttons)
+            foreach (string button in buttons)
             {
                 buttonObject = GameObject.Find(button);
 
@@ -632,7 +638,7 @@ namespace Loom.ZombieBattleground
 
             List<SpecificBattlegroundInfo.OverlordCardInfo> cards = new List<SpecificBattlegroundInfo.OverlordCardInfo>();
 
-            
+
 
             cards.AddRange(battleInfo.PlayerInfo.CardsInDeck);
             cards.AddRange(battleInfo.PlayerInfo.CardsInHand);
@@ -668,7 +674,7 @@ namespace Loom.ZombieBattleground
 
             List<TutorialDescriptionTooltipItem> tooltips = _tutorialDescriptionTooltipItems.FindAll(x => x.OwnerType == owner);
 
-            if(tooltips.Count > 0)
+            if (tooltips.Count > 0)
             {
                 foreach (TutorialDescriptionTooltipItem tooltip in tooltips)
                 {
@@ -793,7 +799,7 @@ namespace Loom.ZombieBattleground
         {
             TutorialDescriptionTooltipItem tooltip = _tutorialDescriptionTooltipItems.Find(x => x.Id == id);
 
-            if(tooltip != null)
+            if (tooltip != null)
             {
                 tooltip.Dispose();
                 _tutorialDescriptionTooltipItems.Remove(tooltip);
@@ -816,7 +822,7 @@ namespace Loom.ZombieBattleground
                 _overlordsChatController.DrawOverlordSayPopup(description, align, owner);
             }, appearDelay);
 
-            if(ofStep)
+            if (ofStep)
             {
                 _overlordSaysPopupSequences.Add(sequence);
             }
