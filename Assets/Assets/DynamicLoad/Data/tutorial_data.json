@@ -1768,7 +1768,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT",
+              "TargetType": "OPPONENT"
             }
           ],
         }

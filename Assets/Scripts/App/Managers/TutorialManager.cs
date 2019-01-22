@@ -435,7 +435,7 @@ namespace Loom.ZombieBattleground
 
                 if (!CurrentTutorial.IsGameplayTutorial())
                 {
-                    StopTutorial();
+                    //StopTutorial();
                 }
             }
             else
@@ -536,7 +536,19 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
-                    if (gameStep.LaunchAIBrain)
+                    if (gameStep.MatchShouldBePaused)
+                    {
+                        Time.timeScale = 0;
+                    }
+                    else
+                    {
+                        if (Time.timeScale == 0)
+                        {
+                            Time.timeScale = 1;
+                        }
+                    }
+
+                    if (gameStep.LaunchAIBrain || (!gameStep.AIShouldBePaused && _gameplayManager.GetController<AIController>().AIPaused))
                     {
                         await _gameplayManager.GetController<AIController>().LaunchAIBrain();
                     }
@@ -560,20 +572,7 @@ namespace Loom.ZombieBattleground
                         _uiManager.SetPageByName(menuStep.OpenScreen);
                     }
 
-                    if (gameStep.MatchShouldBePaused)
-                    {
-                        Time.timeScale = 0;
-                    }
-                    else
-                    {
-                        if (Time.timeScale == 0)
-                        {
-                            Time.timeScale = 1;
-                        }
-                    }
-
-                    if (gameStep.LaunchAIBrain || (!gameStep.AIShouldBePaused && _gameplayManager.GetController<AIController>().AIPaused))
-                    //if (menuStep.BlockedButtons != null)
+                    if (menuStep.BlockedButtons != null)
                     {
                         BlockedButtons.AddRange(menuStep.BlockedButtons);
                     }
