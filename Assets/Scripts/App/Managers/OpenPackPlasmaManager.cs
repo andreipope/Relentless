@@ -22,10 +22,7 @@ namespace Loom.ZombieBattleground
         
         #region Contract
         private TextAsset _abiCardFaucet;
-        private TextAsset _abiBoosterPack;
-        
-        private EvmContract _cardFaucetContract;
-        private EvmContract _boosterPackContract;    
+        private TextAsset _abiBoosterPack;  
         #endregion    
         
         #region Key
@@ -46,6 +43,8 @@ namespace Loom.ZombieBattleground
         private const int _boosterPackIndex = 0;
 
         private const int _cardsPerPack = 5;
+
+        private bool _eventInitialized;
         
         private BackendDataControlMediator _backendDataControlMediator;
         private ILoadObjectsManager _loadObjectsManager;  
@@ -57,6 +56,7 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _dataManager = GameClient.Get<IDataManager>();
             CardsReceived = new List<Card>();
+            _eventInitialized = false;
                       
             _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI"); 
             _abiBoosterPack = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/BoosterPackABI");            
@@ -71,65 +71,49 @@ namespace Loom.ZombieBattleground
         }
         
         public async Task<int> CallPackBalanceContract()
-        {
-            Debug.Log("CallPackBalanceContract");
-            Debug.Log($"PrivateKey: {PrivateKey}");
-            Debug.Log($"PublicKey: {PublicKey}");
-            Debug.Log($"_abiBoosterPack: {_abiBoosterPack != null}");
-
-            try
-            {
-                _boosterPackContract = await GetContract(
-                    PrivateKey,
-                    PublicKey,
-                    _abiBoosterPack.ToString(),
-                    PlasmaChainEndpointsContainer.ContractAddressBoosterPack
-                );
-            }catch
-            {
-                Debug.Log("GetContract _boosterPackContract error");
-                return -1;
-            }
-            try
-            {
-                int amount = await CallBalanceContract(_boosterPackContract);
-                return amount;
-            }catch
-            {
-                Debug.Log("CallBalanceContract(_boosterPackContract) error");
-                return -1;
-            }
+        {        
+            EvmContract boosterPackContract = await GetContract(
+                PrivateKey,
+                PublicKey,
+                _abiBoosterPack.ToString(),
+                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
+            );
+        
+            int amount = await CallBalanceContract(boosterPackContract);
+            return amount;            
         }
 
-        public async Task<List<Card>> CallOpenPack(int packToOpenAmount)
+        public async Task<List<Card>> CallOpenPack()
         {
-             _cardFaucetContract = await GetContract(
+            CardsReceived.Clear();
+            
+             EvmContract cardFaucetContract = await GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiCardFaucet.ToString(),
                 PlasmaChainEndpointsContainer.ContractAddressCardFaucet
-            );
-            _boosterPackContract = await GetContract(
+            );            
+            EvmContract boosterPackContract = await GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiBoosterPack.ToString(),
                 PlasmaChainEndpointsContainer.ContractAddressBoosterPack
             );
 
-            _cardFaucetContract.EventReceived += ContractEventReceived;
-        
-            CardsReceived.Clear();
-            int expectCardReceiveAmount = packToOpenAmount * _cardsPerPack;
-
-            for (int i = 0; i < packToOpenAmount; ++i)
+            if (!_eventInitialized)
             {
-                await CallBalanceContract(_boosterPackContract);
-                await CallApproveContract(_boosterPackContract);
-                await CallOpenPackContract(_cardFaucetContract, _boosterPackIndex);
-                await CallBalanceContract(_boosterPackContract);
+                cardFaucetContract.EventReceived += ContractEventReceived;
+                _eventInitialized = true;
             }
+            
+            int expectCardReceiveAmount = _cardsPerPack;
 
-            double timeOut = 4.99;
+            await CallBalanceContract(boosterPackContract);
+            await CallApproveContract(boosterPackContract);
+            await CallOpenPackContract(cardFaucetContract, _boosterPackIndex);
+            await CallBalanceContract(boosterPackContract);            
+
+            double timeOut = 9.99;
             double interval = 1.0;
             while( timeOut > 0.0 && CardsReceived.Count < expectCardReceiveAmount )
             {                
@@ -137,7 +121,12 @@ namespace Loom.ZombieBattleground
                 timeOut -= interval;
             }
 
-            return CardsReceived;                                   
+            List<Card> resultList = new List<Card>();
+            foreach(Card card in CardsReceived)
+            {
+                resultList.Add(card);
+            }
+            return resultList;                                   
         }
         
         private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
