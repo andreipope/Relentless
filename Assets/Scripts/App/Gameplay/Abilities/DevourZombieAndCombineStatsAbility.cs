@@ -53,15 +53,9 @@ namespace Loom.ZombieBattleground
             {
                 _isTarget = true;
 
-                _units.Add(TargetUnit);               
+                _units.Add(TargetUnit);
                 DevourTargetZombie(TargetUnit);
                 InvokeActionTriggered(_units);
-
-
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                {
-                    TargetUnit
-                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
             }
         }
 

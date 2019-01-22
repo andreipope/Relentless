@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class YouWonPopup : IUIPopup
     {
+        private static Color ColorDisabledContinueButtonForTutorial = new Color32(159, 159, 159, 225);
+
         private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -35,6 +37,10 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonOk;
 
+        private Button _packOpenButton;
+
+        private Image _openPacksImage;
+
         private TextMeshProUGUI _message;
 
         private SpriteRenderer _selectHeroSpriteRenderer;
@@ -44,6 +50,8 @@ namespace Loom.ZombieBattleground
         private TextMeshProUGUI _currentLevel;
 
         private TextMeshProUGUI _nextLevel;
+
+        private TextMeshProUGUI _continueText;
 
         public GameObject Self { get; private set; }
 
@@ -102,9 +110,17 @@ namespace Loom.ZombieBattleground
                 .GetComponent<SpriteRenderer>();
             _message = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Message").GetComponent<TextMeshProUGUI>();
 
-            _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Button_Continue").GetComponent<Button>();
+            _buttonOk = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_Continue").GetComponent<Button>();
             _buttonOk.onClick.AddListener(OnClickOkButtonEventHandler);
             _buttonOk.gameObject.SetActive(false);
+
+            _continueText = _buttonOk.transform.Find("Shifted/Text").GetComponent<TextMeshProUGUI>();
+
+            _packOpenButton = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_OpenPacks").GetComponent<Button>();
+            _packOpenButton.onClick.AddListener(OpenPackButtonOnClickHandler);
+
+            _openPacksImage = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Image_OpenPacks").GetComponent<Image>();
+
             _experienceBar = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/ExperienceBar")
                 .GetComponent<Image>();
             _currentLevel = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/CurrentLevel")
@@ -121,7 +137,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(true);
 
             int heroId = _gameplayManager.IsTutorial
-                ? _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId : _gameplayManager.CurrentPlayerDeck.HeroId;
+                ? _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId :
+                  _gameplayManager.CurrentPlayerDeck.HeroId;
 
             _currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
             string heroName = _currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
@@ -141,6 +158,16 @@ namespace Loom.ZombieBattleground
             _experienceBar.fillAmount = currentExperiencePercentage;
 
             FillingExperienceBar();
+
+            if(_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupOpened);
+                if(_tutorialManager.CurrentTutorial.Id == 0)
+                {
+                    _message.gameObject.SetActive(false);
+                    EnablePackOpenerPart();
+                }
+            }
         }
 
         private void FillingExperienceBar()
@@ -160,6 +187,15 @@ namespace Loom.ZombieBattleground
             {
                 _buttonOk.gameObject.SetActive(true);
             }
+        }
+
+        private void EnablePackOpenerPart()
+        {
+            _packOpenButton.gameObject.SetActive(true);
+            _openPacksImage.gameObject.SetActive(true);
+            _buttonOk.interactable = false;
+            _buttonOk.targetGraphic.color = ColorDisabledContinueButtonForTutorial;
+            _continueText.color = ColorDisabledContinueButtonForTutorial;
         }
 
         public void Show(object data)
@@ -209,13 +245,48 @@ namespace Loom.ZombieBattleground
 
             _uiManager.HidePopup<YouWonPopup>();
 
-            if (_gameplayManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
-                _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
+
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                {
+                    if (_tutorialManager.CurrentTutorial.Id < 2)
+                    {
+                        _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                    }
+                    else
+                    {
+                        _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+                        _gameplayManager.IsTutorial = false;
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                        GameClient.Get<ITutorialManager>().StopTutorial();
+                    }
+                };
+                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }
             else
             {
                 _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
+            }
+        }
+
+        private void OpenPackButtonOnClickHandler()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            _uiManager.HidePopup<YouWonPopup>();
+
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
+
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                };
+                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }
         }
     }

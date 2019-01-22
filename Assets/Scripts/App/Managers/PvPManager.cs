@@ -237,7 +237,7 @@ namespace Loom.ZombieBattleground
             {
                 await func();
             }
-            catch (LoomException e)
+            catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
                 Debug.Log("Exception not handled, restarting matchmaking:" + e.Message);

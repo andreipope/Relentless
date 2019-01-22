@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    public class SpecificBattlegroundInfo
+    public class SpecificBattlegroundInfoOld
     {
         public SpecificBattlegroundOverlordInfo PlayerInfo;
         public SpecificBattlegroundOverlordInfo OpponentInfo;
 
-        public SpecificBattlegroundInfo()
+        public SpecificBattlegroundInfoOld()
         {
             PlayerInfo = new SpecificBattlegroundOverlordInfo();
             OpponentInfo = new SpecificBattlegroundOverlordInfo();
