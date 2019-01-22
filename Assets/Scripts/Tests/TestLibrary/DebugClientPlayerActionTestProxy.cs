@@ -57,11 +57,9 @@ namespace Loom.ZombieBattleground.Test
         public async Task CardAbilityUsed(
             InstanceId card,
             Enumerators.AbilityType abilityType,
-            Enumerators.CardKind cardKind,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
-            IEnumerable<InstanceId> cards = null)
+            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null)
         {
-            await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, cardKind, targets, cards));
+            await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, targets));
         }
 
         public async Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
@@ -74,7 +72,7 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardAttack(attacker, type, target));
         }
 
-        public async Task CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        public async Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
         {
             await SendPlayerAction(_client.PlayerActionFactory.CheatDestroyCardsOnBoard(targets));
         }

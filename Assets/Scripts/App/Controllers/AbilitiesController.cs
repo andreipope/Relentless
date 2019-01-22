@@ -12,8 +12,7 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Enumerators.AbilityType, Enumerators.CardKind,
-                            Enumerators.AffectObjectType, List<ParametrizedAbilityBoardObject>, List<WorkingCard>> AbilityUsed;
+        public event Action<WorkingCard, Enumerators.AbilityType, List<ParametrizedAbilityBoardObject>> AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -652,26 +651,20 @@ namespace Loom.ZombieBattleground
         }
 
         public void ThrowUseAbilityEvent(WorkingCard card, List<ParametrizedAbilityBoardObject> targets,
-                                         Enumerators.AbilityType abilityType, Enumerators.AffectObjectType affectObjectType)
+                                         Enumerators.AbilityType abilityType,
+                                         /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType = Enumerators.AffectObjectType.None)
         {
             if (!CanHandleAbiityUseEvent(card))
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, targets, null);
+            AbilityUsed?.Invoke(card, abilityType, targets);
         }
 
-        public void ThrowUseAbilityEvent(WorkingCard card, List<WorkingCard> cards,
-                                 Enumerators.AbilityType abilityType, Enumerators.AffectObjectType affectObjectType)
-        {
-            if (!CanHandleAbiityUseEvent(card))
-                return;
-
-            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, null, cards);
-        }
-
-
-        public void ThrowUseAbilityEvent(WorkingCard card, List<BoardObject> targets,
-                                         Enumerators.AbilityType abilityType, Enumerators.AffectObjectType affectObjectType)
+        public void ThrowUseAbilityEvent(
+            WorkingCard card,
+            List<BoardObject> targets,
+            Enumerators.AbilityType abilityType,
+            /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType)
         {
             if (!CanHandleAbiityUseEvent(card))
                 return; 
@@ -687,7 +680,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            AbilityUsed?.Invoke(card, abilityType, card.LibraryCard.CardKind, affectObjectType, parametrizedAbilityBoardObjects, null);
+            AbilityUsed?.Invoke(card, abilityType, parametrizedAbilityBoardObjects);
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)

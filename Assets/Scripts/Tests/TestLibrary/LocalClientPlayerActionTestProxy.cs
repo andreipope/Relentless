@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using NotImplementedException = System.NotImplementedException;
 
@@ -19,6 +21,8 @@ namespace Loom.ZombieBattleground.Test
         private readonly IPvPManager _pvpManager;
         private readonly IQueueManager _queueManager;
         private readonly BackendDataControlMediator _backendDataControlMediator;
+
+        private Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
 
         public LocalClientPlayerActionTestProxy(TestHelper testHelper)
         {
@@ -58,11 +62,11 @@ namespace Loom.ZombieBattleground.Test
         public Task CardAbilityUsed(
             InstanceId card,
             Enumerators.AbilityType abilityType,
-            Enumerators.CardKind cardKind,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
-            IEnumerable<InstanceId> cards = null)
+            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null)
         {
-            throw new NotImplementedException("Doesn't makes sense for local player - sent automatically as part of card play");
+            _cardAbilityRequestsQueue.Enqueue(new CardAbilityRequest(card, abilityType, targets));
+            HandleNextCardAbility();
+            return Task.CompletedTask;
         }
 
         public Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
@@ -78,17 +82,51 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public async Task CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        public Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
         {
             MatchRequestFactory matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
             PlayerActionFactory playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
             PlayerAction action = playerActionFactory.CheatDestroyCardsOnBoard(targets);
             _queueManager.AddAction(matchRequestFactory.CreateAction(action));
+
+            return Task.CompletedTask;
         }
 
         public Task<bool> GetIsCurrentTurn()
         {
             throw new NotSupportedException();
+        }
+
+        private void HandleNextCardAbility()
+        {
+            AbilityBoardArrow abilityBoardArrow = _testHelper.GetAbilityBoardArrow();
+            if (abilityBoardArrow != null)
+            {
+                Debug.Log("!!!! abilityBoardArrow", abilityBoardArrow);
+            }
+            if (abilityBoardArrow && _cardAbilityRequestsQueue.Count == 0)
+            {
+                //throw new Exception($"Unhandled card ability - targeting arrow exists, but no CardAbilityUsed call was queued");
+            }
+        }
+
+        private class CardAbilityRequest
+        {
+            public readonly InstanceId Card;
+            public readonly Enumerators.AbilityType AbilityType;
+            public readonly IReadOnlyList<ParametrizedAbilityBoardObject> Targets;
+
+            public CardAbilityRequest(InstanceId card, Enumerators.AbilityType abilityType, IReadOnlyList<ParametrizedAbilityBoardObject> targets)
+            {
+                Card = card;
+                AbilityType = abilityType;
+                Targets = targets;
+            }
+
+            public override string ToString()
+            {
+                return $"({nameof(Card)}: {Card}, {nameof(AbilityType)}: {AbilityType}, {nameof(Targets)}: {Targets})";
+            }
         }
     }
 }

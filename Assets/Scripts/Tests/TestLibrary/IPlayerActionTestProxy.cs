@@ -16,9 +16,7 @@ namespace Loom.ZombieBattleground.Test
         Task CardAbilityUsed(
             InstanceId card,
             Enumerators.AbilityType abilityType,
-            Enumerators.CardKind cardKind,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
-            IEnumerable<InstanceId> cards = null
+            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null
         );
 
         Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId);

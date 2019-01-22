@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType);
         }
 
         private void GetInfosAboutUnitsOnBoard()

@@ -195,10 +195,9 @@ namespace Loom.ZombieBattleground
         }
 
         private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
-        {           
+        {
             GotActionUseCardAbility(new UseCardAbilityModel
             {
-                CardKind = (Enumerators.CardKind) actionUseCardAbility.CardKind,
                 Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
                 AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType
@@ -349,8 +348,7 @@ namespace Loom.ZombieBattleground
             {
                 parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject()
                 {
-                    BoardObject = _battlegroundController.GetTargetById(unit.InstanceId,
-                             Utilites.CastStringTuEnum<Enumerators.AffectObjectType>(unit.AffectObjectType.ToString(), true)),
+                    BoardObject = _battlegroundController.GetTargetById(unit.InstanceId, unit.AffectObjectType),
                     Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
                     {
                         Attack = unit.Parameter.Attack,
@@ -433,11 +431,11 @@ namespace Loom.ZombieBattleground
                 .Cast<BoardUnitModel>()
                 .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
 
-            BoardUnitModel boardUnitModel = _battlegroundController.GetBoardUnitById(card);
-            if (boardUnitModel == null)
+            WorkingCard workingCard = _battlegroundController.GetWorkingCardById(card);
+            if (workingCard == null)
                 throw new Exception($"Board unit with instance ID {card} not found");
 
-            _ranksController.BuffAllyManually(units, boardUnitModel.Card);
+            _ranksController.BuffAllyManually(units, workingCard);
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)
@@ -491,7 +489,6 @@ namespace Loom.ZombieBattleground
     public class UseCardAbilityModel
     {
         public InstanceId Card;
-        public Enumerators.CardKind CardKind;
         public Enumerators.AbilityType AbilityType;
         public List<Unit> Targets;
     }

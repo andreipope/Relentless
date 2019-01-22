@@ -1910,84 +1910,6 @@ namespace Loom.ZombieBattleground.Test
             await new WaitForUpdate();
         }
 
-        private async Task PlayCardFromBoard(
-            BoardUnitModel boardUnitModel,
-            Loom.ZombieBattleground.Player targetPlayer,
-            BoardUnitModel targetCreatureModel)
-        {
-            WorkingCard workingCard = boardUnitModel.Card;
-
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), _testBroker.GetPlayerBoardGameObject(_player).transform);
-            boardUnitView.Model.OwnerPlayer = workingCard.Owner;
-            boardUnitView.SetObjectInfo(workingCard);
-
-            Debug.LogWarning("0");
-
-            if (_player == Enumerators.MatchPlayer.CurrentPlayer)
-            {
-                boardUnitView.SetSelectedUnit(true);
-
-                GameObject boardUnit = boardUnitView.GameObject;
-
-                BattleBoardArrow fightTargetingArrow = _boardArrowController.BeginTargetingArrowFrom<BattleBoardArrow>(boardUnit.transform);
-                fightTargetingArrow.TargetsType = new List<Enumerators.SkillTargetType>
-                {
-                    Enumerators.SkillTargetType.OPPONENT,
-                    Enumerators.SkillTargetType.OPPONENT_CARD
-                };
-                fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
-                fightTargetingArrow.Owner = boardUnitView;
-
-                _battlegroundController.DestroyCardPreview();
-                _playerController.IsCardSelected = true;
-
-                if (targetPlayer != null)
-                {
-                    Debug.LogWarning("1");
-
-                    fightTargetingArrow.OnPlayerSelected(targetPlayer);
-                }
-                else if (targetCreatureModel != null)
-                {
-                    Debug.LogWarning("2");
-
-                    WorkingCard targetWorkingCard = targetCreatureModel.Card;
-
-                    BoardUnitView targetCreatureView =
-                        new BoardUnitView(targetCreatureModel, _testBroker.GetPlayerBoardGameObject(_opponent).transform);
-                    boardUnitView.Model.OwnerPlayer = targetWorkingCard.Owner;
-                    boardUnitView.SetObjectInfo(targetWorkingCard);
-
-                    fightTargetingArrow.OnCardSelected(targetCreatureView);
-                }
-                else
-                    Debug.LogWarning("3");
-
-                await LetsThink();
-
-                fightTargetingArrow.End(boardUnitView);
-                _playerController.IsCardSelected = false;
-            }
-            else
-            {
-                Debug.LogWarning("4");
-
-                BoardObject target = null;
-                if (targetPlayer != null)
-                {
-                    target = targetPlayer;
-                }
-                else
-                {
-                    target = targetCreatureModel;
-                }
-
-                boardUnitView.Model.DoCombat(target);
-            }
-
-            await new WaitForUpdate();
-        }
-
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
         {
             WorkingCard workingCard = null;
@@ -3962,7 +3884,7 @@ namespace Loom.ZombieBattleground.Test
 
         #endregion
 
-        private AbilityBoardArrow GetAbilityBoardArrow()
+        public AbilityBoardArrow GetAbilityBoardArrow()
         {
             return GameObject.FindObjectOfType<AbilityBoardArrow>();
         }

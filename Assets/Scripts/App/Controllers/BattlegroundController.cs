@@ -1062,9 +1062,25 @@ namespace Loom.ZombieBattleground
             BoardUnitView view = 
                 _gameplayManager.OpponentPlayer.BoardCards
                     .Concat(_gameplayManager.CurrentPlayer.BoardCards)
-                    .First(u => u != null && u.Model.Card.InstanceId == id);
+                    .FirstOrDefault(u => u != null && u.Model.Card.InstanceId == id);
 
             return view?.Model;
+        }
+
+        public WorkingCard GetWorkingCardById(InstanceId id)
+        {
+            BoardUnitModel boardUnitModel = GetBoardUnitById(id);
+            if (boardUnitModel != null)
+                return boardUnitModel.Card;
+
+            WorkingCard workingCard =
+                _gameplayManager.OpponentPlayer.CardsOnBoard
+                    .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
+                    .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
+                    .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
+                    .FirstOrDefault(u => u != null && u.InstanceId == id);
+
+            return workingCard;
         }
 
         public BoardObject GetBoardObjectById(InstanceId id)
