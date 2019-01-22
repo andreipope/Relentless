@@ -440,7 +440,7 @@ namespace Loom.ZombieBattleground
                        {
                            AbilityData ability = libraryCard.Abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
 
-                           if (ability.TargetCardType != Enumerators.CardType.NONE &&
+                           if (ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
                                !HasSpecialUnitOnBoard(workingCard, ability) ||
                                ability.TargetUnitStatusType != Enumerators.UnitStatusType.NONE &&
                                !HasSpecialUnitStatusOnBoard(workingCard, ability) ||

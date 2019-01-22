@@ -790,6 +790,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
+                Helpers.ExceptionReporter.LogException(ex);
                 Debug.LogError(ex.Message);
             }
         }

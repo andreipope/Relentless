@@ -192,6 +192,12 @@ namespace Loom.ZombieBattleground
         #region button handlers
         public async void ContinueButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_continueButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             if (_singleSelectionMode)
             {
                 OverlordAbilityItem ability = _overlordAbilities.Find(x => x.IsSelected);
@@ -245,6 +251,8 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
+                    Helpers.ExceptionReporter.LogException(e);
+
                     Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
 
                     OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
@@ -256,6 +264,12 @@ namespace Loom.ZombieBattleground
 
         public void CancelButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_cancelButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
         }

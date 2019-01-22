@@ -169,8 +169,9 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 Debug.Log("brain canceled!");
             }
 
@@ -781,21 +782,27 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.OpponentPlayer == null)
                 return false;
-#if !DEV_MODE
-            return cost <= goo && _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
-#else
-            return true;
-#endif
+            if (!Constants.DevModeEnabled)
+            {
+                return cost <= goo && _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private bool CardCanBePlayable(WorkingCard card)
         {
-#if !DEV_MODE
-            return card.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
+            if (!Constants.DevModeEnabled)
+            {
+                return card.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
-#else
-            return true;
-#endif
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private bool UnitCanBeUsable(BoardUnitModel unit)

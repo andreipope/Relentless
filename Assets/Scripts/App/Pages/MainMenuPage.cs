@@ -53,7 +53,9 @@ namespace Loom.ZombieBattleground
         {
             if (_selfPage != null)
             {
-                if (!Constants.AlwaysGuestLogin && _backendDataControlMediator.UserDataModel != null && !_backendDataControlMediator.UserDataModel.IsRegistered)
+                if (!Constants.AlwaysGuestLogin && 
+                    _backendDataControlMediator.UserDataModel != null && 
+                    (!_backendDataControlMediator.UserDataModel.IsRegistered || !_backendDataControlMediator.UserDataModel.IsValid))
                 {
                     if (!_buttonLogin.gameObject.activeSelf)
                     {
@@ -146,6 +148,12 @@ namespace Loom.ZombieBattleground
 
         private void OnClickPlay()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonPlay.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
@@ -153,30 +161,60 @@ namespace Loom.ZombieBattleground
 
         private void OnClickCollection()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.ARMY);
         }
 
         private void BuyButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.SHOP);
         }
 
         private void CreditsButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonCredits.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.CREDITS);
         }
 
         private void OpenButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonOpen.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
 
         private void SettingsButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSettings.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _uiManager.DrawPopup<SettingsPopup>(true);
         }
 

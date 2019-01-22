@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Loom.ZombieBattleground.BackendCommunication;
 using Object = UnityEngine.Object;
 using TMPro;
+using Loom.ZombieBattleground.Gameplay;
 
 namespace Loom.ZombieBattleground
 {
@@ -43,6 +44,8 @@ namespace Loom.ZombieBattleground
             if (Self == null)
                 return;
 
+            GameClient.Get<ICameraManager>().FadeOut(null, 1, true);
+
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -63,7 +66,9 @@ namespace Loom.ZombieBattleground
             _cancelMatchmakingButton.onClick.AddListener(PressedCancelMatchmakingHandler);
 
             _cancelMatchmakingButton.gameObject.SetActive(true);
-            SetUIState(MatchMakingFlowController.MatchMakingState.WaitingPeriod);
+            SetUIState(MatchMakingFlowController.MatchMakingState.RegisteringToPool);
+
+            GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
         }
 
         public void Show(object data)

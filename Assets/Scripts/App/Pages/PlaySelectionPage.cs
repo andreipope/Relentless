@@ -86,17 +86,32 @@ namespace Loom.ZombieBattleground
 
         private void TutorialButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonTutorial.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
-            _dataManager.CachedUserLocalData.Tutorial = true;
-            GameClient.Get<IGameplayManager>().IsTutorial = true;
-            _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
-            GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            if (!GameClient.Get<ITutorialManager>().CheckNextTutorial())
+            {
+                _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
+                _dataManager.CachedUserLocalData.Tutorial = true;
+                GameClient.Get<IGameplayManager>().IsTutorial = true;
+                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            }
         }
 
         private void SoloModeButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSoloMode.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.LOCAL;
             _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
@@ -104,32 +119,9 @@ namespace Loom.ZombieBattleground
 
         private void PvPModeButtonOnClickHandler()
         {
-            Version pvpVersion = Version.Parse(_dataManager.CachedVersions.PvpVersion);
-            if (!BuildMetaInfo.Instance.CheckBackendVersionMatch(pvpVersion))
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonPvPMode.name))
             {
-                Action[] actions = new Action[2];
-                actions[0] = () =>
-                {
-                    #if UNITY_EDITOR
-                    Debug.LogWarning("Version Mismatched");
-                    #elif UNITY_ANDROID
-                    Application.OpenURL(Constants.GameLinkForAndroid);
-                    #elif UNITY_IOS
-                    Application.OpenURL(Constants.GameLinkForIOS);
-                    #elif UNITY_STANDALONE_OSX
-                    Application.OpenURL(Constants.GameLinkForOSX);
-                    #elif UNITY_STANDALONE_WIN
-                    Application.OpenURL(Constants.GameLinkForWindows);
-                    #else
-                    Debug.LogWarning("Version Mismatched");
-                    #endif
-                };
-                actions[1] = () =>
-                {
-                    Application.Quit();
-                };
-
-                _uiManager.DrawPopup<UpdatePopup>(actions);
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
@@ -146,6 +138,12 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_backButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
         }

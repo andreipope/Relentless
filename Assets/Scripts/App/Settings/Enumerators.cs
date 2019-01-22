@@ -371,7 +371,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardType
         {
-            NONE,
+            UNDEFINED,
             WALKER,
             FERAL,
             HEAVY,
@@ -755,7 +755,9 @@ namespace Loom.ZombieBattleground.Common
             PlayerBattleframe,
             PlayerCardInHand,
             PlayerGooBottles,
-            PlayerOverlordAbility
+            PlayerOverlordAbility,
+
+            UI
         }
 
         public enum TutorialActivityAction
@@ -807,7 +809,19 @@ namespace Loom.ZombieBattleground.Common
             YouWonPopupOpened,
             YouWonPopupClosed,
 
-            TutorialProgressInfoPopupClosed
+            TutorialProgressInfoPopupClosed,
+
+            ScreenChanged,
+            PopupClosed,
+
+            CardDragged,
+            CardRemoved,
+            CardAdded,
+
+            HordeSaved,
+            HordeFilled,
+
+            IncorrectButtonTapped,
         }
 
         public enum TutorialActivityActionHandler

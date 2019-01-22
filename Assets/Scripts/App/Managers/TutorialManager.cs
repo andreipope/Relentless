@@ -11,6 +11,7 @@ using System.Globalization;
 using Newtonsoft.Json.Converters;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
@@ -46,6 +47,8 @@ namespace Loom.ZombieBattleground
 
         private List<Sequence> _overlordSaysPopupSequences;
 
+        private List<string> _buttonsWasDeactivatedPreviousStep;
+
         public bool IsTutorial { get; private set; }
 
         private List<TutorialData> _tutorials;
@@ -56,6 +59,8 @@ namespace Loom.ZombieBattleground
         public TutorialStep CurrentTutorialStep { get; private set; }
 
         public AnalyticsTimer TutorialDuration { get; set; }
+
+        public List<string> BlockedButtons { get; private set; }
 
         public int TutorialsCount
         {
@@ -106,6 +111,24 @@ namespace Loom.ZombieBattleground
 
             _tutorialDescriptionTooltipItems = new List<TutorialDescriptionTooltipItem>();
             _activitiesDoneDuringThisTurn = new List<Enumerators.TutorialActivityAction>();
+            _buttonsWasDeactivatedPreviousStep = new List<string>();
+            BlockedButtons = new List<string>();
+        }
+
+        public bool CheckNextTutorial()
+        {
+            SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
+
+            if (!CurrentTutorial.IsGameplayTutorial())
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+
+                StartTutorial();
+
+                return true;
+            }
+
+            return false;
         }
 
         public void Update()
@@ -114,6 +137,24 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialDescriptionTooltipItems[i]?.Update();
             }
+
+            if (!IsTutorial)
+                return;
+
+            if (!CurrentTutorial.IsGameplayTutorial())
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen);
+                }
+            }
+        }
+
+        public bool IsButtonBlockedInTutorial(string name)
+        {
+            if (!IsTutorial)
+                return false;
+            return BlockedButtons.Contains(name);
         }
 
         public void SetupTutorialById(int id)
@@ -124,13 +165,17 @@ namespace Loom.ZombieBattleground
                 _currentTutorialStepIndex = 0;
                 _tutorialSteps = CurrentTutorial.TutorialContent.TutorialSteps;
                 CurrentTutorialStep = _tutorialSteps[_currentTutorialStepIndex];
-                FillTutorialDeck();
+
+                if (CurrentTutorial.IsGameplayTutorial())
+                {
+                    FillTutorialDeck();
+                }
             }
 
             IsTutorial = false;
         }
 
-        private bool CheckAvailableTutorial()
+        public bool CheckAvailableTutorial()
         {
             int id = _dataManager.CachedUserLocalData.CurrentTutorialId;
 
@@ -195,7 +240,6 @@ namespace Loom.ZombieBattleground
             if (!IsTutorial)
                 return;
 
-
             if (CurrentTutorial.IsGameplayTutorial())
             {
                 _battlegroundController.TurnStarted -= TurnStartedHandler;
@@ -210,15 +254,15 @@ namespace Loom.ZombieBattleground
 
             ClearToolTips();
 
-            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count - 1)
+            _dataManager.CachedUserLocalData.CurrentTutorialId++;
+
+            if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
                 _gameplayManager.IsTutorial = false;
                 _dataManager.CachedUserLocalData.Tutorial = false;
                 _gameplayManager.IsSpecificGameplayBattleground = false;
             }
-
-            _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
             if (!CheckAvailableTutorial())
             {
@@ -227,6 +271,8 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.IsSpecificGameplayBattleground = false;
             }
 
+
+            _buttonsWasDeactivatedPreviousStep.Clear();
 
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
@@ -241,12 +287,15 @@ namespace Loom.ZombieBattleground
         {
             if (!IsTutorial)
                 return null;
-
-            return CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Find(x => x.TurnIndex == _battlegroundController.CurrentTurn - 1);
+                
+            return CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Find(x => x.TurnIndex == _battlegroundController.CurrentTurn);
         }
 
         public bool IsCompletedActivitiesForThisTurn()
         {
+            if (!IsTutorial)
+                return true;
+
             foreach (Enumerators.TutorialActivityAction activityAction in GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn)
             {
                 if (!_activitiesDoneDuringThisTurn.Contains(activityAction))
@@ -269,13 +318,16 @@ namespace Loom.ZombieBattleground
             bool skip = false;
             foreach (TutorialData tutorial in _tutorials)
             {
-                foreach (ActionActivityHandler activityHandler in tutorial.TutorialContent.ActionActivityHandlers)
+                if (tutorial.TutorialContent.ActionActivityHandlers != null)
                 {
-                    if (activityHandler.TutorialActivityAction == action)
+                    foreach (ActionActivityHandler activityHandler in tutorial.TutorialContent.ActionActivityHandlers)
                     {
-                        DoActionByActivity(activityHandler);
-                        skip = true;
-                        break;
+                        if (activityHandler.TutorialActivityAction == action && !activityHandler.HasSpecificConnection)
+                        {
+                            DoActionByActivity(activityHandler);
+                            skip = true;
+                            break;
+                        }
                     }
                 }
 
@@ -283,44 +335,67 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (CurrentTutorial.IsGameplayTutorial() && _battlegroundController.CurrentTurn > 1)
+            if (CurrentTutorial.IsGameplayTutorial())
             {
-                SpecificTurnInfo specificTurnInfo = GetCurrentTurnInfo();
-
-                if (specificTurnInfo != null)
+                if (_battlegroundController.CurrentTurn > 1)
                 {
-                    if (specificTurnInfo.ActionActivityHandlers != null)
+                    SpecificTurnInfo specificTurnInfo = GetCurrentTurnInfo();
+
+                    if (specificTurnInfo != null)
                     {
-                        foreach (var activity in specificTurnInfo.ActionActivityHandlers)
+                        if (specificTurnInfo.ActionActivityHandlers != null)
                         {
-                            if (!_activitiesDoneDuringThisTurn.Contains(activity.ConnectedTutorialActivityAction) &&
-                                activity.TutorialActivityAction == action)
+                            foreach (ActionActivityHandler activity in specificTurnInfo.ActionActivityHandlers)
                             {
-                                DoActionByActivity(activity);
-                                break;
+                                if (!_activitiesDoneDuringThisTurn.Contains(activity.ConnectedTutorialActivityAction) &&
+                                    activity.TutorialActivityAction == action)
+                                {
+                                    DoActionByActivity(activity);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (specificTurnInfo.RequiredActivitiesToDoneDuringTurn != null)
+                        {
+                            if (specificTurnInfo.RequiredActivitiesToDoneDuringTurn.Contains(action) &&
+                               action != CurrentTutorialStep.ActionToEndThisStep)
+                            {
+
+                                List<TutorialStep> steps = CurrentTutorial.TutorialContent.TutorialSteps.FindAll(x =>
+                                                             x.ToGameplayStep().ConnectedTurnIndex == specificTurnInfo.TurnIndex);
+
+                                foreach (TutorialStep step in steps)
+                                {
+                                    if (step.ActionToEndThisStep == action && !step.IsDone)
+                                    {
+                                        if (step.ToGameplayStep().TutorialObjectIdStepOwner == 0 || step.ToGameplayStep().TutorialObjectIdStepOwner == sender)
+                                        {
+                                            step.IsDone = true;
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-
-                    if (specificTurnInfo.RequiredActivitiesToDoneDuringTurn != null)
+                }
+            }
+            else
+            {
+                if (CurrentTutorialStep.ToMenuStep().ConnectedActivities != null)
+                {
+                    ActionActivityHandler handler;
+                    foreach (int id in CurrentTutorialStep.ToMenuStep().ConnectedActivities)
                     {
-                        if (specificTurnInfo.RequiredActivitiesToDoneDuringTurn.Contains(action) &&
-                           action != CurrentTutorialStep.ActionToEndThisStep)
+                        handler = CurrentTutorial.TutorialContent.ActionActivityHandlers.Find(x => x.Id == id && x.HasSpecificConnection);
+
+                        if (handler != null)
                         {
-
-                            List<TutorialStep> steps = CurrentTutorial.TutorialContent.TutorialSteps.FindAll(x =>
-                                                         x.ToGameplayStep().ConnectedTurnIndex == specificTurnInfo.TurnIndex);
-
-                            foreach (TutorialStep step in steps)
+                            if (handler.TutorialActivityAction == action)
                             {
-                                if (step.ActionToEndThisStep == action && !step.IsDone)
-                                {
-                                    if (step.ToGameplayStep().TutorialObjectIdStepOwner == 0 || step.ToGameplayStep().TutorialObjectIdStepOwner == sender)
-                                    {
-                                        step.IsDone = true;
-                                        break;
-                                    }
-                                }
+                                DoActionByActivity(handler);
+                                break;
                             }
                         }
                     }
@@ -329,7 +404,10 @@ namespace Loom.ZombieBattleground
 
             CheckTooltips(action, sender);
 
-            _activitiesDoneDuringThisTurn.Add(action);
+            if (CurrentTutorial.IsGameplayTutorial())
+            {
+                _activitiesDoneDuringThisTurn.Add(action);
+            }
 
             if (CurrentTutorialStep != null && action == CurrentTutorialStep.ActionToEndThisStep)
             {
@@ -378,8 +456,13 @@ namespace Loom.ZombieBattleground
             }
 
             if (_currentTutorialStepIndex + 1 >= _tutorialSteps.Count)
-            {                
+            {
                 ClearToolTips();
+
+                if (!CurrentTutorial.IsGameplayTutorial())
+                {
+                    StopTutorial();
+                }
             }
             else
             {
@@ -391,7 +474,7 @@ namespace Loom.ZombieBattleground
 
         private TutorialStep GetNextNotDoneStep()
         {
-            for(int i = _currentTutorialStepIndex + 1; i < _tutorialSteps.Count; i++)
+            for (int i = _currentTutorialStepIndex + 1; i < _tutorialSteps.Count; i++)
             {
                 if (!_tutorialSteps[i].IsDone)
                 {
@@ -405,28 +488,63 @@ namespace Loom.ZombieBattleground
 
         private async void EnableStepContent(TutorialStep step)
         {
+            if (step.HandPointers != null)
+            {
+                foreach (HandPointerInfo handPointer in step.HandPointers)
+                {
+                    DrawPointer(handPointer.TutorialHandPointerType,
+                                handPointer.TutorialHandPointerOwner,
+                                (Vector3)handPointer.StartPosition,
+                                (Vector3)handPointer.EndPosition,
+                                handPointer.AppearDelay,
+                                handPointer.AppearOnce,
+                                handPointer.TutorialObjectIdStepOwner,
+                                handPointer.TargetTutorialObjectId,
+                                handPointer.AdditionalObjectIdOwners,
+                                handPointer.AdditionalObjectIdTargets,
+                                handPointer.AboveUI);
+                }
+            }
+
+            if (step.TutorialDescriptionTooltipsToActivate != null)
+            {
+                foreach (int tooltipId in step.TutorialDescriptionTooltipsToActivate)
+                {
+                    TutorialDescriptionTooltip tooltip = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.Find(x => x.Id == tooltipId);
+
+                    DrawDescriptionTooltip(tooltip.Id,
+                                           tooltip.Description,
+                                           tooltip.TutorialTooltipAlign,
+                                           tooltip.TutorialTooltipOwner,
+                                           tooltip.TutorialTooltipOwnerId,
+                                           (Vector3)tooltip.Position,
+                                           tooltip.Resizable,
+                                           tooltip.AppearDelay,
+                                           tooltip.DynamicPosition);
+                }
+            }
+
+            if (step.TutorialDescriptionTooltipsToDeactivate != null)
+            {
+                foreach (int tooltipId in step.TutorialDescriptionTooltipsToDeactivate)
+                {
+                    DeactivateDescriptionTooltip(tooltipId);
+                }
+            }
+
+            if (step.TutorialAvatar != null)
+            {
+                DrawAvatar(step.TutorialAvatar.Description, step.TutorialAvatar.DescriptionTooltipCloseText, step.TutorialAvatar.Pose);
+            }
+
+            if (!string.IsNullOrEmpty(step.SoundToPlay))
+            {
+                PlayTutorialSound(step.SoundToPlay, step.SoundToPlayBeginDelay);
+            }
+
             switch (step)
             {
                 case TutorialGameplayStep gameStep:
-
-                    if (gameStep.HandPointers != null)
-                    {
-                        foreach (HandPointerInfo handPointer in gameStep.HandPointers)
-                        {
-                            DrawPointer(handPointer.TutorialHandPointerType,
-                                        handPointer.TutorialHandPointerOwner,
-                                        (Vector3)handPointer.StartPosition,
-                                        (Vector3)handPointer.EndPosition,
-                                        handPointer.AppearDelay,
-                                        handPointer.AppearOnce,
-                                        handPointer.TutorialObjectIdStepOwner,
-                                        handPointer.TargetTutorialObjectId,
-                                        handPointer.AdditionalObjectIdOwners,
-                                        handPointer.AdditionalObjectIdTargets,
-                                        handPointer.AboveUI);
-                        }
-                    }
-
                     if (gameStep.OverlordSayTooltips != null)
                     {
                         foreach (OverlordSayTooltipInfo tooltip in gameStep.OverlordSayTooltips)
@@ -435,48 +553,12 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
-                    if (gameStep.TutorialDescriptionTooltipsToActivate != null)
-                    {
-                        foreach (int tooltipId in gameStep.TutorialDescriptionTooltipsToActivate)
-                        {
-                            TutorialDescriptionTooltip tooltip = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.Find(x => x.Id == tooltipId);
-
-                            DrawDescriptionTooltip(tooltip.Id,
-                                                   tooltip.Description,
-                                                   tooltip.TutorialTooltipAlign,
-                                                   tooltip.TutorialTooltipOwner,
-                                                   tooltip.TutorialTooltipOwnerId,
-                                                   (Vector3)tooltip.Position,
-                                                   tooltip.Resizable,
-                                                   tooltip.AppearDelay,
-                                                   tooltip.DynamicPosition);
-                        }
-                    }
-
-                    if (gameStep.TutorialDescriptionTooltipsToDeactivate != null)
-                    {
-                        foreach (int tooltipId in gameStep.TutorialDescriptionTooltipsToDeactivate)
-                        {
-                            DeactivateDescriptionTooltip(tooltipId);
-                        }
-                    }
-
-                    if (gameStep.TutorialAvatar != null)
-                    {
-                        DrawAvatar(gameStep.TutorialAvatar.Description, gameStep.TutorialAvatar.DescriptionTooltipCloseText, gameStep.TutorialAvatar.Pose);
-                    }
-
                     if(gameStep.LaunchGameplayManually)
                     {
                         _battlegroundController.StartGameplayTurns();
                     }
 
-                    if(!string.IsNullOrEmpty(gameStep.SoundToPlay))
-                    {
-                        PlayTutorialSound(gameStep.SoundToPlay, gameStep.SoundToPlayBeginDelay);
-                    }
-
-                    if(gameStep.PlayerOverlordAbilityShouldBeUnlocked)
+                    if (gameStep.PlayerOverlordAbilityShouldBeUnlocked)
                     {
                         if (CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility != Enumerators.OverlordSkill.NONE)
                         {
@@ -498,7 +580,7 @@ namespace Loom.ZombieBattleground
 
                     if (gameStep.LaunchAIBrain || (!gameStep.AIShouldBePaused && _gameplayManager.GetController<AIController>().AIPaused))
                     {
-                       await _gameplayManager.GetController<AIController>().LaunchAIBrain();
+                        await _gameplayManager.GetController<AIController>().LaunchAIBrain();
                     }
 
                     if(_gameplayManager.GetController<AIController>().IsBrainWorking)
@@ -506,14 +588,76 @@ namespace Loom.ZombieBattleground
                         await _gameplayManager.GetController<AIController>().SetTutorialStep();
                     }
 
-                    if(gameStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.YouWonPopupOpened)
+                    if (gameStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.YouWonPopupOpened)
                     {
                         GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
                     }
 
                     break;
                 case TutorialMenuStep menuStep:
+
+                    BlockedButtons.Clear();
+
+                    if (menuStep.OpenScreen.EndsWith("Popup"))
+                    {
+                        _uiManager.DrawPopupByName(menuStep.OpenScreen);
+                    }
+                    else if (menuStep.OpenScreen.EndsWith("Page"))
+                    {
+                        _uiManager.SetPageByName(menuStep.OpenScreen);
+                    }
+
+                    if (menuStep.BlockedButtons != null)
+                    {
+                        BlockedButtons.AddRange(menuStep.BlockedButtons);
+                    }
                     break;
+            }
+        }
+
+        public void SetStatusOfButtonsByNames(List<string> buttons, bool status)
+        {
+            GameObject buttonObject;
+            Button buttonComponent;
+
+            foreach (string button in buttons)
+            {
+                buttonObject = GameObject.Find(button);
+
+                if (buttonObject != null)
+                {
+                    buttonComponent = buttonObject.GetComponent<Button>();
+
+                    if (buttonComponent != null && buttonComponent)
+                    {
+                        buttonComponent.interactable = status;
+
+                        if (!status)
+                        {
+                            _buttonsWasDeactivatedPreviousStep.Add(button);
+                        }
+                    }
+                    else
+                    {
+                        MenuButtonNoGlow menuButtonNoGlow = buttonObject.GetComponent<MenuButtonNoGlow>();
+                        if (menuButtonNoGlow != null && menuButtonNoGlow)
+                        {
+                            menuButtonNoGlow.enabled = status;
+                            if (!status)
+                            {
+                                _buttonsWasDeactivatedPreviousStep.Add(button);
+                            }
+                        }
+                        else
+                        {
+                            buttonObject.SetActive(status);
+                            if (!status)
+                            {
+                                _buttonsWasDeactivatedPreviousStep.Add(button);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -523,7 +667,7 @@ namespace Loom.ZombieBattleground
 
             List<SpecificBattlegroundInfo.OverlordCardInfo> cards = new List<SpecificBattlegroundInfo.OverlordCardInfo>();
 
-            
+
 
             cards.AddRange(battleInfo.PlayerInfo.CardsInDeck);
             cards.AddRange(battleInfo.PlayerInfo.CardsInHand);
@@ -561,7 +705,7 @@ namespace Loom.ZombieBattleground
 
             List<TutorialDescriptionTooltipItem> tooltips = _tutorialDescriptionTooltipItems.FindAll(x => x.OwnerType == owner);
 
-            if(tooltips.Count > 0)
+            if (tooltips.Count > 0)
             {
                 foreach (TutorialDescriptionTooltipItem tooltip in tooltips)
                 {
@@ -652,7 +796,26 @@ namespace Loom.ZombieBattleground
 
         public void ActivateDescriptionTooltip(int id)
         {
-           _tutorialDescriptionTooltipItems.Find(x => x.Id == id)?.Show();
+            TutorialDescriptionTooltipItem tooltip = _tutorialDescriptionTooltipItems.Find(x => x.Id == id);
+
+            if (tooltip == null)
+            {
+                TutorialDescriptionTooltip tooltipInfo = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.Find(x => x.Id == id);
+
+                DrawDescriptionTooltip(tooltipInfo.Id,
+                                       tooltipInfo.Description,
+                                       tooltipInfo.TutorialTooltipAlign,
+                                       tooltipInfo.TutorialTooltipOwner,
+                                       tooltipInfo.TutorialTooltipOwnerId,
+                                       (Vector3)tooltipInfo.Position,
+                                       tooltipInfo.Resizable,
+                                       tooltipInfo.AppearDelay,
+                                       tooltipInfo.DynamicPosition);
+            }
+            else
+            {
+                tooltip.Show();
+            }
         }
 
         public TutorialDescriptionTooltipItem GetDescriptionTooltip(int id)
@@ -677,7 +840,7 @@ namespace Loom.ZombieBattleground
         {
             TutorialDescriptionTooltipItem tooltip = _tutorialDescriptionTooltipItems.Find(x => x.Id == id);
 
-            if(tooltip != null)
+            if (tooltip != null)
             {
                 tooltip.Dispose();
                 _tutorialDescriptionTooltipItems.Remove(tooltip);
@@ -700,7 +863,7 @@ namespace Loom.ZombieBattleground
                 _overlordsChatController.DrawOverlordSayPopup(description, align, owner);
             }, appearDelay);
 
-            if(ofStep)
+            if (ofStep)
             {
                 _overlordSaysPopupSequences.Add(sequence);
             }
@@ -747,5 +910,4 @@ namespace Loom.ZombieBattleground
             }
         }
     }
-
 }

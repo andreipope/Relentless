@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.9";
+        internal const string CurrentVersionBase = "0.1.10";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
-        public const float PvPCheckPlayerAvailableMaxTime = 10f;
+        public const float PvPCheckPlayerAvailableMaxTime = 30f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
 
@@ -166,7 +166,9 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool AlwaysGuestLogin = false;
 
-        public const string VaultEmptyErrorCode = "404";
+        public const string VaultEmptyErrorCode = "NotFound";
+
+        public const bool DevModeEnabled = false;
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

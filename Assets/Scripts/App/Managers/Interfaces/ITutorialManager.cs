@@ -28,5 +28,8 @@ namespace Loom.ZombieBattleground
         SpecificTurnInfo GetCurrentTurnInfo();
         bool IsCompletedActivitiesForThisTurn();
         string GetCardNameById(int id);
+
+        bool IsButtonBlockedInTutorial(string name);
+        bool CheckNextTutorial();
     }
 }

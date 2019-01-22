@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
         public ProtobufAotHintGenerator(string protobufNamespace, IEnumerable<MessageDescriptor> messageDescriptors)
         {
             ProtobufNamespace = protobufNamespace;
-            MessageDescriptors = messageDescriptors;
+            MessageDescriptors = messageDescriptors.OrderBy(descriptor => descriptor.Name);
         }
 
         public string GenerateAotHint()
@@ -56,13 +56,12 @@ namespace Loom.ZombieBattleground
 
         private void ProcessMessageDescriptor(StringBuilder sb, MessageDescriptor messageDescriptor)
         {
-            foreach (MessageDescriptor nestedMethodDescriptor in messageDescriptor.NestedTypes)
+            foreach (MessageDescriptor nestedMethodDescriptor in messageDescriptor.NestedTypes.OrderBy(descriptor => descriptor.Name))
             {
                 ProcessMessageDescriptor(sb, nestedMethodDescriptor);
             }
 
-            foreach (FieldDescriptor fieldDescriptor in messageDescriptor.Fields.InFieldNumberOrder()
-                .Concat(messageDescriptor.Oneofs.SelectMany(of => of.Fields)))
+            foreach (FieldDescriptor fieldDescriptor in messageDescriptor.Fields.InFieldNumberOrder().Concat(messageDescriptor.Oneofs.SelectMany(of => of.Fields)))
             {
                 PropertyInfo propertyInfo = fieldDescriptor.ContainingType.ClrType.GetProperty(
                     (string) fieldDescriptor
@@ -73,7 +72,7 @@ namespace Loom.ZombieBattleground
                 WriteReflectionHelperForTypes(sb, propertyInfo.DeclaringType, propertyInfo.PropertyType);
             }
 
-            foreach (OneofDescriptor oneof in messageDescriptor.Oneofs)
+            foreach (OneofDescriptor oneof in messageDescriptor.Oneofs.OrderBy(descriptor => descriptor.Name))
             {
                 string oneofPascalCaseName = oneof.Name.First().ToString().ToUpperInvariant() + oneof.Name.Substring(1);
                 string oneofCaseName = oneofPascalCaseName + "OneofCase";

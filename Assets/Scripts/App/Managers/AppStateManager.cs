@@ -62,6 +62,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.HordeSelection:
                     _uiManager.SetPage<HordeSelectionPage>();
+                    CheckIfPlayAgainOptionShouldBeAvailable();
                     break;
                 case Enumerators.AppState.ARMY:
                     _uiManager.SetPage<ArmyPage>();
@@ -70,20 +71,11 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
-
-                    //_uiManager.SetPage<ShopPage>();
-                    //break;
-                    _uiManager.DrawPopup<WarningPopup>(
-                        $"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                    _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                     return;
                 case Enumerators.AppState.PACK_OPENER:
-                {
-                    //_uiManager.SetPage<PackOpenerPage>();
-                    //break;
-                    _uiManager.DrawPopup<WarningPopup>(
-                        $"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                    _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                     return;
-                }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
@@ -111,6 +103,26 @@ namespace Loom.ZombieBattleground
             AppState = stateTo;
 
             UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+        }
+
+        private void CheckIfPlayAgainOptionShouldBeAvailable() 
+        {
+            if (AppState == Enumerators.AppState.GAMEPLAY && GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                _uiManager.DrawPopup<QuestionPopup>("Would you like to play another PvP game?");
+                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived += DecideToPlayAgain;
+            }
+        }
+
+        private void DecideToPlayAgain(bool decision)
+        {
+            if (decision) 
+            {
+                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived -= DecideToPlayAgain;
+                GameClient.Get<IMatchManager>().FindMatch();
+            }
         }
 
         public void SetPausingApp(bool mustPause) {
@@ -170,7 +182,14 @@ namespace Loom.ZombieBattleground
                 {
                     Func<Task> connectFunc = async () =>
                     {
-                        await _backendDataControlMediator.LoginAndLoadData();
+                        try
+                        {
+                            await _backendDataControlMediator.LoginAndLoadData();
+                        }
+                        catch(Exception e)
+                        {
+                            Helpers.ExceptionReporter.LogException(e);
+                        }
                         connectionPopup.Hide();
                     };
 

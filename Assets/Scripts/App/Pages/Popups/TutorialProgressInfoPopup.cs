@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
 
             SetTextProgress(id);
 
-            _textInfo.text = string.Format("FINISH ALL {0} TUTORIALS TO STAT PVP", _tutorialManager.TutorialsCount.ToString());
+            _textInfo.text = string.Format("FINISH ALL {0} TUTORIALS TO START PVP", _tutorialManager.TutorialsCount.ToString());
 
             _textTitle.text = _tutorialManager.CurrentTutorial.Name;
 

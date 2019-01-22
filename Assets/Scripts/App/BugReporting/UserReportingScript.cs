@@ -44,6 +44,8 @@ public class UserReportingScript : MonoBehaviour
     [Tooltip("The user report button used to create a user report.")]
     public Button UserReportButton;
 
+    public GameObject HiddenUI;
+
     public Button BugReportFormCancelButton;
 
     public Button BugReportFormExitButton;
@@ -322,6 +324,7 @@ public class UserReportingScript : MonoBehaviour
             }
             catch (Exception e)
             {
+                UnityUserReporting.CurrentClient.LogException(e);
                 Debug.LogWarning("Error while getting call metrics:" + e);
             }
 
@@ -516,10 +519,9 @@ public class UserReportingScript : MonoBehaviour
         UnityUserReporting.CurrentClient.SendEventsToAnalytics = this.SendEventsToAnalytics;
 
         // Update UI
-        if (this.UserReportButton != null)
+        if (this.HiddenUI != null)
         {
-            UserReportButton.gameObject.SetActive(_afpsCounter.OperationMode == OperationMode.Normal);
-            this.UserReportButton.interactable = this.State == UserReportingState.Idle;
+            HiddenUI.gameObject.SetActive(_afpsCounter.OperationMode == OperationMode.Normal);
         }
 
         if (this.UserReportForm != null)
