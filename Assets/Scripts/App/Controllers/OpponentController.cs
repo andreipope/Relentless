@@ -346,16 +346,15 @@ namespace Loom.ZombieBattleground
 
             foreach(Unit unit in model.Targets)
             {
-                parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject()
-                {
-                    BoardObject = _battlegroundController.GetTargetById(unit.InstanceId, unit.AffectObjectType),
-                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject(
+                    _battlegroundController.GetTargetById(unit.InstanceId, unit.AffectObjectType),
+                    new ParametrizedAbilityBoardObject.AbilityParameters
                     {
                         Attack = unit.Parameter.Attack,
                         Defense = unit.Parameter.Defense,
                         CardName = unit.Parameter.CardName,
                     }
-                });
+                ));
             }
 
             WorkingCard workingCard;

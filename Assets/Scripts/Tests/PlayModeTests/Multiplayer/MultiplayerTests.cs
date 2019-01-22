@@ -114,8 +114,10 @@ namespace Loom.ZombieBattleground.Test
                     Enumerators.OverlordSkill.NONE
                 );
 
-                InstanceId slabId = new InstanceId(4);
-                InstanceId cyndermanId = new InstanceId(6);
+                InstanceId playerSlabId = new InstanceId(8);
+                InstanceId opponentSlabId = new InstanceId(4);
+                InstanceId playerCyndermanId = new InstanceId(6);
+                InstanceId opponentCyndermanId = new InstanceId(2);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        opponent => {},
@@ -123,16 +125,23 @@ namespace Loom.ZombieBattleground.Test
                        opponent => {},
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => opponent.CardPlay(slabId, 0),
+                       player => player.CardPlay(playerSlabId, 0),
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentSlabId, 0);
+                           opponent.CardPlay(opponentCyndermanId, 0);
+                           opponent.CardAbilityUsed(
+                               opponentCyndermanId,
+                               Enumerators.AbilityType.DAMAGE_TARGET,
+                               new List<ParametrizedAbilityBoardObject>
+                               {
+                                   new ParametrizedAbilityBoardObject(TestHelper.BattlegroundController.GetBoardObjectById(playerSlabId))
+                               }
+                           );
+                       },
                        player =>
                        {
-                           //player.CardAbilityUsed();
-                           player.CardPlay(cyndermanId, 0);
+                           player.CardPlay(playerCyndermanId, 0, TestHelper.BattlegroundController.GetBoardObjectById(opponentCyndermanId));
                        },
                    };
 
@@ -141,13 +150,17 @@ namespace Loom.ZombieBattleground.Test
                     () =>
                     {
                         TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.UseCustomDeck = true;
                         TestHelper.DebugCheats.CustomDeck = localDeck;
                         TestHelper.DebugCheats.DisableDeckShuffle = true;
+                        TestHelper.DebugCheats.IgnoreGooRequirements = true;
                     },
-                    cheats => cheats.CustomDeck = opponentDeck
+                    cheats =>
+                    {
+                        cheats.UseCustomDeck = true;
+                        cheats.CustomDeck = opponentDeck;
+                    }
                 );
-
-                await Task.Delay(5000);
 
                 await TestHelper.ClickGenericButton("Button_Continue");
                 await TestHelper.AssertCurrentPageName("HordeSelectionPage");

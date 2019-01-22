@@ -104,13 +104,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null
         )
         {
-            PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed
-            {
-                AbilityType = (CardAbilityType.Types.Enum) abilityType,
-                Card = card.ToProtobuf()
-            };
+            List<Protobuf.Unit> unitTargets = new List<Protobuf.Unit>();
 
-            Protobuf.Unit targetUnit;
             if (targets != null)
             {
                 foreach (ParametrizedAbilityBoardObject parametrizedAbility in targets)
@@ -118,7 +113,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     if (parametrizedAbility.BoardObject == null)
                         continue;
 
-                    targetUnit = new Protobuf.Unit();
+                    Protobuf.Unit targetUnit = new Protobuf.Unit();
 
                     if (parametrizedAbility.BoardObject is BoardUnitModel model)
                     {
@@ -161,9 +156,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         };
                     }
 
-                    cardAbilityUsed.Targets.Add(targetUnit);
+                    unitTargets.Add(targetUnit);
                 }
             }
+
+            return CardAbilityUsed(card, abilityType, unitTargets);
+        }
+
+        public PlayerAction CardAbilityUsed(
+            InstanceId card,
+            Enumerators.AbilityType abilityType,
+            IReadOnlyList<Protobuf.Unit> targets = null
+        )
+        {
+            PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed
+            {
+                AbilityType = (CardAbilityType.Types.Enum) abilityType,
+                Card = card.ToProtobuf(),
+                Targets = { targets }
+            };
 
             return new PlayerAction
             {

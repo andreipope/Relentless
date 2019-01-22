@@ -673,11 +673,7 @@ namespace Loom.ZombieBattleground
 
             foreach(BoardObject boardObject in targets)
             {
-                parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject()
-                {
-                    BoardObject = boardObject,
-                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
-                });
+                parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(boardObject));
             }
 
             AbilityUsed?.Invoke(card, abilityType, parametrizedAbilityBoardObjects);

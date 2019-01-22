@@ -1085,42 +1085,32 @@ namespace Loom.ZombieBattleground
 
         public BoardObject GetBoardObjectById(InstanceId id)
         {
-            List<BoardUnitView> units = new List<BoardUnitView>();
-            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
-            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
+            BoardUnitModel boardUnitModel = GetBoardUnitById(id);
+            if(boardUnitModel != null)
+                return boardUnitModel;
 
-            BoardUnitView unit = units.Find(u => u.Model.Card.InstanceId == id);
-
-            if(unit != null)
+            List<BoardObject> boardObjects = new List<BoardObject>
             {
-                units.Clear();
-                return unit.Model;
-            }
-            else
-            {
-                List<BoardObject> boardObjects = new List<BoardObject>();
-                boardObjects.Add(_gameplayManager.CurrentPlayer);
-                boardObjects.Add(_gameplayManager.OpponentPlayer);
-                boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardSpellsInUse);
-                boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardSpellsInUse);
+                _gameplayManager.CurrentPlayer,
+                _gameplayManager.OpponentPlayer,
+            };
+            boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardSpellsInUse);
+            boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardSpellsInUse);
 
-                BoardObject foundObject = boardObjects.Find(boardObject =>
+            BoardObject foundObject = boardObjects.Find(boardObject =>
+            {
+                switch (boardObject)
                 {
-                    switch (boardObject)
-                    {
-                        case BoardSpell boardSpell:
-                            return boardSpell.Card.InstanceId == id;
-                        case IInstanceIdOwner instanceIdOwner:
-                            return instanceIdOwner.InstanceId == id;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
-                    }
-                });
+                    case BoardSpell boardSpell:
+                        return boardSpell.Card.InstanceId == id;
+                    case IInstanceIdOwner instanceIdOwner:
+                        return instanceIdOwner.InstanceId == id;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
+                }
+            });
 
-                boardObjects.Clear();
-
-                return foundObject;
-            }
+            return foundObject;
         }
 
         public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)

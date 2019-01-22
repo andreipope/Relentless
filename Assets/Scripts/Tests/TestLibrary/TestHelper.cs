@@ -1739,24 +1739,31 @@ namespace Loom.ZombieBattleground.Test
             await new WaitForUpdate();
         }
 
-        public async Task PlayCardFromHandToBoard(WorkingCard card)
+        public async Task PlayCardFromHandToBoard(WorkingCard card, bool autoGetAbilityTarget = true, BoardObject manualAbilityTarget = null)
         {
+            BoardObject target = null;
             bool needTargetForAbility = false;
 
-            if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+            if (autoGetAbilityTarget)
             {
-                needTargetForAbility =
-                    card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+                {
+                    needTargetForAbility =
+                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                }
+
+                if (needTargetForAbility)
+                {
+                    target = GetAbilityTarget(card);
+                }
+
+                Debug.Log("Target: " + (target?.ToString() ?? "Null") + ", Need target: " + needTargetForAbility);
             }
-
-            BoardObject target = null;
-
-            if (needTargetForAbility)
+            else
             {
-                target = GetAbilityTarget(card);
+                target = manualAbilityTarget;
+                needTargetForAbility = true;
             }
-
-            Debug.Log("Target: " + (target?.ToString() ?? "Null") + ", Need target: " + needTargetForAbility);
 
             switch (card.LibraryCard.CardKind)
             {
@@ -1768,16 +1775,16 @@ namespace Loom.ZombieBattleground.Test
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
                             boardCard.HandBoardCard,
-                            PlayCardOnBoard =>
+                            playCardOnBoard =>
                             {
-                                PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                                PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
                                 _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
                             },
                             target);
 
                         await new WaitForUpdate();
 
-                        if (target == null && needTargetForAbility)
+                        /*if (target == null && needTargetForAbility)
                         {
                             WaitStart(3);
                             await new WaitUntil(() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp());
@@ -1791,7 +1798,7 @@ namespace Loom.ZombieBattleground.Test
                             _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget();
 
                             await LetsThink();
-                        }
+                        }*/
                     }
                     else
                     {
@@ -1805,7 +1812,7 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 case Enumerators.CardKind.SPELL:
-                    if ((target != null && needTargetForAbility) || !needTargetForAbility)
+                    if ((!autoGetAbilityTarget && manualAbilityTarget != null) || (target != null && needTargetForAbility || !needTargetForAbility))
                     {
                         _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
                         _testBroker.GetPlayer(_player).AddCardToBoard(card);
@@ -1817,32 +1824,14 @@ namespace Loom.ZombieBattleground.Test
                             _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                                 boardCard,
                                 boardCard.HandBoardCard,
-                                PlayCardOnBoard =>
+                                playCardOnBoard =>
                                 {
                                     //todo: handle abilities here
 
-                                    PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, PlayCardOnBoard);
+                                    PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
                                     _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
                                 },
                                 target);
-
-                            await new WaitForUpdate();
-
-                            if (target == null && needTargetForAbility)
-                            {
-                                WaitStart(3);
-                                await new WaitUntil(() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp());
-                                _boardArrowController.ResetCurrentBoardArrow();
-
-                                await LetsThink();
-
-                                WaitStart(3);
-                                await new WaitUntil(() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp());
-                                _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction();
-                                _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget();
-
-                                await LetsThink();
-                            }
                         }
                         else
                         {
@@ -3790,7 +3779,7 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            await client.Start(contract => new DefaultContractCallProxy(contract), enabledLogs: false);
+            await client.Start(contract => new ThreadedContractCallProxyWrapper(new DefaultContractCallProxy(contract)), enabledLogs: false);
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }
@@ -3811,12 +3800,13 @@ namespace Loom.ZombieBattleground.Test
                 matchConfirmed = true;
             }
 
-            client.DebugCheats = new Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration
+            client.DebugCheats = new DebugCheatsConfiguration
             {
                 Enabled = DebugCheats.Enabled,
                 CustomRandomSeed = DebugCheats.CustomRandomSeed,
                 ForceFirstTurnUserId = DebugCheats.ForceFirstTurnUserId,
-                DisableDeckShuffle = DebugCheats.DisableDeckShuffle
+                DisableDeckShuffle = DebugCheats.DisableDeckShuffle,
+                IgnoreGooRequirements = DebugCheats.IgnoreGooRequirements
             };
 
             modifyDebugCheatsAction?.Invoke(client.DebugCheats);

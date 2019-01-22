@@ -2,13 +2,14 @@ namespace Loom.ZombieBattleground.Data
 {
     public class ParametrizedAbilityBoardObject
     {
-        public BoardObject BoardObject;
+        public readonly BoardObject BoardObject;
 
-        public AbilityParameters Parameters;
+        public readonly AbilityParameters Parameters;
 
-        public ParametrizedAbilityBoardObject()
+        public ParametrizedAbilityBoardObject(BoardObject boardObject, AbilityParameters parameters = null)
         {
-            Parameters = new AbilityParameters();
+            BoardObject = boardObject;
+            Parameters = parameters ?? new AbilityParameters();
         }
 
         public class AbilityParameters

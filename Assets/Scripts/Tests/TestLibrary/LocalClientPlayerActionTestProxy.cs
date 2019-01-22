@@ -48,10 +48,10 @@ namespace Loom.ZombieBattleground.Test
             throw new NotImplementedException();
         }
 
-        public async Task CardPlay(InstanceId card, int position)
+        public async Task CardPlay(InstanceId card, int position, BoardObject entryAbilityTarget = null)
         {
             WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card, Enumerators.MatchPlayer.CurrentPlayer);
-            await _testHelper.PlayCardFromHandToBoard(workingCard);
+            await _testHelper.PlayCardFromHandToBoard(workingCard, false, entryAbilityTarget);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)

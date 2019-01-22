@@ -37,8 +37,11 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.Mulligan(cards));
         }
 
-        public async Task CardPlay(InstanceId card, int position)
+        public async Task CardPlay(InstanceId card, int position, BoardObject entryAbilityTarget = null)
         {
+            if (entryAbilityTarget != null)
+                throw new Exception($"'{nameof(entryAbilityTarget)}' not supported for {nameof(DebugClientPlayerActionTestProxy)}. Use CardPlay + CardAbilityUsed instead.");
+
             WorkingCard workingCard =
                 _testHelper.GetCardInHandByInstanceId(
                     card,
