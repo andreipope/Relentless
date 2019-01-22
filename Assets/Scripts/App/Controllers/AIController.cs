@@ -516,7 +516,8 @@ namespace Loom.ZombieBattleground
                     if (target != null && unit != null)
                     {
                         unit.DoCombat(target);
-                        break;
+                        if (_aiBrainType == Enumerators.AiBrainType.Tutorial)
+                            break;
                     }
 
                     await LetsWaitForQueue(cancellationToken);

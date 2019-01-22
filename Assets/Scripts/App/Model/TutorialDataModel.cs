@@ -246,6 +246,7 @@ namespace Loom.ZombieBattleground
         public string Description;
         public FloatVector3 Position;
         public bool Resizable;
+        public bool DynamicPosition;
         public float AppearDelay;
 
         public TutorialDescriptionTooltip()
@@ -279,6 +280,9 @@ namespace Loom.ZombieBattleground
         public bool AboveUI;
         public float AppearDelay;
         public int TutorialObjectIdStepOwner;
+        public int TargetTutorialObjectId;
+        public List<int> AdditionalObjectIdOwners;
+        public List<int> AdditionalObjectIdTargets;
 
         public HandPointerInfo()
         {
@@ -286,6 +290,9 @@ namespace Loom.ZombieBattleground
             EndPosition = new FloatVector3();
             TutorialHandPointerType = Enumerators.TutorialHandPointerType.Single;
             TutorialHandPointerOwner = Enumerators.TutorialObjectOwner.Undefined;
+
+            AdditionalObjectIdOwners = new List<int>();
+            AdditionalObjectIdTargets = new List<int>();
         }
     }
 
