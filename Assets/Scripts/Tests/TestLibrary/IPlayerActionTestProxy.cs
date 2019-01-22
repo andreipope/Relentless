@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Test
         Task LeaveMatch();
         Task Mulligan(IEnumerable<InstanceId> cards);
         Task CardPlay(InstanceId card, int position);
-        Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units);
+        Task RankBuff(InstanceId card, IEnumerable<InstanceId> units);
 
         Task CardAbilityUsed(
             InstanceId card,

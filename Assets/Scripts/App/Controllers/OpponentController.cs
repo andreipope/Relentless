@@ -151,9 +151,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionOutcome.OutcomeOneofCase.Rage:
                     PlayerActionOutcome.Types.CardAbilityRageOutcome rageOutcome = outcome.Rage;
-                    BoardUnitModel boardUnit =
-                        _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, rageOutcome.InstanceId.FromProtobuf()) ??
-                        _battlegroundController.GetBoardUnitById(_gameplayManager.CurrentPlayer, rageOutcome.InstanceId.FromProtobuf());
+                    BoardUnitModel boardUnit = _battlegroundController.GetBoardUnitById(rageOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
@@ -220,7 +218,7 @@ namespace Loom.ZombieBattleground
         private void OnRankBuffHandler(PlayerActionRankBuff actionRankBuff)
         {
             GotActionRankBuff(
-                actionRankBuff.Card.FromProtobuf(_gameplayManager.OpponentPlayer),
+                actionRankBuff.Card.FromProtobuf(),
                 actionRankBuff.Targets.Select(t => t.FromProtobuf()).ToList()
                 );
         }
@@ -300,7 +298,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(_gameplayManager.OpponentPlayer, model.CardId);
+            BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(model.CardId);
             BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
 
             if(attackerUnit == null || target == null)
@@ -426,7 +424,7 @@ namespace Loom.ZombieBattleground
             // todo implement logic..
         }
 
-        private void GotActionRankBuff(WorkingCard card, IList<Unit> targets)
+        private void GotActionRankBuff(InstanceId card, IList<Unit> targets)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -435,7 +433,11 @@ namespace Loom.ZombieBattleground
                 .Cast<BoardUnitModel>()
                 .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
 
-            _ranksController.BuffAllyManually(units, card);
+            BoardUnitModel boardUnitModel = _battlegroundController.GetBoardUnitById(card);
+            if (boardUnitModel == null)
+                throw new Exception($"Board unit with instance ID {card} not found");
+
+            _ranksController.BuffAllyManually(units, boardUnitModel.Card);
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)

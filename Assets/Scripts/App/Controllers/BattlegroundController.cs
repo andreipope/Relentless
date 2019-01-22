@@ -1057,14 +1057,14 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public BoardUnitModel GetBoardUnitById(Player owner, InstanceId id)
+        public BoardUnitModel GetBoardUnitById(InstanceId id)
         {
-            BoardUnitView view = owner.BoardCards.Find(u => u != null && u.Model.Card.InstanceId == id);
+            BoardUnitView view = 
+                _gameplayManager.OpponentPlayer.BoardCards
+                    .Concat(_gameplayManager.CurrentPlayer.BoardCards)
+                    .First(u => u != null && u.Model.Card.InstanceId == id);
 
-            if (view != null)
-                return view.Model;
-
-            return null;
+            return view?.Model;
         }
 
         public BoardObject GetBoardObjectById(InstanceId id)

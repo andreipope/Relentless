@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
+        public PlayerAction RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
             PlayerActionRankBuff rankBuff = new PlayerActionRankBuff
             {

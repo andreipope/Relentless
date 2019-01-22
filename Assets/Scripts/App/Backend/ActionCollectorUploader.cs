@@ -284,7 +284,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
-                AddAction(_playerActionFactory.RankBuff(card, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
+                AddAction(_playerActionFactory.RankBuff(card.InstanceId, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
             }
 
             private void AddAction(PlayerAction playerAction)

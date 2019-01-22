@@ -132,12 +132,8 @@ namespace Loom.ZombieBattleground.Test
                        player =>
                        {
                            //player.CardAbilityUsed();
-                           player.CardPlay(new InstanceId(32), 0);
+                           player.CardPlay(cyndermanId, 0);
                        },
-                       // slab
-                       opponent => opponent.CardPlay(new InstanceId(5), 0),
-                       // znowman attacks slab
-                       player => player.CardAttack(new InstanceId(32), Enumerators.AffectObjectType.Character, new InstanceId(5)),
                    };
 
                 await GenericPvPTest(

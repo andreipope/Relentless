@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground.Test
             await _testHelper.PlayCardFromHandToBoard(workingCard);
         }
 
-        public Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
+        public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
             throw new InvalidOperationException("Doesn't makes sense for local player - sent automatically by the local player");
         }

@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground.Test
             Queue.Enqueue(() => Proxy.CardPlay(card, position));
         }
 
-        public void RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
+        public void RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
             Queue.Enqueue(() => Proxy.RankBuff(card, units));
         }
