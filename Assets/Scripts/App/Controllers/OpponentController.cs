@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
-            GotActionPlayCard(cardPlay.Card.FromProtobuf(_gameplayManager.OpponentPlayer), cardPlay.Position);
+            GotActionPlayCard(cardPlay.Card.FromProtobuf(), cardPlay.Position);
         }
 
         private void OnLeaveMatchHandler()
@@ -240,12 +240,12 @@ namespace Loom.ZombieBattleground
             _battlegroundController.EndTurn();
         }
 
-        private void GotActionPlayCard(WorkingCard card, int position)
+        private void GotActionPlayCard(InstanceId cardId, int position)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, null, (workingCard, boardObject) =>
+            _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, cardId, null, (workingCard, boardObject) =>
             {
                 switch (workingCard.LibraryCard.CardKind)
                 {
@@ -276,7 +276,7 @@ namespace Loom.ZombieBattleground
                         _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
                         break;
                     case Enumerators.CardKind.SPELL:
-                        BoardSpell spell = new BoardSpell(null, card); // todo improve it with game Object aht will be aniamted
+                        BoardSpell spell = new BoardSpell(null, workingCard); // todo improve it with game Object aht will be aniamted
                         _gameplayManager.OpponentPlayer.BoardSpellsInUse.Add(spell);
                         spell.OwnerPlayer = _gameplayManager.OpponentPlayer;
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                _gameplayManager.OpponentPlayer.CurrentGoo -= card.InstanceCard.Cost;
+                _gameplayManager.OpponentPlayer.CurrentGoo -= workingCard.InstanceCard.Cost;
             });
         }
 

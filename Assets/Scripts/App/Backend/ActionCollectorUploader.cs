@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void CardPlayedHandler(WorkingCard card, int position)
             {
-                AddAction(_playerActionFactory.CardPlay(card, position));
+                AddAction(_playerActionFactory.CardPlay(card.InstanceId, position));
             }
 
             private void TurnEndedHandler()

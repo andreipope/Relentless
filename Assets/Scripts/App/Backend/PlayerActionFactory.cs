@@ -52,12 +52,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction CardPlay(WorkingCard card, int position)
-        {
-            return CardPlay(card.ToProtobuf(), position);
-        }
-
-        public PlayerAction CardPlay(CardInstance card, int position)
+        public PlayerAction CardPlay(InstanceId card, int position)
         {
             return new PlayerAction
             {
@@ -65,7 +60,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 PlayerId = _playerId,
                 CardPlay = new PlayerActionCardPlay
                 {
-                    Card = card,
+                    Card = card.ToProtobuf(),
                     Position = position
                 }
             };

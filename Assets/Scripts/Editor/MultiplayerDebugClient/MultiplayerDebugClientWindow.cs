@@ -324,7 +324,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         await DebugClient.BackendFacade.SendPlayerAction(
                             DebugClient.MatchRequestFactory.CreateAction(
-                                DebugClient.PlayerActionFactory.CardPlay(cardsInHand[_gameActionsState.CardPlayCardIndex], 0)
+                                DebugClient.PlayerActionFactory.CardPlay(cardsInHand[_gameActionsState.CardPlayCardIndex].InstanceId.FromProtobuf(), 0)
                             )
                         );
 
@@ -937,6 +937,11 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         OpenInDataPreviewWindow(playerAction.Action);
                     }
+                }
+
+                if (_playerActions.Count > 0 && GUILayout.Button("Clear", GUILayout.Width(100f)))
+                {
+                    _playerActions.Clear();
                 }
             }
 

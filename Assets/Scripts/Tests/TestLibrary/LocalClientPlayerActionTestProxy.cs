@@ -48,10 +48,17 @@ namespace Loom.ZombieBattleground.Test
             throw new NotImplementedException();
         }
 
-        public async Task CardPlay(InstanceId card, int position, BoardObject entryAbilityTarget = null)
+        public async Task CardPlay(InstanceId card, int position, InstanceId? entryAbilityTarget = null)
         {
-            WorkingCard workingCard = _testHelper.GetCardInHandByInstanceId(card, Enumerators.MatchPlayer.CurrentPlayer);
-            await _testHelper.PlayCardFromHandToBoard(workingCard, false, entryAbilityTarget);
+            BoardObject entryAbilityTargetBoardObject = null;
+            if (entryAbilityTarget != null)
+            {
+                entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectById(entryAbilityTarget.Value);
+                if (entryAbilityTargetBoardObject == null)
+                    throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
+            }
+            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardById(card);
+            await _testHelper.PlayCardFromHandToBoard(workingCard, false, entryAbilityTargetBoardObject);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)

@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Time scale to use during tests.
         /// </summary>
-        public const int TestTimeScale = DebugTests ? 1 : 50;
+        public const int TestTimeScale = DebugTests ? 1 : 1;
 
         private static TestHelper _instance;
 
@@ -1805,7 +1805,7 @@ namespace Loom.ZombieBattleground.Test
                         _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
                         _testBroker.GetPlayer(_player).AddCardToBoard(card);
 
-                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card, target, PlayCardCompleteHandler);
+                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, target, PlayCardCompleteHandler);
                     }
 
                     _cardsController.DrawCardInfo(card);
@@ -1835,7 +1835,7 @@ namespace Loom.ZombieBattleground.Test
                         }
                         else
                         {
-                            _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card, target, PlayCardCompleteHandler);
+                            _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, target, PlayCardCompleteHandler);
                         }
 
                         _cardsController.DrawCardInfo(card);
@@ -2716,19 +2716,6 @@ namespace Loom.ZombieBattleground.Test
         public Player GetOpponentPlayer()
         {
             return _testBroker.GetPlayer(_opponent);
-        }
-
-        public WorkingCard GetCardInHandByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
-        {
-            WorkingCard workingCard =
-                _testBroker.GetPlayer(player)
-                    .CardsInHand
-                    .FirstOrDefault(card => card.InstanceId == instanceId);
-
-            if (workingCard == null)
-                throw new Exception($"Card {instanceId} not found in hand");
-
-            return workingCard;
         }
 
         public BoardUnitView GetCardOnBoardByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)

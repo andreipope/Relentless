@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground.Test
             Queue.Enqueue(() => Proxy.Mulligan(cards));
         }
 
-        public void CardPlay(InstanceId card, int position, BoardObject entryAbilityTarget = null)
+        public void CardPlay(InstanceId card, int position, InstanceId? entryAbilityTarget = null)
         {
             Queue.Enqueue(() => Proxy.CardPlay(card, position, entryAbilityTarget));
         }

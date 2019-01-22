@@ -377,9 +377,10 @@ namespace Loom.ZombieBattleground
                                     new List<Deck>()
                             );
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         ShowLoadDataFailMessage("Issue with Loading Decks Data");
+                        Debug.LogWarning(e);
                         throw;
                     }
 
