@@ -75,12 +75,60 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
-                case Enumerators.AppState.SHOP:
-                    _uiManager.SetPage<ShopPage>();
-                    break;
+                case Enumerators.AppState.SHOP:            
+                    if (Constants.EnableShopPage)
+                    {
+                        if (string.IsNullOrEmpty(
+                            _backendDataControlMediator.UserDataModel.AccessToken
+                        ))
+                        {   
+                            _uiManager.DrawPopup<WarningPopup>($"Please login\nbefore entering a shop");
+                            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                            popup.ConfirmationReceived += () =>
+                            {
+                                LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                                loginPopup.Show();
+                            };
+                            return;
+                        }
+                        else
+                        {
+                            _uiManager.SetPage<ShopPage>();
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
                 case Enumerators.AppState.PACK_OPENER:
-                    _uiManager.SetPage<PackOpenerPage>();
-                    break;
+                    if (Constants.EnableShopPage)
+                    {
+                        if (string.IsNullOrEmpty(
+                            _backendDataControlMediator.UserDataModel.AccessToken
+                        ))
+                        {
+                            _uiManager.DrawPopup<WarningPopup>($"Please login\nbefore open packs");
+                            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                            popup.ConfirmationReceived += () =>
+                            {
+                                LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                                loginPopup.Show();
+                            };
+                            return;
+                        }
+                        else
+                        {
+                            _uiManager.SetPage<PackOpenerPage>();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
