@@ -56,7 +56,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.MAIN_MENU:
                     _uiManager.SetPage<MainMenuPage>();
-                    CheckIfPlayAgainOptionShouldBeAvailable();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
                     _uiManager.SetPage<OverlordSelectionPage>();

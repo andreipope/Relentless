@@ -736,8 +736,17 @@ namespace Loom.ZombieBattleground
 
         private void OnMouseDown()
         {
-            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialDataStep.UnitsCanAttack)
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().UnitsCanAttack)
                 return;
+
+            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != 0 &&
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != Model.TutorialObjectId &&
+                Model.OwnerPlayer.IsLocalPlayer)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseWrongBattleframe);
+                return;
+            }            
 
             if (!_arrivalDone)
                 return;
@@ -759,9 +768,9 @@ namespace Loom.ZombieBattleground
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
 
-                    if (_tutorialManager.IsTutorial)
+                    if(_tutorialManager.IsTutorial)
                     {
-                        _tutorialManager.DeactivateSelectTarget();
+                        _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
                     }
                 }
 

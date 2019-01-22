@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             _cancelMatchmakingButton.onClick.AddListener(PressedCancelMatchmakingHandler);
 
             _cancelMatchmakingButton.gameObject.SetActive(true);
-            SetUIState(MatchMakingFlowController.MatchMakingState.WaitingPeriod);
+            SetUIState(MatchMakingFlowController.MatchMakingState.RegisteringToPool);
 
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
         }
