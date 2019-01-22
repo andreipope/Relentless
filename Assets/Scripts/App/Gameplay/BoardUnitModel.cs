@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 
+        public int TutorialObjectId;
+
         public BoardUnitModel()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -635,6 +637,22 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
 
+
+                            if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
+                            {
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
+                                     info.TargetType == Enumerators.SkillTargetType.OPPONENT))
+                                {
+                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
+                                    IsPlayable = true;
+                                    AttackedThisTurn = false;
+                                    IsAttacking = false;
+                                    completeCallback?.Invoke();
+                                    return;
+                                }
+                            }
+
                             AttackedBoardObjectsThisTurn.Add(targetPlayer);
 
                             FightSequenceHandler.HandleAttackPlayer(
@@ -653,6 +671,7 @@ namespace Loom.ZombieBattleground
                         }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 case BoardUnitModel targetCardModel:
+
                     IsPlayable = false;
                     AttackedThisTurn = true;
 
@@ -666,6 +685,23 @@ namespace Loom.ZombieBattleground
                                 IsAttacking = false;
                                 completeCallback?.Invoke();
                                 return;
+                            }
+
+                            if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
+                            {
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
+                                     info.TutorialObjectId == TutorialObjectId &&
+                                     (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
+                                         info.TargetTutorialObjectId == 0 && info.TargetType != Enumerators.SkillTargetType.OPPONENT)))
+                                {
+                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
+                                    IsPlayable = true;
+                                    AttackedThisTurn = false;
+                                    IsAttacking = false;
+                                    completeCallback?.Invoke();
+                                    return;
+                                }
                             }
 
                             ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);

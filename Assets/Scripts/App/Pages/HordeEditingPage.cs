@@ -671,6 +671,11 @@ namespace Loom.ZombieBattleground
                 CalculateVisibility();
                 Canvas.ForceUpdateCanvases();
             }
+
+            if(_currentDeck.GetNumCards() >= Constants.DeckMaxSize)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
+            }      
         }
 
         public uint GetMaxCopiesValue(IReadOnlyCard card)
@@ -814,6 +819,8 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
             } else {
                 _buttonSave.interactable = true;
             }
@@ -1049,6 +1056,8 @@ namespace Loom.ZombieBattleground
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         AddCardToDeck(null, armyCard.LibraryCard);
+
+                        GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
                     }
                 }
             }
@@ -1114,6 +1123,12 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBack.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmQuitReceivedHandler;
@@ -1138,6 +1153,12 @@ namespace Loom.ZombieBattleground
 
         private void BuyButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
@@ -1145,6 +1166,12 @@ namespace Loom.ZombieBattleground
 
         private void ArmyButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.ARMY);
@@ -1152,6 +1179,12 @@ namespace Loom.ZombieBattleground
 
         private void SaveButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSave.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             OnDoneButtonPressed();

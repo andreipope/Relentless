@@ -1,1613 +1,2099 @@
-{
-  "TutorialDatas": [
-    {
-      "TutorialId": 0,
-      "TutorialDataSteps": [
-        {
-          "id": 0,
-          "janePose": "NORMAL",
-          "janeText": "Welcome, welcome to <b><color=\"orange\"><u>Battleground</u></color></b>!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "IsLaunchAIBrain": true,
-          "SoundName": "czb_tutorial_01_welcome"
-        },
-        {
-          "id": 1,
-          "janePose": "NORMAL",
-          "janeText": "You must be tired from your travels - sit, drink, relax and let's play a few rounds!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_02_weary"
-        },
-        {
-          "id": 2,
-          "janePose": "NORMAL",
-          "janeText": "I'm Jane - a pleasure!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_03_pleasure"
-        },
-        {
-          "id": 3,
-          "janePose": "POINTING",
-          "janeText": "When you're ready, I can show you the ropes. \n\n If you already know how to play, you can just get started",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": true,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_04_ropes"
-        },
-        {
-          "id": 4,
-          "janePose": "THUMBS_UP",
-          "janeText": "Let's dive right in!!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_06_dive"
-        },
-        {
-          "id": 5,
-          "janePose": "POINTING",
-          "janeText": "<b>Notice</b> your <b><color=\"orange\"><u>Goo Bottles</u></color></b> on the left - that's your <b><color=\"orange\"><u>Fuel</u></color></b>",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_07_goo_bottles"
-        },
-        {
-          "id": 6,
-          "janePose": "POINTING",
-          "janeText": "You'll need that to power your zombies in order to move them from your \n<b><color=\"orange\"><u>Hand</u></color></b> to the <b><color=\"orange\"><u>Battleground</u></color></b>",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_08_power"
-        },
-        {
-          "id": 7,
-          "janePose": "POINTING",
-          "janeText": "Each zombie has a <b><color=\"orange\"><u>Goo Cost</u></color></b>,\n let’s drag your first card into the battleground!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_09_Goo_Cost"
-        },
-        {
-          "id": 8,
-          "janePose": "THUMBS_UP",
-          "janeText": "Don't worry, I filled up your goo so you can drop a powerful <b><color=\"orange\"><u>General</u></color></b>!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 5.0,
-            "Y": -6.0,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": -1.7,
-            "Z": 0.0
-          },
-          "requiredAction": "MOVE_CARD",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_10_general"
-        },
-        {
-          "id": 9,
-          "janePose": "POINTING",
-          "janeText": "<b>Notice</b> the <b><color=\"orange\"><u>zZz</u></color></b> - that means your zombie needs to rest until it activates in the next turn",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_11_zzz"
-        },
-        {
-          "id": 10,
-          "janePose": "THUMBS_UP",
-          "janeText": "Wonderful! Now that you're done with your turn, you can press the <b><color=\"orange\"><u>End Turn</u></color></b> button, \nright there on the right",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "START_TURN",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": true,
-          "SoundName": "czb_tutorial_12_end_turn"
-        },
-        {
-          "id": 11,
-          "janePose": "POINTING",
-          "janeText": "Each player, in their turn, will draw zombies to the battleground",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": true,
-          "ShouldStopTurn": true,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "IsLaunchAIBrain": true,
-          "IsPauseTutorial": true,
-          "SoundName": "czb_tutorial_13_draw"
-        },
-        {
-          "id": 12,
-          "janePose": "THINKING",
-          "janeText": "Let’s wait for your turn and \nsee what we can do",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "START_TURN",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_14_wait"
-        },
-        {
-          "id": 13,
-          "janePose": "THUMBS_UP",
-          "janeText": "Excellent! Let's <b><color=\"orange\"><u>Drag</u></color></b> your zombie onto the enemy zombie so we can attack him!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 2.0,
-            "Z": 0.0
-          },
-          "requiredAction": "ATTACK_CARD_CARD",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "UnitsCanAttack": true,
-          "BoardArrowCanUsableOnUnits": true,
-          "SoundName": "czb_tutorial_15_attack"
-        },
-        {
-          "id": 14,
-          "janePose": "POINTING",
-          "janeText": "<b>Notice</b> that your <b><color=\"orange\"><u>Attack Value</u></color></b> is deducted from the enemy zombie's <b><color=\"orange\"><u>Defense Value</u></color></b>",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_16_defense"
-        },
-        {
-          "id": 15,
-          "janePose": "THUMBS_UP",
-          "janeText": "Well done!! \n You dispatched your first zombie, soon you'll be a veteran <b>Zombie Slayer!!</b>",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_17_first_zombie"
-        },
-        {
-          "id": 16,
-          "janePose": "NORMAL",
-          "janeText": "Let’s press <b><color=\"orange\"><u>End Turn</u></color></b>",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "START_TURN",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": true,
-          "SoundName": "czb_tutorial_18_end_turn2"
-        },
-        {
-          "id": 17,
-          "janePose": "THINKING",
-          "janeText": "See, your opponent will try to kill your zombies as well, so you have to plan your moves! ",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "START_TURN",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "IsLaunchAIBrain": true,
-          "SoundName": "czb_tutorial_19_plan"
-        },
-        {
-          "id": 18,
-          "janePose": "POINTING",
-          "janeText": "The main goal is to beat the enemy <b><color=\"orange\"><u>Overlord</u></color></b>,\nthe first one to do so wins the match, no matter how many zombies are on the battleground!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "UnitsCanAttack": false,
-          "SoundName": "czb_tutorial_20_overlord"
-        },
-        {
-          "id": 19,
-          "janePose": "NORMAL",
-          "janeText": "Let's try to attack the enemy Overlord now!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.6,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 5.55,
-            "Z": 0.0
-          },
-          "requiredAction": "ATTACK_CARD_HERO",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "BoardArrowCanUsableOnUnits": false,
-          "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true,
-          "SoundName": "czb_tutorial_21_attack_overlord"
-        },
-        {
-          "id": 20,
-          "janePose": "THUMBS_UP",
-          "janeText": "Excellent! \nSeems like you're getting the hang of it!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_22_hang"
-        },
-        {
-          "id": 21,
-          "janePose": "NORMAL",
-          "janeText": "Let’s continue",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "START_TURN",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": true,
-          "SoundName": "czb_tutorial_23_end_turn3"
-        },
-        {
-          "id": 22,
-          "janePose": "NORMAL",
-          "janeText": "Let’s continue",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "START_TURN",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": false,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-           "IsLaunchAIBrain": true,
-        },
-        {
-          "id": 23,
-          "janePose": "THINKING",
-          "janeText": "Ahh, look - they’re using a <b><color=\"orange\"><u>Heavy</u></color></b> zombie to defend their troops!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 0.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "IsManuallyHideBubble": false,
-          "SoundName": "czb_tutorial_24_heavy"
-        },
-        {
-          "id": 24,
-          "janePose": "POINTING",
-          "janeText": "We'll have to remove it in order \nto attack them again!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 2.0,
-            "Z": 0.0
-          },
-          "requiredAction": "ATTACK_CARD_CARD",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "UnitsCanAttack": true,
-          "BoardArrowCanUsableOnUnits": true,
-          "SoundName": "czb_tutorial_25_remove_heavy"
-        },
-        {
-          "id": 25,
-          "janePose": "THINKING",
-          "janeText": "Damn - you’re out of active zombies on the battleground...",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_26_active_zombies"
-        },
-        {
-          "id": 26,
-          "janePose": "THINKING",
-          "janeText": "Wait - you have some goo and a <b><color=\"orange\"><u>Feral</u></color></b> zombie at the ready in your hand!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_27_feral"
-        },
-        {
-          "id": 27,
-          "janePose": "POINTING",
-          "janeText": "Feral zombies are a little weaker, but they are super fast - they can attack as soon as they land in the battleground!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_28_feral2"
-        },
-        {
-          "id": 28,
-          "janePose": "POINTING",
-          "janeText": "Let's use one! Drag your feral zombie from your hand into the battleground",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 7.0,
-            "Y": -6.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": -1.6,
-            "Z": 0.0
-          },
-          "requiredAction": "MOVE_CARD",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
-          "CanClickEndTurn": false,
-          "BoardArrowCanUsableOnUnits": false,
-          "SoundName": "czb_tutorial_29_drag_feral"
-        },
-        {
-          "id": 29,
-          "janePose": "POINTING",
-          "janeText": "Now, you can attack your opponent's Overlord immediately!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 0.0,
-            "Y": -1.5,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 5.55,
-            "Z": 0.0
-          },
-          "requiredAction": "ATTACK_CARD_HERO",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true,
-          "SoundName": "czb_tutorial_30_immediatly"
-        },
-        {
-          "id": 30,
-          "janePose": "THUMBS_UP",
-          "janeText": "Awesome! Now would be the perfect time to use your <b><color=\"orange\"><u>Overlord Ability</u></color></b>",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_31_perfect"
-        },
-        {
-          "id": 31,
-          "janePose": "NORMAL",
-          "janeText": "Overlord abilities don’t require Goo\n to use, but they take a few turns\n to get ready at the start of a match\n and after every use.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_32_goo_to_use"
-        },
-        {
-          "id": 32,
-          "janePose": "NORMAL",
-          "janeText": "Your Overlord can have two abilities available during a match and can use both of them in a turn if necessary.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_33_goo_to_use"
-        },
-        {
-          "id": 33,
-          "janePose": "POINTING",
-          "janeText": "Time to use one of your <b><color=\"orange\"><u>Overlord Abilities</u></color></b> to attack the enemy Overlord and finish him off!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "CanMoveToNextStepByClick": false,
-          "ArrowStartPosition": {
-            "X": 2.5,
-            "Y": -5.0,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 5.55,
-            "Z": 0.0
-          },
-          "requiredAction": "USE_ABILITY",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": false,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanUseBoardSkill": true,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "BoardArrowCanUsableOnUnits": false,
-          "BoardArrowCanUsableOnPlayer": true,
-          "SoundName": "czb_tutorial_34_abilities"
-        },
-        {
-          "id": 34,
-          "janePose": "THUMBS_UP",
-          "janeText": "NOICE!! \nYou won your first match!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_35_won1"
-        },
-        {
-          "id": 35,
-          "janePose": "THUMBS_UP",
-          "janeText": "What did I tell you? \nA bonafide <b>Zombie Slayer</b>, Oh-Yeah!!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_36_slayer"
-        },
-        {
-          "id": 36,
-          "janePose": "NORMAL",
-          "janeText": "Now you're ready to start \nyour grand adventure!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_37_adventure"
-        },
-        {
-          "id": 37,
-          "janePose": "KISS",
-          "janeText": "Good luck - <b>Zombie Slayer</b>!!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "SoundName": "czb_tutorial_38_good_luck"
-        }
-      ],
-      "SpecificBattlegroundInfo": {
-        "CurrentTurn": 1,
-        "PlayerInfo": {
-          "Health": 9,
-          "MaximumHealth": 20,
-          "CurrentGoo": 9,
-          "MaximumGoo": 9,
-          "HeroId": 4,
-          "CardsInHand": [
-          ],
-          "CardsInDeck": [
-            "GooZilla",
-            "Burrrnn",
-            "Burrrnn",
-            "Burrrnn",
-            "Azuraz"
-          ],
-          "CardsOnBoard": [
-          ],
-          "CardsOnGraveyard": [
-          ],
-          "PrimaryOverlordSkill": "POISON_DART",
-          "SecondaryOverlordSkill": "TOXIC_POWER"
-        },
-        "OpponentInfo": {
-          "Health": 14,
-          "MaximumHealth": 20,
-          "CurrentGoo": 10,
-          "MaximumGoo": 10,
-          "HeroId": 0,
-          "AiType": "MIXED_AI",
-          "CardsInHand": [
-          ],
-          "CardsInDeck": [
-            "MonZoon",
-            "Burrrnn",
-            "Golem",
-            "Rockky",
-            "Rockky"
-          ],
-          "CardsOnBoard": [
-          ],
-          "CardsOnGraveyard": [
-          ],
-          "PrimaryOverlordSkill": "FIRE_BOLT",
-          "SecondaryOverlordSkill": "RABIES"
-        }
-      },
-      "PlayerTurnFirst": true,
-      "Ignore": false
-    },
-	
-    {
-      "TutorialId": 1,
-      "TutorialDataSteps": [
-        {
-          "id": 0,
-          "janePose": "NORMAL",
-          "janeText": "Welcome back, Zombie Slayer! \nIt's me Jane, remember? \nTime for advanced play! \nAre you up for it?",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 0.0,
-          "SoundName": "czb_tutorial_B_01_welcome"
-        },
-        {
-          "id": 1,
-          "janePose": "THINKING",
-          "janeText": "Looks like you’re in the middle of a match... \n...in a bit of a pickle too.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "START_TURN",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 0.0,
-          "SoundName": "czb_tutorial_B_02_pickle",
-          "CanHandleInput": false,
-          "CanClickEndTurn": true,
-          "IsLaunchAIBrain": true
-        },
-        {
-          "id": 2,
-          "janePose": "THINKING",
-          "janeText": "Hmm, one more hit and it's game over. \nThe enemy has one intimidating General zombie in play too, \n...not good at all.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 0.0,
-          "SoundName": "czb_tutorial_B_03_no_good"
-        },
-        {
-          "id": 3,
-          "janePose": "THUMBS_UP",
-          "janeText": "YES! Exactly what we needed!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "SoundName": "czb_tutorial_B_04_yes"
-        },
-        {
-          "id": 4,
-          "janePose": "THUMBS_UP",
-          "janeText": "Let's drop the big one! <b><color=\"orange\"><u>General</u></color></b> Cherno-bill - and MELT, MELT!",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_13_big_one",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 0.0
-        },
-        {
-          "id": 5,
-          "janePose": "POINTING",
-          "janeText": "To do that you need 11 Goo. \nRight now, you only have 10.",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_14_goo",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 0.0
-        },
-        {
-          "id": 6,
-          "janePose": "POINTING",
-          "janeText": "Good thing you got Zeptic, \nhe's a <b><color=\"orange\"><u>Goo-Carrier</u></color></b>.",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_15_carrier",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 0.0
-        },
-        {
-          "id": 7,
-          "janePose": "POINTING",
-          "janeText": "Goo-Carriers give you extra goo to spend for this turn only! \nThis effect is called <b><color=\"orange\"><u>Overflow</u></color></b>.",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_16_overflow",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 8,
-          "janePose": "POINTING",
-          "janeText": "Remember, only Goo-Carriers of the same element as your Overlord will work.",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_17_work",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 9,
-          "janePose": "POINTING",
-          "janeText": "Overflow is for this turn only, and comes with some setbacks. \nSo... it's a calculated risk!",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_18_setbacks",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 10,
-          "janePose": "POINTING",
-          "janeText": "Each goo-carrier has it's own drawback depending on \nit's elemental faction",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_19_drawback",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 11,
-          "janePose": "THINKING",
-          "janeText": "Toxic zombies specialize in dealing extra damage.",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_19a_extra",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 12,
-          "janePose": "THINKING",
-          "janeText": "For example, Toxic Goo-carriers deal damage to your own Overlord.",
-          "IsFocusing": true,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_19b_own",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": true,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 13,
-          "janePose": "THUMBS_UP",
-          "janeText": "Go ahead, let’s drag Zeptic into play and get Overflow going!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "ArrowStartPosition": {
-            "X": 5.0,
-            "Y": -6.0,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": -1.7,
-            "Z": 0.0
-          },
-          "CanMoveToNextStepByClick": false,
-          "SoundName": "czb_tutorial_B_19d_zeptic",
-          "requiredAction": "MOVE_CARD",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
-          "CanClickEndTurn": false,
-          "AvailableCard": "Zeptic",
-          "AvailableCardUsableInHand": true
-        },
-        {
-          "id": 14,
-          "janePose": "THUMBS_UP",
-          "janeText": "Great! ...zz-plan iz unfolding! muhaha",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_20b_zplan",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 15,
-          "janePose": "POINTING",
-          "janeText": "We have the goo to drop the big one! \nLet’s show the enemy Overlord how it's done!",
-          "IsFocusing": true,
-          "IsArrowEnabled": true,
-          "ArrowStartPosition": {
-            "X": 5.0,
-            "Y": -6.0,
-            "Z": 0.0
-          },
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": -1.7,
-            "Z": 0.0
-          },
-          "CanMoveToNextStepByClick": false,
-          "SoundName": "czb_tutorial_B_21_done",
-          "requiredAction": "END_OF_RANK_UPGRADE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": true,
-          "CanClickEndTurn": false,
-          "AvailableCard": "Cherno-bill",
-          "AvailableCardUsableInHand": true
-        },
-        {
-          "id": 16,
-          "janePose": "THUMBS_UP",
-          "janeText": "OH, DID YOU SEE THAT?!?!?",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_22_that",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 17,
-          "janePose": "THUMBS_UP",
-          "janeText": "Check that out - your Poizoms got +1 Attack and the Destroy ability!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_22b_that",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 18,
-          "janePose": "POINTING",
-          "janeText": "This is the <b><color=\"orange\"><u>Ranks System</u></color></b> at work.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_23_system",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 19,
-          "janePose": "POINTING",
-          "janeText": "See - we have ranks in the zombie army, the higher their rank the rarer and more powerful they are!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_24_ranks",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 20,
-          "janePose": "POINTING",
-          "janeText": "Minions are naturally the weakest, followed by Officers, \nthen Commanders and finally the fearsome Generals!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_25_naturally",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 21,
-          "janePose": "POINTING",
-          "janeText": "Now, when we have a higher ranking \nzombie in play the lower ranks of its \nelement get buffed. \nThe higher the rank, \nthe stronger the buff.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_26_buffed",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 22,
-          "janePose": "POINTING",
-          "janeText": "Just remember - each of the 6 elements causes a different effect.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_27_effects",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 23,
-          "janePose": "POINTING",
-          "janeText": "For instance, Toxic Generals like Cherno-bill give 3 lower ranking toxic zombies +1 Attack and the Destroy ability.",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_28_instance",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 24,
-          "janePose": "POINTING",
-          "janeText": "See - now we have a super motivated squad of Poizoms ready for the final blow!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_29_motivated",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 25,
-          "janePose": "POINTING",
-          "janeText": "Oh, by the way, did I mention that these rank buffs stack?",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_30_stack",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 26,
-          "janePose": "NORMAL",
-          "janeText": "So you can get a crazy combo if you plan it right!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_30a_combo",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
-        },
-        {
-          "id": 27,
-          "janePose": "NORMAL",
-          "janeText": "Well, what are YOU waiting for?",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "requiredAction": "ATTACK_CARD_CARD",
-          "SoundName": "czb_tutorial_B_31_waiting",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "BoardArrowCanUsableOnUnits" : true,
-          "DelayToPlaySound": 6.0,
-        },
-        {
-          "id": 28,
-          "janePose": "NORMAL",
-          "janeText": "Put this poor excuse of an Overlord out of his misery!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": false,
-          "requiredAction": "HERO_DEATH",
-          "SoundName": "czb_tutorial_B_32_misery",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": false,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": false,
-          "DelayToPlaySound": 6.0,
-          "CanHandleInput": false,
-          "CanClickEndTurn": false,
-          "BoardArrowCanUsableOnUnits": false,
-          "BoardArrowCanUsableOnPlayer": true,
-          "UnitsCanAttack": true,
-          "HasHelpArrowsAfterDelay": true,
-          "DelayToShowHelpArrows": 10,
-          "ArrowEndPosition": {
-            "X": 0.0,
-            "Y": 5.55,
+[
+  {
+    "Id": 0,
+    "Name": "Basic",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 0,
+          "TutorialTooltipAlign": "TopMiddle",
+          "TutorialTooltipOwner": "EnemyOverlord",
+          "Description": "Enemy\n Overlord\n Defense",
+          "Position": {
+            "X": 0.8,
+            "Y": 2.5,
             "Z": 0.0
           }
         },
         {
-          "id": 29,
-          "janePose": "THUMBS_UP",
-          "janeText": "AWESOME!! ...Now that’s what I call a proper comeback!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_33_comeback",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
+          "Id": 1,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "PlayerOverlord",
+          "Description": "Your\n Overlord\n Defense",
+          "Position": {
+            "X": 0.8,
+            "Y": -1.45,
+            "Z": 0.0
+          }
         },
         {
-          "id": 30,
-          "janePose": "NORMAL",
-          "janeText": "Well... That's it! The student has become the master!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_34_master",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
+          "Id": 2,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "Description": "Atk: How much\n damage this zombie\n deals.",
+          "Position": {
+            "X": 3.57,
+            "Y": 0.87,
+            "Z": 0.0
+          }
         },
         {
-          "id": 31,
-          "janePose": "KISS",
-          "janeText": "Now go out there and make me proud - <b><color=\"orange\"><u>Zombie Slayer!!!</u></color></b>",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_35_proud",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
+          "Id": 3,
+          "TutorialTooltipAlign": "CenterRight",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "Description": "Def: How much\n damage this zombie\n can take.",
+          "Position": {
+            "X": -4.0,
+            "Y": 0.87,
+            "Z": 0.0
+          }
         },
         {
-          "id": 32,
-          "janePose": "KISS",
-          "janeText": "Haha, OK...byeee!",
-          "IsFocusing": false,
-          "IsArrowEnabled": false,
-          "CanMoveToNextStepByClick": true,
-          "SoundName": "czb_tutorial_B_36_mmmbye",
-          "requiredAction": "NONE",
-          "CanMoveToNextStepByClickInPaused": false,
-          "ShouldStopTurn": false,
-          "CanProceedWithEndStepManually": true,
-          "HasDelayToPlaySound": false,
-          "IsShowNextButtonFocusing": false,
-          "IsShowQuestion": false,
-          "IsShowNextButton": true,
-          "DelayToPlaySound": 6.0
+          "Id": 4,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "PlayerBattleframe",
+          "TutorialTooltipOwnerId": 1,
+          "Description": "Defense was lowered\n by the\n counter-attack.",
+          "Position": {
+            "X": 3.65,
+            "Y": -0.85,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Welcome, zombie slayer! \n\n Since you’re new around here, I’ll let you borrow my deck while\n you learn the ropes.",
+            "DescriptionTooltipCloseText": "GOT IT!"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Destroy the enemy\n overlord to win!",
+            "DescriptionTooltipCloseText": "LET’S BEGIN"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "EnemyOverlord",
+              "Description": "GROWL!"
+            }
+          ],
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "I will melt you!"
+            }
+          ],
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "TutorialDescriptionTooltipsToActivate": [
+            0,
+            1
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 1,
+          "LaunchGameplayManually": true,
+          "LaunchAIBrain": true,
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
+        },
+        {
+          "TutorialObjectIdStepOwner": 51,
+          "TutorialDescriptionTooltipsToActivate": [
+            2,
+            3
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Two can play\n that game.",
+              "AppearDelay": 2
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 5.0
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "CanInteractWithGameplay": true
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "My minion\n cannot attack\n yet. So I’m done\n for now.."
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 9.0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Single"
+            }
+          ],
+          "CanEndTurn": true,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 3,
+          "ActionToEndThisStep": "BattleframeAttacked",
+          "UnitsCanAttack": true,
+          "LaunchAIBrain": true
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Not bad for\n a slab of rock"
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 1,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Lets attack\n that zombie."
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0.0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": 3.0,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 1,
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerBattleframe",
+              "AppearDelay": 2.5
+            }
+          ],
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked",
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true
+        },
+        {
+          "TutorialObjectIdStepOwner": 1,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "My boy is tough\n enough to take\n a hit."
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            4
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 2.4,
+                "Y": -0.4,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 5.0
+            }
+          ],
+          "CanInteractWithGameplay": true,
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "I’m done. Let’s\n move on shall\n we?"
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 9.0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Single"
+            }
+          ],
+          "CanEndTurn": true,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "UnitsCanAttack": true,
+          "LaunchAIBrain": true,
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "ConnectedTurnIndex": 5
+        },
+        {
+          "ConnectedTurnIndex": 5,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "EnemyOverlord",
+              "Description": "Double trouble."
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn",
+          "UnitsCanAttack": true
+        },
+        {
+          "TutorialObjectIdStepOwner": 2,
+          "ConnectedTurnIndex": 6,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "MELT HIM!",
+              "AppearDelay": 2.5
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0.0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": 6.7,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 2,
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerBattleframe",
+              "AppearDelay": 2.5
+            }
+          ],
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked",
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true
+        },
+        {
+          "TutorialObjectIdStepOwner": 1,
+          "ConnectedTurnIndex": 6,
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0.0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": 6.7,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 1,
+              "TutorialHandPointerOwner": "PlayerBattleframe",
+              "TutorialHandPointerType": "Animated"
+            }
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked",
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true
+        },
+        {
+          "ConnectedTurnIndex": 6,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 3.7,
+                "Y": -0.4,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand"
+            }
+          ],
+          "CanInteractWithGameplay": true,
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 9.0,
+                "Y": 1.6,
+                "Z": 0.0
+              }
+            }
+          ],
+          "CanEndTurn": true,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 7,
+          "UnitsCanAttack": true,
+          "LaunchAIBrain": true,
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialDescriptionTooltipsToDeactivate": [
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "ConnectedTurnIndex": 7,
+          "UnitsCanAttack": true,
+          "OverlordSayTooltips": [
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true,
+          "ConnectedTurnIndex": 8,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Two can play that\n game...",
+              "AppearDelay": 2.0
+            }
+          ],
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true,
+          "ConnectedTurnIndex": 8,
+          "ActionToEndThisStep": "EnemyOverlordDied"
+        },
+        {
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "NOICE! \nYou won your first match!",
+            "DescriptionTooltipCloseText": "GOT IT!"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -3.0,
+                "Y": -4.7,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true,
+              "AppearDelay": 1.5
+            }
+          ],
+          "ActionToEndThisStep": "YouWonPopupClosed"
+        },
+        {
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
         }
       ],
       "SpecificBattlegroundInfo": {
-        "CurrentTurn": 9,
+        "RankSystemHasEnabled": false,
         "PlayerInfo": {
-          "Health": 10,
-          "MaximumHealth": 20,
-          "CurrentGoo": 9,
-          "MaximumGoo": 9,
-          "HeroId": 4,
+          "OverlordId": 4,
+          "Defense": 10,
+          "MaximumDefense": 20,
+          "CurrentGoo": 0,
+          "MaximumGoo": 0,
           "CardsInHand": [
-            "Cherno-bill"
           ],
           "CardsInDeck": [
-            "Zeptic"
-          ],
-          "CardsOnBoard": [
             {
-              "Name": "Poizom",
-              "IsManuallyPlayable": true
+              "Name": "Gloop",
+              "TutorialObjectId": 1
             },
             {
-              "Name": "Poizom",
-              "IsManuallyPlayable": true
+              "Name": "Rubble",
+              "TutorialObjectId": 2
             },
             {
-              "Name": "Poizom",
-              "IsManuallyPlayable": true
+              "Name": "Zky",
+              "TutorialObjectId": 3
+            },
+            {
+              "Name": "Harpoon",
+              "TutorialObjectId": 4
             }
           ],
-          "CardsOnGraveyard": [
-
+          "CardsOnBoard": [
           ],
-          "PrimaryOverlordSkill": "POISON_DART",
-          "SecondaryOverlordSkill": "TOXIC_POWER"
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
         },
         "OpponentInfo": {
-          "Health": 6,
-          "MaximumHealth": 20,
-          "CurrentGoo": 10,
-          "MaximumGoo": 10,
-          "HeroId": 1,
-          "AiType": "BLITZ_AI",
+          "OverlordId": 0,
+          "Defense": 5,
+          "MaximumDefense": 20,
+          "CurrentGoo": 0,
+          "MaximumGoo": 0,
           "CardsInHand": [
-
           ],
           "CardsInDeck": [
+            {
+              "Name": "Duzt",
+              "TutorialObjectId": 51
+            },
+            {
+              "Name": "Duzt",
+              "TutorialObjectId": 52
+            },
+            {
+              "Name": "Rubble",
+              "TutorialObjectId": 53
+            },
+            {
+              "Name": "Harpoon",
+              "TutorialObjectId": 54
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "GameplayBeginManually": true
+      },
+      "SpecificTurnInfos": [
+        {
+          "TurnIndex": 1,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 51
+            }
+          ]
+        },
+        {
+          "TurnIndex": 2,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 1
 
+            }
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "TapOnEndTurnButtonWhenItsLimited",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "I can still\n play a card!"
+              }
+            }
+          ]
+        },
+        {
+          "TurnIndex": 3,
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "PLAYER"
+            }
+          ]
+        },
+        {
+          "TurnIndex": 4,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 2
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 1,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 51
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked",
+            "PlayerOverlordCardPlayed"
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToUseUnsequentionalBattleframe",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Turn that\n zombie into\n ash!"
+              },
+              "ConnectedTutorialActivityAction": "BattleframeAttacked"
+            },
+            {
+              "TutorialActivityAction": "TapOnEndTurnButtonWhenItsLimited",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Summon more\n minions!"
+              },
+              "ConnectedTutorialActivityAction": "PlayerOverlordCardPlayed"
+            }
+          ]
+        },
+        {
+          "TurnIndex": 5,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 52
+            },
+            {
+              "TutorialObjectId": 53
+            }
+          ]
+        },
+        {
+          "TurnIndex": 6,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked",
+            "BattleframeAttacked",
+            "PlayerOverlordCardPlayed"
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 1,
+              "TargetType": "OPPONENT"
+            },
+            {
+              "TutorialObjectId": 2,
+              "TargetType": "OPPONENT"
+            }
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 3
+            }
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToUseUnsequentionalBattleframe",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterRight",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "NO, get the\n Overlord!"
+              }
+            },
+            {
+              "TutorialActivityAction": "TapOnEndTurnButtonWhenItsLimited",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "My minion is\n itching for battle!"
+              }
+            }
+          ]
+        },
+        {
+          "TurnIndex": 7,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked",
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed"
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 53,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 2
+            }
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 54,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 3
+            }
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "EnemyOverlordCardPlayed",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterRight",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "An Item. Didn’t\n know you were smart\n enough to play those..."
+              }
+            }
+          ]
+        },
+        {
+          "TurnIndex": 8,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked"
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 4,
+              "TargetType": "OPPONENT"
+            }
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "TapOnEndTurnButtonWhenItsLimited",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Drag the Item to\n its target."
+              }
+            },
+            {
+              "TutorialActivityAction": "PlayerOverlordCardDrawed",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "What are you\n waiting for?\n Finish him!"
+              }
+            }
+          ]
+        }
+      ],
+      "ActionActivityHandlers": [
+        {
+          "TutorialActivityAction": "EnemyOverlordDied",
+          "TutorialActivityActionHandler": "OverlordSayTooltip",
+          "TutorialActivityActionHandlerData": {
+            "TutorialTooltipAlign": "CenterLeft",
+            "TutorialTooltipOwner": "PlayerOverlord",
+            "Description": "MELT BABY\n MELT!"
+          }
+        }
+      ],
+      "PlayerOrderScreenShouldAppear": false
+    }
+  },
+  {
+    "Id": 1,
+    "Name": "Abilities",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "TutorialTooltipOwnerId": 51,
+          "Description": "Feral zombies can\n attack the turn they\n are played.",
+          "Position": {
+            "X": 3.5,
+            "Y": 0.3,
+            "Z": 0.0
+          },
+          "AppearDelay": 1.5
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "PlayerCardInHand",
+          "TutorialTooltipOwnerId": 1,
+          "Description": "This is how much\n goo your card costs.",
+          "Position": {
+            "X": 9.8,
+            "Y": -6.0,
+            "Z": 0.0
+          },
+          "Resizable": false,
+          "AppearDelay": 2.3
+        },
+        {
+          "Id": 3,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "PlayerGooBottles",
+          "Description": "You’ve earned a goo\n bottle.",
+          "Position": {
+            "X": -7.25,
+            "Y": -3.67,
+            "Z": 0.0
+          },
+          "Resizable": false,
+          "AppearDelay": 2.0
+        },
+        {
+          "Id": 4,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "Description": "You’ve earned another goo\n bottle, and goo you spent\n before is replenished.",
+          "Position": {
+            "X": -6.77,
+            "Y": -3.2,
+            "Z": 0.0
+          },
+          "Resizable": true,
+          "AppearDelay": 1.0
+        },
+        {
+          "Id": 5,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "PlayerBattleframe",
+          "Description": "Entry effects happen\n as you play cards,\n just like Items.",
+          "Position": {
+            "X": 3.5,
+            "Y": 0.3,
+            "Z": 0.0
+          },
+          "TutorialTooltipOwnerId": 2,
+          "Resizable": false
+        },
+        {
+          "Id": 6,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "TutorialTooltipOwnerId": 52,
+          "Description": "Heavy zombies need\n to be attacked first.",
+          "Position": {
+            "X": 3.4,
+            "Y": 0.3,
+            "Z": 0.0
+          },
+          "Resizable": false
+        },
+        {
+          "Id": 7,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "PlayerOverlordAbility",
+          "Description": "Overlords have unique\n abilities that can be\n used on cooldown.",
+          "Position": {
+            "X": 5.8,
+            "Y": -5.0,
+            "Z": 0.0
+          },
+          "Resizable": true
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Zombies are not all just claws and\n flesh. They have abilities too!",
+            "DescriptionTooltipCloseText": "LET’S BEGIN"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "EnemyOverlord",
+              "Description": "CRUSH YOU!"
+            }
+          ],
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Not if I melt\n you first!"
+            }
+          ],
+          "ActionToEndThisStep": "OverlordSayPopupHided"
+        },
+        {
+          "ConnectedTurnIndex": 1,
+          "LaunchGameplayManually": true,
+          "LaunchAIBrain": true,
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 1,
+          "TutorialObjectIdStepOwner": 51,
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Pesky Ferals..."
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "TutorialDescriptionTooltipsToActivate": [
+            2,
+            3
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true,
+
+
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "AppearDelay": 10.0
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "CanInteractWithGameplay": true,
+          "CanEndTurn": true,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "We’re done here\n lets move it on!",
+              "AppearDelay": 10.0
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 9.0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Single",
+              "AppearDelay": 2.0
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "LaunchAIBrain": true,
+          "ConnectedTurnIndex": 3,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "EnemyOverlord",
+              "Description": "You. No hurt me.",
+              "AppearDelay": 1.0
+            }
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialDescriptionTooltipsToActivate": [
+            4
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Time to end this.",
+              "AppearDelay": 1.0
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "AppearDelay": 10.0
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 2,
+          "TutorialDescriptionTooltipsToActivate": [
+            5
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 52,
+          "TutorialDescriptionTooltipsToActivate": [
+            6
+          ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 2,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0.0,
+                "Y": 1.13,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 1.25,
+                "Y": 3.2,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 2,
+              "TutorialHandPointerType": "Animated"
+            }
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            6,
+            7
+          ],
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "TutorialObjectIdStepOwner": 1,
+          "CanInteractWithGameplay": true,
+          "TutorialDescriptionTooltipsToDeactivate": [
+            5
+          ],
+          "UnitsCanAttack": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0.0,
+                "Y": 1.13,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": 7.0,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 1,
+              "TutorialHandPointerType": "Animated"
+            }
+          ],
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "CanInteractWithGameplay": true,
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
+          "SelectableTargets": [
+            "OPPONENT"
+          ],
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "My Poison Dart\n will end him."
+            }
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 2.53,
+                "Y": -3.9,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": 7.0,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerOverlordAbility"
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            7
+          ],
+          "ActionToEndThisStep": "EnemyOverlordDied"
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Good job Zombie Slayer!",
+            "DescriptionTooltipCloseText": "END"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+        }
+      ],
+      "SpecificBattlegroundInfo": {
+        "RankSystemHasEnabled": false,
+        "PlayerInfo": {
+          "OverlordId": 4,
+          "Defense": 10,
+          "MaximumDefense": 20,
+          "CurrentGoo": 4,
+          "MaximumGoo": 4,
+          "CardsInHand": [
+          ],
+          "CardsInDeck": [
+            {
+              "Name": "Zwoop",
+              "TutorialObjectId": 1
+            },
+            {
+              "Name": "Bane",
+              "TutorialObjectId": 2
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "POISON_DART",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "OpponentInfo": {
+          "OverlordId": 4,
+          "Defense": 5,
+          "MaximumDefense": 20,
+          "CurrentGoo": 4,
+          "MaximumGoo": 4,
+          "CardsInHand": [
+          ],
+          "CardsInDeck": [
+            {
+              "Name": "Shale",
+              "TutorialObjectId": 51
+            },
+            {
+              "Name": "Hardy",
+              "TutorialObjectId": 52
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "GameplayBeginManually": true
+      },
+      "SpecificTurnInfos": [
+        {
+          "TurnIndex": 1,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 51
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "PLAYER"
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "BattleframeAttacked"
+          ],
+          "ActionActivityHandlers": [
+          ]
+        },
+        {
+          "TurnIndex": 2,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 1
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed"
+          ],
+          "ActionActivityHandlers": [
+          ]
+        },
+        {
+          "TurnIndex": 3,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 52
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "PLAYER"
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "BattleframeAttacked"
+          ],
+          "ActionActivityHandlers": [
+          ]
+        },
+        {
+          "TurnIndex": 4,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 2
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 2,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 52
+            },
+            {
+              "TutorialObjectId": 1,
+              "TargetType": "OPPONENT"
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked",
+            "BattleframeAttacked",
+            "PlayerOverlordAbilityUsed"
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToUseWrongBattleframe",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterRight",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Nah, let’s use the Feral"
+              }
+            },
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToUseUnsequentionalBattleframe",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterRight",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "END IT!"
+              }
+            }
+          ]
+        }
+      ],
+      "PlayerOrderScreenShouldAppear": false
+    }
+  },
+  {
+    "Id": 2,
+    "Name": "Overflow",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "EnemyBattleframe",
+          "TutorialTooltipOwnerId": 52,
+          "Description": "Death effect\n happens when the\n zombie is\n destroyed.",
+          "Position": {
+            "X": 3.4,
+            "Y": 0.3,
+            "Z": 0.0
+          }
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "CenterLeft",
+          "Description": "Gives you the ability\n to Overflow your goo.",
+          "Position": {
+            "X": 4.3,
+            "Y": 0.3,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Goo-Carriers give you extra goo to spend. This effect is called Overflow.",
+            "DescriptionTooltipCloseText": "LET’S BEGIN"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ConnectedTurnIndex": 1,
+          "LaunchGameplayManually": true,
+          "LaunchAIBrain": true,
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
+        },
+        {
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed"
+        },
+        {
+          "TutorialObjectIdStepOwner": 52,
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "CanInteractWithGameplay": true,
+          "ConnectedTurnIndex": 2,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 0.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 2.5
+            }
+          ],
+          "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand",
+        },
+        {
+          "MatchShouldBePaused": true,
+          "TutorialDescriptionTooltipsToActivate": [
+            2
+          ],
+          "ActionToEndThisStep": "TapOnScreen",
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "TutorialObjectIdStepOwner": 20,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 1.6,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": -1.32,
+                "Y": 3.04,
+                "Z": 0.0
+              },
+              "TutorialObjectIdStepOwner": 20,
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerBattleframe"
+            }
+          ],
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked",
+        },
+        {
+          "ConnectedTurnIndex": 2,
+          "CanInteractWithGameplay": true,
+          "CanEndTurn": true,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "LaunchAIBrain": true,
+          "ConnectedTurnIndex": 3,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Time for goo to overflow."
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "ConnectedTurnIndex": 4,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "ActionToEndThisStep": "BattleframeAttacked"
+        },
+        {
+          "CanEndTurn": true,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
+          ],
+          "LaunchAIBrain": true,
+          "ConnectedTurnIndex": 5,
+          //"ActionToEndThisStep": "EndTurn"
+          "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted"
+        },
+        {
+
+          "ConnectedTurnIndex": 5,
+          "AIShouldBePaused": true,
+          "ActionToEndThisStep": "DeathAbilityCompleted"
+        },
+        {
+          "ConnectedTurnIndex": 5,
+          "ActionToEndThisStep": "EndTurn"
+        },
+        {
+          "ConnectedTurnIndex": 6,
+          "CanInteractWithGameplay": true,
+          "SelectableTargets": [
+            "OPPONENT_CARD"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.9,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": -1.55,
+                "Y": 3.0,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 1.0
+            }
+          ],
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Let’s finish this."
+            }
+          ],
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed"
+        },
+        {
+          "ConnectedTurnIndex": 6,
+          "CanInteractWithGameplay": true,
+          "UnitsCanAttack": true,
+          "SelectableTargets": [
+            "OPPONENT"
+          ],
+          "ActionToEndThisStep": "EnemyOverlordDied"
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Good job Zombie Slayer!",
+            "DescriptionTooltipCloseText": "END"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+        }
+      ],
+      "SpecificBattlegroundInfo": {
+        "RankSystemHasEnabled": true,
+        "AISpecificOrderEnabled": true,
+        "PlayerInfo": {
+          "OverlordId": 4,
+          "Defense": 10,
+          "MaximumDefense": 20,
+          "CurrentGoo": 8,
+          "MaximumGoo": 8,
+          "CardsInHand": [
+            {
+              "Name": "Cherno-bill",
+              "TutorialObjectId": 1
+            }
+          ],
+          "CardsInDeck": [
+            {
+              "Name": "Germ",
+              "TutorialObjectId": 10
+            },
+            {
+              "Name": "Germ",
+              "TutorialObjectId": 11
+            },
+            {
+              "Name": "Nail Bomb",
+              "TutorialObjectId": 12
+            }
           ],
           "CardsOnBoard": [
             {
-              "Name": "Cerberus",
-              "IsManuallyPlayable": true
+              "Name": "GooZilla",
+              "IsManuallyPlayable": true,
+              "TutorialObjectId": 20,
+              "BuffedHealth": 4,
+              "BuffedDamage": 4
             }
           ],
-          "CardsOnGraveyard": [
-
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "OpponentInfo": {
+          "OverlordId": 0,
+          "Defense": 10,
+          "MaximumDefense": 20,
+          "CurrentGoo": 8,
+          "MaximumGoo": 8,
+          "CardsInHand": [
+            {
+              "Name": "Crumbz",
+              "TutorialObjectId": 51
+            },
+            {
+              "Name": "Crumbz",
+              "TutorialObjectId": 52
+            },
           ],
-          "PrimaryOverlordSkill": "FIRE_BOLT",
-          "SecondaryOverlordSkill": "RABIES"
-        }
+          "CardsInDeck": [
+            {
+              "Name": "Golem",
+              "TutorialObjectId": 53
+            },
+            {
+              "Name": "Hardy",
+              "TutorialObjectId": 54
+            },
+            {
+              "Name": "Earthshaker",
+              "TutorialObjectId": 55
+            },
+            {
+              "Name": "Spiker",
+              "TutorialObjectId": 56
+            },
+            {
+              "Name": "Spiker",
+              "TutorialObjectId": 57
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
+        "GameplayBeginManually": true
       },
-      "PlayerTurnFirst": false,
-      "Ignore": true
+      "SpecificTurnInfos": [
+        {
+          "TurnIndex": 1,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 51
+            },
+            {
+              "TutorialObjectId": 52
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed"
+          ],
+        },
+        {
+          "TurnIndex": 2,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 10
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 20,
+              "TargetType": "OPPONENT_CARD",
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked"
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Save it for Cherno-bill."
+              }
+            },
+          ]
+        },
+        {
+          "TurnIndex": 3,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 53
+            },
+            {
+              "TutorialObjectId": 54
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "PLAYER",
+            },
+            {
+              "TutorialObjectId": 52,
+              "TargetType": "PLAYER",
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "BattleframeAttacked"
+          ],
+        },
+        {
+          "TurnIndex": 4,
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": -1
+            },
+            {
+              "TutorialObjectId": 1
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 20,
+              "TargetType": "OPPONENT_CARD",
+            },
+            {
+              "TutorialObjectId": 10,
+              "TargetType": "OPPONENT_CARD",
+            }
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked",
+            "BattleframeAttacked"
+          ],
+          "ActionActivityHandlers": [
+            {
+              "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Time for goo to overflow."
+              }
+            },
+          ]
+        },
+        {
+          "TurnIndex": 5,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed"
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 52,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 51,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 53,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 54,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            }
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 55,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            },
+            {
+              "TutorialObjectId": 56,
+            }
+          ],
+        },
+        {
+          "TurnIndex": 6,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "BattleframeAttacked"
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 12,
+              "TargetType": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 55
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 20,
+              "TargetType": "OPPONENT"
+            }
+          ],
+        }
+      ],
+      "ActionActivityHandlers": [
+      ],
+      "PlayerOrderScreenShouldAppear": false
     }
-  ]
-}
+  },
+  {
+    "Id": 3,
+    "Name": "Deck Building",
+    "TutorialContent": {
+      "HasBlockedInteractivityInGameScreens": true,
+      "TutorialSteps": [
+        {
+          "OpenScreen": "MainMenuPage",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Army",
+            "Button_Settings",
+            "Button_Credits",
+            "Button_OpenPacks",
+            "Button_Shop"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -2.8,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "PlaySelectionPage",
+          "BlockedButtons": [
+            "Button_Tutorial",
+            "Button_PvPMode",
+            "Button_Back"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -4.5,
+                "Y": -2.2,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "HordeSelectionPage",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_Battle",
+            "Button_Army",
+            "Pulse",
+            "Button_Edit",
+            "Button_Delete",
+            "Image_Skill",
+            "Image_Skill",
+            "Button_LeftArrow",
+            "Button_RightArrow"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 5.5,
+                "Y": 1.75,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "OverlordSelectionPage",
+          "BlockedButtons": [
+            "Button_Back"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -5.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "OverlordAbilityPopup",
+          "BlockedButtons": [
+            "Button_Cancel"
+          ],
+          "ActionToEndThisStep": "PopupClosed",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 2.5,
+                "Y": -5.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "ActionToEndThisStep": "CardDragged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -1.5,
+                "Z": 0
+              },
+              "EndPosition": {
+                "X": 0,
+                "Y": 3.8,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Animated",
+              "AboveUI": true
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            0
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "ActionToEndThisStep": "CardRemoved",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -7.8,
+                "Y": 4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            0
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "ActionToEndThisStep": "CardAdded",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": -1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            2
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "ActionToEndThisStep": "HordeFilled",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back",
+            "Button_Save"
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            2
+          ]
+        },
+        {
+          "OpenScreen": "HordeEditingPage",
+          "BlockedButtons": [
+            "Button_Buy",
+            "Button_Army",
+            "Button_Back"
+          ],
+          "ActionToEndThisStep": "HordeSaved",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 9,
+                "Y": 8,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ]
+        },
+        {
+          "OpenScreen": "HordeSelectionPage",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_Army",
+            "Button_Edit",
+            "Button_Delete",
+            "Image_Skill",
+            "Image_Skill",
+            "Button_LeftArrow",
+            "Button_RightArrow"
+          ],
+          "ActionToEndThisStep": "ScreenChanged",
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 8.3,
+                "Y": -4.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "AboveUI": true
+            }
+          ],
+          "ConnectedActivities": [
+            0
+          ]
+        }
+      ],
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 0,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Add cards to your\ndeck by dragging\nthem to the top.",
+          "Position": {
+            "X": 2.8,
+            "Y": -2.5,
+            "Z": 0.0
+          }
+        },
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Remove cards from\nyour deck by double\ntapping on them.",
+          "Position": {
+            "X": -4.5,
+            "Y": 2.6,
+            "Z": 0
+          }
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "You can also add\ncards by double\ntapping them.",
+          "Position": {
+            "X": 2.8,
+            "Y": -2.5,
+            "Z": 0.0
+          }
+        },
+        {
+          "Id": 3,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "It's time to BATTLE!",
+          "Position": {
+            "X": 8,
+            "Y": -4.5,
+            "Z": 0.0
+          }
+        }
+      ],
+      "ActionActivityHandlers": [
+        {
+          "TutorialActivityAction": "IncorrectButtonTapped",
+          "TutorialActivityActionHandler": "DrawDescriptionTooltips",
+          "Id": 0,
+          "TutorialActivityActionHandlerData": {
+            "TutorialDescriptionTooltipsToActivate": [
+              3
+            ]
+          },
+          "HasSpecificConnection": true
+        }
+      ]
+    }
+  }
+]

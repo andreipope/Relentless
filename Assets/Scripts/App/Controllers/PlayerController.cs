@@ -39,6 +39,12 @@ namespace Loom.ZombieBattleground
 
         private bool _cardsZooming;
 
+        private bool _isHovering;
+
+        private float _timeHovering;
+
+        private BoardCard _hoveringBoardCard;
+
         private BoardCard _topmostBoardCard;
 
         private BoardUnitView _selectedBoardUnitView;
@@ -82,12 +88,14 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsGameStarted || _gameplayManager.IsGameEnded)
                 return;
 
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep != null && !_tutorialManager.CurrentTutorialDataStep.CanHandleInput)
+            HandleInput();
+
+            if (_tutorialManager.IsTutorial &&
+                _tutorialManager.CurrentTutorialStep != null &&
+                !_tutorialManager.CurrentTutorialStep.ToGameplayStep().CanInteractWithGameplay)
                 return;
 
             _pointerEventSolver.Update();
-
-            HandleInput();
         }
 
         public void ResetAll()
@@ -201,6 +209,23 @@ namespace Loom.ZombieBattleground
 
         public void HandCardPreview(object[] param)
         {
+            if (_tutorialManager.IsTutorial)
+            {
+                int id = 0;
+
+                switch (param[0])
+                {
+                    case BoardUnitView unit:
+                        id = unit.Model.TutorialObjectId;
+                        break;
+                    default:
+                        break;
+                }
+
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeSelected, id);
+                return;
+            }
+
             Vector3 cardPosition;
 
             if (!InternalTools.IsTabletScreen())
@@ -353,14 +378,75 @@ namespace Loom.ZombieBattleground
             {
                 _battlegroundController.DestroyCardPreview();
             }
+
+            if(_tutorialManager.IsTutorial && !Application.isMobilePlatform && _boardArrowController.CurrentBoardArrow == null)
+            {
+                CastRay(mousePos);
+            }
+        }
+
+        private void CastRay(Vector3 point)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            hits = hits.Where(hit => !hit.collider.name.Equals(Constants.BattlegroundTouchZone)).ToArray();
+
+            if (hits.Length > 0 && !IsCardSelected)
+            {
+                foreach (RaycastHit2D hit in hits)
+                {
+                    CheckColliders(hit.collider);
+                }
+            }
+            else
+            {
+                ClearHovering();
+            }
+        }
+
+        private void CheckColliders(Collider2D collider)
+        {
+            BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+
+            if (boardCard != null)
+            {
+                UpdateHovering(boardCard);
+            }
+        }
+
+        private void UpdateHovering(BoardCard boardCard)
+        {
+            if (_hoveringBoardCard != boardCard)
+            {
+                _isHovering = false;
+                _hoveringBoardCard = boardCard;
+                _timeHovering = 0;
+            }
+            else if (!_isHovering)
+            {
+                _timeHovering += Time.deltaTime;
+                if (_timeHovering >= Constants.MaxTimeForHovering)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.WorkingCard.TutorialObjectId);
+
+                    _isHovering = true;
+                }
+            }
+        }
+
+        private void ClearHovering()
+        {
+            _isHovering = false;
+            _hoveringBoardCard = null;
+            _timeHovering = 0;
         }
 
         private void PointerSolverDragStartedHandler()
         {
             _topmostBoardCard?.HandBoardCard?.OnSelected();
-            if (_tutorialManager.IsTutorial)
+
+            if(_tutorialManager.IsTutorial && _topmostBoardCard?.HandBoardCard != null)
             {
-                _tutorialManager.DeactivateSelectTarget();
+                _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
             }
 
             if (_boardArrowController.CurrentBoardArrow == null)
@@ -383,6 +469,10 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.CardsZoomed = true;
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+            }
+            else
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
             }
         }
 

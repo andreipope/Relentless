@@ -591,9 +591,25 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+                (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
 
-                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                GameClient.Get<ITutorialManager>().SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
+
+                if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
+                {
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+
+                    GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                }
+                else
+                {
+                    _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+
+                    if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                    {
+                        GameClient.Get<ITutorialManager>().StartTutorial();
+                    }
+                }
             }
             else
             {
