@@ -402,7 +402,7 @@ namespace Loom.ZombieBattleground
                 OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
                 eventHandler.DragBegan += BoardCardDragBeganHandler;
-                eventHandler.DragEnded += BoardCardDragEndedHandler;
+                eventHandler.DragEnded += BoardCardArmyDragEndedHandler;
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdArmyCards.Add(boardCard);
@@ -570,9 +570,8 @@ namespace Loom.ZombieBattleground
         public void AddCardToDeck(DeckBuilderCard sender, IReadOnlyCard card)
         {
             if (_currentDeck == null)
-            {
                 return;
-            }
+            
 
             if (_against[_currentHero.HeroElement] == card.CardSetType)
             {
@@ -634,6 +633,12 @@ namespace Loom.ZombieBattleground
                 deckBuilderCard.Page = this;
                 deckBuilderCard.Card = card;
                 deckBuilderCard.IsHordeItem = true;
+                
+                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
+
+                eventHandler.DragBegan += BoardCardDragBeganHandler;
+                eventHandler.DragEnded += BoardCardHordeDragEndedHandler; 
+                eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdHordeCards.Add(boardCard);
 
@@ -1008,9 +1013,8 @@ namespace Loom.ZombieBattleground
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (_isDragging)
-            {
                 return;
-            }
+            
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
@@ -1026,12 +1030,10 @@ namespace Loom.ZombieBattleground
             _draggingObject.transform.position = position;
         }
 
-        private void BoardCardDragEndedHandler(PointerEventData eventData, GameObject onOnject)
+        private void BoardCardArmyDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            {
-                return;
-            }
+                return;            
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -1055,13 +1057,40 @@ namespace Loom.ZombieBattleground
             _draggingObject = null;
             _isDragging = false;
         }
+        private void BoardCardHordeDragEndedHandler(PointerEventData eventData, GameObject onOnject)
+        {
+            if (!_isDragging)
+                return;
+            
+
+            Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+
+            if (hits.Length > 0)
+            {
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.gameObject == _armyAreaObject)
+                    {
+                        BoardCard hordeCard = _createdHordeCards.Find(x =>
+                            x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
+
+                        RemoveCardFromDeck(null, hordeCard.LibraryCard);
+                    }
+                }
+            }
+
+            Object.Destroy(_draggingObject);
+            _draggingObject = null;
+            _isDragging = false;
+        }
 
         private void BoardCardDragUpdatedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            {
                 return;
-            }
+            
 
             Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             position.z = _draggingObject.transform.position.z;

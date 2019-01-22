@@ -349,9 +349,9 @@ namespace Loom.ZombieBattleground
         private async void ConfirmOTPProcess(bool noOTP = false)
         {
             SetUIState(LoginState.ValidateAndLogin);
+            CreateVaultTokenData vaultTokenData = new CreateVaultTokenData();
             try
             {
-                CreateVaultTokenData vaultTokenData;
                 if (noOTP)
                 {
                     vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
@@ -368,20 +368,25 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                if (e.Message == Constants.VaultEmptyErrorCode || e.Message.Contains("Base-64"))
+                if (e.Message == Constants.VaultEmptyErrorCode)
                 {
-                    UpdatePrivateKeyProcess(noOTP);
+                    UpdatePrivateKeyProcess(noOTP, vaultTokenData);
                 }
                 else
                 {
                     Debug.Log(e.ToString());
+                    string errorMsg = string.Empty;
+                    if (e.Message.Contains("Forbidden"))
+                    {
+                        errorMsg = "Invalid OTP. \n Please Enter correct OTP.";
+                    }
                     _lastErrorMessage = e.Message;
-                    SetUIState(LoginState.ValidationFailed);
+                    SetUIState(LoginState.ValidationFailed, errorMsg);
                 }
             }
         }
 
-        private async void UpdatePrivateKeyProcess(bool noOTP)
+        private async void UpdatePrivateKeyProcess(bool noOTP, CreateVaultTokenData vaultPreviousData = null)
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
@@ -393,7 +398,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                    vaultTokenData = vaultPreviousData;
                 }
                 bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Convert.ToBase64String(_backendDataControlMediator.UserDataModel.PrivateKey));
                 CompleteLoginFromCurrentSetUserData();
@@ -444,8 +449,16 @@ namespace Loom.ZombieBattleground
                 Helpers.ExceptionReporter.LogException(e);
 
                 Debug.Log(e.ToString());
+                string errorMsg = string.Empty;
+                if (e.Message.Contains("BadRequest"))
+                {
+                    errorMsg = "This email already exists, \n " +
+                               "Please try a different email to register or \n " +
+                               "login to your existing account.";
+                }
+
                 _lastErrorMessage = e.Message;
-                SetUIState(LoginState.ValidationFailed);
+                SetUIState(LoginState.ValidationFailed, errorMsg);
 
                 _registerButton.enabled = true;
             }
@@ -542,7 +555,7 @@ namespace Loom.ZombieBattleground
                 _lastErrorMessage = e.Message;
                 if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
                 {
-                    _lastErrorMessage = "\n Put correct Username or Password. \n";
+                    _lastErrorMessage = "\n The Username and/or Password are not correct. \n";
                 }
                 SetUIState(LoginState.ValidationFailed);
 
@@ -589,7 +602,7 @@ namespace Loom.ZombieBattleground
             Hide();
         }
 
-        private void SetUIState(LoginState state)
+        private void SetUIState(LoginState state, string errorMsg = "")
         {
             if (Constants.AlwaysGuestLogin)
             {
@@ -639,7 +652,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.Show("The process could not be completed with error:"+_lastErrorMessage+"\nPlease try again.");
+                    string msgToShow = "The process could not be completed with error:" + _lastErrorMessage +
+                                       "\nPlease try again.";
+                    if (!string.IsNullOrEmpty(errorMsg))
+                        msgToShow = errorMsg;
+                    popup.Show(msgToShow);
                     _uiManager.GetPopup<WarningPopup>().ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
                     break;
                 case LoginState.RemoteVersionMismatch:
