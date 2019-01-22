@@ -98,10 +98,6 @@ namespace Loom.ZombieBattleground
             }
 
             BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);
-
-            List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         private void DevourTargetZombie(BoardUnitModel unit)
