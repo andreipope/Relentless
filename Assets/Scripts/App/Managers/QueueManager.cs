@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (!Active || !_backendFacade.IsConnected)
+            if (!Active)
                 return;
 
             while (_tasks.Count > 0)
@@ -64,6 +64,10 @@ namespace Loom.ZombieBattleground
                             Debug.LogWarning(" Time out == " + exception);
                             ShowConnectionPopup();
                         }
+                        catch(Client.RpcClientException exception)
+                        {
+                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
+                        }
                         catch (Exception exception)
                         {
                             Helpers.ExceptionReporter.LogException(exception);
@@ -82,6 +86,10 @@ namespace Loom.ZombieBattleground
                             Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" Time out == " + exception);
                             ShowConnectionPopup();
+                        }
+                        catch (Client.RpcClientException exception)
+                        {
+                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
                         }
                         catch (Exception exception)
                         {

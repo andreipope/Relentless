@@ -328,7 +328,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                throw exception;
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
             }
         }
 
