@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType TargetUnitStatusType;
 
+        public List<Enumerators.UnitStatusType> BlockedUnitStatusTypes;
+
         public void End(BoardUnitView creature)
         {
             if (!StartedDrag)
@@ -85,8 +87,9 @@ namespace Loom.ZombieBattleground
                 bool opponentHasProvoke = OpponentHasHeavyUnits();
                 if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
-                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
-                        unit.Model.UnitStatus == TargetUnitStatusType)
+                    if ((TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
+                        unit.Model.UnitStatus == TargetUnitStatusType) &&
+                        !BlockedUnitStatusTypes.Contains(unit.Model.UnitStatus))
                     {
                         SelectedCard?.SetSelectedUnit(false);
 
