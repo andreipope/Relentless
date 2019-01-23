@@ -2309,7 +2309,7 @@
     }
   },
   {
-    "Id": 3,
+    "Id": 4,
     "Name": "Deck Building",
     "TutorialContent": {
       "HasBlockedInteractivityInGameScreens": true,
