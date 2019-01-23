@@ -132,6 +132,8 @@ namespace Loom.ZombieBattleground
 
             StopGameplay();
 
+            _timerManager.Dispose();
+
             CurrentTurnPlayer = null;
             CurrentPlayer = null;
             OpponentPlayer = null;
