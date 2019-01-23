@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground
                         isMainTurnSecond = false;
                         break;
                     case Enumerators.MatchType.PVP:
-                        foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
+                        foreach (CardInstance cardInstance in player.InitialPvPPlayerState.CardsInDeck)
                         {
                             workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
                             String.Join("\n", workingDeck.Cast<object>().ToArray())
                         );
 
-                        isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
+                        isMainTurnSecond = !GameClient.Get<IPvPManager>().IsFirstPlayer();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
-                        player.PvPPlayerState.CardsInHand
+                        player.InitialPvPPlayerState.CardsInHand
                         .Select(instance => instance.FromProtobuf(player))
                         .ToList();
 

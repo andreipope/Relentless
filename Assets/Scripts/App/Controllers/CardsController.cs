@@ -767,7 +767,12 @@ namespace Loom.ZombieBattleground
         }
 
         public void PlayOpponentCard(
-            Player player, InstanceId cardId, BoardObject target, Action<WorkingCard, BoardObject> completePlayCardCallback)
+            Player player,
+            InstanceId cardId,
+            BoardObject target,
+            Action<WorkingCard, BoardObject> completePlayCardCallback,
+            Action<WorkingCard> cardFoundCallback = null
+            )
         {
             OpponentHandCard opponentHandCard;
             if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
@@ -781,13 +786,14 @@ namespace Loom.ZombieBattleground
                 if (_battlegroundController.OpponentHandCards.Count <= 0)
                     return;
 
-                opponentHandCard = _battlegroundController.OpponentHandCards[
-                    Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
+                opponentHandCard = _battlegroundController.OpponentHandCards[Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
             }
 
             WorkingCard card = opponentHandCard.WorkingCard;
 
             _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
+            player.CardsInHand.Remove(card);
+            cardFoundCallback?.Invoke(card);
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordCardPlayedStarted);
 

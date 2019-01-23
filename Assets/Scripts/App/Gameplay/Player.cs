@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
         public uint TurnTime { get; private set; }
 
-        public PlayerState PvPPlayerState { get; }
+        public PlayerState InitialPvPPlayerState { get; }
 
         public Data.InstanceId InstanceId { get; }
 
@@ -137,7 +137,7 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.PVP:
-                    PvPPlayerState =
+                    InitialPvPPlayerState =
                         _pvpManager.InitialGameState.PlayerStates
                         .First(state =>
                                 isOpponent ?
@@ -145,15 +145,15 @@ namespace Loom.ZombieBattleground
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
 
-                    InitialCardsInHandCount = (uint) PvPPlayerState.InitialCardsInHandCount;
-                    MaxCardsInHand = (uint) PvPPlayerState.MaxCardsInHand;
-                    MaxCardsInPlay = (uint) PvPPlayerState.MaxCardsInPlay;
-                    MaxGooVials = (uint) PvPPlayerState.MaxGooVials;
+                    InitialCardsInHandCount = (uint) InitialPvPPlayerState.InitialCardsInHandCount;
+                    MaxCardsInHand = (uint) InitialPvPPlayerState.MaxCardsInHand;
+                    MaxCardsInPlay = (uint) InitialPvPPlayerState.MaxCardsInPlay;
+                    MaxGooVials = (uint) InitialPvPPlayerState.MaxGooVials;
 
-                    Defense = PvPPlayerState.Defense;
-                    CurrentGoo = PvPPlayerState.CurrentGoo;
-                    GooVials = PvPPlayerState.GooVials;
-                    TurnTime = (uint) PvPPlayerState.TurnTime;
+                    Defense = InitialPvPPlayerState.Defense;
+                    CurrentGoo = InitialPvPPlayerState.CurrentGoo;
+                    GooVials = InitialPvPPlayerState.GooVials;
+                    TurnTime = (uint) InitialPvPPlayerState.TurnTime;
                     break;
                 default:
                     InitialCardsInHandCount = Constants.DefaultCardsInHandAtStartGame;
@@ -209,7 +209,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case Enumerators.MatchType.PVP:
-                        heroId = (int) PvPPlayerState.Deck.HeroId;
+                        heroId = (int) InitialPvPPlayerState.Deck.HeroId;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

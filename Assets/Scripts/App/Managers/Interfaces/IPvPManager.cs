@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
         event Action GameStartedActionReceived;
         event Action GameEndedActionReceived;
 
-        event Action EndTurnActionReceived;
+        event Action<Protobuf.GameState> EndTurnActionReceived;
         event Action<PlayerActionCardPlay> CardPlayedActionReceived;
         event Action<PlayerActionCardAttack> CardAttackedActionReceived;
         event Action<PlayerActionOverlordSkillUsed> OverlordSkillUsedActionReceived;
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         string GetOpponentUserId();
 
-        bool IsCurrentPlayer();
+        bool IsFirstPlayer();
 
         Task StartMatchmaking(int deckId);
 

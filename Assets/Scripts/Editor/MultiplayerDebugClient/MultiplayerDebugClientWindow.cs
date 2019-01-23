@@ -675,7 +675,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 if (opponentPlayer == null)
                     return truePlayerState;
 
-                return CreateFakePlayerStateFromPlayer(truePlayerState, opponentPlayer, true);
+                GameStateConstructor.CreateFakePlayerStateFromPlayer(truePlayerState.Id, opponentPlayer);
             }
 
             return truePlayerState;
@@ -691,34 +691,10 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 if (localPlayer == null)
                     return truePlayerState;
 
-                return CreateFakePlayerStateFromPlayer(truePlayerState, localPlayer, false);
+                return GameStateConstructor.CreateFakePlayerStateFromPlayer(truePlayerState.Id, localPlayer);
             }
 
             return truePlayerState;
-        }
-
-        private static PlayerState CreateFakePlayerStateFromPlayer(PlayerState truePlayerState, Player player, bool useBoardCards)
-        {
-            PlayerState playerState = new PlayerState
-            {
-                Id = truePlayerState.Id,
-                Defense = player.Defense,
-                GooVials = player.GooVials,
-                TurnTime = (int) player.TurnTime,
-                CardsInPlay =
-                {
-                    !useBoardCards ? player.CardsOnBoard.Select(card => card.ToProtobuf()).ToArray() : player.BoardCards.Select(card => card.Model.Card.ToProtobuf()).ToArray()
-                },
-                CardsInDeck =
-                {
-                    player.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
-                },
-                CardsInHand =
-                {
-                    player.CardsInHand.Select(card => card.ToProtobuf()).ToArray()
-                }
-            };
-            return playerState;
         }
 
         private static string SimpleFormatCardInstance(CardInstance cardInstance)

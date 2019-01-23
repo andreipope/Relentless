@@ -4,13 +4,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
+using KellermanSoftware.CompareNetObjects;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Card = Loom.ZombieBattleground.Data.Card;
+using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
@@ -129,9 +134,9 @@ namespace Loom.ZombieBattleground
             _pvpManager.EndTurnActionReceived += OnGetEndTurnHandler;
         }
 
-        private void OnGetEndTurnHandler()
+        private void OnGetEndTurnHandler(GameState controlGameState)
         {
-            StopTurn();
+            StopTurn(controlGameState);
         }
 
         public void Dispose()
@@ -459,11 +464,30 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer;
         }
 
-        public void StopTurn()
+        public void StopTurn(GameState pvpControlGameState = null)
         {
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
+                     // Validate game state
+                     if (Constants.GameStateValidationEnabled && pvpControlGameState != null)
+                     {
+                         GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameState();
+                         CompareLogic compareLogic = new CompareLogic();
+                         compareLogic.Config.ShowBreadcrumb = true;
+                         compareLogic.Config.TreatStringEmptyAndNullTheSame = true;
+                         compareLogic.Config.MaxDifferences = 25;
+                         compareLogic.Config.MembersToIgnore.Add("CardsInGraveyard");
+                         compareLogic.Config.MembersToIgnore.Add("CurrentGoo");
+                         compareLogic.Config.ActualName = "OpponentState";
+                         compareLogic.Config.ExpectedName = "LocalState";
+                         ComparisonResult comparisonResult = compareLogic.Compare(currentGameState, pvpControlGameState);
+                         if (!comparisonResult.AreEqual)
+                         {
+                             Debug.LogException(new Exception("Game state de-sync:\n" + comparisonResult.DifferencesString));
+                         }
+                     }
+
                      EndTurn();
 
                      if (_gameplayManager.IsLocalPlayerTurn())
