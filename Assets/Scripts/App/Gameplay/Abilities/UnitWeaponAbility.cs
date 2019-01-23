@@ -45,10 +45,10 @@ namespace Loom.ZombieBattleground
 
             switch (MainWorkingCard.LibraryCard.MouldId)
             {
-                case 151:
+                case 41:
                     _gameMechanicType = Enumerators.GameMechanicDescriptionType.SuperSerum;
                     break;
-                case 143:
+                case 18:
                     _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
                     break;
                 default:
