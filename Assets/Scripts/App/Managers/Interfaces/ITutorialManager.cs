@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
 
         void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = -1);
 
+        TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
+
         SpecificTurnInfo GetCurrentTurnInfo();
         bool IsCompletedActivitiesForThisTurn();
         string GetCardNameById(int id);

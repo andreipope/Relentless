@@ -99,6 +99,7 @@ namespace Loom.ZombieBattleground
         public int TutorialObjectIdStepOwner;
 
         public List<Enumerators.SkillTargetType> SelectableTargets;
+        public List<Enumerators.TutorialActivityAction> RequiredActivitiesToDoneDuringStep;
 
         public bool MatchShouldBePaused;
         public bool AIShouldBePaused;
@@ -116,6 +117,7 @@ namespace Loom.ZombieBattleground
         public TutorialGameplayStep()
         {
             SelectableTargets = new List<Enumerators.SkillTargetType>();
+            RequiredActivitiesToDoneDuringStep = new List<Enumerators.TutorialActivityAction>();
 
             OverlordSayTooltips = new List<OverlordSayTooltipInfo>();
         }
@@ -250,6 +252,7 @@ namespace Loom.ZombieBattleground
         public string Description;
         public FloatVector3 Position;
         public bool Resizable;
+        public bool DynamicPosition;
         public float AppearDelay;
 
         public TutorialDescriptionTooltip()
@@ -283,6 +286,9 @@ namespace Loom.ZombieBattleground
         public bool AboveUI;
         public float AppearDelay;
         public int TutorialObjectIdStepOwner;
+        public int TargetTutorialObjectId;
+        public List<int> AdditionalObjectIdOwners;
+        public List<int> AdditionalObjectIdTargets;
 
         public HandPointerInfo()
         {
@@ -290,6 +296,9 @@ namespace Loom.ZombieBattleground
             EndPosition = new FloatVector3();
             TutorialHandPointerType = Enumerators.TutorialHandPointerType.Single;
             TutorialHandPointerOwner = Enumerators.TutorialObjectOwner.Undefined;
+
+            AdditionalObjectIdOwners = new List<int>();
+            AdditionalObjectIdTargets = new List<int>();
         }
     }
 
