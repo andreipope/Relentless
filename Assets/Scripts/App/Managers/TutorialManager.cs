@@ -888,7 +888,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.TutorialTooltipOwnerId,
                                        position,
                                        tooltipInfo.Resizable,
-                                       tooltipInfo.AppearDelay);
+                                       tooltipInfo.AppearDelay,
+                                       tooltipInfo.DynamicPosition);
             }
             else
             {

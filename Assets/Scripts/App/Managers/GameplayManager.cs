@@ -347,10 +347,8 @@ namespace Loom.ZombieBattleground
 
                 TutorialStartAction = () =>
                 {
-                    Debug.LogError(7777);
                     if (_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().PlayerOrderScreenShouldAppear)
                     {
-                        Debug.LogError(8888);
                         _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                         {
                             CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
