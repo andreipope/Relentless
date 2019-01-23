@@ -195,7 +195,8 @@ namespace Loom.ZombieBattleground
         }
 
         private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
-        {           
+        {
+            Debug.LogWarning("NUMBER OF TARGETS " + actionUseCardAbility.Targets.Count);
             GotActionUseCardAbility(new UseCardAbilityModel
             {
                 CardKind = (Enumerators.CardKind) actionUseCardAbility.CardKind,
@@ -341,7 +342,9 @@ namespace Loom.ZombieBattleground
 
             List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
 
-            foreach(Unit unit in model.Targets)
+            Debug.LogWarning("NUMBER OF TARGETS IN OTHER " + model.Targets.Count);
+
+            foreach (Unit unit in model.Targets)
             {
                 parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject()
                 {

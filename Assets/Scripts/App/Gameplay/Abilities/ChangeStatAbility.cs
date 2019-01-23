@@ -24,6 +24,9 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
+            Debug.Log("ACTIVATING THIS ABILITY 2 TIMES");
+            Debug.Log(MainWorkingCard.LibraryCard.Name);
+            Debug.Log(AbilityData.AbilityType);
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
