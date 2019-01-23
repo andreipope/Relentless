@@ -351,7 +351,7 @@ namespace Loom.ZombieBattleground
 
         private Vector3 GetPositionByOwner(BoardUnitView unit, Vector3 position)
         {
-            if (unit != null)
+            if (unit != null && unit.GameObject != null)
             {
                 return unit.Transform.TransformPoint(_startPosition);
             }
