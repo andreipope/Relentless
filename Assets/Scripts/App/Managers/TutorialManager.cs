@@ -211,8 +211,49 @@ namespace Loom.ZombieBattleground
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
 
+            StartTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void StartTutorialEvent(int currentTutorialId)
+        {
+            switch (currentTutorialId)
+            {
+                // Basic
+                case 0:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBasic);
+                    break;
+
+                // Abilities
+                case 1:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialAbilities);
+                    break;
+
+                // Rank
+                case 2:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialRanks);
+                    break;
+
+                // Overflow
+                case 3:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialOverflow);
+                    break;
+
+                // Deck
+                case 4:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialDeck);
+                    break;
+
+                // battle
+                case 5:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBattle);
+                    break;
+            }
+        }
+
+        private void SetStartTutorialEvent(string eventName)
+        {
             TutorialDuration.StartTimer();
-            _analyticsManager.SetEvent(AnalyticsManager.EventStartedTutorial);
+            _analyticsManager.SetEvent(eventName);
         }
 
         private void PlayerSelectedEventHandler(Player player)
@@ -277,17 +318,58 @@ namespace Loom.ZombieBattleground
             IsTutorial = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
+            CompleteTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void CompleteTutorialEvent(int currentTutorialId)
+        {
+            switch (currentTutorialId)
+            {
+                // Basic
+                case 0:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialBasic);
+                    break;
+
+                // Abilities
+                case 1:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialAbilities);
+                    break;
+
+                // Rank
+                case 2:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialRanks);
+                    break;
+
+                // Overflow
+                case 3:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialOverflow);
+                    break;
+
+                // Deck
+                case 4:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialDeck);
+                    break;
+
+                // battle
+                case 5:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialBattle);
+                    break;
+            }
+        }
+
+        private void SetCompleteTutorialEvent(string eventName)
+        {
             TutorialDuration.FinishTimer();
             Dictionary<string, object> eventParameters = new Dictionary<string, object>();
             eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDiffrence());
-            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial, eventParameters);
+            _analyticsManager.SetEvent(eventName, eventParameters);
         }
 
         public SpecificTurnInfo GetCurrentTurnInfo()
         {
             if (!IsTutorial)
                 return null;
-                
+
             return CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Find(x => x.TurnIndex == _battlegroundController.CurrentTurn);
         }
 
