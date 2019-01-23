@@ -251,7 +251,7 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
                 {
-                    if (_tutorialManager.CurrentTutorial.Id < 2)
+                    if (_tutorialManager.CurrentTutorial.Id < 3)
                     {
                         _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
                         _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);

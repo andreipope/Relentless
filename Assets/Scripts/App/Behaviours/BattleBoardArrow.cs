@@ -78,6 +78,11 @@ namespace Loom.ZombieBattleground
             if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.LibraryCard.CardSetType))
                 return;
 
+            if (BlockedUnitStatusTypes == null) 
+            {
+                BlockedUnitStatusTypes = new List<Enumerators.UnitStatusType>();
+            }
+
             if (TargetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) ||
                 TargetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) &&
                 unit.Transform.CompareTag(SRTags.PlayerOwned) ||
