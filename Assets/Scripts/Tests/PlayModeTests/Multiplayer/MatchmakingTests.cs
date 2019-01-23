@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Threading.Tasks;
+using Loom.ZombieBattleground.Common;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
@@ -64,7 +65,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.MatchmakeOpponentDebugClient();
 
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
                 await TestHelper.WaitUntilPlayerOrderIsDecided();
                 TestHelper.AssertOverlordName();
 
@@ -84,7 +85,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.MatchmakeOpponentDebugClient();
 
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
                 await TestHelper.WaitUntilPlayerOrderIsDecided();
                 await TestHelper.AssertMulliganPopupCameUp(
                     () => TestHelper.ClickGenericButton("Button_Keep"),
@@ -152,11 +153,11 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PvPSelection);
                 await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                 int selectedHordeIndex = 0;
 
@@ -207,7 +208,7 @@ namespace Loom.ZombieBattleground.Test
                         return Task.CompletedTask;
                     });
 
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
                 await TestHelper.WaitUntilPlayerOrderIsDecided();
                 TestHelper.AssertOverlordName();
                 await TestHelper.ClickGenericButton("Button_Settings");

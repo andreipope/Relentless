@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Time scale to use during tests.
         /// </summary>
-        public const int TestTimeScale = DebugTests ? 1 : 10;
+        public const int TestTimeScale = DebugTests ? 1 : 25;
 
         private static TestHelper _instance;
 
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground.Test
         private RectTransform _fakeCursorTransform;
         private GameObject _fakeCursorGameObject;
 
-        private string _lastCheckedPageName;
+        private Enumerators.AppState _lastCheckedAppState;
 
         private TestBroker _testBroker;
         private Enumerators.MatchPlayer _player;
@@ -279,7 +279,7 @@ namespace Loom.ZombieBattleground.Test
         /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
         public async Task TearDown_GoBackToMainScreen()
         {
-            while (_lastCheckedPageName != "MainMenuPage")
+            while (_lastCheckedAppState != Enumerators.AppState.MAIN_MENU)
             {
                 await GoOnePageHigher();
 
@@ -304,15 +304,16 @@ namespace Loom.ZombieBattleground.Test
 
                 return false;
             });
-            string actualPageName = _canvas1GameObject.transform.GetChild(1).name.Split('(')[0];
 
-            await AssertCurrentPageName(actualPageName, isGoingBack: true);
+            Enumerators.AppState appState = _appStateManager.AppState;
+
+            await AssertCurrentPageName(appState, isGoingBack: true);
 
             await LetsThink();
 
-            switch (actualPageName)
+            switch (appState)
             {
-                case "GameplayPage":
+                case Enumerators.AppState.GAMEPLAY:
                     if (GameObject.Find("Button_Back") != null)
                     {
                         await ClickGenericButton("Button_Back", isGoingBack: true);
@@ -321,7 +322,7 @@ namespace Loom.ZombieBattleground.Test
 
                         await RespondToYesNoOverlay(true, isGoingBack: true);
 
-                        await AssertCurrentPageName("MainMenuPage", isGoingBack: true);
+                        await AssertCurrentPageName(Enumerators.AppState.MAIN_MENU, isGoingBack: true);
 
                         await LetsThink();
                     }
@@ -337,42 +338,41 @@ namespace Loom.ZombieBattleground.Test
 
                         await RespondToYesNoOverlay(true, isGoingBack: true);
 
-                        await AssertCurrentPageName("MainMenuPage", isGoingBack: true);
+                        await AssertCurrentPageName(Enumerators.AppState.MAIN_MENU, isGoingBack: true);
 
                         await LetsThink();
                     }
 
                     break;
-                case "HordeSelectionPage":
+                case Enumerators.AppState.HordeSelection:
                     await ClickGenericButton("Button_Back", isGoingBack: true);
 
-                    await AssertCurrentPageName("PlaySelectionPage", isGoingBack: true);
+                    await AssertCurrentPageName(Enumerators.AppState.PlaySelection, isGoingBack: true);
 
                     break;
-                case "HordeEditingPage":
+                case Enumerators.AppState.DECK_EDITING:
                     await ClickGenericButton("Button_Back", isGoingBack: true);
 
                     await LetsThink();
 
                     await RespondToYesNoOverlay(false, isGoingBack: true);
 
-                    await AssertCurrentPageName("HordeSelectionPage", isGoingBack: true);
+                    await AssertCurrentPageName(Enumerators.AppState.HordeSelection, isGoingBack: true);
 
                     break;
-                case "PlaySelectionPage":
+                case Enumerators.AppState.PlaySelection:
                     await ClickGenericButton("Button_Back", isGoingBack: true);
 
-                    await AssertCurrentPageName("MainMenuPage", isGoingBack: true);
+                    await AssertCurrentPageName(Enumerators.AppState.MAIN_MENU, isGoingBack: true);
 
                     break;
-                case "MainMenuPage":
+                case Enumerators.AppState.MAIN_MENU:
 
                     return;
-                case "LoadingPage":
-
+                case Enumerators.AppState.APP_INIT:
                     return;
                 default:
-                    throw new ArgumentException("Unhandled page: " + actualPageName);
+                    throw new ArgumentException("Unhandled page: " + appState);
             }
 
             await new WaitForUpdate();
@@ -592,27 +592,27 @@ namespace Loom.ZombieBattleground.Test
         }
 
         /// <summary>
-        /// Checks current page’s name and confirms that it’s correct with what was expected.
+        /// Checks current app state and confirms that it’s correct with what was expected.
         /// </summary>
         /// <remarks>
         /// In case we decide to use this, we need to use it for every page. Using it for just a single one may not work as expected.
         /// </remarks>
         /// <example>
-        /// await AssertCurrentPageName ("MainMenuPage");
+        /// await AssertCurrentPageName (Enumerators.AppState.MAIN_MENU);
         /// </example>
-        /// <param name="expectedPageName">Page name</param>
-        public async Task AssertCurrentPageName(string expectedPageName, string errorTextName = "", bool isGoingBack = false)
+        /// <param name="expectedAppState">Page name</param>
+        public async Task AssertCurrentPageName(Enumerators.AppState expectedAppState, string errorTextName = "", bool isGoingBack = false)
         {
             if (!isGoingBack && IsTestFailed)
                 return;
 
-            if (expectedPageName == _lastCheckedPageName)
+            if (expectedAppState == _lastCheckedAppState)
                 return;
 
             WaitStart(pageTransitionWaitTime, true);
             bool transitionTimeout = false;
 
-            GameObject errorTextObject = null;
+            GameObject errorTextObject;
             await new WaitUntil(() =>
             {
                 if (WaitTimeIsUp())
@@ -634,27 +634,18 @@ namespace Loom.ZombieBattleground.Test
                     }
                 }
 
-                if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount >= 2)
-                {
-                    if (_canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == _lastCheckedPageName)
-                        return false;
-
-                    return true;
-                }
-
-                return false;
+                return _appStateManager.AppState == expectedAppState;
             });
 
             if (transitionTimeout)
             {
-                Assert.Fail($"Page transition took too long from {_lastCheckedPageName} to {expectedPageName}");
+                Assert.Fail($"Page transition took too long from {_lastCheckedAppState} to {expectedAppState}");
             }
 
-            string actualPageName = _canvas1GameObject.transform.GetChild(1).name.Split('(')[0];
+            Enumerators.AppState actualAppState = _appStateManager.AppState;
 
-            Assert.AreEqual(expectedPageName, actualPageName);
-
-            _lastCheckedPageName = actualPageName;
+            Assert.AreEqual(expectedAppState, actualAppState);
+            _lastCheckedAppState = _appStateManager.AppState;
 
             await new WaitForUpdate();
         }
@@ -2837,7 +2828,7 @@ namespace Loom.ZombieBattleground.Test
         /// <returns></returns>
         public async Task PlayMoves(Func<Func<Task>> turnTaskGenerator)
         {
-            await AssertCurrentPageName("GameplayPage");
+            await AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
 
             InitalizePlayer();
 
@@ -2958,13 +2949,13 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await ClickGenericButton("Image_BaackgroundGeneral");
-            await AssertCurrentPageName("OverlordSelectionPage");
+            await AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
 
             await PickOverlord("Valash", false);
             await PickOverlordAbility(0);
 
             await ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            await AssertCurrentPageName("HordeEditingPage");
+            await AssertCurrentPageName(Enumerators.AppState.DECK_EDITING);
 
             SetupArmyCards();
 
@@ -2997,13 +2988,13 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await ClickGenericButton("Image_BaackgroundGeneral");
-            await AssertCurrentPageName("OverlordSelectionPage");
+            await AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
 
             await PickOverlord("Kalile", false);
             await PickOverlordAbility(1);
 
             await ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            await AssertCurrentPageName("HordeEditingPage");
+            await AssertCurrentPageName(Enumerators.AppState.DECK_EDITING);
 
             SetupArmyCards();
 
@@ -3034,13 +3025,13 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await ClickGenericButton("Image_BaackgroundGeneral");
-            await AssertCurrentPageName("OverlordSelectionPage");
+            await AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
 
             await PickOverlord("Razu", true);
             await PickOverlordAbility(1);
 
             await ClickGenericButton("Canvas_BackLayer/Button_Continue");
-            await AssertCurrentPageName("HordeEditingPage");
+            await AssertCurrentPageName(Enumerators.AppState.DECK_EDITING);
 
             SetupArmyCards();
 
@@ -3553,7 +3544,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public async Task PlayAMatch(int maxTurns = 100)
         {
-            await AssertCurrentPageName("GameplayPage");
+            await AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
 
             InitalizePlayer();
 
@@ -3569,7 +3560,7 @@ namespace Loom.ZombieBattleground.Test
 
             await ClickGenericButton("Button_Continue");
 
-            await AssertCurrentPageName("HordeSelectionPage");
+            await AssertCurrentPageName(Enumerators.AppState.HordeSelection);
         }
 
         /// <summary>
@@ -3615,7 +3606,16 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
-            await client.Start(contract => new ThreadedContractCallProxyWrapper(new DefaultContractCallProxy(contract)), enabledLogs: false);
+            Func<Contract, IContractCallProxy> contractCallProxyFactory =
+                contract => new ThreadedContractCallProxyWrapper(new DefaultContractCallProxy(contract));
+            await client.Start(
+                contractCallProxyFactory,
+                onClientCreatedCallback: chainClient =>
+                {
+                    chainClient.Configuration.StaticCallTimeout = 10000;
+                    chainClient.Configuration.CallTimeout = 10000;
+                },
+                enabledLogs: true);
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }

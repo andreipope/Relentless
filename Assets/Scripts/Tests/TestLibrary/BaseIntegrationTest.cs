@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
@@ -71,11 +72,11 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.MainMenuTransition("Button_Play");
             await TestHelper.AssertIfWentDirectlyToTutorial(TestHelper.GoBackToMainAndPressPlay);
 
-            await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
             await TestHelper.MainMenuTransition("Button_PvPMode");
-            await TestHelper.AssertCurrentPageName("PvPSelectionPage");
+            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PvPSelection);
             await TestHelper.MainMenuTransition("Button_CasualType");
-            await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
             await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
             TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
