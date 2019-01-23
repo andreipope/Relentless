@@ -349,7 +349,7 @@ namespace Loom.ZombieBattleground
             {
                 parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject(
                     _battlegroundController.GetTargetById(unit.InstanceId, unit.AffectObjectType),
-                    new ParametrizedAbilityBoardObject.AbilityParameters
+                    new ParametrizedAbilityParameters
                     {
                         Attack = unit.Parameter.Attack,
                         Defense = unit.Parameter.Defense,

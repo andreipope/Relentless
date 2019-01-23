@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
@@ -99,57 +100,63 @@ namespace Loom.ZombieBattleground.BackendCommunication
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null
         )
         {
+            List<ParametrizedAbilityInstanceId> parametrizedTargetsInstanceIds = new List<ParametrizedAbilityInstanceId>();
+
+            if (targets != null)
+            {
+                foreach (ParametrizedAbilityBoardObject target in targets)
+                {
+                    if (target.BoardObject == null)
+                        continue;
+
+                    ParametrizedAbilityInstanceId targetParametrizedInstanceId;
+                    InstanceId instanceId;
+                    Enumerators.AffectObjectType affectObjectType;
+
+                    switch (target.BoardObject)
+                    {
+                        case BoardUnitModel model:
+                            instanceId = model.Card.InstanceId;
+                            affectObjectType = Enumerators.AffectObjectType.Character;
+                            break;
+                        case Player player:
+                            instanceId = player.InstanceId;
+                            affectObjectType = Enumerators.AffectObjectType.Player;
+                            break;
+                        case HandBoardCard handCard:
+                            instanceId = handCard.CardView.WorkingCard.InstanceId;
+                            affectObjectType = Enumerators.AffectObjectType.Card;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, affectObjectType, target.Parameters);
+                    parametrizedTargetsInstanceIds.Add(targetParametrizedInstanceId);
+                }
+            }
+
+            return CardAbilityUsed(card, abilityType, parametrizedTargetsInstanceIds);
+        }
+
+        public PlayerAction CardAbilityUsed(
+            InstanceId card,
+            Enumerators.AbilityType abilityType,
+            IReadOnlyList<ParametrizedAbilityInstanceId> targets = null
+        )
+        {
             List<Protobuf.Unit> unitTargets = new List<Protobuf.Unit>();
 
             if (targets != null)
             {
-                foreach (ParametrizedAbilityBoardObject parametrizedAbility in targets)
+                foreach (ParametrizedAbilityInstanceId target in targets)
                 {
-                    if (parametrizedAbility.BoardObject == null)
-                        continue;
-
-                    Protobuf.Unit targetUnit = new Protobuf.Unit();
-
-                    if (parametrizedAbility.BoardObject is BoardUnitModel model)
+                    Protobuf.Unit targetUnit = new Protobuf.Unit
                     {
-                        targetUnit = new Protobuf.Unit
-                        {
-                            InstanceId = model.Card.InstanceId.ToProtobuf(),
-                            AffectObjectType = AffectObjectType.Types.Enum.Character,
-                            Parameter = new Parameter
-                            {
-                                Attack = parametrizedAbility.Parameters.Attack,
-                                Defense = parametrizedAbility.Parameters.Defense,
-                                CardName = parametrizedAbility.Parameters.CardName
-                            }
-                        };
-                    }
-                    else if (parametrizedAbility.BoardObject is Player player)
-                    {
-                        targetUnit = new Protobuf.Unit
-                        {
-                            InstanceId = new InstanceId(player.InstanceId.Id).ToProtobuf(),
-                            AffectObjectType = AffectObjectType.Types.Enum.Player,
-                            Parameter = new Parameter
-                            {
-                                Defense = parametrizedAbility.Parameters.Defense
-                            }
-                        };
-                    }
-                    else if (parametrizedAbility.BoardObject is HandBoardCard handCard)
-                    {
-                        targetUnit = new Protobuf.Unit
-                        {
-                            InstanceId = handCard.CardView.WorkingCard.InstanceId.ToProtobuf(),
-                            AffectObjectType = AffectObjectType.Types.Enum.Card,
-                            Parameter = new Parameter
-                            {
-                                Attack = parametrizedAbility.Parameters.Attack,
-                                Defense = parametrizedAbility.Parameters.Defense,
-                                CardName = parametrizedAbility.Parameters.CardName
-                            }
-                        };
-                    }
+                        InstanceId = target.Id.ToProtobuf(),
+                        AffectObjectType = (AffectObjectType.Types.Enum) target.AffectObjectType,
+                        Parameter = target.Parameters.ToProtobuf()
+                    };
 
                     unitTargets.Add(targetUnit);
                 }

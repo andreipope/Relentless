@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task CardAbilityUsed(
             InstanceId card,
             Enumerators.AbilityType abilityType,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null)
+            IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
             await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, targets));
         }

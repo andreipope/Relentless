@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Test
         public void CardAbilityUsed(
             InstanceId card,
             Enumerators.AbilityType abilityType,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null)
+            IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
             Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityType, targets));
         }

@@ -172,6 +172,16 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
+        public static Protobuf.Parameter ToProtobuf(this ParametrizedAbilityParameters parameters)
+        {
+            return new Protobuf.Parameter
+            {
+                Attack = parameters.Attack,
+                Defense = parameters.Defense,
+                CardName = parameters.CardName
+            };
+        }
+
         public static Protobuf.DebugCheatsConfiguration ToProtobuf(this BackendCommunication.DebugCheatsConfiguration debugCheatsConfiguration)
         {
             if (debugCheatsConfiguration == null)

@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             {
                 targets.Add(new ParametrizedAbilityBoardObject(
                     unitinfo.OldUnitView.Model,
-                    new ParametrizedAbilityBoardObject.AbilityParameters
+                    new ParametrizedAbilityParameters
                     {
                         CardName = unitinfo.NewUnitCardTitle
                     }

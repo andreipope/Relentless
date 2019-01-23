@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground.Test
         public Task CardAbilityUsed(
             InstanceId card,
             Enumerators.AbilityType abilityType,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null)
+            IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
             _cardAbilityRequestsQueue.Enqueue(new CardAbilityRequest(card, abilityType, targets));
             HandleNextCardAbility();
@@ -123,9 +123,9 @@ namespace Loom.ZombieBattleground.Test
         {
             public readonly InstanceId Card;
             public readonly Enumerators.AbilityType AbilityType;
-            public readonly IReadOnlyList<ParametrizedAbilityBoardObject> Targets;
+            public readonly IReadOnlyList<ParametrizedAbilityInstanceId> Targets;
 
-            public CardAbilityRequest(InstanceId card, Enumerators.AbilityType abilityType, IReadOnlyList<ParametrizedAbilityBoardObject> targets)
+            public CardAbilityRequest(InstanceId card, Enumerators.AbilityType abilityType, IReadOnlyList<ParametrizedAbilityInstanceId> targets)
             {
                 Card = card;
                 AbilityType = abilityType;

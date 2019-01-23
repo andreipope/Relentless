@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
 
                 abilityTargets.Add(new ParametrizedAbilityBoardObject(
                     currentTarget,
-                    new ParametrizedAbilityBoardObject.AbilityParameters
+                    new ParametrizedAbilityParameters
                     {
                         Defense = defenseValue
                     }

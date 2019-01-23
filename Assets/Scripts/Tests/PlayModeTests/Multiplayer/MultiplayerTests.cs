@@ -90,8 +90,6 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                PvPTestHelper pvpTestHelper = new PvPTestHelper();
-
                 Deck opponentDeck = new Deck(
                     0,
                     0,
@@ -137,9 +135,9 @@ namespace Loom.ZombieBattleground.Test
                            opponent.CardAbilityUsed(
                                opponentCyndermanId,
                                Enumerators.AbilityType.DAMAGE_TARGET,
-                               new List<ParametrizedAbilityBoardObject>
+                               new List<ParametrizedAbilityInstanceId>
                                {
-                                   new ParametrizedAbilityBoardObject(TestHelper.BattlegroundController.GetBoardObjectById(playerSlabId))
+                                   new ParametrizedAbilityInstanceId(playerSlabId, Enumerators.AffectObjectType.Character)
                                }
                            );
                        },
@@ -182,19 +180,27 @@ namespace Loom.ZombieBattleground.Test
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
+                    player =>
+                    {
+                        Assert.AreEqual(4, TestHelper.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(3, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                    },
+                    opponent =>
+                    {
+                        Assert.AreEqual(4, TestHelper.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(5, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                    },
+                    player =>
+                    {
+                        Assert.AreEqual(5, TestHelper.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(5, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                    },
                 };
 
                 MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
                 await TestHelper.MatchmakeOpponentDebugClient();
 
                 await matchScenarioPlayer.Play();
-
-                await TestHelper.ClickGenericButton("Button_Settings");
-                await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
-                await TestHelper.RespondToYesNoOverlay(true);
             });
         }
 

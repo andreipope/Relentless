@@ -69,6 +69,7 @@ namespace Loom.ZombieBattleground.Test
 
         private float _positionalTolerance = 0.1f;
 
+        private IAppStateManager _appStateManager;
         private IGameplayManager _gameplayManager;
         private IUIManager _uiManager;
         private IDataManager _dataManager;
@@ -151,17 +152,6 @@ namespace Loom.ZombieBattleground.Test
             return TestContext.CurrentContext.Test.Name;
         }
 
-        // Google Analytics isn't required for testing and in case of multiple tests it starts being overloaded and providing error on number of requests.
-        private void RemoveGoogleAnalyticsModule()
-        {
-            GameObject googleAnalyticsGameObject = GameObject.Find("GAv4");
-
-            if (googleAnalyticsGameObject != null)
-            {
-                GameObject.Destroy(googleAnalyticsGameObject);
-            }
-        }
-
         /// <summary>
         /// SetUp method to be used for most Solo and PvP tests. Logs in and sets up a number of stuff.
         /// </summary>
@@ -207,9 +197,9 @@ namespace Loom.ZombieBattleground.Test
 
                 await LetsThink();
             }
-            else if (GetCurrentPageName() != "")
+            else if (_appStateManager != null)
             {
-                while (GetCurrentPageName() != "MainMenuPage")
+                while (_appStateManager.AppState != Enumerators.AppState.MAIN_MENU)
                 {
                     await GoOnePageHigher();
                 }
@@ -394,6 +384,7 @@ namespace Loom.ZombieBattleground.Test
             _player = Enumerators.MatchPlayer.CurrentPlayer;
             _opponent = Enumerators.MatchPlayer.OpponentPlayer;
 
+            _appStateManager = GameClient.Get<IAppStateManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _dataManager = GameClient.Get<IDataManager>();
@@ -433,37 +424,6 @@ namespace Loom.ZombieBattleground.Test
             //FIXME
         }
 
-        /// <summary>
-        /// Asserts if we've logged in or login failed, so that the test doesn't get stuck in the login screen in the case of issue and instead reports the issue.
-        /// </summary>
-        public async Task AssertLoggedInOrLoginFailed(
-            Func<Task> callback1,
-            Func<Task> callback2,
-            Func<Task> callback3,
-            Func<Task> callback4)
-        {
-            if (IsTestFailed)
-            {
-                return;
-            }
-
-            await CombinedCheck(
-                CheckCurrentPageName,
-                "MainMenuPage",
-                callback1,
-                CheckIfLoginErrorOccured,
-                "",
-                callback2,
-                CheckIfLoginBoxAppeared,
-                "",
-                callback3,
-                CheckCurrentPageName,
-                "GameplayPage",
-                callback4);
-
-            await new WaitForUpdate();
-        }
-
         public bool IsTestFailed { get; private set; }
 
         /// <summary>
@@ -477,12 +437,9 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await CombinedCheck(
-                CheckCurrentPageName,
-                "GameplayPage",
-                callback1,
-                CheckCurrentPageName,
-                "PlaySelectionPage",
-                callback2);
+                (() => CheckCurrentAppState(Enumerators.AppState.GAMEPLAY), callback1),
+                (() => CheckCurrentAppState(Enumerators.AppState.PlaySelection), callback1)
+            );
         }
 
         // @todo: Get this to working using an artificial timeout
@@ -500,14 +457,9 @@ namespace Loom.ZombieBattleground.Test
             WaitStart(60);
 
             await CombinedCheck(
-                CheckCurrentPageName,
-                "GameplayPage",
-                callback1,
-
-                // CheckIfMatchmakingErrorOccured, "", callback2);
-                WaitTimeIsUp,
-                "",
-                callback2);
+                (() => CheckCurrentAppState(Enumerators.AppState.GAMEPLAY), callback1),
+                (WaitTimeIsUp, callback1)
+            );
 
             await new WaitForUpdate();
         }
@@ -522,66 +474,31 @@ namespace Loom.ZombieBattleground.Test
                 WaitStart(5);
 
                 await CombinedCheck(
-                    CheckIfMulliganPopupCameUp,
-                    "",
-                    callback1,
-                    WaitTimeIsUp,
-                    "",
-                    callback2);
+                    (CheckIfMulliganPopupCameUp, callback1),
+                    (WaitTimeIsUp, callback2)
+                );
             }
         }
 
-        /// <summary>
-        /// Is used whenever we need a combined check, instead of a single one.
-        /// </summary>
-        private async Task CombinedCheck(
-            Func<string, bool> check1,
-            string parameter1,
-            Func<Task> callback1,
-            Func<string, bool> check2,
-            string parameter2,
-            Func<Task> callback2,
-            Func<string, bool> check3 = null,
-            string parameter3 = "",
-            Func<Task> callback3 = null,
-            Func<string, bool> check4 = null,
-            string parameter4 = "",
-            Func<Task> callback4 = null)
+        private async Task CombinedCheck(params (Func<bool> check, Func<Task> action)[] checks)
         {
             bool outcomeDecided = false;
-
-            while (outcomeDecided == false)
+            while (!outcomeDecided)
             {
                 if (IsTestFailed)
                     break;
 
-                if (check1(parameter1))
+                foreach ((Func<bool> check, Func<Task> action) tuple in checks)
                 {
-                    outcomeDecided = true;
-
-                    if (callback1 != null)
-                        await callback1();
-                }
-                else if (check2(parameter2))
-                {
-                    outcomeDecided = true;
-
-                    if (callback2 != null)
-                        await callback2();
-                }
-                else if (check3 != null && check3(parameter3))
-                {
-                    outcomeDecided = true;
-
-                    if (callback3 != null)
-                        await callback3();
-                }
-                else if (check4 != null && check4(parameter4))
-                {
-                    outcomeDecided = true;
-
-                    if (callback4 != null)
-                        await callback4();
+                    if (tuple.check())
+                    {
+                        outcomeDecided = true;
+                        if (tuple.action != null)
+                        {
+                            await tuple.action();
+                        }
+                        break;
+                    }
                 }
 
                 await new WaitForUpdate();
@@ -594,7 +511,7 @@ namespace Loom.ZombieBattleground.Test
         /// Checks if login box appeared.
         /// </summary>
         /// <returns><c>true</c>, if login box appeared was checked, <c>false</c> otherwise.</returns>
-        private bool CheckIfLoginBoxAppeared(string dummyparameter)
+        private bool CheckIfLoginBoxAppeared()
         {
             if (_canvas2GameObject != null && _canvas2GameObject.transform.childCount >= 2)
             {
@@ -611,7 +528,7 @@ namespace Loom.ZombieBattleground.Test
         /// Checks if login error occured.
         /// </summary>
         /// <returns><c>true</c>, if login error occured, <c>false</c> otherwise.</returns>
-        private bool CheckIfLoginErrorOccured(string dummyParameter)
+        private bool CheckIfLoginErrorOccured()
         {
             GameObject errorTextObject = GameObject.Find("Beta_Group/Text_Error");
 
@@ -625,7 +542,7 @@ namespace Loom.ZombieBattleground.Test
         /// Checks if matchmaking error occured.
         /// </summary>
         /// <returns><c>true</c>, if matchmaking error (e.g. timeout) occured, <c>false</c> otherwise.</returns>
-        private bool CheckIfMatchmakingErrorOccured(string dummyParameter)
+        private bool CheckIfMatchmakingErrorOccured()
         {
             if (_canvas3GameObject != null && _canvas3GameObject.transform.childCount >= 2)
             {
@@ -638,7 +555,7 @@ namespace Loom.ZombieBattleground.Test
             return false;
         }
 
-        private bool CheckIfMulliganPopupCameUp(string dummyParameter)
+        private bool CheckIfMulliganPopupCameUp()
         {
             if (GameObject.Find("MulliganPopup(Clone)") != null)
                 return true;
@@ -666,58 +583,12 @@ namespace Loom.ZombieBattleground.Test
         }
 
         /// <summary>
-        /// Checks if the name of the current page is as expected.
+        /// Checks if the current app state is as expected.
         /// </summary>
         /// <returns><c>true</c>, if current page name is as expected, <c>false</c> otherwise.</returns>
-        /// <param name="expectedPageName">Expected page name.</param>
-        private bool CheckCurrentPageName(string expectedPageName)
+        private bool CheckCurrentAppState(Enumerators.AppState expectedState)
         {
-            if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount >= 2)
-            {
-                if (_canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == _lastCheckedPageName)
-                    return false;
-                else
-                {
-                    if (_canvas1GameObject.transform.GetChild(1).name.Split('(')[0] == expectedPageName)
-                        return true;
-
-                    return false;
-                }
-            }
-
-            return false;
-        }
-
-        private string GetCurrentPageName(int canvasGameObjectIndex = 1)
-        {
-            GameObject parentGameObject = null;
-            switch (canvasGameObjectIndex)
-            {
-                case 1:
-                    parentGameObject = _canvas1GameObject;
-
-                    break;
-                case 2:
-                    parentGameObject = _canvas2GameObject;
-
-                    break;
-                case 3:
-                    parentGameObject = _canvas3GameObject;
-
-                    break;
-                default:
-                    throw new IndexOutOfRangeException("Canvas index is out of range, can be only 1-3.");
-            }
-
-            if (parentGameObject != null)
-            {
-                if (parentGameObject != null && parentGameObject.transform.childCount >= 2)
-                    return parentGameObject.transform.GetChild(1).name.Split('(')[0];
-                else
-                    return "";
-            }
-
-            return "";
+            return _appStateManager.AppState == expectedState;
         }
 
         /// <summary>
@@ -1046,35 +917,13 @@ namespace Loom.ZombieBattleground.Test
                 };
 
             WaitStart(1000);
-            await new WaitUntil(() =>
-            {
-                return (CheckCurrentPageName("MainMenuPage") || WaitTimeIsUp());
-            });
+            await new WaitUntil(() => CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp());
 
-            if (!CheckCurrentPageName("MainMenuPage"))
+            if (!CheckCurrentAppState(Enumerators.AppState.MAIN_MENU))
             {
                 Assert.Fail(
                     $"Login wasn't completed. Please ensure you have logged in previously, and that you're pointing to the Stage or Production server.");
             }
-
-            await new WaitForUpdate();
-        }
-
-        private async Task SubmitEmailPassword(string email, string password)
-        {
-            await LetsThink();
-
-            Transform loginGroup = GameObject.Find("Login_Group").transform;
-            Button loginButton = loginGroup.transform.Find("Button_Login").GetComponent<Button>();
-            InputField emailField = loginGroup.transform.Find("Email_InputField").GetComponent<InputField>();
-            InputField passwordField = loginGroup.transform.Find("Password_InputField").GetComponent<InputField>();
-
-            emailField.text = email;
-            passwordField.text = password;
-
-            await LetsThink();
-
-            loginButton.onClick.Invoke();
 
             await new WaitForUpdate();
         }
@@ -1093,7 +942,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
             WaitStart(5);
-            GameObject menuButtonGameObject = null;
+            GameObject menuButtonGameObject;
             bool clickTimeout = false;
 
             await new WaitUntil(() =>
@@ -1812,7 +1661,7 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 case Enumerators.CardKind.SPELL:
-                    if ((!autoGetAbilityTarget && manualAbilityTarget != null) || (target != null && needTargetForAbility || !needTargetForAbility))
+                    if (!autoGetAbilityTarget && manualAbilityTarget != null || target != null && needTargetForAbility || !needTargetForAbility)
                     {
                         _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
                         _testBroker.GetPlayer(_player).AddCardToBoard(card);
@@ -2858,11 +2707,11 @@ namespace Loom.ZombieBattleground.Test
             await HandleConnectivityIssues();
 
             await new WaitUntil(() =>
-                IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") != null || GetCurrentPageName(3) == "ConnectionPopup");
+                IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self != null || _uiManager.GetPopup<ConnectionPopup>().Self != null);
 
             await HandleConnectivityIssues();
 
-            await new WaitUntil(() => IsGameEnded() || GameObject.Find("YourTurnPopup(Clone)") == null);
+            await new WaitUntil(() => IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self == null);
 
             await HandleConnectivityIssues();
 
@@ -2936,7 +2785,7 @@ namespace Loom.ZombieBattleground.Test
             int boardChildrenCount = boardTransform.childCount;
 
             await new WaitUntil(() =>
-                (boardChildrenCount < boardTransform.childCount) && (boardChildrenCount < _battlegroundController.OpponentBoardCards.Count));
+                boardChildrenCount < boardTransform.childCount && boardChildrenCount < _battlegroundController.OpponentBoardCards.Count);
         }
 
         /// <summary>
@@ -3011,25 +2860,25 @@ namespace Loom.ZombieBattleground.Test
             {
                 await LetsThink();
 
-                Debug.Log("!a 0");
+                //Debug.Log("!a 0");
 
                 await TaskAsIEnumerator(currentTurnTask());
 
-                Debug.Log("!a 1");
+                //Debug.Log("!a 1");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilOurTurnStarts();
 
-                Debug.Log("!a 2");
+                //Debug.Log("!a 2");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilInputIsUnblocked();
 
-                Debug.Log("!a 3");
+                //Debug.Log("!a 3");
 
                 if (IsGameEnded())
                     break;
@@ -3069,7 +2918,7 @@ namespace Loom.ZombieBattleground.Test
 
         public bool PlayerIsOutOfCards () 
         {
-            return (_gameplayManager.CurrentPlayer.CardsInHand.Count <= 0 && _gameplayManager.CurrentPlayer.CardsInDeck.Count <= 0);
+            return _gameplayManager.CurrentPlayer.CardsInHand.Count <= 0 && _gameplayManager.CurrentPlayer.CardsInDeck.Count <= 0;
         }
 
         private async Task HandleConnectivityIssues()
@@ -3079,15 +2928,15 @@ namespace Loom.ZombieBattleground.Test
                 return;
             }
 
-            if (GetCurrentPageName(3) == "ConnectionPopup")
+            if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
             {
                 WaitStart(10);
 
                 await ClickGenericButton("Button_Reconnect");
 
-                await new WaitUntil(() => (GetCurrentPageName(3) != "ConnectionPopup") || WaitTimeIsUp());
+                await new WaitUntil(() => _uiManager.GetPopup<ConnectionPopup>().Self != null || WaitTimeIsUp());
 
-                if (GetCurrentPageName(3) == "ConnectionPopup")
+                if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
                 {
                     Assert.Fail("Connectivity issue came up.");
                 }
@@ -3451,7 +3300,7 @@ namespace Loom.ZombieBattleground.Test
         {
             TextMeshProUGUI cardsAmountText = GameObject.Find("CardsAmountText")?.GetComponent<TextMeshProUGUI>();
 
-            return (cardsAmountText != null && cardsAmountText.text == "30 / 30");
+            return cardsAmountText != null && cardsAmountText.text == "30 / 30";
         }
 
         private void AssertCorrectNumberOfCards(int correctNumber = 30)
@@ -3883,7 +3732,7 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         /// <remarks>Useful in case you have concern of getting a response for a request. To be coupled with WaitStart.</remarks>
         /// <returns><c>true</c>, if time is up, <c>false</c> otherwise.</returns>
-        private bool WaitTimeIsUp(string dummyParameter = "")
+        private bool WaitTimeIsUp()
         {
             float baseTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
             return baseTime > _waitStartTime + _waitAmount;
