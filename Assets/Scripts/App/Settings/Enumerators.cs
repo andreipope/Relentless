@@ -757,7 +757,8 @@ namespace Loom.ZombieBattleground.Common
             PlayerGooBottles,
             PlayerOverlordAbility,
 
-            UI
+            UI,
+            IncorrectButton
         }
 
         public enum TutorialActivityAction
@@ -806,6 +807,9 @@ namespace Loom.ZombieBattleground.Common
             YouWonPopupOpened,
             YouWonPopupClosed,
 
+            YouLosePopupOpened,
+            YouLosePopupClosed,
+
             TutorialProgressInfoPopupClosed,
 
             ScreenChanged,
@@ -819,6 +823,8 @@ namespace Loom.ZombieBattleground.Common
             HordeFilled,
 
             IncorrectButtonTapped,
+
+            SceneChanged,
 
             BattleStarted
         }

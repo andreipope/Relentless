@@ -249,6 +249,7 @@ namespace Loom.ZombieBattleground
         public Enumerators.TutorialAvatarPose Pose;
         public string Description;
         public string DescriptionTooltipCloseText;
+        public bool AboveUI;
     }
 
     public class TutorialDescriptionTooltip

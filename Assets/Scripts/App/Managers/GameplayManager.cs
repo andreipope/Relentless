@@ -143,6 +143,7 @@ namespace Loom.ZombieBattleground
             PlayerMoves = null;
 
 
+            _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
             //GameClient.Get<IQueueManager>().StopNetworkThread();
 
@@ -346,8 +347,10 @@ namespace Loom.ZombieBattleground
 
                 TutorialStartAction = () =>
                 {
+                    Debug.LogError(7777);
                     if (_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().PlayerOrderScreenShouldAppear)
                     {
+                        Debug.LogError(8888);
                         _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                         {
                             CurrentPlayer.SelfHero, OpponentPlayer.SelfHero

@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -11,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         int TutorialsCount { get; }
 
+        bool PlayerWon { get; set; }
+
         void StartTutorial();
 
         void SetupTutorialById(int id);
@@ -22,6 +25,8 @@ namespace Loom.ZombieBattleground
         void DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
 
         void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = -1);
+
+        void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
         SpecificTurnInfo GetCurrentTurnInfo();
         bool IsCompletedActivitiesForThisTurn();

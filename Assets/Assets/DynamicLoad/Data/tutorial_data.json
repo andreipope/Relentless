@@ -2124,6 +2124,17 @@
             "Y": 1,
             "Z": 0
           }
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "TopMiddle",
+          "TutorialTooltipOwner": "IncorrectButton",
+          "Description": "You still have a\nbattle to win.",
+          "Position": {
+            "X": 9.5,
+            "Y": 1,
+            "Z": 0
+          }
         }
       ],
       "TutorialSteps": [
@@ -2152,17 +2163,6 @@
           "ActionToEndThisStep": "PopupClosed"
         },
         {
-          "TutorialAvatar": {
-            "Pose": "NORMAL",
-            "Description": "Threre's nothing more I can teach\nyou. Congratulations!",
-            "DescriptionTooltipCloseText": "CONTINUE"
-          },
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-          "TutorialDescriptionTooltipsToDeactivate": [
-            1
-          ]
-        },
-        {
           "ActionToEndThisStep": "EndMatchPopupAppear",
           "CanEndTurn": true,
           "UnitsCanAttack": true,
@@ -2171,13 +2171,37 @@
           "SelectableTargets": [
             "OPPONENT",
             "OPPONENT_CARD"
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
           ]
         },
         {
           "BattleShouldBeWonBlocker": true,
-          "ActionToEndThisStep": "YouWonPopupClosed",
-          "BlockedButtons": []
-        }
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_Army",
+            "Pulse",
+            "Button_Edit",
+            "Button_Delete",
+            "Image_Skill",
+            "Image_Skill",
+            "Button_LeftArrow",
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral",
+            "Image_BaackgroundGeneral"
+          ],
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Threre's nothing more I can teach\nyou. Congratulations!",
+            "DescriptionTooltipCloseText": "CONTINUE",
+            "AboveUI": true
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed",
+        },
       ],
       "SpecificBattlegroundInfo": {
         "RankSystemHasEnabled": true,
@@ -2185,7 +2209,8 @@
         "DisabledInitialization": true,
         "PlayerTurnFirst": true
       },
-      "SpecificTurnInfos": [],
+      "SpecificTurnInfos": [
+      ],
       "PlayerOrderScreenShouldAppear": true,
       "MulliganScreenShouldAppear": true,
       "DisabledSpecificTurnInfos": true,

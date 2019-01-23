@@ -96,13 +96,21 @@ namespace Loom.ZombieBattleground
             else
             {
                 _selfObject.transform.position = position;
+                if (OwnerType == Enumerators.TutorialObjectOwner.IncorrectButton)
+                {
+                    _selfObject.transform.position -= Vector3.up * 2;
+                }
             }
         }
 
-        public void Show()
+        public void Show(Vector3? position = null)
         {
             _selfObject?.SetActive(true);
             IsActiveInThisClick = true;
+            if(OwnerType == Enumerators.TutorialObjectOwner.IncorrectButton && position != null)
+            {
+                _selfObject.transform.position = (Vector3)position - Vector3.up * 2;
+            }
         }
 
         public void Hide()
