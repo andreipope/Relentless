@@ -181,7 +181,32 @@ namespace Loom.ZombieBattleground
 
             Debug.Log("brain finished");
 
-            IsBrainWorking = false;
+            if (!_tutorialManager.IsTutorial ||
+                (_aiBrainType == Enumerators.AiBrainType.Tutorial &&
+                _tutorialManager.CurrentTutorialStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn))
+            {
+                IsBrainWorking = false;
+            }
+        }
+
+        public async Task SetTutorialStep()
+        {
+            try
+            {
+                switch (_aiBrainType)
+                {
+                    case Enumerators.AiBrainType.Tutorial:
+                        await LetsThink(_aiBrainCancellationTokenSource.Token);
+                        await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("brain canceled!");
+            }
         }
 
         private void SetAiTypeByDeck()
@@ -292,13 +317,21 @@ namespace Loom.ZombieBattleground
 
         private async Task DoAiBrainForTutorial(CancellationToken cancellationToken)
         {
+            TutorialStep step = _tutorialManager.CurrentTutorialStep;
+
             await LetsThink(cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
 
             await LetsWaitForQueue(cancellationToken);
 
-            foreach (Enumerators.TutorialActivityAction activityAction in _tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn)
+            List<Enumerators.TutorialActivityAction> requiredActivitiesToDoneDuringTurn = step.ToGameplayStep().RequiredActivitiesToDoneDuringStep;
+            if(requiredActivitiesToDoneDuringTurn.Count == 0)
+            {
+                requiredActivitiesToDoneDuringTurn = _tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn;
+            }
+
+            foreach (Enumerators.TutorialActivityAction activityAction in requiredActivitiesToDoneDuringTurn)
             {
                 switch (activityAction)
                 {
@@ -334,9 +367,13 @@ namespace Loom.ZombieBattleground
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
             }
-            await LetsThink(cancellationToken);
-            await LetsThink(cancellationToken);
-            _battlegroundController.StopTurn();
+
+            if (step.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+            }
         }
 
         private bool CheckTutorialAIStepPaused()
@@ -392,10 +429,16 @@ namespace Loom.ZombieBattleground
 
                     if (card != null)
                     {
+
                         PlayCardOnBoard(card, playCardActionInfo: playCardActionInfo);
 
                         await LetsThink(cancellationToken);
                         await LetsThink(cancellationToken);
+
+                        if (_aiBrainType == Enumerators.AiBrainType.Tutorial)
+                        {
+                            break;
+                        }
                     }
                 }
 
@@ -479,6 +522,8 @@ namespace Loom.ZombieBattleground
                     if (target != null && unit != null)
                     {
                         unit.DoCombat(target);
+                        if (_aiBrainType == Enumerators.AiBrainType.Tutorial)
+                            break;
                     }
 
                     await LetsWaitForQueue(cancellationToken);
@@ -1547,7 +1592,7 @@ namespace Loom.ZombieBattleground
                         target = _gameplayManager.CurrentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                        BoardUnitModel unit = GetRandomOpponentUnit();
+                        BoardUnitModel unit = GetRandomOpponentUnit(GetOpponentUnitsOnBoard().FindAll(model => skill.BlockedUnitStatusTypes.Contains(model.UnitStatus)));
 
                         if (unit != null)
                         {

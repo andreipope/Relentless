@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -17,6 +18,8 @@ namespace Loom.ZombieBattleground
         public GameObject SelfObject;
 
         public HeroSkill Skill;
+
+        public List<Enumerators.UnitStatusType> BlockedUnitStatusTypes;
 
         private readonly ILoadObjectsManager _loadObjectsManager;
 
@@ -68,6 +71,13 @@ namespace Loom.ZombieBattleground
             _initialCooldown = skillInfo.InitialCooldown;
             _cooldown = skillInfo.Cooldown;
             _singleUse = skillInfo.SingleUse;
+
+            BlockedUnitStatusTypes = new List<Enumerators.UnitStatusType>();
+
+            if(Skill.OverlordSkill == Enumerators.OverlordSkill.FREEZE)
+            {
+                BlockedUnitStatusTypes.Add(Enumerators.UnitStatusType.FROZEN);
+            }
 
             _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
 
@@ -164,6 +174,7 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
                     FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;
+                    FightTargetingArrow.BlockedUnitStatusTypes = BlockedUnitStatusTypes;
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);

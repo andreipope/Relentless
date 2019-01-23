@@ -137,6 +137,11 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            for (int i = 0; i < _tutorialDescriptionTooltipItems.Count; i++)
+            {
+                _tutorialDescriptionTooltipItems[i]?.Update();
+            }
+
             if (!IsTutorial)
                 return;
 
@@ -266,6 +271,8 @@ namespace Loom.ZombieBattleground
 
             if (BattleShouldBeWonBlocker)
                 return;
+
+            ClearToolTips();
 
             _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
@@ -527,6 +534,9 @@ namespace Loom.ZombieBattleground
                                 handPointer.AppearDelay,
                                 handPointer.AppearOnce,
                                 handPointer.TutorialObjectIdStepOwner,
+                                handPointer.TargetTutorialObjectId,
+                                handPointer.AdditionalObjectIdOwners,
+                                handPointer.AdditionalObjectIdTargets,
                                 handPointer.AboveUI);
                 }
             }
@@ -544,7 +554,8 @@ namespace Loom.ZombieBattleground
                                            tooltip.TutorialTooltipOwnerId,
                                            (Vector3)tooltip.Position,
                                            tooltip.Resizable,
-                                           tooltip.AppearDelay);
+                                           tooltip.AppearDelay,
+                                           tooltip.DynamicPosition);
                 }
             }
 
@@ -577,7 +588,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
 
-                    if (gameStep.LaunchGameplayManually)
+                    if(gameStep.LaunchGameplayManually)
                     {
                         _battlegroundController.StartGameplayTurns();
                     }
@@ -607,6 +618,11 @@ namespace Loom.ZombieBattleground
                     if (gameStep.LaunchAIBrain || (!gameStep.AIShouldBePaused && _gameplayManager.GetController<AIController>().AIPaused))
                     {
                         await _gameplayManager.GetController<AIController>().LaunchAIBrain();
+                    }
+
+                    if(_gameplayManager.GetController<AIController>().IsBrainWorking)
+                    {
+                        await _gameplayManager.GetController<AIController>().SetTutorialStep();
                     }
 
                     if (gameStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.YouWonPopupOpened)
@@ -723,13 +739,15 @@ namespace Loom.ZombieBattleground
             if (ownerId == 0)
                 return;
 
-            TutorialStep step = CurrentTutorial.TutorialContent.TutorialSteps.Find(x => x.ToGameplayStep().TutorialObjectIdStepOwner == ownerId &&
-                                                               x.ToGameplayStep().TutorialDescriptionTooltipsToActivate.Count > 0);
-            if (step != null)
+            TutorialStep step;
+
+            List<TutorialDescriptionTooltip> tooltips = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.FindAll(tooltip => tooltip.TutorialTooltipOwnerId == ownerId);
+            foreach (TutorialDescriptionTooltip tooltip in tooltips)
             {
-                foreach (int id in step.TutorialDescriptionTooltipsToActivate)
+                step = CurrentTutorial.TutorialContent.TutorialSteps.Find(info => info.ToGameplayStep().TutorialDescriptionTooltipsToActivate.Exists(id => id == tooltip.Id));
+                if (step != null)
                 {
-                    ActivateDescriptionTooltip(id);
+                    ActivateDescriptionTooltip(tooltip.Id);
                 }
             }
         }
@@ -796,9 +814,12 @@ namespace Loom.ZombieBattleground
                                 float appearDelay = 0,
                                 bool appearOnce = false,
                                 int tutorialObjectIdStepOwner = 0,
+                                int targetTutorialObjectId = 0,
+                                List<int> additionalObjectIdOwners = null,
+                                List<int> additionalObjectIdTargets = null,
                                 bool aboveUI = false)
         {
-            _handPointerController.DrawPointer(type, owner, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner, aboveUI);
+            _handPointerController.DrawPointer(type, owner, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner, targetTutorialObjectId, additionalObjectIdOwners, additionalObjectIdTargets, aboveUI);
         }
 
         public void DrawDescriptionTooltip(int id,
@@ -808,20 +829,21 @@ namespace Loom.ZombieBattleground
                                            int ownerId,
                                            Vector3 position,
                                            bool resizable,
-                                           float appearDelay)
+                                           float appearDelay,
+                                           bool dynamicPosition)
         {
             if (appearDelay > 0)
             {
                 InternalTools.DoActionDelayed(() =>
                 {
-                    TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerId, position, resizable);
+                    TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerId, position, resizable, dynamicPosition);
 
                     _tutorialDescriptionTooltipItems.Add(tooltipItem);
                 }, appearDelay);
             }
             else
             {
-                TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerId, position, resizable);
+                TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(id, description, align, owner, ownerId, position, resizable, dynamicPosition);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
             }
@@ -842,7 +864,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.TutorialTooltipOwnerId,
                                        (Vector3)tooltipInfo.Position,
                                        tooltipInfo.Resizable,
-                                       tooltipInfo.AppearDelay);
+                                       tooltipInfo.AppearDelay,
+                                       tooltipInfo.DynamicPosition);
             }
             else
             {
@@ -871,6 +894,11 @@ namespace Loom.ZombieBattleground
             {
                 tooltip.Show(position);
             }
+        }
+
+        public TutorialDescriptionTooltipItem GetDescriptionTooltip(int id)
+        {
+            return _tutorialDescriptionTooltipItems.Find(x => x.Id == id);
         }
 
         public void HideDescriptionTooltip(int id)

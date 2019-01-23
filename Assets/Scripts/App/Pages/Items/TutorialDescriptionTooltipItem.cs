@@ -29,9 +29,19 @@ namespace Loom.ZombieBattleground
 
         public bool NotDestroyed => _selfObject != null;
 
+        public float Width;
+
         public Enumerators.TutorialObjectOwner OwnerType;
 
-        public TutorialDescriptionTooltipItem(int id, string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, int ownerId, Vector3 position, bool resizable)
+        private Enumerators.TooltipAlign _align;
+
+        private Vector3 _currentPosition;
+
+        private BoardUnitView _ownerUnit;
+
+        private bool _dynamicPosition;
+
+        public TutorialDescriptionTooltipItem(int id, string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, int ownerId, Vector3 position, bool resizable, bool dynamicPosition)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -39,6 +49,9 @@ namespace Loom.ZombieBattleground
 
             this.Id = id;
             OwnerType = owner;
+            _align = align;
+            _dynamicPosition = dynamicPosition;
+            _currentPosition = position;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -46,20 +59,9 @@ namespace Loom.ZombieBattleground
             _textDescription = _selfObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
 
-            _textDescription.text = description;         
+            _textDescription.text = description;
 
-            switch (align)
-            {
-                case Enumerators.TooltipAlign.CenterLeft:
-                case Enumerators.TooltipAlign.CenterRight:
-                case Enumerators.TooltipAlign.TopMiddle:
-                case Enumerators.TooltipAlign.BottomMiddle:
-                    _currentBattleground = _selfObject.transform.Find("ArrowType/Arrow_" + align.ToString()).GetComponent<SpriteRenderer>();
-                    _currentBattleground.gameObject.SetActive(true);
-                    break;
-                default:
-                    throw new NotImplementedException(nameof(align) + " doesn't implemented");
-            }
+            SetBattlegroundType(align);
 
             if (resizable && _currentBattleground != null)
             {
@@ -70,35 +72,61 @@ namespace Loom.ZombieBattleground
                 _currentBattleground.transform.localScale = Vector3.one * value;
             }
 
-            BoardUnitView unit = null;
+            Width = _currentBattleground.bounds.size.x;
 
             if (ownerId > 0)
             {
                 switch (owner)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        unit = _gameplayManager.CurrentPlayer.BoardCards.Find((x) =>
+                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.Find((x) =>
                             x.Model.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        unit = _gameplayManager.OpponentPlayer.BoardCards.Find((x) =>
+                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.Find((x) =>
                             x.Model.TutorialObjectId == ownerId);
                         break;
                     default: break;
                 }
             }
 
-            if (unit != null)
+            SetPosition();
+
+            UpdatePosition();
+        }
+
+        public void UpdatePosition()
+        {
+            if(_dynamicPosition)
             {
-                _selfObject.transform.SetParent(unit.Transform, false);
-                _selfObject.transform.localPosition = position;
-            }
-            else
-            {
-                _selfObject.transform.position = position;
-                if (OwnerType == Enumerators.TutorialObjectOwner.IncorrectButton)
+                TutorialDescriptionTooltipItem tooltip;
+
+                foreach (int index in _tutorialManager.CurrentTutorialStep.TutorialDescriptionTooltipsToActivate)
                 {
-                    _selfObject.transform.position -= Vector3.up * 2;
+                    if (index != Id)
+                    {
+                        tooltip = _tutorialManager.GetDescriptionTooltip(index);
+
+                        if (tooltip == null)
+                            continue;
+
+                        if (Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x) < (Width + tooltip.Width) / 2)
+                        {
+                            if (_align == Enumerators.TooltipAlign.CenterLeft)
+                            {
+                                SetBattlegroundType(Enumerators.TooltipAlign.CenterRight);
+                                _currentPosition.x *= -1.2f;
+
+                            }
+                            else if (_align == Enumerators.TooltipAlign.CenterRight)
+                            {
+                                SetBattlegroundType(Enumerators.TooltipAlign.CenterLeft);
+                                _currentPosition.x *= -0.9f;
+                            }
+                            SetPosition();
+                            Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
+                        }
+                    }
                 }
             }
         }
@@ -107,9 +135,10 @@ namespace Loom.ZombieBattleground
         {
             _selfObject?.SetActive(true);
             IsActiveInThisClick = true;
-            if(OwnerType == Enumerators.TutorialObjectOwner.IncorrectButton && position != null)
+            if (position != null)
             {
-                _selfObject.transform.position = (Vector3)position - Vector3.up * 2;
+                _currentPosition = (Vector3)position;
+                SetPosition();
             }
         }
 
@@ -127,6 +156,55 @@ namespace Loom.ZombieBattleground
             {
                 MonoBehaviour.Destroy(_selfObject);
             }
+        }
+
+        public void Update()
+        {
+            if(_selfObject != null && _selfObject.activeInHierarchy && _ownerUnit != null)
+            {
+                _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
+            }
+        }
+
+        private void SetPosition()
+        {
+            if (_ownerUnit != null)
+            {
+                _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
+            }
+            else
+            {
+                _selfObject.transform.position = _currentPosition;
+                if (OwnerType == Enumerators.TutorialObjectOwner.IncorrectButton)
+                {
+                    _selfObject.transform.position -= Vector3.up * 2;
+                }
+            }
+        }
+
+        private void SetBattlegroundType(Enumerators.TooltipAlign align)
+        {
+            Vector3 size = Vector3.one;
+            if(_currentBattleground != null)
+            {
+                _currentBattleground.gameObject.SetActive(false);
+                size = _currentBattleground.transform.localScale;
+            }
+
+            switch (align)
+            {
+                case Enumerators.TooltipAlign.CenterLeft:
+                case Enumerators.TooltipAlign.CenterRight:
+                case Enumerators.TooltipAlign.TopMiddle:
+                case Enumerators.TooltipAlign.BottomMiddle:
+                    _currentBattleground = _selfObject.transform.Find("ArrowType/Arrow_" + align.ToString()).GetComponent<SpriteRenderer>();
+                    _currentBattleground.gameObject.SetActive(true);
+                    break;
+                default:
+                    throw new NotImplementedException(nameof(align) + " doesn't implemented");
+            }
+
+            _currentBattleground.transform.localScale = size;
         }
     }
 }

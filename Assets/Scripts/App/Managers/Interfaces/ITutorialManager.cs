@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
 
         void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
+        TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
+
         SpecificTurnInfo GetCurrentTurnInfo();
         bool IsCompletedActivitiesForThisTurn();
         string GetCardNameById(int id);

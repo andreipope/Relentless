@@ -56,9 +56,15 @@ namespace Loom.ZombieBattleground
             _handPointerPopups.Clear();
         }
 
-        public void DrawPointer(Enumerators.TutorialHandPointerType type, Enumerators.TutorialObjectOwner owner, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, bool aboveUI = false)
+        public void Reset(HandPointerPopup popup)
         {
-            HandPointerPopup popup = new HandPointerPopup(type, owner, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner, aboveUI);
+            popup.Dispose();
+            _handPointerPopups.Remove(popup);
+        }
+
+        public void DrawPointer(Enumerators.TutorialHandPointerType type, Enumerators.TutorialObjectOwner owner, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, int targetTutorialObjectId = 0, List<int> additionalObjectIdOwners = null, List<int> additionalObjectIdTargets = null, bool aboveUI = false)
+        {
+            HandPointerPopup popup = new HandPointerPopup(type, owner, begin, end, appearDelay, appearOnce, tutorialObjectIdStepOwner, targetTutorialObjectId, additionalObjectIdOwners, additionalObjectIdTargets, aboveUI);
             _handPointerPopups.Add(popup);
         }
     }
@@ -68,6 +74,8 @@ namespace Loom.ZombieBattleground
         private readonly ITutorialManager _tutorialManager;
         private readonly ILoadObjectsManager _loadObjectsManager;
         private readonly IGameplayManager _gameplayManager;
+
+        private readonly HandPointerController _handPointerController;
 
         private const float durationMove = 2f;
         private const float interval = 0.3f;
@@ -89,6 +97,8 @@ namespace Loom.ZombieBattleground
 
         private Vector3 _startPoint;
 
+        private Vector3 _endPoint;
+
         private float _appearDelay;
 
         private bool _appearOnce;
@@ -96,6 +106,8 @@ namespace Loom.ZombieBattleground
         private bool _stayInEndPoint;
 
         private BoardUnitView _ownerUnit;
+
+        private BoardUnitView _targetUnit;
 
         private float _maxValue = 3;
         private float _startValue = 0;
@@ -109,11 +121,13 @@ namespace Loom.ZombieBattleground
 
         private List<Sequence> _allSequences;
 
-        public HandPointerPopup(Enumerators.TutorialHandPointerType type, Enumerators.TutorialObjectOwner owner, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, bool aboveUI = false)
+        public HandPointerPopup(Enumerators.TutorialHandPointerType type, Enumerators.TutorialObjectOwner owner, Vector3 begin, Vector3? end = null, float appearDelay = 0, bool appearOnce = false, int tutorialObjectIdStepOwner = 0, int targetTutorialObjectId = 0, List<int> additionalObjectIdOwners = null, List<int> additionalObjectIdTargets = null, bool aboveUI = false)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+
+            _handPointerController = _gameplayManager.GetController<HandPointerController>();
 
             _allSequences = new List<Sequence>();
 
@@ -131,7 +145,46 @@ namespace Loom.ZombieBattleground
                 _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.Find(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameById(tutorialObjectIdStepOwner)
                                                                                 .ToLowerInvariant());
-                _selfObject.transform.SetParent(_ownerUnit.Transform, false);
+                if(_ownerUnit == null && additionalObjectIdOwners != null)
+                {
+                    foreach (int id in additionalObjectIdOwners)
+                    {
+                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.Find(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                                _tutorialManager.GetCardNameById(id)
+                                                                                .ToLowerInvariant());
+                        if (_ownerUnit != null)
+                            break;
+                    }
+                }
+
+                if (_ownerUnit == null)
+                {
+                    _handPointerController.Reset(this);
+                    return;
+                }
+            }
+            if(targetTutorialObjectId != 0)
+            {
+                _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.Find(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                                _tutorialManager.GetCardNameById(targetTutorialObjectId)
+                                                                                .ToLowerInvariant());
+                if (_targetUnit == null && additionalObjectIdTargets != null)
+                {
+                    foreach (int id in additionalObjectIdTargets)
+                    {
+                        _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.Find(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                                _tutorialManager.GetCardNameById(id)
+                                                                                .ToLowerInvariant());
+                        if (_targetUnit != null)
+                            break;
+                    }
+                }
+
+                if (_targetUnit == null)
+                {
+                    _handPointerController.Reset(this);
+                    return;
+                }
             }
 
             _selfObject.SetActive(false);
@@ -174,14 +227,8 @@ namespace Loom.ZombieBattleground
             _selfObject.SetActive(true);
 
             _stayInEndPoint = false;
-            if (_ownerUnit != null)
-            {
-                _selfObject.transform.localPosition = _startPosition;
-            }
-            else
-            {
-                _selfObject.transform.position = _startPosition;
-            }
+
+            _selfObject.transform.position = GetPositionByOwner(_ownerUnit, _startPosition);
             _handRenderer.transform.localPosition = Vector3.zero;
 
             switch (_type)
@@ -207,13 +254,15 @@ namespace Loom.ZombieBattleground
 
             ChangeHandState(0);
             _isMove = true;
-            _startPoint = _ownerUnit != null ? _ownerUnit.Transform.position + _startPosition : _startPosition;           
+
+            _startPoint = GetPositionByOwner(_ownerUnit, _startPosition);
+            _endPoint = GetPositionByOwner(_targetUnit, _endPosition);
             _sideTurn = _startPoint.x > _endPosition.x ? 1 : -1;
             _sineOffset = 0;
 
             Sequence moveSequence = DOTween.Sequence();
             _allSequences.Add(moveSequence);
-            moveSequence.Append(_selfObject.transform.DOMove(_endPosition, durationMove)
+            moveSequence.Append(_selfObject.transform.DOMove(_endPoint, durationMove)
                 .SetEase(Ease.InSine)
                 .OnComplete(() =>
                 {
@@ -253,23 +302,25 @@ namespace Loom.ZombieBattleground
             if (_wasDisposed)
                 return;
 
-            if(_stayInEndPoint && _type == Enumerators.TutorialHandPointerType.Animated)
+            _endPoint = GetPositionByOwner(_targetUnit, _endPosition);
+
+            if (_stayInEndPoint && _type == Enumerators.TutorialHandPointerType.Animated)
             {
-                _selfObject.transform.position = _endPosition;
+                _selfObject.transform.position = _endPoint;
             }
             else if(_type == Enumerators.TutorialHandPointerType.Single)
             {
-                _selfObject.transform.position = _startPosition;
+                _selfObject.transform.position = GetPositionByOwner(_ownerUnit, _startPosition);
             }
 
             if(_isMove)
             {
-                _sineOffset = _startValue + _maxValue - (_maxValue / Vector3.Distance(_startPoint, _endPosition) *
-                    Vector3.Distance(_selfObject.transform.position, _endPosition));
+                _sineOffset = _startValue + _maxValue - (_maxValue / Vector3.Distance(_startPoint, _endPoint) *
+                    Vector3.Distance(_selfObject.transform.position, _endPoint));
                 float angle = Mathf.Sin(_sineOffset) * _sideTurn;
                 _handRenderer.transform.localPosition = new Vector3(angle, 0, 0);
 
-                if (_selfObject.transform.position == _endPosition)
+                if (_selfObject.transform.position == _endPoint)
                 {
                     _isMove = false;
                 }
@@ -296,6 +347,15 @@ namespace Loom.ZombieBattleground
             _isMove = false;
             ClearSequences();
             _selfObject?.SetActive(false);
+        }
+
+        private Vector3 GetPositionByOwner(BoardUnitView unit, Vector3 position)
+        {
+            if (unit != null)
+            {
+                return unit.Transform.TransformPoint(_startPosition);
+            }
+            return position;
         }
 
         private void ClearSequences()
