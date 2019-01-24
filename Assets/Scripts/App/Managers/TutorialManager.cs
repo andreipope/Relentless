@@ -881,6 +881,9 @@ namespace Loom.ZombieBattleground
             {
                 TutorialDescriptionTooltip tooltipInfo = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.Find(x => x.TutorialTooltipOwner == owner);
 
+                if (tooltipInfo == null)
+                    return;
+
                 DrawDescriptionTooltip(tooltipInfo.Id,
                                        tooltipInfo.Description,
                                        tooltipInfo.TutorialTooltipAlign,

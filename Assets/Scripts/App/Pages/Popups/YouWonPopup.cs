@@ -259,7 +259,6 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
-                        _gameplayManager.IsTutorial = false;
                         _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                         GameClient.Get<ITutorialManager>().StopTutorial();
                     }

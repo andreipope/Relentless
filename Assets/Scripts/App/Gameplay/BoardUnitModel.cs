@@ -691,7 +691,8 @@ namespace Loom.ZombieBattleground
 
                             if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
                             {
-                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
+                                if (_tutorialManager.GetCurrentTurnInfo() != null &&
+                                    !_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
                                      info.TutorialObjectId == TutorialObjectId &&
                                      (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
                                          info.TargetTutorialObjectId == 0 && info.TargetType != Enumerators.SkillTargetType.OPPONENT)))
