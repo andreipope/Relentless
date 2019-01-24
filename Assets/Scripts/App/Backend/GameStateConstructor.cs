@@ -35,29 +35,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Player player0 = _pvpManager.IsFirstPlayer() ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
             Player player1 = !_pvpManager.IsFirstPlayer() ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
 
-
-            /*IEnumerable<WorkingCard> extraCardsInHand0 =
-                _pvpManager.IsFirstPlayer() ?
-                    _battlegroundController.PlayerHandCards
-                        .Select(card => card.WorkingCard) :
-                    _battlegroundController.OpponentHandCards
-                        .Select(card => card.WorkingCard);
-            IEnumerable<WorkingCard> extraCardsOnBoard0 =
-                _pvpManager.IsFirstPlayer() ?
-                    _battlegroundController.PlayerBoardCards.Select(card => card.Model.Card) :
-                    _battlegroundController.OpponentBoardCards.Select(card => card.Model.Card);
-
-            IEnumerable<WorkingCard> extraCardsInHand1 =
-                !_pvpManager.IsFirstPlayer() ?
-                    _battlegroundController.PlayerHandCards
-                        .Select(card => card.WorkingCard) :
-                    _battlegroundController.OpponentHandCards
-                        .Select(card => card.WorkingCard);
-            IEnumerable<WorkingCard> extraCardsOnBoard1 =
-                !_pvpManager.IsFirstPlayer() ?
-                    _battlegroundController.PlayerBoardCards.Select(card => card.Model.Card) :*/
-                    _battlegroundController.OpponentBoardCards.Select(card => card.Model.Card);
-
             GameState gameState = new GameState
             {
                 Id = _pvpManager.InitialGameState.Id,
@@ -72,17 +49,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return gameState;
         }
 
-        public static PlayerState CreateFakePlayerStateFromPlayer(string playerId, Player player, bool removeNonEssentialData, IEnumerable<WorkingCard> extraCardsInHand = null, IEnumerable<WorkingCard> extraCardsOnBoard = null)
+        public static PlayerState CreateFakePlayerStateFromPlayer(string playerId, Player player, bool removeNonEssentialData)
         {
-            if (extraCardsInHand == null)
-            {
-                extraCardsInHand = Array.Empty<WorkingCard>();
-            }
-
-            if (extraCardsOnBoard == null)
-            {
-                extraCardsOnBoard = Array.Empty<WorkingCard>();
-            }
             PlayerState playerState = new PlayerState
             {
                 Id = playerId,
@@ -94,7 +62,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     player.CardsOnBoard
                         .Concat(player.BoardCards.Select(card => card.Model.Card))
-                        .Concat(extraCardsOnBoard)
                         .Distinct()
                         .Select(card => card.ToProtobuf())
                         .ToArray()
@@ -106,7 +73,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CardsInHand =
                 {
                     player.CardsInHand
-                        .Concat(extraCardsInHand)
                         .Distinct()
                         .Select(card => card.ToProtobuf())
                         .ToArray()
