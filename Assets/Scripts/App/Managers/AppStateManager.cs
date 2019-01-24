@@ -175,10 +175,9 @@ namespace Loom.ZombieBattleground
 
         private void UpdateConnectionStatus()
         {
+            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
             if (!_backendFacade.IsConnected)
             {
-                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-
                 if (connectionPopup.Self == null)
                 {
                     Func<Task> connectFunc = async () =>
@@ -199,43 +198,6 @@ namespace Loom.ZombieBattleground
                     connectionPopup.ShowFailedInGame();
                 }
             }
-        }
-
-        public void HandleNetworkExceptionFlow(string exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
-        {
-            _uiManager.HidePopup<WarningPopup>();
-            _uiManager.GetPopup<MatchMakingPopup>().ForceCancelAndHide();
-            _uiManager.HidePopup<CardInfoPopup>();
-            _uiManager.HidePopup<ConnectionPopup>();
-
-            if (!leaveCurrentAppState)
-            {
-                if (AppState == Enumerators.AppState.GAMEPLAY)
-                {
-                    GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
-                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
-                }
-                else
-                {
-                    ChangeAppState(Enumerators.AppState.MAIN_MENU);
-                }
-            }
-
-            if (drawErrorMessage)
-            {
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupConfirmationReceived;
-
-                _uiManager.DrawPopup<WarningPopup>(exception);
-            }
-        }
-
-        private void WarningPopupConfirmationReceived()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupConfirmationReceived;
-
-            UpdateConnectionStatus();
         }
 
         private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)

@@ -771,17 +771,10 @@ namespace Loom.ZombieBattleground
                 catch (Exception e)
                 {
                     Helpers.ExceptionReporter.LogException(e);
+                    Debug.Log("Result === " + e);
 
                     success = false;
-
-                    if (e is Client.RpcClientException)
-                    {
-                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
-                    }
-                    else
-                    {
-                        OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
-                    }
+                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
                 }
             }
             else
@@ -805,25 +798,19 @@ namespace Loom.ZombieBattleground
                 catch (Exception e)
                 {
                     Helpers.ExceptionReporter.LogException(e);
+                    Debug.Log("Result === " + e);
 
                     success = false;
 
-                    if (e is Client.RpcClientException)
-                    {
-                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
-                    }
-                    else
-                    {
-                        string message = e.Message;
+                    string message = e.Message;
 
-                        string[] description = e.Message.Split('=');
-                        if (description.Length > 0)
-                        {
-                            message = description[description.Length - 1].TrimStart(' ');
-                            message = char.ToUpper(message[0]) + message.Substring(1);
-                        }
-                        OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                    string[] description = e.Message.Split('=');
+                    if (description.Length > 0)
+                    {
+                        message = description[description.Length - 1].TrimStart(' ');
+                        message = char.ToUpper(message[0]) + message.Substring(1);
                     }
+                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
                 }
             }
 
