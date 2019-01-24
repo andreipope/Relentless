@@ -510,6 +510,13 @@ namespace Loom.ZombieBattleground
         private void OnProcessPurchase(PurchaseEventArgs args)
         {
             Product product = args.purchasedProduct;
+
+            Debug.Log("OnProcessPurchase");
+            Debug.Log($"productId {product.definition.id}");
+            Debug.Log($"receipt {args.purchasedProduct.receipt}");
+            Debug.Log($"storeTxId {product.transactionID}");
+            Debug.Log($"storeName {product.definition.storeSpecificId}");
+            
             string productId = product.definition.id;
             string purchaseToken = ParsePurchaseTokenFromReceipt(args.purchasedProduct.receipt);
             string storeTxId = product.transactionID;
@@ -545,7 +552,7 @@ namespace Loom.ZombieBattleground
             }
             catch
             {
-                Debug.LogError("Cannot deserialize args.purchasedProduct.receipt 2");                
+                Debug.Log("Cannot deserialize args.purchasedProduct.receipt 2");                
             }
             
             if( !string.IsNullOrEmpty(payload) )
@@ -559,7 +566,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch
                 {
-                    Debug.LogError("Cannot deserialize payload str");
+                    Debug.Log("Cannot deserialize payload str");
                 }
                 
                 if (!string.IsNullOrEmpty(json))
@@ -572,7 +579,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch
                     {
-                        Debug.LogError("Cannot deserialize rJson");
+                        Debug.Log("Cannot deserialize rJson");
                     }
                 }
             }
