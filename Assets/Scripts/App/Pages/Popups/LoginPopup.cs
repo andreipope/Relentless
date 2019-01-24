@@ -444,6 +444,14 @@ namespace Loom.ZombieBattleground
                 LoginProcess(false);
                 return;
             }
+            catch (RpcClientException e)
+            {
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+
+                SetUIState(LoginState.ValidationFailed, "Registration was failed.\nPlease try again later.");
+
+                _registerButton.enabled = true;
+            }
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
@@ -547,6 +555,16 @@ namespace Loom.ZombieBattleground
 
                 _loginButton.enabled = true;
             }
+            catch(RpcClientException e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+
+                SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
+
+                _loginButton.enabled = true;
+            }
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
@@ -576,6 +594,15 @@ namespace Loom.ZombieBattleground
                 SuccessfulLogin();
 
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+            }
+            catch (RpcClientException e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+
+                _lastErrorMessage = e.Message;
+                SetUIState(LoginState.ValidationFailed);
             }
             catch (Exception e)
             {
