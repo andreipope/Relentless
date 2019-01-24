@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Loom.ZombieBattleground.Common;
 using TMPro;
 using Unity.Cloud.UserReporting;
 using Unity.Cloud.UserReporting.Plugin;
@@ -44,6 +43,8 @@ public class UserReportingScript : MonoBehaviour
     /// </summary>
     [Tooltip("The user report button used to create a user report.")]
     public Button UserReportButton;
+
+    public GameObject HiddenUI;
 
     public Button BugReportFormCancelButton;
 
@@ -259,14 +260,6 @@ public class UserReportingScript : MonoBehaviour
         // Take Thumbnail Screenshot
         UnityUserReporting.CurrentClient.TakeScreenshot(256, 256, s => { });
 
-        // Attempt to get match id
-
-        long? matchId = null;
-        if (GameClient.Get<IMatchManager>()?.MatchType == Enumerators.MatchType.PVP)
-        {
-            matchId = GameClient.Get<IPvPManager>()?.MatchMetadata?.Id;
-        }
-
         // Kill everything else to make sure no more exceptions are being thrown
         if (isCrashReport)
         {
@@ -311,12 +304,6 @@ public class UserReportingScript : MonoBehaviour
                         "text/plain",
                         global::System.Text.Encoding.UTF8.GetBytes(_exceptionStacktrace)
                         ));
-            }
-
-            // Fields
-            if (matchId != null)
-            {
-                br.Fields.Add(new UserReportNamedValue("Online Match Id", matchId.Value.ToString()));
             }
 
             try
@@ -530,6 +517,12 @@ public class UserReportingScript : MonoBehaviour
         // Update Client
         UnityUserReporting.CurrentClient.IsSelfReporting = this.IsSelfReporting;
         UnityUserReporting.CurrentClient.SendEventsToAnalytics = this.SendEventsToAnalytics;
+
+        // Update UI
+        if (this.HiddenUI != null)
+        {
+            HiddenUI.gameObject.SetActive(_afpsCounter.OperationMode == OperationMode.Normal);
+        }
 
         if (this.UserReportForm != null)
         {

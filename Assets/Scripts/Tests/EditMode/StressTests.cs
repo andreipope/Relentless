@@ -142,14 +142,19 @@ namespace Loom.ZombieBattleground.Test
 
                 await Task.WhenAll(
                     clients
-                        .Select(async client =>
+                        .Select(client =>
                         {
-                            await client.Start(
-                                enabledLogs: false,
-                                chainClientCallExecutor: new DumbDAppChainClientCallExecutor(
-                                    new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration())),
-                                contractCallProxyFactory: contract => new ThreadedContractCallProxyWrapper(new DefaultContractCallProxy(contract))
-                            );
+                            Func<Task> t = async () =>
+                            {
+                                await client.Start(
+                                    enabledLogs: false,
+                                    chainClientCallExecutor: new DumbDAppChainClientCallExecutor(
+                                        new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration())),
+                                    contractCallProxyFactory: contract => new ThreadedTimeMetricsContractCallProxy(contract, true, false)
+                                );
+                            };
+
+                            return t();
                         })
                         .ToArray()
                 );

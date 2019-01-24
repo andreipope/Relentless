@@ -106,7 +106,7 @@ namespace Loom.Client
                 ExceptionDispatchInfo.Capture(e.InnerException).Throw();
             }
 
-            TimeoutException ex = new TimeoutException($"Call took longer than {timeoutMs} ms");
+            TimeoutException ex = new TimeoutException();
 
             UnityUserReporting.CurrentClient.LogException(ex);
 

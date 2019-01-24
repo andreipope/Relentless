@@ -767,14 +767,14 @@ namespace Loom.ZombieBattleground
         }
 
         public void PlayOpponentCard(
-            Player player, InstanceId cardId, BoardObject target, Action<WorkingCard, BoardObject> completePlayCardCallback)
+            Player player, WorkingCard card, BoardObject target, Action<WorkingCard, BoardObject> completePlayCardCallback)
         {
             OpponentHandCard opponentHandCard;
             if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 opponentHandCard =
                     _battlegroundController.OpponentHandCards
-                        .First(x => x.WorkingCard.InstanceId == cardId);
+                        .First(x => x.WorkingCard.InstanceId == card.InstanceId);
             }
             else
             {
@@ -784,8 +784,6 @@ namespace Loom.ZombieBattleground
                 opponentHandCard = _battlegroundController.OpponentHandCards[
                     Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
             }
-
-            WorkingCard card = opponentHandCard.WorkingCard;
 
             _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
 

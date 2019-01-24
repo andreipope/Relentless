@@ -1067,60 +1067,54 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public BoardUnitModel GetBoardUnitById(InstanceId id)
+        public BoardUnitModel GetBoardUnitById(Player owner, InstanceId id)
         {
-            BoardUnitView view = 
-                _gameplayManager.OpponentPlayer.BoardCards
-                    .Concat(_gameplayManager.CurrentPlayer.BoardCards)
-                    .FirstOrDefault(u => u != null && u.Model.Card.InstanceId == id);
+            BoardUnitView view = owner.BoardCards.Find(u => u != null && u.Model.Card.InstanceId == id);
 
-            return view?.Model;
-        }
+            if (view != null)
+                return view.Model;
 
-        public WorkingCard GetWorkingCardById(InstanceId id)
-        {
-            BoardUnitModel boardUnitModel = GetBoardUnitById(id);
-            if (boardUnitModel != null)
-                return boardUnitModel.Card;
-
-            WorkingCard workingCard =
-                _gameplayManager.OpponentPlayer.CardsOnBoard
-                    .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
-                    .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
-                    .FirstOrDefault(u => u != null && u.InstanceId == id);
-
-            return workingCard;
+            return null;
         }
 
         public BoardObject GetBoardObjectById(InstanceId id)
         {
-            BoardUnitModel boardUnitModel = GetBoardUnitById(id);
-            if(boardUnitModel != null)
-                return boardUnitModel;
+            List<BoardUnitView> units = new List<BoardUnitView>();
+            units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
+            units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
 
-            List<BoardObject> boardObjects = new List<BoardObject>
-            {
-                _gameplayManager.CurrentPlayer,
-                _gameplayManager.OpponentPlayer,
-            };
-            boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardSpellsInUse);
-            boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardSpellsInUse);
+            BoardUnitView unit = units.Find(u => u.Model.Card.InstanceId == id);
 
-            BoardObject foundObject = boardObjects.Find(boardObject =>
+            if(unit != null)
             {
-                switch (boardObject)
+                units.Clear();
+                return unit.Model;
+            }
+            else
+            {
+                List<BoardObject> boardObjects = new List<BoardObject>();
+                boardObjects.Add(_gameplayManager.CurrentPlayer);
+                boardObjects.Add(_gameplayManager.OpponentPlayer);
+                boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardSpellsInUse);
+                boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardSpellsInUse);
+
+                BoardObject foundObject = boardObjects.Find(boardObject =>
                 {
-                    case BoardSpell boardSpell:
-                        return boardSpell.Card.InstanceId == id;
-                    case IInstanceIdOwner instanceIdOwner:
-                        return instanceIdOwner.InstanceId == id;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
-                }
-            });
+                    switch (boardObject)
+                    {
+                        case BoardSpell boardSpell:
+                            return boardSpell.Card.InstanceId == id;
+                        case IInstanceIdOwner instanceIdOwner:
+                            return instanceIdOwner.InstanceId == id;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
+                    }
+                });
 
-            return foundObject;
+                boardObjects.Clear();
+
+                return foundObject;
+            }
         }
 
         public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)

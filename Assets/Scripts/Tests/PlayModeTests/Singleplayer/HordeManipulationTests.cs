@@ -1,5 +1,4 @@
 using System.Collections;
-using Loom.ZombieBattleground.Common;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
@@ -18,20 +17,20 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+                await TestHelper.AssertCurrentPageName("OverlordSelectionPage");
                 await TestHelper.PickOverlord("Razu", true);
 
                 await TestHelper.LetsThink();
 
                 await TestHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.DECK_EDITING);
+                await TestHelper.AssertCurrentPageName("HordeEditingPage");
                 await TestHelper.ClickGenericButton("Button_Back");
                 await TestHelper.RespondToYesNoOverlay(false);
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
             });
         }
 
@@ -46,9 +45,9 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
 
                 await TestHelper.SelectAHordeByName("Draft", false);
                 if (TestHelper.SelectedHordeIndex != -1)
@@ -57,15 +56,15 @@ namespace Loom.ZombieBattleground.Test
                 }
 
                 await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+                await TestHelper.AssertCurrentPageName("OverlordSelectionPage");
                 await TestHelper.PickOverlord("Razu", true);
                 await TestHelper.LetsThink();
                 await TestHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.DECK_EDITING);
+                await TestHelper.AssertCurrentPageName("HordeEditingPage");
                 await TestHelper.SetDeckTitle("Draft");
                 await TestHelper.ClickGenericButton("Button_Back");
                 await TestHelper.RespondToYesNoOverlay(true);
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.SelectAHordeByName("Draft", true, "Horde draft isn't displayed.");
             });
         }
@@ -81,9 +80,9 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.RemoveAllHordesExceptDefault();
             });
         }
@@ -99,11 +98,11 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.AddRazuHorde();
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
             });
         }
 
@@ -118,11 +117,11 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.AddKalileHorde();
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
             });
         }
 
@@ -137,11 +136,11 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
                 await TestHelper.AddValashHorde();
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
             });
         }
     }

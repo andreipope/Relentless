@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -38,9 +36,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            Func<Contract, IContractCallProxy> contractCallProxyFactory =
-                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, true));
-
             AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
             AddService<ILoadObjectsManager>(loadObjectsManager);
             AddService<ITimerManager>(new TimerManager());
@@ -58,7 +53,7 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(configData));
-            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contractCallProxyFactory));
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contract => new ThreadedTimeMetricsContractCallProxy(contract, false, true)));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IFacebookManager>(new FacebookManager());
