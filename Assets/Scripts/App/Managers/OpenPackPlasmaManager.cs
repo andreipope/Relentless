@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
         {
             CardsReceived.Clear();
             
-             EvmContract cardFaucetContract = await GetContract(
+            EvmContract cardFaucetContract = await GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiCardFaucet.ToString(),

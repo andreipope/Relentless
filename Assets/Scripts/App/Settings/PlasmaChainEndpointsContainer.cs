@@ -20,9 +20,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public static readonly string FiatClaimURL = "https://dev-auth.loom.games/fiat/claim-orders";       
 #else
         //STAGING ENVIRONMENT
-        public static readonly string ContractAddressCardFaucet = "0x3a25fd6f5d1408c0f87f52cc4c187fd107d9d4fd";  
-        public static readonly string ContractAddressBoosterPack = "0x2fa54683d976c72806d2e54d1d61a476848e4da9";
-        public static readonly string ContractAddressFiatPurchase = "0x73907b3ae4933491ea39af1996534980148876c5";       
+        public static readonly string ContractAddressCardFaucet = "0xa99d2de260dd88a46017d9187c381e1dfc9bb0d0";  
+        public static readonly string ContractAddressBoosterPack = "0xdc745ac9945c981a63748a6b46dc31c2909bc865";
+        public static readonly string ContractAddressFiatPurchase = "0xb4b0bd2eb757b124a72065bfa535bea1849101ab";       
         
         public static readonly string Chainid = "default";
         public static readonly string WebSocket = "wss://test-z-us1.dappchains.com/websocket";
