@@ -22,7 +22,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
             switch (AbilityEffectType)
             {
                 case Enumerators.AbilityEffectType.STUN_FREEZES:
