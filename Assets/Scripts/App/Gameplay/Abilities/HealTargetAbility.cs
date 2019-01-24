@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 {
     public class HealTargetAbility : AbilityBase
     {
-        private const int ZedKitId = 72;
+        private const int ZedKitId = 146;
 
         public int Value { get; }
 
