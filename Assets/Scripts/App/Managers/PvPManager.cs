@@ -47,8 +47,6 @@ namespace Loom.ZombieBattleground
 
         public event Action<PlayerActionRankBuff> RankBuffActionReceived;
 
-        public event Action<PlayerActionCheatDestroyCardsOnBoard> CheatDestroyCardsOnBoardActionReceived;
-
         public event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
 
         public event Action LeaveMatchReceived;
@@ -335,14 +333,8 @@ namespace Loom.ZombieBattleground
                                 UpdateCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
 
                                 _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.CardsPreparingToHand);
-                            } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
-                            {
-                                OnReceivePlayerActionType(playerActionEvent);
                             }
-                            else
-                            {
-                                return;
-                            }
+                            return;
                         } else {
                             if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
@@ -435,9 +427,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.Types.Enum.RankBuff:
                     RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
-                    break;
-                case PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard:
-                    CheatDestroyCardsOnBoardActionReceived?.Invoke(playerActionEvent.PlayerAction.CheatDestroyCardsOnBoard);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(

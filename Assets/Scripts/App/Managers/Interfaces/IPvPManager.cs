@@ -25,7 +25,6 @@ namespace Loom.ZombieBattleground
         event Action<PlayerActionCardAbilityUsed> CardAbilityUsedActionReceived;
         event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         event Action<PlayerActionRankBuff> RankBuffActionReceived;
-        event Action<PlayerActionCheatDestroyCardsOnBoard> CheatDestroyCardsOnBoardActionReceived;
         event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
 
         event Action LeaveMatchReceived;
@@ -38,7 +37,7 @@ namespace Loom.ZombieBattleground
 
         List<string> PvPTags { get; set; }
 
-        DebugCheatsConfiguration DebugCheats { get; }
+        DebugCheatsConfiguration DebugCheats { get; set; }
 
         MatchMakingFlowController MatchMakingFlowController { get; }
 

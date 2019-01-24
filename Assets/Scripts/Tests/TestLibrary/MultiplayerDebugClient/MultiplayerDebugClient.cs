@@ -67,6 +67,7 @@ namespace Loom.ZombieBattleground.Test
             set => _playerActionFactory = value;
         }
 
+        [JsonIgnore]
         public List<Card> CardLibrary
         {
             get => _cardLibrary;

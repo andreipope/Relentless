@@ -140,13 +140,14 @@ namespace Loom.ZombieBattleground
                     _targets.Remove(currentTarget);
                 }
 
-                abilityTargets.Add(new ParametrizedAbilityBoardObject(
-                    currentTarget,
-                    new ParametrizedAbilityParameters
+                abilityTargets.Add(new ParametrizedAbilityBoardObject()
+                {
+                    BoardObject = currentTarget,
+                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
                     {
                         Defense = defenseValue
                     }
-                ));
+                });
 
                 if (_targets.Count == 0)
                 {

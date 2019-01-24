@@ -892,7 +892,7 @@ namespace Loom.ZombieBattleground
                         _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
                         _gameplayManager.OpponentPlayer.AddCardToBoard(card);
 
-                        _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, (x, y) =>
+                        _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, (x, y) =>
                         {
                             PlayCardCompleteHandler(x, y, completeCallback);
                         });
@@ -906,7 +906,7 @@ namespace Loom.ZombieBattleground
                                 _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
                                 _gameplayManager.OpponentPlayer.AddCardToBoard(card);
 
-                                _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, (x, y) =>
+                                _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, (x, y) =>
                                 {
                                     PlayCardCompleteHandler(x, y, completeCallback);
                                 });
