@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (!Active)
+            if (!Active || !_backendFacade.IsConnected)
                 return;
 
             while (_tasks.Count > 0)
@@ -62,13 +62,7 @@ namespace Loom.ZombieBattleground
                         {
                             Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" Time out == " + exception);
-                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
-                        }
-                        catch (Client.RpcClientException exception)
-                        {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" RpcException == " + exception);
-                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
+                            ShowConnectionPopup();
                         }
                         catch (Exception exception)
                         {
@@ -87,13 +81,7 @@ namespace Loom.ZombieBattleground
                         {
                             Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" Time out == " + exception);
-                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
-                        }
-                        catch (Client.RpcClientException exception)
-                        {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" RpcException == " + exception);
-                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
+                            ShowConnectionPopup();
                         }
                         catch (Exception exception)
                         {
