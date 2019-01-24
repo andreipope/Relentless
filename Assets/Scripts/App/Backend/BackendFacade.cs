@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Card Collection
 
-        private const string GetCardCollectionMethod = "GetCollection";
+        private const string GetCardCollectionMethod = "GetCollectionByAddress";
 
         public async Task<GetCollectionResponse> GetCardCollection(string userId)
         {
