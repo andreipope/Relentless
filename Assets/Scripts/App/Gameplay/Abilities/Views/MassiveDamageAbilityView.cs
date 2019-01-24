@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbilityView : AbilityViewBase<MassiveDamageAbility>
     {
-        private const int LawnmowerCardId = 248;
+        private const int LawnmowerCardId = 114;
 
         private List<BoardUnitView> _unitsViews;
 
