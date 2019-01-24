@@ -8,7 +8,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Purchasing;
+using UnityEngine.Purchasing.Security;
 using Object = UnityEngine.Object;
+using Convert = System.Convert;
 using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
@@ -515,10 +517,12 @@ namespace Loom.ZombieBattleground
             Debug.Log($"productId {product.definition.id}");
             Debug.Log($"receipt {args.purchasedProduct.receipt}");
             Debug.Log($"storeTxId {product.transactionID}");
-            Debug.Log($"storeName {product.definition.storeSpecificId}");
-            
+            Debug.Log($"storeSpecificId {product.definition.storeSpecificId}");
+
+
+            #if UNITY_ANDROID
             string productId = product.definition.id;
-            string purchaseToken = ParsePurchaseTokenFromReceipt(args.purchasedProduct.receipt);
+            string purchaseToken = ParsePurchaseTokenFromPlayStoreReceipt(args.purchasedProduct.receipt);
             string storeTxId = product.transactionID;
             string storeName = product.definition.storeSpecificId;            
 
@@ -528,10 +532,38 @@ namespace Loom.ZombieBattleground
                 purchaseToken,
                 storeTxId,
                 storeName                
-            );                    
+            );  
+            #elif UNITY_IOS
+            ParseTransactionIdentifierFromAppStoreReceipt(args);
+            #endif                   
+        }
+        
+        private void ParseTransactionIdentifierFromAppStoreReceipt(PurchaseEventArgs e)
+        {
+            var validator = new CrossPlatformValidator(GooglePlayTangle.Data(),
+                    AppleTangle.Data(), Application.identifier);
+        
+            var result = validator.Validate(e.purchasedProduct.receipt);
+            Debug.Log("Receipt is valid. Contents:");
+            int count = 0;
+            foreach (IPurchaseReceipt productReceipt in result) {
+                Debug.Log($"productReceipt {count}");
+                ++count;
+                Debug.Log($"productReceipt.productID: {productReceipt.productID}");
+                Debug.Log($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
+                Debug.Log($"productReceipt.transactionID: {productReceipt.transactionID}");
+                
+                AppleInAppPurchaseReceipt apple = productReceipt as AppleInAppPurchaseReceipt;
+                if (null != apple) {
+                    Debug.Log($"apple.originalTransactionIdentifier: {apple.originalTransactionIdentifier}");
+                    Debug.Log($"apple.subscriptionExpirationDate {apple.subscriptionExpirationDate}");
+                    Debug.Log($"apple.cancellationDate: {apple.cancellationDate}");
+                    Debug.Log($"apple.quantity: {apple.quantity}");
+                }
+            }
         }
 
-        private string ParsePurchaseTokenFromReceipt( string receiptString  )
+        private string ParsePurchaseTokenFromPlayStoreReceipt( string receiptString  )
         {
             string payload = "";   
             string purchaseToken = "";
@@ -552,7 +584,7 @@ namespace Loom.ZombieBattleground
             }
             catch
             {
-                Debug.Log("Cannot deserialize args.purchasedProduct.receipt 2");                
+                Debug.Log("Cannot deserialize args.purchasedProduct.receipt");                
             }
             
             if( !string.IsNullOrEmpty(payload) )
