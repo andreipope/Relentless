@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
-                Debug.LogError(e);
+                Debug.LogWarning(e);
                 _uiManager.GetPopup<MatchMakingPopup>().Hide();
                 _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
             }
