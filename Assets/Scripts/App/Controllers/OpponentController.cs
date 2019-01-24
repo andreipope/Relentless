@@ -316,7 +316,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                Debug.LogError("Attacker with card Id " + model.CardId + " not found on this client in match.");
+                Debug.LogWarning("Attacker with card Id " + model.CardId + " not found on this client in match.");
             }
         }
 

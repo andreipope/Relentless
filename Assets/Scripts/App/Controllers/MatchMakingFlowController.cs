@@ -18,6 +18,7 @@ namespace Loom.ZombieBattleground
     public class MatchMakingFlowController
     {
         private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
+        private const string PlayerIsNotInPool = "Player is already in a match";
 
         private readonly BackendFacade _backendFacade;
         private readonly UserDataModel _userDataModel;

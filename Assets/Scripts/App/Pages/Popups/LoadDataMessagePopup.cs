@@ -101,7 +101,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
-                Debug.LogError(e);
+                Debug.LogWarning(e);
                 success = false;
                 _uiManager.DrawPopup<LoginPopup>();
             }
