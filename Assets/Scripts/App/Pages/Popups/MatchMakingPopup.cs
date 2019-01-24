@@ -81,6 +81,13 @@ namespace Loom.ZombieBattleground
 
         }
 
+        public void ForceCancelAndHide()
+        {
+            CancelMatchmakingClicked?.Invoke();
+
+            _uiManager.HidePopup<MatchMakingPopup>();
+        }
+
         private void PressedCancelMatchmakingHandler()
         {
             CancelMatchmakingClicked?.Invoke();
