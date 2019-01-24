@@ -691,7 +691,7 @@ namespace Loom.ZombieBattleground
             foreach (TutorialDescriptionTooltip tooltip in tooltips)
             {
                 step = CurrentTutorial.TutorialContent.TutorialSteps.Find(info => info.ToGameplayStep().TutorialDescriptionTooltipsToActivate.Exists(id => id == tooltip.Id));
-                if (step != null)
+                if (step != null && (step.IsDone || step == CurrentTutorialStep))
                 {
                     ActivateDescriptionTooltip(tooltip.Id);
                 }

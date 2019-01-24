@@ -59,15 +59,24 @@ namespace Loom.ZombieBattleground
             _textDescription = _selfObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
 
+            description = description.Replace("\n", "");
+
             _textDescription.text = description;
 
             SetBattlegroundType(align);
-
             if (resizable && _currentBattleground != null)
             {
-                _textDescription.autoSizeTextContainer = true;
-                Vector2 textSize = _textDescription.GetPreferredValues(description);
-                Vector2 backgroundSize = Vector2.one / DefaultTextSize * textSize;
+                _textDescription.ForceMeshUpdate();                
+                RectTransform rect = _textDescription.GetComponent<RectTransform>();
+                Vector2 defaultSize = rect.sizeDelta;
+                float koef = 1;
+                while (rect.sizeDelta.y < _textDescription.renderedHeight)
+                {
+                    rect.sizeDelta = defaultSize * koef;
+                    koef += Time.deltaTime;
+                    _textDescription.ForceMeshUpdate();
+                }
+                Vector2 backgroundSize = Vector2.one / DefaultTextSize * rect.sizeDelta;
                 float value = (backgroundSize.x > backgroundSize.y ? backgroundSize.x : backgroundSize.y);
                 _currentBattleground.transform.localScale = Vector3.one * value;
             }
