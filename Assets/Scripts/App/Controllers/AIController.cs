@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsBrainWorking = false;
 
+        public bool AIPaused = false;
+
         private const int MinTurnForAttack = 0;
 
         private readonly Random _random = new Random();
@@ -120,7 +122,16 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
 
-            SetAiBrainType(Enumerators.AiBrainType.Normal);
+            if (_gameplayManager.IsTutorial &&
+                _tutorialManager.CurrentTutorial != null &&
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.AISpecificOrderEnabled)
+            {
+                SetAiBrainType(Enumerators.AiBrainType.Tutorial);
+            }
+            else
+            {
+                SetAiBrainType(Enumerators.AiBrainType.Normal);
+            }
 
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
@@ -148,6 +159,9 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AiBrainType.Normal:
                         await DoAiBrain(_aiBrainCancellationTokenSource.Token);
                         break;
+                    case Enumerators.AiBrainType.Tutorial:
+                        await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
+                        break;
                     case Enumerators.AiBrainType.DontAttack:
                         await DontAttackAiBrain(_aiBrainCancellationTokenSource.Token);
                         break;
@@ -163,7 +177,32 @@ namespace Loom.ZombieBattleground
 
             Debug.Log("brain finished");
 
-            IsBrainWorking = false;
+            if (!_tutorialManager.IsTutorial ||
+                (_aiBrainType == Enumerators.AiBrainType.Tutorial &&
+                _tutorialManager.CurrentTutorialStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn))
+            {
+                IsBrainWorking = false;
+            }
+        }
+
+        public async Task SetTutorialStep()
+        {
+            try
+            {
+                switch (_aiBrainType)
+                {
+                    case Enumerators.AiBrainType.Tutorial:
+                        await LetsThink(_aiBrainCancellationTokenSource.Token);
+                        await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("brain canceled!");
+            }
         }
 
         private void SetAiTypeByDeck()
@@ -210,10 +249,7 @@ namespace Loom.ZombieBattleground
             }
 
             if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground)
-            {
-                if (!_tutorialManager.CurrentTutorialDataStep.IsLaunchAIBrain)
-                    return;
-            }
+                return;
 
             await LaunchAIBrain();
         }
@@ -243,42 +279,108 @@ namespace Loom.ZombieBattleground
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+
+            await LetsWaitForQueue(cancellationToken);
+
+            await UseUnitsOnBoard(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            await UsePlayerSkills(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsWaitForQueue(cancellationToken);
+
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
             {
-                ((TutorialManager) _tutorialManager).Paused = true;
+                await UseUnitsOnBoard(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+
             }
             else
             {
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+            }
+        }
 
-                await LetsWaitForQueue(cancellationToken);
+        private async Task DoAiBrainForTutorial(CancellationToken cancellationToken)
+        {
+            TutorialStep step = _tutorialManager.CurrentTutorialStep;
 
+            await LetsThink(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsWaitForQueue(cancellationToken);
+
+            List<Enumerators.TutorialActivityAction> requiredActivitiesToDoneDuringTurn = step.ToGameplayStep().RequiredActivitiesToDoneDuringStep;
+            if(requiredActivitiesToDoneDuringTurn.Count == 0)
+            {
+                requiredActivitiesToDoneDuringTurn = _tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn;
+            }
+
+            foreach (Enumerators.TutorialActivityAction activityAction in requiredActivitiesToDoneDuringTurn)
+            {
+                switch (activityAction)
+                {
+                    case Enumerators.TutorialActivityAction.EnemyOverlordCardPlayed:
+                        await PlayCardsFromHand(cancellationToken);
+
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+
+                        await LetsWaitForQueue(cancellationToken);
+                        break;
+                    case Enumerators.TutorialActivityAction.BattleframeAttacked:
+                        await UseUnitsOnBoard(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await UsePlayerSkills(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        await LetsWaitForQueue(cancellationToken);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (CheckTutorialAIStepPaused())
+                    return;
+            }
+
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
+            {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-                await UsePlayerSkills(cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
-
-                await LetsWaitForQueue(cancellationToken);
-
-                if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
-                {
-                    await UseUnitsOnBoard(cancellationToken);
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    await LetsThink(cancellationToken);
-                    await LetsThink(cancellationToken);
-                    _battlegroundController.StopTurn();
-
-                }
-                else
-                {
-                    await LetsThink(cancellationToken);
-                    await LetsThink(cancellationToken);
-                    _battlegroundController.StopTurn();
-                }
             }
+
+            if (step.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+            }
+        }
+
+        private bool CheckTutorialAIStepPaused()
+        {
+            if (!_tutorialManager.IsTutorial ||
+                _tutorialManager.CurrentTutorialStep == null ||
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep() == null)
+            {
+                return false;
+            }
+            AIPaused = _tutorialManager.CurrentTutorialStep.ToGameplayStep().AIShouldBePaused;
+            return AIPaused;
         }
 
         private async Task DoNothingAiBrain(CancellationToken cancellationToken)
@@ -308,6 +410,36 @@ namespace Loom.ZombieBattleground
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
+            if (_tutorialManager.IsTutorial)
+            {
+                foreach (PlayCardActionInfo playCardActionInfo in _tutorialManager.GetCurrentTurnInfo().PlayCardsSequence)
+                {
+                    if (CheckTutorialAIStepPaused())
+                        return;
+
+                    WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.
+                                            Find(cardInHand => cardInHand.LibraryCard.Name.ToLowerInvariant() ==
+                                                 _tutorialManager.GetCardNameById(playCardActionInfo.TutorialObjectId).
+                                                 ToLowerInvariant());
+
+                    if (card != null)
+                    {
+
+                        PlayCardOnBoard(card, playCardActionInfo: playCardActionInfo);
+
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+
+                        if (_aiBrainType == Enumerators.AiBrainType.Tutorial)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                return;
+            }
+
             // CHECK about CardsInHand in modification collection!
             await CheckGooCard(cancellationToken);
 
@@ -358,6 +490,45 @@ namespace Loom.ZombieBattleground
         // ai step 2
         private async Task UseUnitsOnBoard(CancellationToken cancellationToken)
         {
+            if (_tutorialManager.IsTutorial)
+            {
+                foreach (UseBattleframeActionInfo frame in _tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence)
+                {
+                    if (CheckTutorialAIStepPaused())
+                        return;
+
+                    BoardUnitModel unit = GetUnitsOnBoard().Find(x => !x.AttackedThisTurn &&
+                                                                       x.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                       _tutorialManager.GetCardNameById(frame.TutorialObjectId).
+                                                                       ToLowerInvariant());
+                    BoardObject target = null;
+
+                    if (frame.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD)
+                    {
+                        target = GetOpponentUnitsOnBoard().Find(x => x.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                     _tutorialManager.GetCardNameById(frame.TargetTutorialObjectId).
+                                                                     ToLowerInvariant());
+                    }
+                    else
+                    {
+                        target = _gameplayManager.CurrentPlayer;
+                    }
+
+                    if (target != null && unit != null)
+                    {
+                        unit.DoCombat(target);
+                        if (_aiBrainType == Enumerators.AiBrainType.Tutorial)
+                            break;
+                    }
+
+                    await LetsWaitForQueue(cancellationToken);
+
+                    await LetsThink(cancellationToken);
+                }
+
+                return;
+            }
+
             List<BoardUnitModel> unitsOnBoard = new List<BoardUnitModel>();
             List<BoardUnitModel> alreadyUsedUnits = new List<BoardUnitModel>();
 
@@ -659,7 +830,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void PlayCardOnBoard(WorkingCard card, bool ignorePlayAbility = false)
+        public void PlayCardOnBoard(WorkingCard card, bool ignorePlayAbility = false, PlayCardActionInfo playCardActionInfo = null)
         {
             _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
             {
@@ -692,7 +863,27 @@ namespace Loom.ZombieBattleground
 
                 if (needTargetForAbility)
                 {
-                    target = GetAbilityTarget(card);
+                    if (_gameplayManager.IsTutorial && playCardActionInfo != null)
+                    {
+                        if (!string.IsNullOrEmpty(_tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)))
+                        {
+                            switch (playCardActionInfo.TargetType)
+                            {
+                                case Enumerators.SkillTargetType.OPPONENT:
+                                    target = _gameplayManager.CurrentPlayer;
+                                    break;
+                                case Enumerators.SkillTargetType.OPPONENT_CARD:
+                                    target = GetOpponentUnitsOnBoard().Find(x => x.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                            _tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)
+                                                                            .ToLowerInvariant());
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        target = GetAbilityTarget(card);
+                    }
                 }
 
                 switch (card.LibraryCard.CardKind)
@@ -763,6 +954,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.zero;
                         boardUnitViewElement.Model.OwnerPlayer = card.Owner;
+                        boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
                         boardUnitViewElement.SetObjectInfo(workingCard);
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
@@ -1226,6 +1418,14 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
+        private List<BoardUnitModel> GetOpponentUnitsOnBoard()
+        {
+        return _gameplayManager.CurrentPlayer.BoardCards
+                    .FindAll(x => x.Model.CurrentHp > 0)
+                    .Select(x => x.Model)
+                    .ToList();
+        }
+
         private BoardUnitModel GetRandomOpponentUnit(List<BoardUnitModel> unitsToIgnore = null)
         {
             List<BoardUnitModel> eligibleCreatures =
@@ -1384,7 +1584,7 @@ namespace Loom.ZombieBattleground
                         target = _gameplayManager.CurrentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                        BoardUnitModel unit = GetRandomOpponentUnit();
+                        BoardUnitModel unit = GetRandomOpponentUnit(GetOpponentUnitsOnBoard().FindAll(model => skill.BlockedUnitStatusTypes.Contains(model.UnitStatus)));
 
                         if (unit != null)
                         {

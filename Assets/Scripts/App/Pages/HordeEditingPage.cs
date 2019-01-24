@@ -671,6 +671,11 @@ namespace Loom.ZombieBattleground
                 CalculateVisibility();
                 Canvas.ForceUpdateCanvases();
             }
+
+            if(_currentDeck.GetNumCards() >= Constants.DeckMaxSize/2)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
+            }      
         }
 
         public uint GetMaxCopiesValue(IReadOnlyCard card)
@@ -766,10 +771,17 @@ namespace Loom.ZombieBattleground
                 catch (Exception e)
                 {
                     Helpers.ExceptionReporter.LogException(e);
-                    Debug.Log("Result === " + e);
 
                     success = false;
-                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+
+                    if (e is Client.RpcClientException)
+                    {
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
+                    }
+                    else
+                    {
+                        OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    }
                 }
             }
             else
@@ -793,19 +805,25 @@ namespace Loom.ZombieBattleground
                 catch (Exception e)
                 {
                     Helpers.ExceptionReporter.LogException(e);
-                    Debug.Log("Result === " + e);
 
                     success = false;
 
-                    string message = e.Message;
-
-                    string[] description = e.Message.Split('=');
-                    if (description.Length > 0)
+                    if (e is Client.RpcClientException)
                     {
-                        message = description[description.Length - 1].TrimStart(' ');
-                        message = char.ToUpper(message[0]) + message.Substring(1);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
                     }
-                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                    else
+                    {
+                        string message = e.Message;
+
+                        string[] description = e.Message.Split('=');
+                        if (description.Length > 0)
+                        {
+                            message = description[description.Length - 1].TrimStart(' ');
+                            message = char.ToUpper(message[0]) + message.Substring(1);
+                        }
+                        OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                    }
                 }
             }
 
@@ -814,6 +832,8 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
             } else {
                 _buttonSave.interactable = true;
             }
@@ -1012,7 +1032,9 @@ namespace Loom.ZombieBattleground
 
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
-            if (_isDragging)
+            if (_isDragging || (GameClient.Get<ITutorialManager>().IsTutorial &&
+                !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
+                GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
                 return;
             
 
@@ -1049,6 +1071,8 @@ namespace Loom.ZombieBattleground
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         AddCardToDeck(null, armyCard.LibraryCard);
+
+                        GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
                     }
                 }
             }
@@ -1114,6 +1138,12 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBack.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmQuitReceivedHandler;
@@ -1138,6 +1168,12 @@ namespace Loom.ZombieBattleground
 
         private void BuyButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
@@ -1145,6 +1181,12 @@ namespace Loom.ZombieBattleground
 
         private void ArmyButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.ARMY);
@@ -1152,6 +1194,12 @@ namespace Loom.ZombieBattleground
 
         private void SaveButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSave.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             OnDoneButtonPressed();

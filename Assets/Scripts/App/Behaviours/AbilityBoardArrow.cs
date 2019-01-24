@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnitView unit)
         {
-            if (unit.Model.CurrentHp <= 0)
+            if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
                 return;
 
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) &&

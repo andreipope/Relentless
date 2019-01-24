@@ -290,7 +290,7 @@ namespace Loom.ZombieBattleground
         private void BattleButtonUpdate()
         {
             bool canStartBattle = true;
-            if (!Constants.DevModeEnabled)
+            if (!Constants.DevModeEnabled && !GameClient.Get<ITutorialManager>().IsTutorial)
             {
                 canStartBattle = _hordeDecks.Count != 0 &&
                     _selectedDeck.Id != -1 &&
@@ -504,18 +504,36 @@ namespace Loom.ZombieBattleground
 
         private void CollectionButtonOnClickHandler()
         {
+            if(GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _appStateManager.ChangeAppState(Enumerators.AppState.ARMY);
+            _appStateManager.ChangeAppState(Enumerators.AppState.ARMY); 
         }
 
         private void BackButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_backButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _appStateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
         private void BattleButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_battleButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_selectedDeck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _selectedDeck;
@@ -524,6 +542,12 @@ namespace Loom.ZombieBattleground
 
         private void BattleButtonWarningOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_battleButtonWarning.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             if (!Constants.DevModeEnabled)
@@ -539,6 +563,12 @@ namespace Loom.ZombieBattleground
 
         private void LeftArrowButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_leftArrowButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             SwitchOverlordObject(-1);
@@ -546,12 +576,25 @@ namespace Loom.ZombieBattleground
 
         private void RightArrowButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_rightArrowButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             SwitchOverlordObject(1);
         }
 
         private void SkillButtonOnSingleClickHandler(int skillIndex)
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_firstSkill.name) ||
+             GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_secondSkill.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (deck != null)
@@ -569,6 +612,13 @@ namespace Loom.ZombieBattleground
 
         private void SkillButtonOnDoubleClickHandler(int skillIndex)
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_firstSkill.name) ||
+                GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_secondSkill.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _editingDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (_editingDeck != null)
@@ -586,6 +636,13 @@ namespace Loom.ZombieBattleground
 
         private void NewHordeDeckButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_newHordeDeckButton.name) ||
+                GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_newHordeDeckButtonLeft.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.GetPage<HordeEditingPage>().CurrentDeckId = -1;
@@ -595,6 +652,12 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_deleteButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             if (_hordeDecks.Count <= 1)
             {
                 _uiManager.DrawPopup<WarningPopup>("Sorry, Not able to delete Last Deck.");
@@ -614,6 +677,12 @@ namespace Loom.ZombieBattleground
 
         private void EditButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_editButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             if (_selectedDeck != null)
             {
                 _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);

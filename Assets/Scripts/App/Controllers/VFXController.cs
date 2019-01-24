@@ -483,8 +483,6 @@ namespace Loom.ZombieBattleground
 
                 SelfObject.transform.position = BoardUnitView.Transform.position;
 
-                BoardUnitView.Transform.SetParent(SelfObject.transform, true);
-
                 AnimationEventTriggeringHandler = SelfObject.GetComponent<AnimationEventTriggering>();
                 EffectAnimator = SelfObject.GetComponent<Animator>();
 
@@ -507,7 +505,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (BoardUnitView != null && !BoardUnitView.WasDestroyed)
+            if (BoardUnitView != null && !BoardUnitView.WasDestroyed && SelfObject != null)
             {
                 if (_withEffect)
                 {

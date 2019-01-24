@@ -9,7 +9,8 @@ namespace Loom.ZombieBattleground
     public class YourTurnPopup : IUIPopup
     {
         private ILoadObjectsManager _loadObjectsManager;
-
+        private ITutorialManager _tutorialManager;
+        private IGameplayManager _gameplayManager;
         private IUIManager _uiManager;
 
         public GameObject Self { get; private set; }
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _gameplayManager = GameClient.Get<IGameplayManager>();
 
             Hide();
         }
@@ -33,6 +36,8 @@ namespace Loom.ZombieBattleground
 
             if (Self == null)
                 return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndTurn);
 
             Self.SetActive(false);
             Object.Destroy(Self);

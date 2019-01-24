@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
-                Debug.LogError(e);
+                Debug.LogWarning(e);
                 _uiManager.GetPopup<MatchMakingPopup>().Hide();
                 _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
             }
@@ -255,6 +255,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.APP_INIT:
                     {
                         _appStateManager.ChangeAppState(_finishMatchAppState);
+
+                        _tutorialManager.CheckNextTutorial();
                     }
                     break;
             }
@@ -262,6 +264,7 @@ namespace Loom.ZombieBattleground
 
         private void ForceStartGameplay(bool force = false)
         {
+            Debug.Log(_gameplayManager.IsTutorial);
             if (_gameplayManager.IsTutorial)
             {
                 _tutorialManager.SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);

@@ -211,6 +211,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsTutorial)
             {
                 _buttonBack.gameObject.SetActive(false);
+                _settingsButton.gameObject.SetActive(false);
             }
 
             StartGame();
@@ -242,8 +243,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.MatchType.LOCAL:
                     if (_gameplayManager.IsTutorial)
                     {
-                        heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
-                        opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
+                        heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
+                        opponentHeroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                     }
                     else
                     {

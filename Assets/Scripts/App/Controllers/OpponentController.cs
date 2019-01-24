@@ -252,6 +252,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.transform.position = Vector3.zero;
                         boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
                         boardUnitViewElement.SetObjectInfo(workingCard);
+                        boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
                         boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
@@ -315,7 +316,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                Debug.LogError("Attacker with card Id " + model.CardId + " not found on this client in match.");
+                Debug.LogWarning("Attacker with card Id " + model.CardId + " not found on this client in match.");
             }
         }
 

@@ -289,7 +289,7 @@ namespace Loom.ZombieBattleground
 
                 Helpers.ExceptionReporter.LogException(new Exception(exception));
 
-                Debug.LogError(exception);
+                Debug.LogWarning(exception);
 
                 ActionDoneCallback();
                 throw;
