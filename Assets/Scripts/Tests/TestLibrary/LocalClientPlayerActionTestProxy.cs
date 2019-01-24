@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground.Test
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
             WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardById(card);
-            await _testHelper.PlayCardFromHandToBoard(workingCard, false, entryAbilityTargetBoardObject);
+            await _testHelper.PlayCardFromHandToBoard(workingCard, position, false, entryAbilityTargetBoardObject);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)

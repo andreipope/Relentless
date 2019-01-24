@@ -472,12 +472,14 @@ namespace Loom.ZombieBattleground
                      // Validate game state
                      if (Constants.GameStateValidationEnabled && pvpControlGameState != null)
                      {
-                         GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameState();
+                         GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameState(true);
                          CompareLogic compareLogic = new CompareLogic();
                          compareLogic.Config.ShowBreadcrumb = true;
                          compareLogic.Config.TreatStringEmptyAndNullTheSame = true;
                          compareLogic.Config.MaxDifferences = 25;
                          compareLogic.Config.MembersToIgnore.Add("CardsInGraveyard");
+                         compareLogic.Config.MembersToIgnore.Add("CardsInHand");
+                         compareLogic.Config.MembersToIgnore.Add("CardsInDeck");
                          compareLogic.Config.MembersToIgnore.Add("CurrentGoo");
                          compareLogic.Config.ActualName = "OpponentState";
                          compareLogic.Config.ExpectedName = "LocalState";

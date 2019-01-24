@@ -1205,7 +1205,7 @@ namespace Loom.ZombieBattleground.Test
 
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
-                    await PlayCardFromHandToBoard(card);
+                    await PlayCardFromHandToBoard(card, 0);
                     wasAction = true;
                     await LetsThink();
                     await LetsThink();
@@ -1216,7 +1216,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
-                    await PlayCardFromHandToBoard(card);
+                    await PlayCardFromHandToBoard(card, 0);
                     wasAction = true;
                     await LetsThink();
                     await LetsThink();
@@ -1484,14 +1484,14 @@ namespace Loom.ZombieBattleground.Test
                         break;
                     if (CardCanBePlayable(card))
                     {
-                        await PlayCardFromHandToBoard(card);
+                        await PlayCardFromHandToBoard(card, 0);
                         wasAction = true;
                         await LetsThink();
                         await LetsThink();
                     }
                 }
 
-                await PlayCardFromHandToBoard(expensiveCard);
+                await PlayCardFromHandToBoard(expensiveCard, 0);
 
                 await LetsThink();
                 await LetsThink();
@@ -1570,7 +1570,7 @@ namespace Loom.ZombieBattleground.Test
 
                 BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
-                await PlayCardFromHandToBoard(boardCard.WorkingCard);
+                await PlayCardFromHandToBoard(boardCard.WorkingCard, 0);
 
                 await LetsThink();
                 await LetsThink();
@@ -1579,7 +1579,7 @@ namespace Loom.ZombieBattleground.Test
             await new WaitForUpdate();
         }
 
-        public async Task PlayCardFromHandToBoard(WorkingCard card, bool autoGetAbilityTarget = true, BoardObject manualAbilityTarget = null)
+        public async Task PlayCardFromHandToBoard(WorkingCard card, int position, bool autoGetAbilityTarget = true, BoardObject manualAbilityTarget = null)
         {
             BoardObject target = null;
             bool needTargetForAbility = false;
@@ -1643,9 +1643,9 @@ namespace Loom.ZombieBattleground.Test
                     else
                     {
                         _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
-                        _testBroker.GetPlayer(_player).AddCardToBoard(card);
+                        _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
 
-                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, target, PlayCardCompleteHandler);
+                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, target, null, PlayCardCompleteHandler);
                     }
 
                     _cardsController.DrawCardInfo(card);
@@ -1655,7 +1655,7 @@ namespace Loom.ZombieBattleground.Test
                     if (!autoGetAbilityTarget && manualAbilityTarget != null || target != null && needTargetForAbility || !needTargetForAbility)
                     {
                         _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
-                        _testBroker.GetPlayer(_player).AddCardToBoard(card);
+                        _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
 
                         if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                         {
@@ -1675,7 +1675,7 @@ namespace Loom.ZombieBattleground.Test
                         }
                         else
                         {
-                            _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, target, PlayCardCompleteHandler);
+                            _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, target, null, PlayCardCompleteHandler);
                         }
 
                         _cardsController.DrawCardInfo(card);

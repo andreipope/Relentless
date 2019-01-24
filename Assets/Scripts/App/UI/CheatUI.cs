@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            GUILayout.BeginArea(new Rect(20, 20, 200, 120), "PvP Cheats", Styles.OpaqueWindow);
+            GUILayout.BeginArea(new Rect(20, 20, 200, 150), "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
 
@@ -53,6 +53,15 @@ namespace Loom.ZombieBattleground
                     }
                 }
                 GUILayout.EndHorizontal();
+
+                if (GUILayout.Button("Find Match"))
+                {
+                    Deck deck = _dataManager.CachedDecksData.Decks[0];
+                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
+                    GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
+                    GameClient.Get<IMatchManager>().FindMatch();
+                }
 
                 GUI.enabled = true;
             }

@@ -536,7 +536,7 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.CardKind.CREATURE:
                         {
-                            int indexOfCard = 0;
+                            card.FuturePositionOnBoard = 0;
                             float newCreatureCardPosition = card.Transform.position.x;
 
                             // set correct position on board depends from card view position
@@ -544,7 +544,7 @@ namespace Loom.ZombieBattleground
                             {
                                 if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
                                 {
-                                    indexOfCard = i + 1;
+                                    card.FuturePositionOnBoard = i + 1;
                                 }
                                 else
                                 {
@@ -561,14 +561,11 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Model.TutorialObjectId = card.WorkingCard.TutorialObjectId;
 
                             player.CardsInHand.Remove(card.WorkingCard);
-                            player.AddCardToBoard(card.WorkingCard);
+                            player.BoardCards.Insert(card.FuturePositionOnBoard, boardUnitView);
+                            player.AddCardToBoard(card.WorkingCard, card.FuturePositionOnBoard);
                             _battlegroundController.PlayerHandCards.Remove(card);
-                            _battlegroundController.PlayerBoardCards.Add(boardUnitView);
+                            _battlegroundController.PlayerBoardCards.Insert(card.FuturePositionOnBoard, boardUnitView);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-
-                            card.FuturePositionOnBoard = player.BoardCards.Count - indexOfCard;
-
-                            player.BoardCards.Insert(indexOfCard, boardUnitView);
 
                             InternalTools.DoActionDelayed(
                                      () =>
@@ -651,7 +648,7 @@ namespace Loom.ZombieBattleground
                                     {
                                         if(status)
                                         {
-                                            player.ThrowPlayCardEvent(card.WorkingCard, card.FuturePositionOnBoard);
+                                            player.ThrowPlayCardEvent(card.WorkingCard, 0);
                                         }
 
                                         RankBuffAction.ForceActionDone();
@@ -722,7 +719,7 @@ namespace Loom.ZombieBattleground
             }
 
 
-            player.AddCardToBoard(card.WorkingCard);
+            player.AddCardToBoard(card.WorkingCard, 0);
             player.RemoveCardFromHand(card.WorkingCard);
             player.BoardCards.Insert(indexOfCard, boardUnitView);
 
@@ -770,8 +767,8 @@ namespace Loom.ZombieBattleground
             Player player,
             InstanceId cardId,
             BoardObject target,
-            Action<WorkingCard, BoardObject> completePlayCardCallback,
-            Action<WorkingCard> cardFoundCallback = null
+            Action<WorkingCard> cardFoundCallback,
+            Action<WorkingCard, BoardObject> completePlayCardCallback
             )
         {
             OpponentHandCard opponentHandCard;
@@ -1151,7 +1148,7 @@ namespace Loom.ZombieBattleground
             WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
             BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
 
-            owner.AddCardToBoard(card);
+            owner.AddCardToBoard(card, 0);
 
             if (isPVPNetwork)
             {

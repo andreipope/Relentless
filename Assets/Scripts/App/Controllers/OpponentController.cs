@@ -245,34 +245,32 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
+            BoardUnitView boardUnitViewElement = null;
             _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer,
                 cardId,
                 null,
-                (workingCard, boardObject) =>
+                workingCard =>
                 {
                     switch (workingCard.LibraryCard.CardKind)
                     {
                         case Enumerators.CardKind.CREATURE:
-                            BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), _battlegroundController.OpponentBoardObject.transform);
+                            boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), _battlegroundController.OpponentBoardObject.transform);
                             GameObject boardUnit = boardUnitViewElement.GameObject;
-                            boardUnit.tag = SRTags.OpponentOwned;
-                            boardUnit.transform.position = Vector3.zero;
                             boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
                             boardUnitViewElement.SetObjectInfo(workingCard);
                             boardUnitViewElement.Model.TutorialObjectId = workingCard.TutorialObjectId;
 
-                            boardUnit.transform.position += Vector3.up * 2f; // Start pos before moving cards to the opponents board
+                            boardUnit.tag = SRTags.OpponentOwned;
+                            boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
+                            boardUnit.SetActive(false);
 
-                            _battlegroundController.OpponentBoardCards.Insert(
-                                Mathf.Clamp(position, 0, _battlegroundController.OpponentBoardCards.Count),
-                                boardUnitViewElement);
+                            Debug.Log("completePlayCardPlayback " + workingCard);
                             _gameplayManager.OpponentPlayer.BoardCards.Insert(
-                                Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count),
+                                position,
                                 boardUnitViewElement);
-
-                            boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
-
-                            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+                            _battlegroundController.OpponentBoardCards.Insert(
+                                position,
+                                boardUnitViewElement);
 
                             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                             {
@@ -282,6 +280,7 @@ namespace Loom.ZombieBattleground
                             });
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
+
                             break;
                         case Enumerators.CardKind.SPELL:
                             BoardSpell spell = new BoardSpell(null, workingCard); // todo improve it with game Object aht will be aniamted
@@ -295,21 +294,19 @@ namespace Loom.ZombieBattleground
                             });
                             break;
                     }
+
+                    _gameplayManager.OpponentPlayer.CurrentGoo -= workingCard.InstanceCard.Cost;
                 },
-                workingCard =>
+                (workingCard, boardObject) =>
                 {
                     switch (workingCard.LibraryCard.CardKind)
                     {
                         case Enumerators.CardKind.CREATURE:
-                            _gameplayManager.OpponentPlayer.CardsOnBoard.Insert(
-                                Mathf.Clamp(position, 0, _gameplayManager.OpponentPlayer.BoardCards.Count),
-                                workingCard);
-                            break;
-                        case Enumerators.CardKind.SPELL:
+                            boardUnitViewElement.GameObject.SetActive(true);
+                            boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
+                            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
                             break;
                     }
-
-                    _gameplayManager.OpponentPlayer.CurrentGoo -= workingCard.InstanceCard.Cost;
                 }
             );
         }

@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         }
 
-        public GameState CreateCurrentGameState()
+        public GameState CreateCurrentGameState(bool removeNonEssentialData)
         {
             if (_matchManager.MatchType != Enumerators.MatchType.PVP)
                 throw new Exception("Game must be PVP");
@@ -64,15 +64,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 RandomSeed = _pvpManager.InitialGameState.RandomSeed,
                 PlayerStates =
                 {
-                    CreateFakePlayerStateFromPlayer(player0.InitialPvPPlayerState.Id, player0),
-                    CreateFakePlayerStateFromPlayer(player1.InitialPvPPlayerState.Id, player1)
+                    CreateFakePlayerStateFromPlayer(player0.InitialPvPPlayerState.Id, player0, removeNonEssentialData),
+                    CreateFakePlayerStateFromPlayer(player1.InitialPvPPlayerState.Id, player1, removeNonEssentialData)
                 }
             };
 
             return gameState;
         }
 
-        public static PlayerState CreateFakePlayerStateFromPlayer(string playerId, Player player, IEnumerable<WorkingCard> extraCardsInHand = null, IEnumerable<WorkingCard> extraCardsOnBoard = null)
+        public static PlayerState CreateFakePlayerStateFromPlayer(string playerId, Player player, bool removeNonEssentialData, IEnumerable<WorkingCard> extraCardsInHand = null, IEnumerable<WorkingCard> extraCardsOnBoard = null)
         {
             if (extraCardsInHand == null)
             {
@@ -96,34 +96,48 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         .Concat(player.BoardCards.Select(card => card.Model.Card))
                         .Concat(extraCardsOnBoard)
                         .Distinct()
-                        .Select(card => RemoveNonEssentialData(card.ToProtobuf()))
+                        .Select(card => card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInDeck =
                 {
-                    player.CardsInDeck.Select(card => RemoveNonEssentialData(card.ToProtobuf())).ToArray()
+                    player.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
                 },
                 CardsInHand =
                 {
                     player.CardsInHand
                         .Concat(extraCardsInHand)
                         .Distinct()
-                        .Select(card => RemoveNonEssentialData(card.ToProtobuf()))
+                        .Select(card => card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInGraveyard =
                 {
-                    player.CardsInGraveyard.Select(card => RemoveNonEssentialData(card.ToProtobuf())).ToArray()
+                    player.CardsInGraveyard.Select(card => card.ToProtobuf()).ToArray()
                 }
             };
+
+            if (removeNonEssentialData)
+            {
+                IEnumerable<CardInstance> allCards =
+                    playerState.CardsInDeck
+                    .Concat(playerState.CardsInHand)
+                    .Concat(playerState.CardsInPlay)
+                    .Concat(playerState.CardsInGraveyard);
+
+                foreach (CardInstance cardInstance in allCards)
+                {
+                    RemoveNonEssentialData(cardInstance);
+                }
+            }
+
             return playerState;
         }
 
-        private static CardInstance RemoveNonEssentialData(CardInstance cardInstance)
+        private static void RemoveNonEssentialData(CardInstance cardInstance)
         {
             cardInstance.Prototype = new Protobuf.Card();
             cardInstance.AbilitiesInstances?.Clear();
-            return cardInstance;
         }
     }
 }

@@ -494,14 +494,14 @@ namespace Loom.ZombieBattleground
             HandChanged?.Invoke(CardsInHand.Count);
         }
 
-        public void AddCardToBoard(WorkingCard card)
+        public void AddCardToBoard(WorkingCard card, int position)
         {
             if (CardsOnBoard.Contains(card))
             {
                 Debug.LogWarning($"Attempt to add card {card} to CardsOnBoard when it is already added");
                 return;
             }
-            CardsOnBoard.Add(card);
+            CardsOnBoard.Insert(position, card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -754,6 +754,7 @@ namespace Loom.ZombieBattleground
 
         public void ThrowPlayCardEvent(WorkingCard card, int position)
         {
+            Debug.Log("ThrowPlayCard position: " + position);
             CardPlayed?.Invoke(card, position);
         }
 
