@@ -485,9 +485,7 @@ namespace Loom.ZombieBattleground
                          compareLogic.Config.ExpectedName = "LocalState";
                          ComparisonResult comparisonResult = compareLogic.Compare(currentGameState, pvpControlGameState);
                          if (!comparisonResult.AreEqual)
-                         {
-                             Debug.LogException(new Exception("Game state de-sync:\n" + comparisonResult.DifferencesString));
-                         }
+                             throw new Exception("Game state de-sync:\n" + comparisonResult.DifferencesString);
                      }
 
                      EndTurn();
