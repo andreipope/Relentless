@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
                 return;
 
-            if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
+            if (unit.Model.CurrentHp <= 0)
                 return;
 
             if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.LibraryCard.CardSetType))
