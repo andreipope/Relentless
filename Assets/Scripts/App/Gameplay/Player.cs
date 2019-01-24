@@ -199,7 +199,9 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        if (_gameplayManager.IsTutorial)
+                        if (_gameplayManager.IsTutorial && 
+                            !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                            SpecificBattlegroundInfo.DisabledInitialization)
                         {
                             heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                         }
@@ -604,7 +606,10 @@ namespace Loom.ZombieBattleground
                 if (i >= CardsInDeck.Count)
                     break;
 
-                if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                if (IsLocalPlayer && (!_gameplayManager.IsTutorial ||
+                    (_gameplayManager.IsTutorial &&
+                    _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                    SpecificBattlegroundInfo.DisabledInitialization)))
                 {
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 }
@@ -683,7 +688,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (!_gameplayManager.IsTutorial)
+            if (!_gameplayManager.IsTutorial || ( _gameplayManager.IsTutorial &&
+                                                 _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                                 SpecificBattlegroundInfo.DisabledInitialization))
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
                 if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)

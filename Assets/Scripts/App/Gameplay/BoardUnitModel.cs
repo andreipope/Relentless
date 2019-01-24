@@ -638,10 +638,12 @@ namespace Loom.ZombieBattleground
                             }
 
 
-                            if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
+                            if (_gameplayManager.IsTutorial &&
+                                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                SpecificBattlegroundInfo.DisabledInitialization && OwnerPlayer.IsLocalPlayer)
                             {
                                 if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
-                                     info.TargetType == Enumerators.SkillTargetType.OPPONENT))
+                                 info.TargetType == Enumerators.SkillTargetType.OPPONENT))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);

@@ -105,7 +105,10 @@ namespace Loom.ZombieBattleground
             _attackedUnitTargets = new List<BoardUnitModel>();
             _unitsToIgnoreThisTurn = new List<BoardUnitModel>();
 
-            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            if (!_gameplayManager.IsSpecificGameplayBattleground ||
+                (_gameplayManager.IsTutorial &&
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                SpecificBattlegroundInfo.DisabledInitialization))
             {
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
@@ -124,7 +127,8 @@ namespace Loom.ZombieBattleground
 
             if (_gameplayManager.IsTutorial &&
                 _tutorialManager.CurrentTutorial != null &&
-                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.AISpecificOrderEnabled)
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.AISpecificOrderEnabled &&
+                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
             {
                 SetAiBrainType(Enumerators.AiBrainType.Tutorial);
             }
@@ -248,7 +252,8 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground)
+            if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground &&
+               !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
                 return;
 
             await LaunchAIBrain();
@@ -410,7 +415,7 @@ namespace Loom.ZombieBattleground
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
-            if (_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().DisabledSpecificTurnInfos)
             {
                 foreach (PlayCardActionInfo playCardActionInfo in _tutorialManager.GetCurrentTurnInfo().PlayCardsSequence)
                 {
@@ -490,7 +495,7 @@ namespace Loom.ZombieBattleground
         // ai step 2
         private async Task UseUnitsOnBoard(CancellationToken cancellationToken)
         {
-            if (_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().DisabledSpecificTurnInfos)
             {
                 foreach (UseBattleframeActionInfo frame in _tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence)
                 {
@@ -602,7 +607,6 @@ namespace Loom.ZombieBattleground
                     while (UnitCanBeUsable(unit))
                     {
                         if (GetPlayerAttackingValue() > GetOpponentAttackingValue() &&
-                            !_tutorialManager.IsTutorial &&
                             !unit.HasBuffRush &&
                             unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
                         { 
@@ -639,7 +643,11 @@ namespace Loom.ZombieBattleground
         private async Task UsePlayerSkills(CancellationToken cancellationToken)
         {
             bool wasAction = false;
-            if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
+
+            if (_gameplayManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().DisabledSpecificTurnInfos)
+                return;
+
+            if(_gameplayManager.OpponentPlayer.IsStunned)
                 return;
 
             if (_skillsController.OpponentPrimarySkill != null)

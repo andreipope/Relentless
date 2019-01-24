@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
                         if (tooltip == null)
                             continue;
 
-                        if (Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x) < (Width + tooltip.Width) / 2)
+                        if (Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x) < (Width + tooltip.Width) / 2 + 1f)
                         {
                             if (_align == Enumerators.TooltipAlign.CenterLeft)
                             {
@@ -123,19 +123,24 @@ namespace Loom.ZombieBattleground
                                 SetBattlegroundType(Enumerators.TooltipAlign.CenterLeft);
                                 _currentPosition.x *= -0.9f;
                             }
+
                             SetPosition();
                             Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
                         }
                     }
-
                 }
             }
         }
 
-        public void Show()
+        public void Show(Vector3? position = null)
         {
             _selfObject?.SetActive(true);
             IsActiveInThisClick = true;
+            if (position != null)
+            {
+                _currentPosition = (Vector3)position;
+                SetPosition();
+            }
         }
 
         public void Hide()
@@ -171,6 +176,10 @@ namespace Loom.ZombieBattleground
             else
             {
                 _selfObject.transform.position = _currentPosition;
+                if (OwnerType == Enumerators.TutorialObjectOwner.IncorrectButton)
+                {
+                    _selfObject.transform.position -= Vector3.up * 2;
+                }
             }
         }
 
