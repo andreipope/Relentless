@@ -44,10 +44,6 @@ namespace Loom.ZombieBattleground
 
         private readonly AbilitiesController _abilitiesController;
 
-        private int _currentDamage;
-
-        private int _currentHealth;
-
         private int _stunTurns;
 
         public bool IsDead { get; private set; }
@@ -140,10 +136,10 @@ namespace Loom.ZombieBattleground
 
         public int CurrentDamage
         {
-            get => _currentDamage;
+            get => Card.InstanceCard.Damage;
             set
             {
-                _currentDamage = Mathf.Clamp(value, 0, 99999);
+                Card.InstanceCard.Damage = Mathf.Max(value, 0);
                 UnitDamageChanged?.Invoke();
             }
         }
@@ -154,10 +150,10 @@ namespace Loom.ZombieBattleground
 
         public int CurrentHp
         {
-            get => _currentHealth;
+            get => Card.InstanceCard.Health;
             set
             {
-                _currentHealth = Mathf.Clamp(value, 0, 99);
+                Card.InstanceCard.Health = Mathf.Clamp(value, 0, 99);
                 UnitHpChanged?.Invoke();
             }
         }

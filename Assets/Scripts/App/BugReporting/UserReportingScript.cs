@@ -406,7 +406,7 @@ public class UserReportingScript : MonoBehaviour
         DontDestroyOnLoad(transform.root.gameObject);
 
 #if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
-            Application.logMessageReceived += OnLogMessageReceived;
+        Application.logMessageReceived += OnLogMessageReceived;
 #endif
     }
 

@@ -502,7 +502,7 @@ namespace Loom.ZombieBattleground
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
-                                           workingCard.Owner.AddCardToBoard(workingCard);
+                                           workingCard.Owner.AddCardToBoard(workingCard, card.FuturePositionOnBoard);
                                            workingCard.Owner.AddCardToGraveyard(workingCard);
 
                                            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
@@ -552,6 +552,9 @@ namespace Loom.ZombieBattleground
                                            handCard.CheckStatusOfHighlight();
 
                                            workingCard.Owner.CardsInHand.Add(card.WorkingCard);
+                                           workingCard.Owner.CardsOnBoard.Remove(card.WorkingCard);
+                                           workingCard.Owner.BoardCards.Remove(workingCard.Owner.BoardCards.First(boardCard =>
+                                               boardCard.Model.Card.InstanceId == card.WorkingCard.InstanceId));
                                            _battlegroundController.PlayerHandCards.Add(card);
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
@@ -1067,7 +1070,7 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
-                card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard);
+                card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard, card.FuturePositionOnBoard);
                 card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
 
                 if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)

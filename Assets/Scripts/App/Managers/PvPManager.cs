@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KellermanSoftware.CompareNetObjects;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -33,7 +34,7 @@ namespace Loom.ZombieBattleground
         public event Action GameEndedActionReceived;
 
         // gameplay actions
-        public event Action EndTurnActionReceived;
+        public event Action<Protobuf.GameState> EndTurnActionReceived;
 
         public event Action<PlayerActionCardPlay> CardPlayedActionReceived;
 
@@ -118,7 +119,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public bool IsCurrentPlayer()
+        public bool IsFirstPlayer()
         {
             return InitialGameState.PlayerStates[InitialGameState.CurrentPlayerIndex].Id ==
                 _backendDataControlMediator.UserDataModel.UserId;
@@ -412,7 +413,7 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.Types.Enum.None:
                     break;
                 case PlayerActionType.Types.Enum.EndTurn:
-                    EndTurnActionReceived?.Invoke();
+                    EndTurnActionReceived?.Invoke(playerActionEvent.PlayerAction.ControlGameState);
                     break;
                 case PlayerActionType.Types.Enum.Mulligan:
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);

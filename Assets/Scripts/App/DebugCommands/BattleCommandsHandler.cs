@@ -415,7 +415,7 @@ static class BattleCommandsHandler
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
 
         player.RemoveCardFromGraveyard(unit.Model.Card);
-        player.AddCardToBoard(workingCard);
+        player.AddCardToBoard(workingCard, 0);
         player.BoardCards.Add(newUnit);
 
         _battlegroundController.PlayerBoardCards.Add(newUnit);

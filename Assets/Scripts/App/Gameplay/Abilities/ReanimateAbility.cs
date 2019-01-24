@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView unit = CreateBoardUnit(card, owner);
             AbilityUnitOwner.IsReanimated = true;
 
-            owner.AddCardToBoard(card);
+            owner.AddCardToBoard(card, 0);
             owner.BoardCards.Add(unit);
 
             if (owner.IsLocalPlayer)

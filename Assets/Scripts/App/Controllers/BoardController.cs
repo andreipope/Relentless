@@ -93,13 +93,17 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
+            if (!isBottom)
+            {
+                units = Enumerable.Reverse(units).ToList();
+            }
+
             float boardWidth = 0.0f;
-            float spacing = 0.2f;
-            float cardWidth = 0.0f;
+            const float spacing = 0.2f;
+            const float cardWidth = 2.5f;
 
             for (int i = 0; i < units.Count; i++)
             {
-                cardWidth = 2.5f;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }

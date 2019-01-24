@@ -890,9 +890,9 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                         _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
-                        _gameplayManager.OpponentPlayer.AddCardToBoard(card);
+                        _gameplayManager.OpponentPlayer.AddCardToBoard(card, 0);
 
-                        _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, (x, y) =>
+                        _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, null, (x, y) =>
                         {
                             PlayCardCompleteHandler(x, y, completeCallback);
                         });
@@ -904,9 +904,9 @@ namespace Loom.ZombieBattleground
                             if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
                                 _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
-                                _gameplayManager.OpponentPlayer.AddCardToBoard(card);
+                                _gameplayManager.OpponentPlayer.AddCardToBoard(card, 0);
 
-                                _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, (x, y) =>
+                                _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, null, (x, y) =>
                                 {
                                     PlayCardCompleteHandler(x, y, completeCallback);
                                 });

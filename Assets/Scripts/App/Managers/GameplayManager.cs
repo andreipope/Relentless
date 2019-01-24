@@ -352,9 +352,9 @@ namespace Loom.ZombieBattleground
                         OpponentPlayer.SetFirstHandForLocalMatch(false);
                         break;
                     case Enumerators.MatchType.PVP:
-                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
+                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsFirstPlayer() ? CurrentPlayer : OpponentPlayer;
                         List<WorkingCard> opponentCardsInHand =
-                            OpponentPlayer.PvPPlayerState.CardsInHand
+                            OpponentPlayer.InitialPvPPlayerState.CardsInHand
                                 .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
 
