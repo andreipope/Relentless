@@ -754,7 +754,6 @@ namespace Loom.ZombieBattleground
 
         public void ThrowPlayCardEvent(WorkingCard card, int position)
         {
-            Debug.Log("ThrowPlayCard position: " + position);
             CardPlayed?.Invoke(card, position);
         }
 
