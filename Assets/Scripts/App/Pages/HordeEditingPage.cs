@@ -774,7 +774,7 @@ namespace Loom.ZombieBattleground
 
                     success = false;
 
-                    if (e is Client.RpcClientException)
+                    if (e is Client.RpcClientException || e is TimeoutException)
                     {
                         GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
                     }
@@ -808,7 +808,7 @@ namespace Loom.ZombieBattleground
 
                     success = false;
 
-                    if (e is Client.RpcClientException)
+                    if (e is Client.RpcClientException || e is TimeoutException)
                     {
                         GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
                     }
