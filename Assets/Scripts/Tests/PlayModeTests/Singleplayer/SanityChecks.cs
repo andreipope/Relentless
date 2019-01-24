@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.TestTools;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -22,9 +23,9 @@ namespace Loom.ZombieBattleground.Test
 
                 #region Tutorial Skip
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_Tutorial");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
                 await SkipTutorial(false);
 
                 #endregion
@@ -44,9 +45,9 @@ namespace Loom.ZombieBattleground.Test
 
                 #region Tutorial Non-Skip
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_Tutorial");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
 
                 await PlayTutorial_Part1();
 
@@ -55,7 +56,7 @@ namespace Loom.ZombieBattleground.Test
                 await PlayTutorial_Part2();
 
                 await TestHelper.ClickGenericButton("Button_Continue");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                 #endregion
             });
@@ -72,9 +73,9 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                 await TestHelper.SelectAHordeByName("Razu", false);
                 if (TestHelper.SelectedHordeIndex != -1)
@@ -83,7 +84,7 @@ namespace Loom.ZombieBattleground.Test
                 }
 
                 await TestHelper.AddRazuHorde();
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
             });
         }
 
@@ -100,16 +101,16 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
                 await TestHelper.SelectAHordeByName("Razu");
                 TestHelper.RecordExpectedOverlordName(TestHelper.SelectedHordeIndex);
                 await TestHelper.ClickGenericButton("Button_Battle");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
                 await SoloGameplay(true);
                 await TestHelper.ClickGenericButton("Button_Continue");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                 #endregion
             });
@@ -128,19 +129,19 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                 int selectedHordeIndex = 0;
 
                 await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
                 TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
                 await TestHelper.ClickGenericButton("Button_Battle");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
                 await SoloGameplay(true);
                 await TestHelper.ClickGenericButton("Button_Continue");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                 #endregion
             });
@@ -166,9 +167,9 @@ namespace Loom.ZombieBattleground.Test
                     await TestHelper.AssertIfWentDirectlyToTutorial(
                         TestHelper.GoBackToMainAndPressPlay);
 
-                    await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                    await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                     await TestHelper.ClickGenericButton("Button_SoloMode");
-                    await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                    await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                     int selectedHordeIndex = 0;
 
@@ -180,7 +181,7 @@ namespace Loom.ZombieBattleground.Test
                     PopulateDeckWithCardsFromIndex(_cardsIndex, _cardsPerDeck);
                     _cardsIndex += _cardsPerDeck;
 
-                    await TestHelper.AssertCurrentPageName("GameplayPage");
+                    await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
                     await SoloGameplay(false, true);
 
                     await TestHelper.ClickGenericButton("Button_Settings");

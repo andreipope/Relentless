@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void CardPlayedHandler(WorkingCard card, int position)
             {
-                AddAction(_playerActionFactory.CardPlay(card, position));
+                AddAction(_playerActionFactory.CardPlay(card.InstanceId, position));
             }
 
             private void TurnEndedHandler()
@@ -246,12 +246,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private void AbilityUsedHandler(
                 WorkingCard card,
                 Enumerators.AbilityType abilityType,
-                Enumerators.CardKind cardKind,
-                Enumerators.AffectObjectType affectObjectType,
-                List<ParametrizedAbilityBoardObject> targets = null,
-                List<WorkingCard> cards = null)
+                List<ParametrizedAbilityBoardObject> targets = null)
             {
-                AddAction(_playerActionFactory.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards?.Select(otherCard => otherCard.InstanceId)));
+                AddAction(_playerActionFactory.CardAbilityUsed(card.InstanceId, abilityType, targets));
             }
 
             private void MulliganHandler(List<WorkingCard> cards)
@@ -284,7 +281,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
             {
-                AddAction(_playerActionFactory.RankBuff(card, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
+                AddAction(_playerActionFactory.RankBuff(card.InstanceId, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
             }
 
             private void AddAction(PlayerAction playerAction)
