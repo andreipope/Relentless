@@ -935,6 +935,11 @@ namespace Loom.ZombieBattleground
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
 
             _boardController.UpdateWholeBoard(null);
+
+            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
+            {
+                ability.PlayerCallerOfAbility = newPlayerOwner;
+            }
         }
 
         public void DistractUnit(BoardUnitView boardUnit)
