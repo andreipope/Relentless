@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         public int CurrentGooModificator { get; set; }
 
-        public int DamageByNoMoreCardsInDeck  { get; set; }
+        public int DamageByNoMoreCardsInDeck { get; set; }
 
         public int ExtraGoo { get; set; }
 
@@ -145,12 +145,16 @@ namespace Loom.ZombieBattleground
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
 
-                    InitialCardsInHandCount = (uint) PvPPlayerState.InitialCardsInHandCount;
-                    MaxCardsInHand = (uint) PvPPlayerState.MaxCardsInHand;
-                    MaxCardsInPlay = (uint) PvPPlayerState.MaxCardsInPlay;
-                    MaxGooVials = (uint) PvPPlayerState.MaxGooVials;
+                    InitialCardsInHandCount = (uint)PvPPlayerState.InitialCardsInHandCount;
+                    MaxCardsInHand = (uint)PvPPlayerState.MaxCardsInHand;
+                    MaxCardsInPlay = (uint)PvPPlayerState.MaxCardsInPlay;
+                    MaxGooVials = (uint)PvPPlayerState.MaxGooVials;
 
+#if USE_REBALANCE_BACKEND
+                    Defense = Constants.DefaultPlayerHp;
+#else
                     Defense = PvPPlayerState.Defense;
+#endif
                     CurrentGoo = PvPPlayerState.CurrentGoo;
                     GooVials = PvPPlayerState.GooVials;
                     TurnTime = (uint) PvPPlayerState.TurnTime;
@@ -799,7 +803,7 @@ namespace Loom.ZombieBattleground
         }
 #endif
 
-        #region handlers
+#region handlers
 
         private void PlayerDefenseChangedHandler(int now)
         {
@@ -829,6 +833,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        #endregion
+#endregion
     }
 }
