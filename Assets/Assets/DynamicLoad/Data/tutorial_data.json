@@ -2655,7 +2655,8 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 2
+          "AppearDelay": 2,
+          "TutorialTooltipLayer": "AbovePopups"
         },
         {
           "Id": 1,
@@ -2666,7 +2667,8 @@
             "X": 9.5,
             "Y": 1,
             "Z": 0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePopups"
         },
         {
           "Id": 2,
@@ -2677,7 +2679,8 @@
             "X": 9.5,
             "Y": 1,
             "Z": 0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         }
       ],
       "TutorialSteps": [
