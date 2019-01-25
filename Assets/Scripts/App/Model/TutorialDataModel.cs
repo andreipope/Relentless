@@ -44,6 +44,12 @@ namespace Loom.ZombieBattleground
     {
         public bool PlayerOrderScreenShouldAppear;
 
+        public bool MulliganScreenShouldAppear;
+
+        public bool DisabledSpecificTurnInfos;
+
+        public bool GameplayFlowBeginsManually;
+
         public SpecificBattlegroundInfo SpecificBattlegroundInfo;
 
         public List<SpecificTurnInfo> SpecificTurnInfos;
@@ -114,6 +120,8 @@ namespace Loom.ZombieBattleground
 
         public string SpecificScreenToShow;
 
+        public bool BeginGameplayFlowManually;
+
         public TutorialGameplayStep()
         {
             SelectableTargets = new List<Enumerators.SkillTargetType>();
@@ -134,6 +142,8 @@ namespace Loom.ZombieBattleground
         public bool GameplayBeginManually;
 
         public bool AISpecificOrderEnabled;
+
+        public bool DisabledInitialization;
 
         public SpecificBattlegroundOverlordInfo PlayerInfo;
         public SpecificBattlegroundOverlordInfo OpponentInfo;
@@ -241,6 +251,7 @@ namespace Loom.ZombieBattleground
         public Enumerators.TutorialAvatarPose Pose;
         public string Description;
         public string DescriptionTooltipCloseText;
+        public bool AboveUI;
     }
 
     public class TutorialDescriptionTooltip
@@ -254,6 +265,7 @@ namespace Loom.ZombieBattleground
         public bool Resizable;
         public bool DynamicPosition;
         public float AppearDelay;
+        public Enumerators.TutorialObjectLayer TutorialTooltipLayer;
 
         public TutorialDescriptionTooltip()
         {
@@ -283,7 +295,7 @@ namespace Loom.ZombieBattleground
         public Enumerators.TutorialHandPointerType TutorialHandPointerType;
         public Enumerators.TutorialObjectOwner TutorialHandPointerOwner;
         public bool AppearOnce;
-        public bool AboveUI;
+        public Enumerators.TutorialObjectLayer TutorialHandLayer;
         public float AppearDelay;
         public int TutorialObjectIdStepOwner;
         public int TargetTutorialObjectId;
@@ -325,6 +337,9 @@ namespace Loom.ZombieBattleground
         public List<string> BlockedButtons;
         public List<int> ConnectedActivities;
         public bool CardsInteractingLocked;
+        public bool BattleShouldBeWonBlocker;
+        public bool CanDragCards;
+        public bool CanDoubleTapCards;
 
         public TutorialMenuStep()
         {

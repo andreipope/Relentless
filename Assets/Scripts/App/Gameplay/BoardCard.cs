@@ -87,6 +87,8 @@ namespace Loom.ZombieBattleground
 
         protected Transform ParentOfLeftBlockOfCardInfo, ParentOfRightBlockOfCardInfo;
 
+        private bool _hasDestroyed = false;
+
         public BoardCard(GameObject selfObject)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -383,6 +385,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            _hasDestroyed = true;
             Object.Destroy(GameObject);
         }
 
@@ -709,7 +712,7 @@ namespace Loom.ZombieBattleground
 
         protected void UpdatePositionOnHand()
         {
-            if (IsPreview)
+            if (IsPreview || _hasDestroyed)
                 return;
 
             Transform.DOScale(ScaleOnHand, 0.5f);
