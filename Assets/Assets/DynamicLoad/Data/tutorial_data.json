@@ -943,6 +943,9 @@
               "AppearDelay": 10.0
             }
           ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            2
+          ],
           "HandPointers": [
             {
               "StartPosition": {
