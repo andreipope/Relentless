@@ -861,5 +861,12 @@ namespace Loom.ZombieBattleground.Common
             Pointing,
             Pressed
         }
+
+        public enum TutorialObjectLayer
+        {
+            Default,
+            AbovePages,
+            AbovePopups
+        }
     }
 }

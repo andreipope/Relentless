@@ -1034,7 +1034,8 @@ namespace Loom.ZombieBattleground
         {
             if (_isDragging || (GameClient.Get<ITutorialManager>().IsTutorial &&
                 !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
-                GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked))
+                (GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
+                !GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CanDragCards)))
                 return;
             
 

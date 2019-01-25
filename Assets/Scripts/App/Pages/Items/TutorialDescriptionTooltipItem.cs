@@ -41,7 +41,17 @@ namespace Loom.ZombieBattleground
 
         private bool _dynamicPosition;
 
-        public TutorialDescriptionTooltipItem(int id, string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, int ownerId, Vector3 position, bool resizable, bool dynamicPosition)
+        private Enumerators.TutorialObjectLayer _layer = Enumerators.TutorialObjectLayer.Default;
+
+        public TutorialDescriptionTooltipItem(int id,
+                                                string description,
+                                                Enumerators.TooltipAlign align,
+                                                Enumerators.TutorialObjectOwner owner,
+                                                int ownerId,
+                                                Vector3 position,
+                                                bool resizable,
+                                                bool dynamicPosition,
+                                                Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -52,6 +62,7 @@ namespace Loom.ZombieBattleground
             _align = align;
             _dynamicPosition = dynamicPosition;
             _currentPosition = position;
+            _layer = layer;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -138,6 +149,22 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 }
+            }
+
+            switch (_layer)
+            {
+                case Enumerators.TutorialObjectLayer.Default:
+                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingOrder = 1;
+                    _textDescription.renderer.sortingOrder = 2;
+                    break;
+                default:
+                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingOrder = 0;
+                    _textDescription.renderer.sortingOrder = 1;
+                    break;
             }
         }
 

@@ -457,7 +457,7 @@
                 "Z": 0.0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true,
+              "TutorialHandLayer": "AbovePopups",
               "AppearDelay": 1.5
             }
           ],
@@ -2337,7 +2337,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2357,7 +2357,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2384,7 +2384,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2402,7 +2402,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2420,7 +2420,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePopups"
             }
           ]
         },
@@ -2433,6 +2433,7 @@
             "Button_Save"
           ],
           "ActionToEndThisStep": "CardDragged",
+          "CanDragCards": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -2446,7 +2447,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -2462,6 +2463,7 @@
             "Button_Save"
           ],
           "ActionToEndThisStep": "CardRemoved",
+          "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -2470,7 +2472,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -2489,6 +2491,7 @@
             "Button_Save"
           ],
           "ActionToEndThisStep": "CardAdded",
+          "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -2497,7 +2500,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -2509,6 +2512,8 @@
         },
         {
           "OpenScreen": "HordeEditingPage",
+          "CanDoubleTapCards": true,
+          "CanDragCards": true,
           "ActionToEndThisStep": "HordeFilled",
           "BlockedButtons": [
             "Button_Buy",
@@ -2536,7 +2541,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "CardsInteractingLocked": true
@@ -2562,7 +2567,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "ConnectedActivities": [
@@ -2580,7 +2585,8 @@
             "X": 2.8,
             "Y": -2.5,
             "Z": 0.0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 1,
@@ -2591,7 +2597,8 @@
             "X": -4.5,
             "Y": 2.6,
             "Z": 0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 2,
@@ -2602,7 +2609,8 @@
             "X": 2.8,
             "Y": -2.5,
             "Z": 0.0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 3,
@@ -2613,7 +2621,8 @@
             "X": 8,
             "Y": -0.5,
             "Z": 0.0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         }
       ],
       "ActionActivityHandlers": [
