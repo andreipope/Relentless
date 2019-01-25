@@ -1309,7 +1309,7 @@
           "TutorialTooltipOwner": "PlayerBattleframe",
           "Description": "When higher ranked\n zombies are played,\n they give Rank\n Buffs to lower\n ranking zombies\n from the same\n faction.",
           "Position": {
-            "X": -5.9,
+            "X": -4.6,
             "Y": 0.3,
             "Z": 0.0
           },
