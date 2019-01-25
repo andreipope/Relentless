@@ -1695,7 +1695,7 @@ namespace Loom.ZombieBattleground
                 skill.EndDoSkill();
             };
 
-            if (skill.Skill.CanSelectTarget)
+            if (skill.Skill.CanSelectTarget || selectedObjectType == Enumerators.AffectObjectType.Player || selectedObjectType == Enumerators.AffectObjectType.Character)
             {
                 skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
             }
