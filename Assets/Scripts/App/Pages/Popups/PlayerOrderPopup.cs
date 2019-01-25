@@ -138,10 +138,17 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.HidePopup<PlayerOrderPopup>();
 
-            if (_gameplayManager.CurrentPlayer != null)
+            if (!_gameplayManager.IsTutorial)
             {
-                _gameplayManager.GetController<PlayerController>().SetHand();
-                _gameplayManager.GetController<CardsController>().StartCardDistribution();
+                if (_gameplayManager.CurrentPlayer != null)
+                {
+                    _gameplayManager.GetController<PlayerController>().SetHand();
+                    _gameplayManager.GetController<CardsController>().StartCardDistribution();
+                }
+            }
+            else
+            {
+                (_gameplayManager as GameplayManager).TutorialGameplayBeginAction?.Invoke();
             }
         }
     }

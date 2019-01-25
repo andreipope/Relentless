@@ -618,15 +618,16 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
+                GameClient.Get<IGameplayManager>().IsTutorial = true;
                 (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
 
                 GameClient.Get<ITutorialManager>().SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
 
                 if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
                 {
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)GameClient.Get<IDataManager>().CachedDecksData.Decks.Last().Id;
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
 
-                    GameClient.Get<IGameplayManager>().IsTutorial = true;
                     GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                 }
                 else

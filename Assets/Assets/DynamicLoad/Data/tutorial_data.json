@@ -2201,6 +2201,7 @@
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed",
             "BattleframeAttacked"
           ]
         },
@@ -2549,7 +2550,7 @@
             "Button_LeftArrow",
             "Button_RightArrow"
           ],
-          "ActionToEndThisStep": "ScreenChanged",
+          "ActionToEndThisStep": "BattleStarted",
           "HandPointers": [
             {
               "StartPosition": {
@@ -2625,6 +2626,126 @@
           "HasSpecificConnection": true
         }
       ]
+    }
+  },
+  {
+    "Id": 5,
+    "Name": "Normal Battle",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 0,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "You go first.",
+          "Position": {
+            "X": 10.5,
+            "Y": -4.5,
+            "Z": 0
+          },
+          "AppearDelay": 2
+        },
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Drag cards that you\nwant replaced to\nthe top. Press KEEP\nwhen you're done.",
+          "Position": {
+            "X": 9.5,
+            "Y": 1,
+            "Z": 0
+          }
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "TopMiddle",
+          "TutorialTooltipOwner": "IncorrectButton",
+          "Description": "You still have a\nbattle to win.",
+          "Position": {
+            "X": 9.5,
+            "Y": 1,
+            "Z": 0
+          }
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Use everything you've learned\nand make me proud!",
+            "DescriptionTooltipCloseText": "BATTLE!"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "TutorialDescriptionTooltipsToActivate": [
+            0
+          ],
+          "ActionToEndThisStep": "PopupClosed",
+          "BeginGameplayFlowManually": true
+        },
+        {
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            0
+          ],
+          "ActionToEndThisStep": "PopupClosed"
+        },
+        {
+          "ActionToEndThisStep": "EndMatchPopupAppear",
+          "CanEndTurn": true,
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true,
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
+          ]
+        },
+        {
+          "BattleShouldBeWonBlocker": true,
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_Army",
+            "Pulse",
+            "Button_Edit",
+            "Button_Delete",
+            "Image_Skill",
+            "Image_Skill",
+            "Button_LeftArrow",
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral",
+            "Image_BaackgroundGeneral"
+          ],
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Threre's nothing more I can teach\nyou. Congratulations!",
+            "DescriptionTooltipCloseText": "CONTINUE",
+            "AboveUI": true
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed",
+        },
+      ],
+      "SpecificBattlegroundInfo": {
+        "RankSystemHasEnabled": true,
+        "AISpecificOrderEnabled": false,
+        "DisabledInitialization": true,
+        "PlayerTurnFirst": true
+      },
+      "SpecificTurnInfos": [
+      ],
+      "PlayerOrderScreenShouldAppear": true,
+      "MulliganScreenShouldAppear": true,
+      "DisabledSpecificTurnInfos": true,
+      "GameplayFlowBeginsManually": true
     }
   }
 ]

@@ -8,6 +8,8 @@ namespace Loom.ZombieBattleground
 {
     public class TutorialAvatarPopup : IUIPopup
     {
+        private const int SortingOrderForAboveUI = 33;
+
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -29,6 +31,8 @@ namespace Loom.ZombieBattleground
         private Sprite[] _janePoses;
 
         private Button _buttonBack;
+
+        private Canvas _selfCanvas;
 
         public GameObject Self { get; private set; }
 
@@ -88,6 +92,8 @@ namespace Loom.ZombieBattleground
 
             _janeImage = Self.transform.Find("NPC").GetComponent<Image>();
 
+            _selfCanvas = Self.GetComponent<Canvas>();
+
             _hideButton.onClick.AddListener(HideButtonOnClickHandler);
         }
 
@@ -100,6 +106,11 @@ namespace Loom.ZombieBattleground
                 _text.text = (string)array[0];
                 _hideButtonText.text = (string)array[1];
                 _janeImage.sprite = _janePoses[(int)((Enumerators.TutorialAvatarPose)array[2])];
+                bool aboveUI = (bool)array[3];
+                if(aboveUI)
+                {
+                    _selfCanvas.sortingOrder = SortingOrderForAboveUI;
+                }
             }          
         }
 
