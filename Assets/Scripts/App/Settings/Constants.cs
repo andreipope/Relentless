@@ -78,7 +78,11 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
+#if USE_REBALANCE_BACKEND
+        internal const int DefaultPlayerHp = 50;
+#else
         internal const int DefaultPlayerHp = 20;
+#endif
 
         internal const int DefaultPlayerGoo = 0;
 
@@ -148,6 +152,8 @@ namespace Loom.ZombieBattleground.Common
         internal const float TimeForStartEndTurnAnimation = 15;
 
         internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;
+
+        internal const float OverlordTalkingPopupDuration = 2f;
 
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);

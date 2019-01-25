@@ -238,6 +238,7 @@ namespace Loom.ZombieBattleground
         public Enumerators.TutorialObjectOwner TutorialTooltipOwner;
         public string Description;
         public float AppearDelay;
+        public float Duration = Constants.OverlordTalkingPopupDuration;
     }
 
     public class DrawDescriptionTooltipsInfo : TutorialActivityActionHandlerData

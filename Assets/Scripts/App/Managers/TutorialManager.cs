@@ -137,13 +137,13 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (!IsTutorial)
+                return;
+
             for (int i = 0; i < _tutorialDescriptionTooltipItems.Count; i++)
             {
                 _tutorialDescriptionTooltipItems[i]?.Update();
             }
-
-            if (!IsTutorial)
-                return;
 
             if (!CurrentTutorial.IsGameplayTutorial())
             {
@@ -668,7 +668,12 @@ namespace Loom.ZombieBattleground
                     {
                         foreach (OverlordSayTooltipInfo tooltip in gameStep.OverlordSayTooltips)
                         {
-                            DrawOverlordSayPopup(tooltip.Description, tooltip.TutorialTooltipAlign, tooltip.TutorialTooltipOwner, tooltip.AppearDelay, true);
+                            DrawOverlordSayPopup(tooltip.Description,
+                                                tooltip.TutorialTooltipAlign,
+                                                tooltip.TutorialTooltipOwner,
+                                                tooltip.AppearDelay,
+                                                true,
+                                                tooltip.Duration);
                         }
                     }
 
@@ -1052,11 +1057,16 @@ namespace Loom.ZombieBattleground
             _tutorialDescriptionTooltipItems.Clear();
         }
 
-        public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, float appearDelay, bool ofStep = false)
+        public void DrawOverlordSayPopup(string description,
+                                        Enumerators.TooltipAlign align,
+                                        Enumerators.TutorialObjectOwner owner,
+                                        float appearDelay,
+                                        bool ofStep = false,
+                                        float duration = Constants.OverlordTalkingPopupDuration)
         {
             Sequence sequence = InternalTools.DoActionDelayed(() =>
             {
-                _overlordsChatController.DrawOverlordSayPopup(description, align, owner);
+                _overlordsChatController.DrawOverlordSayPopup(description, align, owner, duration);
             }, appearDelay);
 
             if (ofStep)
@@ -1091,7 +1101,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialActivityActionHandler.OverlordSayTooltip:
                     {
                         OverlordSayTooltipInfo data = activity.TutorialActivityActionHandlerData as OverlordSayTooltipInfo;
-                        DrawOverlordSayPopup(data.Description, data.TutorialTooltipAlign, data.TutorialTooltipOwner, data.AppearDelay);
+                        DrawOverlordSayPopup(data.Description, data.TutorialTooltipAlign, data.TutorialTooltipOwner, data.AppearDelay, duration: data.Duration);
                     }
                     break;
                 case Enumerators.TutorialActivityActionHandler.DrawDescriptionTooltips:
