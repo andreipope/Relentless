@@ -487,22 +487,20 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            else
-            {
-                if (CurrentTutorialStep.ToMenuStep().ConnectedActivities != null)
-                {
-                    ActionActivityHandler handler;
-                    foreach (int id in CurrentTutorialStep.ToMenuStep().ConnectedActivities)
-                    {
-                        handler = CurrentTutorial.TutorialContent.ActionActivityHandlers.Find(x => x.Id == id && x.HasSpecificConnection);
 
-                        if (handler != null)
+            if (CurrentTutorialStep.ConnectedActivities != null)
+            {
+                ActionActivityHandler handler;
+                foreach (int id in CurrentTutorialStep.ConnectedActivities)
+                {
+                    handler = CurrentTutorial.TutorialContent.ActionActivityHandlers.Find(x => x.Id == id && x.HasSpecificConnection);
+
+                    if (handler != null)
+                    {
+                        if (handler.TutorialActivityAction == action)
                         {
-                            if (handler.TutorialActivityAction == action)
-                            {
-                                DoActionByActivity(handler);
-                                break;
-                            }
+                            DoActionByActivity(handler);
+                            break;
                         }
                     }
                 }

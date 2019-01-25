@@ -1849,6 +1849,16 @@
             "Y": 0.3,
             "Z": 0.0
           }
+        },
+        {
+          "Id": 3,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "Description": "Overflow allows you to go beyond 11 goo and play stronger zombies.",
+          "Position": {
+            "X": -3.32,
+            "Y": -5.9,
+            "Z": 0.0
+          }
         }
       ],
       "TutorialSteps": [
@@ -1950,14 +1960,27 @@
             {
               "TutorialTooltipAlign": "CenterRight",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Time for goo to overflow."
+              "Description": "Let’s play Cherno-bill. But we need to Overflow first. Use Tainted Goo."
             }
+          ],
+          "ConnectedActivities": [
+            0
           ],
           "ActionToEndThisStep": "PlayerOverlordCardPlayed"
         },
         {
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterRight",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Let Cherno-bill melt!"
+            }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            3
+          ],
           "ActionToEndThisStep": "PlayerOverlordCardPlayed"
         },
         {
@@ -2241,15 +2264,7 @@
             "BattleframeAttacked"
           ],
           "ActionActivityHandlers": [
-            {
-              "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
-              "TutorialActivityActionHandler": "OverlordSayTooltip",
-              "TutorialActivityActionHandlerData": {
-                "TutorialTooltipAlign": "CenterLeft",
-                "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Time for goo to overflow."
-              }
-            }
+           
           ]
         },
         {
@@ -2314,6 +2329,17 @@
         }
       ],
       "ActionActivityHandlers": [
+        {
+          "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
+          "TutorialActivityActionHandler": "OverlordSayTooltip",
+          "Id": 0,
+          "TutorialActivityActionHandlerData": {
+            "TutorialTooltipAlign": "CenterLeft",
+            "TutorialTooltipOwner": "PlayerOverlord",
+            "Description": "Use Tainted Goo"
+          },
+          "HasSpecificConnection": true
+        },
       ],
       "PlayerOrderScreenShouldAppear": false
     }
