@@ -426,12 +426,18 @@
               "AppearDelay": 2.0
             }
           ],
+          "SelectableTargets": [
+            "OPPONENT",
+          ],
           "ActionToEndThisStep": "OverlordSayPopupHided"
         },
         {
           "UnitsCanAttack": true,
           "CanInteractWithGameplay": true,
           "ConnectedTurnIndex": 8,
+          "SelectableTargets": [
+            "OPPONENT",
+          ],
           "ActionToEndThisStep": "EnemyOverlordDied"
         },
         {
