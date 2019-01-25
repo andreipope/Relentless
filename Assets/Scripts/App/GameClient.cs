@@ -1,4 +1,3 @@
-#define USE_PRODUCTION_BACKEND
 using System.IO;
 using System;
 using Loom.ZombieBattleground.BackendCommunication;
