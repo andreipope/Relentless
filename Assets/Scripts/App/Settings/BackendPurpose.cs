@@ -5,6 +5,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         Local,
         PvP,
         Staging,
-        Production
+        Production,
+        Rebalance
     }
 }
