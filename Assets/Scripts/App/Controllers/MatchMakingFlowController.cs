@@ -322,6 +322,10 @@ namespace Loom.ZombieBattleground
 
                     await Restart();
                 }
+                catch(TimeoutException e)
+                {
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
+                }
                 catch (Exception e)
                 {
                     ErrorHandler(e);

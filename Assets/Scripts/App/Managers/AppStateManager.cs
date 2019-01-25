@@ -170,7 +170,14 @@ namespace Loom.ZombieBattleground
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStatus(), null);
+            UnitySynchronizationContext.Instance.Post(o =>
+            {
+                if (state != RpcConnectionState.Connected &&
+                    state != RpcConnectionState.Connecting)
+                {
+                    HandleNetworkExceptionFlow($"Changed status of conenction to server on: {state}", false, true);
+                }
+            }, null);
         }
 
         private void UpdateConnectionStatus()

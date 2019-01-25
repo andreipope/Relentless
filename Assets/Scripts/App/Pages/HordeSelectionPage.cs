@@ -242,6 +242,18 @@ namespace Loom.ZombieBattleground
 
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
+            catch (TimeoutException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" Time out == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+            }
+            catch (Client.RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+            }
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
