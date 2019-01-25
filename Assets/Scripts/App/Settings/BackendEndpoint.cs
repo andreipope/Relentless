@@ -2,13 +2,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendEndpoint
     {
-        public BackendEndpoint(string authHost, string readerHost, string writerHost, string vaultHost, string dataVersion)
+        public BackendEndpoint(string authHost, string readerHost, string writerHost, string vaultHost, string dataVersion, bool isMaintenanceMode, bool isForceUpdate)
         {
             AuthHost = authHost;
             ReaderHost = readerHost;
             WriterHost = writerHost;
             VaultHost = vaultHost;
             DataVersion = dataVersion;
+            IsMaintenaceMode = isMaintenanceMode;
+            IsForceUpdate = isForceUpdate;
         }
 
         public string AuthHost { get; set; }
@@ -21,6 +23,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public string DataVersion { get; set; }
 
+        public bool IsMaintenaceMode { get; set; }
+
+        public bool IsForceUpdate { get; set; }
+
         public BackendEndpoint(BackendEndpoint source)
         {
             AuthHost = source.AuthHost;
@@ -28,6 +34,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             WriterHost = source.WriterHost;
             VaultHost = source.VaultHost;
             DataVersion = source.DataVersion;
+            IsMaintenaceMode = source.IsMaintenaceMode;
+            IsForceUpdate = source.IsForceUpdate;
         }
     }
 }

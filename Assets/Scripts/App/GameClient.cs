@@ -1,4 +1,6 @@
+#define USE_PRODUCTION_BACKEND
 using System.IO;
+using System;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -14,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         private static GameClient _instance;
 
+        private static BackendEndpoint backendEndpoint;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="GameClient" /> class.
         /// </summary>
@@ -22,7 +26,7 @@ namespace Loom.ZombieBattleground
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
-            BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
+            PopulateBackendEndpoint();
 
             string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
             ConfigData configData = new ConfigData();
@@ -67,19 +71,29 @@ namespace Loom.ZombieBattleground
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
         }
 
-        public static BackendEndpoint GetDefaultBackendEndpoint()
+        public static async void PopulateBackendEndpoint()
         {
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND && !USE_REBALANCE_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose backend = BackendPurpose.Production;
+            try 
+            {
+                backendEndpoint = await GameClient.Get<BackendFacade>().GetServerURLs();
+            }
+            catch (Exception e) 
+            {
+                Debug.LogWarning(e.Message);
+            }
 #elif USE_REBALANCE_BACKEND
             const BackendPurpose backend = BackendPurpose.Rebalance;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif
+            backendEndpoint = backendEndpoint ?? BackendEndpointsContainer.Endpoints[backend];
+        }
 
-            BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
+        public static BackendEndpoint GetBackendEndpoint(){
             return backendEndpoint;
         }
 
