@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
             backendEndpoint = backendEndpoint ?? BackendEndpointsContainer.Endpoints[backend];
         }
 
-        private async Task<BackendEndpoint> GetServerURLs()
+        private static async Task<BackendEndpoint> GetServerURLs()
         {
             const string queryURLsEndPoint = "/zbversion";
 
