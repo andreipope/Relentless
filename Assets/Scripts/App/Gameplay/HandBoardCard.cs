@@ -98,13 +98,19 @@ public class HandBoardCard : OwnableBoardObject
         if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
             Enabled)
         {
-            if (_tutorialManager.IsTutorial && CardView.CanBeBuyed(OwnerPlayer))
+
+            if (_gameplayManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                SpecificBattlegroundInfo.DisabledInitialization)
             {
-                if (!_tutorialManager.GetCurrentTurnInfo().PlayCardsSequence.Exists(info =>
-                    info.TutorialObjectId == CardView.WorkingCard.TutorialObjectId))
+                if (CardView.CanBeBuyed(OwnerPlayer))
                 {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToPlayUnsequentionalCard);
-                    return;
+                    if (!_tutorialManager.GetCurrentTurnInfo().PlayCardsSequence.Exists(info =>
+                        info.TutorialObjectId == CardView.WorkingCard.TutorialObjectId))
+                    {
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToPlayUnsequentionalCard);
+                        return;
+                    }
                 }
             }
 

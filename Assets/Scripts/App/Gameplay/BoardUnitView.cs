@@ -486,6 +486,9 @@ namespace Loom.ZombieBattleground
                 {
                     GameObject.transform.position += Vector3.back * 5f;
                 }
+
+                if(_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
+                    ArrivalAnimationEventHandler();
             };
 
             if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)

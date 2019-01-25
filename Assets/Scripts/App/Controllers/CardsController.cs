@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
 
             if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
-                if (_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground)
+                if (_gameplayManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().MulliganScreenShouldAppear)
                 {
                     EndCardDistribution();
                 }

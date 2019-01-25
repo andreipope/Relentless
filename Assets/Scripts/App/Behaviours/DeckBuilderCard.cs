@@ -36,7 +36,8 @@ namespace Loom.ZombieBattleground
         {
             if (GameClient.Get<ITutorialManager>().IsTutorial &&
                 !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
-                GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked)
+                (GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
+                !GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CanDoubleTapCards))
                 return;
 
             if (!IsHordeItem)
