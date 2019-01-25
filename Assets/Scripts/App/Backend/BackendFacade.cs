@@ -491,7 +491,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<BackendEndpoint> GetServerURLs()
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=staging";
+            webrequestCreationInfo.Url = "http://stage-auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=staging";
+
+            Debug.Log(webrequestCreationInfo.Url);
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
