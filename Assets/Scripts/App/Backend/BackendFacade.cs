@@ -590,6 +590,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags)
         {
+#if USE_REBALANCE_BACKEND
+            pvpTags.Add("v4");
+#endif
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,
