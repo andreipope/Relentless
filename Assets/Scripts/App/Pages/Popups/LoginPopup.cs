@@ -535,6 +535,8 @@ namespace Loom.ZombieBattleground
 
                 _OTPFieldOTP.text = "";
 
+                _loginButton.enabled = true;
+
                 if (isGuest)
                 {
                     CompleteLoginFromCurrentSetUserData();
