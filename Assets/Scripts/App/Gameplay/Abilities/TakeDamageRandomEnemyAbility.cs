@@ -79,11 +79,15 @@ namespace Loom.ZombieBattleground
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                            _targets.AddRange(GetOpponentOverlord().BoardCards
+                                .FindAll(unit => unit.Model.CurrentHp > 0)
+                                .Select(unit => unit.Model));
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                            _targets.AddRange(PlayerCallerOfAbility.BoardCards
+                                .FindAll(unit => unit.Model.CurrentHp > 0)
+                                .Select(unit => unit.Model));
                             break;
                         case Enumerators.AbilityTargetType.PLAYER:
                             _targets.Add(PlayerCallerOfAbility);

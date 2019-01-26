@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
             _textDescription = _selfObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
 
-            description = description.Replace("\n", "");
+            description = description.Replace("\n", " ");
 
             _textDescription.text = description;
 
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
                 float value = (backgroundSize.x > backgroundSize.y ? backgroundSize.x : backgroundSize.y);
                 _currentBattleground.transform.localScale = Vector3.one * value;
             }
-
+            UpdateTextPosition();
             Width = _currentBattleground.bounds.size.x;
 
             if (ownerId > 0)
@@ -132,18 +132,14 @@ namespace Loom.ZombieBattleground
 
                         if (Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x) < (Width + tooltip.Width) / 2 + 1f)
                         {
-                            if (_align == Enumerators.TooltipAlign.CenterLeft)
+                            if (_align == Enumerators.TooltipAlign.CenterLeft ||
+                                _align == Enumerators.TooltipAlign.CenterRight)
                             {
-                                SetBattlegroundType(Enumerators.TooltipAlign.CenterRight);
-                                _currentPosition.x *= -1.2f;
+                                SetBattlegroundType(_align);
+                                _currentPosition.x *= -1f;
 
                             }
-                            else if (_align == Enumerators.TooltipAlign.CenterRight)
-                            {
-                                SetBattlegroundType(Enumerators.TooltipAlign.CenterLeft);
-                                _currentPosition.x *= -0.9f;
-                            }
-
+                            UpdateTextPosition();
                             SetPosition();
                             Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
                         }
@@ -203,6 +199,29 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void UpdateTextPosition()
+        {
+            Vector3 textPosition = Vector3.zero;
+            switch (_align)
+            {
+                case Enumerators.TooltipAlign.TopMiddle:
+                    textPosition.y = -_currentBattleground.bounds.size.y * 0.52f;
+                    break;
+                case Enumerators.TooltipAlign.CenterLeft:
+                    textPosition.x = _currentBattleground.bounds.size.x * 0.51f;
+                    break;
+                case Enumerators.TooltipAlign.CenterRight:
+                    textPosition.x = -_currentBattleground.bounds.size.x * 0.51f;
+                    break;
+                case Enumerators.TooltipAlign.BottomMiddle:
+                    textPosition.y = _currentBattleground.bounds.size.y * 0.52f;
+                    break;
+                default:
+                    break;
+            }
+            _textDescription.transform.localPosition = textPosition;
+        }
+
         private void SetPosition()
         {
             if (_ownerUnit != null)
@@ -212,11 +231,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 _selfObject.transform.position = _currentPosition;
-                if (OwnerType == Enumerators.TutorialObjectOwner.IncorrectButton)
-                {
-                    _selfObject.transform.position -= Vector3.up * 2;
-                }
-            }
+            }           
         }
 
         private void SetBattlegroundType(Enumerators.TooltipAlign align)

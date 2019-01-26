@@ -502,17 +502,19 @@ namespace Loom.ZombieBattleground
                     if (CheckTutorialAIStepPaused())
                         return;
 
-                    BoardUnitModel unit = GetUnitsOnBoard().Find(x => !x.AttackedThisTurn &&
-                                                                       x.Card.LibraryCard.Name.ToLowerInvariant() ==
+                    BoardUnitModel unit = GetUnitsOnBoard().Find(unitOnBoard => !unitOnBoard.AttackedThisTurn &&
+                                                                       unitOnBoard.Card.LibraryCard.Name.ToLowerInvariant() ==
                                                                        _tutorialManager.GetCardNameById(frame.TutorialObjectId).
-                                                                       ToLowerInvariant());
+                                                                       ToLowerInvariant() &&
+                                                                       UnitCanBeUsable(unitOnBoard));
                     BoardObject target = null;
 
                     if (frame.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD)
                     {
-                        target = GetOpponentUnitsOnBoard().Find(x => x.Card.LibraryCard.Name.ToLowerInvariant() ==
+                        target = GetOpponentUnitsOnBoard().Find(targetUnit => targetUnit.Card.LibraryCard.Name.ToLowerInvariant() ==
                                                                      _tutorialManager.GetCardNameById(frame.TargetTutorialObjectId).
-                                                                     ToLowerInvariant());
+                                                                     ToLowerInvariant() &&
+                                                                     targetUnit.CurrentHp > 0);
                     }
                     else
                     {
@@ -1695,7 +1697,9 @@ namespace Loom.ZombieBattleground
                 skill.EndDoSkill();
             };
 
-            if (skill.Skill.CanSelectTarget || selectedObjectType == Enumerators.AffectObjectType.Player || selectedObjectType == Enumerators.AffectObjectType.Character)
+            if ((skill.Skill.CanSelectTarget && target != null) ||
+                selectedObjectType == Enumerators.AffectObjectType.Player ||
+                selectedObjectType == Enumerators.AffectObjectType.Character)
             {
                 skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
             }

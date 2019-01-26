@@ -82,6 +82,8 @@ namespace Loom.ZombieBattleground
 
         public List<int> TutorialDescriptionTooltipsToDeactivate;
 
+        public List<int> ConnectedActivities;
+
         public List<HandPointerInfo> HandPointers;
 
         public string SoundToPlay;
@@ -93,6 +95,8 @@ namespace Loom.ZombieBattleground
             TutorialDescriptionTooltipsToActivate = new List<int>();
 
             TutorialDescriptionTooltipsToDeactivate = new List<int>();
+
+            ConnectedActivities = new List<int>();
 
             HandPointers = new List<HandPointerInfo>();
         }
@@ -234,6 +238,7 @@ namespace Loom.ZombieBattleground
         public Enumerators.TutorialObjectOwner TutorialTooltipOwner;
         public string Description;
         public float AppearDelay;
+        public float Duration = Constants.OverlordTalkingPopupDuration;
     }
 
     public class DrawDescriptionTooltipsInfo : TutorialActivityActionHandlerData
@@ -335,7 +340,6 @@ namespace Loom.ZombieBattleground
     {
         public string OpenScreen;
         public List<string> BlockedButtons;
-        public List<int> ConnectedActivities;
         public bool CardsInteractingLocked;
         public bool BattleShouldBeWonBlocker;
         public bool CanDragCards;
@@ -344,7 +348,6 @@ namespace Loom.ZombieBattleground
         public TutorialMenuStep()
         {
             BlockedButtons = new List<string>();
-            ConnectedActivities = new List<int>();
         }
     }
 }

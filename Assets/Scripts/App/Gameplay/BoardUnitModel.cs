@@ -680,7 +680,7 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
-                            if(targetCardModel.CurrentHp <= 0)
+                            if(targetCardModel.CurrentHp <= 0 || targetCardModel.IsDead)
                             {
                                 IsPlayable = true;
                                 AttackedThisTurn = false;

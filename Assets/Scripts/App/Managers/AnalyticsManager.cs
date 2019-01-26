@@ -22,8 +22,21 @@ public class AnalyticsManager : IAnalyticsManager, IService
     private int _finishedMatchCounter;
 
     public const string EventLogIn = "Log In";
-    public const string EventStartedTutorial = "Started Tutorial";
-    public const string EventCompletedTutorial = "Completed Tutorial";
+
+    public const string EventStartedTutorialBasic = "Started Tutorial Basic Stage";
+    public const string EventCompletedTutorialBasic = "Completed Tutorial Basic Stage";
+    public const string EventStartedTutorialAbilities = "Started Tutorial Abilities Stage";
+    public const string EventCompletedTutorialAbilities = "Completed Tutorial Abilities Stage";
+    public const string EventStartedTutorialRanks = "Started Tutorial Ranks Stage";
+    public const string EventCompletedTutorialRanks = "Completed Tutorial Ranks Stage";
+    public const string EventStartedTutorialOverflow = "Started Tutorial Overflow Stage";
+    public const string EventCompletedTutorialOverflow = "Completed Tutorial Overflow Stage";
+    public const string EventStartedTutorialDeck = "Started Tutorial Deck Stage";
+    public const string EventCompletedTutorialDeck = "Completed Tutorial Deck Stage";
+    public const string EventStartedTutorialBattle = "Started Tutorial Battle Stage";
+    public const string EventCompletedTutorialBattle = "Completed Tutorial Battle Stage";
+
+
     public const string EventStartedMatch = "Started Match";
     public const string EventEndedMatch = "Completed Match";
     public const string EventDeckCreated = "Create Deck";
