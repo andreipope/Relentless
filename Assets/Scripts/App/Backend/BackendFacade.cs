@@ -486,6 +486,59 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
+        public async Task<BackendEndpoint> GetServerURLs()
+        {
+            const string queryURLsEndPoint = "/zbversion";
+
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = "http://stage-auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=staging";
+
+            Debug.Log(webrequestCreationInfo.Url);
+
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Debug.Log(httpResponseMessage.ReadToEnd());
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(GetServerURLs)} failed with error code {httpResponseMessage.StatusCode}");
+
+            ServerUrlsResponse serverInfo = JsonConvert.DeserializeObject<ServerUrlsResponse>(
+                httpResponseMessage.ReadToEnd()
+            );
+
+            return new BackendEndpoint(
+                serverInfo.version.auth_url,
+                serverInfo.version.read_url,
+                serverInfo.version.write_url,
+                serverInfo.version.vault_url,
+                serverInfo.version.data_version,
+                serverInfo.version.is_maintenace_mode,
+                serverInfo.version.is_force_update,
+                false
+            );
+        }
+
+        private struct ServerUrlsResponse
+        {
+            public ServerUrlsData version;
+        }
+
+        private struct ServerUrlsData
+        {
+            public int id;
+            public int major;
+            public int minor;
+            public int patch;
+            public string environment;
+            public string auth_url;
+            public string read_url;
+            public string write_url;
+            public string vault_url;
+            public string data_version;
+            public bool is_maintenace_mode;
+            public bool is_force_update;
+        }
+
         private struct LoginRequest
         {
             public string email;

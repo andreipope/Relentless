@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground.Test
 
             //Debug.Log(JsonConvert.SerializeObject(UserDataModel, Formatting.Indented));
 
-            BackendFacade backendFacade = new BackendFacade(GameClient.GetBackendEndpoint(), contractCallProxyFactory)
+            BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint(), contractCallProxyFactory)
             {
                 Logger = enabledLogs ? new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] ")) : null,
                 EnableRpcLogging = true

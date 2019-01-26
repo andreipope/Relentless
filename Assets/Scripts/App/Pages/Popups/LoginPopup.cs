@@ -723,6 +723,14 @@ namespace Loom.ZombieBattleground
             {
                 _lastPopupState = _state;
                 SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForMaintenanceMode);
+                return;
+            }
+
+            if (_backendFacade.BackendEndpoint.IsConnectionImpossible && _state != LoginState.ValidationFailed)
+            {
+                _lastPopupState = _state;
+                SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForConnectionImpossible);
+                return;
             }
 
             switch (_state)
@@ -752,6 +760,7 @@ namespace Loom.ZombieBattleground
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                     string msgToShow = "The process could not be completed with error:" + _lastErrorMessage +
                                        "\nPlease try again.";
+
                     if (!string.IsNullOrEmpty(errorMsg))
                         msgToShow = errorMsg;
                     popup.Show(msgToShow);
@@ -788,9 +797,25 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void WarningPopupClosedOnAutomatedLogin()
+        private async void WarningPopupClosedOnAutomatedLogin()
         {
-            SetUIState(_lastPopupState);
+            _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupClosedOnAutomatedLogin;
+            try
+            {
+                if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
+                {
+                    _backendFacade.BackendEndpoint = await _backendFacade.GetServerURLs();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
+            }
+            finally
+            {
+                SetUIState(_lastPopupState);
+            }
         }
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)

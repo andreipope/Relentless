@@ -16,6 +16,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "https://stage-vault.delegatecall.com/v1",
                         "v3",
                         false,
+                        false,
                         false
                     )
                 },
@@ -28,6 +29,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "https://stage-vault.delegatecall.com/v1",
                         "v3",
                         false,
+                        false,
                         false
                     )
                 },
@@ -39,8 +41,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain.dappchains.com:46657/websocket",
                         "https://vault.delegatecall.com/v1",
                         "v3",
-                        true,
-                        false
+                        false,
+                        false,
+                        true
                     )
                 },
                 {
@@ -51,6 +54,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
                         "https://stage-vault.delegatecall.com/v1",
                         "v4",
+                        false,
                         false,
                         false
                     )
