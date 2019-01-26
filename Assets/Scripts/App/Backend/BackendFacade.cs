@@ -359,7 +359,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<bool> InitiateForgottenPassword(string email)
         {
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email +"&kind=signup";
+            webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email + "&kind=signup";
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
@@ -367,7 +367,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception(
                     $"{nameof(InitiateForgottenPassword)} failed with error code {httpResponseMessage.StatusCode}");
-                    
+
             return true;
         }
 
@@ -448,7 +448,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     throw new Exception(httpResponseMessage.StatusCode.ToString());
                 }
-                else 
+                else
                 {
                     throw new Exception($"{nameof(GetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
                 }
@@ -486,7 +486,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return true;
         }
 
-        private struct LoginRequest 
+        private struct LoginRequest
         {
             public string email;
             public string password;
@@ -565,6 +565,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             bool useBackendGameLogic,
             DebugCheatsConfiguration debugCheats = null)
         {
+#if USE_REBALANCE_BACKEND
+            pvpTags.Add("v4");
+#endif
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 RegistrationData = new PlayerProfileRegistrationData
@@ -642,7 +645,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SubscribeEvent(IList<string> topics)
          {
-            #warning Fix the multiple subscription issue once and for all
+#warning Fix the multiple subscription issue once and for all
 
             for (int i = _subscribeCount; i > 0; i--) {
                 await UnsubscribeEvent();
@@ -712,9 +715,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             PlayerActionDataReceived?.Invoke(e.Data);
         }
 
-        #endregion
+#endregion
 
-        #region Custom Game Modes
+#region Custom Game Modes
 
         private const string ListGameModesMethod = "ListGameModes";
         private const string CallCustomGameModeFunctionMethod = "CallCustomGameModeFunction";
@@ -747,6 +750,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             await _contractCallProxy.CallAsync(CallCustomGameModeFunctionMethod, request);
         }
 
-        #endregion
+#endregion
     }
 }

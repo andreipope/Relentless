@@ -250,7 +250,7 @@ public class UserReportingScript : MonoBehaviour
 
         if (!String.IsNullOrEmpty(_exceptionStacktrace))
         {
-            Debug.LogError(_exceptionStacktrace);
+            Debug.LogWarning(_exceptionStacktrace);
         }
 
         // Take Main Screenshot

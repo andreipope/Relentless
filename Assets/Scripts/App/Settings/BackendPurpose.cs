@@ -6,6 +6,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         PvP,
         BranchTesting,
         Staging,
-        Production
+        Production,
+        Rebalance
     }
 }

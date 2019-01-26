@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         public int CurrentGooModificator { get; set; }
 
-        public int DamageByNoMoreCardsInDeck  { get; set; }
+        public int DamageByNoMoreCardsInDeck { get; set; }
 
         public int ExtraGoo { get; set; }
 
@@ -150,7 +150,11 @@ namespace Loom.ZombieBattleground
                     MaxCardsInPlay = (uint) InitialPvPPlayerState.MaxCardsInPlay;
                     MaxGooVials = (uint) InitialPvPPlayerState.MaxGooVials;
 
+#if USE_REBALANCE_BACKEND
+                    Defense = Constants.DefaultPlayerHp;
+#else
                     Defense = InitialPvPPlayerState.Defense;
+#endif
                     CurrentGoo = InitialPvPPlayerState.CurrentGoo;
                     GooVials = InitialPvPPlayerState.GooVials;
                     TurnTime = (uint) InitialPvPPlayerState.TurnTime;
@@ -199,7 +203,9 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        if (_gameplayManager.IsTutorial)
+                        if (_gameplayManager.IsTutorial && 
+                            !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                            SpecificBattlegroundInfo.DisabledInitialization)
                         {
                             heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                         }
@@ -604,7 +610,10 @@ namespace Loom.ZombieBattleground
                 if (i >= CardsInDeck.Count)
                     break;
 
-                if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                if (IsLocalPlayer && (!_gameplayManager.IsTutorial ||
+                    (_gameplayManager.IsTutorial &&
+                    _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                    SpecificBattlegroundInfo.DisabledInitialization)))
                 {
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 }
@@ -683,7 +692,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (!_gameplayManager.IsTutorial)
+            if (!_gameplayManager.IsTutorial || ( _gameplayManager.IsTutorial &&
+                                                 _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                                 SpecificBattlegroundInfo.DisabledInitialization))
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
                 if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
@@ -804,7 +815,7 @@ namespace Loom.ZombieBattleground
         }
 #endif
 
-        #region handlers
+#region handlers
 
         private void PlayerDefenseChangedHandler(int now)
         {
@@ -834,7 +845,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        #endregion
+#endregion
 
         public override string ToString()
         {

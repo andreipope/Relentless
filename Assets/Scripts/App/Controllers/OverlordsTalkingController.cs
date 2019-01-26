@@ -56,6 +56,9 @@ namespace Loom.ZombieBattleground
 
         public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner)
         {
+            if (_overlordSayPopups.Find(x => x.Description == description) != null)
+                return;
+
             OverlordSayPopup overlordSayPopup = new OverlordSayPopup(description, align, owner, _overlordsChatContainer);
             overlordSayPopup.OverlordSayPopupHided += OverlordSayPopupHided;
             _overlordSayPopups.Add(overlordSayPopup);
@@ -106,6 +109,8 @@ namespace Loom.ZombieBattleground
 
             public float HeightPopup;
 
+            public string Description { get; private set; }
+
             private const float DurationOfShow = 1.5f;
             private const float DurationOfHide = 0.5f;
             private const float MinHeight = 2.85f;
@@ -132,7 +137,9 @@ namespace Loom.ZombieBattleground
 
                 _textDescription = _selfObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
-                _textDescription.text = description;
+                Description = description;
+
+                _textDescription.text = Description;
 
 
                 switch (align)

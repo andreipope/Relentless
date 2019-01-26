@@ -212,7 +212,8 @@ namespace Loom.ZombieBattleground
             MulliganCards?.Invoke(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.card).ToList());
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            Hide();
+
+            _uiManager.HidePopup<MulliganPopup>();
         }        
     }
 

@@ -634,10 +634,12 @@ namespace Loom.ZombieBattleground
                             }
 
 
-                            if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
+                            if (_gameplayManager.IsTutorial &&
+                                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                SpecificBattlegroundInfo.DisabledInitialization && OwnerPlayer.IsLocalPlayer)
                             {
                                 if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
-                                     info.TargetType == Enumerators.SkillTargetType.OPPONENT))
+                                 info.TargetType == Enumerators.SkillTargetType.OPPONENT))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
@@ -685,7 +687,8 @@ namespace Loom.ZombieBattleground
 
                             if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
                             {
-                                if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
+                                if (_tutorialManager.GetCurrentTurnInfo() != null &&
+                                    !_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
                                      info.TutorialObjectId == TutorialObjectId &&
                                      (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
                                          info.TargetTutorialObjectId == 0 && info.TargetType != Enumerators.SkillTargetType.OPPONENT)))

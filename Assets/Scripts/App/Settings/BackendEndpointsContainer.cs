@@ -46,6 +46,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "https://vault.delegatecall.com/v1",
                         "v3"
                     )
+                },
+                {
+                    BackendPurpose.Rebalance,
+                    new BackendEndpoint(
+                        "http://stage-auth.loom.games",
+                        "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
+                        "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
+                        "https://stage-vault.delegatecall.com/v1",
+                        "v4"
+                    )
                 }
             };
     }

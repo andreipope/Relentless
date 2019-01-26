@@ -457,7 +457,7 @@
                 "Z": 0.0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true,
+              "TutorialHandLayer": "AbovePopups",
               "AppearDelay": 1.5
             }
           ],
@@ -943,6 +943,9 @@
               "AppearDelay": 10.0
             }
           ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            2
+          ],
           "HandPointers": [
             {
               "StartPosition": {
@@ -1309,7 +1312,7 @@
           "TutorialTooltipOwner": "PlayerBattleframe",
           "Description": "When higher ranked\n zombies are played,\n they give Rank\n Buffs to lower\n ranking zombies\n from the same\n faction.",
           "Position": {
-            "X": -5.9,
+            "X": -4.6,
             "Y": 0.3,
             "Z": 0.0
           },
@@ -2201,6 +2204,7 @@
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed",
             "BattleframeAttacked"
           ]
         },
@@ -2333,7 +2337,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2353,7 +2357,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2380,7 +2384,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2398,7 +2402,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -2416,7 +2420,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePopups"
             }
           ]
         },
@@ -2429,6 +2433,7 @@
             "Button_Save"
           ],
           "ActionToEndThisStep": "CardDragged",
+          "CanDragCards": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -2442,7 +2447,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -2458,6 +2463,7 @@
             "Button_Save"
           ],
           "ActionToEndThisStep": "CardRemoved",
+          "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -2466,7 +2472,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -2485,6 +2491,7 @@
             "Button_Save"
           ],
           "ActionToEndThisStep": "CardAdded",
+          "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -2493,7 +2500,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -2505,6 +2512,8 @@
         },
         {
           "OpenScreen": "HordeEditingPage",
+          "CanDoubleTapCards": true,
+          "CanDragCards": true,
           "ActionToEndThisStep": "HordeFilled",
           "BlockedButtons": [
             "Button_Buy",
@@ -2532,7 +2541,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "CardsInteractingLocked": true
@@ -2549,7 +2558,7 @@
             "Button_LeftArrow",
             "Button_RightArrow"
           ],
-          "ActionToEndThisStep": "ScreenChanged",
+          "ActionToEndThisStep": "BattleStarted",
           "HandPointers": [
             {
               "StartPosition": {
@@ -2558,7 +2567,7 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "AboveUI": true
+              "TutorialHandLayer": "AbovePages"
             }
           ],
           "ConnectedActivities": [
@@ -2576,7 +2585,8 @@
             "X": 2.8,
             "Y": -2.5,
             "Z": 0.0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 1,
@@ -2587,7 +2597,8 @@
             "X": -4.5,
             "Y": 2.6,
             "Z": 0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 2,
@@ -2598,7 +2609,8 @@
             "X": 2.8,
             "Y": -2.5,
             "Z": 0.0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 3,
@@ -2609,7 +2621,8 @@
             "X": 8,
             "Y": -0.5,
             "Z": 0.0
-          }
+          },
+          "TutorialTooltipLayer": "AbovePages"
         }
       ],
       "ActionActivityHandlers": [
@@ -2625,6 +2638,126 @@
           "HasSpecificConnection": true
         }
       ]
+    }
+  },
+  {
+    "Id": 5,
+    "Name": "Normal Battle",
+    "TutorialContent": {
+      "TutorialDescriptionTooltips": [
+        {
+          "Id": 0,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "You go first.",
+          "Position": {
+            "X": 10.5,
+            "Y": -4.5,
+            "Z": 0
+          },
+          "AppearDelay": 2
+        },
+        {
+          "Id": 1,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Drag cards that you\nwant replaced to\nthe top. Press KEEP\nwhen you're done.",
+          "Position": {
+            "X": 9.5,
+            "Y": 1,
+            "Z": 0
+          }
+        },
+        {
+          "Id": 2,
+          "TutorialTooltipAlign": "TopMiddle",
+          "TutorialTooltipOwner": "IncorrectButton",
+          "Description": "You still have a\nbattle to win.",
+          "Position": {
+            "X": 9.5,
+            "Y": 1,
+            "Z": 0
+          }
+        }
+      ],
+      "TutorialSteps": [
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Use everything you've learned\nand make me proud!",
+            "DescriptionTooltipCloseText": "BATTLE!"
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        },
+        {
+          "TutorialDescriptionTooltipsToActivate": [
+            0
+          ],
+          "ActionToEndThisStep": "PopupClosed",
+          "BeginGameplayFlowManually": true
+        },
+        {
+          "TutorialDescriptionTooltipsToActivate": [
+            1
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            0
+          ],
+          "ActionToEndThisStep": "PopupClosed"
+        },
+        {
+          "ActionToEndThisStep": "EndMatchPopupAppear",
+          "CanEndTurn": true,
+          "UnitsCanAttack": true,
+          "CanInteractWithGameplay": true,
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1
+          ]
+        },
+        {
+          "BattleShouldBeWonBlocker": true,
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_Army",
+            "Pulse",
+            "Button_Edit",
+            "Button_Delete",
+            "Image_Skill",
+            "Image_Skill",
+            "Button_LeftArrow",
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral",
+            "Image_BaackgroundGeneral"
+          ],
+        },
+        {
+          "TutorialAvatar": {
+            "Pose": "NORMAL",
+            "Description": "Threre's nothing more I can teach\nyou. Congratulations!",
+            "DescriptionTooltipCloseText": "CONTINUE",
+            "AboveUI": true
+          },
+          "ActionToEndThisStep": "AvatarTooltipClosed",
+        },
+      ],
+      "SpecificBattlegroundInfo": {
+        "RankSystemHasEnabled": true,
+        "AISpecificOrderEnabled": false,
+        "DisabledInitialization": true,
+        "PlayerTurnFirst": true
+      },
+      "SpecificTurnInfos": [
+      ],
+      "PlayerOrderScreenShouldAppear": true,
+      "MulliganScreenShouldAppear": true,
+      "DisabledSpecificTurnInfos": true,
+      "GameplayFlowBeginsManually": true
     }
   }
 ]
