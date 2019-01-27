@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -99,11 +100,11 @@ namespace Loom.ZombieBattleground
                 switch (owner)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.Find((x) =>
+                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.First((x) =>
                             x.Model.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.Find((x) =>
+                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.First((x) =>
                             x.Model.TutorialObjectId == ownerId);
                         break;
                     default: break;

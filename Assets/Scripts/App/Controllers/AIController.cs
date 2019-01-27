@@ -422,10 +422,8 @@ namespace Loom.ZombieBattleground
                     if (CheckTutorialAIStepPaused())
                         return;
 
-                    WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.
-                                            Find(cardInHand => cardInHand.LibraryCard.Name.ToLowerInvariant() ==
-                                                 _tutorialManager.GetCardNameById(playCardActionInfo.TutorialObjectId).
-                                                 ToLowerInvariant());
+                    WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.First(
+                        cardInHand => cardInHand.TutorialObjectId == playCardActionInfo.TutorialObjectId);
 
                     if (card != null)
                     {
@@ -1232,7 +1230,7 @@ namespace Loom.ZombieBattleground
         {
             if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
-                List<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
+                UniqueList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
                 if (targets.Count > 0)
                 {
@@ -1254,7 +1252,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private List<BoardUnitView> GetHeavyUnitsOnBoard(Player player)
+        private UniqueList<BoardUnitView> GetHeavyUnitsOnBoard(Player player)
         {
             return player.BoardCards.FindAll(x => x.Model.HasHeavy || x.Model.HasBuffHeavy);
         }
@@ -1327,7 +1325,7 @@ namespace Loom.ZombieBattleground
 
         private List<WorkingCard> GetUnitCardsInHand()
         {
-            List<WorkingCard> list =
+            UniqueList<WorkingCard> list =
                 _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
                     x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
@@ -1346,7 +1344,7 @@ namespace Loom.ZombieBattleground
 
             foreach (Card item in cards)
             {
-                sortedList.Add(list.Find(x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains(x)));
+                sortedList.Add(list.First(x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains(x)));
             }
 
             list.Clear();
@@ -1355,7 +1353,7 @@ namespace Loom.ZombieBattleground
             return sortedList;
         }
 
-        private List<WorkingCard> GetSpellCardsInHand()
+        private UniqueList<WorkingCard> GetSpellCardsInHand()
         {
             return _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
                 x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);

@@ -249,7 +249,7 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand) 
         {
-            player.CardsInHand = new List<WorkingCard>();
+            player.CardsInHand = new UniqueList<WorkingCard>();
 
             foreach (CardInstance cardInstance in cardsInHand)
             {
@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
         {
-            player.CardsInDeck = new List<WorkingCard>();
+            player.CardsInDeck = new UniqueList<WorkingCard>();
 
             foreach (CardInstance cardInstance in cardsInDeck)
             {

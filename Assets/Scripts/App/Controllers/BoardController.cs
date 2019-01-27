@@ -88,14 +88,14 @@ namespace Loom.ZombieBattleground
             UpdateBoard(player.BoardCards, player.IsLocalPlayer, boardUpdated);
         }
 
-        public void UpdateBoard(List<BoardUnitView> units, bool isBottom, Action boardUpdated)
+        public void UpdateBoard(IList<BoardUnitView> units, bool isBottom, Action boardUpdated)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
 
             if (!isBottom)
             {
-                units = Enumerable.Reverse(units).ToList();
+                units = units.Reverse().ToList();
             }
 
             float boardWidth = 0.0f;

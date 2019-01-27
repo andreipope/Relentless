@@ -8,22 +8,22 @@ using UnityEngine;
 
 namespace Editor
 {
-    public class MultiplayerLocalStateDebugWindow : EditorWindow
+    public class LocalStateDebugWindow : EditorWindow
     {
         private const double RepaintInterval = 0.2;
         private Vector2 _scrollPosition;
         private double _nextRepaintTime;
 
-        [MenuItem("Window/ZombieBattleground/Open Multiplayer Local State Debug Window")]
+        [MenuItem("Window/ZombieBattleground/Open Local State Debug Window")]
         private static void OpenWindow()
         {
-            MultiplayerLocalStateDebugWindow window = GetWindow<MultiplayerLocalStateDebugWindow>();
+            LocalStateDebugWindow window = GetWindow<LocalStateDebugWindow>();
             window.Show();
         }
 
         private void Awake()
         {
-            titleContent = new GUIContent("MP State Debug");
+            titleContent = new GUIContent("Local State Debug");
         }
 
         private void Update()
@@ -38,31 +38,44 @@ namespace Editor
 
         private void OnGUI()
         {
-            if (GameClient.Instance == null)
+            if (!EditorApplication.isPlaying || GameClient.Instance == null)
             {
-                GUILayout.Label("Only available during a PvP match");
+                GUILayout.Label("Only available during gameplay");
                 return;
             }
 
             IMatchManager matchManager = GameClient.Get<IMatchManager>();
             IPvPManager pvpManager = GameClient.Get<IPvPManager>();
             IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
-            if (matchManager.MatchType != Enumerators.MatchType.PVP ||
-                pvpManager.InitialGameState == null ||
-                gameplayManager?.CurrentPlayer?.InitialPvPPlayerState == null ||
-                gameplayManager.OpponentPlayer?.InitialPvPPlayerState == null)
-            {
-                GUILayout.Label("Only available during a PvP match");
-                return;
-            }
-
+            IAppStateManager appStateManager = GameClient.Get<IAppStateManager>();
             BackendDataControlMediator backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
             string userId = backendDataControlMediator?.UserDataModel?.UserId;
+
             if (userId == null)
             {
                 GUILayout.Label("User ID not set");
                 return;
             }
+
+            if (matchManager.MatchType == Enumerators.MatchType.PVP &&
+                (pvpManager.InitialGameState == null ||
+                gameplayManager?.CurrentPlayer?.InitialPvPPlayerState == null ||
+                gameplayManager.OpponentPlayer?.InitialPvPPlayerState == null))
+            {
+                GUILayout.Label("PvP match not yet set up");
+                return;
+            }
+
+            if (appStateManager.AppState != Enumerators.AppState.GAMEPLAY ||
+                gameplayManager?.CurrentPlayer == null ||
+                gameplayManager.OpponentPlayer == null)
+            {
+                GUILayout.Label("Match not yet started");
+                return;
+            }
+
+            GUILayout.Label("Match Type: " + matchManager.MatchType);
 
             using (EditorGUILayout.ScrollViewScope scrollView = new EditorGUILayout.ScrollViewScope(_scrollPosition, false, false))
             {
@@ -70,7 +83,10 @@ namespace Editor
                 EditorGUILayout.BeginVertical();
                 {
                     bool isExpanded = true;
-                    GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameState(false);
+                    GameState currentGameState =
+                        matchManager.MatchType == Enumerators.MatchType.PVP ?
+                        GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(false) :
+                        GameStateConstructor.Create().CreateCurrentGameStateFromLocalGame(false);
                     GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, ref isExpanded);
                 }
                 EditorGUILayout.EndVertical();

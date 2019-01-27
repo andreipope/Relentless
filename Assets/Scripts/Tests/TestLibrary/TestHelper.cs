@@ -1610,7 +1610,7 @@ namespace Loom.ZombieBattleground.Test
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
+                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -1659,7 +1659,7 @@ namespace Loom.ZombieBattleground.Test
 
                         if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                         {
-                            BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
+                            BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
 
                             _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                                 boardCard,
@@ -2045,7 +2045,7 @@ namespace Loom.ZombieBattleground.Test
         {
             if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
-                List<BoardUnitView> targets = GetHeavyUnitsOnBoard(_testBroker.GetPlayer(_opponent));
+                UniqueList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_testBroker.GetPlayer(_opponent));
 
                 if (targets.Count > 0)
                 {
@@ -2067,7 +2067,7 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private List<BoardUnitView> GetHeavyUnitsOnBoard(Loom.ZombieBattleground.Player player)
+        private UniqueList<BoardUnitView> GetHeavyUnitsOnBoard(Loom.ZombieBattleground.Player player)
         {
             return player.BoardCards.FindAll(x => x.Model.HasHeavy || x.Model.HasBuffHeavy);
         }
@@ -2143,14 +2143,8 @@ namespace Loom.ZombieBattleground.Test
 
         private List<WorkingCard> GetUnitCardsInHand()
         {
-            List<WorkingCard> list =
-                _testBroker.GetPlayer(_player).CardsInHand.FindAll(x =>
-                    x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
-
-            /* foreach (WorkingCard workingCard in list)
-            {
-                Debug.Log ("+ " + workingCard.LibraryCard.MouldId + ": " + workingCard.LibraryCard.Name);
-            } */
+            UniqueList<WorkingCard> list =
+                _testBroker.GetPlayer(_player).CardsInHand.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
             List<Loom.ZombieBattleground.Data.Card> cards = new List<Loom.ZombieBattleground.Data.Card>();
 
@@ -2169,7 +2163,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 // Debug.Log ("- " + item.MouldId + ": " + item.Name);
 
-                sortedList.Add(list.Find(x => x.LibraryCard.Name == item.Name && !sortedList.Contains(x)));
+                sortedList.Add(list.First(x => x.LibraryCard.Name == item.Name && !sortedList.Contains(x)));
             }
 
             list.Clear();
@@ -2178,7 +2172,7 @@ namespace Loom.ZombieBattleground.Test
             return sortedList;
         }
 
-        private List<WorkingCard> GetSpellCardsInHand()
+        private UniqueList<WorkingCard> GetSpellCardsInHand()
         {
             return _testBroker.GetPlayer(_player).CardsInHand.FindAll(x =>
                 x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);

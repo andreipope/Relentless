@@ -125,14 +125,14 @@ namespace Loom.ZombieBattleground
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
-            CardsInDeck = new List<WorkingCard>();
-            CardsInGraveyard = new List<WorkingCard>();
-            CardsInHand = new List<WorkingCard>();
-            CardsOnBoard = new List<WorkingCard>();
-            BoardCards = new List<BoardUnitView>();
-            BoardSpellsInUse = new List<BoardSpell>();
+            CardsInDeck = new UniqueList<WorkingCard>();
+            CardsInGraveyard = new UniqueList<WorkingCard>();
+            CardsInHand = new UniqueList<WorkingCard>();
+            CardsOnBoard = new UniqueList<WorkingCard>();
+            BoardCards = new UniqueList<BoardUnitView>();
+            BoardSpellsInUse = new UniqueList<BoardSpell>();
 
-            CardsPreparingToHand = new List<WorkingCard>();
+            CardsPreparingToHand = new UniqueList<WorkingCard>();
 
             switch (_matchManager.MatchType)
             {
@@ -345,19 +345,19 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
-        public List<BoardUnitView> BoardCards { get; set; }
+        public UniqueList<BoardUnitView> BoardCards { get; set; }
 
-        public List<BoardSpell> BoardSpellsInUse { get; set; }
+        public UniqueList<BoardSpell> BoardSpellsInUse { get; set; }
 
-        public List<WorkingCard> CardsInDeck { get; set; }
+        public UniqueList<WorkingCard> CardsInDeck { get; set; }
 
-        public List<WorkingCard> CardsInGraveyard { get; }
+        public UniqueList<WorkingCard> CardsInGraveyard { get; }
 
-        public List<WorkingCard> CardsInHand { get; set; }
+        public UniqueList<WorkingCard> CardsInHand { get; set; }
 
-        public List<WorkingCard> CardsOnBoard { get; }
+        public UniqueList<WorkingCard> CardsOnBoard { get; }
 
-        public List<WorkingCard> CardsPreparingToHand { get; set; }
+        public UniqueList<WorkingCard> CardsPreparingToHand { get; set; }
 
         public bool IsStunned { get; private set; }
 
@@ -549,12 +549,15 @@ namespace Loom.ZombieBattleground
 
         public void SetDeck(List<WorkingCard> cards, bool isMainTurnSecond)
         {
-            CardsInDeck = new List<WorkingCard>();
+            CardsInDeck = new UniqueList<WorkingCard>();
 
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    cards = ShuffleCardsList(cards);
+                    if (!_gameplayManager.IsTutorial)
+                    {
+                        cards.ShuffleList();
+                    }
 
                     if(isMainTurnSecond)
                     {
@@ -583,21 +586,6 @@ namespace Loom.ZombieBattleground
             }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
-        }
-
-        public List<T> ShuffleCardsList<T>(List<T> cards)
-        {
-            if (cards.Count == 0)
-                return cards;
-
-            List<T> array = cards;
-
-            if (!_gameplayManager.IsTutorial)
-            {
-                InternalTools.ShakeList(ref array); // shake
-            }
-
-            return array;
         }
 
         public void SetFirstHandForLocalMatch(bool skip)

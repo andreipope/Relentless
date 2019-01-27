@@ -27,26 +27,34 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         }
 
-        public GameState CreateCurrentGameState(bool removeNonEssentialData)
+        public GameState CreateCurrentGameStateFromOnlineGame(bool removeNonEssentialData)
         {
             if (_matchManager.MatchType != Enumerators.MatchType.PVP)
                 throw new Exception("Game must be PVP");
 
-            Player player0 = _pvpManager.IsFirstPlayer() ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
-            Player player1 = !_pvpManager.IsFirstPlayer() ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
+            return CreateGameState(
+                _pvpManager.IsFirstPlayer(),
+                _pvpManager.InitialGameState.Id,
+                _pvpManager.InitialGameState.RandomSeed,
+                _gameplayManager.CurrentPlayer.InitialPvPPlayerState.Id,
+                _gameplayManager.OpponentPlayer.InitialPvPPlayerState.Id,
+                removeNonEssentialData);
+        }
 
-            GameState gameState = new GameState
-            {
-                Id = _pvpManager.InitialGameState.Id,
-                RandomSeed = _pvpManager.InitialGameState.RandomSeed,
-                PlayerStates =
-                {
-                    CreateFakePlayerStateFromPlayer(player0.InitialPvPPlayerState.Id, player0, removeNonEssentialData),
-                    CreateFakePlayerStateFromPlayer(player1.InitialPvPPlayerState.Id, player1, removeNonEssentialData)
-                }
-            };
+        public GameState CreateCurrentGameStateFromLocalGame(bool removeNonEssentialData)
+        {
+            if (_matchManager.MatchType != Enumerators.MatchType.PVE &&
+                _matchManager.MatchType != Enumerators.MatchType.LOCAL)
+                throw new Exception("Game must be PVE or LOCAL");
 
-            return gameState;
+            bool isFirstPlayer = _gameplayManager.StartingTurn == Enumerators.StartingTurn.Player;
+            return CreateGameState(
+                isFirstPlayer,
+                -1,
+                -1,
+                "CurrentPlayer",
+                "OpponentPlayer",
+                removeNonEssentialData);
         }
 
         public static PlayerState CreateFakePlayerStateFromPlayer(string playerId, Player player, bool removeNonEssentialData)
@@ -98,6 +106,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
 
             return playerState;
+        }
+
+        private  GameState CreateGameState(bool isFirstPlayer, long matchId, long randomSeed, string currentPlayerId, string opponentPlayerId, bool removeNonEssentialData)
+        {
+            Player player0 = isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
+            Player player1 = !isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
+            bool isTurnOfPlayer0 = _gameplayManager.CurrentTurnPlayer == player0;
+
+            GameState gameState = new GameState
+            {
+                Id = matchId,
+                RandomSeed = randomSeed,
+                CurrentPlayerIndex = isTurnOfPlayer0 ? 0 : 1,
+                PlayerStates =
+                {
+                    CreateFakePlayerStateFromPlayer(isFirstPlayer ? currentPlayerId : opponentPlayerId, player0, removeNonEssentialData),
+                    CreateFakePlayerStateFromPlayer(!isFirstPlayer ? currentPlayerId : opponentPlayerId, player1, removeNonEssentialData)
+                }
+            };
+
+            return gameState;
         }
 
         private static void RemoveNonEssentialData(CardInstance cardInstance)

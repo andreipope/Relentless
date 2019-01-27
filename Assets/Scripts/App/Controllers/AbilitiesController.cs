@@ -297,7 +297,7 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        List<BoardUnitView> units =
+                        IList<BoardUnitView> units =
                             player.BoardCards.FindAll(x =>
                                 x.Model.InitialUnitType == ability.TargetCardType &&
                                 x.Model.UnitStatus == ability.TargetUnitStatusType);
@@ -308,7 +308,7 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        List<BoardUnitView> units =
+                        IList<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x =>
                                 x.Model.InitialUnitType == ability.TargetCardType &&
                                 x.Model.UnitStatus == ability.TargetUnitStatusType);
@@ -343,7 +343,7 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        List<BoardUnitView> units =
+                        IList<BoardUnitView> units =
                             player.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
@@ -353,7 +353,7 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        List<BoardUnitView> units =
+                        IList<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)

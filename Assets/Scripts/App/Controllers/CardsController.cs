@@ -184,8 +184,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP && !_gameplayManager.IsTutorial)
             {
-                _gameplayManager.CurrentPlayer.CardsInDeck =
-                _gameplayManager.CurrentPlayer.ShuffleCardsList(_gameplayManager.CurrentPlayer.CardsInDeck);
+                _gameplayManager.CurrentPlayer.CardsInDeck.ShuffleList();
             }
 
             _battlegroundController.StartGameplayTurns();
@@ -196,7 +195,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CardsDistribution(List<WorkingCard> mulliganCards)
+        public void CardsDistribution(IList<WorkingCard> mulliganCards)
         {
             Player player = _gameplayManager.CurrentPlayer;
             List<WorkingCard> randomCards = new List<WorkingCard>();
@@ -204,7 +203,7 @@ namespace Loom.ZombieBattleground
             {
                 randomCards.Add(player.CardsInDeck[i]);
             }
-            player.CardsPreparingToHand = player.CardsPreparingToHand.Except(mulliganCards).ToList();
+            player.CardsPreparingToHand = player.CardsPreparingToHand.Except(mulliganCards).ToUniqueList();
             player.CardsPreparingToHand.AddRange(randomCards);
 
             EndCardDistribution();
@@ -474,7 +473,7 @@ namespace Loom.ZombieBattleground
                 {
                     _indexOfCard = newIndexOfCard;
 
-                    List<BoardUnitView> playerCards = _gameplayManager.CurrentPlayer.BoardCards;
+                    IList<BoardUnitView> playerCards = _gameplayManager.CurrentPlayer.BoardCards;
                     List<BoardUnitView> toArrangeList = new List<BoardUnitView>();
 
                     for (int i = 0; i < playerCards.Count; i++)
@@ -898,7 +897,7 @@ namespace Loom.ZombieBattleground
 
             if (player.IsLocalPlayer)
             {
-                BoardCard boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
+                BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
 
                 boardCard.ChangeCardCostOn(value, true);
             }
@@ -918,7 +917,7 @@ namespace Loom.ZombieBattleground
             {
                 if (boardCard == null)
                 {
-                    boardCard = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard.Equals(card));
+                    boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
                 }
 
                 boardCard.SetCardCost(value);

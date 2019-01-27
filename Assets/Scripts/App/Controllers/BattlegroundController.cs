@@ -34,19 +34,19 @@ namespace Loom.ZombieBattleground
 
         public int CurrentTurn;
 
-        public List<BoardUnitView> OpponentBoardCards = new List<BoardUnitView>();
+        public UniqueList<BoardUnitView> OpponentBoardCards = new UniqueList<BoardUnitView>();
 
-        public List<BoardUnitView> OpponentGraveyardCards = new List<BoardUnitView>();
+        public UniqueList<BoardUnitView> OpponentGraveyardCards = new UniqueList<BoardUnitView>();
 
-        public List<OpponentHandCard> OpponentHandCards = new List<OpponentHandCard>();
+        public UniqueList<OpponentHandCard> OpponentHandCards = new UniqueList<OpponentHandCard>();
 
-        public List<BoardUnitView> PlayerBoardCards = new List<BoardUnitView>();
+        public UniqueList<BoardUnitView> PlayerBoardCards = new UniqueList<BoardUnitView>();
 
         public GameObject PlayerBoardObject, OpponentBoardObject, PlayerGraveyardObject, OpponentGraveyardObject;
 
-        public List<BoardUnitView> PlayerGraveyardCards = new List<BoardUnitView>();
+        public UniqueList<BoardUnitView> PlayerGraveyardCards = new UniqueList<BoardUnitView>();
 
-        public List<BoardCard> PlayerHandCards = new List<BoardCard>();
+        public UniqueList<BoardCard> PlayerHandCards = new UniqueList<BoardCard>();
 
         private AIController _aiController;
 
@@ -484,7 +484,7 @@ namespace Loom.ZombieBattleground
                      // Validate game state
                      if (Constants.GameStateValidationEnabled && pvpControlGameState != null)
                      {
-                         GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameState(true);
+                         GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
                          CompareLogic compareLogic = new CompareLogic();
                          compareLogic.Config.ShowBreadcrumb = true;
                          compareLogic.Config.TreatStringEmptyAndNullTheSame = true;
@@ -522,7 +522,7 @@ namespace Loom.ZombieBattleground
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
         {
-            BoardUnitView boardCard = PlayerBoardCards.Find(x => x.Model.Card == card);
+            BoardUnitView boardCard = PlayerBoardCards.FirstOrDefault(x => x.Model.Card == card);
             if (boardCard == null)
                 return;
 
@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
         {
             Vector3 graveyardPos = OpponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
-            BoardUnitView boardCard = OpponentBoardCards.Find(x => x.Model.Card == card);
+            BoardUnitView boardCard = OpponentBoardCards.FirstOrDefault(x => x.Model.Card == card);
             if (boardCard != null)
             {
                 if (!boardCard.WasDestroyed)
@@ -877,11 +877,11 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)
         {
-            BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.Find(x => x.GameObject.Equals(unitObject));
+            BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.First(x => x.GameObject == unitObject);
 
             if (unit == null)
             {
-                unit = _gameplayManager.OpponentPlayer.BoardCards.Find(x => x.GameObject.Equals(unitObject));
+                unit = _gameplayManager.OpponentPlayer.BoardCards.First(x => x.GameObject == unitObject);
             }
 
             return unit;
@@ -889,7 +889,7 @@ namespace Loom.ZombieBattleground
 
         public BoardCard GetBoardCardFromHisObject(GameObject cardObject)
         {
-            BoardCard card = PlayerHandCards.Find(x => x.GameObject.Equals(cardObject));
+            BoardCard card = PlayerHandCards.FirstOrDefault(x => x.GameObject.Equals(cardObject));
 
             return card;
         }
@@ -1154,7 +1154,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
         {
-            List<BoardUnitView> boardCards = targetUnit.OwnerPlayer.BoardCards;
+            UniqueList<BoardUnitView> boardCards = targetUnit.OwnerPlayer.BoardCards;
 
             int targetView = boardCards.IndexOf(GetBoardUnitViewByModel(targetUnit));
 

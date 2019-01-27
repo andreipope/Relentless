@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -47,7 +48,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            WorkingCard card = PlayerCallerOfAbility.CardsInDeck.Find(x => x.LibraryCard.CardSetType == SetType);
+            WorkingCard card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.LibraryCard.CardSetType == SetType);
 
             if (card != null)
             {

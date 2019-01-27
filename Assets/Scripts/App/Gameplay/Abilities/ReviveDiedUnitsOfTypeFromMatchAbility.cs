@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<WorkingCard> units =
+            UniqueList<WorkingCard> units =
                 GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
 
             foreach (WorkingCard unit in units)

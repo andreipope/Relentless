@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         public bool CanAttackByDefault;
 
-        public List<BoardObject> AttackedBoardObjectsThisTurn;
+        public UniqueList<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.ANY;
 
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
-            AttackedBoardObjectsThisTurn = new List<BoardObject>();
+            AttackedBoardObjectsThisTurn = new UniqueList<BoardObject>();
 
             IsCreatedThisTurn = true;
 
@@ -814,7 +814,7 @@ namespace Loom.ZombieBattleground
             KilledUnit?.Invoke(boardUnit);
         }
 
-        public List<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
+        public UniqueList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
         {
             if (_gameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model).Contains(unit))
             {

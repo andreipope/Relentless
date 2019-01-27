@@ -74,12 +74,14 @@ namespace Loom.ZombieBattleground
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose backend = BackendPurpose.Production;
 #elif USE_BRANCH_TESTING_BACKEND
             const BackendPurpose backend = BackendPurpose.BranchTesting;
+#elif USE_REBALANCE_BACKEND
+            const BackendPurpose backend = BackendPurpose.Rebalance;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif
