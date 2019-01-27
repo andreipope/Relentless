@@ -30,7 +30,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Atk: How much\n damage this zombie\n deals.",
+          "Description": "Def: How much\n damage this zombie\n can take.",
           "Position": {
             "X": 3.57,
             "Y": 0.87,
@@ -41,7 +41,7 @@
           "Id": 3,
           "TutorialTooltipAlign": "CenterRight",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Def: How much\n damage this zombie\n can take.",
+          "Description": "Atk: How much\n damage this zombie\n deals.",
           "Position": {
             "X": -4.0,
             "Y": 0.87,
@@ -53,7 +53,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerBattleframe",
           "TutorialTooltipOwnerId": 1,
-          "Description": "Defense was lowered\n by the\n counter-attack.",
+          "Description": "Gloop's defense was\nlowered by\nthe counter-attack.",
           "Position": {
             "X": 3.65,
             "Y": -0.85,
@@ -181,7 +181,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Not bad for\n a slab of rock"
+              "Description": "Not bad for\n a slab of rock."
             }
           ],
           "ActionToEndThisStep": "EndTurn"
@@ -193,7 +193,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Lets attack\n that zombie."
+              "Description": "Let's attack\n that zombie."
             }
           ],
           "HandPointers": [
@@ -263,7 +263,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "I’m done. Let’s\n move on shall\n we?"
+              "Description": "I’m done. Let’s\n move on, shall\n we?"
             }
           ],
           "HandPointers": [
@@ -722,7 +722,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Drag the Item to\n its target."
+                "Description": "Drag the Item\ninto play." 
               }
             },
             {
@@ -787,7 +787,7 @@
           "Id": 3,
           "TutorialTooltipAlign": "BottomMiddle",
           "TutorialTooltipOwner": "PlayerGooBottles",
-          "Description": "You’ve earned a goo\n bottle.",
+          "Description": "You’ve earned\na goo bottle.",
           "Position": {
             "X": -7.25,
             "Y": -3.67,
