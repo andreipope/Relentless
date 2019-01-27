@@ -104,6 +104,15 @@ namespace Loom.ZombieBattleground
             if (player.Defense <= 0)
                 return;
 
+            if (TutorialManager.IsTutorial)
+            {
+                if ((!player.IsLocalPlayer &&
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT)) ||
+                    (player.IsLocalPlayer &&
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER)))
+                    return;
+            }
+
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) &&
                 player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||
                 PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) &&

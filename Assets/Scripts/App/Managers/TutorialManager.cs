@@ -137,13 +137,13 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (!IsTutorial)
+                return;
+
             for (int i = 0; i < _tutorialDescriptionTooltipItems.Count; i++)
             {
                 _tutorialDescriptionTooltipItems[i]?.Update();
             }
-
-            if (!IsTutorial)
-                return;
 
             if (!CurrentTutorial.IsGameplayTutorial())
             {
@@ -228,8 +228,49 @@ namespace Loom.ZombieBattleground
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
 
+            StartTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void StartTutorialEvent(int currentTutorialId)
+        {
+            switch (currentTutorialId)
+            {
+                // Basic
+                case 0:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBasic);
+                    break;
+
+                // Abilities
+                case 1:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialAbilities);
+                    break;
+
+                // Rank
+                case 2:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialRanks);
+                    break;
+
+                // Overflow
+                case 3:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialOverflow);
+                    break;
+
+                // Deck
+                case 4:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialDeck);
+                    break;
+
+                // battle
+                case 5:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBattle);
+                    break;
+            }
+        }
+
+        private void SetStartTutorialEvent(string eventName)
+        {
             TutorialDuration.StartTimer();
-            _analyticsManager.SetEvent(AnalyticsManager.EventStartedTutorial);
+            _analyticsManager.SetEvent(eventName);
         }
 
         private void PlayerSelectedEventHandler(Player player)
@@ -298,17 +339,58 @@ namespace Loom.ZombieBattleground
             BattleShouldBeWonBlocker = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
+            CompleteTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void CompleteTutorialEvent(int currentTutorialId)
+        {
+            switch (currentTutorialId)
+            {
+                // Basic
+                case 0:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialBasic);
+                    break;
+
+                // Abilities
+                case 1:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialAbilities);
+                    break;
+
+                // Rank
+                case 2:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialRanks);
+                    break;
+
+                // Overflow
+                case 3:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialOverflow);
+                    break;
+
+                // Deck
+                case 4:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialDeck);
+                    break;
+
+                // battle
+                case 5:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialBattle);
+                    break;
+            }
+        }
+
+        private void SetCompleteTutorialEvent(string eventName)
+        {
             TutorialDuration.FinishTimer();
             Dictionary<string, object> eventParameters = new Dictionary<string, object>();
             eventParameters.Add(AnalyticsManager.PropertyTutorialTimeToComplete, TutorialDuration.GetTimeDiffrence());
-            _analyticsManager.SetEvent(AnalyticsManager.EventCompletedTutorial, eventParameters);
+            _analyticsManager.SetEvent(eventName, eventParameters);
         }
 
         public SpecificTurnInfo GetCurrentTurnInfo()
         {
             if (!IsTutorial)
                 return null;
-                
+
             return CurrentTutorial.TutorialContent.ToGameplayContent().SpecificTurnInfos.Find(x => x.TurnIndex == _battlegroundController.CurrentTurn);
         }
 
@@ -405,22 +487,20 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            else
-            {
-                if (CurrentTutorialStep.ToMenuStep().ConnectedActivities != null)
-                {
-                    ActionActivityHandler handler;
-                    foreach (int id in CurrentTutorialStep.ToMenuStep().ConnectedActivities)
-                    {
-                        handler = CurrentTutorial.TutorialContent.ActionActivityHandlers.Find(x => x.Id == id && x.HasSpecificConnection);
 
-                        if (handler != null)
+            if (CurrentTutorialStep.ConnectedActivities != null)
+            {
+                ActionActivityHandler handler;
+                foreach (int id in CurrentTutorialStep.ConnectedActivities)
+                {
+                    handler = CurrentTutorial.TutorialContent.ActionActivityHandlers.Find(x => x.Id == id && x.HasSpecificConnection);
+
+                    if (handler != null)
+                    {
+                        if (handler.TutorialActivityAction == action)
                         {
-                            if (handler.TutorialActivityAction == action)
-                            {
-                                DoActionByActivity(handler);
-                                break;
-                            }
+                            DoActionByActivity(handler);
+                            break;
                         }
                     }
                 }
@@ -588,7 +668,12 @@ namespace Loom.ZombieBattleground
                     {
                         foreach (OverlordSayTooltipInfo tooltip in gameStep.OverlordSayTooltips)
                         {
-                            DrawOverlordSayPopup(tooltip.Description, tooltip.TutorialTooltipAlign, tooltip.TutorialTooltipOwner, tooltip.AppearDelay, true);
+                            DrawOverlordSayPopup(tooltip.Description,
+                                                tooltip.TutorialTooltipAlign,
+                                                tooltip.TutorialTooltipOwner,
+                                                tooltip.AppearDelay,
+                                                true,
+                                                tooltip.Duration);
                         }
                     }
 
@@ -972,11 +1057,16 @@ namespace Loom.ZombieBattleground
             _tutorialDescriptionTooltipItems.Clear();
         }
 
-        public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, float appearDelay, bool ofStep = false)
+        public void DrawOverlordSayPopup(string description,
+                                        Enumerators.TooltipAlign align,
+                                        Enumerators.TutorialObjectOwner owner,
+                                        float appearDelay,
+                                        bool ofStep = false,
+                                        float duration = Constants.OverlordTalkingPopupDuration)
         {
             Sequence sequence = InternalTools.DoActionDelayed(() =>
             {
-                _overlordsChatController.DrawOverlordSayPopup(description, align, owner);
+                _overlordsChatController.DrawOverlordSayPopup(description, align, owner, duration);
             }, appearDelay);
 
             if (ofStep)
@@ -1011,7 +1101,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialActivityActionHandler.OverlordSayTooltip:
                     {
                         OverlordSayTooltipInfo data = activity.TutorialActivityActionHandlerData as OverlordSayTooltipInfo;
-                        DrawOverlordSayPopup(data.Description, data.TutorialTooltipAlign, data.TutorialTooltipOwner, data.AppearDelay);
+                        DrawOverlordSayPopup(data.Description, data.TutorialTooltipAlign, data.TutorialTooltipOwner, data.AppearDelay, duration: data.Duration);
                     }
                     break;
                 case Enumerators.TutorialActivityActionHandler.DrawDescriptionTooltips:

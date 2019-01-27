@@ -81,27 +81,42 @@ namespace Loom.ZombieBattleground
             {
                 _dataLoading = true;
 
-                if (_backendDataControlMediator.LoadUserDataModel() &&
-                    _backendDataControlMediator.UserDataModel.IsValid)
+                try
                 {
-                    LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
-                    popup.Show();
-
-                    if (!_backendDataControlMediator.UserDataModel.IsRegistered)
+                    if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
                     {
-                        popup.SetLoginAsGuestState(_backendDataControlMediator.UserDataModel.GUID);
+                        _backendFacade.BackendEndpoint = await _backendFacade.GetServerURLs();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e.Message);
+                    _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
+                }
+                finally
+                {
+                    if (_backendDataControlMediator.LoadUserDataModel() &&
+                        _backendDataControlMediator.UserDataModel.IsValid)
+                    {
+                        LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                        popup.Show();
+
+                        if (!_backendDataControlMediator.UserDataModel.IsRegistered)
+                        {
+                            popup.SetLoginAsGuestState(_backendDataControlMediator.UserDataModel.GUID);
+                        }
+                        else
+                        {
+                            popup.SetLoginFieldsData(_backendDataControlMediator.UserDataModel.Email, _backendDataControlMediator.UserDataModel.Password);
+                            popup.SetLoginFromDataState();
+                        }
                     }
                     else
                     {
-                        popup.SetLoginFieldsData(_backendDataControlMediator.UserDataModel.Email, _backendDataControlMediator.UserDataModel.Password);
-                        popup.SetLoginFromDataState();
+                        LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                        popup.Show();
+                        popup.SetLoginAsGuestState();
                     }
-                }
-                else
-                {
-                    LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
-                    popup.Show();
-                    popup.SetLoginAsGuestState();
                 }
             }
         }

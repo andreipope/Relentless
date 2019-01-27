@@ -210,10 +210,20 @@ namespace Loom.ZombieBattleground
 
         public void HandleNetworkExceptionFlow(string exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                if (!_backendFacade.IsConnected && !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
+                {
+                    UpdateConnectionStatus();
+                }
+                return;
+            }
+
             _uiManager.HidePopup<WarningPopup>();
             _uiManager.GetPopup<MatchMakingPopup>().ForceCancelAndHide();
             _uiManager.HidePopup<CardInfoPopup>();
             _uiManager.HidePopup<ConnectionPopup>();
+            _uiManager.HidePopup<TutorialAvatarPopup>();
 
             if (!leaveCurrentAppState)
             {

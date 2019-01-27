@@ -96,11 +96,12 @@ namespace Loom.ZombieBattleground
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.Player:
-                    BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
                     AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
                     {
                         TargetPlayer
                     }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
+
+                    BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
 
                     target = TargetPlayer;
                     actionType = Enumerators.ActionType.CardAffectingOverlord;

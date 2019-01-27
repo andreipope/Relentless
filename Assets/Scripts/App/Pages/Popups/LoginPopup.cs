@@ -535,6 +535,8 @@ namespace Loom.ZombieBattleground
 
                 _OTPFieldOTP.text = "";
 
+                _loginButton.enabled = true;
+
                 if (isGuest)
                 {
                     CompleteLoginFromCurrentSetUserData();
@@ -691,6 +693,48 @@ namespace Loom.ZombieBattleground
             _OTPGroup.gameObject.SetActive(false);
             _backgroundDarkImage.enabled = true;
 
+            if (_backendFacade.BackendEndpoint.IsForceUpdate)
+            {
+                Action[] actions = new Action[2];
+                actions[0] = () =>
+                {
+#if UNITY_EDITOR
+                    Debug.LogWarning("Version Mismatched");
+#elif UNITY_ANDROID
+                    Application.OpenURL(Constants.GameLinkForAndroid);
+#elif UNITY_IOS
+                    Application.OpenURL(Constants.GameLinkForIOS);
+#elif UNITY_STANDALONE_OSX
+                    Application.OpenURL(Constants.GameLinkForOSX);
+#elif UNITY_STANDALONE_WIN
+                    Application.OpenURL(Constants.GameLinkForWindows);
+#else
+                    Debug.LogWarning("Version Mismatched");
+#endif
+                };
+                actions[1] = () =>
+                {
+                    Application.Quit();
+                };
+                _backgroundDarkImage.enabled = false;
+                _uiManager.DrawPopup<UpdatePopup>(actions);
+                return;
+            }
+
+            if (_backendFacade.BackendEndpoint.IsMaintenanceMode && _state != LoginState.ValidationFailed)
+            {
+                _lastPopupState = _state;
+                SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForMaintenanceMode);
+                return;
+            }
+
+            if (_backendFacade.BackendEndpoint.IsConnectionImpossible && _state != LoginState.ValidationFailed)
+            {
+                _lastPopupState = _state;
+                SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForConnectionImpossible);
+                return;
+            }
+
             switch (_state)
             {
                 case LoginState.InitiateLogin:
@@ -718,6 +762,7 @@ namespace Loom.ZombieBattleground
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                     string msgToShow = "The process could not be completed with error:" + _lastErrorMessage +
                                        "\nPlease try again.";
+
                     if (!string.IsNullOrEmpty(errorMsg))
                         msgToShow = errorMsg;
                     popup.Show(msgToShow);
@@ -754,9 +799,25 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void WarningPopupClosedOnAutomatedLogin()
+        private async void WarningPopupClosedOnAutomatedLogin()
         {
-            SetUIState(_lastPopupState);
+            _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupClosedOnAutomatedLogin;
+            try
+            {
+                if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
+                {
+                    _backendFacade.BackendEndpoint = await _backendFacade.GetServerURLs();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
+            }
+            finally
+            {
+                SetUIState(_lastPopupState);
+            }
         }
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)

@@ -14,7 +14,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://127.0.0.1:9999/queryws",
                         "ws://127.0.0.1:46657/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v3"
+                        "v3",
+                        false,
+                        false,
+                        false
                     )
                 },
                 {
@@ -24,7 +27,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain-2.dappchains.com:9999/queryws",
                         "ws://gamechain-2.dappchains.com:46657/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v3"
+                        "v3",
+                        false,
+                        false,
+                        false
                     )
                 },
                 {
@@ -34,7 +40,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
                         "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v3"
+                        "v3",
+                        false,
+                        false,
+                        false
                     )
                 },
                 {
@@ -44,7 +53,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain.dappchains.com:9999/queryws",
                         "ws://gamechain.dappchains.com:46657/websocket",
                         "https://vault.delegatecall.com/v1",
-                        "v3"
+                        "v3",
+                        false,
+                        false,
+                        true
                     )
                 },
                 {
@@ -54,7 +66,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://battleground-testnet-asia2.dappchains.com:9999/queryws",
                         "ws://battleground-testnet-asia2.dappchains.com:46657/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v4"
+                        "v4",
+                        false,
+                        false,
+                        false
                     )
                 }
             };
