@@ -39,19 +39,6 @@ namespace Loom.ZombieBattleground.Helpers
             }
         }
 
-        public static void ShuffleList<T>(this IList<T> list)
-        {
-            Random rnd = new Random();
-            int n = list.Count;
-            while (n > 1) {
-                n--;
-                int k = rnd.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
-        }
-
         public static void GroupHorizontalObjects(Transform root, float offset, float spacing, float offsetY, bool isReverse = false, float offsetZ = 0f)
         {
             int count = root.childCount;
@@ -82,16 +69,9 @@ namespace Loom.ZombieBattleground.Helpers
             }
         }
 
-        public static List<T> GetRandomElementsFromList<T>(IList<T> list, int count)
+        public static List<T> GetRandomElementsFromList<T>(IReadOnlyList<T> list, int count)
         {
-            List<T> shuffledList = new List<T>(count);
-            shuffledList.AddRange(list);
-
-            if (list.Count <= count)
-                return shuffledList;
-
-            ShuffleList(shuffledList);
-            return shuffledList.GetRange(0, count);
+            return list.GetRandomElementsFromList(count);
         }
 
         public static float DeviceDiagonalSizeInInches()

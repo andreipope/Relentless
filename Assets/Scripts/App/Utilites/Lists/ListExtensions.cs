@@ -12,8 +12,33 @@ namespace Loom.ZombieBattleground
 
             return new UniqueList<TSource>(new List<TSource>(source));
         }
-        
-        public static List<TItem> FindAll<TList, TItem>(this IList<TItem> list, Predicate<TItem> match)
+
+        public static void ShuffleList<T>(this IList<T> list)
+        {
+            Random rnd = new Random();
+            int n = list.Count;
+            while (n > 1) {
+                n--;
+                int k = rnd.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+        public static List<T> GetRandomElementsFromList<T>(this IReadOnlyList<T> list, int count)
+        {
+            List<T> shuffledList = new List<T>(count);
+            shuffledList.AddRange(list);
+
+            if (list.Count <= count)
+                return shuffledList;
+
+            ShuffleList(shuffledList);
+            return shuffledList.GetRange(0, count);
+        }
+
+        public static List<TItem> FindAll<TItem>(this IReadOnlyList<TItem> list, Predicate<TItem> match)
         {
             if (match == null)
                 throw new ArgumentNullException(nameof(match));

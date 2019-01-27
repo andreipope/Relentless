@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
     /// A list that can only contain unique items.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class UniqueList<T> : IList<T>
+    public class UniqueList<T> : IList<T>, IReadOnlyList<T>
     {
         private readonly IList<T> _list;
 
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
 
         public UniqueList<T> FindAll(Predicate<T> match)
         {
-            return new UniqueList<T>(this.FindAll<UniqueList<T>, T>(match));
+            return new UniqueList<T>(new List<T>(this.FindAll<T>(match)));
         }
 
         private void ThrowIfContains(T item)

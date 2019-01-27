@@ -23,11 +23,6 @@ namespace Loom.ZombieBattleground
             _list = new List<T>(collection);
         }
 
-        public PositionedList(IList<T> list)
-        {
-            _list = list ?? throw new ArgumentNullException(nameof(list));
-        }
-
         public bool IsReadOnly => _list.IsReadOnly;
 
         public int Count => _list.Count;
