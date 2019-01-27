@@ -45,6 +45,15 @@ namespace Loom.ZombieBattleground
             if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
                 return;
 
+            if (TutorialManager.IsTutorial)
+            {
+                if ((!unit.Model.OwnerPlayer.IsLocalPlayer &&
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT_CARD)) ||
+                    (unit.Model.OwnerPlayer.IsLocalPlayer &&
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER_CARD)))
+                    return;
+            }
+
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) &&
                 unit.GameObject.CompareTag(SRTags.PlayerOwned) ||
                 PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) &&
@@ -94,6 +103,15 @@ namespace Loom.ZombieBattleground
         {
             if (player.Defense <= 0)
                 return;
+
+            if (TutorialManager.IsTutorial)
+            {
+                if ((!player.IsLocalPlayer &&
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT)) ||
+                    (player.IsLocalPlayer &&
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER)))
+                    return;
+            }
 
             if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) &&
                 player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||

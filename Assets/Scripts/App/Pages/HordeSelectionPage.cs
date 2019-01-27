@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private IMatchManager _matchManager;
 
+        private ITutorialManager _tutorialManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -80,6 +82,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
         }
 
         public void Update()
@@ -148,8 +151,8 @@ namespace Loom.ZombieBattleground
             _secondSkill.GetComponent<MultiPointerClickHandler>().DoubleClickReceived += () =>
                 SkillButtonOnDoubleClickHandler(1);
 
-            _newHordeDeckButtonLeft.onClick.AddListener(NewHordeDeckButtonOnClickHandler);
-            _newHordeDeckButton.onClick.AddListener(NewHordeDeckButtonOnClickHandler);
+            _newHordeDeckButtonLeft.onClick.AddListener(() => NewHordeDeckButtonOnClickHandler(_newHordeDeckButtonLeft));
+            _newHordeDeckButton.onClick.AddListener(() => NewHordeDeckButtonOnClickHandler(_newHordeDeckButton));
 
             _battleButton.interactable = true;
 
@@ -239,6 +242,18 @@ namespace Loom.ZombieBattleground
 
                 Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
+            catch (TimeoutException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" Time out == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+            }
+            catch (Client.RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+            }
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
@@ -290,7 +305,7 @@ namespace Loom.ZombieBattleground
         private void BattleButtonUpdate()
         {
             bool canStartBattle = true;
-            if (!Constants.DevModeEnabled && !GameClient.Get<ITutorialManager>().IsTutorial)
+            if (!Constants.DevModeEnabled && !_tutorialManager.IsTutorial)
             {
                 canStartBattle = _hordeDecks.Count != 0 &&
                     _selectedDeck.Id != -1 &&
@@ -504,9 +519,10 @@ namespace Loom.ZombieBattleground
 
         private void CollectionButtonOnClickHandler()
         {
-            if(GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name))
+            if(_tutorialManager.IsButtonBlockedInTutorial(_buttonArmy.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, _buttonArmy.transform.position);
                 return;
             }
 
@@ -516,9 +532,10 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_backButton.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_backButton.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, _backButton.transform.position);
                 return;
             }
 
@@ -528,12 +545,14 @@ namespace Loom.ZombieBattleground
 
         private void BattleButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_battleButton.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_battleButton.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+            
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_selectedDeck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _selectedDeck;
@@ -542,9 +561,9 @@ namespace Loom.ZombieBattleground
 
         private void BattleButtonWarningOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_battleButtonWarning.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_battleButtonWarning.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
@@ -563,9 +582,10 @@ namespace Loom.ZombieBattleground
 
         private void LeftArrowButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_leftArrowButton.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_leftArrowButton.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, _leftArrowButton.transform.position);
                 return;
             }
 
@@ -576,9 +596,10 @@ namespace Loom.ZombieBattleground
 
         private void RightArrowButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_rightArrowButton.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_rightArrowButton.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, _rightArrowButton.transform.position);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
@@ -588,10 +609,13 @@ namespace Loom.ZombieBattleground
 
         private void SkillButtonOnSingleClickHandler(int skillIndex)
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_firstSkill.name) ||
-             GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_secondSkill.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_firstSkill.name) ||
+             _tutorialManager.IsButtonBlockedInTutorial(_secondSkill.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                Vector3 position = skillIndex == 0 ? _firstSkill.transform.position : _secondSkill.transform.position;
+
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, position);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
@@ -612,10 +636,14 @@ namespace Loom.ZombieBattleground
 
         private void SkillButtonOnDoubleClickHandler(int skillIndex)
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_firstSkill.name) ||
-                GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_secondSkill.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_firstSkill.name) ||
+                _tutorialManager.IsButtonBlockedInTutorial(_secondSkill.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                Vector3 position = skillIndex == 0 ? _firstSkill.transform.position : _secondSkill.transform.position;
+
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, position);
+
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
@@ -634,12 +662,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void NewHordeDeckButtonOnClickHandler()
+        private void NewHordeDeckButtonOnClickHandler(Button button)
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_newHordeDeckButton.name) ||
-                GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_newHordeDeckButtonLeft.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_newHordeDeckButton.name) ||
+                _tutorialManager.IsButtonBlockedInTutorial(_newHordeDeckButtonLeft.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, button.transform.position);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
@@ -652,9 +681,10 @@ namespace Loom.ZombieBattleground
 
         private void DeleteButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_deleteButton.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_deleteButton.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, _deleteButton.transform.position);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
@@ -677,9 +707,10 @@ namespace Loom.ZombieBattleground
 
         private void EditButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_editButton.name))
+            if (_tutorialManager.IsButtonBlockedInTutorial(_editButton.name))
             {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                _tutorialManager.ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner.IncorrectButton, _editButton.transform.position);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
 
