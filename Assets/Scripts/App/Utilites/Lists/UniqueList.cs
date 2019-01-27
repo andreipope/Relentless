@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -17,24 +18,18 @@ namespace Loom.ZombieBattleground
             _list = new List<T>();
         }
 
-        public UniqueList(int capacity)
-        {
-            _list = new List<T>(capacity);
-        }
-
-        public UniqueList(IEnumerable<T> collection)
-        {
-            _list = new List<T>();
-            foreach (T item in collection)
-            {
-                ThrowIfContains(item);
-                _list.Add(item);
-            }
-        }
-
         public UniqueList(IList<T> list)
         {
-            _list = list ?? throw new ArgumentNullException(nameof(list));
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
+
+            IEnumerable<IGrouping<T,T>> duplicates = list.GroupBy(x => x).Where(g => g.Count() > 1);
+            foreach (IGrouping<T,T> duplicate in duplicates)
+            {
+                throw new ArgumentException($"Source list contained duplicate value \"{duplicate.Key}\"", nameof(list));
+            }
+
+            _list = list;
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -117,54 +112,13 @@ namespace Loom.ZombieBattleground
 
         public UniqueList<T> FindAll(Predicate<T> match)
         {
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
-
-            UniqueList<T> objList = new UniqueList<T>();
-            for (int index = 0; index < _list.Count; ++index)
-            {
-                if (match(_list[index]))
-                    objList.Add(_list[index]);
-            }
-
-            return objList;
-        }
-
-        public int FindIndex(Predicate<T> match)
-        {
-            return FindIndex(0, _list.Count, match);
-        }
-
-        public int FindIndex(int startIndex, Predicate<T> match)
-        {
-            return FindIndex(startIndex, _list.Count - startIndex, match);
-        }
-
-        public int FindIndex(int startIndex, int count, Predicate<T> match)
-        {
-            if ((uint) startIndex > (uint) _list.Count)
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
-
-            if (count < 0 || startIndex > _list.Count - count)
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            if (match == null)
-                throw new ArgumentNullException(nameof(match));
-
-            int num = startIndex + count;
-            for (int index = startIndex; index < num; ++index)
-            {
-                if (match(_list[index]))
-                    return index;
-            }
-
-            return -1;
+            return new UniqueList<T>(this.FindAll<UniqueList<T>, T>(match));
         }
 
         private void ThrowIfContains(T item)
         {
             if (_list.Contains(item))
-                throw new ArgumentException($"Item '{item}' is already in the list");
+                throw new ArgumentException($"Item \"{item}\" is already in the list");
         }
 
         private static bool Equal(T item1, T item2)

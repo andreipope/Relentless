@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
         public int CurrentTurn;
 
-        public UniqueList<BoardUnitView> OpponentBoardCards = new UniqueList<BoardUnitView>();
+        public UniqueList<BoardUnitView> OpponentBoardCards;
 
         public UniqueList<BoardUnitView> OpponentGraveyardCards = new UniqueList<BoardUnitView>();
 
@@ -105,6 +105,11 @@ namespace Loom.ZombieBattleground
         public event Action TurnEnded;
 
         public float TurnTimer { get; private set; }
+
+        public BattlegroundController()
+        {
+            OpponentBoardCards = new UniqueList<BoardUnitView>(new List<BoardUnitView>());
+        }
 
         public void Init()
         {
@@ -877,12 +882,9 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)
         {
-            BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.First(x => x.GameObject == unitObject);
-
-            if (unit == null)
-            {
-                unit = _gameplayManager.OpponentPlayer.BoardCards.First(x => x.GameObject == unitObject);
-            }
+            BoardUnitView unit =
+                _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.GameObject == unitObject) ??
+                _gameplayManager.OpponentPlayer.BoardCards.First(x => x.GameObject == unitObject);
 
             return unit;
         }

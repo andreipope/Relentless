@@ -938,14 +938,7 @@ namespace Loom.ZombieBattleground
         {
             completeCallback?.Invoke();
 
-            WorkingCard workingCard = null;
-
-            if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
-            {
-                workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
-            }
-
-            if (workingCard == null || card == null)
+            if ( card == null)
                 return;
 
             GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
@@ -964,7 +957,7 @@ namespace Loom.ZombieBattleground
                         boardUnitViewElement.Model.OwnerPlayer = card.Owner;
                         boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
-                        boardUnitViewElement.SetObjectInfo(workingCard);
+                        boardUnitViewElement.SetObjectInfo(card);
                         _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
 
                         boardUnit.transform.position +=
@@ -999,7 +992,7 @@ namespace Loom.ZombieBattleground
                                 {
                                     Action callback = () =>
                                     {
-                                        _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
+                                        _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
                                         null, false, (status) =>
                                         {
                                             if (!status)
@@ -1017,7 +1010,7 @@ namespace Loom.ZombieBattleground
                                 }
                                 else
                                 {
-                                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard,
+                                    _abilitiesController.CallAbility(card.LibraryCard, null, card,
                                         Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, callAbilityAction);
 
                                     _actionsQueueController.ForceContinueAction(callAbilityAction);
@@ -1034,10 +1027,10 @@ namespace Loom.ZombieBattleground
 
                         CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                        CurrentSpellCard.Init(workingCard);
+                        CurrentSpellCard.Init(card);
                         CurrentSpellCard.SetHighlightingEnabled(false);
 
-                        BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
+                        BoardSpell boardSpell = new BoardSpell(spellCard, card);
 
                         spellCard.gameObject.SetActive(false);
 
@@ -1060,7 +1053,7 @@ namespace Loom.ZombieBattleground
                         {
                             Action callback = () =>
                             {
-                                _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction, target);
+                                _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction, target);
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                             };
 
@@ -1068,7 +1061,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction);
+                            _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction);
 
                             _actionsQueueController.ForceContinueAction(callAbilityAction);
                             ranksBuffAction.ForceActionDone();

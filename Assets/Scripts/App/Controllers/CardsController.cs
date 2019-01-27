@@ -773,11 +773,10 @@ namespace Loom.ZombieBattleground
             )
         {
             OpponentHandCard opponentHandCard;
-            if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP || _gameplayManager.IsTutorial)
             {
                 opponentHandCard =
-                    _battlegroundController.OpponentHandCards
-                        .First(x => x.WorkingCard.InstanceId == cardId);
+                    _battlegroundController.OpponentHandCards.First(x => x.WorkingCard.InstanceId == cardId);
             }
             else
             {
