@@ -81,39 +81,46 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [requestPacks]");          
-
-            _isEventTriggered = false;
-            _eventResponse = "";  
-            try
+            Debug.Log( $"Calling smart contract [requestPacks]");                     
+            
+            int count = 0;
+            while (true)
             {
-                
-                await contract.CallAsync
-                (
-                    "requestPacks",
-                    contractParams.UserId,
-                    contractParams.r,
-                    contractParams.s,
-                    contractParams.v,
-                    contractParams.hash,
-                    contractParams.amount,
-                    contractParams.TxID
-                );
-                Debug.Log($"Smart contract method [requestPacks] finished executing.");
-                for( int i=0; i<10; ++i)
+                _isEventTriggered = false;
+                _eventResponse = ""; 
+                try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                    Debug.Log($"<color=green>Wait {i + 1} sec</color>");
-                    if( _isEventTriggered )
+
+                    await contract.CallAsync
+                    (
+                        "requestPacks",
+                        contractParams.UserId,
+                        contractParams.r,
+                        contractParams.s,
+                        contractParams.v,
+                        contractParams.hash,
+                        contractParams.amount,
+                        contractParams.TxID
+                    );
+                    Debug.Log($"Smart contract method [requestPacks] finished executing.");
+                    for (int i = 0; i < 10; ++i)
                     {
-                        return _eventResponse;
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        Debug.Log($"<color=green>Wait {i + 1} sec</color>");
+                        if (_isEventTriggered)
+                        {
+                            return _eventResponse;
+                        }
                     }
+                    Debug.Log($"Wait for [requestPacks] response too long");
                 }
-                Debug.Log($"Wait for [requestPacks] response too long");
-            }
-            catch
-            {
-                Debug.Log($"smart contract [requestPacks] error or reverted");                
+                catch
+                {
+                    Debug.Log($"smart contract [requestPacks] error or reverted");
+                    await Task.Delay(TimeSpan.FromSeconds(1)); 
+                }
+                ++count;
+                Debug.Log($"Retry requestPacks: {count}");
             }
             return "";
         }

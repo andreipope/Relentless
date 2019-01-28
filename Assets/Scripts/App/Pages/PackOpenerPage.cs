@@ -330,7 +330,7 @@ namespace Loom.ZombieBattleground
         }
         private async Task RetriveCardsFromPack()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>();            
+            _uiManager.DrawPopup<LoadingFiatPopup>();
             List<Card> cards = await _openPackPlasmaManager.CallOpenPack();
             _cardsToDisplayQueqe = cards;
             _uiManager.HidePopup<LoadingFiatPopup>(); 

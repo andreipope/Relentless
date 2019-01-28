@@ -384,6 +384,7 @@ namespace Loom.ZombieBattleground
 
         private void BuyButtonHandler( int id )
         {
+            _uiManager.DrawPopup<LoadingFiatPopup>("Activating purchase . . .");
             _currentPackId = id;
             
             GameClient.Get<ISoundManager>()
@@ -395,7 +396,7 @@ namespace Loom.ZombieBattleground
             }
 
             string productID = _productID[id];
-            _inAppPurchaseManager.BuyProductID( productID );            
+            _inAppPurchaseManager.BuyProductID( productID );           
         }
         
         private void PackMoveAnimation()
@@ -448,7 +449,6 @@ namespace Loom.ZombieBattleground
         private async void RequestFiatTransaction()
         {
             _uiManager.DrawPopup<LoadingFiatPopup>("Request Fiat Transaction");
-            Debug.Log("Call FiatTransaction request");
             List<FiatBackendManager.FiatTransactionResponse> recordList = await _fiatBackendManager.CallFiatTransaction();
             recordList.Sort( (FiatBackendManager.FiatTransactionResponse resA, FiatBackendManager.FiatTransactionResponse resB)=>
             {
@@ -511,6 +511,7 @@ namespace Loom.ZombieBattleground
 #if UNITY_IOS || UNITY_ANDROID
         private void OnProcessPurchase(PurchaseEventArgs args)
         {
+            _uiManager.HidePopup<LoadingFiatPopup>();
             Product product = args.purchasedProduct;
 
             Debug.Log("OnProcessPurchase");

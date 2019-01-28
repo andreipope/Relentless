@@ -78,21 +78,36 @@ namespace Loom.ZombieBattleground
                 _abiBoosterPack.ToString(),
                 PlasmaChainEndpointsContainer.ContractAddressBoosterPack
             );
-        
-            int amount = await CallBalanceContract(boosterPackContract);
+
+            int amount;
+            int count = 0;
+            while (true)
+            {
+                try
+                {
+                    amount = await CallBalanceContract(boosterPackContract);
+                    break;
+                }
+                catch
+                {
+                    Debug.Log($"smart contract [balanceOf] error or reverted");
+                    await Task.Delay(TimeSpan.FromSeconds(1)); 
+                }
+                ++count;
+                Debug.Log($"Retry CallPackBalance: {count}");
+            }
             return amount;            
         }
 
         public async Task<List<Card>> CallOpenPack()
         {
-            CardsReceived.Clear();
-            
+            List<Card> resultList;
             EvmContract cardFaucetContract = await GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiCardFaucet.ToString(),
                 PlasmaChainEndpointsContainer.ContractAddressCardFaucet
-            );            
+            );
             EvmContract boosterPackContract = await GetContract(
                 PrivateKey,
                 PublicKey,
@@ -105,26 +120,44 @@ namespace Loom.ZombieBattleground
                 cardFaucetContract.EventReceived += ContractEventReceived;
                 _eventInitialized = true;
             }
-            
+
             int expectCardReceiveAmount = _cardsPerPack;
 
-            await CallBalanceContract(boosterPackContract);
-            await CallApproveContract(boosterPackContract);
-            await CallOpenPackContract(cardFaucetContract, _boosterPackIndex);
-            await CallBalanceContract(boosterPackContract);            
-
-            double timeOut = 9.99;
-            double interval = 1.0;
-            while( timeOut > 0.0 && CardsReceived.Count < expectCardReceiveAmount )
-            {                
-                await Task.Delay(TimeSpan.FromSeconds(interval));
-                timeOut -= interval;
-            }
-
-            List<Card> resultList = new List<Card>();
-            foreach(Card card in CardsReceived)
+            int count = 0;
+            while (true)
             {
-                resultList.Add(card);
+                resultList = new List<Card>();
+                CardsReceived.Clear();
+
+                try
+                {
+                    await CallBalanceContract(boosterPackContract);
+                    await CallApproveContract(boosterPackContract);
+                    await CallOpenPackContract(cardFaucetContract, _boosterPackIndex);
+                    await CallBalanceContract(boosterPackContract);
+
+                    double timeOut = 29.99;
+                    double interval = 1.0;
+                    while (timeOut > 0.0 && CardsReceived.Count < expectCardReceiveAmount)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(interval));
+                        timeOut -= interval;
+                    }
+
+
+                    foreach (Card card in CardsReceived)
+                    {
+                        resultList.Add(card);
+                    }
+                    break;
+                }
+                catch
+                {
+                    Debug.Log($"smart contract [openBoosterPack] error or reverted");
+                    await Task.Delay(TimeSpan.FromSeconds(1)); 
+                }
+                ++count;
+                Debug.Log($"Retry CallOpenPack: {count}");
             }
             return resultList;                                   
         }
