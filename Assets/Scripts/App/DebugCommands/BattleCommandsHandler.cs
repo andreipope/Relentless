@@ -416,10 +416,10 @@ static class BattleCommandsHandler
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
 
         player.RemoveCardFromGraveyard(unit.Model.Card);
-        player.AddCardToBoard(workingCard, 0);
-        player.BoardCards.Add(newUnit);
+        player.AddCardToBoard(workingCard, ItemPosition.End);
+        player.BoardCards.Insert(ItemPosition.End, newUnit);
+        _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, newUnit);
 
-        _battlegroundController.PlayerBoardCards.Add(newUnit);
         _boardController.UpdateBoard(player.BoardCards, true, null);
     }
 

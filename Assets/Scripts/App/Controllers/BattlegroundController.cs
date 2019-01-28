@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
             }
 
             PlayerBoardCards.Remove(boardCard);
-            PlayerGraveyardCards.InsertToEnd(boardCard);
+            PlayerGraveyardCards.Insert(ItemPosition.End, boardCard);
 
             boardCard.SetHighlightingEnabled(false);
             boardCard.StopSleepingParticles();
@@ -903,7 +903,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit, bool revertPositioning = false)
+        public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit)
         {
             BoardUnitView view = GetBoardUnitViewByModel(unit);
 
@@ -911,27 +911,12 @@ namespace Loom.ZombieBattleground
             {
                 PlayerBoardCards.Remove(view);
 
-                if (revertPositioning)
-                {
-                    OpponentBoardCards.Insert(0, view);
-                }
-                else
-                {
-                    OpponentBoardCards.Add(view);
-                }
+                OpponentBoardCards.Insert(ItemPosition.End, view);
             }
             else
             {
                 OpponentBoardCards.Remove(view);
-
-                if (revertPositioning)
-                {
-                    PlayerBoardCards.Insert(0, view);
-                }
-                else
-                {
-                    PlayerBoardCards.Add(view);
-                }
+                PlayerBoardCards.Insert(ItemPosition.End, view);
             }
 
             unit.OwnerPlayer.BoardCards.Remove(view);
@@ -940,16 +925,8 @@ namespace Loom.ZombieBattleground
             unit.OwnerPlayer = newPlayerOwner;
             unit.Card.Owner = newPlayerOwner;
 
-            if (revertPositioning)
-            {
-                newPlayerOwner.CardsOnBoard.Insert(0, unit.Card);
-                newPlayerOwner.BoardCards.Insert(0, view);
-            }
-            else
-            {
-                newPlayerOwner.CardsOnBoard.Add(unit.Card);
-                newPlayerOwner.BoardCards.Add(view);
-            }
+            newPlayerOwner.CardsOnBoard.Insert(ItemPosition.End, unit.Card);
+            newPlayerOwner.BoardCards.Insert(ItemPosition.End, view);
 
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
 
@@ -1149,7 +1126,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
         {
-            UniqueList<BoardUnitView> boardCards = targetUnit.OwnerPlayer.BoardCards;
+            UniquePositionedList<BoardUnitView> boardCards = targetUnit.OwnerPlayer.BoardCards;
 
             int targetView = boardCards.IndexOf(GetBoardUnitViewByModel(targetUnit));
 
@@ -1257,22 +1234,22 @@ namespace Loom.ZombieBattleground
 
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in playerCards)
             {
-                workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name);
+                workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name, 0);
                 workingUnitView.Model.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
                 workingUnitView.Model.CurrentHp += cardInfo.BuffedHealth;
                 workingUnitView.Model.BuffedHp += cardInfo.BuffedHealth;
                 workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
                 workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
-                PlayerBoardCards.Add(workingUnitView);
+                PlayerBoardCards.Insert(ItemPosition.End, workingUnitView);
             }
 
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
             {
-                workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name);
+                workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name, 0);
                 workingUnitView.Model.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
-                OpponentBoardCards.Add(workingUnitView);
+                OpponentBoardCards.Insert(ItemPosition.End, workingUnitView);
             }
         }
 

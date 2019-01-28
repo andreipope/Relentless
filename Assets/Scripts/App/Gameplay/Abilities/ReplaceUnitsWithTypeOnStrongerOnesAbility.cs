@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
-                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, position: unitInfo.Position);
+                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, new ItemPosition(unitInfo.Position));
             }
         }
 

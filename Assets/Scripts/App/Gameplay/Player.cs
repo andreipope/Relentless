@@ -420,7 +420,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                CardsInDeck.InsertToEnd(card);
+                CardsInDeck.Insert(ItemPosition.End, card);
             }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
@@ -440,7 +440,7 @@ namespace Loom.ZombieBattleground
         public IView AddCardToHand(WorkingCard card, bool silent = false)
         {
             IView cardView;
-            CardsInHand.InsertToEnd(card);
+            CardsInHand.Insert(ItemPosition.End, card);
 
             if (IsLocalPlayer)
             {
@@ -463,7 +463,7 @@ namespace Loom.ZombieBattleground
         {
             card.Owner = this;
 
-            CardsInHand.InsertToEnd(card);
+            CardsInHand.Insert(ItemPosition.End, card);
 
             if (IsLocalPlayer)
             {
@@ -499,7 +499,7 @@ namespace Loom.ZombieBattleground
             HandChanged?.Invoke(CardsInHand.Count);
         }
 
-        public void AddCardToBoard(WorkingCard card, int position)
+        public void AddCardToBoard(WorkingCard card, ItemPosition position)
         {
             if (CardsOnBoard.Contains(card))
             {
@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
             if (CardsInGraveyard.Contains(card))
                 return;
 
-            CardsInGraveyard.InsertToEnd(card);
+            CardsInGraveyard.Insert(ItemPosition.End, card);
 
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
@@ -567,11 +567,11 @@ namespace Loom.ZombieBattleground
                         _cardsController.SetNewCardInstanceId(0);
                     }
 
-                    CardsInDeck.InsertRangeToEnd(cards);
+                    CardsInDeck.InsertRange(ItemPosition.End, cards);
 
                     break;
                 case Enumerators.MatchType.PVP:
-                    CardsInDeck.InsertRangeToEnd(cards);
+                    CardsInDeck.InsertRange(ItemPosition.End, cards);
 
                     break;
                 default:

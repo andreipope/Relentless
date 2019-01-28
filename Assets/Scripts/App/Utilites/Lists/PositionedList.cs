@@ -63,9 +63,19 @@ namespace Loom.ZombieBattleground
             _list.Insert(index, item);
         }
 
+        public void Insert(ItemPosition position, T item)
+        {
+            Insert(position.GetIndex(this), item);
+        }
+
         public void RemoveAt(int index)
         {
             _list.RemoveAt(index);
+        }
+
+        public void RemoveAt(ItemPosition position)
+        {
+            RemoveAt(position.GetIndex(this));
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -78,19 +88,14 @@ namespace Loom.ZombieBattleground
             return ((IEnumerable) _list).GetEnumerator();
         }
 
-        public void InsertToEnd(T item)
-        {
-            _list.Add(item);
-        }
-
         public void InsertRange(int index, IEnumerable<T> collection)
         {
             _list.InsertRange(index, collection);
         }
 
-        public void InsertRangeToEnd(IEnumerable<T> collection)
+        public void InsertRange(ItemPosition position, IEnumerable<T> collection)
         {
-            _list.InsertRange(_list.Count, collection);
+            InsertRange(position.GetIndex(this), collection);
         }
     }
 }

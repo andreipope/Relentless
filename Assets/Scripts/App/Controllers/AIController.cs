@@ -898,7 +898,7 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                         _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
-                        _gameplayManager.OpponentPlayer.AddCardToBoard(card, 0);
+                        _gameplayManager.OpponentPlayer.AddCardToBoard(card, ItemPosition.End);
 
                         _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, null, (x, y) =>
                         {
@@ -912,7 +912,7 @@ namespace Loom.ZombieBattleground
                             if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
                                 _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
-                                _gameplayManager.OpponentPlayer.AddCardToBoard(card, 0);
+                                _gameplayManager.OpponentPlayer.AddCardToBoard(card, ItemPosition.End);
 
                                 _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, null, (x, y) =>
                                 {
@@ -958,8 +958,8 @@ namespace Loom.ZombieBattleground
                         boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
                         boardUnitViewElement.SetObjectInfo(card);
-                        _battlegroundController.OpponentBoardCards.InsertToEnd(boardUnitViewElement);
-                        _gameplayManager.OpponentPlayer.BoardCards.InsertToEnd(boardUnitViewElement);
+                        _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {

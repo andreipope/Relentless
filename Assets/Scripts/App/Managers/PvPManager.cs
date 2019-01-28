@@ -250,7 +250,7 @@ namespace Loom.ZombieBattleground
         private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand) 
         {
             player.CardsInHand.Clear();
-            player.CardsInHand.InsertRangeToEnd(cardsInHand.Select(card => card.FromProtobuf(player)));
+            player.CardsInHand.InsertRange(ItemPosition.Start, cardsInHand.Select(card => card.FromProtobuf(player)));
 
             player.ThrowOnHandChanged();
         }
@@ -258,7 +258,7 @@ namespace Loom.ZombieBattleground
         private void UpdateCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
         {
             player.CardsInDeck.Clear();
-            player.CardsInDeck.InsertRangeToEnd(cardsInDeck.Select(card => card.FromProtobuf(player)));
+            player.CardsInDeck.InsertRange(ItemPosition.Start, cardsInDeck.Select(card => card.FromProtobuf(player)));
 
             Debug.Log("Updating player cards");
             Debug.Log(player.CardsInDeck.Count);
@@ -322,7 +322,7 @@ namespace Loom.ZombieBattleground
                                 state.Id == _backendDataControlMediator.UserDataModel.UserId);
                                                                                                             
                                 for (int i = 0; i < 3; i++) {
-                                    playerState.CardsInDeck.Insert(0, playerState.CardsInHand[i]);
+                                    playerState.CardsInDeck.Add(playerState.CardsInHand[i]);
                                 }
 
                                 UpdateCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);

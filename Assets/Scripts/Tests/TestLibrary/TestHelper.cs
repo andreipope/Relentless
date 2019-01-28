@@ -1205,7 +1205,7 @@ namespace Loom.ZombieBattleground.Test
 
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
-                    await PlayCardFromHandToBoard(card, 0);
+                    await PlayCardFromHandToBoard(card, ItemPosition.End);
                     wasAction = true;
                     await LetsThink();
                     await LetsThink();
@@ -1216,7 +1216,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (CardCanBePlayable(card) && CheckSpecialCardRules(card))
                 {
-                    await PlayCardFromHandToBoard(card, 0);
+                    await PlayCardFromHandToBoard(card, ItemPosition.End);
                     wasAction = true;
                     await LetsThink();
                     await LetsThink();
@@ -1484,14 +1484,14 @@ namespace Loom.ZombieBattleground.Test
                         break;
                     if (CardCanBePlayable(card))
                     {
-                        await PlayCardFromHandToBoard(card, 0);
+                        await PlayCardFromHandToBoard(card, ItemPosition.End);
                         wasAction = true;
                         await LetsThink();
                         await LetsThink();
                     }
                 }
 
-                await PlayCardFromHandToBoard(expensiveCard, 0);
+                await PlayCardFromHandToBoard(expensiveCard, ItemPosition.End);
 
                 await LetsThink();
                 await LetsThink();
@@ -1570,7 +1570,7 @@ namespace Loom.ZombieBattleground.Test
 
                 BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
-                await PlayCardFromHandToBoard(boardCard.WorkingCard, 0);
+                await PlayCardFromHandToBoard(boardCard.WorkingCard, ItemPosition.End);
 
                 await LetsThink();
                 await LetsThink();
@@ -1579,7 +1579,7 @@ namespace Loom.ZombieBattleground.Test
             await new WaitForUpdate();
         }
 
-        public async Task PlayCardFromHandToBoard(WorkingCard card, int position, bool autoGetAbilityTarget = true, BoardObject manualAbilityTarget = null)
+        public async Task PlayCardFromHandToBoard(WorkingCard card, ItemPosition position, bool autoGetAbilityTarget = true, BoardObject manualAbilityTarget = null)
         {
             BoardObject target = null;
             bool needTargetForAbility = false;
@@ -1758,16 +1758,12 @@ namespace Loom.ZombieBattleground.Test
                     BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
                     GameObject boardUnit = boardUnitViewElement.GameObject;
                     boardUnit.tag = SRTags.OpponentOwned;
-                    boardUnit.transform.position = Vector3.zero;
+                    boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                     boardUnitViewElement.Model.OwnerPlayer = card.Owner;
                     boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
                     boardUnitViewElement.SetObjectInfo(workingCard);
-                    _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-
-                    boardUnit.transform.position +=
-                        Vector3.up * 2f; // Start pos before moving cards to the opponents board
-
-                    _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
+                    _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
+                    _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
                     _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {

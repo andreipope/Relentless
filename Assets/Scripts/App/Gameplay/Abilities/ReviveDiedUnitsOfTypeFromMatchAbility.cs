@@ -59,8 +59,8 @@ namespace Loom.ZombieBattleground
             BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
-            playerOwner.AddCardToBoard(card, 0);
-            playerOwner.BoardCards.Insert(0, unit);
+            playerOwner.AddCardToBoard(card, ItemPosition.End);
+            playerOwner.BoardCards.Insert(ItemPosition.End, unit);
 
             BoardController.UpdateCurrentBoardOfPlayer(playerOwner, null);
         }

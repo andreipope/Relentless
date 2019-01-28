@@ -521,6 +521,7 @@ namespace Loom.ZombieBattleground
                                                InternalTools.DoActionDelayed(() =>
                                                {
                                                    _cardsController.RemoveCard(new object[] { card });
+                                                   workingCard.Owner.RemoveCardFromBoard(workingCard);
                                                }, 0.5f);
 
                                                InternalTools.DoActionDelayed(() =>
@@ -551,11 +552,11 @@ namespace Loom.ZombieBattleground
                                            handCard.ResetToHandAnimation();
                                            handCard.CheckStatusOfHighlight();
 
-                                           workingCard.Owner.CardsInHand.Add(card.WorkingCard);
+                                           workingCard.Owner.CardsInHand.Insert(ItemPosition.End, card.WorkingCard);
+                                           _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
                                            workingCard.Owner.CardsOnBoard.Remove(card.WorkingCard);
                                            workingCard.Owner.BoardCards.Remove(workingCard.Owner.BoardCards.First(boardCard =>
                                                boardCard.Model.Card.InstanceId == card.WorkingCard.InstanceId));
-                                           _battlegroundController.PlayerHandCards.Add(card);
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                                            _playerController.IsCardSelected = false;

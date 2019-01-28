@@ -1221,20 +1221,28 @@ namespace Loom.ZombieBattleground
 
             foreach (WorkingCard card in cards)
             {
-                unit = _cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name, onComplete: () =>
-                {
-                    _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ResurrectVFX"), unit, delay: 6, isIgnoreCastVfx: true);
-                    InternalTools.DoActionDelayed(() =>
+                unit = _cardsController.SpawnUnitOnBoard(
+                    owner,
+                    card.LibraryCard.Name,
+                    ItemPosition.End,
+                    onComplete: () =>
                     {
-                        unit.ChangeModelVisibility(true);
-                    }, 3f);
+                        _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ResurrectVFX"),
+                            unit,
+                            delay: 6,
+                            isIgnoreCastVfx: true);
+                        InternalTools.DoActionDelayed(() =>
+                            {
+                                unit.ChangeModelVisibility(true);
+                            },
+                            3f);
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                        Target = unit,
+                        TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
+                            Target = unit,
+                        });
                     });
-                });
                 unit.ChangeModelVisibility(false);
                 owner.RemoveCardFromGraveyard(card);
             }
@@ -1321,10 +1329,14 @@ namespace Loom.ZombieBattleground
 
             foreach (WorkingCard card in cards)
             {
-                units.Add(_cardsController.SpawnUnitOnBoard(owner, card.LibraryCard.Name, onComplete: () =>
-                {
-                    ReanimateUnit(units);
-                }));
+                units.Add(_cardsController.SpawnUnitOnBoard(
+                    owner,
+                    card.LibraryCard.Name,
+                    ItemPosition.End,
+                    onComplete: () =>
+                    {
+                        ReanimateUnit(units);
+                    }));
                 units[units.Count - 1].ChangeModelVisibility(false);
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -1913,7 +1925,7 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            IList<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH);
+            IReadOnlyList<BoardUnitView> units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH);
 
             Vector3 position;
             foreach (BoardUnitView unit in units)
