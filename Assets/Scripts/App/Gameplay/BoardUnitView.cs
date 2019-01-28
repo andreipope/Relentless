@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform => GameObject?.transform;
 
-        public GameObject GameObject { get; set; }
+        public GameObject GameObject { get; private set; }
 
         public bool WasDestroyed { get; set; }
 
@@ -168,6 +168,13 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
             CheckOnDie();
+        }
+
+        public void ForceSetGameObject(GameObject overrideObject)
+        {
+            Debug.LogWarning("GameObject of BoardUnitView was overrided. from: " + GameObject + " on: " + overrideObject);
+
+            GameObject = overrideObject;
         }
 
         public void SetObjectInfo(WorkingCard card)
@@ -806,16 +813,6 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow.Dispose();
                     _fightTargetingArrow = null;
                 }
-            }
-        }
-
-        private void CheckIsCanDie(object[] param)
-        {
-            if (_arrivalDone)
-            {
-                _timerManager.StopTimer(CheckIsCanDie);
-
-                Model.RemoveUnitFromBoard();
             }
         }
 
