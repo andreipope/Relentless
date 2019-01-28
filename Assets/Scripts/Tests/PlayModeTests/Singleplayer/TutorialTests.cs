@@ -1,6 +1,7 @@
 using System.Collections;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Loom.ZombieBattleground.Common;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
@@ -18,13 +19,13 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
 
                 #region Tutorial Non-Skip
 
                 await TestHelper.MainMenuTransition("Button_Tutorial");
 
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
 
                 await PlayTutorial_Part1();
 
@@ -34,7 +35,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Button_Continue");
 
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
                 #endregion
             });
@@ -51,13 +52,13 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertIfWentDirectlyToTutorial(
                     TestHelper.GoBackToMainAndPressPlay);
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
 
                 #region Tutorial Skip
 
                 await TestHelper.MainMenuTransition("Button_Tutorial");
 
-                await TestHelper.AssertCurrentPageName("GameplayPage");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.GAMEPLAY);
 
                 await SkipTutorial(false);
 

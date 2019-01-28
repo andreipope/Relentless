@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         public bool CanAttackByDefault;
 
-        public List<BoardObject> AttackedBoardObjectsThisTurn;
+        public UniqueList<BoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.ANY;
 
@@ -43,10 +43,6 @@ namespace Loom.ZombieBattleground
         private readonly ActionsQueueController _actionsQueueController;
 
         private readonly AbilitiesController _abilitiesController;
-
-        private int _currentDamage;
-
-        private int _currentHealth;
 
         private int _stunTurns;
 
@@ -69,7 +65,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
-            AttackedBoardObjectsThisTurn = new List<BoardObject>();
+            AttackedBoardObjectsThisTurn = new UniqueList<BoardObject>();
 
             IsCreatedThisTurn = true;
 
@@ -140,10 +136,10 @@ namespace Loom.ZombieBattleground
 
         public int CurrentDamage
         {
-            get => _currentDamage;
+            get => Card.InstanceCard.Damage;
             set
             {
-                _currentDamage = Mathf.Clamp(value, 0, 99999);
+                Card.InstanceCard.Damage = Mathf.Max(value, 0);
                 UnitDamageChanged?.Invoke();
             }
         }
@@ -154,10 +150,10 @@ namespace Loom.ZombieBattleground
 
         public int CurrentHp
         {
-            get => _currentHealth;
+            get => Card.InstanceCard.Health;
             set
             {
-                _currentHealth = Mathf.Clamp(value, 0, 99);
+                Card.InstanceCard.Health = Mathf.Clamp(value, 0, 99);
                 UnitHpChanged?.Invoke();
             }
         }
@@ -818,7 +814,7 @@ namespace Loom.ZombieBattleground
             KilledUnit?.Invoke(boardUnit);
         }
 
-        public List<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
+        public UniquePositionedList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
         {
             if (_gameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model).Contains(unit))
             {

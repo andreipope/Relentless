@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -109,7 +110,7 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = player.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
+        WorkingCard workingCard = player.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
         if (workingCard != null)
         {
             _cardsController.AddCardToHand(player, workingCard);
@@ -326,11 +327,11 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = opponentPlayer.CardsInDeck.Find(x => x.LibraryCard.Name == cardName);
+        WorkingCard workingCard = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
         if (workingCard != null)
         {
             _cardsController.AddCardToHand(opponentPlayer, workingCard);
-            workingCard = opponentPlayer.CardsInHand.Find(x => x.LibraryCard.Name == cardName);
+            workingCard = opponentPlayer.CardsInHand.FirstOrDefault(x => x.LibraryCard.Name == cardName);
             _aiController.PlayCardOnBoard(workingCard, true);
         }
         else
@@ -415,10 +416,10 @@ static class BattleCommandsHandler
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
 
         player.RemoveCardFromGraveyard(unit.Model.Card);
-        player.AddCardToBoard(workingCard);
-        player.BoardCards.Add(newUnit);
+        player.AddCardToBoard(workingCard, ItemPosition.End);
+        player.BoardCards.Insert(ItemPosition.End, newUnit);
+        _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, newUnit);
 
-        _battlegroundController.PlayerBoardCards.Add(newUnit);
         _boardController.UpdateBoard(player.BoardCards, true, null);
     }
 
@@ -633,7 +634,7 @@ static class BattleCommandsHandler
         BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Target;
         WorkingCard workingCard = targetUnit.Card;
 
-        BoardCard card = _battlegroundController.PlayerHandCards.Find(x => x.WorkingCard == workingCard);
+        BoardCard card = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard == workingCard);
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);

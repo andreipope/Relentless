@@ -1,14 +1,8 @@
-using System.Collections.Generic;
-
 namespace Loom.ZombieBattleground
 {
     public class PlayerManager : IService, IPlayerManager
     {
         public User LocalUser { get; set; }
-
-        public List<BoardUnitView> PlayerGraveyardCards { get; set; }
-
-        public List<BoardUnitView> OpponentGraveyardCards { get; set; }
 
         public void ChangeGoo(int value)
         {
