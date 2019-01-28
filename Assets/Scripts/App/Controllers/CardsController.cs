@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground
                 (_gameplayManager.IsTutorial &&
                 _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)))
             {
-                _gameplayManager.CurrentPlayer.CardsInDeck.ShuffleList();
+                _gameplayManager.CurrentPlayer.CardsInDeck.UnsafeGetUnderlyingList().ShuffleList();
             }
 
             _battlegroundController.StartGameplayTurns();

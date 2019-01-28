@@ -113,6 +113,11 @@ namespace Loom.ZombieBattleground
             return new UniquePositionedList<T>(new PositionedList<T>(this.FindAll<T>(match)));
         }
 
+        public IPositionedList<T> UnsafeGetUnderlyingList()
+        {
+            return _list;
+        }
+
         private void ThrowIfContains(T item)
         {
             if (_list.Contains(item))

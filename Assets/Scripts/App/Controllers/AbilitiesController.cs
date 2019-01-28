@@ -555,8 +555,13 @@ namespace Loom.ZombieBattleground
                                            workingCard.Owner.CardsInHand.Insert(ItemPosition.End, card.WorkingCard);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
                                            workingCard.Owner.CardsOnBoard.Remove(card.WorkingCard);
-                                           workingCard.Owner.BoardCards.Remove(workingCard.Owner.BoardCards.First(boardCard =>
-                                               boardCard.Model.Card.InstanceId == card.WorkingCard.InstanceId));
+                                           BoardUnitView boardCardUnitView = workingCard.Owner.BoardCards.FirstOrDefault(boardCard =>
+                                               boardCard.Model.Card.InstanceId == card.WorkingCard.InstanceId);
+                                           if (boardCardUnitView != null)
+                                           {
+                                               workingCard.Owner.BoardCards.Remove(boardCardUnitView);
+                                           }
+
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                                            _playerController.IsCardSelected = false;
