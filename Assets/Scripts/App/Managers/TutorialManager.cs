@@ -621,7 +621,8 @@ namespace Loom.ZombieBattleground
                                 handPointer.TargetTutorialObjectId,
                                 handPointer.AdditionalObjectIdOwners,
                                 handPointer.AdditionalObjectIdTargets,
-                                handPointer.TutorialHandLayer);
+                                handPointer.TutorialHandLayer,
+                                handPointer.HandPointerSpeed);
                 }
             }
 
@@ -908,7 +909,8 @@ namespace Loom.ZombieBattleground
                                 int targetTutorialObjectId = 0,
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
-                                Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default)
+                                Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
+                                float handPointerSpeed = Constants.HandPointerSpeed)
         {
             _handPointerController.DrawPointer(type,
                                                owner,
@@ -920,7 +922,8 @@ namespace Loom.ZombieBattleground
                                                targetTutorialObjectId,
                                                additionalObjectIdOwners,
                                                additionalObjectIdTargets,
-                                               handLayer);
+                                               handLayer,
+                                               handPointerSpeed);
         }
 
         public void DrawDescriptionTooltip(int id,

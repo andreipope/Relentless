@@ -155,6 +155,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float OverlordTalkingPopupDuration = 2f;
 
+        internal const float HandPointerSpeed = 4f;
+
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
 
