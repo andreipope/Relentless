@@ -55,9 +55,9 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            for (int i = 0; i < _targets.Count; i++)
+            for (int i = _targets.Count-1; i >= 0; i--)
             {
-                OneActionComleted(_targets[i]);
+                OneActionCompleted(_targets[i]);
             }
 
             if (TutorialManager.IsTutorial && AbilityCallType == Enumerators.AbilityCallType.DEATH)
@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(_targets);
         }
 
-        public void OneActionComleted(BoardObject boardObject)
+        public void OneActionCompleted(BoardObject boardObject)
         {
             switch (boardObject)
             {
