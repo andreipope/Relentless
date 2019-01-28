@@ -5,17 +5,21 @@ namespace Loom.ZombieBattleground
 {
     public struct ItemPosition : IEquatable<ItemPosition>, IComparable<ItemPosition>
     {
-        public static readonly ItemPosition Start = new ItemPosition(-1);
-        public static readonly ItemPosition End = new ItemPosition(-2);
+        public static readonly ItemPosition Start = new ItemPosition(true, -1);
+        public static readonly ItemPosition End = new ItemPosition(true, -2);
 
         private int Index { get; }
 
-        public ItemPosition(int index)
+        private ItemPosition(bool skipChecks, int index)
         {
-            if (index < 0)
+            if (!skipChecks && index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
             Index = index;
+        }
+
+        public ItemPosition(int index) : this(false, index)
+        {
         }
 
         public int GetIndex<T>(ICollection<T> collection)
@@ -40,7 +44,7 @@ namespace Loom.ZombieBattleground
                 return 0;
 
             if (this == End)
-                return count - 1;
+                return count;
 
             return Index;
         }
@@ -94,8 +98,8 @@ namespace Loom.ZombieBattleground
 
             return $"(Index: {val})";
         }
-        
-        public static implicit operator ItemPosition(int index)
+
+        public static explicit operator ItemPosition(int index)
         {
             return new ItemPosition(index);
         }

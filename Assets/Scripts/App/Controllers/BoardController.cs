@@ -93,7 +93,9 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            if (!isBottom)
+            // FIXME HARD: in tutorial, arrows should NEVER use XYZ coordinates, and use references to actual things instead.
+
+            if (!isBottom && !_gameplayManager.IsTutorial)
             {
                 units = units.Reverse().ToList();
             }

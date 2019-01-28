@@ -422,7 +422,7 @@ namespace Loom.ZombieBattleground
                     if (CheckTutorialAIStepPaused())
                         return;
 
-                    WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.First(
+                    WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.FirstOrDefault(
                         cardInHand => cardInHand.TutorialObjectId == playCardActionInfo.TutorialObjectId);
 
                     if (card != null)

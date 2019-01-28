@@ -502,7 +502,7 @@ namespace Loom.ZombieBattleground
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
-                                           workingCard.Owner.AddCardToBoard(workingCard, card.FuturePositionOnBoard);
+                                           workingCard.Owner.AddCardToBoard(workingCard, (ItemPosition) card.FuturePositionOnBoard);
                                            workingCard.Owner.AddCardToGraveyard(workingCard);
 
                                            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
@@ -1088,7 +1088,7 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
-                card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard, card.FuturePositionOnBoard);
+                card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard, (ItemPosition) card.FuturePositionOnBoard);
                 card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
 
                 if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)

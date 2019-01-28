@@ -43,8 +43,8 @@ namespace Loom.ZombieBattleground.Test
                        opponent => {},
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(playerSlabId, 0),
-                       opponent => opponent.CardPlay(opponentSlabId, 0),
+                       player => player.CardPlay(playerSlabId, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentSlabId, ItemPosition.Start),
                        player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
                        opponent => opponent.CardAttack(opponentSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
                        player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
@@ -127,11 +127,11 @@ namespace Loom.ZombieBattleground.Test
                        opponent => {},
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(playerSlabId, 0),
+                       player => player.CardPlay(playerSlabId, ItemPosition.Start),
                        opponent =>
                        {
-                           opponent.CardPlay(opponentSlabId, 0);
-                           opponent.CardPlay(opponentCyndermanId, 0);
+                           opponent.CardPlay(opponentSlabId, ItemPosition.Start);
+                           opponent.CardPlay(opponentCyndermanId, ItemPosition.Start);
                            opponent.CardAbilityUsed(
                                opponentCyndermanId,
                                Enumerators.AbilityType.DAMAGE_TARGET,
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground.Test
                        },
                        player =>
                        {
-                           player.CardPlay(playerCyndermanId, 0, opponentCyndermanId);
+                           player.CardPlay(playerCyndermanId, ItemPosition.Start, opponentCyndermanId);
                        },
                    };
 
