@@ -133,6 +133,12 @@ namespace Loom.ZombieBattleground
 
         private void PressedLoginHandler() 
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
