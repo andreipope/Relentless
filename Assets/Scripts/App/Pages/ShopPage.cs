@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
             _selectedColor = Color.white;
             _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
 
-            Hide();       
+            Hide();
         }
 
         public void Update()
@@ -536,6 +536,7 @@ namespace Loom.ZombieBattleground
             );  
             #elif UNITY_IOS
             ParseTransactionIdentifierFromAppStoreReceipt(args);
+            ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
             #endif                   
         }
         
@@ -561,6 +562,51 @@ namespace Loom.ZombieBattleground
                     Debug.Log($"apple.cancellationDate: {apple.cancellationDate}");
                     Debug.Log($"apple.quantity: {apple.quantity}");
                 }
+            }
+        }
+
+        private void ParsePayloadFromAppStoreReceipt(string receiptString)
+        {
+            string payload = "";   
+            try
+            {
+                IAPReceipt2 receipt = JsonConvert.DeserializeObject<IAPReceipt2>(receiptString);                
+                
+                Debug.Log("IAPReceipt");
+                string log = "";
+                log += "receipt.TransactionID: " + receipt.TransactionID;
+                log += "\n";
+                log += "receipt.Store: " + receipt.Store;
+                log += "\n";
+                log += "Payload: " + receipt.Payload;
+                Debug.Log(log);  
+                payload = receipt.Payload;
+
+                string logText = "";
+                string payloadToCut = payload;
+                Debug.Log("PAYLOAD START");
+                int count = 0;
+                while( !string.IsNullOrEmpty(payloadToCut))
+                {
+                    int lengthAmount = 80;
+                    if(payloadToCut.Length > lengthAmount)
+                    {
+                        logText = payloadToCut.Substring(0, lengthAmount);
+                        payloadToCut = payloadToCut.Substring(lengthAmount);
+                    }
+                    else
+                    {
+                        logText = payloadToCut;
+                        payloadToCut = "";
+                    }
+                    ++count;
+                    Debug.Log( $"{count}: {logText}");
+                }
+                Debug.Log("PAYLOAD END");
+            }
+            catch
+            {
+                Debug.Log("Cannot deserialize args.purchasedProduct.receipt");                
             }
         }
 
