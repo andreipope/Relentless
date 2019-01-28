@@ -591,7 +591,7 @@ namespace Loom.ZombieBattleground
                 Transform displayBoardCard = _createdBoardCards[i].Transform;
                 Sequence hideCardSequence = DOTween.Sequence();
                 hideCardSequence.AppendInterval(.1f * i);
-                hideCardSequence.Append(displayBoardCard.DOMove(  - Vector3.up * 12f  , .4f));
+                hideCardSequence.Append(displayBoardCard.DOMove(  - Vector3.up * 14f  , .4f));
                 
                 if( i == lastIndex)
                 {
