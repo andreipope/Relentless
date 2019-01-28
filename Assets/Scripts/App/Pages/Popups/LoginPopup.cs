@@ -446,7 +446,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 SetUIState(LoginState.ValidationFailed, "Registration was failed.\nPlease try again later.");
 
@@ -561,7 +561,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
 
@@ -571,7 +571,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
 
@@ -611,7 +611,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
@@ -620,7 +620,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);

@@ -246,13 +246,13 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(exception);
                 Debug.LogWarning(" Time out == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Client.RpcClientException exception)
             {
                 Helpers.ExceptionReporter.LogException(exception);
                 Debug.LogWarning(" RpcException == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Exception e)
             {
