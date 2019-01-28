@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(List<BoardUnitView> units, WorkingCard card, GameplayQueueAction<object> actionInQueue)
+        public void UpdateRanksByElements(IReadOnlyList<BoardUnitView> units, WorkingCard card, GameplayQueueAction<object> actionInQueue)
         {
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {

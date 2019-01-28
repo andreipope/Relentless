@@ -37,32 +37,25 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.Mulligan(cards));
         }
 
-        public async Task CardPlay(InstanceId card, int position)
+        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
         {
-            WorkingCard workingCard =
-                _testHelper.GetCardInHandByInstanceId(
-                    card,
-                    _testHelper.GameplayManager.CurrentTurnPlayer == _testHelper.GameplayManager.CurrentPlayer ?
-                        Enumerators.MatchPlayer.CurrentPlayer :
-                        Enumerators.MatchPlayer.OpponentPlayer
-                );
-            await SendPlayerAction(_client.PlayerActionFactory.CardPlay(workingCard, position));
+            if (entryAbilityTarget != null)
+                throw new Exception($"'{nameof(entryAbilityTarget)}' not supported for {nameof(DebugClientPlayerActionTestProxy)}. Use CardPlay + CardAbilityUsed instead.");
+
+            await SendPlayerAction(_client.PlayerActionFactory.CardPlay(card, position.GetIndex(int.MaxValue)));
         }
 
-        public async Task RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
+        public async Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
             await SendPlayerAction(_client.PlayerActionFactory.RankBuff(card, units));
         }
 
         public async Task CardAbilityUsed(
-            WorkingCard card,
+            InstanceId card,
             Enumerators.AbilityType abilityType,
-            Enumerators.CardKind cardKind,
-            Enumerators.AffectObjectType affectObjectType,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
-            IEnumerable<InstanceId> cards = null)
+            IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards));
+            await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, targets));
         }
 
         public async Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
@@ -73,6 +66,11 @@ namespace Loom.ZombieBattleground.Test
         public async Task CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
         {
             await SendPlayerAction(_client.PlayerActionFactory.CardAttack(attacker, type, target));
+        }
+
+        public async Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
+        {
+            await SendPlayerAction(_client.PlayerActionFactory.CheatDestroyCardsOnBoard(targets));
         }
 
         public async Task<bool> GetIsCurrentTurn()
