@@ -70,7 +70,8 @@ namespace Loom.ZombieBattleground
                                 int targetTutorialObjectId = 0,
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
-                                Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default)
+                                Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
+                                float handPointerSpeed = Constants.HandPointerSpeed)
         {
             HandPointerPopup popup = new HandPointerPopup(type,
                                                           owner,
@@ -81,7 +82,8 @@ namespace Loom.ZombieBattleground
                                                           tutorialObjectIdStepOwner,
                                                           targetTutorialObjectId,
                                                           additionalObjectIdOwners,
-                                                          additionalObjectIdTargets, handLayer);
+                                                          additionalObjectIdTargets, handLayer,
+                                                          handPointerSpeed);
             _handPointerPopups.Add(popup);
         }
     }
@@ -94,7 +96,6 @@ namespace Loom.ZombieBattleground
 
         private readonly HandPointerController _handPointerController;
 
-        private const float SpeedMove = 4f;
         private const float Interval = 0.3f;
         private const int SortingOrderAbovePages = -1;
         private const int SortingOrderAbovePopups = 125;
@@ -132,6 +133,8 @@ namespace Loom.ZombieBattleground
         private float _startValue = 0;
         private float _sideTurn;
 
+        private float _speedMove;
+
         private float _durationMove;
 
         private bool _isMove = false;
@@ -152,7 +155,8 @@ namespace Loom.ZombieBattleground
                                 int targetTutorialObjectId = 0,
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
-                                Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default)
+                                Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
+                                float handPointerSpeed = Constants.HandPointerSpeed)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -167,6 +171,7 @@ namespace Loom.ZombieBattleground
             _appearOnce = appearOnce;
             _type = type;
             Owner = owner;
+            _speedMove = handPointerSpeed;
 
             _selfObject = MonoBehaviour.Instantiate(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/HandPointer"));
@@ -301,7 +306,7 @@ namespace Loom.ZombieBattleground
             _sideTurn = _startPoint.x > _endPosition.x ? 1 : -1;
             _sineOffset = 0;
 
-            _durationMove = Vector2.Distance(_startPoint, _endPoint) / SpeedMove;
+            _durationMove = Vector2.Distance(_startPoint, _endPoint) / _speedMove;
 
             Sequence moveSequence = DOTween.Sequence();
             _allSequences.Add(moveSequence);
