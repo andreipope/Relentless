@@ -44,6 +44,8 @@ namespace Loom.ZombieBattleground
         private TextMeshProUGUI _packsAmountText;
         
         private Transform _packTray, _trayStart, _trayEnd, _panelCollect, _greenPoolVFX;
+
+        private SpriteRenderer _vignetteCollectCard;
     
         private Animator _gooPoolAnimator;
         
@@ -171,6 +173,8 @@ namespace Loom.ZombieBattleground
             _trayStart =  _selfPage.transform.Find("BackgroundImage/tray_start").GetComponent<Transform>();
             _trayEnd =  _selfPage.transform.Find("BackgroundImage/tray_end").GetComponent<Transform>();
             _panelCollect = _selfPage.transform.Find("Panel_Collect").GetComponent<Transform>();
+            _panelCollect.SetParent(_uiManager.Canvas2.transform);
+            
     
             _rightPanelLight = _selfPage.transform.Find("BackgroundImage/Glowing/Panel_right").GetComponent<Image>();
             _leftPanelLight = _selfPage.transform.Find("BackgroundImage/Glowing/Panel_left").GetComponent<Image>();                       
@@ -218,6 +222,9 @@ namespace Loom.ZombieBattleground
                         
             _createdGooPool.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             _createdGooPool.GetComponent<SortingGroup>().sortingOrder = 1;            
+            
+            _vignetteCollectCard = _createdGooPool.transform.Find("Vignette").GetComponent<SpriteRenderer>();
+            _vignetteCollectCard.enabled = false;
             
             _createdbuttonOpenPackVFX = Object.Instantiate(_buttonOpenPackVFXPrefab);
             _createdbuttonOpenPackVFX.transform.position = _buttonOpenPack.transform.position;            
@@ -308,6 +315,10 @@ namespace Loom.ZombieBattleground
         {
             DestroyCardVFX();
             DestroyBoardCards();
+            if(_panelCollect.gameObject != null )
+            {
+                Object.Destroy(_panelCollect.gameObject);
+            }
             if (_createdGooPool != null)
             {
                 Object.Destroy(_createdGooPool);
@@ -519,7 +530,8 @@ namespace Loom.ZombieBattleground
                         {
                             RefreshAnimation();
                             _isTransitioningState = false;
-                            _greenPoolVFX.gameObject.SetActive(false);
+                            _greenPoolVFX.gameObject.SetActive(true);
+                            _vignetteCollectCard.enabled = true;
                             _panelCollect.gameObject.SetActive(true);
                             _buttonCollect.gameObject.SetActive(true);
                         });
@@ -607,6 +619,7 @@ namespace Loom.ZombieBattleground
         private void ChangeState( STATE newState )
         {
             _isWaitingForTapToReveal = false;
+            _vignetteCollectCard.enabled = false;
             switch (_state)
             {
                 case STATE.NONE:
