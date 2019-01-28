@@ -961,7 +961,7 @@ namespace Loom.ZombieBattleground
                     target, delay: 6f, isIgnoreCastVfx: true);
                     _battlegroundController.DestroyBoardUnit(unit, false, true);
 
-                    IList<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
+                    IReadOnlyList<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
 
                     if (opponentUnits.Count == 0)
                         return;

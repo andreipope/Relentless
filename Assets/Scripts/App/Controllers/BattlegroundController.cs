@@ -34,19 +34,19 @@ namespace Loom.ZombieBattleground
 
         public int CurrentTurn;
 
-        public UniqueList<BoardUnitView> OpponentBoardCards;
+        public UniquePositionedList<BoardUnitView> OpponentBoardCards { get; } = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
 
-        public UniqueList<BoardUnitView> OpponentGraveyardCards = new UniqueList<BoardUnitView>();
+        public UniquePositionedList<BoardUnitView> OpponentGraveyardCards { get; } =  new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
 
-        public UniqueList<OpponentHandCard> OpponentHandCards = new UniqueList<OpponentHandCard>();
+        public UniquePositionedList<OpponentHandCard> OpponentHandCards { get; } =  new UniquePositionedList<OpponentHandCard>(new PositionedList<OpponentHandCard>());
 
-        public UniqueList<BoardUnitView> PlayerBoardCards = new UniqueList<BoardUnitView>();
+        public UniquePositionedList<BoardUnitView> PlayerBoardCards { get; } =  new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
+
+        public UniquePositionedList<BoardUnitView> PlayerGraveyardCards { get; } = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
+
+        public UniquePositionedList<BoardCard> PlayerHandCards { get; } = new UniquePositionedList<BoardCard>(new PositionedList<BoardCard>());
 
         public GameObject PlayerBoardObject, OpponentBoardObject, PlayerGraveyardObject, OpponentGraveyardObject;
-
-        public UniqueList<BoardUnitView> PlayerGraveyardCards = new UniqueList<BoardUnitView>();
-
-        public UniqueList<BoardCard> PlayerHandCards = new UniqueList<BoardCard>();
 
         private AIController _aiController;
 
@@ -105,11 +105,6 @@ namespace Loom.ZombieBattleground
         public event Action TurnEnded;
 
         public float TurnTimer { get; private set; }
-
-        public BattlegroundController()
-        {
-            OpponentBoardCards = new UniqueList<BoardUnitView>(new List<BoardUnitView>());
-        }
 
         public void Init()
         {
@@ -321,8 +316,6 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.OpponentPlayer.Defense = 99;
                 _gameplayManager.CurrentPlayer.Defense = 99;
             }
-
-            _playerManager.OpponentGraveyardCards = OpponentGraveyardCards;
 
             PlayerBoardObject = GameObject.Find("PlayerBoard");
             OpponentBoardObject = GameObject.Find("OpponentBoard");
@@ -538,7 +531,7 @@ namespace Loom.ZombieBattleground
             }
 
             PlayerBoardCards.Remove(boardCard);
-            PlayerGraveyardCards.Add(boardCard);
+            PlayerGraveyardCards.InsertToEnd(boardCard);
 
             boardCard.SetHighlightingEnabled(false);
             boardCard.StopSleepingParticles();

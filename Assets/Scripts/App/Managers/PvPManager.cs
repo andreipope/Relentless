@@ -249,24 +249,16 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand) 
         {
-            player.CardsInHand = new UniqueList<WorkingCard>();
-
-            foreach (CardInstance cardInstance in cardsInHand)
-            {
-                player.CardsInHand.Add(cardInstance.FromProtobuf(player));
-            }
+            player.CardsInHand.Clear();
+            player.CardsInHand.InsertRangeToEnd(cardsInHand.Select(card => card.FromProtobuf(player)));
 
             player.ThrowOnHandChanged();
         }
 
         private void UpdateCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
         {
-            player.CardsInDeck = new UniqueList<WorkingCard>();
-
-            foreach (CardInstance cardInstance in cardsInDeck)
-            {
-                player.CardsInDeck.Add(cardInstance.FromProtobuf(player));
-            }
+            player.CardsInDeck.Clear();
+            player.CardsInDeck.InsertRangeToEnd(cardsInDeck.Select(card => card.FromProtobuf(player)));
 
             Debug.Log("Updating player cards");
             Debug.Log(player.CardsInDeck.Count);

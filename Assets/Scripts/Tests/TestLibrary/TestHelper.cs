@@ -2045,7 +2045,7 @@ namespace Loom.ZombieBattleground.Test
         {
             if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
-                UniqueList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_testBroker.GetPlayer(_opponent));
+                IReadOnlyList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_testBroker.GetPlayer(_opponent));
 
                 if (targets.Count > 0)
                 {
@@ -2067,7 +2067,7 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private UniqueList<BoardUnitView> GetHeavyUnitsOnBoard(Loom.ZombieBattleground.Player player)
+        private IReadOnlyList<BoardUnitView> GetHeavyUnitsOnBoard(Loom.ZombieBattleground.Player player)
         {
             return player.BoardCards.FindAll(x => x.Model.HasHeavy || x.Model.HasBuffHeavy);
         }
@@ -2143,7 +2143,7 @@ namespace Loom.ZombieBattleground.Test
 
         private List<WorkingCard> GetUnitCardsInHand()
         {
-            UniqueList<WorkingCard> list =
+            IReadOnlyList<WorkingCard> list =
                 _testBroker.GetPlayer(_player).CardsInHand.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
             List<Loom.ZombieBattleground.Data.Card> cards = new List<Loom.ZombieBattleground.Data.Card>();
@@ -2166,16 +2166,12 @@ namespace Loom.ZombieBattleground.Test
                 sortedList.Add(list.First(x => x.LibraryCard.Name == item.Name && !sortedList.Contains(x)));
             }
 
-            list.Clear();
-            cards.Clear();
-
             return sortedList;
         }
 
-        private UniqueList<WorkingCard> GetSpellCardsInHand()
+        private IReadOnlyList<WorkingCard> GetSpellCardsInHand()
         {
-            return _testBroker.GetPlayer(_player).CardsInHand.FindAll(x =>
-                x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);
+            return _testBroker.GetPlayer(_player).CardsInHand.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);
         }
 
         private List<BoardUnitModel> GetUnitsOnBoard()

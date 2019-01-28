@@ -297,7 +297,7 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        IList<BoardUnitView> units =
+                        IReadOnlyList<BoardUnitView> units =
                             player.BoardCards.FindAll(x =>
                                 x.Model.InitialUnitType == ability.TargetCardType &&
                                 x.Model.UnitStatus == ability.TargetUnitStatusType);
@@ -308,7 +308,7 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        IList<BoardUnitView> units =
+                        IReadOnlyList<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x =>
                                 x.Model.InitialUnitType == ability.TargetCardType &&
                                 x.Model.UnitStatus == ability.TargetUnitStatusType);
@@ -343,7 +343,7 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        IList<BoardUnitView> units =
+                        IReadOnlyList<BoardUnitView> units =
                             player.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
@@ -353,7 +353,7 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        IList<BoardUnitView> units =
+                        IReadOnlyList<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
@@ -542,7 +542,7 @@ namespace Loom.ZombieBattleground
                                        },
                                        failedCallback: () =>
                                        {
-                                           // HACK: why do we need to update library card instead of modifying a copy?
+                                           // HACK FIXME: why do we need to update library card instead of modifying a copy?
                                            ((ICard) libraryCard).ForceUpdateAbilities(libraryCard.InitialAbilities);
 
                                            card.WorkingCard.Owner.CurrentGoo += card.ManaCost;

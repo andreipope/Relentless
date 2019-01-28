@@ -13,7 +13,28 @@ namespace Loom.ZombieBattleground
             return new UniqueList<TSource>(new List<TSource>(source));
         }
 
+        public static UniquePositionedList<TSource> ToUniquePositionedList<TSource>(this IEnumerable<TSource> source)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            return new UniquePositionedList<TSource>(new PositionedList<TSource>(source));
+        }
+
         public static void ShuffleList<T>(this IList<T> list)
+        {
+            Random rnd = new Random();
+            int n = list.Count;
+            while (n > 1) {
+                n--;
+                int k = rnd.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+        public static void ShuffleList<T>(this IPositionedList<T> list)
         {
             Random rnd = new Random();
             int n = list.Count;
@@ -53,17 +74,17 @@ namespace Loom.ZombieBattleground
             return filteredList;
         }
 
-        public static int FindIndex<T>(this IList<T> list, Predicate<T> match)
+        public static int FindIndex<T>(this IReadOnlyList<T> list, Predicate<T> match)
         {
             return FindIndex(list, 0, list.Count, match);
         }
 
-        public static int FindIndex<T>(this IList<T> list, int startIndex, Predicate<T> match)
+        public static int FindIndex<T>(this IReadOnlyList<T> list, int startIndex, Predicate<T> match)
         {
             return FindIndex(list, startIndex, list.Count - startIndex, match);
         }
 
-        public static int FindIndex<T>(this IList<T> list, int startIndex, int count, Predicate<T> match)
+        public static int FindIndex<T>(this IReadOnlyList<T> list, int startIndex, int count, Predicate<T> match)
         {
             if ((uint) startIndex > (uint) list.Count)
                 throw new ArgumentOutOfRangeException(nameof(startIndex));

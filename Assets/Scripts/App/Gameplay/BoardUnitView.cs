@@ -547,8 +547,10 @@ namespace Loom.ZombieBattleground
                 // FIXME: WTF we have logic based on card name?
                 if (Model.Card.LibraryCard.Name.Equals("Freezzee"))
                 {
-                    IList<BoardUnitView> freezzees = Model.GetEnemyUnitsList(Model)
-                        .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
+                    IReadOnlyList<BoardUnitView> freezzees =
+                        Model
+                            .GetEnemyUnitsList(Model)
+                            .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
 
                     if (freezzees.Count > 0)
                     {

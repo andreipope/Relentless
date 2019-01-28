@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView leftAdjustment = null, rightAdjastment = null;
 
             int targetIndex = -1;
-            IList<BoardUnitView> list = null;
+            IReadOnlyList<BoardUnitView> list = null;
             for (int i = 0; i < playerOwner.BoardCards.Count; i++)
             {
                 if (playerOwner.BoardCards[i].Model == unit)

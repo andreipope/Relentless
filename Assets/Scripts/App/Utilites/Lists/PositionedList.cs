@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class PositionedList<T> : IPositionedList<T>
     {
-        private readonly IList<T> _list;
+        private readonly List<T> _list;
 
         public PositionedList()
         {
@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
             _list = new List<T>(collection);
         }
 
-        public bool IsReadOnly => _list.IsReadOnly;
+        public bool IsReadOnly => false;
 
         public int Count => _list.Count;
 
@@ -76,6 +76,21 @@ namespace Loom.ZombieBattleground
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable) _list).GetEnumerator();
+        }
+
+        public void InsertToEnd(T item)
+        {
+            _list.Add(item);
+        }
+
+        public void InsertRange(int index, IEnumerable<T> collection)
+        {
+            _list.InsertRange(index, collection);
+        }
+
+        public void InsertRangeToEnd(IEnumerable<T> collection)
+        {
+            _list.InsertRange(_list.Count, collection);
         }
     }
 }

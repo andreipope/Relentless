@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardCard boardCard;
                 Player playerOwner;
-                UniqueList<WorkingCard> filteredCards = null;
+                UniquePositionedList<WorkingCard> filteredCards = null;
 
                 foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
                 {
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
-                    filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniqueList();
+                    filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;
 

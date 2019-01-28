@@ -814,7 +814,7 @@ namespace Loom.ZombieBattleground
             KilledUnit?.Invoke(boardUnit);
         }
 
-        public UniqueList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
+        public UniquePositionedList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
         {
             if (_gameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model).Contains(unit))
             {

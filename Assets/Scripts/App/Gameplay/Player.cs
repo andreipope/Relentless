@@ -125,14 +125,13 @@ namespace Loom.ZombieBattleground
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
-            CardsInDeck = new UniqueList<WorkingCard>();
-            CardsInGraveyard = new UniqueList<WorkingCard>();
-            CardsInHand = new UniqueList<WorkingCard>();
-            CardsOnBoard = new UniqueList<WorkingCard>();
-            BoardCards = new UniqueList<BoardUnitView>();
-            BoardSpellsInUse = new UniqueList<BoardSpell>();
-
-            CardsPreparingToHand = new UniqueList<WorkingCard>();
+            CardsInDeck = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            CardsInGraveyard = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            CardsInHand = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            CardsOnBoard = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            BoardCards = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
+            BoardSpellsInUse = new UniquePositionedList<BoardSpell>(new PositionedList<BoardSpell>());
+            CardsPreparingToHand = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
 
             switch (_matchManager.MatchType)
             {
@@ -345,19 +344,19 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
-        public UniqueList<BoardUnitView> BoardCards { get; set; }
+        public UniquePositionedList<BoardUnitView> BoardCards { get; }
 
-        public UniqueList<BoardSpell> BoardSpellsInUse { get; set; }
+        public UniquePositionedList<BoardSpell> BoardSpellsInUse { get; }
 
-        public UniqueList<WorkingCard> CardsInDeck { get; set; }
+        public UniquePositionedList<WorkingCard> CardsInDeck { get; }
 
-        public UniqueList<WorkingCard> CardsInGraveyard { get; }
+        public UniquePositionedList<WorkingCard> CardsInGraveyard { get; }
 
-        public UniqueList<WorkingCard> CardsInHand { get; set; }
+        public UniquePositionedList<WorkingCard> CardsInHand { get; }
 
-        public UniqueList<WorkingCard> CardsOnBoard { get; }
+        public UniquePositionedList<WorkingCard> CardsOnBoard { get; }
 
-        public UniqueList<WorkingCard> CardsPreparingToHand { get; set; }
+        public UniquePositionedList<WorkingCard> CardsPreparingToHand { get; }
 
         public bool IsStunned { get; private set; }
 
@@ -421,7 +420,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                CardsInDeck.Add(card);
+                CardsInDeck.InsertToEnd(card);
             }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
@@ -441,7 +440,7 @@ namespace Loom.ZombieBattleground
         public IView AddCardToHand(WorkingCard card, bool silent = false)
         {
             IView cardView;
-            CardsInHand.Add(card);
+            CardsInHand.InsertToEnd(card);
 
             if (IsLocalPlayer)
             {
@@ -464,7 +463,7 @@ namespace Loom.ZombieBattleground
         {
             card.Owner = this;
 
-            CardsInHand.Add(card);
+            CardsInHand.InsertToEnd(card);
 
             if (IsLocalPlayer)
             {
@@ -532,7 +531,7 @@ namespace Loom.ZombieBattleground
             if (CardsInGraveyard.Contains(card))
                 return;
 
-            CardsInGraveyard.Add(card);
+            CardsInGraveyard.InsertToEnd(card);
 
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
@@ -549,7 +548,7 @@ namespace Loom.ZombieBattleground
 
         public void SetDeck(List<WorkingCard> cards, bool isMainTurnSecond)
         {
-            CardsInDeck = new UniqueList<WorkingCard>();
+            CardsInDeck.Clear();
 
             switch (_matchManager.MatchType)
             {
@@ -568,17 +567,11 @@ namespace Loom.ZombieBattleground
                         _cardsController.SetNewCardInstanceId(0);
                     }
 
-                    foreach (WorkingCard card in cards)
-                    {
-                        CardsInDeck.Add(card);
-                    }
+                    CardsInDeck.InsertRangeToEnd(cards);
 
                     break;
                 case Enumerators.MatchType.PVP:
-                    foreach (WorkingCard card in cards)
-                    {
-                        CardsInDeck.Add(card);
-                    }
+                    CardsInDeck.InsertRangeToEnd(cards);
 
                     break;
                 default:

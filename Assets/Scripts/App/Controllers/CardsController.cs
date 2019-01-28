@@ -197,7 +197,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CardsDistribution(IList<WorkingCard> mulliganCards)
+        public void CardsDistribution(IReadOnlyList<WorkingCard> mulliganCards)
         {
             Player player = _gameplayManager.CurrentPlayer;
             List<WorkingCard> randomCards = new List<WorkingCard>();
@@ -205,15 +205,16 @@ namespace Loom.ZombieBattleground
             {
                 randomCards.Add(player.CardsInDeck[i]);
             }
-            player.CardsPreparingToHand = player.CardsPreparingToHand.Except(mulliganCards).ToUniqueList();
-            player.CardsPreparingToHand.AddRange(randomCards);
+            player.CardsPreparingToHand.Clear();
+            player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
+            player.CardsPreparingToHand.InsertRangeToEnd(randomCards);
 
             EndCardDistribution();
         }
 
         public void AddCardToDistributionState(Player player, WorkingCard card)
         {
-            player.CardsPreparingToHand.Add(card);
+            player.CardsPreparingToHand.InsertToEnd(card);
         }
 
         public IView AddCardToHand(Player player, WorkingCard card = null, bool removeCardsFromDeck = true)
@@ -300,7 +301,7 @@ namespace Loom.ZombieBattleground
                 boardCard.SetDefaultAnimation();
             }
 
-            _battlegroundController.PlayerHandCards.Add(boardCard);
+            _battlegroundController.PlayerHandCards.InsertToEnd(boardCard);
 
             if (silent)
             {
@@ -327,7 +328,7 @@ namespace Loom.ZombieBattleground
         {
             OpponentHandCard opponentHandCard = CreateOpponentHandCard(card);
 
-            _battlegroundController.OpponentHandCards.Add(opponentHandCard);
+            _battlegroundController.OpponentHandCards.InsertToEnd(opponentHandCard);
             _abilitiesController.CallAbilitiesInHand(null, card);
 
             return opponentHandCard;
@@ -475,7 +476,7 @@ namespace Loom.ZombieBattleground
                 {
                     _indexOfCard = newIndexOfCard;
 
-                    IList<BoardUnitView> playerCards = _gameplayManager.CurrentPlayer.BoardCards;
+                    IReadOnlyList<BoardUnitView> playerCards = _gameplayManager.CurrentPlayer.BoardCards;
                     List<BoardUnitView> toArrangeList = new List<BoardUnitView>();
 
                     for (int i = 0; i < playerCards.Count; i++)
@@ -712,11 +713,11 @@ namespace Loom.ZombieBattleground
             if (player.IsLocalPlayer)
             {
                 _battlegroundController.PlayerHandCards.Remove(card);
-                _battlegroundController.PlayerBoardCards.Add(boardUnitView);
+                _battlegroundController.PlayerBoardCards.InsertToEnd(boardUnitView);
             }
             else
             {
-                _battlegroundController.OpponentBoardCards.Add(boardUnitView);
+                _battlegroundController.OpponentBoardCards.InsertToEnd(boardUnitView);
             }
 
 

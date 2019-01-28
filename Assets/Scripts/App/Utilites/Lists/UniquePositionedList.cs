@@ -7,9 +7,9 @@ namespace Loom.ZombieBattleground
 {
     public class UniquePositionedList<T> : IPositionedList<T>
     {
-        private readonly IPositionedList<T> _list;
+        private readonly PositionedList<T> _list;
 
-        public UniquePositionedList(IPositionedList<T> list)
+        public UniquePositionedList(PositionedList<T> list)
         {
             if (list == null)
                 throw new ArgumentNullException(nameof(list));
@@ -80,6 +80,16 @@ namespace Loom.ZombieBattleground
         {
             ThrowIfContains(item);
             _list.Insert(index, item);
+        }
+
+        public void InsertToEnd(T item)
+        {
+            _list.InsertToEnd(item);
+        }
+
+        public void InsertRangeToEnd(IEnumerable<T> collection)
+        {
+            _list.InsertRange(_list.Count, collection);
         }
 
         public void RemoveAt(int index)

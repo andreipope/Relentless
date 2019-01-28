@@ -37,9 +37,10 @@ namespace Loom.ZombieBattleground
             if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
                 return;
 
-            UniqueList<BoardCard> cards = BattlegroundController.PlayerHandCards.FindAll(
+            IReadOnlyList<BoardCard> cards = BattlegroundController.PlayerHandCards.FindAll(
                 x => x.WorkingCard.InstanceCard.Cost <= Value &&
-                x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                    x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+            );
 
             if(SetType != Enumerators.SetType.NONE)
             {

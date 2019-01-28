@@ -953,17 +953,13 @@ namespace Loom.ZombieBattleground
                         BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
                         GameObject boardUnit = boardUnitViewElement.GameObject;
                         boardUnit.tag = SRTags.OpponentOwned;
-                        boardUnit.transform.position = Vector3.zero;
+                        boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                         boardUnitViewElement.Model.OwnerPlayer = card.Owner;
                         boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
                         boardUnitViewElement.SetObjectInfo(card);
-                        _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-
-                        boardUnit.transform.position +=
-                            Vector3.up * 2f; // Start pos before moving cards to the opponents board
-
-                        _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
+                        _battlegroundController.OpponentBoardCards.InsertToEnd(boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.InsertToEnd(boardUnitViewElement);
 
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
@@ -1225,7 +1221,7 @@ namespace Loom.ZombieBattleground
         {
             if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
-                UniqueList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
+                IReadOnlyList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
                 if (targets.Count > 0)
                 {
@@ -1247,7 +1243,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private UniqueList<BoardUnitView> GetHeavyUnitsOnBoard(Player player)
+        private IReadOnlyList<BoardUnitView> GetHeavyUnitsOnBoard(Player player)
         {
             return player.BoardCards.FindAll(x => x.Model.HasHeavy || x.Model.HasBuffHeavy);
         }
@@ -1320,7 +1316,7 @@ namespace Loom.ZombieBattleground
 
         private List<WorkingCard> GetUnitCardsInHand()
         {
-            UniqueList<WorkingCard> list =
+            IReadOnlyList<WorkingCard> list =
                 _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
                     x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
@@ -1342,13 +1338,10 @@ namespace Loom.ZombieBattleground
                 sortedList.Add(list.First(x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains(x)));
             }
 
-            list.Clear();
-            cards.Clear();
-
             return sortedList;
         }
 
-        private UniqueList<WorkingCard> GetSpellCardsInHand()
+        private IReadOnlyList<WorkingCard> GetSpellCardsInHand()
         {
             return _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
                 x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);
