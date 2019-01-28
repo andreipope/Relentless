@@ -324,7 +324,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch(TimeoutException e)
                 {
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
                 }
                 catch (Exception e)
                 {
@@ -333,7 +333,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
         }
 

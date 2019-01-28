@@ -650,8 +650,8 @@ PlayerSettings:
   webGLCompressionFormat: 1
   webGLLinkerTarget: 1
   scriptingDefineSymbols:
-    1: USE_BRANCH_TESTING_BACKEND
-    7: FORCE_ENABLE_CRASH_REPORTER
+    1: 
+    7: 
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
