@@ -6,9 +6,9 @@ namespace Loom.ZombieBattleground
 {
     public class BattleBoardArrow : BoardArrow
     {
-        public List<BoardObject> IgnoreBoardObjectsList;
+        public UniqueList<BoardObject> IgnoreBoardObjectsList;
 
-        public List<BoardUnitView> BoardCards;
+        public UniquePositionedList<BoardUnitView> BoardCards;
 
         public BoardUnitView Owner;
 

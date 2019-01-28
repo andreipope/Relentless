@@ -18,13 +18,14 @@ namespace Loom.ZombieBattleground
         event Action GameStartedActionReceived;
         event Action GameEndedActionReceived;
 
-        event Action EndTurnActionReceived;
+        event Action<Protobuf.GameState> EndTurnActionReceived;
         event Action<PlayerActionCardPlay> CardPlayedActionReceived;
         event Action<PlayerActionCardAttack> CardAttackedActionReceived;
         event Action<PlayerActionOverlordSkillUsed> OverlordSkillUsedActionReceived;
         event Action<PlayerActionCardAbilityUsed> CardAbilityUsedActionReceived;
         event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
         event Action<PlayerActionRankBuff> RankBuffActionReceived;
+        event Action<PlayerActionCheatDestroyCardsOnBoard> CheatDestroyCardsOnBoardActionReceived;
         event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
 
         event Action LeaveMatchReceived;
@@ -37,13 +38,13 @@ namespace Loom.ZombieBattleground
 
         List<string> PvPTags { get; set; }
 
-        DebugCheatsConfiguration DebugCheats { get; set; }
+        DebugCheatsConfiguration DebugCheats { get; }
 
         MatchMakingFlowController MatchMakingFlowController { get; }
 
         string GetOpponentUserId();
 
-        bool IsCurrentPlayer();
+        bool IsFirstPlayer();
 
         Task StartMatchmaking(int deckId);
 

@@ -9,7 +9,7 @@ using Random = System.Random;
 
 namespace Loom.ZombieBattleground.Helpers
 {
-    public class InternalTools
+    public static class InternalTools
     {
         public static void SetLayerRecursively(
             GameObject parent, int layer, List<string> ignoreNames = null, bool parentIgnored = false)
@@ -37,18 +37,6 @@ namespace Loom.ZombieBattleground.Helpers
                     SetLayerRecursively(parent.transform.GetChild(i).gameObject, layer, ignoreNames, ignored);
                 }
             }
-        }
-
-        public static void ShakeList<T>(ref List<T> list)
-        {
-            Random rnd = new Random();
-            list = list.OrderBy(item => rnd.Next()).ToList();
-        }
-
-        public static List<T> ShakeList<T>(List<T> list)
-        {
-            Random rnd = new Random();
-            return list.OrderBy(item => rnd.Next()).ToList();
         }
 
         public static void GroupHorizontalObjects(Transform root, float offset, float spacing, float offsetY, bool isReverse = false, float offsetZ = 0f)
@@ -81,29 +69,9 @@ namespace Loom.ZombieBattleground.Helpers
             }
         }
 
-        public static List<T> GetRandomElementsFromList<T>(List<T> root, int count)
+        public static List<T> GetRandomElementsFromList<T>(IReadOnlyList<T> list, int count)
         {
-            List<T> list = new List<T>();
-
-            if (root.Count <= count)
-            {
-                list.AddRange(root);
-            }
-            else
-            {
-                T element;
-                for (int i = 0; i < count; i++)
-                {
-                    element = ShakeList(root).First(x => !list.Contains(x));
-
-                    if (element != null)
-                    {
-                        list.Add(element);
-                    }
-                }
-            }
-
-            return list;
+            return list.GetRandomElementsFromList(count);
         }
 
         public static float DeviceDiagonalSizeInInches()

@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             WriterHost = writerHost;
             VaultHost = vaultHost;
             DataVersion = dataVersion;
-            IsMaintenaceMode = isMaintenanceMode;
+            IsMaintenanceMode = isMaintenanceMode;
             IsForceUpdate = isForceUpdate;
             IsConnectionImpossible = isConnectionImpossible;
         }
@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public string DataVersion { get; set; }
 
-        public bool IsMaintenaceMode { get; set; }
+        public bool IsMaintenanceMode { get; set; }
 
         public bool IsForceUpdate { get; set; }
 
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             WriterHost = source.WriterHost;
             VaultHost = source.VaultHost;
             DataVersion = source.DataVersion;
-            IsMaintenaceMode = source.IsMaintenaceMode;
+            IsMaintenanceMode = source.IsMaintenanceMode;
             IsForceUpdate = source.IsForceUpdate;
             IsConnectionImpossible = source.IsConnectionImpossible;
         }

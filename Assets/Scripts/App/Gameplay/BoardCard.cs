@@ -404,8 +404,7 @@ namespace Loom.ZombieBattleground
                 {
                     CardAnimator.enabled = false;
 
-                    BattlegroundController.PlayerHandCards.Add(this);
-
+                    BattlegroundController.PlayerHandCards.Insert(ItemPosition.End, this);
                     BattlegroundController.UpdatePositionOfCardsInPlayerHand(true);
                 },
                 null,

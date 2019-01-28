@@ -721,7 +721,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (_backendFacade.BackendEndpoint.IsMaintenaceMode && _state != LoginState.ValidationFailed)
+            if (_backendFacade.BackendEndpoint.IsMaintenanceMode && _state != LoginState.ValidationFailed)
             {
                 _lastPopupState = _state;
                 SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForMaintenanceMode);

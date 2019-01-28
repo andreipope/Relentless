@@ -13,6 +13,7 @@ namespace Loom.ZombieBattleground.Test
     public class QueueProxyPlayerActionTestProxy
     {
         private readonly Func<Queue<Func<Task>>> _getQueueFunc;
+        private readonly MatchScenarioPlayer _matchScenarioPlayer;
 
         protected Queue<Func<Task>> Queue => _getQueueFunc();
 
@@ -21,10 +22,16 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public IPlayerActionTestProxy Proxy { get; }
 
-        public QueueProxyPlayerActionTestProxy(Func<Queue<Func<Task>>> queueFunc, IPlayerActionTestProxy proxy)
+        public QueueProxyPlayerActionTestProxy(MatchScenarioPlayer matchScenarioPlayer, Func<Queue<Func<Task>>> queueFunc, IPlayerActionTestProxy proxy)
         {
+            _matchScenarioPlayer = matchScenarioPlayer;
             _getQueueFunc = queueFunc;
             Proxy = proxy;
+        }
+
+        public void AbortNextTurns()
+        {
+            _matchScenarioPlayer.AbortNextMoves();
         }
 
         public void EndTurn()
@@ -42,25 +49,22 @@ namespace Loom.ZombieBattleground.Test
             Queue.Enqueue(() => Proxy.Mulligan(cards));
         }
 
-        public void CardPlay(InstanceId card, int position)
+        public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
         {
-            Queue.Enqueue(() => Proxy.CardPlay(card, position));
+            Queue.Enqueue(() => Proxy.CardPlay(card, position, entryAbilityTarget));
         }
 
-        public void RankBuff(WorkingCard card, IEnumerable<InstanceId> units)
+        public void RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
             Queue.Enqueue(() => Proxy.RankBuff(card, units));
         }
 
         public void CardAbilityUsed(
-            WorkingCard card,
+            InstanceId card,
             Enumerators.AbilityType abilityType,
-            Enumerators.CardKind cardKind,
-            Enumerators.AffectObjectType affectObjectType,
-            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null,
-            IEnumerable<InstanceId> cards = null)
+            IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityType, cardKind, affectObjectType, targets, cards));
+            Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityType, targets));
         }
 
         public void OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
@@ -71,6 +75,11 @@ namespace Loom.ZombieBattleground.Test
         public void CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
         {
             Queue.Enqueue(() => Proxy.CardAttack(attacker, type, target));
+        }
+
+        public void CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        {
+            Queue.Enqueue(() => Proxy.CheatDestroyCardsOnBoard(targets));
         }
     }
 }

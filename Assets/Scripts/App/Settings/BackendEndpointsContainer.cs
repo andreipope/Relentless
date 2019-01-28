@@ -21,6 +21,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     )
                 },
                 {
+                    BackendPurpose.BranchTesting,
+                    new BackendEndpoint(
+                        "http://stage-auth.loom.games",
+                        "ws://gamechain-2.dappchains.com:9999/queryws",
+                        "ws://gamechain-2.dappchains.com:46657/websocket",
+                        "https://stage-vault.delegatecall.com/v1",
+                        "v3",
+                        false,
+                        false,
+                        false
+                    )
+                },
+                {
                     BackendPurpose.Staging,
                     new BackendEndpoint(
                         "http://stage-auth.loom.games",

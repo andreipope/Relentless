@@ -51,17 +51,16 @@ namespace Loom.ZombieBattleground
 
             foreach(ReplaceUnitInfo unitinfo in _replaceUnitInfos)
             {
-                targets.Add(new ParametrizedAbilityBoardObject()
-                {
-                    BoardObject = unitinfo.OldUnitView.Model,
-                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                targets.Add(new ParametrizedAbilityBoardObject(
+                    unitinfo.OldUnitView.Model,
+                    new ParametrizedAbilityParameters
                     {
                         CardName = unitinfo.NewUnitCardTitle
                     }
-                });
+                ));
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType);
         }
 
         private void GetInfosAboutUnitsOnBoard()
@@ -97,7 +96,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
-                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, position: unitInfo.Position);
+                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, new ItemPosition(unitInfo.Position));
             }
         }
 
