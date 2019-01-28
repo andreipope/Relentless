@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                             unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, IsPVPAbility);
                             if (unit != null)
                             {
-                                BattlegroundController.OpponentBoardCards.Add(unit);
+                                AddUnitToBoardCards(GetOpponentOverlord(), unit);
                             }
                         }
 
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
                             unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, IsPVPAbility);
                             if (unit != null)
                             {
-                                BattlegroundController.PlayerBoardCards.Add(unit);
+                                AddUnitToBoardCards(PlayerCallerOfAbility, unit);
                             }
                         }
 
@@ -94,6 +94,18 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
+        }
+
+        private void AddUnitToBoardCards(Player owner, BoardUnitView unit)
+        {
+            if (owner.IsLocalPlayer)
+            {
+                BattlegroundController.PlayerBoardCards.Add(unit);
+            }
+            else
+            {
+                BattlegroundController.OpponentBoardCards.Add(unit);
+            }
         }
     }
 }
