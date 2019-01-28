@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
-            AddService<DebugCommandsManager>( new DebugCommandsManager());
+            AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
             AddService<FiatBackendManager>(new FiatBackendManager());
             AddService<FiatPlasmaManager>(new FiatPlasmaManager());
@@ -70,10 +70,12 @@ namespace Loom.ZombieBattleground
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND && !USE_REBALANCE_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose backend = BackendPurpose.Production;
+#elif USE_REBALANCE_BACKEND
+            const BackendPurpose backend = BackendPurpose.Rebalance;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif

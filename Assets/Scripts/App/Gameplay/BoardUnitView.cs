@@ -486,6 +486,9 @@ namespace Loom.ZombieBattleground
                 {
                     GameObject.transform.position += Vector3.back * 5f;
                 }
+
+                if(_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
+                    ArrivalAnimationEventHandler();
             };
 
             if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
@@ -849,20 +852,21 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel(targetCard);
 
-            if(targetCardView == null)
+            if(targetCardView == null || targetCardView.GameObject == null)
             {
                 Model.ActionForDying = null;
                 targetCard.ActionForDying = null;
                 completeCallback?.Invoke();
 
-                Helpers.ExceptionReporter.LogException("target card is NULL. cancel ATTACK!");
+                Helpers.ExceptionReporter.LogException("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
+                                                        " | targetCardView.GameObject: " + targetCardView?.GameObject);
 
                 return;
             }
 
             _animationsController.DoFightAnimation(
                 GameObject,
-                targetCardView.Transform.gameObject,
+                targetCardView.GameObject,
                 0.5f,
                 () =>
                 {
