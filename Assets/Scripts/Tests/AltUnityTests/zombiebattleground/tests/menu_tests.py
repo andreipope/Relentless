@@ -19,9 +19,10 @@ class CZBMenuTests(CZBTests):
         self.altdriver.wait_for_element('Button_Skip').mobile_tap()
         time.sleep(1)
         self.altdriver.wait_for_element("Button_Yes").mobile_tap()
-        self.altdriver.wait_for_element_to_not_be_present("LoadingGameplayPopup(Clone)")
+        self.altdriver.wait_for_element_to_not_be_present(
+            "LoadingGameplayPopup(Clone)")
         self.altdriver.wait_for_element('Button_Back').mobile_tap()
-       
+
     def test_credits_screen(self):
         self.altdriver.wait_for_element('Button_Credits').mobile_tap()
         self.altdriver.wait_for_element('Panel_CreditsList')
@@ -40,7 +41,6 @@ class CZBMenuTests(CZBTests):
         self.driver.save_screenshot('./screenshots/credits-done-thank-you.png')
         self.altdriver.wait_for_element('CreditsPage(Clone)/Button_Back').tap()
         self.altdriver.wait_for_element('MainMenuPage(Clone)')
-
 
     # def test_close_button(self):
 

@@ -21,7 +21,7 @@ class CZBTutorialTests(CZBTests):
     #     self.altdriver.wait_for_element('Button_Play').mobile_tap()
     #     time.sleep(1)
     #     self.go_though_all_steps(1,37)
-        
+
     #     self.driver.save_screenshot('./screenshots/Continue_Button_Tutorial1.png')
     #     self.altdriver.wait_for_element('Button_Continue').mobile_tap()
 
@@ -39,9 +39,10 @@ class CZBTutorialTests(CZBTests):
     def test_tutorial_without_waiting_audio(self):
         # self.altdriver.wait_for_element('Button_Play').mobile_tap()
         time.sleep(5)
-        self.go_though_all_steps_without_waiting_for_audio(1,37)
-        
-        self.driver.save_screenshot('./screenshots/Continue_Button_Tutorial1.png')
+        self.go_though_all_steps_without_waiting_for_audio(1, 37)
+
+        self.driver.save_screenshot(
+            './screenshots/Continue_Button_Tutorial1.png')
         self.altdriver.wait_for_element('Button_Continue').mobile_tap()
 
     # def test_second_tutorial_without_waiting_audio(self):
@@ -124,135 +125,140 @@ class CZBTutorialTests(CZBTests):
         25: "Oh, by the way, did I mention that these rank buffs stack?",
         26: "So you can get a crazy combo if you plan it right!",
         27: "Well, what are YOU waiting for?",
-        28:"Put this poor excuse of an Overlord out of his misery!" ,
+        28: "Put this poor excuse of an Overlord out of his misery!",
         29: "AWESOME!! ...Now that\xe2\x80\x99s what I call a proper comeback!",
         30: "Well... That's it! The student has become the master!",
         31: "Now go out there and make me proud - <b><color=\"orange\"><u>Zombie Slayer!!!</u></color></b>",
         32: "Haha, OK...byeee!",
     }
 
-    def check_description(self,step,tutorial):
-        if tutorial==1:
+    def check_description(self, step, tutorial):
+        if tutorial == 1:
             # self.assertEqual(self.altdriver.wait_for_element('Description/Text').get_component_property('TMPro.TextMeshProUGUI','text','Unity.TextMeshPro'),self.text_first_tutorial_npc.get(step))
-           self.wait_for_element_with_tmp_text('Description/Text', self.text_first_tutorial_npc.get(step))
+            self.wait_for_element_with_tmp_text(
+                'Description/Text', self.text_first_tutorial_npc.get(step))
         else:
-           self.wait_for_element_with_tmp_text('Description/Text', self.text_second_tutorial_npc.get(step))
+            self.wait_for_element_with_tmp_text(
+                'Description/Text', self.text_second_tutorial_npc.get(step))
             # self.assertEqual(self.altdriver.wait_for_element('Description/Text').get_component_property('TMPro.TextMeshProUGUI','text','Unity.TextMeshPro'),self.text_second_tutorial_npc.get(step))
 
     def click_next(self, step=0):
-        if(step==11):
+        if(step == 11):
             time.sleep(5)
         self.altdriver.find_element('Button_Next').mobile_tap()
 
     def click_play(self):
         self.altdriver.find_element('Button_Play').mobile_tap()
-    
+
     def click_end_turn(self):
         self.altdriver.find_element('_1_btn_endturn').mobile_tap()
 
     def wait_your_turn(self):
-        self.altdriver.wait_for_element('EndTurnButton/_1_btn_endturn/EndTurnGlowEffect',timeout=60,interval=1)
-          
+        self.altdriver.wait_for_element(
+            'EndTurnButton/_1_btn_endturn/EndTurnGlowEffect', timeout=60, interval=1)
+
     def drag_from_circle_to_circle(self):
-        circles=self.altdriver.find_elements("Circle")
-        if(int(circles[0].mobileY)<int(circles[1].mobileY)):
-            dragFrom=circles[1]
-            dragTo=circles[0]
+        circles = self.altdriver.find_elements("Circle")
+        if(int(circles[0].mobileY) < int(circles[1].mobileY)):
+            dragFrom = circles[1]
+            dragTo = circles[0]
         else:
-            dragFrom=circles[0]
-            dragTo=circles[1]
+            dragFrom = circles[0]
+            dragTo = circles[1]
 
-        self.driver.swipe(dragFrom.x,dragFrom.mobileY,dragTo.x,dragTo.mobileY,2000)
+        self.driver.swipe(dragFrom.x, dragFrom.mobileY,
+                          dragTo.x, dragTo.mobileY, 2000)
 
-    def check_click_next(self,step,tutorial):
-        if step==11 and tutorial==1:
+    def check_click_next(self, step, tutorial):
+        if step == 11 and tutorial == 1:
             self.wait_for_audio_to_finish()
-        self.check_description(step,tutorial)
+        self.check_description(step, tutorial)
         self.click_next(step=step)
-    
-    def check_click_play(self,step,tutorial):
-        self.check_description(step,tutorial)
+
+    def check_click_play(self, step, tutorial):
+        self.check_description(step, tutorial)
         self.click_play()
-    
-    def check_click_end_turn(self,step,tutorial):
-        self.check_description(step,tutorial)
+
+    def check_click_end_turn(self, step, tutorial):
+        self.check_description(step, tutorial)
         self.click_end_turn()
 
-    def check_drag_from_circles(self,step,tutorial):
-        if(step ==28 and tutorial ==1):
+    def check_drag_from_circles(self, step, tutorial):
+        if(step == 28 and tutorial == 1):
             self.wait_for_audio_to_finish()
-        self.check_description(step,tutorial)
+        self.check_description(step, tutorial)
         self.drag_from_circle_to_circle()
         time.sleep(2)
-    
-    def check_wait_turn(self,step,tutorial):
-        self.check_description(step,tutorial)
+
+    def check_wait_turn(self, step, tutorial):
+        self.check_description(step, tutorial)
         self.wait_your_turn()
 
-    def wait_turn_check_click_next(self,step,tutorial):
+    def wait_turn_check_click_next(self, step, tutorial):
         self.wait_your_turn()
-        self.check_click_next(step,tutorial)
+        self.check_click_next(step, tutorial)
 
-    def try_clicking_next_until_description_changes(self,step,tutorial):
-        self.check_description(step,tutorial)
+    def try_clicking_next_until_description_changes(self, step, tutorial):
+        self.check_description(step, tutorial)
         while True:
             try:
-                self.check_click_next(step,tutorial)
-                time.sleep(1)
-            except Exception:
-                break
-                
-    def try_wait_after_end_turn_until_description_changes_click_next(self,step,tutorial):
-        self.wait_your_turn()
-        while True:
-            try:
-                self.check_description(step,tutorial)
-                break
-                time.sleep(1)
-            except Exception:
-                time.sleep(1)
-        self.check_click_next(step,tutorial)
-
-    def try_swiping_until_description_changes(self,step,tutorial):
-        self.check_description(step,tutorial)
-        while True:
-            try:
-                self.check_drag_from_circles(step,tutorial)
+                self.check_click_next(step, tutorial)
                 time.sleep(1)
             except Exception:
                 break
 
-    def specialAttack(self,step,tutorial):
-        self.check_description(step,tutorial)
+    def try_wait_after_end_turn_until_description_changes_click_next(self, step, tutorial):
+        self.wait_your_turn()
+        while True:
+            try:
+                self.check_description(step, tutorial)
+                break
+                time.sleep(1)
+            except Exception:
+                time.sleep(1)
+        self.check_click_next(step, tutorial)
+
+    def try_swiping_until_description_changes(self, step, tutorial):
+        self.check_description(step, tutorial)
+        while True:
+            try:
+                self.check_drag_from_circles(step, tutorial)
+                time.sleep(1)
+            except Exception:
+                break
+
+    def specialAttack(self, step, tutorial):
+        self.check_description(step, tutorial)
         # enemy=self.altdriver.wait_for_element('AttackArrowVFX_Object(Clone)/Target_Collider')
         # active_minions=self.altdriver.find_elements('AttackArrowVFX_Object(Clone)/Arrow/Group_RootObjects')
 
-        enemy=self.altdriver.find_element("Opponent/OverlordArea/RegularModel/RegularPosition/Avatar","CameraBattleground")
-        minions=self.altdriver.find_elements("PlayerBoard/BoardCreature(Clone)/Other/ZB_ANM_Walker_ActiveFrame_Green(Clone)/..","CameraBattleground")
-        
+        enemy = self.altdriver.find_element(
+            "Opponent/OverlordArea/RegularModel/RegularPosition/Avatar", "CameraBattleground")
+        minions = self.altdriver.find_elements(
+            "PlayerBoard/BoardCreature(Clone)/Other/ZB_ANM_Walker_ActiveFrame_Green(Clone)/..", "CameraBattleground")
+
         for minion in minions:
             print(minion.x)
-            self.driver.swipe(minion.x,minion.mobileY,enemy.x,enemy.mobileY,2000)
+            self.driver.swipe(minion.x, minion.mobileY,
+                              enemy.x, enemy.mobileY, 2000)
             time.sleep(1)
         time.sleep(3)
-    
+
     def wait_for_audio_to_finish(self):
-        self.altdriver.wait_for_element('AudioClip TUTORIAL',interval=2)
-        self.altdriver.wait_for_element_to_not_be_present('AudioClip TUTORIAL',interval=2)
+        self.altdriver.wait_for_element('AudioClip TUTORIAL', interval=2)
+        self.altdriver.wait_for_element_to_not_be_present(
+            'AudioClip TUTORIAL', interval=2)
 
-
-    
-  
-    steps_first_tutorial={
-        0:check_click_next,
-        1:check_click_next,
-        2:check_click_next,
-        3:check_click_play,
-        4:check_click_next,
-        5:check_click_next,
-        6:check_click_next,
-        7:check_click_next,
-        8:check_drag_from_circles,
+    steps_first_tutorial = {
+        0: check_click_next,
+        1: check_click_next,
+        2: check_click_next,
+        3: check_click_play,
+        4: check_click_next,
+        5: check_click_next,
+        6: check_click_next,
+        7: check_click_next,
+        8: check_drag_from_circles,
         9: check_click_next,
         10: check_click_end_turn,
         11: check_click_next,
@@ -283,16 +289,16 @@ class CZBTutorialTests(CZBTests):
         36: check_click_next
     }
 
-    steps_second_tutorial={
-        0:check_click_next,
-        1:check_wait_turn,
-        2:check_click_next,
-        3:check_click_next,
-        4:check_click_next,
-        5:check_click_next,
-        6:check_click_next,
-        7:check_click_next,
-        8:check_click_next,
+    steps_second_tutorial = {
+        0: check_click_next,
+        1: check_wait_turn,
+        2: check_click_next,
+        3: check_click_next,
+        4: check_click_next,
+        5: check_click_next,
+        6: check_click_next,
+        7: check_click_next,
+        8: check_click_next,
         9: check_click_next,
         10: check_click_next,
         11: check_click_next,
@@ -317,59 +323,66 @@ class CZBTutorialTests(CZBTests):
         30: check_click_next,
         31: check_click_next,
         32: check_click_next,
-        
+
     }
+
     def skip_tutorial(self):
         self.altdriver.wait_for_element('Button_Skip').mobile_tap()
         self.altdriver.wait_for_element('Button_Yes').mobile_tap()
-    
-    def verify_skip_tutorial_is_available(self,tutorial=1):
-        button=self.altdriver.wait_for_element('Button_Skip')
+
+    def verify_skip_tutorial_is_available(self, tutorial=1):
+        button = self.altdriver.wait_for_element('Button_Skip')
         button.mobile_tap()
-        if tutorial==1:
-            self.assertEqual(self.altdriver.wait_for_element('QuestionPopup(Clone)/Text_Message').get_component_property('TMPro.TextMeshProUGUI','text','Unity.TextMeshPro'),'Do you really want to skip \nBasic Tutorial?')
+        if tutorial == 1:
+            self.assertEqual(self.altdriver.wait_for_element('QuestionPopup(Clone)/Text_Message').get_component_property(
+                'TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro'), 'Do you really want to skip \nBasic Tutorial?')
         else:
-            self.assertEqual(self.altdriver.wait_for_element('QuestionPopup(Clone)/Text_Message').get_component_property('TMPro.TextMeshProUGUI','text','Unity.TextMeshPro'),'Do you really want to skip \nAdvanced Tutorial?')
+            self.assertEqual(self.altdriver.wait_for_element('QuestionPopup(Clone)/Text_Message').get_component_property(
+                'TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro'), 'Do you really want to skip \nAdvanced Tutorial?')
         self.altdriver.wait_for_element('Button_Yes')
         self.altdriver.wait_for_element('Button_No').mobile_tap()
 
-    def basic_tutorial_steps(self,step,tutorial):
-        if tutorial==1:
+    def basic_tutorial_steps(self, step, tutorial):
+        if tutorial == 1:
             print('==> basic tutorial - step ' + str(step))
             print('----------------------------------------')
-            step_function=self.steps_first_tutorial.get(step)
+            step_function = self.steps_first_tutorial.get(step)
         else:
             print('==> advanced tutorial - step ' + str(step))
-            step_function=self.steps_second_tutorial.get(step)
+            step_function = self.steps_second_tutorial.get(step)
         print(step_function)
-        step_function(self,step,tutorial)
+        step_function(self, step, tutorial)
 
-
-    def go_though_all_steps(self,tutorial,steps):
+    def go_though_all_steps(self, tutorial, steps):
         for i in range(steps):
             try:
                 self.wait_for_audio_to_finish()
                 self.verify_skip_tutorial_is_available(tutorial)
-                self.basic_tutorial_steps(i,tutorial)
+                self.basic_tutorial_steps(i, tutorial)
             except Exception:
-                print('./screenshots/tutorial-'+str(tutorial)+'-step-'+str(i)+'.png')
-                self.driver.save_screenshot('./screenshots/tutorial-'+str(tutorial)+'-step-'+str(i)+'.png')
-                raise 
-    
-    def go_though_all_steps_without_waiting_for_audio(self,tutorial,steps):
-        for i in range(steps):          
+                print('./screenshots/tutorial-' +
+                      str(tutorial)+'-step-'+str(i)+'.png')
+                self.driver.save_screenshot(
+                    './screenshots/tutorial-'+str(tutorial)+'-step-'+str(i)+'.png')
+                raise
+
+    def go_though_all_steps_without_waiting_for_audio(self, tutorial, steps):
+        for i in range(steps):
             try:
                 time.sleep(1)
                 self.verify_skip_tutorial_is_available(tutorial)
-                self.basic_tutorial_steps(i,tutorial)
+                self.basic_tutorial_steps(i, tutorial)
             except Exception:
-                print('./screenshots/tutorial-'+str(tutorial)+'-step-'+str(i)+'.png')
-                self.driver.save_screenshot('./screenshots/tutorial-'+str(tutorial)+'-step-'+str(i)+'.png')
-                raise 
+                print('./screenshots/tutorial-' +
+                      str(tutorial)+'-step-'+str(i)+'.png')
+                self.driver.save_screenshot(
+                    './screenshots/tutorial-'+str(tutorial)+'-step-'+str(i)+'.png')
+                raise
 
     def wait_to_start_tutorial(self):
         self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
         self.altdriver.wait_for_element("NPC")
+
 
 if __name__ == '__main__':
     unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
