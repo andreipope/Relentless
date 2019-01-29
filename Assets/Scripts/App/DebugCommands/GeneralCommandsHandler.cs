@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler(Description = "Skips tutorial if you inside it")]
-        private static void SkipTutorialFlow()
+        public static void SkipTutorialFlow()
         {
             if (!GameClient.Get<ITutorialManager>().IsTutorial)
                 return;
