@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const string VaultEmptyErrorCode = "NotFound";
 
-        public const bool DevModeEnabled = true;
+        public const bool DevModeEnabled = false;
 
         public const bool GameStateValidationEnabled = true;
 
