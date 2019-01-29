@@ -494,7 +494,26 @@ namespace Loom.ZombieBattleground
                          compareLogic.Config.ExpectedName = "LocalState";
                          ComparisonResult comparisonResult = compareLogic.Compare(currentGameState, pvpControlGameState);
                          if (!comparisonResult.AreEqual)
-                             throw new Exception("Game state de-sync:\n" + comparisonResult.DifferencesString);
+                         {
+                             GameStateDesyncException desyncException = new GameStateDesyncException(comparisonResult.DifferencesString);
+                             UserReportingScript.Instance.SummaryInput.text = "PvP De-sync Detected";
+#if USE_PRODUCTION_BACKEND
+                             Debug.LogError(desyncException);
+
+                             if (!_gameplayManager.IsDesyncDetected)
+                             {
+                                 _gameplayManager.IsDesyncDetected = true;
+                                 UserReportingScript.Instance.CreateUserReport(
+                                     true,
+                                     false,
+                                     desyncException.GetType().ToString(),
+                                     desyncException.ToString()
+                                 );
+                             }
+#else
+                             throw desyncException;
+#endif
+                         }
                      }
 
                      EndTurn();
@@ -1016,6 +1035,8 @@ namespace Loom.ZombieBattleground
                     List<WorkingCard> cards = new List<WorkingCard>();
                     cards.AddRange(_gameplayManager.OpponentPlayer.CardsInDeck);
                     cards.AddRange(_gameplayManager.CurrentPlayer.CardsInDeck);
+                    cards.AddRange(_gameplayManager.OpponentPlayer.CardsInHand);
+                    cards.AddRange(_gameplayManager.CurrentPlayer.CardsInHand);
 
                     WorkingCard card = cards.Find(u => u.InstanceId == id);
 

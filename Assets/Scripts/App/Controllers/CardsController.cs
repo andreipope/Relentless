@@ -684,22 +684,6 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
 
-            int indexOfCard = 0;
-            float newCreatureCardPosition = card.Transform.position.x;
-
-            // set correct position on board depends from card view position
-            for (int i = 0; i < player.BoardCards.Count; i++)
-            {
-                if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
-                {
-                    indexOfCard = i + 1;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
             GameObject board = player.IsLocalPlayer ? _playerBoard : _opponentBoard;
 
             BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), board.transform);
@@ -723,7 +707,7 @@ namespace Loom.ZombieBattleground
 
             player.AddCardToBoard(card.WorkingCard, ItemPosition.End);
             player.RemoveCardFromHand(card.WorkingCard);
-            player.BoardCards.Insert(indexOfCard, boardUnitView);
+            player.BoardCards.Insert(ItemPosition.End, boardUnitView);
 
             InternalTools.DoActionDelayed(() =>
             {

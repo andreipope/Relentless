@@ -214,7 +214,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void SetLoginAsGuestState (string GUID = null)
+        public void SetLoginAsGuestState(string GUID = null)
         {
             _lastGUID = GUID;
             SetUIState(LoginState.LoginAsGuest);
@@ -225,7 +225,7 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.LoginFromCurrentSetOfData);
         }
 
-        public void SetLoginFieldsData (string _email, string _password)
+        public void SetLoginFieldsData(string _email, string _password)
         {
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
@@ -432,7 +432,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void RegisterProcess ()
+        private async void RegisterProcess()
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
@@ -593,7 +593,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void CompleteLoginFromCurrentSetUserData () {
+        private async void CompleteLoginFromCurrentSetUserData()
+        {
             SetUIState(LoginState.ValidateAndLogin);
 
             try
@@ -639,6 +640,10 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
+#if USE_REBALANCE_BACKEND
+                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
+                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+#else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
                 (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
 
@@ -660,6 +665,7 @@ namespace Loom.ZombieBattleground
                         GameClient.Get<ITutorialManager>().StartTutorial();
                     }
                 }
+#endif
             }
             else
             {
