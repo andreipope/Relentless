@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform => GameObject?.transform;
 
-        public GameObject GameObject { get; set; }
+        public GameObject GameObject { get; private set; }
 
         public bool WasDestroyed { get; set; }
 
@@ -168,6 +168,21 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
             CheckOnDie();
+        }
+
+        public void DisposeGameObject()
+        {
+            Debug.LogWarning("GameObject of BoardUnitView was disposed");
+
+            Transform.DOKill();
+            Object.Destroy(GameObject);
+        }
+
+        public void ForceSetGameObject(GameObject overrideObject)
+        {
+            Debug.LogWarning("GameObject of BoardUnitView was overrided. from: " + GameObject + " on: " + overrideObject);
+
+            GameObject = overrideObject;
         }
 
         public void SetObjectInfo(WorkingCard card)
@@ -274,7 +289,7 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitOnUnitFromDeckRemoved()
         {
-            Object.Destroy(GameObject);
+            DisposeGameObject();
         }
 
         private void BoardUnitOnCreaturePlayableForceSet()
@@ -543,10 +558,14 @@ namespace Loom.ZombieBattleground
                     false, true);
                 }
 
+
+                // FIXME: WTF we have logic based on card name?
                 if (Model.Card.LibraryCard.Name.Equals("Freezzee"))
                 {
-                    List<BoardUnitView> freezzees = Model.GetEnemyUnitsList(Model)
-                    .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
+                    IReadOnlyList<BoardUnitView> freezzees =
+                        Model
+                            .GetEnemyUnitsList(Model)
+                            .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
 
                     if (freezzees.Count > 0)
                     {
@@ -802,16 +821,6 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow.Dispose();
                     _fightTargetingArrow = null;
                 }
-            }
-        }
-
-        private void CheckIsCanDie(object[] param)
-        {
-            if (_arrivalDone)
-            {
-                _timerManager.StopTimer(CheckIsCanDie);
-
-                Model.RemoveUnitFromBoard();
             }
         }
 

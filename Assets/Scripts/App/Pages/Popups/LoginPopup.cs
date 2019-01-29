@@ -214,7 +214,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void SetLoginAsGuestState (string GUID = null)
+        public void SetLoginAsGuestState(string GUID = null)
         {
             _lastGUID = GUID;
             SetUIState(LoginState.LoginAsGuest);
@@ -225,7 +225,7 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.LoginFromCurrentSetOfData);
         }
 
-        public void SetLoginFieldsData (string _email, string _password)
+        public void SetLoginFieldsData(string _email, string _password)
         {
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
@@ -432,7 +432,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void RegisterProcess ()
+        private async void RegisterProcess()
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
@@ -446,7 +446,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 SetUIState(LoginState.ValidationFailed, "Registration was failed.\nPlease try again later.");
 
@@ -561,7 +561,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
 
@@ -571,7 +571,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
 
@@ -593,7 +593,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void CompleteLoginFromCurrentSetUserData () {
+        private async void CompleteLoginFromCurrentSetUserData()
+        {
             SetUIState(LoginState.ValidateAndLogin);
 
             try
@@ -611,7 +612,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
@@ -620,7 +621,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(e);
 
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true, false);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
@@ -639,6 +640,10 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
+#if USE_REBALANCE_BACKEND
+                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
+                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+#else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
                 (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
 
@@ -660,6 +665,7 @@ namespace Loom.ZombieBattleground
                         GameClient.Get<ITutorialManager>().StartTutorial();
                     }
                 }
+#endif
             }
             else
             {
@@ -721,7 +727,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (_backendFacade.BackendEndpoint.IsMaintenaceMode && _state != LoginState.ValidationFailed)
+            if (_backendFacade.BackendEndpoint.IsMaintenanceMode && _state != LoginState.ValidationFailed)
             {
                 _lastPopupState = _state;
                 SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForMaintenanceMode);

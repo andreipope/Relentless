@@ -155,6 +155,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float OverlordTalkingPopupDuration = 2f;
 
+        internal const float HandPointerSpeed = 4f;
+
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
 
@@ -178,6 +180,8 @@ namespace Loom.ZombieBattleground.Common
         public const string VaultEmptyErrorCode = "NotFound";
 
         public const bool DevModeEnabled = false;
+
+        public const bool GameStateValidationEnabled = true;
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

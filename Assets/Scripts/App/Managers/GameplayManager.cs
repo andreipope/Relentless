@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsPreparingEnded { get; set; }
 
+        public bool IsDesyncDetected { get; set; }
+
         public Player CurrentTurnPlayer { get; set; }
 
         public Player CurrentPlayer { get; set; }
@@ -164,6 +166,7 @@ namespace Loom.ZombieBattleground
                     IsGameStarted = true;
                     IsGameEnded = false;
                     IsPreparingEnded = false;
+                    IsDesyncDetected = false;
 
                     CanDoDragActions = true;
 
@@ -309,6 +312,7 @@ namespace Loom.ZombieBattleground
                         _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId;
                     GetController<PlayerController>().InitializePlayer(new InstanceId(localPlayerHasZeroIndex ? 0 : 1));
                     GetController<OpponentController>().InitializePlayer(new InstanceId(!localPlayerHasZeroIndex ? 0 : 1));
+                    AvoidGooCost = _pvpManager.DebugCheats.Enabled && _pvpManager.DebugCheats.IgnoreGooRequirements;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
@@ -402,9 +406,9 @@ namespace Loom.ZombieBattleground
                         OpponentPlayer.SetFirstHandForLocalMatch(false);
                         break;
                     case Enumerators.MatchType.PVP:
-                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
+                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsFirstPlayer() ? CurrentPlayer : OpponentPlayer;
                         List<WorkingCard> opponentCardsInHand =
-                            OpponentPlayer.PvPPlayerState.CardsInHand
+                            OpponentPlayer.InitialPvPPlayerState.CardsInHand
                                 .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KellermanSoftware.CompareNetObjects;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -33,7 +34,7 @@ namespace Loom.ZombieBattleground
         public event Action GameEndedActionReceived;
 
         // gameplay actions
-        public event Action EndTurnActionReceived;
+        public event Action<Protobuf.GameState> EndTurnActionReceived;
 
         public event Action<PlayerActionCardPlay> CardPlayedActionReceived;
 
@@ -46,6 +47,8 @@ namespace Loom.ZombieBattleground
         public event Action<PlayerActionMulligan> MulliganProcessUsedActionReceived;
 
         public event Action<PlayerActionRankBuff> RankBuffActionReceived;
+
+        public event Action<PlayerActionCheatDestroyCardsOnBoard> CheatDestroyCardsOnBoardActionReceived;
 
         public event Action<PlayerActionOutcome> PlayerActionOutcomeReceived;
 
@@ -102,7 +105,28 @@ namespace Loom.ZombieBattleground
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
-                    await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+
+                    try
+                    {
+                        await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+                    }
+                    catch (TimeoutException exception)
+                    {
+                        Helpers.ExceptionReporter.LogException(exception);
+                        Debug.LogWarning(" Time out == " + exception);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                    }
+                    catch (Client.RpcClientException exception)
+                    {
+                        Helpers.ExceptionReporter.LogException(exception);
+                        Debug.LogWarning(" RpcException == " + exception);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                    }
+                    catch (Exception exception)
+                    {
+                        Helpers.ExceptionReporter.LogException(exception);
+                        Debug.LogWarning(" other == " + exception);
+                    }
                 }
             }
 
@@ -116,7 +140,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public bool IsCurrentPlayer()
+        public bool IsFirstPlayer()
         {
             return InitialGameState.PlayerStates[InitialGameState.CurrentPlayerIndex].Id ==
                 _backendDataControlMediator.UserDataModel.UserId;
@@ -235,6 +259,18 @@ namespace Loom.ZombieBattleground
             {
                 await func();
             }
+            catch (TimeoutException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" Time out == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+            }
+            catch (Client.RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+            }
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
@@ -246,24 +282,16 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand) 
         {
-            player.CardsInHand = new List<WorkingCard>();
-
-            foreach (CardInstance cardInstance in cardsInHand)
-            {
-                player.CardsInHand.Add(cardInstance.FromProtobuf(player));
-            }
+            player.CardsInHand.Clear();
+            player.CardsInHand.InsertRange(ItemPosition.Start, cardsInHand.Select(card => card.FromProtobuf(player)));
 
             player.ThrowOnHandChanged();
         }
 
         private void UpdateCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
         {
-            player.CardsInDeck = new List<WorkingCard>();
-
-            foreach (CardInstance cardInstance in cardsInDeck)
-            {
-                player.CardsInDeck.Add(cardInstance.FromProtobuf(player));
-            }
+            player.CardsInDeck.Clear();
+            player.CardsInDeck.InsertRange(ItemPosition.Start, cardsInDeck.Select(card => card.FromProtobuf(player)));
 
             Debug.Log("Updating player cards");
             Debug.Log(player.CardsInDeck.Count);
@@ -327,14 +355,20 @@ namespace Loom.ZombieBattleground
                                 state.Id == _backendDataControlMediator.UserDataModel.UserId);
                                                                                                             
                                 for (int i = 0; i < 3; i++) {
-                                    playerState.CardsInDeck.Insert(0, playerState.CardsInHand[i]);
+                                    playerState.CardsInDeck.Add(playerState.CardsInHand[i]);
                                 }
 
                                 UpdateCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
 
                                 _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.CardsPreparingToHand);
+                            } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
+                            {
+                                OnReceivePlayerActionType(playerActionEvent);
                             }
-                            return;
+                            else
+                            {
+                                return;
+                            }
                         } else {
                             if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
@@ -404,7 +438,7 @@ namespace Loom.ZombieBattleground
                 case PlayerActionType.Types.Enum.None:
                     break;
                 case PlayerActionType.Types.Enum.EndTurn:
-                    EndTurnActionReceived?.Invoke();
+                    EndTurnActionReceived?.Invoke(playerActionEvent.PlayerAction.ControlGameState);
                     break;
                 case PlayerActionType.Types.Enum.Mulligan:
                     MulliganProcessUsedActionReceived?.Invoke(playerActionEvent.PlayerAction.Mulligan);
@@ -427,6 +461,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionType.Types.Enum.RankBuff:
                     RankBuffActionReceived?.Invoke(playerActionEvent.PlayerAction.RankBuff);
+                    break;
+                case PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard:
+                    CheatDestroyCardsOnBoardActionReceived?.Invoke(playerActionEvent.PlayerAction.CheatDestroyCardsOnBoard);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(
