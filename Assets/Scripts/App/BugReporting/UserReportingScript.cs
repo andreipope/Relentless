@@ -143,7 +143,7 @@ public class UserReportingScript : MonoBehaviour
     private bool _isCrashing;
 
     private string _exceptionStacktrace;
-
+    private string _exceptionCondition;
 
     #endregion
 
@@ -248,19 +248,22 @@ public class UserReportingScript : MonoBehaviour
         // Set Creating Flag
         this.isCreatingUserReport = true;
 
-        if (!String.IsNullOrEmpty(_exceptionStacktrace))
-        {
-            Debug.LogWarning(_exceptionStacktrace);
-        }
-
         // Take Main Screenshot
         UnityUserReporting.CurrentClient.TakeScreenshot(1280, 1280, s => { });
 
         // Take Thumbnail Screenshot
         UnityUserReporting.CurrentClient.TakeScreenshot(256, 256, s => { });
 
-        // Attempt to get match id
+        if (isCrashReport)
+        {
+            if (_exceptionCondition.Contains(nameof(GameStateDesyncException)) ||
+                _exceptionStacktrace.Contains(nameof(GameStateDesyncException)))
+            {
+                SummaryInput.text = "PvP De-sync Detected";
+            }
+        }
 
+        // Attempt to get match id
         long? matchId = null;
         if (GameClient.Get<IMatchManager>()?.MatchType == Enumerators.MatchType.PVP)
         {
@@ -304,13 +307,7 @@ public class UserReportingScript : MonoBehaviour
             // Attachments
             if (!String.IsNullOrEmpty(_exceptionStacktrace))
             {
-                br.Attachments.Add(
-                    new UserReportAttachment(
-                        "Exception",
-                        "Exception.txt",
-                        "text/plain",
-                        global::System.Text.Encoding.UTF8.GetBytes(_exceptionStacktrace)
-                        ));
+                AddTextAttachment(br, "Exception", _exceptionStacktrace);
             }
 
             // Fields
@@ -417,6 +414,7 @@ public class UserReportingScript : MonoBehaviour
 
         _isCrashing = true;
         _exceptionStacktrace = stacktrace;
+        _exceptionCondition = condition;
         StartCoroutine(DelayedCreateBugReport(true));
     }
 
@@ -568,4 +566,17 @@ public class UserReportingScript : MonoBehaviour
     }
 
     #endregion
+
+    private void AddTextAttachment(UserReport report, string name, string text)
+    {
+        // Convert to Windows encoding for easy viewing
+        text = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
+        report.Attachments.Add(
+            new UserReportAttachment(
+                name,
+                name + ".txt",
+                "text/plain",
+                System.Text.Encoding.UTF8.GetBytes(text)
+            ));
+    }
 }
