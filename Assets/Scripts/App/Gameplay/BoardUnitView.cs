@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground
 
         public void DisposeGameObject()
         {
-            Debug.LogWarning("GameObject of BoardUnitView was disposed");
+            Debug.Log($"GameObject of BoardUnitView was disposed");
 
             Transform.DOKill();
             Object.Destroy(GameObject);
@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground
 
         public void ForceSetGameObject(GameObject overrideObject)
         {
-            Debug.LogWarning("GameObject of BoardUnitView was overrided. from: " + GameObject + " on: " + overrideObject);
+            Debug.Log($"GameObject of BoardUnitView was overrided. from: {GameObject} on: {overrideObject}");
 
             GameObject = overrideObject;
         }

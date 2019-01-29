@@ -482,6 +482,8 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction (true);
 
+                                   _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, boardObject);
+
                                    _boardController.UpdateWholeBoard(() =>
                                    {
                                        onCompleteCallback?.Invoke(true);
@@ -530,6 +532,8 @@ namespace Loom.ZombieBattleground
                                                }, 1.5f);
                                            }
 
+
+                                           _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, boardObject, "Entry");
 
                                            BlockEndTurnButton = false;
 
@@ -596,6 +600,8 @@ namespace Loom.ZombieBattleground
                                    }
 
                                    _activeAbility.Ability.SelectedTargetAction(true);
+
+                                   _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, boardObject);
 
                                    _boardController.UpdateWholeBoard(() =>
                                    {
