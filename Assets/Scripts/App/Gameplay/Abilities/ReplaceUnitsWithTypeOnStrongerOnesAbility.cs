@@ -94,9 +94,16 @@ namespace Loom.ZombieBattleground
 
         private void GenerateNewUnitsOnBoard()
         {
+            BoardUnitView unit;
+            ItemPosition itemPosition;
             foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
-                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, new ItemPosition(unitInfo.Position));
+                itemPosition = new ItemPosition(unitInfo.Position);
+                unit = CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, itemPosition);
+                if (unit != null)
+                {
+                    AddUnitToBoardCards(unitInfo.OwnerPlayer, itemPosition, unit);
+                }
             }
         }
 
@@ -177,6 +184,18 @@ namespace Loom.ZombieBattleground
             }
 
             replaceUnitInfo.NewUnitCardTitle = possibleUnits[UnityEngine.Random.Range(0, possibleUnits.Count)].Name;
+        }
+
+        private void AddUnitToBoardCards(Player owner, ItemPosition position, BoardUnitView unit)
+        {
+            if (owner.IsLocalPlayer)
+            {
+                BattlegroundController.PlayerBoardCards.Insert(position, unit);
+            }
+            else
+            {
+                BattlegroundController.OpponentBoardCards.Insert(position, unit);
+            }
         }
 
         public class ReplaceUnitInfo
