@@ -1016,6 +1016,8 @@ namespace Loom.ZombieBattleground
                     List<WorkingCard> cards = new List<WorkingCard>();
                     cards.AddRange(_gameplayManager.OpponentPlayer.CardsInDeck);
                     cards.AddRange(_gameplayManager.CurrentPlayer.CardsInDeck);
+                    cards.AddRange(_gameplayManager.OpponentPlayer.CardsInHand);
+                    cards.AddRange(_gameplayManager.CurrentPlayer.CardsInHand);
 
                     WorkingCard card = cards.Find(u => u.InstanceId == id);
 
