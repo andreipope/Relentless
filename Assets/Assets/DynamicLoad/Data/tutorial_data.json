@@ -2555,7 +2555,10 @@
           ],
           "TutorialDescriptionTooltipsToDeactivate": [
             2
-          ]
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            4
+          ],
         },
         {
           "OpenScreen": "HordeEditingPage",
@@ -2655,7 +2658,19 @@
             "Z": 0.0
           },
           "TutorialTooltipLayer": "AbovePages"
-        }
+        },
+        {
+          "Id": 4,
+          "TutorialTooltipAlign": "TopMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Select this text to rename your Horde.",
+          "Position": {
+            "X": -3.45,
+            "Y": 6.35,
+            "Z": 0
+          },
+          "TutorialTooltipLayer": "AbovePages"
+        },
       ],
       "ActionActivityHandlers": [
         {

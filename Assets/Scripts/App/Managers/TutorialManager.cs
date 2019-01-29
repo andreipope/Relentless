@@ -66,6 +66,8 @@ namespace Loom.ZombieBattleground
 
         public bool PlayerWon { get; set; }
 
+        public bool UnfinishedTutorial { get; set; }
+
         public int TutorialsCount
         {
             get { return _tutorials.Count; }
@@ -224,6 +226,7 @@ namespace Loom.ZombieBattleground
             }
             BattleShouldBeWonBlocker = false;
             PlayerWon = false;
+            UnfinishedTutorial = false;
 
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
@@ -315,7 +318,10 @@ namespace Loom.ZombieBattleground
 
             ClearToolTips();
 
-            _dataManager.CachedUserLocalData.CurrentTutorialId++;
+            if (!UnfinishedTutorial)
+            {
+                _dataManager.CachedUserLocalData.CurrentTutorialId++;
+            }
 
             if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
             {
