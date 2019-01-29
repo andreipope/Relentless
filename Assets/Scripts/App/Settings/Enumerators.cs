@@ -835,6 +835,8 @@ namespace Loom.ZombieBattleground.Common
             BattleStarted,
 
             CardWithAbilityPlayed,
+            CardWithHeavyPlayed,
+            CardWithFeralPlayed
         }
 
         public enum TutorialActivityActionHandler
@@ -871,7 +873,8 @@ namespace Loom.ZombieBattleground.Common
         {
             Default,
             AbovePages,
-            AbovePopups
+            AbovePopups,
+            AboveUI
         }
     }
 }

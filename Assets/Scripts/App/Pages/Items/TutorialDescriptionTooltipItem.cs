@@ -175,6 +175,12 @@ namespace Loom.ZombieBattleground
                     _currentBattleground.sortingOrder = 1;
                     _textDescription.renderer.sortingOrder = 2;
                     break;
+                case Enumerators.TutorialObjectLayer.AboveUI:
+                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI3;
+                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI3;
+                    _currentBattleground.sortingOrder = 1;
+                    _textDescription.renderer.sortingOrder = 2;
+                    break;
                 default:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
                     _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;

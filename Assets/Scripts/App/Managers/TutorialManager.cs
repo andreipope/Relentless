@@ -717,7 +717,8 @@ namespace Loom.ZombieBattleground
                                            (Vector3)tooltip.Position,
                                            tooltip.Resizable,
                                            tooltip.AppearDelay,
-                                           tooltip.DynamicPosition);
+                                           tooltip.DynamicPosition,
+                                           tooltip.TutorialTooltipLayer);
                 }
             }
 
@@ -1091,7 +1092,8 @@ namespace Loom.ZombieBattleground
                                        position,
                                        tooltipInfo.Resizable,
                                        tooltipInfo.AppearDelay,
-                                       tooltipInfo.DynamicPosition);
+                                       tooltipInfo.DynamicPosition,
+                                       tooltipInfo.TutorialTooltipLayer);
             }
             else
             {
