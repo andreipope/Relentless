@@ -53,6 +53,11 @@ namespace Loom.ZombieBattleground
 
         #region UI Handlers
 
+        public void SubmitBugReport()
+        {
+            UserReportingScript.Instance.CreateUserReport();
+        }
+
         public void OpenDebugConsole()
         {
             _afpsCounter.OperationMode = OperationMode.Disabled;

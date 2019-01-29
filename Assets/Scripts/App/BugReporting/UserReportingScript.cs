@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using Unity.Cloud.UserReporting;
 using Unity.Cloud.UserReporting.Plugin;
@@ -91,12 +92,6 @@ public class UserReportingScript : MonoBehaviour
     public bool IsHotkeyEnabled;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the user report prefab is in silent mode. Silent mode does not show the user report form.
-    /// </summary>
-    [Tooltip("A value indicating whether the user report prefab is in silent mode. Silent mode does not show the user report form.")]
-    public bool IsInSilentMode;
-
-    /// <summary>
     /// Gets or sets a value indicating whether the user report client reports metrics about itself.
     /// </summary>
     [Tooltip("A value indicating whether the user report client reports metrics about itself.")]
@@ -142,12 +137,14 @@ public class UserReportingScript : MonoBehaviour
 
     private bool _isCrashing;
 
-    private string _exceptionStacktrace;
-    private string _exceptionCondition;
+    private string _exceptionStacktrace = "";
+    private string _exceptionCondition = "";
 
     #endregion
 
     #region Properties
+
+    public static UserReportingScript Instance { get; private set; }
 
     /// <summary>
     /// Gets the current user report.
@@ -163,7 +160,7 @@ public class UserReportingScript : MonoBehaviour
         {
             if (this.CurrentUserReport != null)
             {
-                if (this.IsInSilentMode)
+                if (this.IsSilent)
                 {
                     return UserReportingState.Idle;
                 }
@@ -189,6 +186,9 @@ public class UserReportingScript : MonoBehaviour
             }
         }
     }
+
+    // Silent mode does not show the user report form.
+    public bool IsSilent { get; set; }
 
     #endregion
 
@@ -224,9 +224,168 @@ public class UserReportingScript : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets a value indicating whether the user report is submitting.
+    /// </summary>
+    /// <returns>A value indicating whether the user report is submitting.</returns>
+    public bool IsSubmitting()
+    {
+        return this.isSubmitting;
+    }
+
+    private void SetThumbnail(UserReport userReport)
+    {
+        if (userReport != null && this.ThumbnailViewer != null)
+        {
+            byte[] data = Convert.FromBase64String(userReport.Thumbnail.DataBase64);
+            Texture2D texture = new Texture2D(1, 1);
+            texture.LoadImage(data);
+            this.ThumbnailViewer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5F, 0.5F));
+            this.ThumbnailViewer.preserveAspect = true;
+        }
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+        DontDestroyOnLoad(transform.root.gameObject);
+
+#if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
+        Application.logMessageReceived += OnLogMessageReceived;
+#endif
+    }
+
+    private void OnLogMessageReceived(string condition, string stacktrace, LogType type)
+    {
+        if (type != LogType.Exception || _isCrashing)
+            return;
+
+        CreateUserReport(false, true, condition, stacktrace);
+    }
+
+    public void CreateUserReport(bool isSilent, bool isCrashing, string exceptionCondition, string exceptionStacktrace)
+    {
+        IsSilent = isSilent;
+        _isCrashing = isCrashing;
+        _exceptionStacktrace = exceptionStacktrace;
+        _exceptionCondition = exceptionCondition;
+        Debug.Log($"Starting submitting report, isSilent: {isSilent}, isCrashing: {isCrashing}");
+        StartCoroutine(DelayedCreateBugReport());
+    }
+
+    public void CreateUserReport()
+    {
+        CreateUserReport(false, false, "", "");
+    }
+
+        /// <summary>
+    /// Submits the user report.
+    /// </summary>
+    public void SubmitUserReport()
+    {
+        // Preconditions
+        if (this.isSubmitting || this.CurrentUserReport == null)
+        {
+            return;
+        }
+
+        // Set Submitting Flag
+        this.isSubmitting = true;
+
+        // Set Summary
+        if (this.SummaryInput != null)
+        {
+            this.CurrentUserReport.Summary = this.SummaryInput.text;
+        }
+
+        // Set Category
+        if (this.CategoryDropdown != null)
+        {
+            Dropdown.OptionData optionData = this.CategoryDropdown.options[this.CategoryDropdown.value];
+            string category = optionData.text;
+            this.CurrentUserReport.Dimensions.Add(new UserReportNamedValue("Category", category));
+            this.CurrentUserReport.Fields.Add(new UserReportNamedValue("Category", category));
+        }
+
+        // Set Description
+        // This is how you would add additional fields.
+        if (this.DescriptionInput != null)
+        {
+            UserReportNamedValue userReportField = new UserReportNamedValue();
+            userReportField.Name = "Description";
+            userReportField.Value = this.DescriptionInput.text;
+            this.CurrentUserReport.Fields.Add(userReportField);
+        }
+
+        // Clear Form
+        this.ClearForm();
+
+        // Raise Event
+        this.RaiseUserReportSubmitting();
+
+        // Send Report
+        UnityUserReporting.CurrentClient.SendUserReport(this.CurrentUserReport, (uploadProgress, downloadProgress) =>
+        {
+            if (this.ProgressText != null)
+            {
+                string progressText = uploadProgress.ToString("0%");
+                this.ProgressText.text = progressText;
+            }
+        }, (success, br2) =>
+        {
+            Debug.Log("Successfully sent bug report: " + success);
+
+            if (!success)
+            {
+                this.isShowingError = true;
+                this.StartCoroutine(this.ClearError());
+            }
+
+            this.CurrentUserReport = null;
+            this.isSubmitting = false;
+
+            if (_isCrashing)
+            {
+                ExitApplication();
+            }
+        });
+    }
+
+    private IEnumerator DelayedCreateBugReport()
+    {
+        yield return new WaitForEndOfFrame();
+        CreateUserReportInternal();
+    }
+
+    private void Start()
+    {
+        // Set Up Event System
+        if (Application.isPlaying)
+        {
+            EventSystem sceneEventSystem = UnityEngine.Object.FindObjectOfType<EventSystem>();
+            if (sceneEventSystem == null)
+            {
+                GameObject eventSystem = new GameObject("EventSystem");
+                eventSystem.AddComponent<EventSystem>();
+                eventSystem.AddComponent<StandaloneInputModule>();
+            }
+        }
+
+        // Configure Client
+        // This where you would want to change endpoints, override your project identifier, or provide configuration for events, metrics, and screenshots.
+        if (UnityUserReporting.CurrentClient == null)
+        {
+            UnityUserReporting.Configure();
+        }
+
+        _afpsCounter = FindObjectOfType<AFPSCounter>();
+        if (_afpsCounter == null)
+            throw new Exception("AFPSCounter instance not found in scene");
+    }
+
+        /// <summary>
     /// Creates a user report.
     /// </summary>
-    public void CreateUserReport(bool isCrashReport)
+    private void CreateUserReportInternal()
     {
         // Check Creating Flag
         if (this.isCreatingUserReport)
@@ -240,10 +399,10 @@ public class UserReportingScript : MonoBehaviour
             _afpsCounter.OperationMode = OperationMode.Background;
         }
 
-        BugReportFormCancelButton.gameObject.SetActive(!isCrashReport);
-        BugReportFormExitButton.gameObject.SetActive(isCrashReport);
-        BugReportFormCrashText.gameObject.SetActive(isCrashReport);
-        CrashBackupObjectsRoot.SetActive(isCrashReport);
+        BugReportFormCancelButton.gameObject.SetActive(!_isCrashing);
+        BugReportFormExitButton.gameObject.SetActive(_isCrashing);
+        BugReportFormCrashText.gameObject.SetActive(_isCrashing);
+        CrashBackupObjectsRoot.SetActive(_isCrashing);
 
         // Set Creating Flag
         this.isCreatingUserReport = true;
@@ -254,15 +413,6 @@ public class UserReportingScript : MonoBehaviour
         // Take Thumbnail Screenshot
         UnityUserReporting.CurrentClient.TakeScreenshot(256, 256, s => { });
 
-        if (isCrashReport)
-        {
-            if (_exceptionCondition.Contains(nameof(GameStateDesyncException)) ||
-                _exceptionStacktrace.Contains(nameof(GameStateDesyncException)))
-            {
-                SummaryInput.text = "PvP De-sync Detected";
-            }
-        }
-
         // Attempt to get match id
         long? matchId = null;
         if (GameClient.Get<IMatchManager>()?.MatchType == Enumerators.MatchType.PVP)
@@ -271,7 +421,7 @@ public class UserReportingScript : MonoBehaviour
         }
 
         // Kill everything else to make sure no more exceptions are being thrown
-        if (isCrashReport)
+        if (_isCrashing)
         {
             Scene[] scenes = new Scene[SceneManager.sceneCount];
             for (int i = 0; i < SceneManager.sceneCount; ++i)
@@ -283,7 +433,7 @@ public class UserReportingScript : MonoBehaviour
                 scenes
                     .Concat(new[]
                     {
-                            gameObject.scene
+                        gameObject.scene
                     })
                     .Distinct()
                     .SelectMany(scene => scene.GetRootGameObjects())
@@ -356,7 +506,7 @@ public class UserReportingScript : MonoBehaviour
 
             br.Dimensions.Add(new UserReportNamedValue("Platform.Version", string.Format("{0}.{1}", platform, version)));
 
-            br.Dimensions.Add(new UserReportNamedValue("IsCrashReport", isCrashReport.ToString()));
+            br.Dimensions.Add(new UserReportNamedValue("IsCrashReport", _isCrashing.ToString()));
 
             br.Dimensions.Add(new UserReportNamedValue("GitBranch", BuildMetaInfo.Instance.GitBranchName));
 
@@ -370,155 +520,9 @@ public class UserReportingScript : MonoBehaviour
             this.SetThumbnail(br);
 
             // Submit Immediately in Silent Mode
-            if (this.IsInSilentMode)
+            if (this.IsSilent)
             {
                 this.SubmitUserReport();
-            }
-        });
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the user report is submitting.
-    /// </summary>
-    /// <returns>A value indicating whether the user report is submitting.</returns>
-    public bool IsSubmitting()
-    {
-        return this.isSubmitting;
-    }
-
-    private void SetThumbnail(UserReport userReport)
-    {
-        if (userReport != null && this.ThumbnailViewer != null)
-        {
-            byte[] data = Convert.FromBase64String(userReport.Thumbnail.DataBase64);
-            Texture2D texture = new Texture2D(1, 1);
-            texture.LoadImage(data);
-            this.ThumbnailViewer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5F, 0.5F));
-            this.ThumbnailViewer.preserveAspect = true;
-        }
-    }
-
-    private void Awake()
-    {
-        DontDestroyOnLoad(transform.root.gameObject);
-
-#if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
-        Application.logMessageReceived += OnLogMessageReceived;
-#endif
-    }
-
-    private void OnLogMessageReceived(string condition, string stacktrace, LogType type)
-    {
-        if (type != LogType.Exception || _isCrashing)
-            return;
-
-        _isCrashing = true;
-        _exceptionStacktrace = stacktrace;
-        _exceptionCondition = condition;
-        StartCoroutine(DelayedCreateBugReport(true));
-    }
-
-    public IEnumerator DelayedCreateBugReport(bool isCrashReport)
-    {
-        yield return new WaitForEndOfFrame();
-        CreateUserReport(isCrashReport);
-    }
-
-    private void Start()
-    {
-        // Set Up Event System
-        if (Application.isPlaying)
-        {
-            EventSystem sceneEventSystem = UnityEngine.Object.FindObjectOfType<EventSystem>();
-            if (sceneEventSystem == null)
-            {
-                GameObject eventSystem = new GameObject("EventSystem");
-                eventSystem.AddComponent<EventSystem>();
-                eventSystem.AddComponent<StandaloneInputModule>();
-            }
-        }
-
-        // Configure Client
-        // This where you would want to change endpoints, override your project identifier, or provide configuration for events, metrics, and screenshots.
-        if (UnityUserReporting.CurrentClient == null)
-        {
-            UnityUserReporting.Configure();
-        }
-
-        _afpsCounter = FindObjectOfType<AFPSCounter>();
-        if (_afpsCounter == null)
-            throw new Exception("AFPSCounter instance not found in scene");
-    }
-
-    /// <summary>
-    /// Submits the user report.
-    /// </summary>
-    public void SubmitUserReport()
-    {
-        // Preconditions
-        if (this.isSubmitting || this.CurrentUserReport == null)
-        {
-            return;
-        }
-
-        // Set Submitting Flag
-        this.isSubmitting = true;
-
-        // Set Summary
-        if (this.SummaryInput != null)
-        {
-            this.CurrentUserReport.Summary = this.SummaryInput.text;
-        }
-
-        // Set Category
-        if (this.CategoryDropdown != null)
-        {
-            Dropdown.OptionData optionData = this.CategoryDropdown.options[this.CategoryDropdown.value];
-            string category = optionData.text;
-            this.CurrentUserReport.Dimensions.Add(new UserReportNamedValue("Category", category));
-            this.CurrentUserReport.Fields.Add(new UserReportNamedValue("Category", category));
-        }
-
-        // Set Description
-        // This is how you would add additional fields.
-        if (this.DescriptionInput != null)
-        {
-            UserReportNamedValue userReportField = new UserReportNamedValue();
-            userReportField.Name = "Description";
-            userReportField.Value = this.DescriptionInput.text;
-            this.CurrentUserReport.Fields.Add(userReportField);
-        }
-
-        // Clear Form
-        this.ClearForm();
-
-        // Raise Event
-        this.RaiseUserReportSubmitting();
-
-        // Send Report
-        UnityUserReporting.CurrentClient.SendUserReport(this.CurrentUserReport, (uploadProgress, downloadProgress) =>
-        {
-            if (this.ProgressText != null)
-            {
-                string progressText = string.Format("{0:P}", uploadProgress);
-                this.ProgressText.text = progressText;
-            }
-        }, (success, br2) =>
-        {
-            Debug.Log("Successfully sent bug report: " + success);
-
-            if (!success)
-            {
-                this.isShowingError = true;
-                this.StartCoroutine(this.ClearError());
-            }
-
-            this.CurrentUserReport = null;
-            this.isSubmitting = false;
-
-            if (_isCrashing)
-            {
-                ExitApplication();
             }
         });
     }
