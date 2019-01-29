@@ -81,7 +81,7 @@
     },
     "AppearOnce": true,
     "IsEnabled": true,
-    "Tag": "Delayed"
+    "Tag": "DelayedX"
   },
   {
     "Id": 6,
@@ -165,7 +165,7 @@
     },
     "AppearOnce": true,
     "IsEnabled": true,
-    "Tag": "Overflow"
+    "Tag": "OverflowX"
   },
   {
     "Id": 12,
@@ -207,7 +207,7 @@
     },
     "AppearOnce": true,
     "IsEnabled": true,
-    "Tag": "Rage"
+    "Tag": "RageX"
   },
   {
     "Id": 15,

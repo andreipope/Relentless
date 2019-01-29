@@ -432,6 +432,8 @@ namespace Loom.ZombieBattleground
 
         public void AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType gameMechanic)
         {
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, this, gameMechanic.ToString());
+
             if (!GameMechanicDescriptionsOnUnit.Contains(gameMechanic))
             {
                 GameMechanicDescriptionsOnUnit.Add(gameMechanic);

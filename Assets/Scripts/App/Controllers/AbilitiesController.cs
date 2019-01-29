@@ -532,9 +532,6 @@ namespace Loom.ZombieBattleground
                                                }, 1.5f);
                                            }
 
-
-                                           _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, boardObject, "Entry");
-
                                            BlockEndTurnButton = false;
 
                                            action?.Invoke(card);
