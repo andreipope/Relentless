@@ -805,7 +805,7 @@
         {
           "Id": 4,
           "TutorialTooltipAlign": "BottomMiddle",
-          "Description": "You’ve earned another goo\n bottle, and goo you spent\n before is replenished.",
+          "Description": "You’ve earned another goo bottle, and goo you spent before is replenished.",
           "Position": {
             "X": -6.77,
             "Y": -5.28,
@@ -818,7 +818,7 @@
           "Id": 5,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerBattleframe",
-          "Description": "Entry effects happen\n as you play cards,\n just like Items.",
+          "Description": "Entry effects happen as you play cards, just like Items.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -832,7 +832,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
           "TutorialTooltipOwnerId": 52,
-          "Description": "Heavy zombies need\n to be attacked first.",
+          "Description": "Heavy zombies need to be attacked first.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -945,7 +945,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "We’re done here\n lets move it on!",
+              "Description": "We’re done here, let's move it on!",
               "AppearDelay": 10.0
             }
           ],
@@ -1275,7 +1275,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterRight",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Nah, let’s use the Feral"
+                "Description": "Nah, let’s use the Feral."
               }
             },
             {
@@ -1303,7 +1303,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwnerId": 1,
           "TutorialTooltipOwner": "PlayerBattleframe",
-          "Description": "For Toxic, the\n Rank Buff gives\n zombies +1 Atk and\n the Destroy ability.",
+          "Description": "For Toxic, the Rank Buff gives zombies +1 Atk and the Destroy ability.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -1316,7 +1316,7 @@
           "TutorialTooltipAlign": "CenterRight",
           "TutorialTooltipOwnerId": 21,
           "TutorialTooltipOwner": "PlayerBattleframe",
-          "Description": "When higher ranked\n zombies are played,\n they give Rank\n Buffs to lower\n ranking zombies\n from the same\n faction.",
+          "Description": "When higher ranked zombies are played, they give Rank Buffs to lower ranking zombies from the same faction.",
           "Position": {
             "X": -1.15,
             "Y": 0.3,
@@ -1328,7 +1328,7 @@
           "Id": 3,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Zombies damaged by\n zombies with Destroy are\n removed from\n battleground",
+          "Description": "Zombies damaged by zombies with Destroy are removed from the battleground.",
           "Position": {
             "X": 3.75,
             "Y": -1.45,
@@ -1340,19 +1340,19 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerBattleframe",
           "TutorialTooltipOwnerId": 22,
-          "Description": "Zombies with Blitz can\n attack other zombies\n the turn they are played.",
+          "Description": "Zombies with Blitz can attack other zombies the turn they are played.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
             "Z": 0.0
           }
-        },
+        }
       ],
       "TutorialSteps": [
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "The Rank System at work.",
+            "Description": "Let's look at the Rank System at work.",
             "DescriptionTooltipCloseText": "LET’S BEGIN"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
@@ -1372,7 +1372,7 @@
           "RequiredActivitiesToDoneDuringStep": [
             "EnemyOverlordCardPlayed"
           ],
-          "ActionToEndThisStep": "EndTurn",
+          "ActionToEndThisStep": "EndTurn"
         },
         {
           "ConnectedTurnIndex": 2,
@@ -1434,7 +1434,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "We’ll show them with\nOur big Goo Monster!"
+              "Description": "We’ll show them with our GooZilla!"
             }
           ],
           "ConnectedTurnIndex": 4,
@@ -1811,7 +1811,7 @@
             {
               "Name": "Groundy",
               "TutorialObjectId": 54
-            },
+            }
           ],
           "CardsOnBoard": [
           ],
@@ -1833,7 +1833,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
           "TutorialTooltipOwnerId": 52,
-          "Description": "Death effect\n happens when the\n zombie is\n destroyed.",
+          "Description": "Death effects are triggered when the zombie is destroyed.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -1843,7 +1843,7 @@
         {
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
-          "Description": "Gives you the ability\n to Overflow your goo.",
+          "Description": "Gives you the ability to Overflow your goo.",
           "Position": {
             "X": 1.85,
             "Y": 0.3,
@@ -1960,7 +1960,7 @@
             {
               "TutorialTooltipAlign": "CenterRight",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Let’s play Cherno-bill. But we need to Overflow first. Use Tainted Goo."
+              "Description": "Let’s play Cherno-bill. But we need Overflow first. Use Tainted Goo."
             }
           ],
           "ConnectedActivities": [
@@ -2336,7 +2336,7 @@
           "TutorialActivityActionHandlerData": {
             "TutorialTooltipAlign": "CenterLeft",
             "TutorialTooltipOwner": "PlayerOverlord",
-            "Description": "Use Tainted Goo"
+            "Description": "Use Tainted Goo."
           },
           "HasSpecificConnection": true
         },
@@ -2624,7 +2624,7 @@
           "Id": 1,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Remove cards from\nyour deck by double\ntapping on them.",
+          "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
             "X": -6.2,
             "Y": 2.6,
@@ -2694,7 +2694,7 @@
           "Id": 1,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Drag cards that you\nwant replaced to\nthe top. Press KEEP\nwhen you're done.",
+          "Description": "Drag cards that you want replaced to the top. Press KEEP when you're done.",
           "Position": {
             "X": 7.6,
             "Y": 1,
@@ -2706,7 +2706,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwner": "IncorrectButton",
-          "Description": "You still have a\nbattle to win.",
+          "Description": "You still have a battle to win.",
           "Position": {
             "X": 9.5,
             "Y": 1,
@@ -2719,7 +2719,7 @@
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Use everything you've learned\nand make me proud!",
+            "Description": "Use everything you've learned and make me proud!",
             "DescriptionTooltipCloseText": "BATTLE!"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
