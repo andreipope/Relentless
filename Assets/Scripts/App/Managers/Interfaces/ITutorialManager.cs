@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
 
         bool PlayerWon { get; set; }
 
+        bool UnfinishedTutorial { get; set; }
+
         void StartTutorial();
 
         void SetupTutorialById(int id);
