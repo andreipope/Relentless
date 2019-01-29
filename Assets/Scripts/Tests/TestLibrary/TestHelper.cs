@@ -152,6 +152,11 @@ namespace Loom.ZombieBattleground.Test
             return TestContext.CurrentContext.Test.Name;
         }
 
+        public string GetTestNameAndDeviceId()
+        {
+            return GetTestName() + "_" + SystemInfo.deviceUniqueIdentifier;
+        }
+
         /// <summary>
         /// SetUp method to be used for most Solo and PvP tests. Logs in and sets up a number of stuff.
         /// </summary>
@@ -902,7 +907,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task HandleLogin()
         {
             BackendDataControlMediator.UserDataModel =
-                new UserDataModel("Test_" + GetTestName(), CryptoUtils.GeneratePrivateKey())
+                new UserDataModel("Test_" + GetTestNameAndDeviceId(), CryptoUtils.GeneratePrivateKey())
                 {
                     IsRegistered = true
                 };
@@ -3587,7 +3592,7 @@ namespace Loom.ZombieBattleground.Test
             owner.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
             OnBehaviourHandler onBehaviourHandler = owner.AddComponent<OnBehaviourHandler>();
 
-            MultiplayerDebugClient client = new MultiplayerDebugClient("Test_" + GetTestName());
+            MultiplayerDebugClient client = new MultiplayerDebugClient("Test_" + GetTestNameAndDeviceId());
 
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;

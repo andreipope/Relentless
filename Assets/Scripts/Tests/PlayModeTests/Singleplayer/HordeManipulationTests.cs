@@ -1,10 +1,12 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using Loom.ZombieBattleground.Common;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Ignore("not verified")]
     public class HordeManipulationTests : BaseIntegrationTest
     {
         [UnityTest]

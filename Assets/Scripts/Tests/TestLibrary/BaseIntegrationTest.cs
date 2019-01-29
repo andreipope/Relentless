@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
             tags.Insert(0, "pvpTest");
-            tags.Insert(1, TestHelper.GetTestName());
+            tags.Insert(1, TestHelper.GetTestNameAndDeviceId());
 
             TestHelper.SetPvPTags(tags);
             TestHelper.DebugCheats.Enabled = true;
