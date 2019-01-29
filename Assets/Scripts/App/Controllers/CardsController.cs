@@ -486,7 +486,7 @@ namespace Loom.ZombieBattleground
 
                     if (_fakeBoardCard != null)
                     {
-                        Object.Destroy(_fakeBoardCard.GameObject);
+                        _fakeBoardCard.DisposeGameObject();
                         _fakeBoardCard = null;
                     }
 
@@ -510,7 +510,7 @@ namespace Loom.ZombieBattleground
                 _indexOfCard = -1;
                 if (_fakeBoardCard != null)
                 {
-                    Object.Destroy(_fakeBoardCard.GameObject);
+                    _fakeBoardCard.DisposeGameObject();
                     _fakeBoardCard = null;
                 }
             }
@@ -617,8 +617,8 @@ namespace Loom.ZombieBattleground
                                                 _battlegroundController.PlayerBoardCards.Remove(boardUnitView);
                                                 player.BoardCards.Remove(boardUnitView);
 
-                                                boardUnitView.Transform.DOKill();
-                                                Object.Destroy(boardUnitView.GameObject);
+
+                                                boardUnitView.DisposeGameObject();
                                                 boardUnitView.Model.Die(true);
 
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
@@ -1041,7 +1041,7 @@ namespace Loom.ZombieBattleground
                 unitOwner.BoardCards.Remove(unit);
 
                 unit.Model.Die(true);
-                Object.Destroy(unit.GameObject);
+                unit.DisposeGameObject();
 
                 unitOwner.RemoveCardFromBoard(returningCard);
 

@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground
                     unit.Model.OwnerPlayer.BoardCards.Remove(unit);
                     unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model.Card);
 
-                    Object.Destroy(unit.GameObject);
+                    unit.DisposeGameObject();
                 }
             }
             else
@@ -118,9 +118,9 @@ namespace Loom.ZombieBattleground
 	            {
 	                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
 	                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
-	               
-	                Object.Destroy(unitInfo.OldUnitView.GameObject);
-	            }
+
+                    unitInfo.OldUnitView.DisposeGameObject();
+                }
 	        }
         }
 

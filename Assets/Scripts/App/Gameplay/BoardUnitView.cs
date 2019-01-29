@@ -170,6 +170,14 @@ namespace Loom.ZombieBattleground
             CheckOnDie();
         }
 
+        public void DisposeGameObject()
+        {
+            Debug.LogWarning("GameObject of BoardUnitView was disposed");
+
+            Transform.DOKill();
+            Object.Destroy(GameObject);
+        }
+
         public void ForceSetGameObject(GameObject overrideObject)
         {
             Debug.LogWarning("GameObject of BoardUnitView was overrided. from: " + GameObject + " on: " + overrideObject);
@@ -281,7 +289,7 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitOnUnitFromDeckRemoved()
         {
-            Object.Destroy(GameObject);
+            DisposeGameObject();
         }
 
         private void BoardUnitOnCreaturePlayableForceSet()
