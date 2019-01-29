@@ -227,8 +227,7 @@ namespace Loom.ZombieBattleground
             {
                 Action endOfDestroyAnimationCallback = () =>
                 {
-                    boardUnitView.Transform.DOKill();
-                    Object.DestroyImmediate(boardUnitView.GameObject);
+                    boardUnitView.DisposeGameObject();
 
                     boardUnitView.WasDestroyed = true;
                 };
