@@ -315,7 +315,7 @@ namespace Loom.ZombieBattleground
         {
             DestroyCardVFX();
             DestroyBoardCards();
-            if(_panelCollect.gameObject != null )
+            if(_panelCollect != null )
             {
                 Object.Destroy(_panelCollect.gameObject);
             }
