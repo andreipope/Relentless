@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsPreparingEnded { get; set; }
 
+        public bool IsDesyncDetected { get; set; }
+
         public Player CurrentTurnPlayer { get; set; }
 
         public Player CurrentPlayer { get; set; }
@@ -164,6 +166,7 @@ namespace Loom.ZombieBattleground
                     IsGameStarted = true;
                     IsGameEnded = false;
                     IsPreparingEnded = false;
+                    IsDesyncDetected = false;
 
                     CanDoDragActions = true;
 

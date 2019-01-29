@@ -4468,7 +4468,6 @@ MonoBehaviour:
   DescriptionInput: {fileID: 326711314}
   ErrorPopup: {fileID: 0}
   IsHotkeyEnabled: 0
-  IsInSilentMode: 0
   IsSelfReporting: 1
   ProgressText: {fileID: 195827522}
   SendEventsToAnalytics: 0
@@ -7687,9 +7686,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1171157685}
-        m_MethodName: CreateUserReport
-        m_Mode: 6
+      - m_Target: {fileID: 1493858011}
+        m_MethodName: SubmitBugReport
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
