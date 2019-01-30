@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class UnitBoardCard : BoardCard
+    public class UnitBoardCard : BoardCardView
     {
         protected TextMeshPro AttackText;
 

@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+                    BoardCardView boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
 
                     if (boardCard != null)
                     {
@@ -318,7 +318,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCard boardCard = null, bool isManaBar = false)
+        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCardView boardCard = null, bool isManaBar = false)
         {
             if (_hoveringObject != obj)
             {

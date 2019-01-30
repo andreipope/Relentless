@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground.Test
         private bool _waitUnscaledTime;
 
         private const int MinTurnForAttack = 0;
-        public BoardCard CurrentSpellCard;
+        public BoardCardView CurrentSpellCard;
 
         private readonly Random _random = new Random();
 
@@ -1573,9 +1573,9 @@ namespace Loom.ZombieBattleground.Test
                     return;
                 }
 
-                BoardCard boardCard = _battlegroundController.PlayerHandCards[cardIndex];
+                BoardCardView boardCard = _battlegroundController.PlayerHandCards[cardIndex];
 
-                await PlayCardFromHandToBoard(boardCard.WorkingCard, ItemPosition.End);
+                await PlayCardFromHandToBoard(boardCard.BoardUnitModel.Card, ItemPosition.End);
 
                 await LetsThink();
                 await LetsThink();
@@ -1615,7 +1615,7 @@ namespace Loom.ZombieBattleground.Test
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        BoardCardView boardCard = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -1664,7 +1664,7 @@ namespace Loom.ZombieBattleground.Test
 
                         if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                         {
-                            BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                            BoardCardView boardCard = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
 
                             _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                                 boardCard,

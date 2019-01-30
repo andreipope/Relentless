@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         public UniquePositionedList<BoardUnitView> PlayerGraveyardCards { get; } = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
 
-        public UniquePositionedList<BoardCard> PlayerHandCards { get; } = new UniquePositionedList<BoardCard>(new PositionedList<BoardCard>());
+        public UniquePositionedList<BoardCardView> PlayerHandCards { get; } = new UniquePositionedList<BoardCardView>(new PositionedList<BoardCardView>());
 
         public GameObject PlayerBoardObject, OpponentBoardObject, PlayerGraveyardObject, OpponentGraveyardObject;
 
@@ -405,7 +405,7 @@ namespace Loom.ZombieBattleground
                     card.Model.OnStartTurn();
                 }
 
-                foreach (BoardCard card in PlayerHandCards)
+                foreach (BoardCardView card in PlayerHandCards)
                 {
                     card.SetHighlightingEnabled(false);
                 }
@@ -574,8 +574,8 @@ namespace Loom.ZombieBattleground
 
             switch (target)
             {
-                case BoardCard card:
-                    CurrentPreviewedCardId = card.WorkingCard.InstanceId;
+                case BoardCardView card:
+                    CurrentPreviewedCardId = card.BoardUnitModel.Card.InstanceId;
                     break;
                 case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
@@ -597,8 +597,8 @@ namespace Loom.ZombieBattleground
 
             switch (target)
             {
-                case BoardCard card1:
-                    card = card1.WorkingCard;
+                case BoardCardView card1:
+                    card = card1.BoardUnitModel.Card;
                     break;
                 case BoardUnitView unit:
                     card = unit.Model.Card;
@@ -607,7 +607,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
-            BoardCard boardCard;
+            BoardCardView boardCard;
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
@@ -641,7 +641,7 @@ namespace Loom.ZombieBattleground
                     boardCardUnit.Damage = boardUnit.Model.MaxCurrentDamage;
                     boardCardUnit.Health = boardUnit.Model.MaxCurrentHp;
                     break;
-                case BoardCard tooltipCard:
+                case BoardCardView tooltipCard:
                     boardCard.DrawTooltipInfoOfCard(tooltipCard);
                     break;
                 default:
@@ -738,7 +738,7 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < PlayerHandCards.Count; i++)
             {
-                BoardCard card = PlayerHandCards[i];
+                BoardCardView card = PlayerHandCards[i];
                 float twist = startTwist - i * twistPerCard;
                 float nudge = Mathf.Abs(twist);
 
@@ -866,9 +866,9 @@ namespace Loom.ZombieBattleground
             return unit;
         }
 
-        public BoardCard GetBoardCardFromHisObject(GameObject cardObject)
+        public BoardCardView GetBoardCardFromHisObject(GameObject cardObject)
         {
-            BoardCard card = PlayerHandCards.FirstOrDefault(x => x.GameObject.Equals(cardObject));
+            BoardCardView card = PlayerHandCards.FirstOrDefault(x => x.GameObject.Equals(cardObject));
 
             return card;
         }
@@ -1123,9 +1123,9 @@ namespace Loom.ZombieBattleground
             ).ToList();
         }
 
-        public BoardCard CreateCustomHandBoardCard(WorkingCard card)
+        public BoardCardView CreateCustomHandBoardCard(WorkingCard card)
         {
-            BoardCard boardCard = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab));
+            BoardCardView boardCard = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab));
             boardCard.Init(card);
             boardCard.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
                                                                                  Constants.DefaultPositionOfOpponentBoardCard;

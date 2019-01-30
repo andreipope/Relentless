@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             affectObjectType = Enumerators.AffectObjectType.Player;
                             break;
                         case HandBoardCard handCard:
-                            instanceId = handCard.CardView.WorkingCard.InstanceId;
+                            instanceId = handCard.CardView.BoardUnitModel.InstanceId;
                             affectObjectType = Enumerators.AffectObjectType.Card;
                             break;
                         default:

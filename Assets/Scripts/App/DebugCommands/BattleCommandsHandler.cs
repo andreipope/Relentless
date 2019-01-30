@@ -634,7 +634,7 @@ static class BattleCommandsHandler
         BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Target;
         WorkingCard workingCard = targetUnit.Card;
 
-        BoardCard card = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard == workingCard);
+        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == workingCard);
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);

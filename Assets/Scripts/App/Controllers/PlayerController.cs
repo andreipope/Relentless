@@ -43,9 +43,9 @@ namespace Loom.ZombieBattleground
 
         private float _timeHovering;
 
-        private BoardCard _hoveringBoardCard;
+        private BoardCardView _hoveringBoardCard;
 
-        private BoardCard _topmostBoardCard;
+        private BoardCardView _topmostBoardCard;
 
         private BoardUnitView _selectedBoardUnitView;
 
@@ -271,7 +271,7 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
             {
-                foreach (BoardCard card in _battlegroundController.PlayerHandCards)
+                foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
                 {
                     if (card.CanBeBuyed(_gameplayManager.CurrentPlayer))
                     {
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground
                     {
                         hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
 
-                        BoardCard topmostBoardCard =
+                        BoardCardView topmostBoardCard =
                             _battlegroundController.GetBoardCardFromHisObject(hitCards[hitCards.Count - 1]);
                         if (topmostBoardCard != null && !topmostBoardCard.IsPreview)
                         {
@@ -424,7 +424,7 @@ namespace Loom.ZombieBattleground
 
         private void CheckColliders(Collider2D collider)
         {
-            BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+            BoardCardView boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
 
             if (boardCard != null)
             {
@@ -432,7 +432,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateHovering(BoardCard boardCard)
+        private void UpdateHovering(BoardCardView boardCard)
         {
             if (_hoveringBoardCard != boardCard)
             {
@@ -445,7 +445,7 @@ namespace Loom.ZombieBattleground
                 _timeHovering += Time.deltaTime;
                 if (_timeHovering >= Constants.MaxTimeForHovering)
                 {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.WorkingCard.TutorialObjectId);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.BoardUnitModel.Card.TutorialObjectId);
 
                     _isHovering = true;
                 }

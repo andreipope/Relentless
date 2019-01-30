@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 {
     public class AIController : IController
     {
-        public BoardCard CurrentSpellCard;
+        public BoardCardView CurrentSpellCard;
 
         public bool IsBrainWorking = false;
 
@@ -950,7 +950,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CardKind.CREATURE:
                     {
-                        BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
+                        BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(card), GameObject.Find("OpponentBoard").transform);
                         GameObject boardUnit = boardUnitViewElement.GameObject;
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board

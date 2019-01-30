@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
                         sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
                     }
                     break;
-                case BoardCard card:
+                case BoardCardView card:
                     if (card.PictureSprite && card.PictureSprite != null)
                     {
                         sprite = card.PictureSprite.sprite;

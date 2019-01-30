@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                BoardCard boardCard;
+                BoardCardView boardCard;
                 Player playerOwner;
                 UniquePositionedList<WorkingCard> filteredCards = null;
 
@@ -88,11 +88,11 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void PutCardFromDeckToBoard(Player owner, BoardCard boardCard,
+        private void PutCardFromDeckToBoard(Player owner, BoardCardView boardCard,
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
                                             ref List<HandBoardCard> cards)
         {
-            owner.RemoveCardFromDeck(boardCard.WorkingCard);
+            owner.RemoveCardFromDeck(boardCard.BoardUnitModel.Card);
 
             CardsController.SummonUnitFromHand(owner, boardCard);
 

@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         private CardInfoPopupHandler _cardInfoPopupHandler;
 
-        private List<BoardCard> _createdBoardCards;
+        private List<BoardCardView> _createdBoardCards;
 
         private CardHighlightingVFXItem _highlightingVFXItem;
 
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
             CardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             CardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
 
-            _createdBoardCards = new List<BoardCard>();
+            _createdBoardCards = new List<BoardCardView>();
         }
 
         public void Update()
@@ -299,7 +299,7 @@ namespace Loom.ZombieBattleground
                     continue;
 
                 GameObject go;
-                BoardCard boardCard;
+                BoardCardView boardCard;
                 switch (card.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:
@@ -323,7 +323,7 @@ namespace Loom.ZombieBattleground
 
                 _createdBoardCards.Add(boardCard);
 
-                if (boardCard.LibraryCard.MouldId == _highlightingVFXItem.MouldId)
+                if (boardCard.BoardUnitModel.Card.LibraryCard.MouldId == _highlightingVFXItem.MouldId)
                 {
                     _highlightingVFXItem.ChangeState(true);
                 }
@@ -334,7 +334,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetBoardCards()
         {
-            foreach (BoardCard item in _createdBoardCards)
+            foreach (BoardCardView item in _createdBoardCards)
             {
                 item.Dispose();
             }

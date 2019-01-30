@@ -15,7 +15,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardCard : IView
+    public class BoardCardView : IView
     {
         public int CardsAmountDeckEditing;
 
@@ -24,10 +24,6 @@ namespace Loom.ZombieBattleground
         public bool IsNewCard;
 
         public bool IsPreview;
-
-        public int InitialCost;
-
-        public IReadOnlyCard LibraryCard;
 
         protected const float cardToHandSoundKoef = 2f;
 
@@ -89,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         private bool _hasDestroyed = false;
 
-        public BoardCard(GameObject selfObject)
+        public BoardCardView(GameObject selfObject)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             SoundManager = GameClient.Get<ISoundManager>();
@@ -147,8 +143,6 @@ namespace Loom.ZombieBattleground
 
         public SpriteRenderer PictureSprite { get; protected set; }
 
-        public int ManaCost { get; protected set; }
-
         public ParticleSystem RemoveCardParticle { get; protected set; }
 
         public Transform Transform => GameObject.transform;
@@ -157,51 +151,45 @@ namespace Loom.ZombieBattleground
 
         public GameObject costHighlightObject { get; protected set; }
 
-        public int CurrentTurn { get; set; }
-
-        public WorkingCard WorkingCard { get; private set; }
+        public BoardUnitModel BoardUnitModel { get; private set; }
 
         public HandBoardCard HandBoardCard { get; set; }
 
         public int FuturePositionOnBoard = 0;
 
-        public virtual void Init(WorkingCard card)
+        public virtual void Init(BoardUnitModel boardUnitModel)
         {
-            WorkingCard = card;
-            LibraryCard = WorkingCard.LibraryCard;
+            BoardUnitModel = boardUnitModel;
 
-            InitialCost = WorkingCard.LibraryCard.Cost;
-            ManaCost = InitialCost;
-
-            NameText.text = LibraryCard.Name;
-            BodyText.text = LibraryCard.Description;
-            CostText.text = InitialCost.ToString();
+            NameText.text = BoardUnitModel.Card.LibraryCard.Name;
+            BodyText.text = BoardUnitModel.Card.LibraryCard.Description;
+            CostText.text = BoardUnitModel.Card.LibraryCard.ToString();
 
             IsNewCard = true;
 
-            WorkingCard.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
+            BoardUnitModel.Card.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.LibraryCard.CardRank);
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), BoardUnitModel.Card.LibraryCard.CardRank);
 
-            string setName = LibraryCard.CardSetType.ToString();
+            string setName = BoardUnitModel.Card.LibraryCard.CardSetType.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-            if (!string.IsNullOrEmpty(LibraryCard.Frame))
+            if (!string.IsNullOrEmpty(BoardUnitModel.Card.LibraryCard.Frame))
             {
-                frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                frameName = "Images/Cards/Frames/" + BoardUnitModel.Card.LibraryCard.Frame;
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
             PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
                 "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
-                WorkingCard.LibraryCard.Picture.ToLowerInvariant()));
+                BoardUnitModel.Card.LibraryCard.Picture.ToLowerInvariant()));
 
             AmountText.transform.parent.gameObject.SetActive(false);
             AmountTextForArmy.transform.parent.gameObject.SetActive(false);
             DistibuteCardObject.SetActive(false);
 
-            if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+            if (BoardUnitModel.Card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
                 ParentOfLeftBlockOfCardInfo = Transform.Find("Group_LeftBlockInfo");
                 ParentOfRightBlockOfCardInfo = Transform.Find("Group_RightBlockInfo");
@@ -219,25 +207,22 @@ namespace Loom.ZombieBattleground
 
         public virtual void Init(IReadOnlyCard card, int amount = 0)
         {
-            LibraryCard = card;
+            BoardUnitModel.Card.LibraryCard = card;
 
-            NameText.text = LibraryCard.Name;
-            BodyText.text = LibraryCard.Description;
+            NameText.text = BoardUnitModel.Card.LibraryCard.Name;
+            BodyText.text = BoardUnitModel.Card.LibraryCard.Description;
             AmountText.text = amount.ToString();
-            CostText.text = LibraryCard.Cost.ToString();
-
-            InitialCost = LibraryCard.Cost;
-            ManaCost = InitialCost;
+            CostText.text = BoardUnitModel.Card.LibraryCard.Cost.ToString();
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.CardRank);
 
-            string setName = LibraryCard.CardSetType.ToString();
+            string setName = BoardUnitModel.Card.LibraryCard.CardSetType.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-            if (!string.IsNullOrEmpty(LibraryCard.Frame))
+            if (!string.IsNullOrEmpty(BoardUnitModel.Card.LibraryCard.Frame))
             {
-                frameName = "Images/Cards/Frames/" + LibraryCard.Frame;
+                frameName = "Images/Cards/Frames/" + BoardUnitModel.Card.LibraryCard.Frame;
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
@@ -248,31 +233,11 @@ namespace Loom.ZombieBattleground
             DistibuteCardObject.SetActive(false);
         }
 
-        public void SetCardCost(int value)
+        public void UpdateCardCost()
         {
-            ManaCost = value;
-            CostText.text = ManaCost.ToString();
-
+            CostText.text = BoardUnitModel.Card.InstanceCard.Cost.ToString();
             UpdateColorOfCost();
         }
-
-        public void ChangeCardCostOn(int value, bool changeRealCost = false)
-        {
-            if (changeRealCost)
-            {
-                WorkingCard.InstanceCard.Cost += value;
-                ManaCost = WorkingCard.InstanceCard.Cost;
-                CostText.text = ManaCost.ToString();
-            }
-            else
-            {
-                ManaCost = WorkingCard.InstanceCard.Cost + value;
-                CostText.text = ManaCost.ToString();
-            }
-
-            UpdateColorOfCost();
-        }
-
         public virtual void UpdateAmount(int amount)
         {
             AmountText.text = amount.ToString();
@@ -291,7 +256,7 @@ namespace Loom.ZombieBattleground
             {
                 UpdatePositionOnHand();
             }
-            else if (CurrentTurn != 0)
+            else if (BattlegroundController.CurrentTurn != 0)
             {
                 CardAnimator.enabled = true;
                 CardAnimator.SetTrigger("DeckToHand");
@@ -325,7 +290,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                int id = WorkingCard.Owner.CardsInHand.Count;
+                int id = BoardUnitModel.Card.Owner.CardsInHand.Count;
                 CardAnimator.SetFloat("Id", id);
             }
 
@@ -367,7 +332,7 @@ namespace Loom.ZombieBattleground
                 if (GameplayManager.AvoidGooCost)
                     return true;
 
-                return owner.CurrentGoo >= ManaCost;
+                return owner.CurrentGoo >= BoardUnitModel.Card.InstanceCard.Cost;
             }
             else
             {
@@ -455,9 +420,9 @@ namespace Loom.ZombieBattleground
             {
                 offsetY = -0.17f;
                 AmountTextForArmy.text = amount.ToString();
-                if (LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+                if (BoardUnitModel.Card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
                 {
-                    IconsForArmyPanel.Find("Icon_" + LibraryCard.CardRank.ToString())?.gameObject.SetActive(true);
+                    IconsForArmyPanel.Find("Icon_" + BoardUnitModel.Card.LibraryCard.CardRank.ToString())?.gameObject.SetActive(true);
                 }
             }
             InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
@@ -607,11 +572,11 @@ namespace Loom.ZombieBattleground
             InternalTools.GroupVerticalObjects(parent, 0f, centerOffset, cardSize);
         }
 
-        public void DrawTooltipInfoOfCard(BoardCard boardCard)
+        public void DrawTooltipInfoOfCard(BoardCardView boardCard)
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            if (boardCard.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
+            if (boardCard.BoardUnitModel.Card.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -624,13 +589,13 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (boardCard.WorkingCard.LibraryCard.CardRank != Enumerators.CardRank.MINION)
+            if (boardCard.BoardUnitModel.Card.LibraryCard.CardRank != Enumerators.CardRank.MINION)
             {
-                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCard.WorkingCard.LibraryCard.CardRank);
+                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCard.BoardUnitModel.Card.LibraryCard.CardRank);
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == boardCard.WorkingCard.LibraryCard.CardSetType);
+                        y => y.Element == boardCard.BoardUnitModel.Card.LibraryCard.CardSetType);
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -643,9 +608,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCard.WorkingCard.InstanceCard.CardType != Enumerators.CardType.WALKER)
+            if (boardCard.BoardUnitModel.Card.InstanceCard.CardType != Enumerators.CardType.WALKER)
             {
-                TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(boardCard.WorkingCard.InstanceCard.CardType);
+                TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(boardCard.BoardUnitModel.Card.InstanceCard.CardType);
                 if (cardTypeInfo != null)
                 {
                     buffs.Add(
@@ -659,9 +624,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCard.WorkingCard.LibraryCard.Abilities != null)
+            if (boardCard.BoardUnitModel.Card.LibraryCard.Abilities != null)
             {
-                foreach (AbilityData abil in boardCard.WorkingCard.LibraryCard.Abilities)
+                foreach (AbilityData abil in boardCard.BoardUnitModel.Card.LibraryCard.Abilities)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
                     if (gameMechanicInfo != null)
@@ -725,16 +690,16 @@ namespace Loom.ZombieBattleground
 
         private void PlayerCurrentGooChangedHandler(int obj)
         {
-            UpdateCardsStatusEventHandler(WorkingCard.Owner);
+            UpdateCardsStatusEventHandler(BoardUnitModel.Card.Owner);
         }
 
         private void UpdateColorOfCost()
         {
-            if (ManaCost > InitialCost)
+            if (BoardUnitModel.Card.InstanceCard.Cost > BoardUnitModel.Card.LibraryCard.Cost)
             {
                 CostText.color = Color.red;
             }
-            else if (ManaCost < InitialCost)
+            else if (BoardUnitModel.Card.InstanceCard.Cost < BoardUnitModel.Card.LibraryCard.Cost)
             {
                 CostText.color = Color.green;
             }
@@ -796,10 +761,10 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (WorkingCard == null)
+            if (BoardUnitModel.Card == null)
                 return;
 
-            DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId.Id, WorkingCard.LibraryCard.Name);
+            DebugCardInfoDrawer.Draw(Transform.position, BoardUnitModel.Card.InstanceId.Id, BoardUnitModel.Card.LibraryCard.Name);
         }
 #endif
 

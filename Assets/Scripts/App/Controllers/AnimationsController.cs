@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
                 });
         }
 
-        public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCard boardCard)
+        public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCardView boardCard)
         {
             boardCard.DrawCardFromOpponentDeckToPlayer();
         }

@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
 
         public int TutorialObjectId;
 
-        public BoardUnitModel()
+        public BoardUnitModel(WorkingCard card)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -84,6 +84,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CanDoDragActions = false;
 
             LastAttackingSetType = Enumerators.SetType.NONE;
+
+            SetObjectInfo(card);
         }
 
         public event Action TurnStarted;
@@ -457,7 +459,7 @@ namespace Loom.ZombieBattleground
             GameMechanicDescriptionsOnUnitChanged?.Invoke();
         }
 
-        public void SetObjectInfo(WorkingCard card)
+        private void SetObjectInfo(WorkingCard card)
         {
             Card = card;
 

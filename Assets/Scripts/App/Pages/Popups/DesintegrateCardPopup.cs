@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
                 _yesButton.interactable = false;
             }
 
-            _cardPreview.GetComponent<BoardCard>().UpdateAmount(_cardData.Amount);
+            _cardPreview.GetComponent<BoardCardView>().UpdateAmount(_cardData.Amount);
 
             Card libraryCard = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
                 .First(card => card.Name == _cardData.CardName);
