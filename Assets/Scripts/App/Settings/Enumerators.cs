@@ -834,9 +834,7 @@ namespace Loom.ZombieBattleground.Common
 
             BattleStarted,
 
-            CardWithAbilityPlayed,
-            CardWithHeavyPlayed,
-            CardWithFeralPlayed
+            CardWithAbilityPlayed
         }
 
         public enum TutorialActivityActionHandler

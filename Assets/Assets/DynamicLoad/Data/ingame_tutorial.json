@@ -114,7 +114,7 @@
   {
     "Id": 8,
     "Description": "tooltip description",
-    "ActivityAction": "CardWithHeavyPlayed",
+    "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
     "Position": {
@@ -128,7 +128,7 @@
   {
     "Id": 9,
     "Description": "tooltip description",
-    "ActivityAction": "CardWithFeralPlayed",
+    "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
     "Position": {
