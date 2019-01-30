@@ -2715,7 +2715,7 @@
             "Y": 1,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePopups"
+          "TutorialTooltipLayer": "AboveUI"
         },
         {
           "Id": 2,

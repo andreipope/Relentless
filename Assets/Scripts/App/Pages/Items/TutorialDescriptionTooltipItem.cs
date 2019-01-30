@@ -44,15 +44,18 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.TutorialObjectLayer _layer = Enumerators.TutorialObjectLayer.Default;
 
+        private bool _isDrawing;
+
         public TutorialDescriptionTooltipItem(int id,
                                                 string description,
                                                 Enumerators.TooltipAlign align,
                                                 Enumerators.TutorialObjectOwner owner,
-                                                int ownerId,
                                                 Vector3 position,
                                                 bool resizable,
                                                 bool dynamicPosition,
-                                                Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default)
+                                                int ownerId = 0,
+                                                Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
+                                                BoardObject boardObjectOwner = null)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -97,7 +100,7 @@ namespace Loom.ZombieBattleground
 
             if (ownerId > 0)
             {
-                switch (owner)
+                switch (OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
                         _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.First((x) =>
@@ -110,10 +113,26 @@ namespace Loom.ZombieBattleground
                     default: break;
                 }
             }
+            else if(boardObjectOwner != null)
+            {
+                switch(OwnerType)
+                {
+                    case Enumerators.TutorialObjectOwner.Battleframe:
+                    case Enumerators.TutorialObjectOwner.EnemyBattleframe:
+                    case Enumerators.TutorialObjectOwner.PlayerBattleframe:
+                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(boardObjectOwner as BoardUnitModel);
+                        break;
+                    case Enumerators.TutorialObjectOwner.HandCard:
+                        break;
+
+                }
+            }
 
             SetPosition();
 
             UpdatePosition();
+
+            _isDrawing = true;
         }
 
         public void UpdatePosition()
@@ -156,6 +175,12 @@ namespace Loom.ZombieBattleground
                     _currentBattleground.sortingOrder = 1;
                     _textDescription.renderer.sortingOrder = 2;
                     break;
+                case Enumerators.TutorialObjectLayer.AboveUI:
+                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI3;
+                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI3;
+                    _currentBattleground.sortingOrder = 1;
+                    _textDescription.renderer.sortingOrder = 2;
+                    break;
                 default:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
                     _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;
@@ -174,14 +199,14 @@ namespace Loom.ZombieBattleground
                 _currentPosition = (Vector3)position;
                 SetPosition();
             }
+            _isDrawing = true;
         }
 
         public void Hide()
         {
-            if (_selfObject != null)
-            {
-                _selfObject.SetActive(false);
-            }
+            _selfObject?.SetActive(false);
+
+            _isDrawing = false;
         }
 
         public void Dispose()
@@ -194,9 +219,18 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if(_selfObject != null && _selfObject.activeInHierarchy && _ownerUnit != null)
+            if(_isDrawing)
             {
-                _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
+                switch (OwnerType)
+                {
+                    case Enumerators.TutorialObjectOwner.Battleframe:
+                    case Enumerators.TutorialObjectOwner.EnemyBattleframe:
+                    case Enumerators.TutorialObjectOwner.PlayerBattleframe:
+                        _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
+                        break;
+                    case Enumerators.TutorialObjectOwner.HandCard:
+                        break;
+                }
             }
         }
 

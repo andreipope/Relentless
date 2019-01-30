@@ -758,7 +758,10 @@ namespace Loom.ZombieBattleground.Common
             PlayerOverlordAbility,
 
             UI,
-            IncorrectButton
+            IncorrectButton,
+
+            Battleframe,
+            HandCard
         }
 
         public enum TutorialActivityAction
@@ -829,7 +832,11 @@ namespace Loom.ZombieBattleground.Common
 
             SceneChanged,
 
-            BattleStarted
+            BattleStarted,
+
+            CardWithAbilityPlayed,
+            CardWithHeavyPlayed,
+            CardWithFeralPlayed
         }
 
         public enum TutorialActivityActionHandler
@@ -866,7 +873,8 @@ namespace Loom.ZombieBattleground.Common
         {
             Default,
             AbovePages,
-            AbovePopups
+            AbovePopups,
+            AboveUI
         }
     }
 }

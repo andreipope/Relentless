@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
 
         void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = -1);
 
+        void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "");
+
         void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
         TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);

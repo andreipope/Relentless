@@ -1,0 +1,240 @@
+[
+  {
+    "Id": 0,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Entry"
+  },
+  {
+    "Id": 1,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Turn"
+  },
+  {
+    "Id": 2,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "End"
+  },
+  {
+    "Id": 3,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Attack"
+  },
+  {
+    "Id": 4,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Death"
+  },
+  {
+    "Id": 5,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "DelayedX"
+  },
+  {
+    "Id": 6,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Freeze"
+  },
+  {
+    "Id": 7,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Reanimate"
+  },
+  {
+    "Id": 8,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithHeavyPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Heavy"
+  },
+  {
+    "Id": 9,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithFeralPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Feral"
+  },
+  {
+    "Id": 10,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Devour"
+  },
+  {
+    "Id": 11,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "OverflowX"
+  },
+  {
+    "Id": 12,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Blitz"
+  },
+  {
+    "Id": 13,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Destroy"
+  },
+  {
+    "Id": 14,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "RageX"
+  },
+  {
+    "Id": 15,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Flash"
+  },
+  {
+    "Id": 16,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Guard"
+  }
+]

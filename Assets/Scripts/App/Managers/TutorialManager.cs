@@ -19,6 +19,8 @@ namespace Loom.ZombieBattleground
     {
         private const string TutorialDataPath = "Data/tutorial_data";
 
+        private const string InGameTutorialDataPath = "Data/ingame_tutorial";
+
         private IUIManager _uiManager;
 
         private ISoundManager _soundManager;
@@ -55,12 +57,17 @@ namespace Loom.ZombieBattleground
         private List<TutorialStep> _tutorialSteps;
         private int _currentTutorialStepIndex;
 
+        private List<InGameTutorialData> _ingameTutorials;
+
+        private List<TutorialDescriptionTooltipItem> _ingameTutorialActiveTooltips;
+
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialStep CurrentTutorialStep { get; private set; }
 
         public AnalyticsTimer TutorialDuration { get; set; }
 
         public List<string> BlockedButtons { get; private set; }
+
 
         public bool BattleShouldBeWonBlocker;
 
@@ -113,12 +120,16 @@ namespace Loom.ZombieBattleground
             _tutorials = JsonConvert.DeserializeObject<List<TutorialData>>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>(TutorialDataPath).text, settings);
 
+            _ingameTutorials = JsonConvert.DeserializeObject<List<InGameTutorialData>>(_loadObjectsManager
+                        .GetObjectByPath<TextAsset>(InGameTutorialDataPath).text, settings);
+
             TutorialDuration = new AnalyticsTimer();
 
             _tutorialDescriptionTooltipItems = new List<TutorialDescriptionTooltipItem>();
             _activitiesDoneDuringThisTurn = new List<Enumerators.TutorialActivityAction>();
             _buttonsWasDeactivatedPreviousStep = new List<string>();
             BlockedButtons = new List<string>();
+            _ingameTutorialActiveTooltips = new List<TutorialDescriptionTooltipItem>();
         }
 
         public bool CheckNextTutorial()
@@ -140,7 +151,13 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
             if (!IsTutorial)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen, null);
+                }
                 return;
+            }
 
             for (int i = 0; i < _tutorialDescriptionTooltipItems.Count; i++)
             {
@@ -417,6 +434,14 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
+        public void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "")
+        {
+            if (!IsTutorial)
+            {
+                HandleNonTutorialActions(activityAction, sender, tag);
+            }
+        }
+
         public void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = 0)
         {
             if (!IsTutorial)
@@ -522,6 +547,58 @@ namespace Loom.ZombieBattleground
             if (CurrentTutorialStep != null && action == CurrentTutorialStep.ActionToEndThisStep)
             {
                 MoveToNextStep();
+            }
+        }
+
+        private void HandleNonTutorialActions(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "")
+        {
+            ResetInGameTutorialActiveTooltips();
+
+            if (activityAction == Enumerators.TutorialActivityAction.TapOnScreen)
+                return;
+
+            foreach (InGameTutorialData item in _ingameTutorials)
+            {
+                if (item.ActivityAction == activityAction && item.IsEnabled &&
+                   _dataManager.CachedUserLocalData.TutorialTooltipsPassed != null &&
+                   !_dataManager.CachedUserLocalData.TutorialTooltipsPassed.Contains(item.Id))
+                {
+                    if ((!string.IsNullOrEmpty(item.Tag) && item.Tag.ToLowerInvariant() == tag.ToLowerInvariant()) ||
+                        string.IsNullOrEmpty(item.Tag))
+                    {
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            TutorialDescriptionTooltipItem tooltipItem = new TutorialDescriptionTooltipItem(item.Id,
+                                                                                            item.Description,
+                                                                                            item.Align,
+                                                                                            item.Owner,
+                                                                                            (Vector3)item.Position,
+                                                                                            true,
+                                                                                            false,
+                                                                                            layer: Enumerators.TutorialObjectLayer.Default,
+                                                                                            boardObjectOwner: sender);
+                            _ingameTutorialActiveTooltips.Add(tooltipItem);
+
+                            if (item.AppearOnce)
+                            {
+                                _dataManager.CachedUserLocalData.TutorialTooltipsPassed.Add(item.Id);
+                                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                            }
+                        }, item.AppearDelay);
+                    }
+                }
+            }
+        }
+
+        private void ResetInGameTutorialActiveTooltips()
+        {
+            if (_ingameTutorialActiveTooltips.Count > 0)
+            {
+                foreach (TutorialDescriptionTooltipItem item in _ingameTutorialActiveTooltips)
+                {
+                    item.Dispose();
+                }
+                _ingameTutorialActiveTooltips.Clear();
             }
         }
 
@@ -646,7 +723,8 @@ namespace Loom.ZombieBattleground
                                            (Vector3)tooltip.Position,
                                            tooltip.Resizable,
                                            tooltip.AppearDelay,
-                                           tooltip.DynamicPosition);
+                                           tooltip.DynamicPosition,
+                                           tooltip.TutorialTooltipLayer);
                 }
             }
 
@@ -951,10 +1029,10 @@ namespace Loom.ZombieBattleground
                                                                                                     description,
                                                                                                     align,
                                                                                                     owner,
-                                                                                                    ownerId,
                                                                                                     position,
                                                                                                     resizable,
                                                                                                     dynamicPosition,
+                                                                                                    ownerId,
                                                                                                     layer);
 
                     _tutorialDescriptionTooltipItems.Add(tooltipItem);
@@ -966,10 +1044,10 @@ namespace Loom.ZombieBattleground
                                                                                                 description,
                                                                                                 align,
                                                                                                 owner,
-                                                                                                ownerId,
                                                                                                 position,
                                                                                                 resizable,
                                                                                                 dynamicPosition,
+                                                                                                ownerId,
                                                                                                 layer);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
@@ -1020,7 +1098,8 @@ namespace Loom.ZombieBattleground
                                        position,
                                        tooltipInfo.Resizable,
                                        tooltipInfo.AppearDelay,
-                                       tooltipInfo.DynamicPosition);
+                                       tooltipInfo.DynamicPosition,
+                                       tooltipInfo.TutorialTooltipLayer);
             }
             else
             {
