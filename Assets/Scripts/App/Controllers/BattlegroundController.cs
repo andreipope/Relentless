@@ -478,44 +478,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     // Validate game state
-                     if (Constants.GameStateValidationEnabled && pvpControlGameState != null)
-                     {
-                         GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
-                         CompareLogic compareLogic = new CompareLogic();
-                         compareLogic.Config.ShowBreadcrumb = true;
-                         compareLogic.Config.TreatStringEmptyAndNullTheSame = true;
-                         compareLogic.Config.MaxDifferences = 25;
-                         compareLogic.Config.MembersToIgnore.Add("CardsInGraveyard");
-                         compareLogic.Config.MembersToIgnore.Add("CardsInHand");
-                         compareLogic.Config.MembersToIgnore.Add("CardsInDeck");
-                         compareLogic.Config.MembersToIgnore.Add("CurrentGoo");
-                         compareLogic.Config.ActualName = "OpponentState";
-                         compareLogic.Config.ExpectedName = "LocalState";
-                         ComparisonResult comparisonResult = compareLogic.Compare(currentGameState, pvpControlGameState);
-                         if (!comparisonResult.AreEqual)
-                         {
-                             GameStateDesyncException desyncException = new GameStateDesyncException(comparisonResult.DifferencesString);
-                             UserReportingScript.Instance.SummaryInput.text = "PvP De-sync Detected";
-#if USE_PRODUCTION_BACKEND
-                             Debug.LogError(desyncException);
-
-                             if (!_gameplayManager.IsDesyncDetected)
-                             {
-                                 _gameplayManager.IsDesyncDetected = true;
-                                 UserReportingScript.Instance.CreateUserReport(
-                                     true,
-                                     false,
-                                     desyncException.GetType().ToString(),
-                                     desyncException.ToString()
-                                 );
-                             }
-#else
-                             throw desyncException;
-#endif
-                         }
-                     }
-
+                     ValidateGameState(pvpControlGameState);
                      EndTurn();
 
                      if (_gameplayManager.IsLocalPlayerTurn())
@@ -1170,6 +1133,49 @@ namespace Loom.ZombieBattleground
             boardCard.HandBoardCard.OwnerPlayer = card.Owner;
 
             return boardCard;
+        }
+
+        private static void ValidateGameState(GameState pvpControlGameState)
+        {
+            if (!Constants.GameStateValidationEnabled || pvpControlGameState == null)
+                return;
+
+            GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
+            CompareLogic compareLogic = new CompareLogic();
+            compareLogic.Config.ShowBreadcrumb = true;
+            compareLogic.Config.TreatStringEmptyAndNullTheSame = true;
+            compareLogic.Config.MaxDifferences = 25;
+            compareLogic.Config.MembersToIgnore.Add("CardsInGraveyard");
+            compareLogic.Config.MembersToIgnore.Add("CardsInHand");
+            compareLogic.Config.MembersToIgnore.Add("CardsInDeck");
+            compareLogic.Config.MembersToIgnore.Add("CurrentGoo");
+            compareLogic.Config.MembersToIgnore.Add("GooVials");
+            compareLogic.Config.ActualName = "OpponentState";
+            compareLogic.Config.ExpectedName = "LocalState";
+            ComparisonResult comparisonResult = compareLogic.Compare(currentGameState, pvpControlGameState);
+            if (!comparisonResult.AreEqual)
+            {
+                GameStateDesyncException desyncException = new GameStateDesyncException(comparisonResult.DifferencesString);
+                UserReportingScript.Instance.SummaryInput.text = "PvP De-sync Detected";
+#if USE_PRODUCTION_BACKEND
+                    Debug.LogError(desyncException);
+
+                    if (!_gameplayManager.IsDesyncDetected)
+                    {
+                        _gameplayManager.IsDesyncDetected = true;
+                        UserReportingScript.Instance.CreateUserReport(
+                            true,
+                            false,
+                            desyncException.GetType().ToString(),
+                            desyncException.ToString()
+                        );
+                    }
+#elif UNITY_EDITOR
+                Debug.LogException(desyncException);
+#else
+                throw desyncException;
+#endif
+            }
         }
 
         #region specific setup of battleground
