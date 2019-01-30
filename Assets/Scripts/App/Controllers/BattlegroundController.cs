@@ -321,6 +321,9 @@ namespace Loom.ZombieBattleground
             PlayerGraveyardObject = GameObject.Find("GraveyardPlayer");
             OpponentGraveyardObject = GameObject.Find("GraveyardOpponent");
 
+            TurnTimer = 0f;
+            _turnTimerCounting = false;
+
             _endTurnButtonAnimationAnimator = GameObject.Find("EndTurnButton/_1_btn_endturn").GetComponent<Animator>();
             _endTurnRingsAnimationGameObject = GameObject.Find("EndTurnButton").transform.Find("ZB_ANM_TurnTimerEffect").gameObject;
             _endTurnRingsAnimationParticleSystems = _endTurnRingsAnimationGameObject.gameObject.GetComponentsInChildren<ParticleSystem>();
