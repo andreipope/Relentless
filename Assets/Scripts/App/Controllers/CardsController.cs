@@ -201,12 +201,19 @@ namespace Loom.ZombieBattleground
         {
             Player player = _gameplayManager.CurrentPlayer;
             List<WorkingCard> randomCards = new List<WorkingCard>();
-            for (int i = 0; i < mulliganCards.Count; i++) 
-            {
-                randomCards.Add(player.CardsInDeck[i]);
+
+            int count = 0;
+            while (randomCards.Count < mulliganCards.Count) {
+                if (!player.CardsPreparingToHand.Contains(player.CardsInDeck[count]) && !mulliganCards.Contains(player.CardsInDeck[count]))
+                {
+                    randomCards.Add(player.CardsInDeck[count]);
+                }
+                count++;
             }
+
+            UniquePositionedList<WorkingCard> finalCards = player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
             player.CardsPreparingToHand.Clear();
-            player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
+            player.CardsPreparingToHand.InsertRange(ItemPosition.End, finalCards);
             player.CardsPreparingToHand.InsertRange(ItemPosition.End, randomCards);
 
             EndCardDistribution();
