@@ -16,6 +16,10 @@ namespace Loom.ZombieBattleground
 
         private const float KoefSize = 0.88f;
 
+        private const float AdditionalInterval = 0.5f;
+
+        private const float MinIntervalFromDifferentAlign = 1f;
+
         private static Vector2 DefaultTextSize = new Vector3(3.2f, 1.4f);
 
         private GameObject _selfObject;
@@ -29,6 +33,8 @@ namespace Loom.ZombieBattleground
         public bool IsActiveInThisClick;
 
         public bool NotDestroyed => _selfObject != null;
+
+        public Enumerators.TooltipAlign Align => _align;
 
         public float Width;
 
@@ -140,6 +146,7 @@ namespace Loom.ZombieBattleground
             if(_dynamicPosition)
             {
                 TutorialDescriptionTooltipItem tooltip;
+                float distance = 0;
 
                 foreach (int index in _tutorialManager.CurrentTutorialStep.TutorialDescriptionTooltipsToActivate)
                 {
@@ -150,15 +157,14 @@ namespace Loom.ZombieBattleground
                         if (tooltip == null)
                             continue;
 
-                        if (Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x) < (Width + tooltip.Width) / 2 + 1f)
-                        {
-                            if (_align == Enumerators.TooltipAlign.CenterLeft ||
-                                _align == Enumerators.TooltipAlign.CenterRight)
-                            {
-                                SetBackgroundType(_align);
-                                _currentPosition.x *= -1f;
+                        distance = Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x);
 
-                            }
+                        if ((_align == tooltip.Align && distance < Width + AdditionalInterval) ||
+                            (_align != tooltip.Align && distance < MinIntervalFromDifferentAlign))
+                        {
+                            _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
+                            SetBackgroundType(_align);
+                            _currentPosition.x *= -1f;
                             UpdateTextPosition();
                             SetPosition();
                             Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
