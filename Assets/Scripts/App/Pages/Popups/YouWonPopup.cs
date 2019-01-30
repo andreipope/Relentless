@@ -259,9 +259,30 @@ namespace Loom.ZombieBattleground
                     else
                     {
                         _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
-                        _gameplayManager.IsTutorial = false;
                         _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                         GameClient.Get<ITutorialManager>().StopTutorial();
+
+                        BackendCommunication.BackendDataControlMediator backendDataControlMediator = GameClient.Get<BackendCommunication.BackendDataControlMediator>();
+                        if (string.IsNullOrEmpty(
+                            backendDataControlMediator.UserDataModel.AccessToken
+                        ))
+                        {   
+                            _uiManager.DrawPopup<WarningPopup>($"Please login\nto claim\ntutorial reward");
+                            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                            popup.ConfirmationReceived += () =>
+                            {
+                                LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                                LoginPopup.OnHidePopupEvent += () =>
+                                {
+                                    _uiManager.DrawPopup<TutorialRewardPopup>();
+                                };
+                                loginPopup.Show();
+                            };
+                        }
+                        else
+                        {
+                            _uiManager.DrawPopup<TutorialRewardPopup>();
+                        }                        
                     }
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();

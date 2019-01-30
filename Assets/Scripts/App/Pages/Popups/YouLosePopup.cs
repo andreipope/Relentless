@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private ITutorialManager _tutorialManager;
+
         private Button _buttonOk;
 
         private SpriteRenderer _selectHeroSpriteRenderer;
@@ -27,6 +29,7 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
         }
 
         public void Dispose()
@@ -72,6 +75,11 @@ namespace Loom.ZombieBattleground
             string heroName = currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
             _selectHeroSpriteRenderer.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant() + "_bnw");
+
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouLosePopupOpened);
+            }
         }
 
         public void Show(object data)
@@ -87,6 +95,11 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            if(_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouLosePopupClosed);
+            }
 
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
 

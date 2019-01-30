@@ -49,10 +49,10 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                            unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, ItemPosition.End, IsPVPAbility);
                             if (unit != null)
                             {
-                                BattlegroundController.OpponentBoardCards.Add(unit);
+                                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
                             }
                         }
 
@@ -60,10 +60,10 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
-                            unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End, IsPVPAbility);
                             if (unit != null)
                             {
-                                BattlegroundController.PlayerBoardCards.Add(unit);
+                                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, unit);
                             }
                         }
 

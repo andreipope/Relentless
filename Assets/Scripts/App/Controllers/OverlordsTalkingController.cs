@@ -54,9 +54,15 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void DrawOverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner)
+        public void DrawOverlordSayPopup(string description,
+                                        Enumerators.TooltipAlign align,
+                                        Enumerators.TutorialObjectOwner owner,
+                                        float duration = Constants.OverlordTalkingPopupDuration)
         {
-            OverlordSayPopup overlordSayPopup = new OverlordSayPopup(description, align, owner, _overlordsChatContainer);
+            if (_overlordSayPopups.Find(x => x.Description == description) != null)
+                return;
+
+            OverlordSayPopup overlordSayPopup = new OverlordSayPopup(description, align, owner, _overlordsChatContainer, duration);
             overlordSayPopup.OverlordSayPopupHided += OverlordSayPopupHided;
             _overlordSayPopups.Add(overlordSayPopup);
             UpdatePopupsPositions();
@@ -106,7 +112,8 @@ namespace Loom.ZombieBattleground
 
             public float HeightPopup;
 
-            private const float DurationOfShow = 1.5f;
+            public string Description { get; private set; }
+
             private const float DurationOfHide = 0.5f;
             private const float MinHeight = 2.85f;
 
@@ -119,7 +126,11 @@ namespace Loom.ZombieBattleground
 
             private TextMeshPro _textDescription;
 
-            public OverlordSayPopup(string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, Transform parent)
+            public OverlordSayPopup(string description,
+                                    Enumerators.TooltipAlign align,
+                                    Enumerators.TutorialObjectOwner owner,
+                                    Transform parent,
+                                    float drawDuration = Constants.OverlordTalkingPopupDuration)
             {
                 _tutorialManager = GameClient.Get<ITutorialManager>();
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -132,7 +143,9 @@ namespace Loom.ZombieBattleground
 
                 _textDescription = _selfObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
-                _textDescription.text = description;
+                Description = description;
+
+                _textDescription.text = Description;
 
 
                 switch (align)
@@ -152,7 +165,7 @@ namespace Loom.ZombieBattleground
                 {
                     _textDescription.DOFade(0, DurationOfHide);
                     _currentBattleground.DOFade(0, DurationOfHide).OnComplete(Hide);
-                }, DurationOfShow);
+                }, drawDuration);
             }
 
             public void UpdatePosition(float height)

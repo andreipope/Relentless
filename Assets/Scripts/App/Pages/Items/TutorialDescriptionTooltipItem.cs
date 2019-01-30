@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -41,7 +42,17 @@ namespace Loom.ZombieBattleground
 
         private bool _dynamicPosition;
 
-        public TutorialDescriptionTooltipItem(int id, string description, Enumerators.TooltipAlign align, Enumerators.TutorialObjectOwner owner, int ownerId, Vector3 position, bool resizable, bool dynamicPosition)
+        private Enumerators.TutorialObjectLayer _layer = Enumerators.TutorialObjectLayer.Default;
+
+        public TutorialDescriptionTooltipItem(int id,
+                                                string description,
+                                                Enumerators.TooltipAlign align,
+                                                Enumerators.TutorialObjectOwner owner,
+                                                int ownerId,
+                                                Vector3 position,
+                                                bool resizable,
+                                                bool dynamicPosition,
+                                                Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -52,6 +63,7 @@ namespace Loom.ZombieBattleground
             _align = align;
             _dynamicPosition = dynamicPosition;
             _currentPosition = position;
+            _layer = layer;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -59,19 +71,28 @@ namespace Loom.ZombieBattleground
             _textDescription = _selfObject.transform.Find("Text").GetComponent<TextMeshPro>();
 
 
+            description = description.Replace("\n", " ");
+
             _textDescription.text = description;
 
             SetBattlegroundType(align);
-
             if (resizable && _currentBattleground != null)
             {
-                _textDescription.autoSizeTextContainer = true;
-                Vector2 textSize = _textDescription.GetPreferredValues(description);
-                Vector2 backgroundSize = Vector2.one / DefaultTextSize * textSize;
+                _textDescription.ForceMeshUpdate();                
+                RectTransform rect = _textDescription.GetComponent<RectTransform>();
+                Vector2 defaultSize = rect.sizeDelta;
+                float koef = 1;
+                while (rect.sizeDelta.y < _textDescription.renderedHeight)
+                {
+                    rect.sizeDelta = defaultSize * koef;
+                    koef += Time.deltaTime;
+                    _textDescription.ForceMeshUpdate();
+                }
+                Vector2 backgroundSize = Vector2.one / DefaultTextSize * rect.sizeDelta;
                 float value = (backgroundSize.x > backgroundSize.y ? backgroundSize.x : backgroundSize.y);
                 _currentBattleground.transform.localScale = Vector3.one * value;
             }
-
+            UpdateTextPosition();
             Width = _currentBattleground.bounds.size.x;
 
             if (ownerId > 0)
@@ -79,11 +100,11 @@ namespace Loom.ZombieBattleground
                 switch (owner)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.Find((x) =>
+                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.First((x) =>
                             x.Model.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.Find((x) =>
+                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.First((x) =>
                             x.Model.TutorialObjectId == ownerId);
                         break;
                     default: break;
@@ -110,32 +131,49 @@ namespace Loom.ZombieBattleground
                         if (tooltip == null)
                             continue;
 
-                        if (Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x) < (Width + tooltip.Width) / 2)
+                        if (Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x) < (Width + tooltip.Width) / 2 + 1f)
                         {
-                            if (_align == Enumerators.TooltipAlign.CenterLeft)
+                            if (_align == Enumerators.TooltipAlign.CenterLeft ||
+                                _align == Enumerators.TooltipAlign.CenterRight)
                             {
-                                SetBattlegroundType(Enumerators.TooltipAlign.CenterRight);
-                                _currentPosition.x *= -1.2f;
+                                SetBattlegroundType(_align);
+                                _currentPosition.x *= -1f;
 
                             }
-                            else if (_align == Enumerators.TooltipAlign.CenterRight)
-                            {
-                                SetBattlegroundType(Enumerators.TooltipAlign.CenterLeft);
-                                _currentPosition.x *= -0.9f;
-                            }
+                            UpdateTextPosition();
                             SetPosition();
                             Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
                         }
                     }
-
                 }
+            }
+
+            switch (_layer)
+            {
+                case Enumerators.TutorialObjectLayer.Default:
+                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingOrder = 1;
+                    _textDescription.renderer.sortingOrder = 2;
+                    break;
+                default:
+                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBattleground.sortingOrder = 0;
+                    _textDescription.renderer.sortingOrder = 1;
+                    break;
             }
         }
 
-        public void Show()
+        public void Show(Vector3? position = null)
         {
             _selfObject?.SetActive(true);
             IsActiveInThisClick = true;
+            if (position != null)
+            {
+                _currentPosition = (Vector3)position;
+                SetPosition();
+            }
         }
 
         public void Hide()
@@ -162,6 +200,29 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void UpdateTextPosition()
+        {
+            Vector3 textPosition = Vector3.zero;
+            switch (_align)
+            {
+                case Enumerators.TooltipAlign.TopMiddle:
+                    textPosition.y = -_currentBattleground.bounds.size.y * 0.52f;
+                    break;
+                case Enumerators.TooltipAlign.CenterLeft:
+                    textPosition.x = _currentBattleground.bounds.size.x * 0.51f;
+                    break;
+                case Enumerators.TooltipAlign.CenterRight:
+                    textPosition.x = -_currentBattleground.bounds.size.x * 0.51f;
+                    break;
+                case Enumerators.TooltipAlign.BottomMiddle:
+                    textPosition.y = _currentBattleground.bounds.size.y * 0.52f;
+                    break;
+                default:
+                    break;
+            }
+            _textDescription.transform.localPosition = textPosition;
+        }
+
         private void SetPosition()
         {
             if (_ownerUnit != null)
@@ -171,7 +232,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 _selfObject.transform.position = _currentPosition;
-            }
+            }           
         }
 
         private void SetBattlegroundType(Enumerators.TooltipAlign align)

@@ -53,6 +53,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   token: 609343ab4cfd24db2e55c89ddd834dfc
   debugToken: 609343ab4cfd24db2e55c89ddd834dfc
-  trackInEditor: 1
+  trackInEditor: 0
   minLogLevel: 4
   flushInterval: 10

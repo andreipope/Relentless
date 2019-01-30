@@ -37,7 +37,8 @@ namespace Loom.ZombieBattleground
 
             if (TargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
             {
-                CardsController.ShuffleCardToPlayerHand(MainWorkingCard, PlayerCallerOfAbility);
+                // FIXME: doesn't this cause de-sync?
+                PlayerCallerOfAbility.AddCardToDeck(MainWorkingCard, true);
             }
         }
     }

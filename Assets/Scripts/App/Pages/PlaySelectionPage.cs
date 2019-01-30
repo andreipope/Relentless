@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine.Experimental.PlayerLoop;
 
 namespace Loom.ZombieBattleground

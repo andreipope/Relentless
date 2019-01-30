@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitModel unit in _movedUnits)
             {
-                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit, IsPVPAbility);
+                BattlegroundController.TakeControlUnit(PlayerCallerOfAbility, unit);
             }
 
             if (_movedUnits.Count > 0)

@@ -90,10 +90,15 @@ namespace Loom.ZombieBattleground
 
             HandleInput();
 
-            if (_tutorialManager.IsTutorial &&
-                _tutorialManager.CurrentTutorialStep != null &&
-                !_tutorialManager.CurrentTutorialStep.ToGameplayStep().CanInteractWithGameplay)
-                return;
+            if (_tutorialManager.IsTutorial)
+            {
+                if (!_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
+                {
+                    if (_tutorialManager.CurrentTutorialStep != null && _tutorialManager.CurrentTutorialStep is TutorialGameplayStep &&
+                    !_tutorialManager.CurrentTutorialStep.ToGameplayStep().CanInteractWithGameplay)
+                        return;
+                }
+            }
 
             _pointerEventSolver.Update();
         }
@@ -112,7 +117,10 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfHero);
 
-            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            if (!_gameplayManager.IsSpecificGameplayBattleground ||
+                (_gameplayManager.IsTutorial &&
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                SpecificBattlegroundInfo.DisabledInitialization))
             {
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
@@ -133,7 +141,7 @@ namespace Loom.ZombieBattleground
                         isMainTurnSecond = false;
                         break;
                     case Enumerators.MatchType.PVP:
-                        foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
+                        foreach (CardInstance cardInstance in player.InitialPvPPlayerState.CardsInDeck)
                         {
                             workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
@@ -143,7 +151,7 @@ namespace Loom.ZombieBattleground
                             String.Join("\n", workingDeck.Cast<object>().ToArray())
                         );
 
-                        isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
+                        isMainTurnSecond = !GameClient.Get<IPvPManager>().IsFirstPlayer();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -162,11 +170,20 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    player.SetFirstHandForLocalMatch(_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
+
+                    bool tutorialStatus = false;
+
+                    if (_gameplayManager.IsTutorial)
+                    {
+                        tutorialStatus = _gameplayManager.IsSpecificGameplayBattleground;
+                        tutorialStatus = !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization;
+                    }
+
+                    player.SetFirstHandForLocalMatch(tutorialStatus);
                     break;
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
-                        player.PvPPlayerState.CardsInHand
+                        player.InitialPvPPlayerState.CardsInHand
                         .Select(instance => instance.FromProtobuf(player))
                         .ToList();
 
@@ -209,7 +226,9 @@ namespace Loom.ZombieBattleground
 
         public void HandCardPreview(object[] param)
         {
-            if (_tutorialManager.IsTutorial)
+            if (_gameplayManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                SpecificBattlegroundInfo.DisabledInitialization)
             {
                 int id = 0;
 
@@ -461,7 +480,10 @@ namespace Loom.ZombieBattleground
             {
                 CheckCardPreviewShow();
             }
-            else if (!_gameplayManager.IsTutorial)
+            else if (!_gameplayManager.IsTutorial ||
+                     (_gameplayManager.IsTutorial &&
+                     _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                     SpecificBattlegroundInfo.DisabledInitialization))
             {
                 _timerManager.StopTimer(SetStatusZoomingFalse);
                 _cardsZooming = true;

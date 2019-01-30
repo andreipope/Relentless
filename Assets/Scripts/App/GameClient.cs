@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -36,6 +38,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            Func<Contract, IContractCallProxy> contractCallProxyFactory =
+                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, true));
+
             AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
             AddService<ILoadObjectsManager>(loadObjectsManager);
             AddService<ITimerManager>(new TimerManager());
@@ -53,27 +58,32 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(configData));
-            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contract => new ThreadedTimeMetricsContractCallProxy(contract, false, true)));
+            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contractCallProxyFactory));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IFacebookManager>(new FacebookManager());
             AddService<IAnalyticsManager>(new AnalyticsManager());
             AddService<IPvPManager>(new PvPManager());
             AddService<IQueueManager>(new QueueManager());
-            AddService<DebugCommandsManager>( new DebugCommandsManager());
+            AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
             AddService<FiatBackendManager>(new FiatBackendManager());
             AddService<FiatPlasmaManager>(new FiatPlasmaManager());
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
             AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
+            AddService<TutorialRewardManager>(new TutorialRewardManager());
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
         {
-#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_PVP_BACKEND
+#if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
             const BackendPurpose backend = BackendPurpose.Production;
+#elif USE_BRANCH_TESTING_BACKEND
+            const BackendPurpose backend = BackendPurpose.BranchTesting;
+#elif USE_REBALANCE_BACKEND
+            const BackendPurpose backend = BackendPurpose.Rebalance;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif

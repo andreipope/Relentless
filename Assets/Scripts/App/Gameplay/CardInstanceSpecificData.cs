@@ -5,9 +5,9 @@ namespace Loom.ZombieBattleground
 {
     public class CardInstanceSpecificData
     {
-        public int Damage { get; protected set; }
+        public int Damage { get; set; }
 
-        public int Health { get; protected set; }
+        public int Health { get; set; }
 
         public Enumerators.SetType CardSetType { get; set; }
 
