@@ -653,7 +653,10 @@ namespace Loom.ZombieBattleground
                                 }
                             }
 
-                            AttackedBoardObjectsThisTurn.Add(targetPlayer);
+                            if (!AttackedBoardObjectsThisTurn.Contains(targetPlayer))
+                            {
+                                AttackedBoardObjectsThisTurn.Add(targetPlayer);
+                            }
 
                             FightSequenceHandler.HandleAttackPlayer(
                                 completeCallback,
@@ -708,7 +711,11 @@ namespace Loom.ZombieBattleground
                             ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
                             targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
-                            AttackedBoardObjectsThisTurn.Add(targetCardModel);
+                            if (!AttackedBoardObjectsThisTurn.Contains(targetCardModel))
+                            {
+                                AttackedBoardObjectsThisTurn.Add(targetCardModel);
+                            }
+
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
                                 targetCardModel,
