@@ -47,6 +47,11 @@ namespace Loom.ZombieBattleground
                     UIRoot.gameObject.SetActive(ShouldBeVisible);
                 }
 
+                if (ShouldBeVisible)
+                {
+                    DebugConsole.IsVisible = false;
+                }
+
                 _isVisible = ShouldBeVisible;
             }
         }

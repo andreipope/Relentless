@@ -138,7 +138,14 @@ namespace Loom.ZombieBattleground
             _currentTime -= Time.deltaTime;
             if (_currentTime < 0)
             {
-                Handler(Parameters);
+                try
+                {
+                    Handler(Parameters);
+                } catch (Exception)
+                {
+                    Finished = true;
+                    throw;
+                }
 
                 if (_loop)
                 {

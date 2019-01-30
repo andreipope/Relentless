@@ -172,6 +172,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
+        public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
         public const bool MulliganEnabled = false;
 
@@ -181,7 +182,12 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool DevModeEnabled = false;
 
-        public const bool GameStateValidationEnabled = true;
+        public const bool GameStateValidationEnabled =
+#if UNITY_EDITOR
+            true;
+#else
+            false;
+#endif
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
