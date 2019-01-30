@@ -89,6 +89,52 @@ namespace Loom.ZombieBattleground
             return response;
         }
         
+        public async Task<FiatValidationResponse> CallFiatValidationApple(string productId, string transactionId, string receiptData, string storeName)
+        {  
+            Debug.Log("CallFiatValidationApple");
+            
+            WWWForm form = new WWWForm();
+            form.AddField("productId", productId);       
+            form.AddField("transactionId", transactionId);       
+            form.AddField("receiptData", receiptData);       
+            form.AddField("storeName", storeName);
+
+            UnityWebRequest request = null;
+
+            int count = 0;
+            while (true)
+            {
+                if (request != null)
+                    request.Dispose();
+                request = UnityWebRequest.Post(PlasmaChainEndpointsContainer.FiatValidationURL,form);
+                AddAuthorizationHeader(request);
+                request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.downloadHandler = new DownloadHandlerBuffer();
+                try
+                {
+                    await request.SendWebRequest();
+
+                    if (IsSuccess(request))
+                        break;
+                    Debug.Log("FiatValidation request connection error");
+                }
+                catch
+                {
+                    Debug.Log("Catch FiatValidation request connection error");
+                    await Task.Delay(TimeSpan.FromSeconds(1));                  
+                }
+                ++count;
+                Debug.Log($"Retry FiatValidation: {count}");
+            }      
+
+            string json = request.downloadHandler.text;          
+            Debug.Log(json);        
+            FiatValidationResponse response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
+            
+            Debug.Log("Finish CallFiatValidation");
+            return response;
+        }
+        
         public async Task<List<FiatTransactionResponse>> CallFiatTransaction()
         {
             Debug.Log("CallFiatTransaction");

@@ -445,6 +445,20 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<LoadingFiatPopup>();
             RequestFiatTransaction();           
         }
+
+        private async void RequestFiatValidationApple(string productId, string transactionId, string receiptData, string storeName)
+        {
+            _uiManager.DrawPopup<LoadingFiatPopup>("Request Fiat Validation");
+            FiatBackendManager.FiatValidationResponse response = await _fiatBackendManager.CallFiatValidationApple
+            (
+                productId,
+                transactionId,
+                receiptData,
+                storeName
+            );
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            RequestFiatTransaction(); 
+        }
         
         private async void RequestFiatTransaction()
         {
@@ -535,12 +549,25 @@ namespace Loom.ZombieBattleground
                 storeName                
             );  
             #elif UNITY_IOS
-            ParseTransactionIdentifierFromAppStoreReceipt(args);
-            ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
+            string productId = product.definition.id;
+            string transactionId = ParseTransactionIdentifierFromAppStoreReceipt(args);
+            string receiptData = ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
+            string storeName = product.definition.storeSpecificId;
+            Debug.Log($"productId: {productId}");
+            Debug.Log($"transactionId: {transactionId}");
+            Debug.Log($"receiptData: {receiptData}");
+            Debug.Log($"storeName: {storeName}");
+            RequestFiatValidationApple
+            (
+                productId,
+                transactionId,
+                receiptData,
+                storeName
+            );
             #endif                   
         }
         
-        private void ParseTransactionIdentifierFromAppStoreReceipt(PurchaseEventArgs e)
+        private string ParseTransactionIdentifierFromAppStoreReceipt(PurchaseEventArgs e)
         {
             var validator = new CrossPlatformValidator(GooglePlayTangle.Data(),
                     AppleTangle.Data(), Application.identifier);
@@ -554,6 +581,8 @@ namespace Loom.ZombieBattleground
                 Debug.Log($"productReceipt.productID: {productReceipt.productID}");
                 Debug.Log($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
                 Debug.Log($"productReceipt.transactionID: {productReceipt.transactionID}");
+
+                return productReceipt.transactionID;
                 
                 AppleInAppPurchaseReceipt apple = productReceipt as AppleInAppPurchaseReceipt;
                 if (null != apple) {
@@ -563,9 +592,10 @@ namespace Loom.ZombieBattleground
                     Debug.Log($"apple.quantity: {apple.quantity}");
                 }
             }
+            return "";
         }
 
-        private void ParsePayloadFromAppStoreReceipt(string receiptString)
+        private string ParsePayloadFromAppStoreReceipt(string receiptString)
         {
             string payload = "";   
             try
@@ -588,7 +618,7 @@ namespace Loom.ZombieBattleground
                 int count = 0;
                 while( !string.IsNullOrEmpty(payloadToCut))
                 {
-                    int lengthAmount = 80;
+                    int lengthAmount = 200;
                     if(payloadToCut.Length > lengthAmount)
                     {
                         logText = payloadToCut.Substring(0, lengthAmount);
@@ -608,6 +638,7 @@ namespace Loom.ZombieBattleground
             {
                 Debug.Log("Cannot deserialize args.purchasedProduct.receipt");                
             }
+            return payload;
         }
 
         private string ParsePurchaseTokenFromPlayStoreReceipt( string receiptString  )
