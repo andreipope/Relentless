@@ -18,6 +18,7 @@ namespace Loom.ZombieBattleground
     public class MatchMakingFlowController
     {
         private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
+        private const string PlayerIsNotInPool = "Player not found in player pool";
 
         private readonly BackendFacade _backendFacade;
         private readonly UserDataModel _userDataModel;
@@ -91,8 +92,7 @@ namespace Loom.ZombieBattleground
             Address? customGameModeAddress,
             IList<string> tags,
             bool useBackendGameLogic,
-            DebugCheatsConfiguration debugCheats
-            )
+            DebugCheatsConfiguration debugCheats)
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -106,27 +106,6 @@ namespace Loom.ZombieBattleground
 
             await SetState(MatchMakingState.RegisteringToPool);
             await RegisterPlayerToPool();
-        }
-
-        public async Task RegisterPlayerToPool ()
-        {
-            try
-            {
-                RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
-                    _userDataModel.UserId,
-                    _deckId,
-                    _customGameModeAddress,
-                    _tags,
-                    _useBackendGameLogic,
-                    _debugCheats
-                );
-
-                await SetState(MatchMakingState.WaitingPeriod);
-            }
-            catch (Exception e)
-            {
-                ErrorHandler(e);
-            }
         }
 
         public async Task Stop()
@@ -170,6 +149,27 @@ namespace Loom.ZombieBattleground
 
                     break;
                 }
+            }
+        }
+
+        private async Task RegisterPlayerToPool ()
+        {
+            try
+            {
+                RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
+                    _userDataModel.UserId,
+                    _deckId,
+                    _customGameModeAddress,
+                    _tags,
+                    _useBackendGameLogic,
+                    _debugCheats
+                );
+
+                await SetState(MatchMakingState.WaitingPeriod);
+            }
+            catch (Exception e)
+            {
+                ErrorHandler(e);
             }
         }
 
@@ -312,7 +312,7 @@ namespace Loom.ZombieBattleground
         private async void ErrorHandler (Exception exception) {
             // Just restart the entire process
             // FIXME: why does this error still occur, though?
-            if (exception.Message.Contains(PlayerIsAlreadyInAMatch))
+            if (exception.Message.Contains(PlayerIsAlreadyInAMatch) || exception.Message.Contains(PlayerIsNotInPool))
             {
                 try
                 {
@@ -322,17 +322,18 @@ namespace Loom.ZombieBattleground
 
                     await Restart();
                 }
+                catch(TimeoutException e)
+                {
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
+                }
                 catch (Exception e)
                 {
                     ErrorHandler(e);
                 }
-
-                return;
             }
             else
             {
-                Debug.Log("Exception not handled, restarting matchmaking:" + exception.Message);
-                await RegisterPlayerToPool();
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
         }
 

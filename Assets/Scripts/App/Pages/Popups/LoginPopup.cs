@@ -88,6 +88,8 @@ namespace Loom.ZombieBattleground
         private InputField _OTPFieldOTP;
         private Image _backgroundDarkImage;
 
+        private string _lastErrorMessage;
+
 
         private LoginState _state;
 
@@ -212,20 +214,25 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void SetLoginAsGuestState (string GUID = null) 
+        public void SetLoginAsGuestState(string GUID = null)
         {
             _lastGUID = GUID;
             SetUIState(LoginState.LoginAsGuest);
         }
 
-        public void SetLoginFieldsData (string _email, string _password) 
+        public void SetLoginFromDataState()
+        {
+            SetUIState(LoginState.LoginFromCurrentSetOfData);
+        }
+
+        public void SetLoginFieldsData(string _email, string _password)
         {
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
             SetUIState(LoginState.InitiateLogin);
         }
 
-        private void PressedSendOTPHandler() 
+        private void PressedSendOTPHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -245,7 +252,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldForgot.text.Length > 0 && Utilites.ValidateEmail(_emailFieldForgot.text)) 
+            if (_emailFieldForgot.text.Length > 0 && Utilites.ValidateEmail(_emailFieldForgot.text))
             {
                 ForgottenPasswordProcess();
             }
@@ -277,12 +284,30 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.InitiateRegistration);
         }
 
-        private void PressedRegisterHandler() 
+        private void PressedRegisterHandler()
         {
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldRegister.text.Length > 0 && Utilites.ValidateEmail(_emailFieldRegister.text) && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
+            if (string.IsNullOrEmpty(_emailFieldRegister.text) || string.IsNullOrEmpty(_passwordFieldRegister.text) || string.IsNullOrEmpty(_confirmFieldRegister.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                return;
+            }
+
+            if (!Utilites.ValidateEmail(_emailFieldRegister.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                return;
+            }
+
+            if (_passwordFieldRegister.text != _confirmFieldRegister.text)
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Password Mismatch - Password and Confirm Password must be the same.");
+                return;
+            }
+
+            if (_emailFieldRegister.text.Length > 0 && _passwordFieldRegister.text.Length > 0 && _confirmFieldRegister.text.Length > 0 && _passwordFieldRegister.text == _confirmFieldRegister.text)
             {
                 _registerButton.enabled = false;
                 RegisterProcess();
@@ -298,7 +323,19 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_emailFieldLogin.text.Length > 0 && Utilites.ValidateEmail(_emailFieldLogin.text) && _passwordFieldLogin.text.Length > 0)
+            if (string.IsNullOrEmpty(_emailFieldLogin.text) || string.IsNullOrEmpty(_passwordFieldLogin.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                return;
+            }
+
+            if (!Utilites.ValidateEmail(_emailFieldLogin.text))
+            {
+                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                return;
+            }
+
+            if (_emailFieldLogin.text.Length > 0 && _passwordFieldLogin.text.Length > 0)
             {
                 _loginButton.enabled = false;
                 LoginProcess(false);
@@ -309,42 +346,69 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void ConfirmOTPProcess()
+        private async void ConfirmOTPProcess(bool noOTP = false)
         {
             SetUIState(LoginState.ValidateAndLogin);
+            CreateVaultTokenData vaultTokenData = new CreateVaultTokenData();
             try
             {
-                CreateVaultTokenData vaultTokenData =  await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                if (noOTP)
+                {
+                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                }
+                else
+                {
+                    vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
+                }
                 GetVaultDataResponse vaultDataData = await _backendFacade.GetVaultData(vaultTokenData.auth.client_token);
                 _backendDataControlMediator.UserDataModel.PrivateKey = Convert.FromBase64String(vaultDataData.data.privatekey);
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
             {
-                if (e.Message == Constants.VaultEmptyErrorCode) 
+                Helpers.ExceptionReporter.LogException(e);
+
+                if (e.Message == Constants.VaultEmptyErrorCode)
                 {
-                    UpdatePrivateKeyProcess();
+                    UpdatePrivateKeyProcess(noOTP, vaultTokenData);
                 }
-                else 
+                else
                 {
                     Debug.Log(e.ToString());
-                    SetUIState(LoginState.ValidationFailed);
+                    string errorMsg = string.Empty;
+                    if (e.Message.Contains("Forbidden"))
+                    {
+                        errorMsg = "Invalid OTP. \n Please Enter correct OTP.";
+                    }
+                    _lastErrorMessage = e.Message;
+                    SetUIState(LoginState.ValidationFailed, errorMsg);
                 }
             }
         }
 
-        private async void UpdatePrivateKeyProcess()
+        private async void UpdatePrivateKeyProcess(bool noOTP, CreateVaultTokenData vaultPreviousData = null)
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
             {
-                CreateVaultTokenData vaultTokenData = await _backendFacade.CreateVaultToken(_OTPFieldOTP.text, _backendDataControlMediator.UserDataModel.AccessToken);
-                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Encoding.UTF8.GetString(_backendDataControlMediator.UserDataModel.PrivateKey));
+                CreateVaultTokenData vaultTokenData;
+                if (noOTP)
+                {
+                    vaultTokenData = await _backendFacade.CreateVaultTokenForNon2FAUsers(_backendDataControlMediator.UserDataModel.AccessToken);
+                }
+                else
+                {
+                    vaultTokenData = vaultPreviousData;
+                }
+                bool setVaultTokenResponse = await _backendFacade.SetVaultData(vaultTokenData.auth.client_token, Convert.ToBase64String(_backendDataControlMediator.UserDataModel.PrivateKey));
                 CompleteLoginFromCurrentSetUserData();
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
         }
@@ -360,12 +424,15 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
         }
 
-        private async void RegisterProcess () 
+        private async void RegisterProcess()
         {
             SetUIState(LoginState.ValidateAndLogin);
             try
@@ -377,13 +444,32 @@ namespace Loom.ZombieBattleground
                 LoginProcess(false);
                 return;
             }
+            catch (RpcClientException e)
+            {
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
+
+                SetUIState(LoginState.ValidationFailed, "Registration was failed.\nPlease try again later.");
+
+                _registerButton.enabled = true;
+            }
             catch (Exception e)
             {
-                Debug.Log(e.ToString());
-                SetUIState(LoginState.ValidationFailed);
-            }
+                Helpers.ExceptionReporter.LogException(e);
 
-            _registerButton.enabled = true;
+                Debug.Log(e.ToString());
+                string errorMsg = string.Empty;
+                if (e.Message.Contains("BadRequest"))
+                {
+                    errorMsg = "This email already exists, \n " +
+                               "Please try a different email to register or \n " +
+                               "login to your existing account.";
+                }
+
+                _lastErrorMessage = e.Message;
+                SetUIState(LoginState.ValidationFailed, errorMsg);
+
+                _registerButton.enabled = true;
+            }
         }
 
         private async void LoginProcess(bool isGuest)
@@ -408,7 +494,7 @@ namespace Loom.ZombieBattleground
                     publicKey = publicKeyFromGuID;
                     userId = userIDFromGuID;
                 }
-                else 
+                else
                 {
                     loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
 
@@ -441,7 +527,7 @@ namespace Loom.ZombieBattleground
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
 
-                if (authyId != 0) 
+                if (authyId != 0)
                 {
                     SetUIState(LoginState.PromptOTP);
                     return;
@@ -449,54 +535,137 @@ namespace Loom.ZombieBattleground
 
                 _OTPFieldOTP.text = "";
 
+                _loginButton.enabled = true;
+
                 if (isGuest)
                 {
                     CompleteLoginFromCurrentSetUserData();
                 }
                 else
                 {
-                    CompleteLoginFromCurrentSetUserData();
-                    //TODO Remove the line above, and uncomment the one below
-                    //once Parth implements Create Vault Token for users without 2FA
-                    //ConfirmOTPProcess();
+                    ConfirmOTPProcess(true);
                 }
 
                 return;
             }
             catch (GameVersionMismatchException e)
             {
+                Helpers.ExceptionReporter.LogException(e);
+
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
-            }
-            catch (Exception e) 
-            {
-                Debug.Log(e.ToString());
-                SetUIState(LoginState.ValidationFailed);
-            }
 
-            _loginButton.enabled = true;
+                _loginButton.enabled = true;
+            }
+            catch (TimeoutException e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
+
+                SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
+
+                _loginButton.enabled = true;
+            }
+            catch (RpcClientException e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
+
+                SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
+
+                _loginButton.enabled = true;
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                Debug.Log(e.ToString());
+                _lastErrorMessage = e.Message;
+                if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
+                {
+                    _lastErrorMessage = "\n The Username and/or Password are not correct. \n";
+                }
+                SetUIState(LoginState.ValidationFailed);
+
+                _loginButton.enabled = true;
+            }
         }
 
-        public async void CompleteLoginFromCurrentSetUserData () {
+        private async void CompleteLoginFromCurrentSetUserData()
+        {
             SetUIState(LoginState.ValidateAndLogin);
 
-            await _backendDataControlMediator.LoginAndLoadData();
+            try
+            {
+                await _backendDataControlMediator.LoginAndLoadData();
 
-            _backendDataControlMediator.UserDataModel.IsValid = true;
-            _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
+                _backendDataControlMediator.UserDataModel.IsValid = true;
+                _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
 
-            SuccessfulLogin();
+                SuccessfulLogin();
 
-            _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+                _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+            }
+            catch (TimeoutException e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
+
+                _lastErrorMessage = e.Message;
+                SetUIState(LoginState.ValidationFailed);
+            }
+            catch (RpcClientException e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
+
+                _lastErrorMessage = e.Message;
+                SetUIState(LoginState.ValidationFailed);
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                Debug.LogWarning(e);
+                _lastErrorMessage = e.Message;
+                SetUIState(LoginState.ValidationFailed);
+            }
         }
 
         private void SuccessfulLogin()
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+#if USE_REBALANCE_BACKEND
+                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
+                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+#else
+                GameClient.Get<IGameplayManager>().IsTutorial = true;
+                (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
 
-                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                GameClient.Get<ITutorialManager>().SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
+
+                if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
+                {
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)GameClient.Get<IDataManager>().CachedDecksData.Decks.Last().Id;
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
+
+                    GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                }
+                else
+                {
+                    _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+
+                    if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                    {
+                        GameClient.Get<ITutorialManager>().StartTutorial();
+                    }
+                }
+#endif
             }
             else
             {
@@ -505,19 +674,19 @@ namespace Loom.ZombieBattleground
             Hide();
         }
 
-        private void SetUIState(LoginState state)
+        private void SetUIState(LoginState state, string errorMsg = "")
         {
-            if (Constants.AlwaysGuestLogin) 
+            if (Constants.AlwaysGuestLogin)
             {
-                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration) 
+                if (state == LoginState.InitiateLogin || state == LoginState.InitiateRegistration || state == LoginState.LoginFromCurrentSetOfData)
                 {
                     state = LoginState.LoginAsGuest;
                 }
             }
 
-            if (Self == null) 
+            if (Self == null)
                 return;
-            
+
             Debug.Log(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
@@ -529,6 +698,48 @@ namespace Loom.ZombieBattleground
             _forgottenSuccessGroup.gameObject.SetActive(false);
             _OTPGroup.gameObject.SetActive(false);
             _backgroundDarkImage.enabled = true;
+
+            if (_backendFacade.BackendEndpoint.IsForceUpdate)
+            {
+                Action[] actions = new Action[2];
+                actions[0] = () =>
+                {
+#if UNITY_EDITOR
+                    Debug.LogWarning("Version Mismatched");
+#elif UNITY_ANDROID
+                    Application.OpenURL(Constants.GameLinkForAndroid);
+#elif UNITY_IOS
+                    Application.OpenURL(Constants.GameLinkForIOS);
+#elif UNITY_STANDALONE_OSX
+                    Application.OpenURL(Constants.GameLinkForOSX);
+#elif UNITY_STANDALONE_WIN
+                    Application.OpenURL(Constants.GameLinkForWindows);
+#else
+                    Debug.LogWarning("Version Mismatched");
+#endif
+                };
+                actions[1] = () =>
+                {
+                    Application.Quit();
+                };
+                _backgroundDarkImage.enabled = false;
+                _uiManager.DrawPopup<UpdatePopup>(actions);
+                return;
+            }
+
+            if (_backendFacade.BackendEndpoint.IsMaintenanceMode && _state != LoginState.ValidationFailed)
+            {
+                _lastPopupState = _state;
+                SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForMaintenanceMode);
+                return;
+            }
+
+            if (_backendFacade.BackendEndpoint.IsConnectionImpossible && _state != LoginState.ValidationFailed)
+            {
+                _lastPopupState = _state;
+                SetUIState(LoginState.ValidationFailed, Constants.ErrorMessageForConnectionImpossible);
+                return;
+            }
 
             switch (_state)
             {
@@ -555,7 +766,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.Show("The process could not be completed. Please try again.");
+                    string msgToShow = "The process could not be completed with error:" + _lastErrorMessage +
+                                       "\nPlease try again.";
+
+                    if (!string.IsNullOrEmpty(errorMsg))
+                        msgToShow = errorMsg;
+                    popup.Show(msgToShow);
                     _uiManager.GetPopup<WarningPopup>().ConfirmationReceived += WarningPopupClosedOnAutomatedLogin;
                     break;
                 case LoginState.RemoteVersionMismatch:
@@ -580,14 +796,34 @@ namespace Loom.ZombieBattleground
                     _backgroundGroup.gameObject.SetActive(false);
                     _OTPGroup.gameObject.SetActive(true);
                     break;
+                case LoginState.LoginFromCurrentSetOfData:
+                    _lastPopupState = _state;
+                    CompleteLoginFromCurrentSetUserData();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_state), _state, null);
             }
         }
 
-        private void WarningPopupClosedOnAutomatedLogin()
+        private async void WarningPopupClosedOnAutomatedLogin()
         {
-            SetUIState(_lastPopupState);
+            _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupClosedOnAutomatedLogin;
+            try
+            {
+                if (_backendFacade.BackendEndpoint == BackendEndpointsContainer.Endpoints[BackendPurpose.Production])
+                {
+                    _backendFacade.BackendEndpoint = await _backendFacade.GetServerURLs();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
+            }
+            finally
+            {
+                SetUIState(_lastPopupState);
+            }
         }
 
         private void UpdateVersionMismatchText(GameVersionMismatchException exception)
@@ -644,7 +880,8 @@ namespace Loom.ZombieBattleground
             LoginAsGuest,
             ForgotPassword,
             SuccessForgotPassword,
-            PromptOTP
+            PromptOTP,
+            LoginFromCurrentSetOfData
         }
     }
 }

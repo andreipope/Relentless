@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         public int CurrentGooModificator { get; set; }
 
-        public int DamageByNoMoreCardsInDeck  { get; set; }
+        public int DamageByNoMoreCardsInDeck { get; set; }
 
         public int ExtraGoo { get; set; }
 
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
         public uint TurnTime { get; private set; }
 
-        public PlayerState PvPPlayerState { get; }
+        public PlayerState InitialPvPPlayerState { get; }
 
         public Data.InstanceId InstanceId { get; }
 
@@ -125,19 +125,18 @@ namespace Loom.ZombieBattleground
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
-            CardsInDeck = new List<WorkingCard>();
-            CardsInGraveyard = new List<WorkingCard>();
-            CardsInHand = new List<WorkingCard>();
-            CardsOnBoard = new List<WorkingCard>();
-            BoardCards = new List<BoardUnitView>();
-            BoardSpellsInUse = new List<BoardSpell>();
-
-            CardsPreparingToHand = new List<WorkingCard>();
+            CardsInDeck = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            CardsInGraveyard = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            CardsInHand = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            CardsOnBoard = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
+            BoardCards = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
+            BoardSpellsInUse = new UniquePositionedList<BoardSpell>(new PositionedList<BoardSpell>());
+            CardsPreparingToHand = new UniquePositionedList<WorkingCard>(new PositionedList<WorkingCard>());
 
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.PVP:
-                    PvPPlayerState =
+                    InitialPvPPlayerState =
                         _pvpManager.InitialGameState.PlayerStates
                         .First(state =>
                                 isOpponent ?
@@ -145,15 +144,19 @@ namespace Loom.ZombieBattleground
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
 
-                    InitialCardsInHandCount = (uint) PvPPlayerState.InitialCardsInHandCount;
-                    MaxCardsInHand = (uint) PvPPlayerState.MaxCardsInHand;
-                    MaxCardsInPlay = (uint) PvPPlayerState.MaxCardsInPlay;
-                    MaxGooVials = (uint) PvPPlayerState.MaxGooVials;
+                    InitialCardsInHandCount = (uint) InitialPvPPlayerState.InitialCardsInHandCount;
+                    MaxCardsInHand = (uint) InitialPvPPlayerState.MaxCardsInHand;
+                    MaxCardsInPlay = (uint) InitialPvPPlayerState.MaxCardsInPlay;
+                    MaxGooVials = (uint) InitialPvPPlayerState.MaxGooVials;
 
-                    Defense = PvPPlayerState.Defense;
-                    CurrentGoo = PvPPlayerState.CurrentGoo;
-                    GooVials = PvPPlayerState.GooVials;
-                    TurnTime = (uint) PvPPlayerState.TurnTime;
+#if USE_REBALANCE_BACKEND
+                    Defense = Constants.DefaultPlayerHp;
+#else
+                    Defense = InitialPvPPlayerState.Defense;
+#endif
+                    CurrentGoo = InitialPvPPlayerState.CurrentGoo;
+                    GooVials = InitialPvPPlayerState.GooVials;
+                    TurnTime = (uint) InitialPvPPlayerState.TurnTime;
                     break;
                 default:
                     InitialCardsInHandCount = Constants.DefaultCardsInHandAtStartGame;
@@ -191,7 +194,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
+                    heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
                 }
             }
             else
@@ -199,9 +202,11 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        if (_gameplayManager.IsTutorial)
+                        if (_gameplayManager.IsTutorial && 
+                            !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                            SpecificBattlegroundInfo.DisabledInitialization)
                         {
-                            heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
+                            heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                         }
                         else
                         {
@@ -209,7 +214,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case Enumerators.MatchType.PVP:
-                        heroId = (int) PvPPlayerState.Deck.HeroId;
+                        heroId = (int) InitialPvPPlayerState.Deck.HeroId;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -253,6 +258,9 @@ namespace Loom.ZombieBattleground
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
 #endif
+
+            _gameplayManager.GetController<InputController>().PlayerSelectedEvent += PlayerSelectedEventHandler;
+
         }
 
         public event Action TurnStarted;
@@ -336,19 +344,19 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
-        public List<BoardUnitView> BoardCards { get; set; }
+        public UniquePositionedList<BoardUnitView> BoardCards { get; }
 
-        public List<BoardSpell> BoardSpellsInUse { get; set; }
+        public UniquePositionedList<BoardSpell> BoardSpellsInUse { get; }
 
-        public List<WorkingCard> CardsInDeck { get; set; }
+        public UniquePositionedList<WorkingCard> CardsInDeck { get; }
 
-        public List<WorkingCard> CardsInGraveyard { get; }
+        public UniquePositionedList<WorkingCard> CardsInGraveyard { get; }
 
-        public List<WorkingCard> CardsInHand { get; }
+        public UniquePositionedList<WorkingCard> CardsInHand { get; }
 
-        public List<WorkingCard> CardsOnBoard { get; }
+        public UniquePositionedList<WorkingCard> CardsOnBoard { get; }
 
-        public List<WorkingCard> CardsPreparingToHand { get; set; }
+        public UniquePositionedList<WorkingCard> CardsPreparingToHand { get; }
 
         public bool IsStunned { get; private set; }
 
@@ -385,7 +393,20 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _cardsController.AddCardToHand(this);
+                // Backend already draws a card at the start
+                if (!_pvpManager.UseBackendGameLogic ||
+                    _pvpManager.UseBackendGameLogic && _battlegroundController.CurrentTurn != 1)
+                {
+                    IView cardView = _cardsController.AddCardToHand(this);
+                    (cardView as BoardCard)?.SetDefaultAnimation();
+                }
+
+                // Second player draw two cards on their first turn
+                if (_battlegroundController.CurrentTurn == 2 && !_gameplayManager.IsTutorial)
+                {
+                    IView cardView = _cardsController.AddCardToHand(this);
+                    (cardView as BoardCard)?.SetDefaultAnimation();
+                }
             }
 
             TurnStarted?.Invoke();
@@ -399,7 +420,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                CardsInDeck.Add(card);
+                CardsInDeck.Insert(ItemPosition.End, card);
             }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
@@ -412,33 +433,37 @@ namespace Loom.ZombieBattleground
             DeckChanged?.Invoke(CardsInDeck.Count);
         }
 
-        public GameObject AddCardToHand(WorkingCard card, bool silent = false)
+        public void InvokeDeckChangedEvent () {
+            DeckChanged?.Invoke(CardsInDeck.Count);
+        }
+
+        public IView AddCardToHand(WorkingCard card, bool silent = false)
         {
-            GameObject cardObject;
-            CardsInHand.Add(card);
+            IView cardView;
+            CardsInHand.Insert(ItemPosition.End, card);
 
             if (IsLocalPlayer)
             {
-                cardObject = _cardsController.AddCardToHand(card, silent);
+                cardView = _cardsController.AddCardToHand(card, silent);
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand(silent);
             }
             else
             {
-                cardObject = _cardsController.AddCardToOpponentHand(card, silent).GameObject;
+                cardView = _cardsController.AddCardToOpponentHand(card, silent);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand(true, !silent);
             }
 
             HandChanged?.Invoke(CardsInHand.Count);
 
-            return cardObject;
+            return cardView;
         }
 
         public void AddCardToHandFromOpponentDeck(Player opponent, WorkingCard card)
         {
             card.Owner = this;
 
-            CardsInHand.Add(card);
+            CardsInHand.Insert(ItemPosition.End, card);
 
             if (IsLocalPlayer)
             {
@@ -474,9 +499,14 @@ namespace Loom.ZombieBattleground
             HandChanged?.Invoke(CardsInHand.Count);
         }
 
-        public void AddCardToBoard(WorkingCard card)
+        public void AddCardToBoard(WorkingCard card, ItemPosition position)
         {
-            CardsOnBoard.Add(card);
+            if (CardsOnBoard.Contains(card))
+            {
+                Debug.LogWarning($"Attempt to add card {card} to CardsOnBoard when it is already added");
+                return;
+            }
+            CardsOnBoard.Insert(position, card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -501,7 +531,7 @@ namespace Loom.ZombieBattleground
             if (CardsInGraveyard.Contains(card))
                 return;
 
-            CardsInGraveyard.Add(card);
+            CardsInGraveyard.Insert(ItemPosition.End, card);
 
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
         }
@@ -518,12 +548,15 @@ namespace Loom.ZombieBattleground
 
         public void SetDeck(List<WorkingCard> cards, bool isMainTurnSecond)
         {
-            CardsInDeck = new List<WorkingCard>();
+            CardsInDeck.Clear();
 
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    cards = ShuffleCardsList(cards);
+                    if (!_gameplayManager.IsTutorial)
+                    {
+                        cards.ShuffleList();
+                    }
 
                     if(isMainTurnSecond)
                     {
@@ -534,17 +567,11 @@ namespace Loom.ZombieBattleground
                         _cardsController.SetNewCardInstanceId(0);
                     }
 
-                    foreach (WorkingCard card in cards)
-                    {
-                        CardsInDeck.Add(card);
-                    }
+                    CardsInDeck.InsertRange(ItemPosition.End, cards);
 
                     break;
                 case Enumerators.MatchType.PVP:
-                    foreach (WorkingCard card in cards)
-                    {
-                        CardsInDeck.Add(card);
-                    }
+                    CardsInDeck.InsertRange(ItemPosition.End, cards);
 
                     break;
                 default:
@@ -552,21 +579,6 @@ namespace Loom.ZombieBattleground
             }
 
             DeckChanged?.Invoke(CardsInDeck.Count);
-        }
-
-        public List<T> ShuffleCardsList<T>(List<T> cards)
-        {
-            if (cards.Count == 0)
-                return cards;
-
-            List<T> array = cards;
-
-            if (!_gameplayManager.IsTutorial)
-            {
-                InternalTools.ShakeList(ref array); // shake
-            }
-
-            return array;
         }
 
         public void SetFirstHandForLocalMatch(bool skip)
@@ -579,7 +591,10 @@ namespace Loom.ZombieBattleground
                 if (i >= CardsInDeck.Count)
                     break;
 
-                if (IsLocalPlayer && !_gameplayManager.IsTutorial)
+                if (IsLocalPlayer && (!_gameplayManager.IsTutorial ||
+                    (_gameplayManager.IsTutorial &&
+                    _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                    SpecificBattlegroundInfo.DisabledInitialization)))
                 {
                     _cardsController.AddCardToDistributionState(this, CardsInDeck[i]);
                 }
@@ -620,6 +635,8 @@ namespace Loom.ZombieBattleground
             _deathAnimator.Play(0);
             _regularAnimator.Play(0);
 
+            _gameplayManager.GetController<InputController>().PlayerSelectedEvent -= PlayerSelectedEventHandler;
+
             FadeTool overlordFactionFrameFadeTool = _overlordFactionFrameAnimator.transform.GetComponent<FadeTool>();
             if (overlordFactionFrameFadeTool != null)
                 overlordFactionFrameFadeTool.FadeIn();
@@ -656,7 +673,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (!_gameplayManager.IsTutorial)
+            if (!_gameplayManager.IsTutorial || ( _gameplayManager.IsTutorial &&
+                                                 _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                                 SpecificBattlegroundInfo.DisabledInitialization))
             {
                 _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
                 if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
@@ -678,7 +697,14 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                GameClient.Get<ITutorialManager>().ReportAction(Enumerators.TutorialReportAction.HERO_DEATH);
+                if (IsLocalPlayer)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlorDied);
+                }
+                else
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordDied);
+                }
             }
         }
 
@@ -770,7 +796,7 @@ namespace Loom.ZombieBattleground
         }
 #endif
 
-        #region handlers
+#region handlers
 
         private void PlayerDefenseChangedHandler(int now)
         {
@@ -787,6 +813,24 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        #endregion
+
+        private void PlayerSelectedEventHandler(Player player)
+        {
+            if (IsLocalPlayer)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordSelected);
+            }
+            else
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordSelected);
+            }
+        }
+
+#endregion
+
+        public override string ToString()
+        {
+            return $"{{InstanceId: {InstanceId}, IsLocalPlayer: {IsLocalPlayer}}}";
+        }
     }
 }

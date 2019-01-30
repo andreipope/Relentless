@@ -1,3 +1,4 @@
+using System;
 using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground
@@ -13,5 +14,7 @@ namespace Loom.ZombieBattleground
         void BackAppState();
 
         void QuitApplication();
+
+        void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true);
     }
 }

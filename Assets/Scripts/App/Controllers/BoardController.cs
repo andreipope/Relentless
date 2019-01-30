@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
+        private long _sequenceUniqueId = 0;
+
         public void Dispose()
         {
         }
@@ -58,6 +60,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetAll()
         {
+            _sequenceUniqueId = 0;
         }
 
         public void Update()
@@ -85,18 +88,23 @@ namespace Loom.ZombieBattleground
             UpdateBoard(player.BoardCards, player.IsLocalPlayer, boardUpdated);
         }
 
-        public void UpdateBoard(List<BoardUnitView> units, bool isBottom, Action boardUpdated)
+        public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
 
+            // FIXME HARD: in tutorial, arrows should NEVER use XYZ coordinates, and use references to actual things instead.
+            if (!isBottom)
+            {
+                units = units.Reverse().ToList();
+            }
+
             float boardWidth = 0.0f;
-            float spacing = 0.2f;
-            float cardWidth = 0.0f;
+            const float spacing = 0.2f;
+            const float cardWidth = 2.5f;
 
             for (int i = 0; i < units.Count; i++)
             {
-                cardWidth = 2.5f;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }
@@ -114,16 +122,39 @@ namespace Loom.ZombieBattleground
                 pivot.x += boardWidth / units.Count;
             }
 
-            Sequence sequence = DOTween.Sequence();
+            _sequenceUniqueId++;
+
+            BoardUpdateSequence updateSequence = new BoardUpdateSequence();
+            updateSequence.Id = _sequenceUniqueId;
+
+            Tween tween;
+            const float Duration = 0.4f;
+
             for (int i = 0; i < units.Count; i++)
+            {
+                updateSequence.AddTween(null, Duration);
+            }
+
+            for (int i = 0; i < updateSequence.Tweens.Count; i++)
             {
                 BoardUnitView card = units[i];
 
                 card.PositionOfBoard = newPositions[i];
-                sequence.Insert(0, card.Transform.DOMove(newPositions[i], 0.4f).SetEase(Ease.OutSine));
+
+                tween = card.Transform.DOMove(newPositions[i], Duration).SetEase(Ease.OutSine);
+                tween.OnComplete(() =>
+                {
+                    updateSequence.TweenEnded(tween);
+                });
+
+                updateSequence.Tweens[i].Tween = tween;
+                updateSequence.StartTween(updateSequence.Tweens[i]);
             }
 
-            sequence.AppendCallback(() => boardUpdated?.Invoke());
+            if (boardUpdated != null)
+            {
+                updateSequence.TweensEnded += boardUpdated;
+            }
         }
 
         private void CheckIfBoardWasUpdated(ref int value, int maxValue, Action endCallback)
@@ -133,6 +164,63 @@ namespace Loom.ZombieBattleground
             if (value == maxValue)
             {
                 endCallback?.Invoke();
+            }
+        }
+
+        public class BoardUpdateSequence
+        {
+            public event Action TweensEnded;
+
+            public long Id;
+
+            public List<TweenObject> Tweens;
+
+            public bool SequenceDone;
+
+            public BoardUpdateSequence()
+            {
+                Tweens = new List<TweenObject>();
+                SequenceDone = false;
+            }
+
+            public void AddTween(Tween tween, float duration)
+            {
+                TweenObject tweenObject = new TweenObject();
+                tweenObject.Tween = tween;
+                tweenObject.IsDone = false;
+                tweenObject.timeout = duration + 0.1f;
+
+                Tweens.Add(tweenObject);
+            }
+
+            public void StartTween(TweenObject tweenObject)
+            {
+                InternalTools.DoActionDelayed(() =>
+                {
+                    TweenEnded(tweenObject.Tween);
+                }, tweenObject.timeout);
+            }
+
+            public void TweenEnded(Tween tween)
+            {
+                if (SequenceDone)
+                    return;
+
+                TweenObject tweenObject = Tweens.Find(tweenElement => tweenElement.Tween == tween);
+                tweenObject.IsDone = true;
+
+                if (Tweens.FindAll(tweenElement => tweenElement.IsDone).Count >= Tweens.Count)
+                {
+                    SequenceDone = true;
+                    TweensEnded?.Invoke();
+                }
+            }
+
+            public class TweenObject
+            {
+                public Tween Tween;
+                public bool IsDone;
+                public float timeout;
             }
         }
     }

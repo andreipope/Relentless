@@ -62,6 +62,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AppState.HordeSelection:
                     _uiManager.SetPage<HordeSelectionPage>();
+                    CheckIfPlayAgainOptionShouldBeAvailable();
                     break;
                 case Enumerators.AppState.ARMY:
                     _uiManager.SetPage<ArmyPage>();
@@ -70,20 +71,11 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:
-
-                    //_uiManager.SetPage<ShopPage>();
-                    //break;
-                    _uiManager.DrawPopup<WarningPopup>(
-                        $"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                    _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                     return;
                 case Enumerators.AppState.PACK_OPENER:
-                {
-                    //_uiManager.SetPage<PackOpenerPage>();
-                    //break;
-                    _uiManager.DrawPopup<WarningPopup>(
-                        $"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                    _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                     return;
-                }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
@@ -111,6 +103,26 @@ namespace Loom.ZombieBattleground
             AppState = stateTo;
 
             UnityUserReporting.CurrentClient.LogEvent(UserReportEventLevel.Info, "App state: " + AppState);
+        }
+
+        private void CheckIfPlayAgainOptionShouldBeAvailable() 
+        {
+            if (AppState == Enumerators.AppState.GAMEPLAY && GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            {
+                _uiManager.DrawPopup<QuestionPopup>("Would you like to play another PvP game?");
+                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived += DecideToPlayAgain;
+            }
+        }
+
+        private void DecideToPlayAgain(bool decision)
+        {
+            if (decision) 
+            {
+                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived -= DecideToPlayAgain;
+                GameClient.Get<IMatchManager>().FindMatch();
+            }
         }
 
         public void SetPausingApp(bool mustPause) {
@@ -158,19 +170,34 @@ namespace Loom.ZombieBattleground
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            UnitySynchronizationContext.Instance.Post(o => UpdateConnectionStatus(), null);
+            UnitySynchronizationContext.Instance.Post(o =>
+            {
+                if (state != RpcConnectionState.Connected &&
+                    state != RpcConnectionState.Connecting)
+                {
+                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}"), false, true);
+                }
+            }, null);
         }
 
         private void UpdateConnectionStatus()
         {
-            ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
             if (!_backendFacade.IsConnected)
             {
+                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+
                 if (connectionPopup.Self == null)
                 {
                     Func<Task> connectFunc = async () =>
                     {
-                        await _backendDataControlMediator.LoginAndLoadData();
+                        try
+                        {
+                            await _backendDataControlMediator.LoginAndLoadData();
+                        }
+                        catch(Exception e)
+                        {
+                            Helpers.ExceptionReporter.LogException(e);
+                        }
                         connectionPopup.Hide();
                     };
 
@@ -179,6 +206,55 @@ namespace Loom.ZombieBattleground
                     connectionPopup.ShowFailedInGame();
                 }
             }
+        }
+
+        public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
+        {
+            Debug.LogWarning("Handled network exception: " + exception);
+
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                if (!_backendFacade.IsConnected && !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
+                {
+                    UpdateConnectionStatus();
+                }
+                return;
+            }
+
+            _uiManager.HidePopup<WarningPopup>();
+            _uiManager.GetPopup<MatchMakingPopup>().ForceCancelAndHide();
+            _uiManager.HidePopup<CardInfoPopup>();
+            _uiManager.HidePopup<ConnectionPopup>();
+            _uiManager.HidePopup<TutorialAvatarPopup>();
+
+            if (!leaveCurrentAppState)
+            {
+                if (AppState == Enumerators.AppState.GAMEPLAY)
+                {
+                    GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.CANCEL);
+                    GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+                }
+                else
+                {
+                    ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                }
+            }
+
+            if (drawErrorMessage)
+            {
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupConfirmationReceived;
+
+                _uiManager.DrawPopup<WarningPopup>(exception.Message);
+            }
+        }
+
+        private void WarningPopupConfirmationReceived()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupConfirmationReceived;
+
+            UpdateConnectionStatus();
         }
 
         private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)

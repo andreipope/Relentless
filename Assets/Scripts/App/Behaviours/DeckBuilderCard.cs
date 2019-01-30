@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
-        public HordeEditingPage Scene;
+        public HordeEditingPage Page;
 
         public IReadOnlyCard Card;
 
@@ -16,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         public void OnScroll(PointerEventData eventData)
         {
-            Scene?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
+            Page?.ScrollCardList(IsHordeItem, eventData.scrollDelta);
         }
 
         private void Awake()
@@ -28,18 +29,28 @@ namespace Loom.ZombieBattleground
 
         private void SingleClickAction()
         {
-            Scene.SelectCard(this, Card);
+            Page?.SelectCard(this, Card);
         }
 
         private void DoubleClickAction()
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial &&
+                !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
+                (GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
+                !GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CanDoubleTapCards))
+                return;
+
             if (!IsHordeItem)
             {
-                Scene.AddCardToDeck(this, Card);
+                Page?.AddCardToDeck(this, Card);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardAdded);
             }
             else
             {
-                Scene.RemoveCardFromDeck(this, Card);
+                Page?.RemoveCardFromDeck(this, Card);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardRemoved);
             }
         }
     }

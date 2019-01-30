@@ -41,6 +41,18 @@ namespace Loom.ZombieBattleground.Editor
             throw new Exception($"Awful exception {UnityEngine.Random.Range(10000, 99999)}!");
         }
 
+        [MenuItem("Utility/Bug Reporting/Send Silent Report")]
+        public static void SilentReport()
+        {
+            UserReportingScript.Instance.SummaryInput.text = "test silent report";
+            UserReportingScript.Instance.CreateUserReport(
+                true,
+                false,
+                "something awful happened somehow",
+                "awful details: " + new Exception($"Awful exception {UnityEngine.Random.Range(10000, 99999)}!")
+                );
+        }
+
          #endregion
 
         #region Build

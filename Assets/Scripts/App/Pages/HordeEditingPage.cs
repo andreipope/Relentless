@@ -49,6 +49,8 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
+        private ITutorialManager _tutorialManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -122,6 +124,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -396,13 +399,13 @@ namespace Loom.ZombieBattleground
                 boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
                 DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                deckBuilderCard.Scene = this;
+                deckBuilderCard.Page = this;
                 deckBuilderCard.Card = card;
 
                 OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
                 eventHandler.DragBegan += BoardCardDragBeganHandler;
-                eventHandler.DragEnded += BoardCardDragEndedHandler;
+                eventHandler.DragEnded += BoardCardArmyDragEndedHandler;
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdArmyCards.Add(boardCard);
@@ -485,7 +488,7 @@ namespace Loom.ZombieBattleground
                     boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
                     DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                    deckBuilderCard.Scene = this;
+                    deckBuilderCard.Page = this;
                     deckBuilderCard.Card = libraryCard;
                     deckBuilderCard.IsHordeItem = true;
 
@@ -570,9 +573,8 @@ namespace Loom.ZombieBattleground
         public void AddCardToDeck(DeckBuilderCard sender, IReadOnlyCard card)
         {
             if (_currentDeck == null)
-            {
                 return;
-            }
+            
 
             if (_against[_currentHero.HeroElement] == card.CardSetType)
             {
@@ -631,9 +633,15 @@ namespace Loom.ZombieBattleground
                 foundItem = boardCard;
 
                 DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                deckBuilderCard.Scene = this;
+                deckBuilderCard.Page = this;
                 deckBuilderCard.Card = card;
                 deckBuilderCard.IsHordeItem = true;
+                
+                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
+
+                eventHandler.DragBegan += BoardCardDragBeganHandler;
+                eventHandler.DragEnded += BoardCardHordeDragEndedHandler; 
+                eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 _createdHordeCards.Add(boardCard);
 
@@ -666,6 +674,11 @@ namespace Loom.ZombieBattleground
                 CalculateVisibility();
                 Canvas.ForceUpdateCanvases();
             }
+
+            if(_currentDeck.GetNumCards() >= Constants.DeckMaxSize/2)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
+            }      
         }
 
         public uint GetMaxCopiesValue(IReadOnlyCard card)
@@ -760,10 +773,18 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("Result === " + e);
+                    Helpers.ExceptionReporter.LogException(e);
 
                     success = false;
-                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+
+                    if (e is Client.RpcClientException || e is TimeoutException)
+                    {
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                    }
+                    else
+                    {
+                        OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                    }
                 }
             }
             else
@@ -786,19 +807,30 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("Result === " + e);
+                    Helpers.ExceptionReporter.LogException(e);
 
                     success = false;
 
-                    string message = e.Message;
-
-                    string[] description = e.Message.Split('=');
-                    if (description.Length > 0)
+                    if (e is Client.RpcClientException || e is TimeoutException)
                     {
-                        message = description[description.Length - 1].TrimStart(' ');
-                        message = char.ToUpper(message[0]) + message.Substring(1);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
                     }
-                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                    else
+                    {
+                        string message = e.Message;
+
+                        string[] description = e.Message.Split('=');
+                        if (description.Length > 0)
+                        {
+                            message = description[description.Length - 1].TrimStart(' ');
+                            message = char.ToUpper(message[0]) + message.Substring(1);
+                        }
+                        if (_tutorialManager.IsTutorial)
+                        {
+                            message = Constants.ErrorMessageForConnectionFailed;
+                        }
+                        OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                    }
                 }
             }
 
@@ -807,6 +839,8 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_currentDeck.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
             } else {
                 _buttonSave.interactable = true;
             }
@@ -1005,10 +1039,12 @@ namespace Loom.ZombieBattleground
 
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
-            if (_isDragging)
-            {
+            if (_isDragging || (GameClient.Get<ITutorialManager>().IsTutorial &&
+                !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
+                (GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
+                !GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CanDragCards)))
                 return;
-            }
+            
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
@@ -1024,12 +1060,10 @@ namespace Loom.ZombieBattleground
             _draggingObject.transform.position = position;
         }
 
-        private void BoardCardDragEndedHandler(PointerEventData eventData, GameObject onOnject)
+        private void BoardCardArmyDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            {
-                return;
-            }
+                return;            
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -1045,6 +1079,36 @@ namespace Loom.ZombieBattleground
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         AddCardToDeck(null, armyCard.LibraryCard);
+
+                        GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
+                    }
+                }
+            }
+
+            Object.Destroy(_draggingObject);
+            _draggingObject = null;
+            _isDragging = false;
+        }
+        private void BoardCardHordeDragEndedHandler(PointerEventData eventData, GameObject onOnject)
+        {
+            if (!_isDragging)
+                return;
+            
+
+            Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+
+            if (hits.Length > 0)
+            {
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.gameObject == _armyAreaObject)
+                    {
+                        BoardCard hordeCard = _createdHordeCards.Find(x =>
+                            x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
+
+                        RemoveCardFromDeck(null, hordeCard.LibraryCard);
                     }
                 }
             }
@@ -1057,9 +1121,8 @@ namespace Loom.ZombieBattleground
         private void BoardCardDragUpdatedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-            {
                 return;
-            }
+            
 
             Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             position.z = _draggingObject.transform.position.z;
@@ -1083,6 +1146,12 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBack.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmQuitReceivedHandler;
@@ -1107,6 +1176,12 @@ namespace Loom.ZombieBattleground
 
         private void BuyButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
@@ -1114,6 +1189,12 @@ namespace Loom.ZombieBattleground
 
         private void ArmyButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.ARMY);
@@ -1121,6 +1202,12 @@ namespace Loom.ZombieBattleground
 
         private void SaveButtonHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSave.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             OnDoneButtonPressed();

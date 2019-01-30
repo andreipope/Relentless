@@ -49,10 +49,10 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                            unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, ItemPosition.End, IsPVPAbility);
                             if (unit != null)
                             {
-                                BattlegroundController.OpponentBoardCards.Add(unit);
+                                AddUnitToBoardCards(GetOpponentOverlord(), ItemPosition.End, unit);
                             }
                         }
 
@@ -60,10 +60,10 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
-                            unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, IsPVPAbility);
+                            unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End, IsPVPAbility);
                             if (unit != null)
                             {
-                                BattlegroundController.PlayerBoardCards.Add(unit);
+                                AddUnitToBoardCards(PlayerCallerOfAbility, ItemPosition.End, unit);
                             }
                         }
 
@@ -94,6 +94,18 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
+        }
+
+        private void AddUnitToBoardCards(Player owner, ItemPosition position, BoardUnitView unit)
+        {
+            if (owner.IsLocalPlayer)
+            {
+                BattlegroundController.PlayerBoardCards.Insert(position, unit);
+            }
+            else
+            {
+                BattlegroundController.OpponentBoardCards.Insert(position, unit);
+            }
         }
     }
 }

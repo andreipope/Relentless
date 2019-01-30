@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -17,6 +18,8 @@ namespace Loom.ZombieBattleground
         public GameObject SelfObject;
 
         public HeroSkill Skill;
+
+        public List<Enumerators.UnitStatusType> BlockedUnitStatusTypes;
 
         private readonly ILoadObjectsManager _loadObjectsManager;
 
@@ -68,6 +71,13 @@ namespace Loom.ZombieBattleground
             _initialCooldown = skillInfo.InitialCooldown;
             _cooldown = skillInfo.Cooldown;
             _singleUse = skillInfo.SingleUse;
+
+            BlockedUnitStatusTypes = new List<Enumerators.UnitStatusType>();
+
+            if(Skill.OverlordSkill == Enumerators.OverlordSkill.FREEZE)
+            {
+                BlockedUnitStatusTypes.Add(Enumerators.UnitStatusType.FROZEN);
+            }
 
             _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
 
@@ -164,13 +174,14 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
                     FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;
+                    FightTargetingArrow.BlockedUnitStatusTypes = BlockedUnitStatusTypes;
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
 
-                    if (_tutorialManager.IsTutorial)
+                    if(_tutorialManager.IsTutorial)
                     {
-                        _tutorialManager.DeactivateSelectTarget();
+                        _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerOverlordAbility);
                     }
                 }
             }
@@ -200,7 +211,10 @@ namespace Loom.ZombieBattleground
             _isAlreadyUsed = true;
             GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
-            _tutorialManager.ReportAction(Enumerators.TutorialReportAction.USE_ABILITY);
+            if (OwnerPlayer.IsLocalPlayer)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed);
+            }
 
             SkillUsed?.Invoke(this, target);
 
@@ -331,9 +345,10 @@ namespace Loom.ZombieBattleground
                 return;
 
             SetHighlightingEnabled(false);
-#if DEV_MODE
-            _cooldown = 0;
-#endif
+            if (Constants.DevModeEnabled)
+            {
+                _cooldown = 0;
+            }
             if (!_usedInThisTurn)
             {
                 _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);
@@ -358,9 +373,9 @@ namespace Loom.ZombieBattleground
 
         private void DoOnUpSkillAction(Action completeCallback)
         {
-            if (OwnerPlayer.IsLocalPlayer && _tutorialManager.IsTutorial)
+            if(OwnerPlayer.IsLocalPlayer && _tutorialManager.IsTutorial)
             {
-                _tutorialManager.ActivateSelectTarget();
+                _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerOverlordAbility);
             }
 
             if (!Skill.CanSelectTarget)
@@ -390,13 +405,8 @@ namespace Loom.ZombieBattleground
 
         private bool IsSkillCanUsed()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.CanUseBoardSkill)
-            {
-                return true;
-            }
-
             if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn ||
-                _tutorialManager.IsTutorial)
+                (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().PlayerOverlordAbilityShouldBeUnlocked))
             {
                 return false;
             }

@@ -37,16 +37,16 @@ namespace Loom.ZombieBattleground
             BoardUnitView unit = CreateBoardUnit(card, owner);
             AbilityUnitOwner.IsReanimated = true;
 
-            owner.AddCardToBoard(card);
-            owner.BoardCards.Add(unit);
+            owner.AddCardToBoard(card, ItemPosition.End);
+            owner.BoardCards.Insert(ItemPosition.End, unit);
 
             if (owner.IsLocalPlayer)
             {
-                BattlegroundController.PlayerBoardCards.Add(unit);
+                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, unit);
             }
             else
             {
-                BattlegroundController.OpponentBoardCards.Add(unit);
+                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
             }
 
             BoardController.UpdateCurrentBoardOfPlayer(owner, null);
@@ -80,6 +80,7 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnitView.Model.OwnerPlayer = owner;
             boardUnitView.SetObjectInfo(card);
+            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {

@@ -4,16 +4,13 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    public class SpecificBattlegroundInfo
+    public class SpecificBattlegroundInfoOld
     {
-        public int CurrentTurn;
-
         public SpecificBattlegroundOverlordInfo PlayerInfo;
         public SpecificBattlegroundOverlordInfo OpponentInfo;
 
-        public SpecificBattlegroundInfo()
+        public SpecificBattlegroundInfoOld()
         {
-            CurrentTurn = Constants.FirstGameTurnIndex;
             PlayerInfo = new SpecificBattlegroundOverlordInfo();
             OpponentInfo = new SpecificBattlegroundOverlordInfo();
         }

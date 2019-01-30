@@ -32,5 +32,26 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
 
         }
+
+        [CommandHandler(Description = "Skips tutorial if you inside it")]
+        public static void SkipTutorialFlow()
+        {
+            if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                return;
+
+            if (GameClient.Get<IAppStateManager>().AppState == Common.Enumerators.AppState.GAMEPLAY)
+            {
+                GameClient.Get<IGameplayManager>().EndGame(Common.Enumerators.EndGameType.CANCEL);
+                GameClient.Get<IMatchManager>().FinishMatch(Common.Enumerators.AppState.MAIN_MENU);
+            }
+            else
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+            }
+
+            GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
+            GameClient.Get<ITutorialManager>().StopTutorial();
+            GameClient.Get<IGameplayManager>().IsTutorial = false;
+        }
     }
 }

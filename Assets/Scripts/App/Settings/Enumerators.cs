@@ -371,7 +371,7 @@ namespace Loom.ZombieBattleground.Common
 
         public enum CardType
         {
-            NONE,
+            UNDEFINED,
             WALKER,
             FERAL,
             HEAVY,
@@ -493,7 +493,7 @@ namespace Loom.ZombieBattleground.Common
         public enum SoundType
         {
             CLICK,
-           // OTHER,
+            // OTHER,
             BACKGROUND,
             BATTLEGROUND,
             BATTLEGROUND_TOUCH_EFFECT,
@@ -564,28 +564,6 @@ namespace Loom.ZombieBattleground.Common
             ABILITY,
             UNIT_TYPE,
             BUFF
-        }
-
-        public enum TutorialJanePoses
-        {
-            NORMAL,
-            THINKING,
-            POINTING,
-            THUMBS_UP,
-            KISS
-        }
-
-        public enum TutorialReportAction
-        {
-            NONE,
-            END_TURN,
-            MOVE_CARD,
-            ATTACK_CARD_CARD,
-            ATTACK_CARD_HERO,
-            USE_ABILITY,
-            HERO_DEATH,
-            START_TURN,
-            END_OF_RANK_UPGRADE
         }
 
         public enum UnitStatusType
@@ -662,7 +640,8 @@ namespace Loom.ZombieBattleground.Common
         {
             DoNothing,
             Normal,
-            DontAttack
+            DontAttack,
+            Tutorial
         }
 
         public enum StartingTurn
@@ -747,6 +726,153 @@ namespace Loom.ZombieBattleground.Common
             EndMatch,
             UnitCombat,
             LeaveMatch
+        }
+
+        public enum TooltipAlign
+        {
+            Undefined,
+
+            TopLeft,
+            TopMiddle,
+            TopRight,
+            CenterLeft,
+            CenterMiddle,
+            CenterRight,
+            BottomLeft,
+            BottomMiddle,
+            BottomRight
+        }
+
+        public enum TutorialObjectOwner
+        {
+            Undefined,
+
+            EnemyOverlord,
+            EnemyBattleframe,
+            EnemyCardInHand,
+
+            PlayerOverlord,
+            PlayerBattleframe,
+            PlayerCardInHand,
+            PlayerGooBottles,
+            PlayerOverlordAbility,
+
+            UI,
+            IncorrectButton,
+
+            Battleframe,
+            HandCard
+        }
+
+        public enum TutorialActivityAction
+        {
+            Undefined,
+
+            PlayerOverlordTriedToAttackTargetWhenItsLimited,
+            EnemyOverlordDied,
+            EnemyOverlordCardPlayedStarted,
+            EnemyOverlordCardPlayed,
+            EnemyOverlordSelected,
+
+            PlayerOverlordCardDrawed,
+            PlayerOverlordTriedToPlayUnsequentionalCard,
+            PlayerOverlordTriedToUseUnsequentionalBattleframe,
+            PlayerOverlordTriedToUseWrongBattleframe,
+            PlayerOverlordTriedToPlayCardWhenItsLimited,
+            PlayerOverlorDied,
+            PlayerOverlordAbilityUsed,
+            PlayerOverlordCardPlayed,
+            PlayerOverlordSelected,
+            PlayerManaBarSelected,
+            PlayerCardInHandSelected,
+            DeathAbilityCompleted,
+
+            PlayerCreatedNewCardAndMovedToHand,
+
+            EndMatchPopupAppear,
+
+            TapOnDisabledButtonWhenItsLimited,
+            TapOnEndTurnButtonWhenItsLimited,
+
+            EndTurn,
+            StartTurn,
+            RanksUpdated,
+
+            BattleframeAttacked,
+            BattleframeSelected,
+            BattleframeDeselected,
+
+            PlayerBattleframeDied,
+            EnemyBattleframeDied,
+
+            TapOnScreen,
+            AvatarTooltipClosed,
+
+            OverlordSayPopupHided,
+
+            YouWonPopupOpened,
+            YouWonPopupClosed,
+
+            YouLosePopupOpened,
+            YouLosePopupClosed,
+
+            TutorialProgressInfoPopupClosed,
+
+            ScreenChanged,
+            PopupClosed,
+
+            CardDragged,
+            CardRemoved,
+            CardAdded,
+
+            HordeSaved,
+            HordeFilled,
+
+            IncorrectButtonTapped,
+
+            SceneChanged,
+
+            BattleStarted,
+
+            CardWithAbilityPlayed
+        }
+
+        public enum TutorialActivityActionHandler
+        {
+            Undefined,
+
+            OverlordSayTooltip,
+            DrawDescriptionTooltips,
+        }
+
+        public enum TutorialHandPointerType
+        {
+            Single,
+            Animated
+        }
+
+        public enum TutorialAvatarPose
+        {
+            NORMAL,
+            THINKING,
+            POINTING,
+            THUMBS_UP,
+            KISS
+        }
+
+        public enum TutorialHandState
+        {
+            Drag,
+            Pointing,
+            Pressed
+        }
+
+        public enum TutorialObjectLayer
+        {
+            Default,
+            AbovePages,
+            AbovePopups,
+            AboveUI
         }
     }
 }

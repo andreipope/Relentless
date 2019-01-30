@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsPreparingEnded { get; set; }
 
+        public bool IsDesyncDetected { get; set; }
+
         public Player CurrentTurnPlayer { get; set; }
 
         public Player CurrentPlayer { get; set; }
@@ -84,7 +86,9 @@ namespace Loom.ZombieBattleground
 
         public AnalyticsTimer MatchDuration { get; set; }
 
-        public bool UseBackendGameLogic => _pvpManager?.MatchMetadata?.UseBackendGameLogic ?? false;
+        public Action TutorialStartAction { get; private set; }
+
+        public Action TutorialGameplayBeginAction { get; private set; }
 
         public T GetController<T>()
             where T : IController
@@ -140,6 +144,9 @@ namespace Loom.ZombieBattleground
             StartingTurn = Enumerators.StartingTurn.UnDecided;
             PlayerMoves = null;
 
+
+            _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
             //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
@@ -159,6 +166,7 @@ namespace Loom.ZombieBattleground
                     IsGameStarted = true;
                     IsGameEnded = false;
                     IsPreparingEnded = false;
+                    IsDesyncDetected = false;
 
                     CanDoDragActions = true;
 
@@ -269,7 +277,9 @@ namespace Loom.ZombieBattleground
                 new InputController(),
                 new OpponentController(),
                 new UniqueAnimationsController(),
-                new BoardController()
+                new BoardController(),
+                new OverlordsTalkingController(),
+                new HandPointerController()
             };
 
             foreach (IController controller in _controllers)
@@ -280,6 +290,10 @@ namespace Loom.ZombieBattleground
 
         private void StartInitializeGame()
         {
+            if (Constants.DevModeEnabled) {
+                AvoidGooCost = true;
+            }
+
             if (IsTutorial)
             {
                 IsSpecificGameplayBattleground = true;
@@ -298,6 +312,7 @@ namespace Loom.ZombieBattleground
                         _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId;
                     GetController<PlayerController>().InitializePlayer(new InstanceId(localPlayerHasZeroIndex ? 0 : 1));
                     GetController<OpponentController>().InitializePlayer(new InstanceId(!localPlayerHasZeroIndex ? 0 : 1));
+                    AvoidGooCost = _pvpManager.DebugCheats.Enabled && _pvpManager.DebugCheats.IgnoreGooRequirements;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
@@ -308,10 +323,61 @@ namespace Loom.ZombieBattleground
 
             if (IsTutorial)
             {
-                CurrentTurnPlayer = _tutorialManager.CurrentTutorial.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
+                CurrentTurnPlayer = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                                    SpecificBattlegroundInfo.PlayerTurnFirst ? CurrentPlayer : OpponentPlayer;
 
-                GetController<PlayerController>().SetHand();
-                GetController<CardsController>().StartCardDistribution();
+                StartingTurn = CurrentTurnPlayer == CurrentPlayer ?
+                    Enumerators.StartingTurn.Player : Enumerators.StartingTurn.Enemy;
+
+                TutorialGameplayBeginAction = () =>
+                {
+                    GetController<PlayerController>().SetHand();
+                    GetController<CardsController>().StartCardDistribution();
+
+                    if (!_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().GameplayFlowBeginsManually)
+                    {
+                        if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
+                        {
+                            _tutorialManager.StartTutorial();
+                        }
+                    }
+
+                    if (_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
+                        _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
+                    {
+                        OpponentPlayer.SetFirstHandForLocalMatch(false);
+                    }
+                };
+
+                TutorialStartAction = () =>
+                {
+                    if (_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().PlayerOrderScreenShouldAppear)
+                    {
+                        _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
+                        {
+                            CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                        });
+                    }
+                    else
+                    {
+                        TutorialGameplayBeginAction();
+                    }
+                };
+
+                if (_tutorialManager.CurrentTutorial.IsGameplayTutorial())
+                {
+                    if (!_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().GameplayFlowBeginsManually)
+                    {
+                        TutorialStartAction();
+                    }
+                    else
+                    {
+                        if (_dataManager.CachedUserLocalData.Tutorial && !_tutorialManager.IsTutorial)
+                        {
+                            _tutorialManager.StartTutorial();
+                        }
+                    }
+                }
             }
             else
             {
@@ -340,9 +406,9 @@ namespace Loom.ZombieBattleground
                         OpponentPlayer.SetFirstHandForLocalMatch(false);
                         break;
                     case Enumerators.MatchType.PVP:
-                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsCurrentPlayer() ? CurrentPlayer : OpponentPlayer;
+                        CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsFirstPlayer() ? CurrentPlayer : OpponentPlayer;
                         List<WorkingCard> opponentCardsInHand =
-                            OpponentPlayer.PvPPlayerState.CardsInHand
+                            OpponentPlayer.InitialPvPPlayerState.CardsInHand
                                 .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
 
@@ -350,7 +416,7 @@ namespace Loom.ZombieBattleground
                             $"Player ID {OpponentPlayer.InstanceId}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
                             String.Join(
                                 "\n",
-                                (IList<WorkingCard>) opponentCardsInHand
+                                (IList<WorkingCard>)opponentCardsInHand
                                     .OrderBy(card => card.InstanceId)
                                     .ToArray()
                             )

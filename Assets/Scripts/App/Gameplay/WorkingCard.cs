@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
 
         public InstanceId InstanceId { get; set; }
 
+        public int TutorialObjectId;
+
         public WorkingCard(IReadOnlyCard cardPrototype, IReadOnlyCard card, Player player, InstanceId? id = null)
             : this(cardPrototype, new CardInstanceSpecificData(card), player, id)
         {

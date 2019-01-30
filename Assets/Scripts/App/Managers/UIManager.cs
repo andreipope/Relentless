@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new DesintigrateCardPopup());
             _uiPopups.Add(new WarningPopup());
             _uiPopups.Add(new QuestionPopup());
-            _uiPopups.Add(new TutorialPopup());
+            _uiPopups.Add(new TutorialAvatarPopup());
             _uiPopups.Add(new PreparingForBattlePopup());
             _uiPopups.Add(new YouLosePopup());
             _uiPopups.Add(new YouWonPopup());
@@ -78,6 +78,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new UpdatePopup());
             _uiPopups.Add(new MulliganPopup());
             _uiPopups.Add(new LoadDataMessagePopup());
+            _uiPopups.Add(new LoadingFiatPopup());
+            _uiPopups.Add(new TutorialProgressInfoPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
@@ -148,6 +150,8 @@ namespace Loom.ZombieBattleground
             CurrentPage.Show();
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
+
+            GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
         }
 
         public void DrawPopup<T>(object message = null, bool setMainPriority = false)
@@ -168,6 +172,14 @@ namespace Loom.ZombieBattleground
             {
                 popup.Show(message);
             }
+
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                if (popup is WarningPopup || popup is ConnectionPopup)
+                    return;
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+            }
         }
 
         public void HidePopup<T>()
@@ -175,6 +187,8 @@ namespace Loom.ZombieBattleground
         {
             IUIPopup popup = GetPopup<T>();
             popup.Hide();
+
+            GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PopupClosed);
         }
 
         public T GetPopup<T>()
@@ -199,6 +213,62 @@ namespace Loom.ZombieBattleground
             }
 
             return default(T);
+        }
+
+        public void DrawPopupByName(string name, object data = null)
+        {
+            foreach (IUIPopup popup in _uiPopups)
+            {
+                if (popup.GetType().Name == name)
+                {
+                    if (popup.Self != null)
+                        break;
+
+                    popup.SetMainPriority();
+
+                    if (data == null)
+                    {
+                        popup.Show();
+                    }
+                    else
+                    {
+                        popup.Show(data);
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        public void SetPageByName(string name, bool hideAll = false)
+        {
+            foreach (IUIElement page in Pages)
+            {
+                if (page.GetType().Name == name)
+                {
+                    if (CurrentPage == page)
+                        break;
+
+                    if (hideAll)
+                    {
+                        HideAllPages();
+                    }
+                    else
+                    {
+                        CurrentPage?.Hide();
+                    }
+
+                    CurrentPage = page;
+                    CurrentPage.Show();
+
+                    GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                        false, false, true);
+
+                    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+
+                    break;
+                }
+            }
         }
     }
 }

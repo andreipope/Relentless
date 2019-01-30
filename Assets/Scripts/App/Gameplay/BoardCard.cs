@@ -87,6 +87,8 @@ namespace Loom.ZombieBattleground
 
         protected Transform ParentOfLeftBlockOfCardInfo, ParentOfRightBlockOfCardInfo;
 
+        private bool _hasDestroyed = false;
+
         public BoardCard(GameObject selfObject)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -309,7 +311,7 @@ namespace Loom.ZombieBattleground
             SoundManager.PlaySound(Enumerators.SoundType.CARD_DECK_TO_HAND_MULTIPLE, Constants.CardsMoveSoundVolume);
         }
 
-        public virtual void SetDefaultAnimation(int id)
+        public virtual void SetDefaultAnimation()
         {
             if (IsPreview)
                 return;
@@ -323,6 +325,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                int id = WorkingCard.Owner.CardsInHand.Count;
                 CardAnimator.SetFloat("Id", id);
             }
 
@@ -347,23 +350,29 @@ namespace Loom.ZombieBattleground
 
         public virtual bool CanBePlayed(Player owner)
         {
-#if !DEV_MODE
-            return PlayerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
-#else
-            return true;
-#endif
+            if (!Constants.DevModeEnabled)
+            {
+                return PlayerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public virtual bool CanBeBuyed(Player owner)
         {
-#if !DEV_MODE
-            if (GameplayManager.AvoidGooCost)
-                return true;
+            if (!Constants.DevModeEnabled)
+            {
+                if (GameplayManager.AvoidGooCost)
+                    return true;
 
-            return owner.CurrentGoo >= ManaCost;
-#else
-            return true;
-#endif
+                return owner.CurrentGoo >= ManaCost;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public void SetHighlightingEnabled(bool enabled)
@@ -376,6 +385,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            _hasDestroyed = true;
             Object.Destroy(GameObject);
         }
 
@@ -394,8 +404,7 @@ namespace Loom.ZombieBattleground
                 {
                     CardAnimator.enabled = false;
 
-                    BattlegroundController.PlayerHandCards.Add(this);
-
+                    BattlegroundController.PlayerHandCards.Insert(ItemPosition.End, this);
                     BattlegroundController.UpdatePositionOfCardsInPlayerHand(true);
                 },
                 null,
@@ -488,8 +497,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.InitialUnitType != Enumerators.CardType.WALKER &&
-                unit.Model.InitialUnitType != Enumerators.CardType.NONE)
+            if (unit.Model.InitialUnitType != Enumerators.CardType.WALKER)
             {
                 TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(unit.Model.InitialUnitType);
                 if (cardTypeInfo != null)
@@ -635,8 +643,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCard.WorkingCard.InstanceCard.CardType != Enumerators.CardType.WALKER &&
-                boardCard.WorkingCard.InstanceCard.CardType != Enumerators.CardType.NONE)
+            if (boardCard.WorkingCard.InstanceCard.CardType != Enumerators.CardType.WALKER)
             {
                 TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(boardCard.WorkingCard.InstanceCard.CardType);
                 if (cardTypeInfo != null)
@@ -704,7 +711,7 @@ namespace Loom.ZombieBattleground
 
         protected void UpdatePositionOnHand()
         {
-            if (IsPreview)
+            if (IsPreview || _hasDestroyed)
                 return;
 
             Transform.DOScale(ScaleOnHand, 0.5f);

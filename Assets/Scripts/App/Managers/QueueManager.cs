@@ -60,11 +60,19 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" Time out == " + exception);
-                            ShowConnectionPopup();
+                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                        }
+                        catch (Client.RpcClientException exception)
+                        {
+                            Helpers.ExceptionReporter.LogException(exception);
+                            Debug.LogWarning(" RpcException == " + exception);
+                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Exception exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" other == " + exception);
                             ShowConnectionPopup();
                         }
@@ -77,11 +85,19 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" Time out == " + exception);
-                            ShowConnectionPopup();
+                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                        }
+                        catch (Client.RpcClientException exception)
+                        {
+                            Helpers.ExceptionReporter.LogException(exception);
+                            Debug.LogWarning(" RpcException == " + exception);
+                            GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Exception exception)
                         {
+                            Helpers.ExceptionReporter.LogException(exception);
                             Debug.LogWarning(" other == " + exception);
                             ShowConnectionPopup();
                         }

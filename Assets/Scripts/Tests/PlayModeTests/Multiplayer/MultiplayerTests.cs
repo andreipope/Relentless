@@ -18,65 +18,183 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
+                Deck deck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+                InstanceId playerSlabId = new InstanceId(36);
+                InstanceId opponentSlabId = new InstanceId(2);
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => player.CardPlay(playerSlabId, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentSlabId, ItemPosition.Start),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerSlabId, Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                   };
 
-                int selectedHordeIndex = 0;
+                await GenericPvPTest(
+                    turns,
+                    () =>
+                    {
+                        TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.UseCustomDeck = true;
+                        TestHelper.DebugCheats.CustomDeck = deck;
+                        TestHelper.DebugCheats.DisableDeckShuffle = true;
+                    },
+                    cheats =>
+                    {
+                        cheats.UseCustomDeck = true;
+                        cheats.CustomDeck = deck;
+                    }
+                );
+            });
+        }
 
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest", "scenario1"
-                });
-                TestHelper.DebugCheatsConfiguration.Enabled = true;
-                TestHelper.DebugCheatsConfiguration.CustomRandomSeed = 0;
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Cynderman()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Cynderman", 2),
+                        new DeckCardData("Slab", 2)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
 
-                await TestHelper.LetsThink();
+                Deck localDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Cynderman", 2),
+                        new DeckCardData("Slab", 2)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
 
-                await TestHelper.MainMenuTransition("Button_Battle");
+                InstanceId playerSlabId = new InstanceId(8);
+                InstanceId opponentSlabId = new InstanceId(4);
+                InstanceId playerCyndermanId = new InstanceId(6);
+                InstanceId opponentCyndermanId = new InstanceId(2);
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => player.CardPlay(playerSlabId, ItemPosition.Start),
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentSlabId, ItemPosition.Start);
+                           opponent.CardPlay(opponentCyndermanId, ItemPosition.Start);
+                           opponent.CardAbilityUsed(
+                               opponentCyndermanId,
+                               Enumerators.AbilityType.DAMAGE_TARGET,
+                               new List<ParametrizedAbilityInstanceId>
+                               {
+                                   new ParametrizedAbilityInstanceId(playerSlabId, Enumerators.AffectObjectType.Character)
+                               }
+                           );
+                       },
+                       player =>
+                       {
+                           player.CardPlay(playerCyndermanId, ItemPosition.Start, opponentCyndermanId);
+                       },
+                   };
 
-                await TestHelper.CreateAndConnectOpponentDebugClient();
+                await GenericPvPTest(
+                    turns,
+                    () =>
+                    {
+                        TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.UseCustomDeck = true;
+                        TestHelper.DebugCheats.CustomDeck = localDeck;
+                        TestHelper.DebugCheats.DisableDeckShuffle = true;
+                        TestHelper.DebugCheats.IgnoreGooRequirements = true;
+                    },
+                    cheats =>
+                    {
+                        cheats.UseCustomDeck = true;
+                        cheats.CustomDeck = opponentDeck;
+                    }
+                );
+
+                Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerSlabId)).CurrentHp);
+                Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(opponentCyndermanId)).CurrentHp);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator CorrectCardDraw()
+        {
+            return AsyncTest(async () =>
+            {
+                await StartOnlineMatch();
+                TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.BackendDataControlMediator.UserDataModel.UserId;
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => player.CardPlay(new InstanceId(38), 0),
-                    opponent => opponent.CardPlay(new InstanceId(2), 0),
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => opponent.CardAttack(new InstanceId(2), Enumerators.AffectObjectType.Player, TestHelper.GetCurrentPlayer().InstanceId),
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player,TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
-                    opponent => {},
-                    player => player.CardAttack(new InstanceId(38), Enumerators.AffectObjectType.Player, TestHelper.GetOpponentPlayer().InstanceId),
+                    player =>
+                    {
+                        Assert.AreEqual(4, TestHelper.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(3, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                    },
+                    opponent =>
+                    {
+                        Assert.AreEqual(4, TestHelper.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(5, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                    },
+                    player =>
+                    {
+                        Assert.AreEqual(5, TestHelper.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(5, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                    },
                 };
 
                 MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
@@ -86,305 +204,19 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MatchmakingCancel()
+        private async Task GenericPvPTest(IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns, Action setupAction, Action<DebugCheatsConfiguration> modifyOpponentDebugCheats)
         {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.MainMenuTransition("Button_Play");
+            await TestHelper.CreateAndConnectOpponentDebugClient();
 
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
+            setupAction?.Invoke();
 
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
+            await StartOnlineMatch(createOpponent: false);
 
-                int selectedHordeIndex = 0;
+            MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
+            await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
+            await TestHelper.WaitUntilPlayerOrderIsDecided();
 
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest", "NoOpponentCancel"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.LetsThink(10);
-
-                await TestHelper.ClickGenericButton("Button_Cancel");
-            });
-        }
-
-        [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MatchmakingTimeout()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest", "NoOpponentTimeout"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
-                    () => TestHelper.PlayAMatch(),
-                    () => TestHelper.ClickGenericButton("Button_Cancel"));
-            });
-        }
-
-        [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MatchmakeAndQuit()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.CreateAndConnectOpponentDebugClient();
-                await TestHelper.MatchmakeOpponentDebugClient();
-
-                await TestHelper.AssertCurrentPageName("GameplayPage");
-                await TestHelper.WaitUntilPlayerOrderIsDecided();
-                TestHelper.AssertOverlordName();
-
-                await TestHelper.ClickGenericButton("Button_Settings");
-                await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
-                await TestHelper.RespondToYesNoOverlay(true);
-            });
-        }
-
-        [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MatchmakeWaitForOurTurnAndQuit()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.ClickGenericButton("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.ClickGenericButton("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.ClickGenericButton("Button_Battle");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
-                await TestHelper.WaitUntilPlayerOrderIsDecided();
-                await TestHelper.AssertMulliganPopupCameUp(
-                    () => TestHelper.ClickGenericButton("Button_Keep"),
-                    null);
-                await TestHelper.WaitUntilOurFirstTurn();
-                await TestHelper.ClickGenericButton("Button_Settings");
-                await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
-                await TestHelper.RespondToYesNoOverlay(true);
-            });
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator MatchmakeMakeOneMoveAndQuit()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.CreateAndConnectOpponentDebugClient();
-                TestHelper.SetupOpponentDebugClientToEndTurns();
-                await TestHelper.MatchmakeOpponentDebugClient();
-
-                await TestHelper.PlayAMatch(1);
-                await TestHelper.ClickGenericButton("Button_Settings");
-                await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
-                await TestHelper.RespondToYesNoOverlay(true);
-            });
-        }
-
-        [UnityTest]
-        [Timeout(300 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MatchmakeAndPlay()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.CreateAndConnectOpponentDebugClient();
-                TestHelper.SetupOpponentDebugClientToEndTurns();
-                await TestHelper.MatchmakeOpponentDebugClient();
-
-                await TestHelper.PlayAMatch();
-            });
-        }
-
-        [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MatchmakingCancelAndMatchmake()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName("PlaySelectionPage");
-                await TestHelper.MainMenuTransition("Button_PvPMode");
-                await TestHelper.AssertCurrentPageName("PvPSelectionPage");
-                await TestHelper.MainMenuTransition("Button_CasualType");
-                await TestHelper.AssertCurrentPageName("HordeSelectionPage");
-
-                int selectedHordeIndex = 0;
-
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-                TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
-
-                #region Matchmaking Cancel
-
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTestNoOpponentCancel"
-                });
-
-                await TestHelper.LetsThink();
-                await TestHelper.MainMenuTransition("Button_Battle");
-
-                await TestHelper.LetsThink();
-                await TestHelper.LetsThink();
-                await TestHelper.LetsThink();
-
-                await TestHelper.ClickGenericButton("Button_Cancel");
-
-                #endregion
-
-                await TestHelper.LetsThink();
-                await TestHelper.LetsThink();
-
-                #region Matchmake and Quit
-
-                TestHelper.SetPvPTags(new[]
-                {
-                    "pvpTest"
-                });
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.MainMenuTransition("Button_Battle");
-                await TestHelper.AssertCurrentPageName("GameplayPage");
-                await TestHelper.WaitUntilPlayerOrderIsDecided();
-                TestHelper.AssertOverlordName();
-                await TestHelper.ClickGenericButton("Button_Settings");
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
-
-                await TestHelper.LetsThink();
-
-                await TestHelper.RespondToYesNoOverlay(true);
-
-                await TestHelper.LetsThink();
-
-                #endregion
-            });
+            await matchScenarioPlayer.Play();
         }
     }
 }

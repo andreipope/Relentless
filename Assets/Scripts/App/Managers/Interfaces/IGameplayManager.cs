@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         bool IsPreparingEnded { get; set; }
 
+        bool IsDesyncDetected { get; set; }
+
         bool IsSpecificGameplayBattleground { get; set; }
 
         bool CanDoDragActions { get; set; }
@@ -74,6 +76,5 @@ namespace Loom.ZombieBattleground
         int OpponentIdCheat { get; set; }
         bool AvoidGooCost { get; set; }
         bool UseInifiniteAbility { get; set; }
-        bool UseBackendGameLogic { get; }
     }
 }

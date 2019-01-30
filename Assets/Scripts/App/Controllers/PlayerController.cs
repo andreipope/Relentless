@@ -39,6 +39,12 @@ namespace Loom.ZombieBattleground
 
         private bool _cardsZooming;
 
+        private bool _isHovering;
+
+        private float _timeHovering;
+
+        private BoardCard _hoveringBoardCard;
+
         private BoardCard _topmostBoardCard;
 
         private BoardUnitView _selectedBoardUnitView;
@@ -82,12 +88,19 @@ namespace Loom.ZombieBattleground
             if (!_gameplayManager.IsGameStarted || _gameplayManager.IsGameEnded)
                 return;
 
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep != null && !_tutorialManager.CurrentTutorialDataStep.CanHandleInput)
-                return;
+            HandleInput();
+
+            if (_tutorialManager.IsTutorial)
+            {
+                if (!_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
+                {
+                    if (_tutorialManager.CurrentTutorialStep != null && _tutorialManager.CurrentTutorialStep is TutorialGameplayStep &&
+                    !_tutorialManager.CurrentTutorialStep.ToGameplayStep().CanInteractWithGameplay)
+                        return;
+                }
+            }
 
             _pointerEventSolver.Update();
-
-            HandleInput();
         }
 
         public void ResetAll()
@@ -104,7 +117,10 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfHero);
 
-            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            if (!_gameplayManager.IsSpecificGameplayBattleground ||
+                (_gameplayManager.IsTutorial &&
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                SpecificBattlegroundInfo.DisabledInitialization))
             {
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
@@ -118,12 +134,6 @@ namespace Loom.ZombieBattleground
                         {
                             for (int i = 0; i < card.Amount; i++)
                             {
-#if DEV_MODE
-
-// playerDeck.Add("Whizpar");
-// playerDeck.Add("Nail Bomb");
-#endif
-
                                 workingDeck.Add(_cardsController.GetWorkingCardFromCardName(card.CardName, player));
                             }
                         }
@@ -131,7 +141,7 @@ namespace Loom.ZombieBattleground
                         isMainTurnSecond = false;
                         break;
                     case Enumerators.MatchType.PVP:
-                        foreach (CardInstance cardInstance in player.PvPPlayerState.CardsInDeck)
+                        foreach (CardInstance cardInstance in player.InitialPvPPlayerState.CardsInDeck)
                         {
                             workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
@@ -141,7 +151,7 @@ namespace Loom.ZombieBattleground
                             String.Join("\n", workingDeck.Cast<object>().ToArray())
                         );
 
-                        isMainTurnSecond = !GameClient.Get<IPvPManager>().IsCurrentPlayer();
+                        isMainTurnSecond = !GameClient.Get<IPvPManager>().IsFirstPlayer();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -160,11 +170,20 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    player.SetFirstHandForLocalMatch(_gameplayManager.IsTutorial || _gameplayManager.IsSpecificGameplayBattleground);
+
+                    bool tutorialStatus = false;
+
+                    if (_gameplayManager.IsTutorial)
+                    {
+                        tutorialStatus = _gameplayManager.IsSpecificGameplayBattleground;
+                        tutorialStatus = !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization;
+                    }
+
+                    player.SetFirstHandForLocalMatch(tutorialStatus);
                     break;
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
-                        player.PvPPlayerState.CardsInHand
+                        player.InitialPvPPlayerState.CardsInHand
                         .Select(instance => instance.FromProtobuf(player))
                         .ToList();
 
@@ -207,6 +226,25 @@ namespace Loom.ZombieBattleground
 
         public void HandCardPreview(object[] param)
         {
+            if (_gameplayManager.IsTutorial &&
+                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                SpecificBattlegroundInfo.DisabledInitialization)
+            {
+                int id = 0;
+
+                switch (param[0])
+                {
+                    case BoardUnitView unit:
+                        id = unit.Model.TutorialObjectId;
+                        break;
+                    default:
+                        break;
+                }
+
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeSelected, id);
+                return;
+            }
+
             Vector3 cardPosition;
 
             if (!InternalTools.IsTabletScreen())
@@ -359,14 +397,75 @@ namespace Loom.ZombieBattleground
             {
                 _battlegroundController.DestroyCardPreview();
             }
+
+            if(_tutorialManager.IsTutorial && !Application.isMobilePlatform && _boardArrowController.CurrentBoardArrow == null)
+            {
+                CastRay(mousePos);
+            }
+        }
+
+        private void CastRay(Vector3 point)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector3.forward, Mathf.Infinity, SRLayerMask.Default);
+            hits = hits.Where(hit => !hit.collider.name.Equals(Constants.BattlegroundTouchZone)).ToArray();
+
+            if (hits.Length > 0 && !IsCardSelected)
+            {
+                foreach (RaycastHit2D hit in hits)
+                {
+                    CheckColliders(hit.collider);
+                }
+            }
+            else
+            {
+                ClearHovering();
+            }
+        }
+
+        private void CheckColliders(Collider2D collider)
+        {
+            BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+
+            if (boardCard != null)
+            {
+                UpdateHovering(boardCard);
+            }
+        }
+
+        private void UpdateHovering(BoardCard boardCard)
+        {
+            if (_hoveringBoardCard != boardCard)
+            {
+                _isHovering = false;
+                _hoveringBoardCard = boardCard;
+                _timeHovering = 0;
+            }
+            else if (!_isHovering)
+            {
+                _timeHovering += Time.deltaTime;
+                if (_timeHovering >= Constants.MaxTimeForHovering)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.WorkingCard.TutorialObjectId);
+
+                    _isHovering = true;
+                }
+            }
+        }
+
+        private void ClearHovering()
+        {
+            _isHovering = false;
+            _hoveringBoardCard = null;
+            _timeHovering = 0;
         }
 
         private void PointerSolverDragStartedHandler()
         {
             _topmostBoardCard?.HandBoardCard?.OnSelected();
-            if (_tutorialManager.IsTutorial)
+
+            if(_tutorialManager.IsTutorial && _topmostBoardCard?.HandBoardCard != null)
             {
-                _tutorialManager.DeactivateSelectTarget();
+                _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
             }
 
             if (_boardArrowController.CurrentBoardArrow == null)
@@ -381,7 +480,10 @@ namespace Loom.ZombieBattleground
             {
                 CheckCardPreviewShow();
             }
-            else if (!_gameplayManager.IsTutorial)
+            else if (!_gameplayManager.IsTutorial ||
+                     (_gameplayManager.IsTutorial &&
+                     _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                     SpecificBattlegroundInfo.DisabledInitialization))
             {
                 _timerManager.StopTimer(SetStatusZoomingFalse);
                 _cardsZooming = true;
@@ -389,6 +491,10 @@ namespace Loom.ZombieBattleground
 
                 _battlegroundController.CardsZoomed = true;
                 _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+            }
+            else
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
             }
         }
 

@@ -67,7 +67,6 @@ namespace Loom.ZombieBattleground.Test
             set => _playerActionFactory = value;
         }
 
-        [JsonIgnore]
         public List<Card> CardLibrary
         {
             get => _cardLibrary;
@@ -121,11 +120,11 @@ namespace Loom.ZombieBattleground.Test
         }
 
         public async Task Start(
+            Func<Contract, IContractCallProxy> contractCallProxyFactory,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,
             Action<DAppChainClient> onClientCreatedCallback = null,
             IDAppChainClientCallExecutor chainClientCallExecutor = null,
-            Func<Contract, IContractCallProxy> contractCallProxyFactory = null,
             bool enabledLogs = true)
         {
             await Reset();
@@ -181,7 +180,10 @@ namespace Loom.ZombieBattleground.Test
         public async Task Update()
         {
 #if UNITY_EDITOR
-            double timeSinceStartup = UnityEditor.EditorApplication.timeSinceStartup;
+            double timeSinceStartup =
+                UnityEditor.EditorApplication.isPlaying ?
+                    Time.realtimeSinceStartup :
+                    UnityEditor.EditorApplication.timeSinceStartup;
 #else
             double timeSinceStartup = Time.realtimeSinceStartup;
 #endif
@@ -191,8 +193,9 @@ namespace Loom.ZombieBattleground.Test
             }
 
             double deltaTime = timeSinceStartup - _lastTimeSinceStartup.Value;
+            _lastTimeSinceStartup = timeSinceStartup;
 
-            if (MatchMakingFlowController != null)
+            if (MatchMakingFlowController != null && _backendFacade.IsConnected)
             {
                 await MatchMakingFlowController.Update((float) deltaTime);
 

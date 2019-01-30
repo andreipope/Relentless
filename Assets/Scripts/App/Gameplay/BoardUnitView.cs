@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform => GameObject?.transform;
 
-        public GameObject GameObject { get; set; }
+        public GameObject GameObject { get; private set; }
 
         public bool WasDestroyed { get; set; }
 
@@ -168,6 +168,21 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
             CheckOnDie();
+        }
+
+        public void DisposeGameObject()
+        {
+            Debug.Log($"GameObject of BoardUnitView was disposed");
+
+            Transform.DOKill();
+            Object.Destroy(GameObject);
+        }
+
+        public void ForceSetGameObject(GameObject overrideObject)
+        {
+            Debug.Log($"GameObject of BoardUnitView was overrided. from: {GameObject} on: {overrideObject}");
+
+            GameObject = overrideObject;
         }
 
         public void SetObjectInfo(WorkingCard card)
@@ -274,7 +289,7 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitOnUnitFromDeckRemoved()
         {
-            Object.Destroy(GameObject);
+            DisposeGameObject();
         }
 
         private void BoardUnitOnCreaturePlayableForceSet()
@@ -367,8 +382,6 @@ namespace Loom.ZombieBattleground
                     {
                         StopSleepingParticles();
                     }
-                    break;
-                case Enumerators.CardType.NONE:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -488,6 +501,25 @@ namespace Loom.ZombieBattleground
                 {
                     GameObject.transform.position += Vector3.back * 5f;
                 }
+
+                float delay = 0f;
+
+                switch (Model.InitialUnitType)
+                {
+                    case Enumerators.CardType.FERAL:
+                    case Enumerators.CardType.HEAVY:
+                        delay = Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f;
+                        break;
+                    case Enumerators.CardType.WALKER:
+                    default:
+                        delay = Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f;
+                        break;
+                }
+
+                if (_uniqueAnimationsController.HasUniqueAnimation(Model.Card) && (!playUniqueAnimation || !firstAppear))
+                {
+                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, delay);
+                }
             };
 
             if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
@@ -542,10 +574,14 @@ namespace Loom.ZombieBattleground
                     false, true);
                 }
 
+
+                // FIXME: WTF we have logic based on card name?
                 if (Model.Card.LibraryCard.Name.Equals("Freezzee"))
                 {
-                    List<BoardUnitView> freezzees = Model.GetEnemyUnitsList(Model)
-                    .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
+                    IReadOnlyList<BoardUnitView> freezzees =
+                        Model
+                            .GetEnemyUnitsList(Model)
+                            .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
 
                     if (freezzees.Count > 0)
                     {
@@ -738,8 +774,17 @@ namespace Loom.ZombieBattleground
 
         private void OnMouseDown()
         {
-            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialDataStep.UnitsCanAttack)
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().UnitsCanAttack)
                 return;
+
+            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != 0 &&
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != Model.TutorialObjectId &&
+                Model.OwnerPlayer.IsLocalPlayer)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseWrongBattleframe);
+                return;
+            }            
 
             if (!_arrivalDone)
                 return;
@@ -761,9 +806,9 @@ namespace Loom.ZombieBattleground
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
 
-                    if (_tutorialManager.IsTutorial)
+                    if(_tutorialManager.IsTutorial)
                     {
-                        _tutorialManager.DeactivateSelectTarget();
+                        _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
                     }
                 }
 
@@ -792,16 +837,6 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow.Dispose();
                     _fightTargetingArrow = null;
                 }
-            }
-        }
-
-        private void CheckIsCanDie(object[] param)
-        {
-            if (_arrivalDone)
-            {
-                _timerManager.StopTimer(CheckIsCanDie);
-
-                Model.RemoveUnitFromBoard();
             }
         }
 
@@ -841,9 +876,22 @@ namespace Loom.ZombieBattleground
         public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
             BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel(targetCard);
+
+            if(targetCardView == null || targetCardView.GameObject == null)
+            {
+                Model.ActionForDying = null;
+                targetCard.ActionForDying = null;
+                completeCallback?.Invoke();
+
+                Helpers.ExceptionReporter.LogException("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
+                                                        " | targetCardView.GameObject: " + targetCardView?.GameObject);
+
+                return;
+            }
+
             _animationsController.DoFightAnimation(
                 GameObject,
-                targetCardView.Transform.gameObject,
+                targetCardView.GameObject,
                 0.5f,
                 () =>
                 {

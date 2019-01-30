@@ -1,3 +1,5 @@
+//#define HAS_IAP_PLUGIN_INCLUDED
+
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -5,7 +7,11 @@ using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if HAS_IAP_PLUGIN_INCLUDED
+using UnityEngine.Purchasing;
+#endif
 using Object = UnityEngine.Object;
+using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
@@ -54,6 +60,12 @@ namespace Loom.ZombieBattleground
         private IPlayerManager _playerManager;
 
         private ISoundManager _soundManager;
+        
+#if HAS_IAP_PLUGIN_INCLUDED
+        private IInAppPurchaseManager _inAppPurchaseManager;
+
+        private FiatBackendManager _fiatBackendManager;
+#endif
 
         private GameObject _selfPage;
 
@@ -90,6 +102,15 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+
+#if HAS_IAP_PLUGIN_INCLUDED
+            _fiatBackendManager = GameClient.Get<FiatBackendManager>();
+            
+            _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
+#if UNITY_IOS || UNITY_ANDROID
+            _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;            
+#endif
+#endif
 
             _selectedColor = Color.white;
             _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
@@ -337,7 +358,7 @@ namespace Loom.ZombieBattleground
             _shopSelectScrollSequence?.Kill();
         }
 
-        #region Buttons Handlers
+#region Buttons Handlers
 
         public void OpenButtonHandler()
         {
@@ -372,6 +393,11 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            string productID = _productID[id];
+            #if HAS_IAP_PLUGIN_INCLUDED
+            _inAppPurchaseManager.BuyProductID( productID );
+            #endif
+
             _playerManager.LocalUser.Wallet -= _costs[_currentPackId];
             _wallet.text = _playerManager.LocalUser.Wallet.ToString("0.00") + " $";
             GameObject prefab;
@@ -390,9 +416,102 @@ namespace Loom.ZombieBattleground
 
                 Sequence animationSequence = DOTween.Sequence();
                 animationSequence.AppendInterval(_amount[_currentPackId] * 0.1f - 0.1f * i);
-                animationSequence.Append(packItem.transform.DOMove(Vector3.up * -15f, .3f));
+                animationSequence.Append(packItem.transform.DOMove(Vector3.up * -15f, .5f));
+                
+                if( i == 0 )
+                {
+                    animationSequence.OnComplete(
+                    () =>
+                    {
+                        GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
+                    });
+                }
             }
         }
+      
+#if HAS_IAP_PLUGIN_INCLUDED  
+        private async void RequestFiatValidation(string productId, string purchaseToken, string storeTxId, string storeName)
+        {
+            FiatBackendManager.FiatValidationResponse response = await _fiatBackendManager.CallFiatValidation
+            (
+                productId,
+                purchaseToken,
+                storeTxId,
+                storeName
+            );
+            Debug.Log("msg: " + response.msg);
+            Debug.Log("tx_id: " + response.tx_id);
+
+            _fiatBackendManager.CallFiatTransaction();            
+        }
+        
+        private async void TestRequestFiatValidation()
+        {
+            RequestFiatValidation
+            (
+                "booster_pack_1",
+                "epgecdfbnjpniiigemenbbcn.AO-J1OxgDxU79uuUCxDQ27Ild4qs1z9-A2_h8QXxk0CICVA9UfeItYcD8IL0zpaBxprfdljAMa7TaGkK_YpVyo7wPWHYr8kc6H6CCD_3T2cNBEbk9nZBBzMvc1bwOSaZfDNXlamF6bIm",
+                "GPA.3394-9641-8410-18820",
+                "GooglePlay"
+            );
+        }
+
+
+#if UNITY_IOS || UNITY_ANDROID
+        private void OnProcessPurchase(PurchaseEventArgs args)
+        {
+            //todo parse receipt
+
+            string receiptJson = args.purchasedProduct.receipt;
+            IAPReceipt receipt = null;
+            try
+            {
+                receipt = JsonConvert.DeserializeObject<IAPReceipt>(receiptJson);
+                Debug.Log("receipt.TransactionID: " + receipt.TransactionID);
+                Debug.Log("receipt.Store: " + receipt.Store);
+                return;
+            }
+            catch
+            {
+                Debug.LogError("Cannot deserialize args.purchasedProduct.receipt");
+                return;
+            }
+            
+            Product product = args.purchasedProduct;
+            string productId = product.definition.id;
+            string purchaseToken = "";
+            string storeTxId = product.transactionID;
+            string storeName = product.definition.storeSpecificId;
+
+            RequestFiatValidation
+            (
+                productId,
+                purchaseToken,
+                storeTxId,
+                storeName                
+            );                    
+        }
+        public class IAPReceipt
+        {
+            public string Store;
+            public string TransactionID;
+            public string Payload;
+        }
+        public class ReceiptPayload
+        {
+            public ReceiptJSON json;
+        }
+        public class ReceiptJSON
+        {
+            public string productId;
+            public DeveloperPayload developerPayload;
+        }
+        public class DeveloperPayload
+        {
+            public string purchaseToken;
+        }
+#endif
+#endif
 
         private void ChooseItemHandler(int id)
         {
@@ -432,7 +551,7 @@ namespace Loom.ZombieBattleground
             SwitchShopObject(1);
         }
 
-        #endregion
+#endregion
 
         public class ShopObject
         {

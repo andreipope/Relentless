@@ -172,6 +172,16 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
+        public static Protobuf.Parameter ToProtobuf(this ParametrizedAbilityParameters parameters)
+        {
+            return new Protobuf.Parameter
+            {
+                Attack = parameters.Attack,
+                Defense = parameters.Defense,
+                CardName = parameters.CardName
+            };
+        }
+
         public static Protobuf.DebugCheatsConfiguration ToProtobuf(this BackendCommunication.DebugCheatsConfiguration debugCheatsConfiguration)
         {
             if (debugCheatsConfiguration == null)
@@ -184,10 +194,14 @@ namespace Loom.ZombieBattleground.Data
                 UseCustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed != null,
                 CustomRandomSeed = debugCheatsConfiguration.CustomRandomSeed ?? 0,
 
-                UseCustomDeck = debugCheatsConfiguration.CustomDeck != null,
-                CustomDeck = debugCheatsConfiguration.CustomDeck?.ToProtobuf(),
+                UseCustomDeck = debugCheatsConfiguration.UseCustomDeck,
+                CustomDeck = debugCheatsConfiguration.UseCustomDeck ? debugCheatsConfiguration.CustomDeck?.ToProtobuf() : null,
 
-                DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle
+                DisableDeckShuffle = debugCheatsConfiguration.DisableDeckShuffle,
+
+                ForceFirstTurnUserId = debugCheatsConfiguration.ForceFirstTurnUserId ?? "",
+
+                IgnoreGooRequirements = debugCheatsConfiguration.IgnoreGooRequirements
             };
         }
     }

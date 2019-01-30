@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbilityView : AbilityViewBase<MassiveDamageAbility>
     {
-        private const int LawnmowerCardId = 248;
+        private const int LawnmowerCardId = 114;
 
         private List<BoardUnitView> _unitsViews;
 
@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (_lineObject.transform.position.x + 1f < _unitView.Transform.position.x)
                     {
-                        Ability.OneActionComleted(_unitView.Model);
+                        Ability.OneActionCompleted(_unitView.Model);
                         CreateSubParticle(_unitView.Transform.position);
                         _unitsViews.Remove(_unitView);
                         _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
