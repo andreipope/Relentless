@@ -1163,9 +1163,9 @@ namespace Loom.ZombieBattleground
 #if USE_PRODUCTION_BACKEND
                     Debug.LogError(desyncException);
 
-                    if (!_gameplayManager.IsDesyncDetected)
+                    if (!GameClient.Get<IGameplayManager>().IsDesyncDetected)
                     {
-                        _gameplayManager.IsDesyncDetected = true;
+                        GameClient.Get<IGameplayManager>().IsDesyncDetected = true;
                         UserReportingScript.Instance.CreateUserReport(
                             true,
                             false,
