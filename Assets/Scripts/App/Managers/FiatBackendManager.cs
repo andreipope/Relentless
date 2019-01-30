@@ -250,7 +250,9 @@ namespace Loom.ZombieBattleground
             public string msg;
             public string transactionId;
             public bool success;
+            #if UNITY_ANDROID
             public int txId;
+            #endif
         }
         
         public class FiatTransactionResponse
