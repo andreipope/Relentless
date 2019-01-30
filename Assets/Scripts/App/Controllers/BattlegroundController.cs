@@ -550,7 +550,7 @@ namespace Loom.ZombieBattleground
                     Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
                 }
             }
-            else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.WorkingCard)
+            else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.BoardUnitModel.Card)
             {
                 _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
                 _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
@@ -622,7 +622,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCard.Init(card);
+            boardCard.Init(new BoardUnitModel(card));
             if (highlight)
             {
                 highlight = boardCard.CanBePlayed(card.Owner) && boardCard.CanBeBuyed(card.Owner);
@@ -963,12 +963,11 @@ namespace Loom.ZombieBattleground
         {
             GameObject playerBoard = owner.IsLocalPlayer ? PlayerBoardObject : OpponentBoardObject;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card), playerBoard.transform);
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.SetParent(playerBoard.transform);
             boardUnitView.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
             boardUnitView.Model.OwnerPlayer = owner;
-            boardUnitView.SetObjectInfo(card);
             boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             boardUnitView.PlayArrivalAnimation();
@@ -1126,7 +1125,7 @@ namespace Loom.ZombieBattleground
         public BoardCardView CreateCustomHandBoardCard(WorkingCard card)
         {
             BoardCardView boardCard = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab));
-            boardCard.Init(card);
+            boardCard.Init(new BoardUnitModel(card));
             boardCard.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
                                                                                  Constants.DefaultPositionOfOpponentBoardCard;
             boardCard.GameObject.transform.localScale = Vector3.one * .3f;

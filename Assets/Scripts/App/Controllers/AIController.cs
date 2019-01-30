@@ -957,7 +957,6 @@ namespace Loom.ZombieBattleground
                         boardUnitViewElement.Model.OwnerPlayer = card.Owner;
                         boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
-                        boardUnitViewElement.SetObjectInfo(card);
                         _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
                         _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
@@ -1023,7 +1022,7 @@ namespace Loom.ZombieBattleground
 
                         CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                        CurrentSpellCard.Init(card);
+                        CurrentSpellCard.Init(new BoardUnitModel(card));
                         CurrentSpellCard.SetHighlightingEnabled(false);
 
                         BoardSpell boardSpell = new BoardSpell(spellCard, card);

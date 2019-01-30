@@ -257,10 +257,9 @@ namespace Loom.ZombieBattleground
                     switch (workingCard.LibraryCard.CardKind)
                     {
                         case Enumerators.CardKind.CREATURE:
-                            boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), _battlegroundController.OpponentBoardObject.transform);
+                            boardUnitViewElement = new BoardUnitView(new BoardUnitModel(workingCard), _battlegroundController.OpponentBoardObject.transform);
                             GameObject boardUnit = boardUnitViewElement.GameObject;
                             boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
-                            boardUnitViewElement.SetObjectInfo(workingCard);
                             boardUnitViewElement.Model.TutorialObjectId = workingCard.TutorialObjectId;
 
                             boardUnit.tag = SRTags.OpponentOwned;

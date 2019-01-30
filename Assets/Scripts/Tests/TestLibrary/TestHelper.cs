@@ -1746,27 +1746,19 @@ namespace Loom.ZombieBattleground.Test
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
         {
-            WorkingCard workingCard = null;
-
-            if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
-            {
-                workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
-            }
-
-            if (workingCard == null || card == null)
+            if (card == null)
                 return;
 
             switch (card.LibraryCard.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                 {
-                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
+                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(card), GameObject.Find("OpponentBoard").transform);
                     GameObject boardUnit = boardUnitViewElement.GameObject;
                     boardUnit.tag = SRTags.OpponentOwned;
                     boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                     boardUnitViewElement.Model.OwnerPlayer = card.Owner;
                     boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
-                    boardUnitViewElement.SetObjectInfo(workingCard);
                     _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
                     _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
@@ -1798,7 +1790,7 @@ namespace Loom.ZombieBattleground.Test
                                 {
                                     _abilitiesController.CallAbility(card.LibraryCard,
                                         null,
-                                        workingCard,
+                                        card,
                                         Enumerators.CardKind.CREATURE,
                                         boardUnitViewElement.Model,
                                         null,
@@ -1816,7 +1808,7 @@ namespace Loom.ZombieBattleground.Test
                             {
                                 _abilitiesController.CallAbility(card.LibraryCard,
                                     null,
-                                    workingCard,
+                                    card,
                                     Enumerators.CardKind.CREATURE,
                                     boardUnitViewElement.Model,
                                     null,
@@ -1834,10 +1826,10 @@ namespace Loom.ZombieBattleground.Test
 
                     CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                    CurrentSpellCard.Init(workingCard);
+                    CurrentSpellCard.Init(new BoardUnitModel(card));
                     CurrentSpellCard.SetHighlightingEnabled(false);
 
-                    BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
+                    BoardSpell boardSpell = new BoardSpell(spellCard, card);
 
                     spellCard.gameObject.SetActive(false);
 
@@ -1855,7 +1847,7 @@ namespace Loom.ZombieBattleground.Test
                         {
                             _abilitiesController.CallAbility(card.LibraryCard,
                                 null,
-                                workingCard,
+                                card,
                                 Enumerators.CardKind.SPELL,
                                 boardSpell,
                                 null,
@@ -1874,7 +1866,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         _abilitiesController.CallAbility(card.LibraryCard,
                             null,
-                            workingCard,
+                            card,
                             Enumerators.CardKind.SPELL,
                             boardSpell,
                             null,

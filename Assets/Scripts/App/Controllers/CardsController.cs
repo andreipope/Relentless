@@ -497,7 +497,7 @@ namespace Loom.ZombieBattleground
                         _fakeBoardCard = null;
                     }
 
-                    _fakeBoardCard = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
+                    _fakeBoardCard = new BoardUnitView(card.BoardUnitModel, _playerBoard.transform);
                     toArrangeList.Insert(_indexOfCard, _fakeBoardCard);
 
                     _boardController.UpdateBoard(toArrangeList, true, null);
@@ -562,12 +562,11 @@ namespace Loom.ZombieBattleground
                                 }
                             }
 
-                            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), _playerBoard.transform);
+                            BoardUnitView boardUnitView = new BoardUnitView(card.BoardUnitModel, _playerBoard.transform);
                             boardUnitView.Transform.tag = SRTags.PlayerOwned;
                             boardUnitView.Transform.parent = _playerBoard.transform;
                             boardUnitView.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
                             boardUnitView.Model.OwnerPlayer = card.BoardUnitModel.Card.Owner;
-                            boardUnitView.SetObjectInfo(card.BoardUnitModel.Card);
                             boardUnitView.Model.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
 
                             player.CardsInHand.Remove(card.BoardUnitModel.Card);
@@ -694,12 +693,11 @@ namespace Loom.ZombieBattleground
 
             GameObject board = player.IsLocalPlayer ? _playerBoard : _opponentBoard;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), board.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card.BoardUnitModel.Card), board.transform);
             boardUnitView.Transform.tag = player.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = board.transform;
             boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * player.BoardCards.Count, 0);
             boardUnitView.Model.OwnerPlayer = card.BoardUnitModel.Card.Owner;
-            boardUnitView.SetObjectInfo(card.BoardUnitModel.Card);
             boardUnitView.Model.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
 
             if (player.IsLocalPlayer)
@@ -850,7 +848,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCard.Init(card);
+            boardCard.Init(new BoardUnitModel(card));
             go.transform.position = new Vector3(-6, 0, 0);
             go.transform.localScale = Vector3.one * .3f;
             boardCard.SetHighlightingEnabled(false);
@@ -1087,7 +1085,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCard.Init(card);
+            boardCard.Init(new BoardUnitModel(card));
 
             HandBoardCard handCard = new HandBoardCard(go, boardCard);
             handCard.OwnerPlayer = card.Owner;
@@ -1166,12 +1164,11 @@ namespace Loom.ZombieBattleground
 
             float unitYPositionOnBoard = owner.IsLocalPlayer ? -1.66f : 1.66f;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card), playerBoard.transform);
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, unitYPositionOnBoard);
             boardUnitView.Model.OwnerPlayer = owner;
-            boardUnitView.SetObjectInfo(card);
             boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             boardUnitView.PlayArrivalAnimation();

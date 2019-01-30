@@ -150,6 +150,8 @@ namespace Loom.ZombieBattleground
             _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
 
+            SetObjectInfo();
+
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
 #endif
@@ -185,13 +187,11 @@ namespace Loom.ZombieBattleground
             GameObject = overrideObject;
         }
 
-        public void SetObjectInfo(WorkingCard card)
+        private void SetObjectInfo()
         {
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
-            Model.SetObjectInfo(card);
-
-            Enumerators.SetType setType = _cardsController.GetSetOfCard(card.LibraryCard);
+            Enumerators.SetType setType = _cardsController.GetSetOfCard(Model.Card.LibraryCard);
             string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
             string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
             SetAttackGlowFromUnitType();
             SetHighlightingEnabled(false);
 
-            if(card.Owner.IsLocalPlayer)
+            if(Model.Card.Owner.IsLocalPlayer)
             {
                 PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
             }
