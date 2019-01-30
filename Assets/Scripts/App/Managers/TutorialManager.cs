@@ -152,6 +152,11 @@ namespace Loom.ZombieBattleground
         {
             if (!IsTutorial)
             {
+                for (int i = 0; i < _ingameTutorialActiveTooltips.Count; i++)
+                {
+                    _ingameTutorialActiveTooltips[i]?.Update();
+                }
+
                 if (Input.GetMouseButtonDown(0))
                 {
                     ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen, null);

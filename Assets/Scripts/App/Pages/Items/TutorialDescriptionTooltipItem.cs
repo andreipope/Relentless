@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _selfObject;
 
-        private SpriteRenderer _currentBattleground;
+        private SpriteRenderer _currentBackground;
 
         private TextMeshPro _textDescription;
 
@@ -78,8 +78,8 @@ namespace Loom.ZombieBattleground
 
             _textDescription.text = description;
 
-            SetBattlegroundType(align);
-            if (resizable && _currentBattleground != null)
+            SetBackgroundType(align);
+            if (resizable && _currentBackground != null)
             {
                 _textDescription.ForceMeshUpdate();                
                 RectTransform rect = _textDescription.GetComponent<RectTransform>();
@@ -93,10 +93,10 @@ namespace Loom.ZombieBattleground
                 }
                 Vector2 backgroundSize = Vector2.one / DefaultTextSize * rect.sizeDelta;
                 float value = (backgroundSize.x > backgroundSize.y ? backgroundSize.x : backgroundSize.y);
-                _currentBattleground.transform.localScale = Vector3.one * value;
+                _currentBackground.transform.localScale = Vector3.one * value;
             }
             UpdateTextPosition();
-            Width = _currentBattleground.bounds.size.x;
+            Width = _currentBackground.bounds.size.x;
 
             if (ownerId > 0)
             {
@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
                             if (_align == Enumerators.TooltipAlign.CenterLeft ||
                                 _align == Enumerators.TooltipAlign.CenterRight)
                             {
-                                SetBattlegroundType(_align);
+                                SetBackgroundType(_align);
                                 _currentPosition.x *= -1f;
 
                             }
@@ -171,20 +171,20 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.TutorialObjectLayer.Default:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBattleground.sortingOrder = 1;
+                    _currentBackground.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBackground.sortingOrder = 1;
                     _textDescription.renderer.sortingOrder = 2;
                     break;
                 case Enumerators.TutorialObjectLayer.AboveUI:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI3;
-                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI3;
-                    _currentBattleground.sortingOrder = 1;
+                    _currentBackground.sortingLayerName = SRSortingLayers.GameUI3;
+                    _currentBackground.sortingOrder = 1;
                     _textDescription.renderer.sortingOrder = 2;
                     break;
                 default:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBattleground.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBattleground.sortingOrder = 0;
+                    _currentBackground.sortingLayerName = SRSortingLayers.GameUI2;
+                    _currentBackground.sortingOrder = 0;
                     _textDescription.renderer.sortingOrder = 1;
                     break;
             }
@@ -219,7 +219,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if(_isDrawing)
+            if (_isDrawing)
             {
                 switch (OwnerType)
                 {
@@ -243,16 +243,16 @@ namespace Loom.ZombieBattleground
             switch (_align)
             {
                 case Enumerators.TooltipAlign.TopMiddle:
-                    textPosition.y = -_currentBattleground.bounds.size.y * 0.52f;
+                    textPosition.y = -_currentBackground.bounds.size.y * 0.52f;
                     break;
                 case Enumerators.TooltipAlign.CenterLeft:
-                    textPosition.x = _currentBattleground.bounds.size.x * 0.51f;
+                    textPosition.x = _currentBackground.bounds.size.x * 0.51f;
                     break;
                 case Enumerators.TooltipAlign.CenterRight:
-                    textPosition.x = -_currentBattleground.bounds.size.x * 0.51f;
+                    textPosition.x = -_currentBackground.bounds.size.x * 0.51f;
                     break;
                 case Enumerators.TooltipAlign.BottomMiddle:
-                    textPosition.y = _currentBattleground.bounds.size.y * 0.52f;
+                    textPosition.y = _currentBackground.bounds.size.y * 0.52f;
                     break;
                 default:
                     break;
@@ -272,13 +272,13 @@ namespace Loom.ZombieBattleground
             }           
         }
 
-        private void SetBattlegroundType(Enumerators.TooltipAlign align)
+        private void SetBackgroundType(Enumerators.TooltipAlign align)
         {
             Vector3 size = Vector3.one;
-            if(_currentBattleground != null)
+            if(_currentBackground != null)
             {
-                _currentBattleground.gameObject.SetActive(false);
-                size = _currentBattleground.transform.localScale;
+                _currentBackground.gameObject.SetActive(false);
+                size = _currentBackground.transform.localScale;
             }
 
             switch (align)
@@ -287,14 +287,14 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TooltipAlign.CenterRight:
                 case Enumerators.TooltipAlign.TopMiddle:
                 case Enumerators.TooltipAlign.BottomMiddle:
-                    _currentBattleground = _selfObject.transform.Find("ArrowType/Arrow_" + align.ToString()).GetComponent<SpriteRenderer>();
-                    _currentBattleground.gameObject.SetActive(true);
+                    _currentBackground = _selfObject.transform.Find("ArrowType/Arrow_" + align.ToString()).GetComponent<SpriteRenderer>();
+                    _currentBackground.gameObject.SetActive(true);
                     break;
                 default:
                     throw new NotImplementedException(nameof(align) + " doesn't implemented");
             }
 
-            _currentBattleground.transform.localScale = size;
+            _currentBackground.transform.localScale = size;
         }
     }
 }
