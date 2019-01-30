@@ -46,6 +46,8 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitView _ownerUnit;
 
+        private BoardObject _boardObjectOwner;
+
         private bool _dynamicPosition;
 
         private Enumerators.TutorialObjectLayer _layer = Enumerators.TutorialObjectLayer.Default;
@@ -73,6 +75,7 @@ namespace Loom.ZombieBattleground
             _dynamicPosition = dynamicPosition;
             _currentPosition = position;
             _layer = layer;
+            _boardObjectOwner = boardObjectOwner;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -119,14 +122,14 @@ namespace Loom.ZombieBattleground
                     default: break;
                 }
             }
-            else if(boardObjectOwner != null)
+            else if(_boardObjectOwner != null)
             {
                 switch(OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(boardObjectOwner as BoardUnitModel);
+                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(_boardObjectOwner as BoardUnitModel);
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
                         break;
@@ -227,6 +230,15 @@ namespace Loom.ZombieBattleground
         {
             if (_isDrawing)
             {
+                if (_boardObjectOwner != null)
+                {
+                    if (_ownerUnit != null && _ownerUnit.Model.IsDead)
+                    {
+                        Hide();
+                        return;
+                    }
+                }
+
                 switch (OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.Battleframe:
