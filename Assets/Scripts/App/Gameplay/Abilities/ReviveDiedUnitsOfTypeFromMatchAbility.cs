@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<WorkingCard> units =
+            IReadOnlyList<WorkingCard> units =
                 GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
 
             foreach (WorkingCard unit in units)
@@ -59,8 +59,8 @@ namespace Loom.ZombieBattleground
             BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
-            playerOwner.AddCardToBoard(card);
-            playerOwner.BoardCards.Add(unit);
+            playerOwner.AddCardToBoard(card, ItemPosition.End);
+            playerOwner.BoardCards.Insert(ItemPosition.End, unit);
 
             BoardController.UpdateCurrentBoardOfPlayer(playerOwner, null);
         }

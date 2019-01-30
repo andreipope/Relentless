@@ -18,6 +18,7 @@ namespace Loom.ZombieBattleground
     public class MatchMakingFlowController
     {
         private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
+        private const string PlayerIsNotInPool = "Player not found in player pool";
 
         private readonly BackendFacade _backendFacade;
         private readonly UserDataModel _userDataModel;
@@ -311,7 +312,7 @@ namespace Loom.ZombieBattleground
         private async void ErrorHandler (Exception exception) {
             // Just restart the entire process
             // FIXME: why does this error still occur, though?
-            if (exception.Message.Contains(PlayerIsAlreadyInAMatch))
+            if (exception.Message.Contains(PlayerIsAlreadyInAMatch) || exception.Message.Contains(PlayerIsNotInPool))
             {
                 try
                 {
@@ -321,6 +322,10 @@ namespace Loom.ZombieBattleground
 
                     await Restart();
                 }
+                catch(TimeoutException e)
+                {
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
+                }
                 catch (Exception e)
                 {
                     ErrorHandler(e);
@@ -328,7 +333,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                throw exception;
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
         }
 

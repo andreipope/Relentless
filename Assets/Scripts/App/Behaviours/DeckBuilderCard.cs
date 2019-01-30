@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -33,13 +34,23 @@ namespace Loom.ZombieBattleground
 
         private void DoubleClickAction()
         {
+            if (GameClient.Get<ITutorialManager>().IsTutorial &&
+                !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial() &&
+                (GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CardsInteractingLocked ||
+                !GameClient.Get<ITutorialManager>().CurrentTutorialStep.ToMenuStep().CanDoubleTapCards))
+                return;
+
             if (!IsHordeItem)
             {
                 Page?.AddCardToDeck(this, Card);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardAdded);
             }
             else
             {
                 Page?.RemoveCardFromDeck(this, Card);
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardRemoved);
             }
         }
     }

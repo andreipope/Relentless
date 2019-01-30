@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
             GameObject prefab = null;
             MulliganCardItem item = null;
             int index = 0;
-            foreach (var card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
+            foreach (WorkingCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
                 prefab = card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _spellCardPrefab;
                 item = new MulliganCardItem(prefab, Self.transform, card);
@@ -212,7 +212,8 @@ namespace Loom.ZombieBattleground
             MulliganCards?.Invoke(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.card).ToList());
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            Hide();
+
+            _uiManager.HidePopup<MulliganPopup>();
         }        
     }
 

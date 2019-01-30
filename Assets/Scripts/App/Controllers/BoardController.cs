@@ -88,18 +88,23 @@ namespace Loom.ZombieBattleground
             UpdateBoard(player.BoardCards, player.IsLocalPlayer, boardUpdated);
         }
 
-        public void UpdateBoard(List<BoardUnitView> units, bool isBottom, Action boardUpdated)
+        public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
 
+            // FIXME HARD: in tutorial, arrows should NEVER use XYZ coordinates, and use references to actual things instead.
+            if (!isBottom)
+            {
+                units = units.Reverse().ToList();
+            }
+
             float boardWidth = 0.0f;
-            float spacing = 0.2f;
-            float cardWidth = 0.0f;
+            const float spacing = 0.2f;
+            const float cardWidth = 2.5f;
 
             for (int i = 0; i < units.Count; i++)
             {
-                cardWidth = 2.5f;
                 boardWidth += cardWidth;
                 boardWidth += spacing;
             }

@@ -28,5 +28,8 @@ namespace Loom.ZombieBattleground
 
         void HideAllPages();
         void HideAllPopups();
+
+        void DrawPopupByName(string name, object data = null);
+        void SetPageByName(string name, bool hideAll = false);
     }
 }

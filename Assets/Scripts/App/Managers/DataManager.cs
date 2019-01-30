@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<IApplicationSettingsManager>().ApplySettings();
 
-            GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
+            //GameClient.Get<IGameplayManager>().IsTutorial = CachedUserLocalData.Tutorial;
 
 #if DEVELOPMENT
             foreach (Enumerators.CacheDataType dataType in _cacheDataFileNames.Keys)
@@ -377,9 +377,10 @@ namespace Loom.ZombieBattleground
                                     new List<Deck>()
                             );
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         ShowLoadDataFailMessage("Issue with Loading Decks Data");
+                        Debug.LogWarning(e);
                         throw;
                     }
 

@@ -1,33 +1,44 @@
 using Loom.ZombieBattleground.Common;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public interface ITutorialManager
     {
         TutorialData CurrentTutorial { get; }
-        TutorialDataStep CurrentTutorialDataStep { get; }
+        TutorialStep CurrentTutorialStep { get; }
 
         bool IsTutorial { get; }
 
-        bool IsBubbleShow { get; set; }
+        int TutorialsCount { get; }
+
+        bool PlayerWon { get; set; }
+
+        bool UnfinishedTutorial { get; set; }
 
         void StartTutorial();
+
         void SetupTutorialById(int id);
 
         void StopTutorial();
 
-        void ReportAction(Enumerators.TutorialReportAction action);
+        void ActivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
 
-        void ActivateSelectTarget();
+        void DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
 
-        void DeactivateSelectTarget();
+        void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = -1);
 
-        void NextButtonClickHandler();
+        void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "");
 
-        void SkipTutorial(Enumerators.AppState state);
+        void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
-        int TutorialsCount { get; }
+        TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
 
-        AnalyticsTimer TutorialDuration { get; set; }
+        SpecificTurnInfo GetCurrentTurnInfo();
+        bool IsCompletedActivitiesForThisTurn();
+        string GetCardNameById(int id);
+
+        bool IsButtonBlockedInTutorial(string name);
+        bool CheckNextTutorial();
     }
 }

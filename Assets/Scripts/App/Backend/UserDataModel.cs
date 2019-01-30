@@ -26,5 +26,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             UserId = userId;
             PrivateKey = privateKey;
         }
+
+        public override string ToString()
+        {
+            return $"(UserId: {UserId}, Email: {Email}, IsValid: {IsValid})";
+        }
     }
 }

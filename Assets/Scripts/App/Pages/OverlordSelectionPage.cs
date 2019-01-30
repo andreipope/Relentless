@@ -416,12 +416,22 @@ namespace Loom.ZombieBattleground
 
         private void BackButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_backButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _appStateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
         }
 
         private void ContinueButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_continueButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.GetPage<HordeEditingPage>().CurrentHero = _currentOverlordObject.SelfHero;
@@ -446,12 +456,23 @@ namespace Loom.ZombieBattleground
 
         private void LeftArrowButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_leftArrowButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             SwitchOverlordObject(-1);
         }
 
         private void RightArrowButtonOnClickHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_rightArrowButton.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             SwitchOverlordObject(1);
         }

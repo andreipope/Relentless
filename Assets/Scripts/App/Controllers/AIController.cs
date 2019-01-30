@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsBrainWorking = false;
 
+        public bool AIPaused = false;
+
         private const int MinTurnForAttack = 0;
 
         private readonly Random _random = new Random();
@@ -103,7 +105,10 @@ namespace Loom.ZombieBattleground
             _attackedUnitTargets = new List<BoardUnitModel>();
             _unitsToIgnoreThisTurn = new List<BoardUnitModel>();
 
-            if (!_gameplayManager.IsSpecificGameplayBattleground)
+            if (!_gameplayManager.IsSpecificGameplayBattleground ||
+                (_gameplayManager.IsTutorial &&
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                SpecificBattlegroundInfo.DisabledInitialization))
             {
                 List<WorkingCard> workingDeck = new List<WorkingCard>();
 
@@ -120,7 +125,17 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
 
-            SetAiBrainType(Enumerators.AiBrainType.Normal);
+            if (_gameplayManager.IsTutorial &&
+                _tutorialManager.CurrentTutorial != null &&
+                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.AISpecificOrderEnabled &&
+                !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
+            {
+                SetAiBrainType(Enumerators.AiBrainType.Tutorial);
+            }
+            else
+            {
+                SetAiBrainType(Enumerators.AiBrainType.Normal);
+            }
 
             _gameplayManager.OpponentPlayer.TurnStarted += TurnStartedHandler;
             _gameplayManager.OpponentPlayer.TurnEnded += TurnEndedHandler;
@@ -148,6 +163,9 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AiBrainType.Normal:
                         await DoAiBrain(_aiBrainCancellationTokenSource.Token);
                         break;
+                    case Enumerators.AiBrainType.Tutorial:
+                        await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
+                        break;
                     case Enumerators.AiBrainType.DontAttack:
                         await DontAttackAiBrain(_aiBrainCancellationTokenSource.Token);
                         break;
@@ -163,7 +181,32 @@ namespace Loom.ZombieBattleground
 
             Debug.Log("brain finished");
 
-            IsBrainWorking = false;
+            if (!_tutorialManager.IsTutorial ||
+                (_aiBrainType == Enumerators.AiBrainType.Tutorial &&
+                _tutorialManager.CurrentTutorialStep.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn))
+            {
+                IsBrainWorking = false;
+            }
+        }
+
+        public async Task SetTutorialStep()
+        {
+            try
+            {
+                switch (_aiBrainType)
+                {
+                    case Enumerators.AiBrainType.Tutorial:
+                        await LetsThink(_aiBrainCancellationTokenSource.Token);
+                        await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("brain canceled!");
+            }
         }
 
         private void SetAiTypeByDeck()
@@ -209,11 +252,9 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground)
-            {
-                if (!_tutorialManager.CurrentTutorialDataStep.IsLaunchAIBrain)
-                    return;
-            }
+            if (_tutorialManager.IsTutorial && _gameplayManager.IsSpecificGameplayBattleground &&
+               !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
+                return;
 
             await LaunchAIBrain();
         }
@@ -243,42 +284,108 @@ namespace Loom.ZombieBattleground
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialDataStep.IsPauseTutorial)
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+            await LetsThink(cancellationToken);
+
+            await LetsWaitForQueue(cancellationToken);
+
+            await UseUnitsOnBoard(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            await UsePlayerSkills(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsWaitForQueue(cancellationToken);
+
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
             {
-                ((TutorialManager) _tutorialManager).Paused = true;
+                await UseUnitsOnBoard(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+
             }
             else
             {
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+            }
+        }
 
-                await LetsWaitForQueue(cancellationToken);
+        private async Task DoAiBrainForTutorial(CancellationToken cancellationToken)
+        {
+            TutorialStep step = _tutorialManager.CurrentTutorialStep;
 
+            await LetsThink(cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await LetsWaitForQueue(cancellationToken);
+
+            List<Enumerators.TutorialActivityAction> requiredActivitiesToDoneDuringTurn = step.ToGameplayStep().RequiredActivitiesToDoneDuringStep;
+            if(requiredActivitiesToDoneDuringTurn.Count == 0)
+            {
+                requiredActivitiesToDoneDuringTurn = _tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn;
+            }
+
+            foreach (Enumerators.TutorialActivityAction activityAction in requiredActivitiesToDoneDuringTurn)
+            {
+                switch (activityAction)
+                {
+                    case Enumerators.TutorialActivityAction.EnemyOverlordCardPlayed:
+                        await PlayCardsFromHand(cancellationToken);
+
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+
+                        await LetsWaitForQueue(cancellationToken);
+                        break;
+                    case Enumerators.TutorialActivityAction.BattleframeAttacked:
+                        await UseUnitsOnBoard(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await UsePlayerSkills(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        await LetsWaitForQueue(cancellationToken);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (CheckTutorialAIStepPaused())
+                    return;
+            }
+
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
+            {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-                await UsePlayerSkills(cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
-
-                await LetsWaitForQueue(cancellationToken);
-
-                if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
-                {
-                    await UseUnitsOnBoard(cancellationToken);
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    await LetsThink(cancellationToken);
-                    await LetsThink(cancellationToken);
-                    _battlegroundController.StopTurn();
-
-                }
-                else
-                {
-                    await LetsThink(cancellationToken);
-                    await LetsThink(cancellationToken);
-                    _battlegroundController.StopTurn();
-                }
             }
+
+            if (step.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                _battlegroundController.StopTurn();
+            }
+        }
+
+        private bool CheckTutorialAIStepPaused()
+        {
+            if (!_tutorialManager.IsTutorial ||
+                _tutorialManager.CurrentTutorialStep == null ||
+                _tutorialManager.CurrentTutorialStep.ToGameplayStep() == null)
+            {
+                return false;
+            }
+            AIPaused = _tutorialManager.CurrentTutorialStep.ToGameplayStep().AIShouldBePaused;
+            return AIPaused;
         }
 
         private async Task DoNothingAiBrain(CancellationToken cancellationToken)
@@ -308,6 +415,34 @@ namespace Loom.ZombieBattleground
         // ai step 1
         private async Task PlayCardsFromHand(CancellationToken cancellationToken)
         {
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().DisabledSpecificTurnInfos)
+            {
+                foreach (PlayCardActionInfo playCardActionInfo in _tutorialManager.GetCurrentTurnInfo().PlayCardsSequence)
+                {
+                    if (CheckTutorialAIStepPaused())
+                        return;
+
+                    WorkingCard card = _gameplayManager.OpponentPlayer.CardsInHand.FirstOrDefault(
+                        cardInHand => cardInHand.TutorialObjectId == playCardActionInfo.TutorialObjectId);
+
+                    if (card != null)
+                    {
+
+                        PlayCardOnBoard(card, playCardActionInfo: playCardActionInfo);
+
+                        await LetsThink(cancellationToken);
+                        await LetsThink(cancellationToken);
+
+                        if (_aiBrainType == Enumerators.AiBrainType.Tutorial)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                return;
+            }
+
             // CHECK about CardsInHand in modification collection!
             await CheckGooCard(cancellationToken);
 
@@ -358,6 +493,47 @@ namespace Loom.ZombieBattleground
         // ai step 2
         private async Task UseUnitsOnBoard(CancellationToken cancellationToken)
         {
+            if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().DisabledSpecificTurnInfos)
+            {
+                foreach (UseBattleframeActionInfo frame in _tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence)
+                {
+                    if (CheckTutorialAIStepPaused())
+                        return;
+
+                    BoardUnitModel unit = GetUnitsOnBoard().Find(unitOnBoard => !unitOnBoard.AttackedThisTurn &&
+                                                                       unitOnBoard.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                       _tutorialManager.GetCardNameById(frame.TutorialObjectId).
+                                                                       ToLowerInvariant() &&
+                                                                       UnitCanBeUsable(unitOnBoard));
+                    BoardObject target = null;
+
+                    if (frame.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD)
+                    {
+                        target = GetOpponentUnitsOnBoard().Find(targetUnit => targetUnit.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                     _tutorialManager.GetCardNameById(frame.TargetTutorialObjectId).
+                                                                     ToLowerInvariant() &&
+                                                                     targetUnit.CurrentHp > 0);
+                    }
+                    else
+                    {
+                        target = _gameplayManager.CurrentPlayer;
+                    }
+
+                    if (target != null && unit != null)
+                    {
+                        unit.DoCombat(target);
+                        if (_aiBrainType == Enumerators.AiBrainType.Tutorial)
+                            break;
+                    }
+
+                    await LetsWaitForQueue(cancellationToken);
+
+                    await LetsThink(cancellationToken);
+                }
+
+                return;
+            }
+
             List<BoardUnitModel> unitsOnBoard = new List<BoardUnitModel>();
             List<BoardUnitModel> alreadyUsedUnits = new List<BoardUnitModel>();
 
@@ -431,7 +607,6 @@ namespace Loom.ZombieBattleground
                     while (UnitCanBeUsable(unit))
                     {
                         if (GetPlayerAttackingValue() > GetOpponentAttackingValue() &&
-                            !_tutorialManager.IsTutorial &&
                             !unit.HasBuffRush &&
                             unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
                         { 
@@ -468,7 +643,11 @@ namespace Loom.ZombieBattleground
         private async Task UsePlayerSkills(CancellationToken cancellationToken)
         {
             bool wasAction = false;
-            if (_gameplayManager.IsTutorial || _gameplayManager.OpponentPlayer.IsStunned)
+
+            if (_gameplayManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().DisabledSpecificTurnInfos)
+                return;
+
+            if(_gameplayManager.OpponentPlayer.IsStunned)
                 return;
 
             if (_skillsController.OpponentPrimarySkill != null)
@@ -659,7 +838,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void PlayCardOnBoard(WorkingCard card, bool ignorePlayAbility = false)
+        public void PlayCardOnBoard(WorkingCard card, bool ignorePlayAbility = false, PlayCardActionInfo playCardActionInfo = null)
         {
             _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
             {
@@ -692,16 +871,36 @@ namespace Loom.ZombieBattleground
 
                 if (needTargetForAbility)
                 {
-                    target = GetAbilityTarget(card);
+                    if (_gameplayManager.IsTutorial && playCardActionInfo != null)
+                    {
+                        if (!string.IsNullOrEmpty(_tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)))
+                        {
+                            switch (playCardActionInfo.TargetType)
+                            {
+                                case Enumerators.SkillTargetType.OPPONENT:
+                                    target = _gameplayManager.CurrentPlayer;
+                                    break;
+                                case Enumerators.SkillTargetType.OPPONENT_CARD:
+                                    target = GetOpponentUnitsOnBoard().Find(x => x.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                                                            _tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)
+                                                                            .ToLowerInvariant());
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        target = GetAbilityTarget(card);
+                    }
                 }
 
                 switch (card.LibraryCard.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                         _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
-                        _gameplayManager.OpponentPlayer.AddCardToBoard(card);
+                        _gameplayManager.OpponentPlayer.AddCardToBoard(card, ItemPosition.End);
 
-                        _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, (x, y) =>
+                        _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, null, (x, y) =>
                         {
                             PlayCardCompleteHandler(x, y, completeCallback);
                         });
@@ -713,9 +912,9 @@ namespace Loom.ZombieBattleground
                             if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
                                 _gameplayManager.OpponentPlayer.RemoveCardFromHand(card);
-                                _gameplayManager.OpponentPlayer.AddCardToBoard(card);
+                                _gameplayManager.OpponentPlayer.AddCardToBoard(card, ItemPosition.End);
 
-                                _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card, target, (x, y) =>
+                                _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, card.InstanceId, target, null, (x, y) =>
                                 {
                                     PlayCardCompleteHandler(x, y, completeCallback);
                                 });
@@ -739,14 +938,7 @@ namespace Loom.ZombieBattleground
         {
             completeCallback?.Invoke();
 
-            WorkingCard workingCard = null;
-
-            if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
-            {
-                workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
-            }
-
-            if (workingCard == null || card == null)
+            if ( card == null)
                 return;
 
             GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
@@ -761,16 +953,13 @@ namespace Loom.ZombieBattleground
                         BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
                         GameObject boardUnit = boardUnitViewElement.GameObject;
                         boardUnit.tag = SRTags.OpponentOwned;
-                        boardUnit.transform.position = Vector3.zero;
+                        boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                         boardUnitViewElement.Model.OwnerPlayer = card.Owner;
+                        boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
 
-                        boardUnitViewElement.SetObjectInfo(workingCard);
-                        _battlegroundController.OpponentBoardCards.Add(boardUnitViewElement);
-
-                        boardUnit.transform.position +=
-                            Vector3.up * 2f; // Start pos before moving cards to the opponents board
-
-                        _gameplayManager.OpponentPlayer.BoardCards.Add(boardUnitViewElement);
+                        boardUnitViewElement.SetObjectInfo(card);
+                        _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
+                        _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
@@ -799,7 +988,7 @@ namespace Loom.ZombieBattleground
                                 {
                                     Action callback = () =>
                                     {
-                                        _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
+                                        _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
                                         null, false, (status) =>
                                         {
                                             if (!status)
@@ -817,7 +1006,7 @@ namespace Loom.ZombieBattleground
                                 }
                                 else
                                 {
-                                    _abilitiesController.CallAbility(card.LibraryCard, null, workingCard,
+                                    _abilitiesController.CallAbility(card.LibraryCard, null, card,
                                         Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, callAbilityAction);
 
                                     _actionsQueueController.ForceContinueAction(callAbilityAction);
@@ -834,10 +1023,10 @@ namespace Loom.ZombieBattleground
 
                         CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                        CurrentSpellCard.Init(workingCard);
+                        CurrentSpellCard.Init(card);
                         CurrentSpellCard.SetHighlightingEnabled(false);
 
-                        BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
+                        BoardSpell boardSpell = new BoardSpell(spellCard, card);
 
                         spellCard.gameObject.SetActive(false);
 
@@ -860,7 +1049,7 @@ namespace Loom.ZombieBattleground
                         {
                             Action callback = () =>
                             {
-                                _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction, target);
+                                _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction, target);
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                             };
 
@@ -868,7 +1057,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            _abilitiesController.CallAbility(card.LibraryCard, null, workingCard, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction);
+                            _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction);
 
                             _actionsQueueController.ForceContinueAction(callAbilityAction);
                             ranksBuffAction.ForceActionDone();
@@ -1032,7 +1221,7 @@ namespace Loom.ZombieBattleground
         {
             if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
             {
-                List<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
+                IReadOnlyList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
                 if (targets.Count > 0)
                 {
@@ -1054,7 +1243,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private List<BoardUnitView> GetHeavyUnitsOnBoard(Player player)
+        private IReadOnlyList<BoardUnitView> GetHeavyUnitsOnBoard(Player player)
         {
             return player.BoardCards.FindAll(x => x.Model.HasHeavy || x.Model.HasBuffHeavy);
         }
@@ -1109,7 +1298,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel item in list)
             {
-                if (item.CurrentHp < item.MaxCurrentHp && item.CurrentHp > 0)
+                if (item.CurrentHp < item.MaxCurrentHp && item.CurrentHp > 0 && !item.IsDead)
                 {
                     finalList.Add(item);
                 }
@@ -1127,7 +1316,7 @@ namespace Loom.ZombieBattleground
 
         private List<WorkingCard> GetUnitCardsInHand()
         {
-            List<WorkingCard> list =
+            IReadOnlyList<WorkingCard> list =
                 _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
                     x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
@@ -1146,16 +1335,13 @@ namespace Loom.ZombieBattleground
 
             foreach (Card item in cards)
             {
-                sortedList.Add(list.Find(x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains(x)));
+                sortedList.Add(list.First(x => x.LibraryCard.MouldId == item.MouldId && !sortedList.Contains(x)));
             }
-
-            list.Clear();
-            cards.Clear();
 
             return sortedList;
         }
 
-        private List<WorkingCard> GetSpellCardsInHand()
+        private IReadOnlyList<WorkingCard> GetSpellCardsInHand()
         {
             return _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
                 x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);
@@ -1165,7 +1351,7 @@ namespace Loom.ZombieBattleground
         {
             return
                 _gameplayManager.OpponentPlayer.BoardCards
-                    .FindAll(x => x.Model.CurrentHp > 0)
+                    .FindAll(x => x.Model.CurrentHp > 0 && !x.Model.IsDead)
                     .Select(x => x.Model)
                     .ToList();
         }
@@ -1178,7 +1364,7 @@ namespace Loom.ZombieBattleground
             {
                 eligibleUnits =
                     _gameplayManager.OpponentPlayer.BoardCards
-                        .FindAll(x => x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model))
+                        .FindAll(x => x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model) && !x.Model.IsDead)
                         .Select(x => x.Model)
                         .ToList();
             }
@@ -1186,7 +1372,7 @@ namespace Loom.ZombieBattleground
             {
                 eligibleUnits =
                     _gameplayManager.OpponentPlayer.BoardCards
-                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model))
+                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model) && !x.Model.IsDead)
                         .Select(x => x.Model)
                         .ToList();
             }
@@ -1208,7 +1394,7 @@ namespace Loom.ZombieBattleground
         {
             List<BoardUnitModel> eligibleUnits =
                 _gameplayManager.CurrentPlayer.BoardCards
-                    .FindAll(x => x.Model.CurrentHp > 0)
+                    .FindAll(x => x.Model.CurrentHp > 0 && !x.Model.IsDead)
                     .Select(x => x.Model)
                     .ToList();
 
@@ -1226,12 +1412,20 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
+        private List<BoardUnitModel> GetOpponentUnitsOnBoard()
+        {
+        return _gameplayManager.CurrentPlayer.BoardCards
+                    .FindAll(x => x.Model.CurrentHp > 0 && !x.Model.IsDead)
+                    .Select(x => x.Model)
+                    .ToList();
+        }
+
         private BoardUnitModel GetRandomOpponentUnit(List<BoardUnitModel> unitsToIgnore = null)
         {
             List<BoardUnitModel> eligibleCreatures =
                 _gameplayManager.CurrentPlayer.BoardCards
                     .Select(x => x.Model)
-                    .Where(x => x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x))
+                    .Where(x => x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x) && !x.IsDead)
                     .ToList();
 
             if (unitsToIgnore != null)
@@ -1253,7 +1447,7 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer.BoardCards
                     .Select(x => x.Model)
                     .ToList();
-            List<BoardUnitModel> eligibleCreatures = board.FindAll(x => x.CurrentHp > 0);
+            List<BoardUnitModel> eligibleCreatures = board.FindAll(x => x.CurrentHp > 0 && !x.IsDead);
             if (eligibleCreatures.Count > 0)
             {
                 List<BoardUnitModel> provokeCreatures = eligibleCreatures.FindAll(x => x.IsHeavyUnit);
@@ -1334,7 +1528,7 @@ namespace Loom.ZombieBattleground
                             {
                                 _unitsToIgnoreThisTurn =
                                     _gameplayManager.OpponentPlayer.BoardCards
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) && !x.Model.IsDead)
                                     .Select(x => x.Model)
                                     .ToList();
                             }
@@ -1358,7 +1552,7 @@ namespace Loom.ZombieBattleground
                     {
                         _unitsToIgnoreThisTurn =
                             _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
-                            skill.Skill.ElementTargetTypes.Count > 0 &&
+                            skill.Skill.ElementTargetTypes.Count > 0 && !x.Model.IsDead &&
                             !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) ||
                             x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral)
                                 .Select(x => x.Model)
@@ -1384,7 +1578,8 @@ namespace Loom.ZombieBattleground
                         target = _gameplayManager.CurrentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                        BoardUnitModel unit = GetRandomOpponentUnit();
+                        BoardUnitModel unit = GetRandomOpponentUnit(GetOpponentUnitsOnBoard().FindAll(model => skill.BlockedUnitStatusTypes.Contains(model.UnitStatus)
+                        && !model.IsDead));
 
                         if (unit != null)
                         {
@@ -1402,7 +1597,7 @@ namespace Loom.ZombieBattleground
                         {
                             _unitsToIgnoreThisTurn =
                                 _gameplayManager.OpponentPlayer.BoardCards
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) && !x.Model.IsDead)
                                     .Select(x => x.Model)
                                     .ToList();
                         }
@@ -1438,7 +1633,7 @@ namespace Loom.ZombieBattleground
 
                 case Enumerators.OverlordSkill.SHATTER:
                     {
-                        List<BoardUnitModel> units = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.IsStun).Select(x => x.Model).ToList();
+                        List<BoardUnitModel> units = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.IsStun && !x.Model.IsDead).Select(x => x.Model).ToList();
 
                         if (units.Count > 0)
                         {
@@ -1487,7 +1682,9 @@ namespace Loom.ZombieBattleground
                 skill.EndDoSkill();
             };
 
-            if (skill.Skill.CanSelectTarget)
+            if ((skill.Skill.CanSelectTarget && target != null) ||
+                selectedObjectType == Enumerators.AffectObjectType.Player ||
+                selectedObjectType == Enumerators.AffectObjectType.Character)
             {
                 skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
             }

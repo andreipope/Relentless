@@ -79,6 +79,8 @@ namespace Loom.ZombieBattleground
 
         protected IPvPManager PvPManager;
 
+        protected ITutorialManager TutorialManager;
+
         protected GameObject VfxObject;
 
         protected bool IsAbilityResolved;
@@ -103,6 +105,7 @@ namespace Loom.ZombieBattleground
             TimerManager = GameClient.Get<ITimerManager>();
             SoundManager = GameClient.Get<ISoundManager>();
             PvPManager = GameClient.Get<IPvPManager>();
+            TutorialManager = GameClient.Get<ITutorialManager>();
 
             AbilitiesController = GameplayManager.GetController<AbilitiesController>();
             ParticlesController = GameplayManager.GetController<ParticlesController>();

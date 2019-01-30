@@ -76,10 +76,10 @@ namespace Loom.ZombieBattleground
 
         public void CloseButtonHandler()
         {
-            ConfirmationReceived?.Invoke();
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Hide();
+            ConfirmationReceived?.Invoke();
         }
     }
 }

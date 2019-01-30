@@ -229,6 +229,7 @@ namespace Loom.Client.Internal
                 {
                     UnityUserReporting.CurrentClient.LogException(ex);
                     tcs.TrySetException(ex);
+                    throw;
                 }
             };
 

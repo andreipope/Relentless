@@ -208,11 +208,6 @@ namespace Loom.ZombieBattleground
             _settingsButton.gameObject.SetActive(false);
 #endif
 
-            if (_gameplayManager.IsTutorial)
-            {
-                _buttonBack.gameObject.SetActive(false);
-            }
-
             StartGame();
             KeepButtonVisibility(false);
         }
@@ -240,10 +235,10 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    if (_gameplayManager.IsTutorial)
+                    if (_gameplayManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
                     {
-                        heroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.PlayerInfo.HeroId;
-                        opponentHeroId = _tutorialManager.CurrentTutorial.SpecificBattlegroundInfo.OpponentInfo.HeroId;
+                        heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
+                        opponentHeroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                     }
                     else
                     {
@@ -266,11 +261,11 @@ namespace Loom.ZombieBattleground
                     {
                         if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            heroId = (int) playerState.Deck.HeroId;
+                            heroId = (int)playerState.Deck.HeroId;
                         }
                         else
                         {
-                            opponentHeroId = (int) playerState.Deck.HeroId;
+                            opponentHeroId = (int)playerState.Deck.HeroId;
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
                             _gameplayManager.OpponentDeckId = -1;
                         }
@@ -335,12 +330,12 @@ namespace Loom.ZombieBattleground
             {
                 SetHeroInfo(_opponentHero, Constants.Opponent);
 
-                _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ? 
+                _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ?
                                                         _pvpManager.GetOpponentUserId() : _opponentHero.FullName;
             }
 
-           _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
-                _playerManaBarsPosition, _playerNameText.text, Constants.Player);
+            _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
+                 _playerManaBarsPosition, _playerNameText.text, Constants.Player);
             _opponentManaBar = new PlayerManaBarItem(GameObject.Find("OpponentManaBar"), "GooOverflowOpponent",
                 _opponentManaBarsPosition, _opponentNameText.text, Constants.Opponent);
 
@@ -414,7 +409,7 @@ namespace Loom.ZombieBattleground
 
         private int GetPercentFromMaxDeck(int index)
         {
-            return 100 * index / (int) Constants.DeckMaxSize;
+            return 100 * index / (int)Constants.DeckMaxSize;
         }
 
         private class CardZoneOnBoardStatus

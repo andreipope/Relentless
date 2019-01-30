@@ -5,6 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using Unity.Cloud.UserReporting;
 using Unity.Cloud.UserReporting.Plugin;
@@ -43,8 +45,6 @@ public class UserReportingScript : MonoBehaviour
     /// </summary>
     [Tooltip("The user report button used to create a user report.")]
     public Button UserReportButton;
-
-    public GameObject HiddenUI;
 
     public Button BugReportFormCancelButton;
 
@@ -92,12 +92,6 @@ public class UserReportingScript : MonoBehaviour
     public bool IsHotkeyEnabled;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the user report prefab is in silent mode. Silent mode does not show the user report form.
-    /// </summary>
-    [Tooltip("A value indicating whether the user report prefab is in silent mode. Silent mode does not show the user report form.")]
-    public bool IsInSilentMode;
-
-    /// <summary>
     /// Gets or sets a value indicating whether the user report client reports metrics about itself.
     /// </summary>
     [Tooltip("A value indicating whether the user report client reports metrics about itself.")]
@@ -143,12 +137,14 @@ public class UserReportingScript : MonoBehaviour
 
     private bool _isCrashing;
 
-    private string _exceptionStacktrace;
-
+    private string _exceptionStacktrace = "";
+    private string _exceptionCondition = "";
 
     #endregion
 
     #region Properties
+
+    public static UserReportingScript Instance { get; private set; }
 
     /// <summary>
     /// Gets the current user report.
@@ -164,7 +160,7 @@ public class UserReportingScript : MonoBehaviour
         {
             if (this.CurrentUserReport != null)
             {
-                if (this.IsInSilentMode)
+                if (this.IsSilent)
                 {
                     return UserReportingState.Idle;
                 }
@@ -190,6 +186,9 @@ public class UserReportingScript : MonoBehaviour
             }
         }
     }
+
+    // Silent mode does not show the user report form.
+    public bool IsSilent { get; set; }
 
     #endregion
 
@@ -225,149 +224,6 @@ public class UserReportingScript : MonoBehaviour
     }
 
     /// <summary>
-    /// Creates a user report.
-    /// </summary>
-    public void CreateUserReport(bool isCrashReport)
-    {
-        // Check Creating Flag
-        if (this.isCreatingUserReport)
-        {
-            return;
-        }
-
-        // Hide FPS counter
-        if (_afpsCounter != null)
-        {
-            _afpsCounter.OperationMode = OperationMode.Background;
-        }
-
-        BugReportFormCancelButton.gameObject.SetActive(!isCrashReport);
-        BugReportFormExitButton.gameObject.SetActive(isCrashReport);
-        BugReportFormCrashText.gameObject.SetActive(isCrashReport);
-        CrashBackupObjectsRoot.SetActive(isCrashReport);
-
-        // Set Creating Flag
-        this.isCreatingUserReport = true;
-
-        if (!String.IsNullOrEmpty(_exceptionStacktrace))
-        {
-            Debug.LogError(_exceptionStacktrace);
-        }
-
-        // Take Main Screenshot
-        UnityUserReporting.CurrentClient.TakeScreenshot(1280, 1280, s => { });
-
-        // Take Thumbnail Screenshot
-        UnityUserReporting.CurrentClient.TakeScreenshot(256, 256, s => { });
-
-        // Kill everything else to make sure no more exceptions are being thrown
-        if (isCrashReport)
-        {
-            Scene[] scenes = new Scene[SceneManager.sceneCount];
-            for (int i = 0; i < SceneManager.sceneCount; ++i)
-            {
-                scenes[i] = SceneManager.GetSceneAt(i);
-            }
-
-            IEnumerable<GameObject> rootGameObjects =
-                scenes
-                    .Concat(new[]
-                    {
-                            gameObject.scene
-                    })
-                    .Distinct()
-                    .SelectMany(scene => scene.GetRootGameObjects())
-                    .Where((go, i) => go != transform.root.gameObject);
-
-            foreach (GameObject rootGameObject in rootGameObjects)
-            {
-                Destroy(rootGameObject);
-            }
-        }
-
-        // Create Report
-        UnityUserReporting.CurrentClient.CreateUserReport((br) =>
-        {
-            // Ensure Project Identifier
-            if (string.IsNullOrEmpty(br.ProjectIdentifier))
-            {
-                Debug.LogWarning("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
-            }
-
-            // Attachments
-            if (!String.IsNullOrEmpty(_exceptionStacktrace))
-            {
-                br.Attachments.Add(
-                    new UserReportAttachment(
-                        "Exception",
-                        "Exception.txt",
-                        "text/plain",
-                        global::System.Text.Encoding.UTF8.GetBytes(_exceptionStacktrace)
-                        ));
-            }
-
-            try
-            {
-                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
-                IDataManager dataManager = GameClient.Get<IDataManager>();
-                if (backendFacade.ContractCallProxy is TimeMetricsContractCallProxy callProxy)
-                {
-                    string callMetricsJson = dataManager.SerializeToJson(callProxy.MethodToCallRoundabouts, true);
-                    br.Attachments.Add(
-                        new UserReportAttachment(
-                            TimeMetricsContractCallProxy.CallMetricsFileName,
-                            TimeMetricsContractCallProxy.CallMetricsFileName,
-                            "application/json",
-                            global::System.Text.Encoding.UTF8.GetBytes(callMetricsJson)
-                        ));
-                }
-            }
-            catch (Exception e)
-            {
-                UnityUserReporting.CurrentClient.LogException(e);
-                Debug.LogWarning("Error while getting call metrics:" + e);
-            }
-
-            br.DeviceMetadata.Add(new UserReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
-            br.DeviceMetadata.Add(new UserReportNamedValue("Min FPS", _afpsCounter.fpsCounter.LastMinimumValue.ToString()));
-            br.DeviceMetadata.Add(new UserReportNamedValue("Max FPS", _afpsCounter.fpsCounter.LastMaximumValue.ToString()));
-            br.DeviceMetadata.Add(new UserReportNamedValue("Average FPS", _afpsCounter.fpsCounter.LastAverageValue.ToString()));
-
-            // Dimensions
-            string platform = "Unknown";
-            string version = BuildMetaInfo.Instance.DisplayVersionName;
-            foreach (UserReportNamedValue deviceMetadata in br.DeviceMetadata)
-            {
-                if (deviceMetadata.Name == "Platform")
-                {
-                    platform = deviceMetadata.Value;
-                }
-            }
-
-            br.Dimensions.Add(new UserReportNamedValue("Platform.Version", string.Format("{0}.{1}", platform, version)));
-
-            br.Dimensions.Add(new UserReportNamedValue("IsCrashReport", isCrashReport.ToString()));
-
-            br.Dimensions.Add(new UserReportNamedValue("GitBranch", BuildMetaInfo.Instance.GitBranchName));
-
-            // Set Current Report
-            this.CurrentUserReport = br;
-
-            // Set Creating Flag
-            this.isCreatingUserReport = false;
-
-            // Set Thumbnail
-            this.SetThumbnail(br);
-
-            // Submit Immediately in Silent Mode
-            if (this.IsInSilentMode)
-            {
-                this.SubmitUserReport();
-            }
-        });
-    }
-
-    /// <summary>
     /// Gets a value indicating whether the user report is submitting.
     /// </summary>
     /// <returns>A value indicating whether the user report is submitting.</returns>
@@ -390,10 +246,11 @@ public class UserReportingScript : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         DontDestroyOnLoad(transform.root.gameObject);
 
 #if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
-            Application.logMessageReceived += OnLogMessageReceived;
+        Application.logMessageReceived += OnLogMessageReceived;
 #endif
     }
 
@@ -402,44 +259,25 @@ public class UserReportingScript : MonoBehaviour
         if (type != LogType.Exception || _isCrashing)
             return;
 
-        _isCrashing = true;
-        _exceptionStacktrace = stacktrace;
-        StartCoroutine(DelayedCreateBugReport(true));
+        CreateUserReport(false, true, condition, stacktrace);
     }
 
-    public IEnumerator DelayedCreateBugReport(bool isCrashReport)
+    public void CreateUserReport(bool isSilent, bool isCrashing, string exceptionCondition, string exceptionStacktrace)
     {
-        yield return new WaitForEndOfFrame();
-        CreateUserReport(isCrashReport);
+        IsSilent = isSilent;
+        _isCrashing = isCrashing;
+        _exceptionStacktrace = exceptionStacktrace;
+        _exceptionCondition = exceptionCondition;
+        Debug.Log($"Starting submitting report, isSilent: {isSilent}, isCrashing: {isCrashing}");
+        StartCoroutine(DelayedCreateBugReport());
     }
 
-    private void Start()
+    public void CreateUserReport()
     {
-        // Set Up Event System
-        if (Application.isPlaying)
-        {
-            EventSystem sceneEventSystem = UnityEngine.Object.FindObjectOfType<EventSystem>();
-            if (sceneEventSystem == null)
-            {
-                GameObject eventSystem = new GameObject("EventSystem");
-                eventSystem.AddComponent<EventSystem>();
-                eventSystem.AddComponent<StandaloneInputModule>();
-            }
-        }
-
-        // Configure Client
-        // This where you would want to change endpoints, override your project identifier, or provide configuration for events, metrics, and screenshots.
-        if (UnityUserReporting.CurrentClient == null)
-        {
-            UnityUserReporting.Configure();
-        }
-
-        _afpsCounter = FindObjectOfType<AFPSCounter>();
-        if (_afpsCounter == null)
-            throw new Exception("AFPSCounter instance not found in scene");
+        CreateUserReport(false, false, "", "");
     }
 
-    /// <summary>
+        /// <summary>
     /// Submits the user report.
     /// </summary>
     public void SubmitUserReport()
@@ -489,7 +327,7 @@ public class UserReportingScript : MonoBehaviour
         {
             if (this.ProgressText != null)
             {
-                string progressText = string.Format("{0:P}", uploadProgress);
+                string progressText = uploadProgress.ToString("0%");
                 this.ProgressText.text = progressText;
             }
         }, (success, br2) =>
@@ -512,17 +350,188 @@ public class UserReportingScript : MonoBehaviour
         });
     }
 
+    private IEnumerator DelayedCreateBugReport()
+    {
+        yield return new WaitForEndOfFrame();
+        CreateUserReportInternal();
+    }
+
+    private void Start()
+    {
+        // Set Up Event System
+        if (Application.isPlaying)
+        {
+            EventSystem sceneEventSystem = UnityEngine.Object.FindObjectOfType<EventSystem>();
+            if (sceneEventSystem == null)
+            {
+                GameObject eventSystem = new GameObject("EventSystem");
+                eventSystem.AddComponent<EventSystem>();
+                eventSystem.AddComponent<StandaloneInputModule>();
+            }
+        }
+
+        // Configure Client
+        // This where you would want to change endpoints, override your project identifier, or provide configuration for events, metrics, and screenshots.
+        if (UnityUserReporting.CurrentClient == null)
+        {
+            UnityUserReporting.Configure();
+        }
+
+        _afpsCounter = FindObjectOfType<AFPSCounter>();
+        if (_afpsCounter == null)
+            throw new Exception("AFPSCounter instance not found in scene");
+    }
+
+        /// <summary>
+    /// Creates a user report.
+    /// </summary>
+    private void CreateUserReportInternal()
+    {
+        // Check Creating Flag
+        if (this.isCreatingUserReport)
+        {
+            return;
+        }
+
+        // Hide FPS counter
+        if (_afpsCounter != null)
+        {
+            _afpsCounter.OperationMode = OperationMode.Background;
+        }
+
+        BugReportFormCancelButton.gameObject.SetActive(!_isCrashing);
+        BugReportFormExitButton.gameObject.SetActive(_isCrashing);
+        BugReportFormCrashText.gameObject.SetActive(_isCrashing);
+        CrashBackupObjectsRoot.SetActive(_isCrashing);
+
+        // Set Creating Flag
+        this.isCreatingUserReport = true;
+
+        // Take Main Screenshot
+        UnityUserReporting.CurrentClient.TakeScreenshot(1280, 1280, s => { });
+
+        // Take Thumbnail Screenshot
+        UnityUserReporting.CurrentClient.TakeScreenshot(256, 256, s => { });
+
+        // Attempt to get match id
+        long? matchId = null;
+        if (GameClient.Get<IMatchManager>()?.MatchType == Enumerators.MatchType.PVP)
+        {
+            matchId = GameClient.Get<IPvPManager>()?.MatchMetadata?.Id;
+        }
+
+        // Kill everything else to make sure no more exceptions are being thrown
+        if (_isCrashing)
+        {
+            Scene[] scenes = new Scene[SceneManager.sceneCount];
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
+            {
+                scenes[i] = SceneManager.GetSceneAt(i);
+            }
+
+            IEnumerable<GameObject> rootGameObjects =
+                scenes
+                    .Concat(new[]
+                    {
+                        gameObject.scene
+                    })
+                    .Distinct()
+                    .SelectMany(scene => scene.GetRootGameObjects())
+                    .Where((go, i) => go != transform.root.gameObject);
+
+            foreach (GameObject rootGameObject in rootGameObjects)
+            {
+                Destroy(rootGameObject);
+            }
+        }
+
+        // Create Report
+        UnityUserReporting.CurrentClient.CreateUserReport((br) =>
+        {
+            // Ensure Project Identifier
+            if (string.IsNullOrEmpty(br.ProjectIdentifier))
+            {
+                Debug.LogWarning("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
+            }
+
+            // Attachments
+            if (!String.IsNullOrEmpty(_exceptionStacktrace))
+            {
+                AddTextAttachment(br, "Exception", _exceptionStacktrace);
+            }
+
+            // Fields
+            if (matchId != null)
+            {
+                br.Fields.Add(new UserReportNamedValue("Online Match Id", matchId.Value.ToString()));
+            }
+
+            try
+            {
+                BackendFacade backendFacade = GameClient.Get<BackendFacade>();
+                IDataManager dataManager = GameClient.Get<IDataManager>();
+                if (backendFacade.ContractCallProxy is TimeMetricsContractCallProxy callProxy)
+                {
+                    string callMetricsJson = dataManager.SerializeToJson(callProxy.MethodToCallRoundabouts, true);
+                    br.Attachments.Add(
+                        new UserReportAttachment(
+                            TimeMetricsContractCallProxy.CallMetricsFileName,
+                            TimeMetricsContractCallProxy.CallMetricsFileName,
+                            "application/json",
+                            global::System.Text.Encoding.UTF8.GetBytes(callMetricsJson)
+                        ));
+                }
+            }
+            catch (Exception e)
+            {
+                UnityUserReporting.CurrentClient.LogException(e);
+                Debug.LogWarning("Error while getting call metrics:" + e);
+            }
+
+            br.DeviceMetadata.Add(new UserReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
+            br.DeviceMetadata.Add(new UserReportNamedValue("Min FPS", _afpsCounter.fpsCounter.LastMinimumValue.ToString()));
+            br.DeviceMetadata.Add(new UserReportNamedValue("Max FPS", _afpsCounter.fpsCounter.LastMaximumValue.ToString()));
+            br.DeviceMetadata.Add(new UserReportNamedValue("Average FPS", _afpsCounter.fpsCounter.LastAverageValue.ToString()));
+
+            // Dimensions
+            string platform = "Unknown";
+            string version = BuildMetaInfo.Instance.DisplayVersionName;
+            foreach (UserReportNamedValue deviceMetadata in br.DeviceMetadata)
+            {
+                if (deviceMetadata.Name == "Platform")
+                {
+                    platform = deviceMetadata.Value;
+                }
+            }
+
+            br.Dimensions.Add(new UserReportNamedValue("Platform.Version", string.Format("{0}.{1}", platform, version)));
+
+            br.Dimensions.Add(new UserReportNamedValue("IsCrashReport", _isCrashing.ToString()));
+
+            br.Dimensions.Add(new UserReportNamedValue("GitBranch", BuildMetaInfo.Instance.GitBranchName));
+
+            // Set Current Report
+            this.CurrentUserReport = br;
+
+            // Set Creating Flag
+            this.isCreatingUserReport = false;
+
+            // Set Thumbnail
+            this.SetThumbnail(br);
+
+            // Submit Immediately in Silent Mode
+            if (this.IsSilent)
+            {
+                this.SubmitUserReport();
+            }
+        });
+    }
+
     private void Update()
     {
         // Update Client
         UnityUserReporting.CurrentClient.IsSelfReporting = this.IsSelfReporting;
         UnityUserReporting.CurrentClient.SendEventsToAnalytics = this.SendEventsToAnalytics;
-
-        // Update UI
-        if (this.HiddenUI != null)
-        {
-            HiddenUI.gameObject.SetActive(_afpsCounter.OperationMode == OperationMode.Normal);
-        }
 
         if (this.UserReportForm != null)
         {
@@ -561,4 +570,17 @@ public class UserReportingScript : MonoBehaviour
     }
 
     #endregion
+
+    private void AddTextAttachment(UserReport report, string name, string text)
+    {
+        // Convert to Windows encoding for easy viewing
+        text = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
+        report.Attachments.Add(
+            new UserReportAttachment(
+                name,
+                name + ".txt",
+                "text/plain",
+                System.Text.Encoding.UTF8.GetBytes(text)
+            ));
+    }
 }

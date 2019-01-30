@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string BattlegroundTouchZone = "BattlegroundTouchZona";
 
+        internal const string PlayerManaBar = "PlayerManaBar";
+
         internal const string ContentFolderName = "SpreadsheetsData/";
 
         internal const string CardSoundPlay = "P";
@@ -76,15 +78,23 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
+#if USE_REBALANCE_BACKEND
+        internal const int DefaultPlayerHp = 50;
+#else
         internal const int DefaultPlayerHp = 20;
+#endif
 
         internal const int DefaultPlayerGoo = 0;
 
         internal const int MaximumPlayerGoo = 10;
 
+        internal const int FirstGameTurnIndex = 1;
+
         internal const int DefaultCardsInHandAtStartGame = 3;
 
         internal const float DelayBetweenGameplayActions = 0.1f;
+
+        internal const float MaxTimeForHovering = 3f;
 
         internal const int DelayBetweenAiActions = 1100;
 
@@ -143,13 +153,26 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;
 
+        internal const float OverlordTalkingPopupDuration = 2f;
+
+        internal const float HandPointerSpeed = 4f;
+
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
+
+        internal static Vector3 LeftPlayerOverlordPositionForChat = new Vector3(-3.95f, -4.65f, 0);
+        internal static Vector3 RightPlayerOverlordPositionForChat = new Vector3(3.95f, -4.65f, 0);
+        internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
+        internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
 
         internal const string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
         internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
         internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
         internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
+
+        public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
+        public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
+        public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
         public const bool MulliganEnabled = false;
 
@@ -158,6 +181,8 @@ namespace Loom.ZombieBattleground.Common
         public const string VaultEmptyErrorCode = "NotFound";
 
         public const bool DevModeEnabled = false;
+
+        public const bool GameStateValidationEnabled = true;
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

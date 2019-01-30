@@ -29,8 +29,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
-
             AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Restore);
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
@@ -140,14 +138,13 @@ namespace Loom.ZombieBattleground
                     _targets.Remove(currentTarget);
                 }
 
-                abilityTargets.Add(new ParametrizedAbilityBoardObject()
-                {
-                    BoardObject = currentTarget,
-                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                abilityTargets.Add(new ParametrizedAbilityBoardObject(
+                    currentTarget,
+                    new ParametrizedAbilityParameters
                     {
                         Defense = defenseValue
                     }
-                });
+                ));
 
                 if (_targets.Count == 0)
                 {

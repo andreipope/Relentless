@@ -51,17 +51,16 @@ namespace Loom.ZombieBattleground
 
             foreach(ReplaceUnitInfo unitinfo in _replaceUnitInfos)
             {
-                targets.Add(new ParametrizedAbilityBoardObject()
-                {
-                    BoardObject = unitinfo.OldUnitView.Model,
-                    Parameters = new ParametrizedAbilityBoardObject.AbilityParameters()
+                targets.Add(new ParametrizedAbilityBoardObject(
+                    unitinfo.OldUnitView.Model,
+                    new ParametrizedAbilityParameters
                     {
                         CardName = unitinfo.NewUnitCardTitle
                     }
-                });
+                ));
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType);
         }
 
         private void GetInfosAboutUnitsOnBoard()
@@ -71,10 +70,10 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _boardUnits.AddRange(GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
+                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.LibraryCard.CardSetType == SetType));
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _boardUnits.AddRange(GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
+                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.LibraryCard.CardSetType == SetType));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -95,9 +94,16 @@ namespace Loom.ZombieBattleground
 
         private void GenerateNewUnitsOnBoard()
         {
+            BoardUnitView unit;
+            ItemPosition itemPosition;
             foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
-                CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, position: unitInfo.Position);
+                itemPosition = new ItemPosition(unitInfo.Position);
+                unit = CardsController.SpawnUnitOnBoard(unitInfo.OwnerPlayer, unitInfo.NewUnitCardTitle, itemPosition);
+                if (unit != null)
+                {
+                    AddUnitToBoardCards(unitInfo.OwnerPlayer, itemPosition, unit);
+                }
             }
         }
 
@@ -110,7 +116,7 @@ namespace Loom.ZombieBattleground
                     unit.Model.OwnerPlayer.BoardCards.Remove(unit);
                     unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model.Card);
 
-                    Object.Destroy(unit.GameObject);
+                    unit.DisposeGameObject();
                 }
             }
             else
@@ -119,9 +125,9 @@ namespace Loom.ZombieBattleground
 	            {
 	                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
 	                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
-	               
-	                Object.Destroy(unitInfo.OldUnitView.GameObject);
-	            }
+
+                    unitInfo.OldUnitView.DisposeGameObject();
+                }
 	        }
         }
 
@@ -178,6 +184,18 @@ namespace Loom.ZombieBattleground
             }
 
             replaceUnitInfo.NewUnitCardTitle = possibleUnits[UnityEngine.Random.Range(0, possibleUnits.Count)].Name;
+        }
+
+        private void AddUnitToBoardCards(Player owner, ItemPosition position, BoardUnitView unit)
+        {
+            if (owner.IsLocalPlayer)
+            {
+                BattlegroundController.PlayerBoardCards.Insert(position, unit);
+            }
+            else
+            {
+                BattlegroundController.OpponentBoardCards.Insert(position, unit);
+            }
         }
 
         public class ReplaceUnitInfo
