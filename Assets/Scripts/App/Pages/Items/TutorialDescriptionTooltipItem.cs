@@ -226,7 +226,10 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
+                        if (_ownerUnit != null)
+                        {
+                            _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
+                        }
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
                         break;
