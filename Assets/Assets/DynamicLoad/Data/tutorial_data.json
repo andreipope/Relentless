@@ -8,7 +8,7 @@
           "Id": 0,
           "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwner": "EnemyOverlord",
-          "Description": "Enemy\n Overlord\n Defense",
+          "Description": "Enemy Overlord Defense",
           "Position": {
             "X": 1.0,
             "Y": 4.1,
@@ -19,7 +19,7 @@
           "Id": 1,
           "TutorialTooltipAlign": "BottomMiddle",
           "TutorialTooltipOwner": "PlayerOverlord",
-          "Description": "Your\n Overlord\n Defense",
+          "Description": "Your Overlord Defense",
           "Position": {
             "X": 1.0,
             "Y": -2.9,
@@ -30,7 +30,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Atk: How much\n damage this zombie\n deals.",
+          "Description": "Def: How much damage this zombie can take.",
           "Position": {
             "X": 1.38,
             "Y": 0.87,
@@ -41,7 +41,7 @@
           "Id": 3,
           "TutorialTooltipAlign": "CenterRight",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Def: How much\n damage this zombie\n can take.",
+          "Description": "Atk: How much damage this zombie deals.",
           "Position": {
             "X": -1.3,
             "Y": 0.87,
@@ -53,7 +53,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerBattleframe",
           "TutorialTooltipOwnerId": 1,
-          "Description": "Defense was lowered\n by the\n counter-attack.",
+          "Description": "Gloop's defense was lowered by the counter-attack.",
           "Position": {
             "X": 1.3,
             "Y": -0.85,
@@ -65,7 +65,7 @@
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Welcome, zombie slayer! \n\n Since you’re new around here, I’ll let you borrow my deck while\n you learn the ropes.",
+            "Description": "Welcome, zombie slayer! \n\n Since you’re new around here, I’ll let you borrow my deck while you learn the ropes.",
             "DescriptionTooltipCloseText": "GOT IT!"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
@@ -73,7 +73,7 @@
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Destroy the enemy\n overlord to win!",
+            "Description": "Destroy the enemy overlord to win!",
             "DescriptionTooltipCloseText": "LET’S BEGIN"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
@@ -125,7 +125,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Two can play\n that game.",
+              "Description": "Two can play that game.",
               "AppearDelay": 2
             }
           ],
@@ -154,7 +154,8 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My minion\n cannot attack\n yet. So I’m done\n for now.."
+              "Description": "My minion cannot attack yet. So I’m done for now.",
+              "Duration": 4.0
             }
           ],
           "HandPointers": [
@@ -181,7 +182,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Not bad for\n a slab of rock"
+              "Description": "Not bad for a slab of rock."
             }
           ],
           "ActionToEndThisStep": "EndTurn"
@@ -193,7 +194,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Lets attack\n that zombie."
+              "Description": "Let's attack that zombie."
             }
           ],
           "HandPointers": [
@@ -228,7 +229,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My boy is tough\n enough to take\n a hit."
+              "Description": "My boy is tough enough to take a hit."
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -263,7 +264,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "I’m done. Let’s\n move on shall\n we?"
+              "Description": "I’m done. Let’s move on, shall we?"
             }
           ],
           "HandPointers": [
@@ -422,12 +423,12 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Two can play that\n game...",
+              "Description": "Two can play that game.",
               "AppearDelay": 2.0
             }
           ],
           "SelectableTargets": [
-            "OPPONENT",
+            "OPPONENT"
           ],
           "ActionToEndThisStep": "OverlordSayPopupHided"
         },
@@ -436,7 +437,7 @@
           "CanInteractWithGameplay": true,
           "ConnectedTurnIndex": 8,
           "SelectableTargets": [
-            "OPPONENT",
+            "OPPONENT"
           ],
           "ActionToEndThisStep": "EnemyOverlordDied"
         },
@@ -446,7 +447,7 @@
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "NOICE! \nYou won your first match!",
+            "Description": "NOICE!\nYou won your first match!",
             "DescriptionTooltipCloseText": "GOT IT!"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
@@ -563,7 +564,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "I can still\n play a card!"
+                "Description": "I can still play a card!"
               }
             }
           ]
@@ -602,7 +603,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Turn that\n zombie into\n ash!"
+                "Description": "Turn that zombie into ash!"
               },
               "ConnectedTutorialActivityAction": "BattleframeAttacked"
             },
@@ -612,7 +613,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Summon more\n minions!"
+                "Description": "Summon more minions!"
               },
               "ConnectedTutorialActivityAction": "PlayerOverlordCardPlayed"
             }
@@ -658,7 +659,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterRight",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "NO, get the\n Overlord!"
+                "Description": "NO, get the Overlord!"
               }
             },
             {
@@ -667,7 +668,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "My minion is\n itching for battle!"
+                "Description": "My minion is itching for battle!"
               }
             }
           ]
@@ -705,7 +706,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterRight",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "An Item. Didn’t\n know you were smart\n enough to play those..."
+                "Description": "An Item. Didn’t know you were smart enough to play those..."
               }
             }
           ]
@@ -728,7 +729,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Drag the Item to\n its target."
+                "Description": "Drag the Item into play." 
               }
             },
             {
@@ -737,7 +738,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "What are you\n waiting for?\n Finish him!"
+                "Description": "What are you waiting for? Finish him!"
               }
             }
           ]
@@ -750,7 +751,7 @@
           "TutorialActivityActionHandlerData": {
             "TutorialTooltipAlign": "CenterLeft",
             "TutorialTooltipOwner": "PlayerOverlord",
-            "Description": "MELT BABY\n MELT!"
+            "Description": "MELT BABY MELT!"
           }
         }
       ],
@@ -767,7 +768,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
           "TutorialTooltipOwnerId": 51,
-          "Description": "Feral zombies can\n attack the turn they\n are played.",
+          "Description": "Feral zombies can attack the turn they are played.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -780,7 +781,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerCardInHand",
           "TutorialTooltipOwnerId": 1,
-          "Description": "This is how much\n goo your card costs.",
+          "Description": "This is how much goo your card costs.",
           "Position": {
             "X": 7.45,
             "Y": -6.0,
@@ -793,7 +794,7 @@
           "Id": 3,
           "TutorialTooltipAlign": "BottomMiddle",
           "TutorialTooltipOwner": "PlayerGooBottles",
-          "Description": "You’ve earned a goo\n bottle.",
+          "Description": "You’ve earned a goo bottle.",
           "Position": {
             "X": -7.05,
             "Y": -5.25,
@@ -805,7 +806,7 @@
         {
           "Id": 4,
           "TutorialTooltipAlign": "BottomMiddle",
-          "Description": "You’ve earned another goo\n bottle, and goo you spent\n before is replenished.",
+          "Description": "You’ve earned another goo bottle, and goo you spent before is replenished.",
           "Position": {
             "X": -6.77,
             "Y": -5.28,
@@ -818,7 +819,7 @@
           "Id": 5,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerBattleframe",
-          "Description": "Entry effects happen\n as you play cards,\n just like Items.",
+          "Description": "Entry effects happen as you play cards, just like Items.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -832,7 +833,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
           "TutorialTooltipOwnerId": 52,
-          "Description": "Heavy zombies need\n to be attacked first.",
+          "Description": "Heavy zombies need to be attacked first.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -844,7 +845,7 @@
           "Id": 7,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerOverlordAbility",
-          "Description": "Overlords have unique\n abilities that can be\n used on cooldown.",
+          "Description": "Overlords have unique abilities that can be used on cooldown.",
           "Position": {
             "X": 3.6,
             "Y": -5.0,
@@ -857,7 +858,7 @@
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Zombies are not all just claws and\n flesh. They have abilities too!",
+            "Description": "Zombies are not all just claws and flesh. They have abilities too!",
             "DescriptionTooltipCloseText": "LET’S BEGIN"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
@@ -877,7 +878,7 @@
             {
               "TutorialTooltipAlign": "CenterRight",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Not if I melt\n you first!"
+              "Description": "Not if I melt you first!"
             }
           ],
           "ActionToEndThisStep": "OverlordSayPopupHided"
@@ -945,7 +946,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "We’re done here\n lets move it on!",
+              "Description": "We’re done here, let's move it on!",
               "AppearDelay": 10.0
             }
           ],
@@ -1101,7 +1102,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My Poison Dart\n will end him."
+              "Description": "My Poison Dart will end him."
             }
           ],
           "HandPointers": [
@@ -1275,7 +1276,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterRight",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Nah, let’s use the Feral"
+                "Description": "Nah, let’s use the Feral."
               }
             },
             {
@@ -1303,7 +1304,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwnerId": 1,
           "TutorialTooltipOwner": "PlayerBattleframe",
-          "Description": "For Toxic, the\n Rank Buff gives\n zombies +1 Atk and\n the Destroy ability.",
+          "Description": "For Toxic, the Rank Buff gives zombies +1 Atk and the Destroy ability.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -1316,7 +1317,7 @@
           "TutorialTooltipAlign": "CenterRight",
           "TutorialTooltipOwnerId": 21,
           "TutorialTooltipOwner": "PlayerBattleframe",
-          "Description": "When higher ranked\n zombies are played,\n they give Rank\n Buffs to lower\n ranking zombies\n from the same\n faction.",
+          "Description": "When higher ranked zombies are played, they give Rank Buffs to lower ranking zombies from the same faction.",
           "Position": {
             "X": -1.15,
             "Y": 0.3,
@@ -1328,7 +1329,7 @@
           "Id": 3,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Zombies damaged by\n zombies with Destroy are\n removed from\n battleground",
+          "Description": "Zombies damaged by zombies with Destroy are removed from the battleground.",
           "Position": {
             "X": 3.75,
             "Y": -1.45,
@@ -1340,19 +1341,19 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "PlayerBattleframe",
           "TutorialTooltipOwnerId": 22,
-          "Description": "Zombies with Blitz can\n attack other zombies\n the turn they are played.",
+          "Description": "Zombies with Blitz can attack other zombies the turn they are played.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
             "Z": 0.0
           }
-        },
+        }
       ],
       "TutorialSteps": [
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "The Rank System at work.",
+            "Description": "Let's look at the Rank System at work.",
             "DescriptionTooltipCloseText": "LET’S BEGIN"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
@@ -1372,7 +1373,7 @@
           "RequiredActivitiesToDoneDuringStep": [
             "EnemyOverlordCardPlayed"
           ],
-          "ActionToEndThisStep": "EndTurn",
+          "ActionToEndThisStep": "EndTurn"
         },
         {
           "ConnectedTurnIndex": 2,
@@ -1434,7 +1435,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "We’ll show them with\nOur big Goo Monster!"
+              "Description": "We’ll show them with our GooZilla!"
             }
           ],
           "ConnectedTurnIndex": 4,
@@ -1619,7 +1620,7 @@
             "EnemyOverlordCardPlayed",
             "BattleframeAttacked",
             "EnemyOverlordCardPlayed"
-          ],
+          ]
         },
         {
           "TurnIndex": 2,
@@ -1634,7 +1635,7 @@
           "RequiredActivitiesToDoneDuringTurn": [
             "PlayerOverlordCardPlayed",
             "PlayerOverlordCardPlayed"
-          ],
+          ]
         },
         {
           "TurnIndex": 3,
@@ -1646,18 +1647,18 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER",
+              "TargetType": "PLAYER"
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "PLAYER",
+              "TargetType": "PLAYER"
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed",
             "BattleframeAttacked",
             "BattleframeAttacked"
-          ],
+          ]
         },
         {
           "TurnIndex": 4,
@@ -1669,11 +1670,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT_CARD",
+              "TargetType": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD",
+              "TargetType": "OPPONENT_CARD"
             }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
@@ -1688,7 +1689,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterLeft",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Best to play Goozilla first. You’ll see"
+                "Description": "Best to play Goozilla first. You’ll see."
               }
             },
             {
@@ -1699,7 +1700,7 @@
                 "TutorialTooltipOwner": "PlayerOverlord",
                 "Description": "That will be suicide."
               }
-            },
+            }
           ]
         },
         {
@@ -1711,7 +1712,7 @@
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "EnemyOverlordCardPlayed"
-          ],
+          ]
         },
         {
           "TurnIndex": 6,
@@ -1723,12 +1724,12 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 22,
-              "TargetType": "OPPONENT_CARD",
+              "TargetType": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 21,
-              "TargetType": "OPPONENT",
-            },
+              "TargetType": "OPPONENT"
+            }
           ],
           "RequiredActivitiesToDoneDuringTurn": [
             "PlayerOverlordCardPlayed",
@@ -1746,7 +1747,7 @@
               }
             }
           ]
-        },
+        }
       ],
       "SpecificBattlegroundInfo": {
         "RankSystemHasEnabled": true,
@@ -1781,7 +1782,7 @@
             {
               "Name": "Zwoop",
               "IsManuallyPlayable": true,
-              "TutorialObjectId": 10,
+              "TutorialObjectId": 10
             }
           ],
           "PrimaryOverlordAbility": "NONE",
@@ -1811,7 +1812,7 @@
             {
               "Name": "Groundy",
               "TutorialObjectId": 54
-            },
+            }
           ],
           "CardsOnBoard": [
           ],
@@ -1833,7 +1834,7 @@
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
           "TutorialTooltipOwnerId": 52,
-          "Description": "Death effect\n happens when the\n zombie is\n destroyed.",
+          "Description": "Death effects are triggered when the zombie is destroyed.",
           "Position": {
             "X": 1.15,
             "Y": 0.3,
@@ -1843,7 +1844,7 @@
         {
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
-          "Description": "Gives you the ability\n to Overflow your goo.",
+          "Description": "Gives you the ability to Overflow your goo.",
           "Position": {
             "X": 1.85,
             "Y": 0.3,
@@ -1960,7 +1961,7 @@
             {
               "TutorialTooltipAlign": "CenterRight",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Let’s play Cherno-bill. But we need to Overflow first. Use Tainted Goo."
+              "Description": "Let’s play Cherno-bill. But we need Overflow first. Use Tainted Goo."
             }
           ],
           "ConnectedActivities": [
@@ -2336,10 +2337,10 @@
           "TutorialActivityActionHandlerData": {
             "TutorialTooltipAlign": "CenterLeft",
             "TutorialTooltipOwner": "PlayerOverlord",
-            "Description": "Use Tainted Goo"
+            "Description": "Use Tainted Goo."
           },
           "HasSpecificConnection": true
-        },
+        }
       ],
       "PlayerOrderScreenShouldAppear": false
     }
@@ -2615,7 +2616,7 @@
           "Id": 0,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Add cards to your\ndeck by dragging\nthem to the top.",
+          "Description": "Add cards to your deck by dragging them to the top.",
           "Position": {
             "X": 1.4,
             "Y": -2.5,
@@ -2627,7 +2628,7 @@
           "Id": 1,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Remove cards from\nyour deck by double\ntapping on them.",
+          "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
             "X": -6.2,
             "Y": 2.6,
@@ -2639,7 +2640,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "You can also add\ncards by double\ntapping them.",
+          "Description": "You can also add cards by double tapping them.",
           "Position": {
             "X": 1.4,
             "Y": -2.5,
@@ -2709,7 +2710,7 @@
           "Id": 1,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Drag cards that you\nwant replaced to\nthe top. Press KEEP\nwhen you're done.",
+          "Description": "Drag cards that you want replaced to the top. Press KEEP when you're done.",
           "Position": {
             "X": 7.6,
             "Y": 1,
@@ -2721,7 +2722,7 @@
           "Id": 2,
           "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwner": "IncorrectButton",
-          "Description": "You still have a\nbattle to win.",
+          "Description": "You still have a battle to win.",
           "Position": {
             "X": 9.5,
             "Y": 1,
@@ -2734,7 +2735,7 @@
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Use everything you've learned\nand make me proud!",
+            "Description": "Use everything you've learned and make me proud!",
             "DescriptionTooltipCloseText": "BATTLE!"
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
@@ -2784,17 +2785,17 @@
             "Button_RightArrow",
             "Image_BaackgroundGeneral",
             "Image_BaackgroundGeneral"
-          ],
+          ]
         },
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Threre's nothing more I can teach\nyou. Congratulations!",
+            "Description": "Threre's nothing more I can teach you. Congratulations!",
             "DescriptionTooltipCloseText": "CONTINUE",
             "AboveUI": true
           },
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-        },
+          "ActionToEndThisStep": "AvatarTooltipClosed"
+        }
       ],
       "SpecificBattlegroundInfo": {
         "RankSystemHasEnabled": true,
