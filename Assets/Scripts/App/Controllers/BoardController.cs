@@ -188,7 +188,7 @@ namespace Loom.ZombieBattleground
                 TweenObject tweenObject = new TweenObject();
                 tweenObject.Tween = tween;
                 tweenObject.IsDone = false;
-                tweenObject.timeout = duration + 0.1f;
+                tweenObject.timeout = duration * 2f;
 
                 Tweens.Add(tweenObject);
             }
