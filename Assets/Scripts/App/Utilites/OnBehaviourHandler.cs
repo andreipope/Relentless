@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
         private void Update()
         {
             if(SelectedGameObject == gameObject)
-               Updating?.Invoke(gameObject);
+               Updating?.Invoke(gameObject); 
         }
 
         private void OnMouseUp()
