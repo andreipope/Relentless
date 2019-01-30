@@ -502,8 +502,24 @@ namespace Loom.ZombieBattleground
                     GameObject.transform.position += Vector3.back * 5f;
                 }
 
-                if(_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
-                    ArrivalAnimationEventHandler();
+                float delay = 0f;
+
+                switch (Model.InitialUnitType)
+                {
+                    case Enumerators.CardType.FERAL:
+                    case Enumerators.CardType.HEAVY:
+                        delay = Model.OwnerPlayer.IsLocalPlayer ? 2.9f : 1.7f;
+                        break;
+                    case Enumerators.CardType.WALKER:
+                    default:
+                        delay = Model.OwnerPlayer.IsLocalPlayer ? 1.3f : 0.3f;
+                        break;
+                }
+
+                if (_uniqueAnimationsController.HasUniqueAnimation(Model.Card) && (!playUniqueAnimation || !firstAppear))
+                {
+                    InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, delay);
+                }
             };
 
             if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
