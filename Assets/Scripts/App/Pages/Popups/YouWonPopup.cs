@@ -165,7 +165,6 @@ namespace Loom.ZombieBattleground
                 if(_tutorialManager.CurrentTutorial.Id == 0)
                 {
                     _message.gameObject.SetActive(false);
-                    EnablePackOpenerPart();
                 }
             }
         }

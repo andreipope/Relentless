@@ -482,6 +482,8 @@ namespace Loom.ZombieBattleground
 
                                    _activeAbility.Ability.SelectedTargetAction (true);
 
+                                   _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, boardObject);
+
                                    _boardController.UpdateWholeBoard(() =>
                                    {
                                        onCompleteCallback?.Invoke(true);
@@ -529,7 +531,6 @@ namespace Loom.ZombieBattleground
                                                    ProceedWithCardToGraveyard(card);
                                                }, 1.5f);
                                            }
-
 
                                            BlockEndTurnButton = false;
 
@@ -596,6 +597,8 @@ namespace Loom.ZombieBattleground
                                    }
 
                                    _activeAbility.Ability.SelectedTargetAction(true);
+
+                                   _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, boardObject);
 
                                    _boardController.UpdateWholeBoard(() =>
                                    {
@@ -995,6 +998,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED:
                     ability = new DamageOverlordOnCountItemsPlayedAbility(cardKind, abilityData);
+                    abilityView = new DamageOverlordOnCountItemsPlayedAbilityView((DamageOverlordOnCountItemsPlayedAbility)ability);
                     break;
                 case Enumerators.AbilityType.DISTRACT:
                     ability = new DistractAbility(cardKind, abilityData);

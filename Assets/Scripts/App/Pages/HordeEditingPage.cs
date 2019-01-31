@@ -49,6 +49,8 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
+        private ITutorialManager _tutorialManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -122,6 +124,7 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -776,7 +779,7 @@ namespace Loom.ZombieBattleground
 
                     if (e is Client.RpcClientException || e is TimeoutException)
                     {
-                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
                     }
                     else
                     {
@@ -810,7 +813,7 @@ namespace Loom.ZombieBattleground
 
                     if (e is Client.RpcClientException || e is TimeoutException)
                     {
-                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e.Message, true);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
                     }
                     else
                     {
@@ -821,6 +824,10 @@ namespace Loom.ZombieBattleground
                         {
                             message = description[description.Length - 1].TrimStart(' ');
                             message = char.ToUpper(message[0]) + message.Substring(1);
+                        }
+                        if (_tutorialManager.IsTutorial)
+                        {
+                            message = Constants.ErrorMessageForConnectionFailed;
                         }
                         OpenAlertDialog("Not able to Edit Deck: \n" + message);
                     }

@@ -105,7 +105,28 @@ namespace Loom.ZombieBattleground
                 if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _checkPlayerTimer = 0f;
-                    await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+
+                    try
+                    {
+                        await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
+                    }
+                    catch (TimeoutException exception)
+                    {
+                        Helpers.ExceptionReporter.LogException(exception);
+                        Debug.LogWarning(" Time out == " + exception);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                    }
+                    catch (Client.RpcClientException exception)
+                    {
+                        Helpers.ExceptionReporter.LogException(exception);
+                        Debug.LogWarning(" RpcException == " + exception);
+                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                    }
+                    catch (Exception exception)
+                    {
+                        Helpers.ExceptionReporter.LogException(exception);
+                        Debug.LogWarning(" other == " + exception);
+                    }
                 }
             }
 
@@ -237,6 +258,18 @@ namespace Loom.ZombieBattleground
             try
             {
                 await func();
+            }
+            catch (TimeoutException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" Time out == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+            }
+            catch (Client.RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
             catch (Exception e)
             {

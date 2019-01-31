@@ -201,12 +201,19 @@ namespace Loom.ZombieBattleground
         {
             Player player = _gameplayManager.CurrentPlayer;
             List<WorkingCard> randomCards = new List<WorkingCard>();
-            for (int i = 0; i < mulliganCards.Count; i++) 
-            {
-                randomCards.Add(player.CardsInDeck[i]);
+
+            int count = 0;
+            while (randomCards.Count < mulliganCards.Count) {
+                if (!player.CardsPreparingToHand.Contains(player.CardsInDeck[count]) && !mulliganCards.Contains(player.CardsInDeck[count]))
+                {
+                    randomCards.Add(player.CardsInDeck[count]);
+                }
+                count++;
             }
+
+            UniquePositionedList<WorkingCard> finalCards = player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
             player.CardsPreparingToHand.Clear();
-            player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
+            player.CardsPreparingToHand.InsertRange(ItemPosition.End, finalCards);
             player.CardsPreparingToHand.InsertRange(ItemPosition.End, randomCards);
 
             EndCardDistribution();
@@ -486,7 +493,7 @@ namespace Loom.ZombieBattleground
 
                     if (_fakeBoardCard != null)
                     {
-                        Object.Destroy(_fakeBoardCard.GameObject);
+                        _fakeBoardCard.DisposeGameObject();
                         _fakeBoardCard = null;
                     }
 
@@ -510,7 +517,7 @@ namespace Loom.ZombieBattleground
                 _indexOfCard = -1;
                 if (_fakeBoardCard != null)
                 {
-                    Object.Destroy(_fakeBoardCard.GameObject);
+                    _fakeBoardCard.DisposeGameObject();
                     _fakeBoardCard = null;
                 }
             }
@@ -617,8 +624,8 @@ namespace Loom.ZombieBattleground
                                                 _battlegroundController.PlayerBoardCards.Remove(boardUnitView);
                                                 player.BoardCards.Remove(boardUnitView);
 
-                                                boardUnitView.Transform.DOKill();
-                                                Object.Destroy(boardUnitView.GameObject);
+
+                                                boardUnitView.DisposeGameObject();
                                                 boardUnitView.Model.Die(true);
 
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
@@ -684,22 +691,6 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                 Constants.CardsMoveSoundVolume);
 
-            int indexOfCard = 0;
-            float newCreatureCardPosition = card.Transform.position.x;
-
-            // set correct position on board depends from card view position
-            for (int i = 0; i < player.BoardCards.Count; i++)
-            {
-                if (newCreatureCardPosition > player.BoardCards[i].Transform.position.x)
-                {
-                    indexOfCard = i + 1;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
             GameObject board = player.IsLocalPlayer ? _playerBoard : _opponentBoard;
 
             BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), board.transform);
@@ -723,7 +714,7 @@ namespace Loom.ZombieBattleground
 
             player.AddCardToBoard(card.WorkingCard, ItemPosition.End);
             player.RemoveCardFromHand(card.WorkingCard);
-            player.BoardCards.Insert(indexOfCard, boardUnitView);
+            player.BoardCards.Insert(ItemPosition.End, boardUnitView);
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -1041,7 +1032,7 @@ namespace Loom.ZombieBattleground
                 unitOwner.BoardCards.Remove(unit);
 
                 unit.Model.Die(true);
-                Object.Destroy(unit.GameObject);
+                unit.DisposeGameObject();
 
                 unitOwner.RemoveCardFromBoard(returningCard);
 

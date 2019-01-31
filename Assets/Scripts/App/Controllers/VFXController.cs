@@ -415,7 +415,10 @@ namespace Loom.ZombieBattleground
             {
                 endOfDestroyAnimationCallback?.Invoke();
 
-                unitView.GameObject = deathAnimation.SelfObject;
+                if (deathAnimation.SelfObject)
+                {
+                    unitView.ForceSetGameObject(deathAnimation.SelfObject);
+                }
             };
             deathAnimation.AnimationEnded += (x) =>
             {

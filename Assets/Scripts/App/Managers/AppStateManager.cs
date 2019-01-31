@@ -223,7 +223,7 @@ namespace Loom.ZombieBattleground
                 if (state != RpcConnectionState.Connected &&
                     state != RpcConnectionState.Connecting)
                 {
-                    HandleNetworkExceptionFlow($"Changed status of conenction to server on: {state}", false, true);
+                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}"), false, true);
                 }
             }, null);
         }
@@ -256,8 +256,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HandleNetworkExceptionFlow(string exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
+        public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
         {
+            Debug.LogWarning("Handled network exception: " + exception);
+
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
                 if (!_backendFacade.IsConnected && !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
@@ -291,7 +293,7 @@ namespace Loom.ZombieBattleground
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupConfirmationReceived;
 
-                _uiManager.DrawPopup<WarningPopup>(exception);
+                _uiManager.DrawPopup<WarningPopup>(exception.Message);
             }
         }
 

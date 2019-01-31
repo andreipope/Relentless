@@ -302,6 +302,7 @@ namespace Loom.ZombieBattleground
         public bool AppearOnce;
         public Enumerators.TutorialObjectLayer TutorialHandLayer;
         public float AppearDelay;
+        public float HandPointerSpeed;
         public int TutorialObjectIdStepOwner;
         public int TargetTutorialObjectId;
         public List<int> AdditionalObjectIdOwners;
@@ -316,6 +317,8 @@ namespace Loom.ZombieBattleground
 
             AdditionalObjectIdOwners = new List<int>();
             AdditionalObjectIdTargets = new List<int>();
+
+            HandPointerSpeed = Constants.HandPointerSpeed;
         }
     }
 

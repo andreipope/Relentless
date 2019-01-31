@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
 
+        private bool _isReturnToTutorial;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -115,6 +117,8 @@ namespace Loom.ZombieBattleground
             //{
             //    _uiManager.DrawPopup<TermsPopup>();
             //}
+
+            _isReturnToTutorial = GameClient.Get<ITutorialManager>().UnfinishedTutorial;
         }
 
         public void Hide()
@@ -133,6 +137,12 @@ namespace Loom.ZombieBattleground
 
         private void PressedLoginHandler() 
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name) || _isReturnToTutorial)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
@@ -153,6 +163,13 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
+            else if (_isReturnToTutorial)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+
+                GameClient.Get<IMatchManager>().FindMatch();
+                return;
+            }
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
@@ -161,7 +178,7 @@ namespace Loom.ZombieBattleground
 
         private void OnClickCollection()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name))
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonArmy.name) || _isReturnToTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
@@ -173,7 +190,7 @@ namespace Loom.ZombieBattleground
 
         private void BuyButtonHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name))
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name) || _isReturnToTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
@@ -185,7 +202,7 @@ namespace Loom.ZombieBattleground
 
         private void CreditsButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonCredits.name))
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonCredits.name) || _isReturnToTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
@@ -197,7 +214,7 @@ namespace Loom.ZombieBattleground
 
         private void OpenButtonHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonOpen.name))
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonOpen.name) || _isReturnToTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
@@ -209,7 +226,7 @@ namespace Loom.ZombieBattleground
 
         private void SettingsButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSettings.name))
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSettings.name) || _isReturnToTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;

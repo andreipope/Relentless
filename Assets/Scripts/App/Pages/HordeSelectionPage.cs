@@ -203,7 +203,7 @@ namespace Loom.ZombieBattleground
                         _dataManager.CachedDecksData.Decks[i],
                         _dataManager.CachedHeroesData.Heroes.Find(x =>
                             x.HeroId == _dataManager.CachedDecksData.Decks[i].HeroId),
-                        i+1);
+                        i + 1);
                 hordeDeck.HordeDeckSelected += HordeDeckSelectedHandler;
 
                 _hordeDecks.Add(hordeDeck);
@@ -246,13 +246,13 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.LogException(exception);
                 Debug.LogWarning(" Time out == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Client.RpcClientException exception)
             {
                 Helpers.ExceptionReporter.LogException(exception);
                 Debug.LogWarning(" RpcException == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception.Message, true);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Exception e)
             {
@@ -328,7 +328,7 @@ namespace Loom.ZombieBattleground
 
             HordeDeckObject deck =
                 _hordeDecks.Find(x => x.SelfDeck.Id == _defaultSelectedDeck);
-
+                
             if (deck != null)
             {
                 HordeDeckSelectedHandler(deck);
@@ -515,7 +515,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        #region Buttons Handlers
+#region Buttons Handlers
 
         private void CollectionButtonOnClickHandler()
         {
@@ -743,7 +743,7 @@ namespace Loom.ZombieBattleground
             _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
         }
 
-        #endregion
+#endregion
 
 
         private void AbilityPopupClosedEvent()

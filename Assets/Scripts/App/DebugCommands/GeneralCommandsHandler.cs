@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler(Description = "Skips tutorial if you inside it")]
-        private static void SkipTutorialFlow()
+        public static void SkipTutorialFlow()
         {
             if (!GameClient.Get<ITutorialManager>().IsTutorial)
                 return;
@@ -50,8 +50,10 @@ namespace Loom.ZombieBattleground
             }
 
             GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
+            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = 0;
             GameClient.Get<ITutorialManager>().StopTutorial();
             GameClient.Get<IGameplayManager>().IsTutorial = false;
+            GameClient.Get<IGameplayManager>().IsSpecificGameplayBattleground = false;
         }
     }
 }
