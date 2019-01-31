@@ -1,4 +1,3 @@
-#define USE_STAGING_BACKEND
 using System;
 using System.IO;
 using Loom.Client;
