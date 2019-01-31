@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -40,5 +41,8 @@ namespace Loom.ZombieBattleground
 
         bool IsButtonBlockedInTutorial(string name);
         bool CheckNextTutorial();
+
+        List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
+        Data.CollectionCardData GetCardData(string id);
     }
 }

@@ -1044,11 +1044,12 @@
                 "Z": 0.0
               },
               "EndPosition": {
-                "X": 1.25,
-                "Y": 3.2,
+                "X": 0.0,
+                "Y": 1.13,
                 "Z": 0.0
               },
               "TutorialObjectIdStepOwner": 2,
+              "TargetTutorialObjectId": 52,
               "TutorialHandPointerType": "Animated"
             }
           ],
@@ -2685,7 +2686,57 @@
           },
           "HasSpecificConnection": true
         }
-      ]
+      ],
+      "SpecificHordeInfo": {
+        "MainSet": "TOXIC",
+        "CardsForArmy":[
+          {
+            "CardName": "Gloop",
+            "Amount": 4
+          },
+          {
+            "CardName": "Rubble",
+            "Amount": 2
+          },
+          {
+            "CardName": "Zky",
+            "Amount": 1
+          },
+          {
+            "CardName": "Harpoon",
+            "Amount": 1
+          },
+          {
+            "CardName": "Zwoop",
+            "Amount": 2
+          },
+          {
+            "CardName": "Bane",
+            "Amount": 1
+          },
+          {
+            "CardName": "GooZilla",
+            "Amount": 1
+          },
+          {
+            "CardName": "Azzazzin",
+            "Amount": 1
+          },
+          {
+            "CardName": "Cherno-bill",
+            "Amount": 1
+          },
+          {
+            "CardName": "Germ",
+            "Amount": 1
+          },
+          {
+            "CardName": "Nail Bomb",
+            "Amount": 1
+          }
+        ]
+      },
+      
     }
   },
   {
@@ -2801,7 +2852,61 @@
         "RankSystemHasEnabled": true,
         "AISpecificOrderEnabled": false,
         "DisabledInitialization": true,
-        "PlayerTurnFirst": true
+        "PlayerTurnFirst": true,
+        "EnableCustomDeckForOpponent": true,
+        "OpponentInfo": {
+          "CardsInDeck": [
+            {
+              "Name": "Duzt",
+            },
+            {
+              "Name": "Duzt",
+            },
+            {
+              "Name": "Duzt",
+            },
+            {
+              "Name": "Rubble",
+            },
+            {
+              "Name": "Rubble",
+            },
+            {
+              "Name": "Harpoon",
+            },
+            {
+              "Name": "Shale",
+            },
+            {
+              "Name": "Hardy",
+            },
+            {
+              "Name": "Hardy",
+            },
+            {
+              "Name": "Groundy",
+            },
+            {
+              "Name": "Crumbz",
+            },
+            {
+              "Name": "Crumbz",
+            },
+            {
+              "Name": "Golem",
+            },
+            {
+              "Name": "Earthshaker",
+            },
+            {
+              "Name": "Spiker",
+            }
+          ],
+          "CardsOnBoard": [
+          ],
+          "PrimaryOverlordAbility": "NONE",
+          "SecondaryOverlordAbility": "NONE"
+        },
       },
       "SpecificTurnInfos": [
       ],
