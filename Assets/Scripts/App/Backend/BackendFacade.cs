@@ -442,9 +442,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
-            Debug.Log(httpResponseMessage.StatusCode.ToString());
-            Debug.Log(httpResponseMessage.StatusCode);
+            Debug.Log(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {

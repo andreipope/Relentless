@@ -28,14 +28,6 @@ namespace Loom.ZombieBattleground
 
 #if USE_PRODUCTION_BACKEND
             UIRoot.gameObject.SetActive(false);
-            BaseRaycaster[] raycasters = FindObjectsOfType<BaseRaycaster>();
-            foreach (BaseRaycaster raycaster in raycasters)
-            {
-                if (AlwaysActiveRaycasters.Contains(raycaster))
-                    continue;
-
-                raycaster.enabled = false;
-            }
             _afpsCounter.OperationMode = OperationMode.Disabled;
 #endif
         }
