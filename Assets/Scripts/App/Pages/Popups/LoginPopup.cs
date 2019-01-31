@@ -527,6 +527,8 @@ namespace Loom.ZombieBattleground
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
 
+                _loginButton.enabled = true;
+
                 if (authyId != 0)
                 {
                     SetUIState(LoginState.PromptOTP);
@@ -534,8 +536,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 _OTPFieldOTP.text = "";
-
-                _loginButton.enabled = true;
 
                 if (isGuest)
                 {
