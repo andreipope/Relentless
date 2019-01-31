@@ -217,6 +217,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            _isDrawing = false;
             if (_selfObject != null)
             {
                 MonoBehaviour.Destroy(_selfObject);

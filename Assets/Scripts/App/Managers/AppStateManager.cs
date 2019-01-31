@@ -212,7 +212,7 @@ namespace Loom.ZombieBattleground
         {
             Debug.LogWarning("Handled network exception: " + exception);
 
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            if (GameClient.Get<ITutorialManager>().IsTutorial || GameClient.Get<IGameplayManager>().IsTutorial)
             {
                 if (!_backendFacade.IsConnected && !GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
                 {
