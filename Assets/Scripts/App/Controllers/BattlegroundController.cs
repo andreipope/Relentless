@@ -417,7 +417,14 @@ namespace Loom.ZombieBattleground
             }
 
             _gameplayManager.CurrentPlayer.InvokeTurnStarted();
+            if (_gameplayManager.CurrentPlayer == null) {
+                return;
+            }
             _gameplayManager.OpponentPlayer.InvokeTurnStarted();
+            if (_gameplayManager.OpponentPlayer == null)
+            {
+                return;
+            }
 
             _playerController.UpdateHandCardsHighlight();
 
