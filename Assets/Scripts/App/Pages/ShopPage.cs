@@ -552,7 +552,7 @@ namespace Loom.ZombieBattleground
             string productId = product.definition.id;
             string transactionId = ParseTransactionIdentifierFromAppStoreReceipt(args);
             string receiptData = ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
-            string storeName = product.definition.storeSpecificId;
+            string storeName = "AppleStore";
             Debug.Log($"productId: {productId}");
             Debug.Log($"transactionId: {transactionId}");
             Debug.Log($"receiptData: {receiptData}");

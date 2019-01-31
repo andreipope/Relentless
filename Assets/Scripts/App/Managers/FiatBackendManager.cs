@@ -114,9 +114,12 @@ namespace Loom.ZombieBattleground
                 {
                     await request.SendWebRequest();
 
-                    if (IsSuccess(request))
-                        break;
-                    Debug.Log("FiatValidation request connection error");
+                    //if (IsSuccess(request))
+                    //break;
+                    //Debug.Log("FiatValidation request connection error");
+                    
+                    Debug.Log($"FiatValidation responseCode: {request.responseCode}");
+                    break;
                 }
                 catch
                 {
