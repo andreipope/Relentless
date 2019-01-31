@@ -2790,7 +2790,7 @@
         {
           "TutorialAvatar": {
             "Pose": "NORMAL",
-            "Description": "Threre's nothing more I can teach you. Congratulations!",
+            "Description": "There's nothing more I can teach you. Congratulations!",
             "DescriptionTooltipCloseText": "CONTINUE",
             "AboveUI": true
           },
