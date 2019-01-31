@@ -111,6 +111,8 @@ public class HandBoardCard : OwnableBoardObject
                         _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToPlayUnsequentionalCard);
                         return;
                     }
+
+                    _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
                 }
             }
 

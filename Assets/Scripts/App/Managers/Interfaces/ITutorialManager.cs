@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         void SetupTutorialById(int id);
 
-        void StopTutorial();
+        void StopTutorial(bool isManual = false);
 
         void ActivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
 

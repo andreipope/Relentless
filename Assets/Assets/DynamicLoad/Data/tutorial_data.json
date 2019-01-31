@@ -1966,6 +1966,23 @@
               "Description": "Let’s play Cherno-bill. But we need Overflow first. Use Tainted Goo."
             }
           ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 7.1,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 4.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 10.0
+            }
+          ],
           "ConnectedActivities": [
             0
           ],

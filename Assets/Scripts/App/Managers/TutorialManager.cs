@@ -322,7 +322,7 @@ namespace Loom.ZombieBattleground
             _activitiesDoneDuringThisTurn.Clear();
         }
 
-        public void StopTutorial()
+        public void StopTutorial(bool isManual = false)
         {
             if (!IsTutorial)
                 return;
@@ -339,7 +339,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
-            if (BattleShouldBeWonBlocker)
+            if (BattleShouldBeWonBlocker && !isManual)
                 return;
 
             ClearToolTips();
