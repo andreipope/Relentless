@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.10";
+        internal const string CurrentVersionBase = "0.1.11";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -182,7 +182,12 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool DevModeEnabled = false;
 
-        public const bool GameStateValidationEnabled = true;
+        public const bool GameStateValidationEnabled =
+#if UNITY_EDITOR
+            true;
+#else
+            false;
+#endif
 
         public const string MatchEmailPattern =
         @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

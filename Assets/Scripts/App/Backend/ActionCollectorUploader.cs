@@ -229,8 +229,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 PlayerAction playerAction = _playerActionFactory.EndTurn();
 
-                // TODO: remove when we are confident about the lack of de-sync
-                playerAction.ControlGameState = GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
+                if (Constants.GameStateValidationEnabled)
+                {
+                    // TODO: remove when we are confident about the lack of de-sync
+                    playerAction.ControlGameState = GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
+                }
+
                 AddAction(playerAction);
             }
 

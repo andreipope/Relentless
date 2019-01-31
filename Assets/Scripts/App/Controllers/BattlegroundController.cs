@@ -417,7 +417,15 @@ namespace Loom.ZombieBattleground
             }
 
             _gameplayManager.CurrentPlayer.InvokeTurnStarted();
+            if (_gameplayManager.CurrentPlayer == null) 
+            {
+                return;
+            }
             _gameplayManager.OpponentPlayer.InvokeTurnStarted();
+            if (_gameplayManager.OpponentPlayer == null)
+            {
+                return;
+            }
 
             _playerController.UpdateHandCardsHighlight();
 
@@ -481,44 +489,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     // Validate game state
-                     if (Constants.GameStateValidationEnabled && pvpControlGameState != null)
-                     {
-                         GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
-                         CompareLogic compareLogic = new CompareLogic();
-                         compareLogic.Config.ShowBreadcrumb = true;
-                         compareLogic.Config.TreatStringEmptyAndNullTheSame = true;
-                         compareLogic.Config.MaxDifferences = 25;
-                         compareLogic.Config.MembersToIgnore.Add("CardsInGraveyard");
-                         compareLogic.Config.MembersToIgnore.Add("CardsInHand");
-                         compareLogic.Config.MembersToIgnore.Add("CardsInDeck");
-                         compareLogic.Config.MembersToIgnore.Add("CurrentGoo");
-                         compareLogic.Config.ActualName = "OpponentState";
-                         compareLogic.Config.ExpectedName = "LocalState";
-                         ComparisonResult comparisonResult = compareLogic.Compare(currentGameState, pvpControlGameState);
-                         if (!comparisonResult.AreEqual)
-                         {
-                             GameStateDesyncException desyncException = new GameStateDesyncException(comparisonResult.DifferencesString);
-                             UserReportingScript.Instance.SummaryInput.text = "PvP De-sync Detected";
-#if USE_PRODUCTION_BACKEND
-                             Debug.LogError(desyncException);
-
-                             if (!_gameplayManager.IsDesyncDetected)
-                             {
-                                 _gameplayManager.IsDesyncDetected = true;
-                                 UserReportingScript.Instance.CreateUserReport(
-                                     true,
-                                     false,
-                                     desyncException.GetType().ToString(),
-                                     desyncException.ToString()
-                                 );
-                             }
-#else
-                             throw desyncException;
-#endif
-                         }
-                     }
-
+                     ValidateGameState(pvpControlGameState);
                      EndTurn();
 
                      if (_gameplayManager.IsLocalPlayerTurn())
@@ -1175,15 +1146,64 @@ namespace Loom.ZombieBattleground
             return boardCard;
         }
 
+        private static void ValidateGameState(GameState pvpControlGameState)
+        {
+            if (!Constants.GameStateValidationEnabled || pvpControlGameState == null)
+                return;
+
+            GameState currentGameState = GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
+            CompareLogic compareLogic = new CompareLogic();
+            compareLogic.Config.ShowBreadcrumb = true;
+            compareLogic.Config.TreatStringEmptyAndNullTheSame = true;
+            compareLogic.Config.MaxDifferences = 25;
+            compareLogic.Config.MembersToIgnore.Add("CardsInGraveyard");
+            compareLogic.Config.MembersToIgnore.Add("CardsInHand");
+            compareLogic.Config.MembersToIgnore.Add("CardsInDeck");
+            compareLogic.Config.MembersToIgnore.Add("CurrentGoo");
+            compareLogic.Config.MembersToIgnore.Add("GooVials");
+            compareLogic.Config.ActualName = "OpponentState";
+            compareLogic.Config.ExpectedName = "LocalState";
+            ComparisonResult comparisonResult = compareLogic.Compare(currentGameState, pvpControlGameState);
+            if (!comparisonResult.AreEqual)
+            {
+                GameStateDesyncException desyncException = new GameStateDesyncException(comparisonResult.DifferencesString);
+                UserReportingScript.Instance.SummaryInput.text = "PvP De-sync Detected";
+#if USE_PRODUCTION_BACKEND
+                    Debug.LogError(desyncException);
+
+                    if (!GameClient.Get<IGameplayManager>().IsDesyncDetected)
+                    {
+                        GameClient.Get<IGameplayManager>().IsDesyncDetected = true;
+                        UserReportingScript.Instance.CreateUserReport(
+                            true,
+                            false,
+                            desyncException.GetType().ToString(),
+                            desyncException.ToString()
+                        );
+                    }
+#elif UNITY_EDITOR
+                Debug.LogException(desyncException);
+#else
+                throw desyncException;
+#endif
+            }
+        }
+
         #region specific setup of battleground
 
         public void SetupBattlegroundAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
         {
             SetupOverlordsAsSpecific(specificBattlegroundInfo);
             SetupOverlordsHandsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInHand, specificBattlegroundInfo.OpponentInfo.CardsInHand);
-            SetupOverlordsDecksAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInDeck, specificBattlegroundInfo.OpponentInfo.CardsInDeck);
+            SetupOverlordsDeckByPlayerAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInDeck, _gameplayManager.CurrentPlayer);
+            SetupOverlordsDeckByPlayerAsSpecific(specificBattlegroundInfo.OpponentInfo.CardsInDeck, _gameplayManager.OpponentPlayer);
             SetupOverlordsBoardUnitsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsOnBoard, specificBattlegroundInfo.OpponentInfo.CardsOnBoard);
             SetupGeneralUIAsSpecific(specificBattlegroundInfo);
+        }
+
+        public void SetOpponentDeckAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            SetupOverlordsDeckByPlayerAsSpecific(specificBattlegroundInfo.OpponentInfo.CardsInDeck, _gameplayManager.OpponentPlayer);
         }
 
         private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
@@ -1216,33 +1236,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetupOverlordsDecksAsSpecific(List<SpecificBattlegroundInfo.OverlordCardInfo> playerCards,
-                                                   List<SpecificBattlegroundInfo.OverlordCardInfo> opponentCards)
+        private void SetupOverlordsDeckByPlayerAsSpecific(List<SpecificBattlegroundInfo.OverlordCardInfo> cards, Player player)
         {
             List<WorkingCard> workingPlayerCards =
-                playerCards
+                cards
                     .Select(cardInfo =>
                     {
                         Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
-                        WorkingCard workingCard = new WorkingCard(card, card, _gameplayManager.CurrentPlayer);
+                        WorkingCard workingCard = new WorkingCard(card, card, player);
                         workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
                         return workingCard;
                     })
                     .ToList();
 
-            List<WorkingCard> workingOpponentCards =
-                opponentCards
-                    .Select(cardInfo =>
-                    {
-                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
-                        WorkingCard workingCard = new WorkingCard(card, card, _gameplayManager.OpponentPlayer);
-                        workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
-                        return workingCard;
-                    })
-                    .ToList();
-
-            _gameplayManager.CurrentPlayer.SetDeck(workingPlayerCards, false);
-            _gameplayManager.OpponentPlayer.SetDeck(workingOpponentCards, true);
+           player.SetDeck(workingPlayerCards, false);
         }
 
         private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)
