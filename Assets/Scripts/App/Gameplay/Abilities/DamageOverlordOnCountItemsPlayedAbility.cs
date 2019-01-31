@@ -8,6 +8,8 @@ namespace Loom.ZombieBattleground
     {
         private int _damage;
 
+        private Player _targetPlayer;
+
         public DamageOverlordOnCountItemsPlayedAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -17,22 +19,40 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
-
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             Action();
         }
 
-
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
+            if (PredefinedTargets != null)
             {
-                InvokeActionTriggered(GetOpponentOverlord());
+                foreach (ParametrizedAbilityBoardObject target in PredefinedTargets)
+                {
+                    if (target.BoardObject is Player player)
+                    {
+                        _damage = target.Parameters.Attack;
+                        _targetPlayer = player;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
+                {
+                    _targetPlayer = GetOpponentOverlord();
+                    _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.SPELL).Count; 
+                }
+            }
+
+            if (_targetPlayer != null)
+            {
+                InvokeActionTriggered(_targetPlayer);
             }
         }
 
@@ -40,19 +60,20 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.SPELL).Count;
-
-            if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
-            {
-                DamageTarget(GetOpponentOverlord());
-            }
+            DamageTarget(_targetPlayer);
         }
 
         private void DamageTarget(Player player)
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+            BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
 
-            BattleController.AttackPlayerByAbility(caller, AbilityData, player, _damage);
+            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<ParametrizedAbilityBoardObject>()
+            {
+                new ParametrizedAbilityBoardObject(player, new ParametrizedAbilityParameters()
+                    {
+                        Attack = _damage
+                    })
+            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
