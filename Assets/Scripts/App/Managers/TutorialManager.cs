@@ -445,7 +445,7 @@ namespace Loom.ZombieBattleground
 
         public void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "")
         {
-            if (!IsTutorial)
+            if (!IsTutorial && Constants.UsingCardTooltips)
             {
                 HandleNonTutorialActions(activityAction, sender, tag);
             }
