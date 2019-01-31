@@ -25,10 +25,16 @@ namespace Loom.ZombieBattleground
             _afpsCounter = FindObjectOfType<AFPSCounter>();
             if (_afpsCounter == null)
                 throw new Exception("AFPSCounter instance not found in scene");
+
+#if USE_PRODUCTION_BACKEND
+            UIRoot.gameObject.SetActive(false);
+            _afpsCounter.OperationMode = OperationMode.Disabled;
+#endif
         }
 
         void Update()
         {
+#if !USE_PRODUCTION_BACKEND
             if (_isVisible != ShouldBeVisible)
             {
                 BaseRaycaster[] raycasters = FindObjectsOfType<BaseRaycaster>();
@@ -54,9 +60,10 @@ namespace Loom.ZombieBattleground
 
                 _isVisible = ShouldBeVisible;
             }
+#endif
         }
 
-        #region UI Handlers
+#region UI Handlers
 
         public void SubmitBugReport()
         {
@@ -74,6 +81,6 @@ namespace Loom.ZombieBattleground
             GeneralCommandsHandler.SkipTutorialFlow();
         }
 
-        #endregion
+#endregion
     }
 }

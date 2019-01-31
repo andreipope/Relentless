@@ -442,9 +442,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
-            Debug.Log(httpResponseMessage.StatusCode.ToString());
-            Debug.Log(httpResponseMessage.StatusCode);
+            Debug.Log(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -495,7 +493,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             const string queryURLsEndPoint = "/zbversion";
 
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = "http://stage-auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=staging";
+            webrequestCreationInfo.Url = "http://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
 
             Debug.Log(webrequestCreationInfo.Url);
 
