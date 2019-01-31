@@ -404,6 +404,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<CreateVaultTokenData> CreateVaultTokenForNon2FAUsers(string accessToken)
         {
+            await GetVaultData("7acc5d5f-b1c4-5ab3-aab8-c2eafaf3c1e9");
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = BackendEndpoint.VaultHost + createVaultTokenForNon2FAUsersEndPoint;
