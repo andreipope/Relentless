@@ -359,7 +359,7 @@ namespace Loom.ZombieBattleground
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
                         }
 
-                        ProcessCardsInCollectionValidation();
+                        await ProcessCardsInCollectionValidation();
                     }
                     catch (Exception)
                     {
@@ -379,7 +379,7 @@ namespace Loom.ZombieBattleground
                                     new List<Deck>()
                             );
 
-                        ProcessCardsInDeckValidation();
+                       await ProcessCardsInDeckValidation();
                     }
                     catch (Exception e)
                     {
@@ -416,7 +416,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void ProcessCardsInDeckValidation()
+        private async Task ProcessCardsInDeckValidation()
         {
             bool hasChanges;
             Card foundCard;
@@ -443,7 +443,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ProcessCardsInCollectionValidation()
+        private async Task ProcessCardsInCollectionValidation()
         {
             Card foundCard;
             for (int i = 0; i < CachedCollectionData.Cards.Count; i++)
@@ -457,7 +457,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
+            await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void LoadLocalCachedData()
