@@ -789,6 +789,12 @@ namespace Loom.ZombieBattleground
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
                     _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+
+                    if(_tutorialManager.IsTutorial)
+                    {
+                        _dataManager.CachedUserLocalData.TutorialSavedDeck = _currentDeck;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    }
                 }
                 catch (Exception e)
                 {
