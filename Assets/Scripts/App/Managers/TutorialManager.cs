@@ -235,6 +235,10 @@ namespace Loom.ZombieBattleground
                 {
                     _battlegroundController.SetupBattlegroundAsSpecific(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo);
                 }
+                else if(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.EnableCustomDeckForOpponent)
+                {
+                    _battlegroundController.SetOpponentDeckAsSpecific(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo);
+                }
 
                 _battlegroundController.TurnStarted += TurnStartedHandler;
 
@@ -441,7 +445,7 @@ namespace Loom.ZombieBattleground
 
         public void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "")
         {
-            if (!IsTutorial)
+            if (!IsTutorial && Constants.UsingCardTooltips)
             {
                 HandleNonTutorialActions(activityAction, sender, tag);
             }
@@ -1207,6 +1211,32 @@ namespace Loom.ZombieBattleground
                     }
                     break;
             }
+        }
+
+        public List<Card> GetSpecificCardsBySet(Enumerators.SetType setType)
+        {
+            List<Card> cards = null;
+            if(CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
+            {
+                cards = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                    .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.CardName))
+                    .ToList()
+                    .FindAll(card => card.CardSetType == setType)
+                    .OrderBy(sort => sort.Cost)
+                    .ToList();
+            }
+            return cards;
+        }
+
+        public CollectionCardData GetCardData(string id)
+        {
+            CollectionCardData cardData = null;
+            if (CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
+            {
+                cardData = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                    .Find(info => info.CardName == id);
+            }
+            return cardData;
         }
     }
 }

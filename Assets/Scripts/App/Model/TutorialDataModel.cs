@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
     {
         public bool HasBlockedInteractivityInGameScreens;
 
+        public SpecificHordeInfo SpecificHordeInfo;
+
         public TutorialMenusContent() : base()
         {
         }
@@ -148,6 +150,8 @@ namespace Loom.ZombieBattleground
         public bool AISpecificOrderEnabled;
 
         public bool DisabledInitialization;
+
+        public bool EnableCustomDeckForOpponent;
 
         public SpecificBattlegroundOverlordInfo PlayerInfo;
         public SpecificBattlegroundOverlordInfo OpponentInfo;
@@ -336,6 +340,17 @@ namespace Loom.ZombieBattleground
             UseBattleframesSequence = new List<UseBattleframeActionInfo>();
             RequiredActivitiesToDoneDuringTurn = new List<Enumerators.TutorialActivityAction>();
             ActionActivityHandlers = new List<ActionActivityHandler>();
+        }
+    }
+
+    public class SpecificHordeInfo
+    {
+        public Enumerators.SetType MainSet;
+        public List<Data.CollectionCardData> CardsForArmy;
+
+        public SpecificHordeInfo()
+        {
+            CardsForArmy = new List<Data.CollectionCardData>();
         }
     }
 

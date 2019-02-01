@@ -1,7 +1,7 @@
 [
   {
     "Id": 0,
-    "Description": "tooltip description",
+    "Description": "Entry abilities activate as the card is played.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -15,7 +15,7 @@
   },
   {
     "Id": 1,
-    "Description": "tooltip description",
+    "Description": "Turn abilities activate at the start of every turn.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -29,7 +29,7 @@
   },
   {
     "Id": 2,
-    "Description": "tooltip description",
+    "Description": "End abilities activate at the end of every turn.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -43,7 +43,7 @@
   },
   {
     "Id": 3,
-    "Description": "tooltip description",
+    "Description": "Attack abilities activate as the zombie fights.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -57,7 +57,7 @@
   },
   {
     "Id": 4,
-    "Description": "tooltip description",
+    "Description": "Death abilities trigger when the zombie's Def is 0",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -71,7 +71,7 @@
   },
   {
     "Id": 5,
-    "Description": "tooltip description",
+    "Description": "Delayed abilities activate after a certain number of turns",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -85,7 +85,7 @@
   },
   {
     "Id": 6,
-    "Description": "tooltip description",
+    "Description": "A frozen zombie cannot attack the next turn.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -99,7 +99,7 @@
   },
   {
     "Id": 7,
-    "Description": "tooltip description",
+    "Description": "Reanimated zombies reappear after one death.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -113,7 +113,7 @@
   },
   {
     "Id": 8,
-    "Description": "tooltip description",
+    "Description": "Heavy zombies must be attacked first.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -127,7 +127,7 @@
   },
   {
     "Id": 9,
-    "Description": "tooltip description",
+    "Description": "Feral zombies can attack the turn they are played.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -150,7 +150,7 @@
       "Y": 0.15
     },
     "AppearOnce": true,
-    "IsEnabled": true,
+    "IsEnabled": false,
     "Tag": "Devour"
   },
   {
@@ -164,7 +164,7 @@
       "Y": 0.15
     },
     "AppearOnce": true,
-    "IsEnabled": true,
+    "IsEnabled": false,
     "Tag": "OverflowX"
   },
   {
@@ -178,12 +178,12 @@
       "Y": 0.15
     },
     "AppearOnce": true,
-    "IsEnabled": true,
+    "IsEnabled": false,
     "Tag": "Blitz"
   },
   {
     "Id": 13,
-    "Description": "tooltip description",
+    "Description": "The Destroy effect is a single-hit kill.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -197,7 +197,7 @@
   },
   {
     "Id": 14,
-    "Description": "tooltip description",
+    "Description": "Rage increases Attack when the zombie first takes damage.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -211,7 +211,7 @@
   },
   {
     "Id": 15,
-    "Description": "tooltip description",
+    "Description": "Flash allows the zombie to attack twice.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
@@ -225,7 +225,7 @@
   },
   {
     "Id": 16,
-    "Description": "tooltip description",
+    "Description": "Guard protects the zombie from damage or Destroy once.",
     "ActivityAction": "CardWithAbilityPlayed",
     "Owner": "Battleframe",
     "Align": "CenterLeft",
