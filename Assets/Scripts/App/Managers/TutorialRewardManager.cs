@@ -40,11 +40,13 @@ namespace Loom.ZombieBattleground
         
         private BackendDataControlMediator _backendDataControlMediator;
         private ILoadObjectsManager _loadObjectsManager;
+        private IUIManager _uiManager;
         private BackendFacade _backendFacade;
     
         public void Init()
         {           
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
+            _uiManager = GameClient.Get<IUIManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade = GameClient.Get<BackendFacade>();
             
@@ -59,44 +61,55 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        public async Task<RewardTutorialCompletedResponse> CallRewardTutorialComplete()
-        { 
-            int count = 0;
-            while (true)
+        public async Task CallRewardTutorialFlow()
+        {
+            _uiManager.DrawPopup<LoadingFiatPopup>("CallRewardTutorialComplete...");
+            TutorialRewardManager tutorialRewardManager = GameClient.Get<TutorialRewardManager>();
+
+            RewardTutorialCompletedResponse response = null;
+            try
+            {
+                response = await tutorialRewardManager.CallRewardTutorialComplete();
+            }catch
+            {
+                Debug.Log("CallRewardTutorialComplete failed");
+            }
+            if (response != null)
             {
                 try
                 {
-                    RewardTutorialCompletedResponse response = await _backendFacade.GetRewardTutorialCompletedResponse
-                    (
-                        _backendDataControlMediator.UserDataModel.AccessToken
-                    );
-                    Debug.Log($"RewardTutorialCompletedResponse");
-                    
-                    Debug.Log($"Hash: {response.Hash}");
-                    Debug.Log($"R: {response.R}");
-                    Debug.Log($"S: {response.S}");
-                    Debug.Log($"V: {response.V}");
-                    Debug.Log($"RewardType: {response.RewardType}");   
-                    Debug.Log($"UserId: {BigUIntToInt(response.UserId)}");
-                    Debug.Log($"Amount: {BigUIntToSByte(response.Amount)}");                    
-                    
-                    return response;
+                    _uiManager.HidePopup<LoadingFiatPopup>();
+                    _uiManager.DrawPopup<LoadingFiatPopup>("CallTutorialRewardContract...");
+                    await tutorialRewardManager.CallTutorialRewardContract(response);
                 }
-                catch (Exception e)
+                catch
                 {
-                    Helpers.ExceptionReporter.LogException(e);
-                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                    Debug.Log("CallTutorialRewardContract failed");
                 }
-                await Task.Delay(TimeSpan.FromSeconds(1)); 
-                ++count;
-                Debug.Log($"Retry CallRewardTutorialComplete: {count}");
-            }
+            }            
+               
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            _uiManager.DrawPopup<RewardPopup>();
+        }
+
+        public async Task<RewardTutorialCompletedResponse> CallRewardTutorialComplete()
+        { 
+            RewardTutorialCompletedResponse response = await _backendFacade.GetRewardTutorialCompletedResponse();
+            Debug.Log($"RewardTutorialCompletedResponse");
+            
+            Debug.Log($"Hash: {response.Hash}");
+            Debug.Log($"R: {response.R}");
+            Debug.Log($"S: {response.S}");
+            Debug.Log($"V: {response.V}");
+            Debug.Log($"RewardType: {response.RewardType}");   
+            Debug.Log($"Amount: {BigUIntToSByte(response.Amount)}");                    
+            
+            return response;
         }
 
         public async Task CallTutorialRewardContract(RewardTutorialCompletedResponse rewardTutorialCompletedResponse)
         {            
             ContractRequest contractParams = ParseContractRequestFromRewardTutorialCompletedResponse(rewardTutorialCompletedResponse);
-            //ContractRequest contractParams = GenerateFakeContractRequest();
             _tutorialRewardContract = await GetContract
             (
                 PrivateKey,
@@ -110,7 +123,6 @@ namespace Loom.ZombieBattleground
         private ContractRequest GenerateFakeContractRequest()
         {
             ContractRequest contractParams = new ContractRequest();
-            contractParams.UserId = 98;
             contractParams.r = HexStringToByte("0x6408eb878d2c1617028dc9590d622d0bdfdb353255091c6c0c6325049b068269".Substring(2));
             contractParams.s = HexStringToByte("0x72d04e6d8831712a883d2895784eadd42d9722f96f9f7eca3a2ab1f68def4f31".Substring(2));
             contractParams.v = 28;
@@ -129,7 +141,6 @@ namespace Loom.ZombieBattleground
             await contract.CallAsync
             (
                 "requestPacks",
-                contractParams.UserId,
                 contractParams.r,
                 contractParams.s,
                 contractParams.v,
@@ -175,7 +186,6 @@ namespace Loom.ZombieBattleground
         
         public class ContractRequest
         {
-            public int UserId;
             public byte[] r;
             public byte[] s;
             public sbyte v;
@@ -186,14 +196,12 @@ namespace Loom.ZombieBattleground
         private ContractRequest ParseContractRequestFromRewardTutorialCompletedResponse(RewardTutorialCompletedResponse rewardTutorialCompletedResponse)
         {
             string log = "<color=green>ContractRequest Params:</color>\n";
-            int UserId = BigUIntToInt(rewardTutorialCompletedResponse.UserId);
             string hash = rewardTutorialCompletedResponse.Hash.Substring(2);
             string r = rewardTutorialCompletedResponse.R.Substring(2);
             string s = rewardTutorialCompletedResponse.S.Substring(2);
             sbyte v = Convert.ToSByte(rewardTutorialCompletedResponse.V);
             int amount = (int)BigUIntToSByte(rewardTutorialCompletedResponse.Amount);
             
-            log += "UserId: " + UserId + "\n";
             log += "r: " + r + "\n";
             log += "s: " + s + "\n";
             log += "v: " + v + "\n";
@@ -202,7 +210,6 @@ namespace Loom.ZombieBattleground
             Debug.Log(log);
     
             ContractRequest contractParams = new ContractRequest();
-            contractParams.UserId = UserId;
             contractParams.r = HexStringToByte(r);
             contractParams.s = HexStringToByte(s);
             contractParams.v = v;
@@ -238,18 +245,6 @@ namespace Loom.ZombieBattleground
 
         public int BigUIntToInt(Client.Protobuf.BigUInt bigNumber)
         {
-            //byte[] bytes = Convert.FromBase64String
-            //            (
-            //                bigNumber.Value.ToBase64()
-            //            );
-            //if( bytes.Length > 1)
-            //{
-            //    return (int)BitConverter.ToUInt16(bytes,0);
-            //}
-            //else
-            //{
-            //    return (int)Convert.ToSByte(bytes[0]);
-            //}
             Array someArray = Convert.FromBase64String
             (
                 bigNumber.Value.ToBase64()
@@ -266,12 +261,6 @@ namespace Loom.ZombieBattleground
         
         public sbyte BigUIntToSByte(Client.Protobuf.BigUInt bigNumber)
         {
-            //return Convert.ToSByte(
-                    //    Convert.FromBase64String
-                    //    (
-                    //        bigNumber.Value.ToBase64()
-                    //    )[0]                        
-                    //);
             Array someArray = Convert.FromBase64String
             (
                 bigNumber.Value.ToBase64()

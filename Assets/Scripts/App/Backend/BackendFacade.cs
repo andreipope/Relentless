@@ -810,24 +810,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
 #region RewardTutorial
         private const string RewardTutorialCompletedMethod = "RewardTutorialCompleted";
-        public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse(string accessToken)
+        public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse()
         {
             Debug.Log("GetRewardTutorialCompletedResponse");
-            Debug.Log($"access token:{accessToken}");
-            RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest
-            {
-                AccessToken = accessToken
-            };
+            RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest();
             return await _contractCallProxy.CallAsync<RewardTutorialCompletedResponse>(RewardTutorialCompletedMethod, request);
         }
 
         private const string RewardTutorialClaimMethod = "ConfirmRewardTutorialClaimed";
-        public async Task<RewardTutorialClaimed> ConfirmRewardTutorialClaimed(string accessToken)
+        public async Task<RewardTutorialClaimed> ConfirmRewardTutorialClaimed()
         {
-            ConfirmRewardTutorialClaimedRequest request = new ConfirmRewardTutorialClaimedRequest
-            {
-                AccessToken = accessToken
-            };
+            ConfirmRewardTutorialClaimedRequest request = new ConfirmRewardTutorialClaimedRequest();
             return await _contractCallProxy.CallAsync<RewardTutorialClaimed>(RewardTutorialClaimMethod, request);
         }
 #endregion
