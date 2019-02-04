@@ -29,6 +29,7 @@ namespace Loom.ZombieBattleground
 #if USE_PRODUCTION_BACKEND
             UIRoot.gameObject.SetActive(false);
             _afpsCounter.OperationMode = OperationMode.Disabled;
+            _afpsCounter.circleGesture = false;
 #endif
         }
 
