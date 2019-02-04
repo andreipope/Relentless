@@ -717,7 +717,7 @@ namespace Loom.ZombieBattleground
                 if (cards[i].LibraryCard.Abilities != null)
                 {
                     AbilityData attackOverlordAbility = cards[i].LibraryCard.Abilities
-                        .Find(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
+                        .FirstOrDefault(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
                     if (attackOverlordAbility != null)
                     {
                         if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
@@ -725,7 +725,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     overflowGooAbility = cards[i].LibraryCard.Abilities
-                        .Find(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
+                        .FirstOrDefault(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
                     if (overflowGooAbility != null)
                     {
                         if (_gameplayManager.OpponentPlayer.BoardCards.Count + boardCount < _gameplayManager.OpponentPlayer.MaxCardsInPlay - 1)
@@ -776,11 +776,11 @@ namespace Loom.ZombieBattleground
                 _normalUnitCardInHand.Clear();
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalUnitCardInHand.RemoveAll(x =>
-                    x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.LibraryCard.Abilities.Any(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
                 _normalSpellCardInHand.Clear();
                 _normalSpellCardInHand.AddRange(GetSpellCardsInHand());
                 _normalSpellCardInHand.RemoveAll(x =>
-                    x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.LibraryCard.Abilities.Any(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
             }
 
             await LetsThink(cancellationToken);

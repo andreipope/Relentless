@@ -67,8 +67,6 @@ namespace Loom.ZombieBattleground.Test
         
         protected async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
         {
-            await TestHelper.HandleLogin();
-
             await TestHelper.MainMenuTransition("Button_Play");
             await TestHelper.AssertIfWentDirectlyToTutorial(TestHelper.GoBackToMainAndPressPlay);
 
