@@ -202,7 +202,6 @@ namespace Loom.ZombieBattleground
                                     GUILayout.BeginHorizontal();
                                     {
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
-                                        GUILayout.FlexibleSpace();
                                         if (GUILayout.Button("Add", GUILayout.Width(70)))
                                         {
                                             if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
