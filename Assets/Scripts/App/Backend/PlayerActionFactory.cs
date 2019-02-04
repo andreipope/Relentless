@@ -96,7 +96,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public PlayerAction CardAbilityUsed(
             InstanceId card,
-            Enumerators.AbilityType abilityType,
+            int abilityIndex,
+            int choosableAbilityIndex,
             IReadOnlyList<ParametrizedAbilityBoardObject> targets = null
         )
         {
@@ -136,12 +137,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            return CardAbilityUsed(card, abilityType, parametrizedTargetsInstanceIds);
+            return CardAbilityUsed(card, abilityIndex, choosableAbilityIndex, parametrizedTargetsInstanceIds);
         }
 
         public PlayerAction CardAbilityUsed(
             InstanceId card,
-            Enumerators.AbilityType abilityType,
+            int abilityIndex,
+            int choosableAbilityIndex,
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null
         )
         {
@@ -162,18 +164,20 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            return CardAbilityUsed(card, abilityType, unitTargets);
+            return CardAbilityUsed(card, abilityIndex, choosableAbilityIndex, unitTargets);
         }
 
         public PlayerAction CardAbilityUsed(
             InstanceId card,
-            Enumerators.AbilityType abilityType,
+            int abilityIndex,
+            int choosableAbilityIndex,
             IReadOnlyList<Protobuf.Unit> targets = null
         )
         {
             PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed
             {
-                AbilityType = (CardAbilityType.Types.Enum) abilityType,
+                AbilityIndex = abilityIndex,
+                ChoosableAbilityIndex = choosableAbilityIndex,
                 Card = card.ToProtobuf(),
                 Targets = { targets }
             };

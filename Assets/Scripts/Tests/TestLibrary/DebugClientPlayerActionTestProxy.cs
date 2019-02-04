@@ -52,10 +52,11 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardAbilityUsed(
             InstanceId card,
-            Enumerators.AbilityType abilityType,
+            int abilityIndex,
+            int choosableAbilityIndex = 0,
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, targets));
+            await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityIndex, choosableAbilityIndex, targets));
         }
 
         public async Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)

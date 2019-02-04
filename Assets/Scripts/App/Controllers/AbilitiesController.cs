@@ -10,9 +10,13 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class AbilitiesController : IController
-    {
-        public event Action<WorkingCard, Enumerators.AbilityType, List<ParametrizedAbilityBoardObject>> AbilityUsed;
+    public class AbilitiesController : IController {
+        public delegate void AbilityUsedEventHandler(
+            WorkingCard card,
+            int abilityIndex,
+            int choosableAbilityIndex,
+            List<ParametrizedAbilityBoardObject> targets = null);
+        public event AbilityUsedEventHandler AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -661,21 +665,23 @@ namespace Loom.ZombieBattleground
                };
         }
 
-        public void ThrowUseAbilityEvent(WorkingCard card, List<ParametrizedAbilityBoardObject> targets,
-                                         Enumerators.AbilityType abilityType,
-                                         /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType = Enumerators.AffectObjectType.None)
+        public void ThrowUseAbilityEvent(
+            WorkingCard card,
+            List<ParametrizedAbilityBoardObject> targets,
+            int abilityIndex,
+            int choosableAbilityIndex = 0)
         {
             if (!CanHandleAbiityUseEvent(card))
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType, targets);
+            AbilityUsed?.Invoke(card, abilityIndex, choosableAbilityIndex, targets);
         }
 
-        public void ThrowUseAbilityEvent(
+        /*public void ThrowUseAbilityEvent(
             WorkingCard card,
             List<BoardObject> targets,
-            Enumerators.AbilityType abilityType,
-            /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType)
+            int abilityIndex,
+            int choosableAbilityIndex = 0)
         {
             if (!CanHandleAbiityUseEvent(card))
                 return; 
@@ -687,8 +693,8 @@ namespace Loom.ZombieBattleground
                 parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(boardObject));
             }
 
-            AbilityUsed?.Invoke(card, abilityType, parametrizedAbilityBoardObjects);
-        }
+            AbilityUsed?.Invoke(card, abilityIndex, choosableAbilityIndex, parametrizedAbilityBoardObjects);
+        }*/
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)
         {
@@ -717,24 +723,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private bool _PvPToggleFirstLastAbility = true;
-
-        public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller,
+        public void PlayAbilityFromEvent(int abilityIndex, int choosableAbilityIndex, BoardObject abilityCaller,
                                          List<ParametrizedAbilityBoardObject> targets, WorkingCard card, Player owner)
         {
-            //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
-            //We should absolutely change the backend API to support an index field.
-            //That will tell us directly which one of multiple abilities with the same name we should use for a card.
-            AbilityData abilityData;
-            if (_PvPToggleFirstLastAbility)
+            AbilityData abilityData = card.LibraryCard.Abilities[abilityIndex];
+            if (abilityData.HasChoosableAbilities())
             {
-                abilityData = card.LibraryCard.Abilities.Find(x => x.AbilityType == ability);
-                _PvPToggleFirstLastAbility = false;
-            }
-            else
-            {
-                abilityData = card.LibraryCard.Abilities.FindLast(x => x.AbilityType == ability);
-                _PvPToggleFirstLastAbility = true;
+                abilityData = abilityData.ChoosableAbilities[choosableAbilityIndex].AbilityData;
             }
 
             ActiveAbility activeAbility = CreateActiveAbility(abilityData,

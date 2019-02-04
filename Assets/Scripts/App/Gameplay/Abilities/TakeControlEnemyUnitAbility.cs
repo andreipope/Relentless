@@ -79,8 +79,11 @@ namespace Loom.ZombieBattleground
 
             if (_movedUnits.Count > 0)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _movedUnits.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
-                                                         Enumerators.AffectObjectType.Character);
+                ThrowUseAbilityEvent(
+                    _movedUnits
+                        .Select(x => new ParametrizedAbilityBoardObject(x))
+                        .ToList()
+                );
             }
         }
 

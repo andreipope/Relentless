@@ -68,10 +68,11 @@ namespace Loom.ZombieBattleground.Test
 
         public Task CardAbilityUsed(
             InstanceId card,
-            Enumerators.AbilityType abilityType,
+            int abilityIndex,
+            int choosableAbilityIndex = 0,
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            _cardAbilityRequestsQueue.Enqueue(new CardAbilityRequest(card, abilityType, targets));
+            _cardAbilityRequestsQueue.Enqueue(new CardAbilityRequest(card, abilityIndex, choosableAbilityIndex, targets));
             HandleNextCardAbility();
             return Task.CompletedTask;
         }
@@ -122,19 +123,25 @@ namespace Loom.ZombieBattleground.Test
         private class CardAbilityRequest
         {
             public readonly InstanceId Card;
-            public readonly Enumerators.AbilityType AbilityType;
+            public readonly int AbilityIndex;
+            public readonly int ChoosableAbilityIndex;
             public readonly IReadOnlyList<ParametrizedAbilityInstanceId> Targets;
 
-            public CardAbilityRequest(InstanceId card, Enumerators.AbilityType abilityType, IReadOnlyList<ParametrizedAbilityInstanceId> targets)
+            public CardAbilityRequest(InstanceId card, int abilityIndex, int choosableAbilityIndex, IReadOnlyList<ParametrizedAbilityInstanceId> targets)
             {
                 Card = card;
-                AbilityType = abilityType;
+                AbilityIndex = abilityIndex;
+                ChoosableAbilityIndex = choosableAbilityIndex;
                 Targets = targets;
             }
 
             public override string ToString()
             {
-                return $"({nameof(Card)}: {Card}, {nameof(AbilityType)}: {AbilityType}, {nameof(Targets)}: {Targets})";
+                return
+                    $"({nameof(Card)}: {Card}, " +
+                    $"{nameof(AbilityIndex)}: {AbilityIndex}, " +
+                    $"{nameof(ChoosableAbilityIndex)}: {ChoosableAbilityIndex}, " +
+                    $"{nameof(Targets)}: {Targets})";
             }
         }
     }

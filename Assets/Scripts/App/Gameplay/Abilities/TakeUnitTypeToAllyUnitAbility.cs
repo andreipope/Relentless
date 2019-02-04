@@ -79,10 +79,12 @@ namespace Loom.ZombieBattleground
                                     Target = allies[0]
                                 });
 
-                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                                {
-                                   allies[0]
-                                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+                                ThrowUseAbilityEvent(
+                                    new List<ParametrizedAbilityBoardObject> {
+                                        new ParametrizedAbilityBoardObject(allies[0])
+                                    }
+                                );
                             }
                         }
                         else
@@ -102,10 +104,11 @@ namespace Loom.ZombieBattleground
                                     Target = allies[random]
                                 });
 
-                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                                {
-                                   allies[random]
-                                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                                ThrowUseAbilityEvent(
+                                    new List<ParametrizedAbilityBoardObject> {
+                                        new ParametrizedAbilityBoardObject(allies[random])
+                                    }
+                                );
                             }
                         }
                     }
@@ -120,12 +123,7 @@ namespace Loom.ZombieBattleground
                         });
 
                         TakeTypeToUnit(AbilityUnitOwner);
-                        AbilitiesController.ThrowUseAbilityEvent(
-                            MainWorkingCard,
-                            new List<BoardObject>(),
-                            AbilityData.AbilityType,
-                            Enumerators.AffectObjectType.Character
-                        );
+                        ThrowUseAbilityEvent();
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
@@ -147,8 +145,11 @@ namespace Loom.ZombieBattleground
                             });
                         }
 
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
-                            AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                        ThrowUseAbilityEvent(
+                            allies
+                                .Select(model => new ParametrizedAbilityBoardObject(model))
+                                .ToList()
+                        );
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
@@ -163,8 +164,11 @@ namespace Loom.ZombieBattleground
                             TakeTypeToUnit(unit);
                         }
 
-                        AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, allies.Cast<BoardObject>().ToList(),
-                            AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                        ThrowUseAbilityEvent(
+                            allies
+                                .Select(model => new ParametrizedAbilityBoardObject(model))
+                                .ToList()
+                        );
                     }
                     break;
             }

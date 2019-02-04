@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
 
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
 
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                    ThrowUseAbilityEvent();
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
@@ -96,10 +96,11 @@ namespace Loom.ZombieBattleground
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.Player:
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                    {
-                        TargetPlayer
-                    }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
+                    ThrowUseAbilityEvent(
+                        new List<ParametrizedAbilityBoardObject> {
+                            new ParametrizedAbilityBoardObject(TargetPlayer)
+                        }
+                    );
 
                     BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
 
@@ -108,11 +109,11 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                    {
-                        TargetUnit
-                    }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
-
+                    ThrowUseAbilityEvent(
+                        new List<ParametrizedAbilityBoardObject> {
+                            new ParametrizedAbilityBoardObject(TargetUnit)
+                        }
+                    );
                     target = TargetUnit;
                     actionType = Enumerators.ActionType.CardAffectingCard;
                     break;

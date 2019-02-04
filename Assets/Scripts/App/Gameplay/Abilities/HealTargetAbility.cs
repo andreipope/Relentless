@@ -80,10 +80,11 @@ namespace Loom.ZombieBattleground
         {
             HealTarget(PlayerCallerOfAbility, Value);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                PlayerCallerOfAbility
-            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
+            ThrowUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject> {
+                    new ParametrizedAbilityBoardObject(PlayerCallerOfAbility)
+                }
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -111,13 +112,10 @@ namespace Loom.ZombieBattleground
 
             HealTarget(boardObject, Value);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard,
-                new List<BoardObject>
-                {
-                    boardObject
-                },
-                AbilityData.AbilityType,
-                AffectObjectType
+            ThrowUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject> {
+                    new ParametrizedAbilityBoardObject(boardObject)
+                }
             );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -197,7 +195,11 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            ThrowUseAbilityEvent(
+                _targets
+                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .ToList()
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -55,7 +56,11 @@ namespace Loom.ZombieBattleground
                 TargetEffects = TargetEffects
             });
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            ThrowUseAbilityEvent(
+                targets
+                    .Select(boardObject => new ParametrizedAbilityBoardObject(boardObject))
+                    .ToList()
+            );
         }
     }
 }

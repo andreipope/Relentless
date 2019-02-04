@@ -77,8 +77,11 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(),
-                                                     AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
+            ThrowUseAbilityEvent(
+                boardCards
+                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .ToList()
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

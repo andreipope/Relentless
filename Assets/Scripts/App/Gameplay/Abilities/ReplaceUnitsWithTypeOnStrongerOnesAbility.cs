@@ -60,7 +60,11 @@ namespace Loom.ZombieBattleground
                 ));
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType);
+            ThrowUseAbilityEvent(
+                targets
+                    .Select(x => new ParametrizedAbilityBoardObject(x.BoardObject))
+                    .ToList()
+            );
         }
 
         private void GetInfosAboutUnitsOnBoard()

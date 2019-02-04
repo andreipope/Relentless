@@ -103,8 +103,11 @@ namespace Loom.ZombieBattleground
         {
             if (unit != null && unit.Card.InstanceCard.Cost <= Cost)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { unit }, AbilityData.AbilityType,
-                                                     Enumerators.AffectObjectType.Character);
+                ThrowUseAbilityEvent(
+                    new List<ParametrizedAbilityBoardObject> {
+                        new ParametrizedAbilityBoardObject(unit)
+                    }
+                );
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 

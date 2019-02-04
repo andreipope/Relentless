@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, abilityTargets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            ThrowUseAbilityEvent(abilityTargets);
         }
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)
