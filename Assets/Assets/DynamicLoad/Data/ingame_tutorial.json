@@ -1,0 +1,240 @@
+[
+  {
+    "Id": 0,
+    "Description": "Entry abilities activate as the card is played.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Entry"
+  },
+  {
+    "Id": 1,
+    "Description": "Turn abilities activate at the start of every turn.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Turn"
+  },
+  {
+    "Id": 2,
+    "Description": "End abilities activate at the end of every turn.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "End"
+  },
+  {
+    "Id": 3,
+    "Description": "Attack abilities activate as the zombie fights.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Attack"
+  },
+  {
+    "Id": 4,
+    "Description": "Death abilities trigger when the zombie's Def is 0",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Death"
+  },
+  {
+    "Id": 5,
+    "Description": "Delayed abilities activate after a certain number of turns",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "DelayedX"
+  },
+  {
+    "Id": 6,
+    "Description": "A frozen zombie cannot attack the next turn.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Freeze"
+  },
+  {
+    "Id": 7,
+    "Description": "Reanimated zombies reappear after one death.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Reanimate"
+  },
+  {
+    "Id": 8,
+    "Description": "Heavy zombies must be attacked first.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Heavy"
+  },
+  {
+    "Id": 9,
+    "Description": "Feral zombies can attack the turn they are played.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Feral"
+  },
+  {
+    "Id": 10,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": false,
+    "Tag": "Devour"
+  },
+  {
+    "Id": 11,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": false,
+    "Tag": "OverflowX"
+  },
+  {
+    "Id": 12,
+    "Description": "tooltip description",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": false,
+    "Tag": "Blitz"
+  },
+  {
+    "Id": 13,
+    "Description": "The Destroy effect is a single-hit kill.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Destroy"
+  },
+  {
+    "Id": 14,
+    "Description": "Rage increases Attack when the zombie first takes damage.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "RageX"
+  },
+  {
+    "Id": 15,
+    "Description": "Flash allows the zombie to attack twice.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Flash"
+  },
+  {
+    "Id": 16,
+    "Description": "Guard protects the zombie from damage or Destroy once.",
+    "ActivityAction": "CardWithAbilityPlayed",
+    "Owner": "Battleframe",
+    "Align": "CenterLeft",
+    "Position": {
+      "X": 1.25,
+      "Y": 0.15
+    },
+    "AppearOnce": true,
+    "IsEnabled": true,
+    "Tag": "Guard"
+  }
+]

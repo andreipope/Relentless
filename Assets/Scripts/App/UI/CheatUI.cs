@@ -20,6 +20,7 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
         private CustomDeckEditor _customDeckEditor;
 
+#if !USE_PRODUCTION_BACKEND
         private void OnGUI()
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
@@ -57,7 +58,7 @@ namespace Loom.ZombieBattleground
                 if (GUILayout.Button("Find Match"))
                 {
                     Deck deck = _dataManager.CachedDecksData.Decks[0];
-                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
                     GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
                     GameClient.Get<IMatchManager>().FindMatch();
@@ -69,6 +70,7 @@ namespace Loom.ZombieBattleground
 
             _customDeckEditor?.OnGUI();
         }
+#endif
 
         private void Start()
         {
@@ -108,7 +110,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static float UIScaleFactor => Screen.dpi / 96f;
+        private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
 
         private class CustomDeckEditor
         {
@@ -158,7 +160,7 @@ namespace Loom.ZombieBattleground
                 GUILayout.BeginHorizontal(GUILayout.Width(Screen.width / UIScaleFactor));
                 {
                     GUILayout.FlexibleSpace();
-                    GUILayout.BeginVertical(GUILayout.Width(700f));
+                    GUILayout.BeginVertical(GUILayout.Width(500f));
                     {
                         // Custom Deck
                         GUILayout.BeginVertical("Custom Deck", Styles.OpaqueWindow, GUILayout.Height(Screen.height * customDeckScreenHeightRatio / UIScaleFactor));
@@ -266,7 +268,12 @@ namespace Loom.ZombieBattleground
     
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label(_cardNameToDescription[deckCard.CardName]);
+                    if (!_cardNameToDescription.TryGetValue(deckCard.CardName, out string cardDescription))
+                    {
+                        customDeck.Cards.Remove(deckCard);
+                        GUIUtility.ExitGUI();
+                    }
+                    GUILayout.Label(cardDescription);
                     GUILayout.FlexibleSpace();
                     string amountString = GUILayout.TextField(deckCard.Amount.ToString(), GUILayout.Width(35));
                     if (int.TryParse(amountString, out int newAmount))

@@ -173,7 +173,13 @@ namespace Loom.ZombieBattleground
                 popup.Show(message);
             }
 
-            GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                if (popup is WarningPopup || popup is ConnectionPopup)
+                    return;
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+            }
         }
 
         public void HidePopup<T>()

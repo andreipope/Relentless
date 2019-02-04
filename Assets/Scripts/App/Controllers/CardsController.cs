@@ -201,12 +201,19 @@ namespace Loom.ZombieBattleground
         {
             Player player = _gameplayManager.CurrentPlayer;
             List<WorkingCard> randomCards = new List<WorkingCard>();
-            for (int i = 0; i < mulliganCards.Count; i++) 
-            {
-                randomCards.Add(player.CardsInDeck[i]);
+
+            int count = 0;
+            while (randomCards.Count < mulliganCards.Count) {
+                if (!player.CardsPreparingToHand.Contains(player.CardsInDeck[count]) && !mulliganCards.Contains(player.CardsInDeck[count]))
+                {
+                    randomCards.Add(player.CardsInDeck[count]);
+                }
+                count++;
             }
+
+            UniquePositionedList<WorkingCard> finalCards = player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
             player.CardsPreparingToHand.Clear();
-            player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
+            player.CardsPreparingToHand.InsertRange(ItemPosition.End, finalCards);
             player.CardsPreparingToHand.InsertRange(ItemPosition.End, randomCards);
 
             EndCardDistribution();
@@ -755,7 +762,7 @@ namespace Loom.ZombieBattleground
             if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP || _gameplayManager.IsTutorial)
             {
                 opponentHandCard =
-                    _battlegroundController.OpponentHandCards.First(x => x.WorkingCard.InstanceId == cardId);
+                    _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.WorkingCard.InstanceId == cardId);
             }
             else
             {
@@ -763,6 +770,14 @@ namespace Loom.ZombieBattleground
                     return;
 
                 opponentHandCard = _battlegroundController.OpponentHandCards[Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
+            }
+
+            if(opponentHandCard == null || opponentHandCard is default(OpponentHandCard))
+            {
+                Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogException(exception);
+                return;
             }
 
             WorkingCard card = opponentHandCard.WorkingCard;

@@ -1298,7 +1298,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel item in list)
             {
-                if (item.CurrentHp < item.MaxCurrentHp && item.CurrentHp > 0)
+                if (item.CurrentHp < item.MaxCurrentHp && item.CurrentHp > 0 && !item.IsDead)
                 {
                     finalList.Add(item);
                 }
@@ -1351,7 +1351,7 @@ namespace Loom.ZombieBattleground
         {
             return
                 _gameplayManager.OpponentPlayer.BoardCards
-                    .FindAll(x => x.Model.CurrentHp > 0)
+                    .FindAll(x => x.Model.CurrentHp > 0 && !x.Model.IsDead)
                     .Select(x => x.Model)
                     .ToList();
         }
@@ -1364,7 +1364,7 @@ namespace Loom.ZombieBattleground
             {
                 eligibleUnits =
                     _gameplayManager.OpponentPlayer.BoardCards
-                        .FindAll(x => x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model))
+                        .FindAll(x => x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model) && !x.Model.IsDead)
                         .Select(x => x.Model)
                         .ToList();
             }
@@ -1372,7 +1372,7 @@ namespace Loom.ZombieBattleground
             {
                 eligibleUnits =
                     _gameplayManager.OpponentPlayer.BoardCards
-                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model))
+                        .FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp && x.Model.CurrentHp > 0 && !_attackedUnitTargets.Contains(x.Model) && !x.Model.IsDead)
                         .Select(x => x.Model)
                         .ToList();
             }
@@ -1394,7 +1394,7 @@ namespace Loom.ZombieBattleground
         {
             List<BoardUnitModel> eligibleUnits =
                 _gameplayManager.CurrentPlayer.BoardCards
-                    .FindAll(x => x.Model.CurrentHp > 0)
+                    .FindAll(x => x.Model.CurrentHp > 0 && !x.Model.IsDead)
                     .Select(x => x.Model)
                     .ToList();
 
@@ -1415,7 +1415,7 @@ namespace Loom.ZombieBattleground
         private List<BoardUnitModel> GetOpponentUnitsOnBoard()
         {
         return _gameplayManager.CurrentPlayer.BoardCards
-                    .FindAll(x => x.Model.CurrentHp > 0)
+                    .FindAll(x => x.Model.CurrentHp > 0 && !x.Model.IsDead)
                     .Select(x => x.Model)
                     .ToList();
         }
@@ -1425,7 +1425,7 @@ namespace Loom.ZombieBattleground
             List<BoardUnitModel> eligibleCreatures =
                 _gameplayManager.CurrentPlayer.BoardCards
                     .Select(x => x.Model)
-                    .Where(x => x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x))
+                    .Where(x => x.CurrentHp > 0 && !_attackedUnitTargets.Contains(x) && !x.IsDead)
                     .ToList();
 
             if (unitsToIgnore != null)
@@ -1447,7 +1447,7 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer.BoardCards
                     .Select(x => x.Model)
                     .ToList();
-            List<BoardUnitModel> eligibleCreatures = board.FindAll(x => x.CurrentHp > 0);
+            List<BoardUnitModel> eligibleCreatures = board.FindAll(x => x.CurrentHp > 0 && !x.IsDead);
             if (eligibleCreatures.Count > 0)
             {
                 List<BoardUnitModel> provokeCreatures = eligibleCreatures.FindAll(x => x.IsHeavyUnit);
@@ -1528,7 +1528,7 @@ namespace Loom.ZombieBattleground
                             {
                                 _unitsToIgnoreThisTurn =
                                     _gameplayManager.OpponentPlayer.BoardCards
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) && !x.Model.IsDead)
                                     .Select(x => x.Model)
                                     .ToList();
                             }
@@ -1552,7 +1552,7 @@ namespace Loom.ZombieBattleground
                     {
                         _unitsToIgnoreThisTurn =
                             _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
-                            skill.Skill.ElementTargetTypes.Count > 0 &&
+                            skill.Skill.ElementTargetTypes.Count > 0 && !x.Model.IsDead &&
                             !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) ||
                             x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral)
                                 .Select(x => x.Model)
@@ -1578,7 +1578,8 @@ namespace Loom.ZombieBattleground
                         target = _gameplayManager.CurrentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                        BoardUnitModel unit = GetRandomOpponentUnit(GetOpponentUnitsOnBoard().FindAll(model => skill.BlockedUnitStatusTypes.Contains(model.UnitStatus)));
+                        BoardUnitModel unit = GetRandomOpponentUnit(GetOpponentUnitsOnBoard().FindAll(model => skill.BlockedUnitStatusTypes.Contains(model.UnitStatus)
+                        && !model.IsDead));
 
                         if (unit != null)
                         {
@@ -1596,7 +1597,7 @@ namespace Loom.ZombieBattleground
                         {
                             _unitsToIgnoreThisTurn =
                                 _gameplayManager.OpponentPlayer.BoardCards
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) && !x.Model.IsDead)
                                     .Select(x => x.Model)
                                     .ToList();
                         }
@@ -1632,7 +1633,7 @@ namespace Loom.ZombieBattleground
 
                 case Enumerators.OverlordSkill.SHATTER:
                     {
-                        List<BoardUnitModel> units = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.IsStun).Select(x => x.Model).ToList();
+                        List<BoardUnitModel> units = _gameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.IsStun && !x.Model.IsDead).Select(x => x.Model).ToList();
 
                         if (units.Count > 0)
                         {

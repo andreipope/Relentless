@@ -527,6 +527,8 @@ namespace Loom.ZombieBattleground
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
 
+                _loginButton.enabled = true;
+
                 if (authyId != 0)
                 {
                     SetUIState(LoginState.PromptOTP);
@@ -534,8 +536,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 _OTPFieldOTP.text = "";
-
-                _loginButton.enabled = true;
 
                 if (isGuest)
                 {
@@ -636,7 +636,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SuccessfulLogin()
+        private async void SuccessfulLogin()
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
@@ -651,8 +651,16 @@ namespace Loom.ZombieBattleground
 
                 if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
                 {
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)GameClient.Get<IDataManager>().CachedDecksData.Decks.Last().Id;
-                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
+                    Data.Deck savedTutorialDeck = GameClient.Get<IDataManager>().CachedUserLocalData.TutorialSavedDeck;
+
+                    if (GameClient.Get<IDataManager>().CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
+                    {
+                        GameClient.Get<IDataManager>().CachedDecksData.Decks.Add(savedTutorialDeck);
+                        await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                    }
+
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
                     GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                 }

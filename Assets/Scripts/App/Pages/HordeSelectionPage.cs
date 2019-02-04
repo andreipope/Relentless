@@ -551,12 +551,28 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
-            
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_selectedDeck.Id;
-            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _selectedDeck;
-            _matchManager.FindMatch();
+
+            Action startMatch = () =>
+            {
+                _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)_selectedDeck.Id;
+                GameClient.Get<IGameplayManager>().CurrentPlayerDeck = _selectedDeck;
+                _matchManager.FindMatch();
+            };
+
+            if (_tutorialManager.IsTutorial)
+            {
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                    startMatch?.Invoke();
+                };
+                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
+            }
+            else
+            {
+                startMatch?.Invoke();
+            }
         }
 
         private void BattleButtonWarningOnClickHandler()

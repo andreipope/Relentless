@@ -277,7 +277,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
 
+#if USE_PRODUCTION_BACKEND
+        private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
+#else
         private const string accessVaultEndPoint = "/entcubbyhole/protected/loomauth";
+#endif
 
         private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
 
@@ -438,9 +442,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
-            Debug.Log(httpResponseMessage.StatusCode.ToString());
-            Debug.Log(httpResponseMessage.StatusCode);
+            Debug.Log(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -491,7 +493,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             const string queryURLsEndPoint = "/zbversion";
 
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = "http://stage-auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=staging";
+            webrequestCreationInfo.Url = "http://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
 
             Debug.Log(webrequestCreationInfo.Url);
 
@@ -567,10 +569,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             public bool IsValid;
         }
 
-        #endregion
+#endregion
 
 
-        #region VersionCheck
+#region VersionCheck
 
         private const string GetVersionMethod = "GetVersions";
 
@@ -580,10 +582,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<GetVersionsResponse>(GetVersionMethod, request);
         }
 
-        #endregion
+#endregion
 
 
-        #region PVP
+#region PVP
 
         private const string FindMatchMethod = "FindMatch";
         private const string DebugFindMatchMethod = "DebugFindMatch";
