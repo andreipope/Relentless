@@ -728,12 +728,12 @@ namespace Loom.ZombieBattleground
             AbilityData abilityData;
             if (_PvPToggleFirstLastAbility)
             {
-                abilityData = card.LibraryCard.Abilities.Find(x => x.AbilityType == ability);
+                abilityData = card.LibraryCard.Abilities.First(x => x.AbilityType == ability);
                 _PvPToggleFirstLastAbility = false;
             }
             else
             {
-                abilityData = card.LibraryCard.Abilities.FindLast(x => x.AbilityType == ability);
+                abilityData = card.LibraryCard.Abilities.Last(x => x.AbilityType == ability);
                 _PvPToggleFirstLastAbility = true;
             }
 
