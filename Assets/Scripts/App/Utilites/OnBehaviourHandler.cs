@@ -62,9 +62,11 @@ namespace Loom.ZombieBattleground
             PointerExited?.Invoke(eventData);
         }
 
-        private void Update()
+        private void Update() 
         {
-            if(SelectedGameObject == gameObject)
+          //TODO commenting out this fix from Gaurav, as it currently breaks tests.
+          //Make sure we check if this is the only way, and if it breaks other things in normal gameplay.
+          //if(SelectedGameObject == gameObject)
                Updating?.Invoke(gameObject); 
         }
 

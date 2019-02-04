@@ -171,6 +171,118 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Pushhh()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Pushhh", 2),
+                        new DeckCardData("Golem", 2)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                Deck localDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Pushhh", 2),
+                        new DeckCardData("Golem", 2)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                InstanceId playerGolemId = new InstanceId(8);
+                InstanceId opponentGolemId = new InstanceId(4);
+                InstanceId playerPushhhId = new InstanceId(6);
+                InstanceId opponentPushhhId = new InstanceId(2);
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => 
+                       {
+                           player.CardPlay(playerGolemId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentGolemId, ItemPosition.Start);
+                       },
+                       player =>
+                       {
+                           player.CardPlay(playerPushhhId, ItemPosition.Start, opponentGolemId);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentPushhhId, ItemPosition.Start);
+                           opponent.CardAbilityUsed(
+                               opponentPushhhId,
+                               Enumerators.AbilityType.CARD_RETURN,
+                               new List<ParametrizedAbilityInstanceId>
+                               {
+                                   new ParametrizedAbilityInstanceId(playerGolemId, Enumerators.AffectObjectType.Character)
+                               }
+                           );
+                       }
+                   };
+
+                await GenericPvPTest(
+                    turns,
+                    () =>
+                    {
+                        TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.UseCustomDeck = true;
+                        TestHelper.DebugCheats.CustomDeck = localDeck;
+                        TestHelper.DebugCheats.DisableDeckShuffle = true;
+                        TestHelper.DebugCheats.IgnoreGooRequirements = true;
+                    },
+                    cheats =>
+                    {
+                        cheats.UseCustomDeck = true;
+                        cheats.CustomDeck = opponentDeck;
+                    }
+                );
+
+                BoardUnitModel playerGolemModel = null;
+                BoardUnitModel opponentGolemModel = null;
+
+                try 
+                {
+                    playerGolemModel = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectById(playerGolemId);
+                } 
+                catch (Exception e)
+                {
+                    //do nothing with it
+                }
+
+                try
+                {
+                    opponentGolemModel = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectById(opponentGolemId);
+                }
+                catch (Exception e)
+                {
+                    //do nothing with it
+                }
+
+                Assert.Null(playerGolemModel);
+                Assert.Null(opponentGolemModel);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
         public IEnumerator CorrectCardDraw()
         {
             return AsyncTest(async () =>
