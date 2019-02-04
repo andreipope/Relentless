@@ -68,6 +68,7 @@ namespace Loom.ZombieBattleground
 
         public List<string> BlockedButtons { get; private set; }
 
+        public event Action OnMenuStepUpdated;
 
         public bool BattleShouldBeWonBlocker;
 
@@ -844,6 +845,8 @@ namespace Loom.ZombieBattleground
                     {
                         BattleShouldBeWonBlocker = true;
                     }
+
+                    OnMenuStepUpdated?.Invoke();
 
                     break;
             }

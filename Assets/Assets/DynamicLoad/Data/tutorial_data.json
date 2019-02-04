@@ -2482,7 +2482,10 @@
             "Button_Buy",
             "Button_Army",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "ArrowRightButton",
+            "ArrowLeftButton",
+            "ElementsToggles"
           ],
           "ActionToEndThisStep": "CardDragged",
           "CanDragCards": true,
@@ -2512,7 +2515,10 @@
             "Button_Buy",
             "Button_Army",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "ArrowRightButton",
+            "ArrowLeftButton",
+            "ElementsToggles"
           ],
           "ActionToEndThisStep": "CardRemoved",
           "CanDoubleTapCards": true,
@@ -2540,7 +2546,10 @@
             "Button_Buy",
             "Button_Army",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "ArrowRightButton",
+            "ArrowLeftButton",
+            "ElementsToggles"
           ],
           "ActionToEndThisStep": "CardAdded",
           "CanDoubleTapCards": true,
@@ -2577,8 +2586,12 @@
             2
           ],
           "TutorialDescriptionTooltipsToActivate": [
-            4
+            4,
+            5
           ],
+          "ConnectedActivities": [
+            1
+          ]
         },
         {
           "OpenScreen": "HordeEditingPage",
@@ -2691,6 +2704,18 @@
           },
           "TutorialTooltipLayer": "AbovePages"
         },
+        {
+          "Id": 5,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Click on the arrows to browse your cards.",
+          "Position": {
+            "X": 10.15,
+            "Y": -2.42,
+            "Z": 0
+          },
+          "TutorialTooltipLayer": "AbovePages"
+        }
       ],
       "ActionActivityHandlers": [
         {
@@ -2700,6 +2725,17 @@
           "TutorialActivityActionHandlerData": {
             "TutorialDescriptionTooltipsToActivate": [
               3
+            ]
+          },
+          "HasSpecificConnection": true
+        },
+        {
+          "TutorialActivityAction": "IncorrectButtonTapped",
+          "TutorialActivityActionHandler": "DrawDescriptionTooltips",
+          "Id": 1,
+          "TutorialActivityActionHandlerData": {
+            "TutorialDescriptionTooltipsToActivate": [
+              5
             ]
           },
           "HasSpecificConnection": true

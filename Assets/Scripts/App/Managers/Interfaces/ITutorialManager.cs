@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,5 +45,7 @@ namespace Loom.ZombieBattleground
 
         List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
         Data.CollectionCardData GetCardData(string id);
+
+        event Action OnMenuStepUpdated;
     }
 }
