@@ -125,14 +125,16 @@ namespace Loom.ZombieBattleground
             }
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            //FIXME we're removing the check just for now, we need to bring this back at some point
+            /*
             if (!Constants.AlwaysGuestLogin && !_backendDataControlMediator.UserDataModel.IsRegistered)
             {
                 _uiManager.GetPopup<LoginPopup>().Show();
             }
             else
-            {
+            {*/
                 _stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);
-            }
+            //}
         }
 
         private void BackButtonOnClickHandler()

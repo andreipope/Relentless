@@ -371,9 +371,18 @@ namespace Loom.ZombieBattleground
         {
             _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
 
-            CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+            List<Card> cards;
 
-            List<Card> cards = set.Cards;
+            if(_tutorialManager.IsTutorial)
+            {
+                cards = _tutorialManager.GetSpecificCardsBySet(setType);
+            }
+            else
+            {
+                CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+
+                cards = set.Cards;
+            }
 
             int startIndex = page * CardsPerPage;
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
@@ -388,7 +397,17 @@ namespace Loom.ZombieBattleground
                 }
 
                 Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+
+                CollectionCardData cardData;
+
+                if(_tutorialManager.IsTutorial)
+                {
+                    cardData = _tutorialManager.GetCardData(card.Name);
+                }
+                else
+                {
+                    cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+                }
 
                 if (cardData == null)
                 {
@@ -770,6 +789,12 @@ namespace Loom.ZombieBattleground
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
                     _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+
+                    if(_tutorialManager.IsTutorial)
+                    {
+                        _dataManager.CachedUserLocalData.TutorialSavedDeck = _currentDeck;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -885,7 +910,18 @@ namespace Loom.ZombieBattleground
         {
             _collectionData.Cards.Clear();
             CollectionCardData cardData;
-            foreach (CollectionCardData card in _dataManager.CachedCollectionData.Cards)
+
+            List<CollectionCardData> data;
+            if (_tutorialManager.IsTutorial)
+            {
+                data = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy;
+            }
+            else
+            {
+                data = _dataManager.CachedCollectionData.Cards;
+            }
+
+            foreach (CollectionCardData card in data)
             {
                 cardData = new CollectionCardData();
                 cardData.Amount = card.Amount;
@@ -934,11 +970,18 @@ namespace Loom.ZombieBattleground
 
         private void InitObjects()
         {
-            Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.Heroes
-                .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
+            if (_tutorialManager.IsTutorial)
+            {
+                _currentSet = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet;
+            }
+            else
+            {
+                Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.Heroes
+                    .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
 
+                _currentSet = heroSetType;
+            }
             _currentElementPage = 0;
-            _currentSet = heroSetType;
             CalculateNumberOfPages();
             LoadCards(_currentElementPage, _currentSet);
         }
@@ -947,7 +990,14 @@ namespace Loom.ZombieBattleground
         {
             CardSet set = _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(c => c.MouldId == card.MouldId) != null);
             setIndex = _dataManager.CachedCardsLibraryData.Sets.IndexOf(set);
-            cardIndex = set.Cards.FindIndex(c => c.MouldId == card.MouldId);
+            if (_tutorialManager.IsTutorial)
+            {
+                cardIndex = _tutorialManager.GetSpecificCardsBySet(set.Name).FindIndex(info => info.MouldId == card.MouldId);
+            }
+            else
+            {
+                cardIndex = set.Cards.FindIndex(c => c.MouldId == card.MouldId);
+            }
         }
 
         private void UpdateCardsPage()
@@ -958,7 +1008,17 @@ namespace Loom.ZombieBattleground
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count /
+            int count = 0;
+            if(_tutorialManager.IsTutorial)
+            {
+                count = _tutorialManager.GetSpecificCardsBySet(_currentSet).Count;
+            }
+            else
+            {
+                count = SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count;
+            }
+
+            _numElementPages = Mathf.CeilToInt(count /
                 (float) CardsPerPage);
         }
 

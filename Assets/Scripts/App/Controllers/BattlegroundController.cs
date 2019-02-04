@@ -417,7 +417,15 @@ namespace Loom.ZombieBattleground
             }
 
             _gameplayManager.CurrentPlayer.InvokeTurnStarted();
+            if (_gameplayManager.CurrentPlayer == null) 
+            {
+                return;
+            }
             _gameplayManager.OpponentPlayer.InvokeTurnStarted();
+            if (_gameplayManager.OpponentPlayer == null)
+            {
+                return;
+            }
 
             _playerController.UpdateHandCardsHighlight();
 
@@ -1163,9 +1171,9 @@ namespace Loom.ZombieBattleground
 #if USE_PRODUCTION_BACKEND
                     Debug.LogError(desyncException);
 
-                    if (!_gameplayManager.IsDesyncDetected)
+                    if (!GameClient.Get<IGameplayManager>().IsDesyncDetected)
                     {
-                        _gameplayManager.IsDesyncDetected = true;
+                        GameClient.Get<IGameplayManager>().IsDesyncDetected = true;
                         UserReportingScript.Instance.CreateUserReport(
                             true,
                             false,
@@ -1187,9 +1195,15 @@ namespace Loom.ZombieBattleground
         {
             SetupOverlordsAsSpecific(specificBattlegroundInfo);
             SetupOverlordsHandsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInHand, specificBattlegroundInfo.OpponentInfo.CardsInHand);
-            SetupOverlordsDecksAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInDeck, specificBattlegroundInfo.OpponentInfo.CardsInDeck);
+            SetupOverlordsDeckByPlayerAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsInDeck, _gameplayManager.CurrentPlayer);
+            SetupOverlordsDeckByPlayerAsSpecific(specificBattlegroundInfo.OpponentInfo.CardsInDeck, _gameplayManager.OpponentPlayer);
             SetupOverlordsBoardUnitsAsSpecific(specificBattlegroundInfo.PlayerInfo.CardsOnBoard, specificBattlegroundInfo.OpponentInfo.CardsOnBoard);
             SetupGeneralUIAsSpecific(specificBattlegroundInfo);
+        }
+
+        public void SetOpponentDeckAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
+        {
+            SetupOverlordsDeckByPlayerAsSpecific(specificBattlegroundInfo.OpponentInfo.CardsInDeck, _gameplayManager.OpponentPlayer);
         }
 
         private void SetupOverlordsAsSpecific(SpecificBattlegroundInfo specificBattlegroundInfo)
@@ -1222,33 +1236,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetupOverlordsDecksAsSpecific(List<SpecificBattlegroundInfo.OverlordCardInfo> playerCards,
-                                                   List<SpecificBattlegroundInfo.OverlordCardInfo> opponentCards)
+        private void SetupOverlordsDeckByPlayerAsSpecific(List<SpecificBattlegroundInfo.OverlordCardInfo> cards, Player player)
         {
             List<WorkingCard> workingPlayerCards =
-                playerCards
+                cards
                     .Select(cardInfo =>
                     {
                         Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
-                        WorkingCard workingCard = new WorkingCard(card, card, _gameplayManager.CurrentPlayer);
+                        WorkingCard workingCard = new WorkingCard(card, card, player);
                         workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
                         return workingCard;
                     })
                     .ToList();
 
-            List<WorkingCard> workingOpponentCards =
-                opponentCards
-                    .Select(cardInfo =>
-                    {
-                        Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name);
-                        WorkingCard workingCard = new WorkingCard(card, card, _gameplayManager.OpponentPlayer);
-                        workingCard.TutorialObjectId = cardInfo.TutorialObjectId;
-                        return workingCard;
-                    })
-                    .ToList();
-
-            _gameplayManager.CurrentPlayer.SetDeck(workingPlayerCards, false);
-            _gameplayManager.OpponentPlayer.SetDeck(workingOpponentCards, true);
+           player.SetDeck(workingPlayerCards, false);
         }
 
         private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)

@@ -222,7 +222,10 @@ namespace Loom.ZombieBattleground
         {
             FindOpponentTime.FinishTimer();
 
-            matchMakingFlowController.StateChanged -= MatchMakingFlowControllerOnStateChanged;
+            if (matchMakingFlowController != null)
+            {
+                matchMakingFlowController.StateChanged -= MatchMakingFlowControllerOnStateChanged;
+            }
             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
             matchMakingPopup.Hide();
             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;

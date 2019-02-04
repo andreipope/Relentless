@@ -729,15 +729,25 @@ namespace Loom.ZombieBattleground
             //We should absolutely change the backend API to support an index field.
             //That will tell us directly which one of multiple abilities with the same name we should use for a card.
             AbilityData abilityData;
-            if (_PvPToggleFirstLastAbility)
+
+            var subAbilitiesData = card.LibraryCard.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
+
+            if (subAbilitiesData != null && !(subAbilitiesData is default(AbilityData)))
             {
-                abilityData = card.LibraryCard.Abilities.Find(x => x.AbilityType == ability);
-                _PvPToggleFirstLastAbility = false;
+                abilityData = subAbilitiesData.ChoosableAbilities.Find(x => x.AbilityData.AbilityType == ability).AbilityData;
             }
             else
             {
-                abilityData = card.LibraryCard.Abilities.FindLast(x => x.AbilityType == ability);
-                _PvPToggleFirstLastAbility = true;
+                if (_PvPToggleFirstLastAbility)
+                {
+                    abilityData = card.LibraryCard.Abilities.Find(x => x.AbilityType == ability);
+                    _PvPToggleFirstLastAbility = false;
+                }
+                else
+                {
+                    abilityData = card.LibraryCard.Abilities.FindLast(x => x.AbilityType == ability);
+                    _PvPToggleFirstLastAbility = true;
+                }
             }
 
             ActiveAbility activeAbility = CreateActiveAbility(abilityData,
