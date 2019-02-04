@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
         
         #region Contract
         private TextAsset _abiCardFaucet;
-        private TextAsset _abiBoosterPack;  
+        private TextAsset[] _abiPacks;
         #endregion    
         
         #region Key
@@ -39,8 +39,6 @@ namespace Loom.ZombieBattleground
             get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
         }
         #endregion
-        
-        private const int _boosterPackIndex = 0;
 
         private const int _cardsPerPack = 5;
 
@@ -58,8 +56,13 @@ namespace Loom.ZombieBattleground
             CardsReceived = new List<Card>();
             _eventInitialized = false;
                       
-            _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI"); 
-            _abiBoosterPack = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/BoosterPackABI");            
+            _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI");
+            Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
+            _abiPacks = new TextAsset[packTypes.Length];
+            for(int i=0;i<packTypes.Length;++i)
+            {
+                _abiPacks[i] = _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{packTypes[i].ToString()}PackABI");
+            }
         }
         
         public void Update()
@@ -70,13 +73,44 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        public async Task<int> CallPackBalanceContract()
+        private string GetContractAddress(int packTypeId)
+        {
+            switch( (Enumerators.MarketplaceCardPackType)packTypeId)
+            {
+                case Enumerators.MarketplaceCardPackType.Booster:
+                    return PlasmaChainEndpointsContainer.ContractAddressBoosterPack;
+                case Enumerators.MarketplaceCardPackType.Super:
+                    return PlasmaChainEndpointsContainer.ContractAddressSuperPack;
+                case Enumerators.MarketplaceCardPackType.Air:
+                    return PlasmaChainEndpointsContainer.ContractAddressAirPack;
+                case Enumerators.MarketplaceCardPackType.Earth:
+                    return PlasmaChainEndpointsContainer.ContractAddressEarthPack;
+                case Enumerators.MarketplaceCardPackType.Fire:
+                    return PlasmaChainEndpointsContainer.ContractAddressFirePack;
+                case Enumerators.MarketplaceCardPackType.Life:
+                    return PlasmaChainEndpointsContainer.ContractAddressLifePack;
+                case Enumerators.MarketplaceCardPackType.Toxic:
+                    return PlasmaChainEndpointsContainer.ContractAddressToxicPack;
+                case Enumerators.MarketplaceCardPackType.Water:
+                    return PlasmaChainEndpointsContainer.ContractAddressWaterPack;
+                case Enumerators.MarketplaceCardPackType.Small:
+                    return PlasmaChainEndpointsContainer.ContractAddressSmallPack;
+                case Enumerators.MarketplaceCardPackType.Minion:
+                    return PlasmaChainEndpointsContainer.ContractAddressMinionPack;
+                default:
+                    break;
+            }
+            return "";
+        }
+        
+        public async Task<int> CallPackBalanceContract(int packTypeId)
         {        
-            EvmContract boosterPackContract = await GetContract(
+            Debug.Log($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");
+            EvmContract packContract = await GetContract(
                 PrivateKey,
                 PublicKey,
-                _abiBoosterPack.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
+                _abiPacks[packTypeId].ToString(),
+                GetContractAddress(packTypeId)
             );
 
             int amount;
@@ -85,7 +119,7 @@ namespace Loom.ZombieBattleground
             {
                 try
                 {
-                    amount = await CallBalanceContract(boosterPackContract);
+                    amount = await CallBalanceContract(packContract);
                     break;
                 }
                 catch
@@ -99,7 +133,7 @@ namespace Loom.ZombieBattleground
             return amount;            
         }
 
-        public async Task<List<Card>> CallOpenPack()
+        public async Task<List<Card>> CallOpenPack(int packTypeId)
         {
             List<Card> resultList;
             EvmContract cardFaucetContract = await GetContract(
@@ -108,11 +142,11 @@ namespace Loom.ZombieBattleground
                 _abiCardFaucet.ToString(),
                 PlasmaChainEndpointsContainer.ContractAddressCardFaucet
             );
-            EvmContract boosterPackContract = await GetContract(
+            EvmContract packContract = await GetContract(
                 PrivateKey,
                 PublicKey,
-                _abiBoosterPack.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
+                _abiPacks[packTypeId].ToString(),
+                GetContractAddress(packTypeId)
             );
 
             if (!_eventInitialized)
@@ -131,10 +165,10 @@ namespace Loom.ZombieBattleground
 
                 try
                 {
-                    await CallBalanceContract(boosterPackContract);
-                    await CallApproveContract(boosterPackContract);
-                    await CallOpenPackContract(cardFaucetContract, _boosterPackIndex);
-                    await CallBalanceContract(boosterPackContract);
+                    await CallBalanceContract(packContract);
+                    await CallApproveContract(packContract);
+                    await CallOpenPackContract(cardFaucetContract, packTypeId);
+                    await CallBalanceContract(packContract);
 
                     double timeOut = 29.99;
                     double interval = 1.0;
@@ -153,7 +187,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch
                 {
-                    Debug.Log($"smart contract [openBoosterPack] error or reverted");
+                    Debug.Log($"smart contract [open{ (Enumerators.MarketplaceCardPackType)packTypeId }Packs] error or reverted");
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
@@ -228,17 +262,17 @@ namespace Loom.ZombieBattleground
             Debug.Log("Smart contract method [approve] finished executing.");
         }
         
-        public async Task CallOpenPackContract(EvmContract contract, int packIndex)
+        public async Task CallOpenPackContract(EvmContract contract, int packTypeId)
         {
             if (contract == null)
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [openBoosterPack] {packIndex}");
+            Debug.Log( $"Calling smart contract [openBoosterPack] with packId: {packTypeId}");
         
-            await contract.CallAsync("openBoosterPack", packIndex);
+            await contract.CallAsync("openBoosterPack", packTypeId);
         
-            Debug.Log($"Smart contract method [openBoosterPack] {packIndex} finished executing.");
+            Debug.Log($"Smart contract method [openBoosterPack] with packId: {packTypeId} finished executing.");
         }
         
         [Event("GeneratedCard")]
@@ -254,12 +288,12 @@ namespace Loom.ZombieBattleground
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
         {
             Debug.LogFormat("Received smart contract event: " + e.EventName);
-            OnOpenPackEvent onOpenBoosterPackEvent = e.DecodeEventDto<OnOpenPackEvent>();
-            Debug.Log($"<color=red>CardId: {onOpenBoosterPackEvent.CardId}, BoosterType: {onOpenBoosterPackEvent.BoosterType}</color>");
+            OnOpenPackEvent onOpenPackEvent = e.DecodeEventDto<OnOpenPackEvent>();
+            Debug.Log($"<color=red>CardId: {onOpenPackEvent.CardId}, BoosterType: {onOpenPackEvent.BoosterType}</color>");
 
-            if ((int)onOpenBoosterPackEvent.CardId % 10 == 0)
+            if ((int)onOpenPackEvent.CardId % 10 == 0)
             {
-                int mouldId = (int)onOpenBoosterPackEvent.CardId / 10;
+                int mouldId = (int)onOpenPackEvent.CardId / 10;
                 Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
                 Debug.Log($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
                 CardsReceived.Add(card);

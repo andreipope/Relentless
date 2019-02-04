@@ -336,13 +336,13 @@ namespace Loom.ZombieBattleground
         private async void RetrievePackBalanceAmount()
         {
             _uiManager.DrawPopup<LoadingFiatPopup>();            
-            _packBalanceAmount = await _openPackPlasmaManager.CallPackBalanceContract();            
+            _packBalanceAmount = await _openPackPlasmaManager.CallPackBalanceContract((int)Enumerators.MarketplaceCardPackType.Booster);            
             _uiManager.HidePopup<LoadingFiatPopup>();
         }
         private async Task RetriveCardsFromPack()
         {
             _uiManager.DrawPopup<LoadingFiatPopup>();
-            List<Card> cards = await _openPackPlasmaManager.CallOpenPack();
+            List<Card> cards = await _openPackPlasmaManager.CallOpenPack((int)Enumerators.MarketplaceCardPackType.Booster);
             _cardsToDisplayQueqe = cards;
             _uiManager.HidePopup<LoadingFiatPopup>(); 
         }

@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            _uiManager.SetPage<PackOpenerPage>();
+                            _uiManager.SetPage<PackOpenerPage2>();
                             break;
                         }
                     }
