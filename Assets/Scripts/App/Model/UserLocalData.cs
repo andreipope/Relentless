@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground.Data
 
         public List<int> TutorialTooltipsPassed;
 
+        public Deck TutorialSavedDeck;
+
         public UserLocalData()
         {
             Reset();

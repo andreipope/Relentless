@@ -762,7 +762,7 @@ namespace Loom.ZombieBattleground
             if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP || _gameplayManager.IsTutorial)
             {
                 opponentHandCard =
-                    _battlegroundController.OpponentHandCards.First(x => x.WorkingCard.InstanceId == cardId);
+                    _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.WorkingCard.InstanceId == cardId);
             }
             else
             {
@@ -770,6 +770,14 @@ namespace Loom.ZombieBattleground
                     return;
 
                 opponentHandCard = _battlegroundController.OpponentHandCards[Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
+            }
+
+            if(opponentHandCard == null || opponentHandCard is default(OpponentHandCard))
+            {
+                Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogException(exception);
+                return;
             }
 
             WorkingCard card = opponentHandCard.WorkingCard;

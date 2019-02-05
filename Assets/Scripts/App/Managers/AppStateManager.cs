@@ -149,21 +149,22 @@ namespace Loom.ZombieBattleground
 
         private void DecideToPlayAgain(bool decision)
         {
-            if (decision) 
+            if (decision)
             {
                 QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
                 popup.ConfirmationReceived -= DecideToPlayAgain;
+                _uiManager.HidePopup<MatchMakingPopup>();
                 GameClient.Get<IMatchManager>().FindMatch();
             }
         }
 
         public void SetPausingApp(bool mustPause) {
-            if (!mustPause) 
+            if (!mustPause)
             {
                 IsAppPaused = false;
                 AudioListener.pause = false;
-            } 
-            else 
+            }
+            else
             {
                 IsAppPaused = true;
                 AudioListener.pause = true;
