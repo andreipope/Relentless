@@ -463,11 +463,6 @@ namespace Loom.ZombieBattleground
         {
             _topmostBoardCard?.HandBoardCard?.OnSelected();
 
-            if(_tutorialManager.IsTutorial && _topmostBoardCard?.HandBoardCard != null)
-            {
-                _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
-            }
-
             if (_boardArrowController.CurrentBoardArrow == null)
             {
                 HideCardPreview();
