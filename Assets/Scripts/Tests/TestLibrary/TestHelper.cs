@@ -2721,7 +2721,7 @@ namespace Loom.ZombieBattleground.Test
 
             await HandleConnectivityIssues();
 
-            await new WaitUntil(() => _playerController.IsActive);
+            await new WaitUntil(() => IsGameEnded() || _playerController.IsActive);
         }
 
         /// <summary>

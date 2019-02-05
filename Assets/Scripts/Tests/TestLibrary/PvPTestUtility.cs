@@ -15,7 +15,8 @@ namespace Loom.ZombieBattleground.Test
         public static async Task GenericPvPTest(
             PvpTestContext pvpTestContext,
             IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns,
-            Action validateEndStateAction)
+            Action validateEndStateAction,
+            bool enableReverseMatch = true)
         {
             Func<Task> callTest = async () =>
             {
@@ -47,9 +48,12 @@ namespace Loom.ZombieBattleground.Test
             pvpTestContext.IsReversed = false;
             await callTest();
 
-            Debug.Log("Starting reversed Pvp test");
-            pvpTestContext.IsReversed = true;
-            await callTest();
+            if (enableReverseMatch)
+            {
+                Debug.Log("Starting reversed Pvp test");
+                pvpTestContext.IsReversed = true;
+                await callTest();
+            }
         }
 
         private static async Task GenericPvPTest(

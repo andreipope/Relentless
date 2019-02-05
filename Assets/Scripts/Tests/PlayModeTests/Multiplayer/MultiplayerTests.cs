@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground.Test
     {
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator PlayScenarioGame1()
+        public IEnumerator Slab()
         {
             return AsyncTest(async () =>
             {
@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground.Test
                 Deck opponentDeck = new Deck(
                     0,
                     0,
-                    "test deck",
+                    "test deck2",
                     new List<DeckCardData>
                     {
                         new DeckCardData("Slab", 30)
@@ -48,11 +48,10 @@ namespace Loom.ZombieBattleground.Test
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerSlabId = new InstanceId(36);
-                InstanceId opponentSlabId = new InstanceId(2);
+                InstanceId playerSlabId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 0);
+                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 0);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
-                       opponent => {},
                        player => {},
                        opponent => {},
                        player => {},
@@ -63,31 +62,36 @@ namespace Loom.ZombieBattleground.Test
                        opponent => {},
                        player => player.CardPlay(playerSlabId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentSlabId, ItemPosition.Start),
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
-                       opponent => opponent.CardAttack(opponentSlabId, TestHelper.GetCurrentPlayer().InstanceId),
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
-                       opponent => opponent.CardAttack(opponentSlabId, TestHelper.GetCurrentPlayer().InstanceId),
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentSlabId, pvpTestContext.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentSlabId, pvpTestContext.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => {},
-                       player => player.CardAttack(playerSlabId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerSlabId, pvpTestContext.GetOpponentPlayer().InstanceId),
                    };
 
                 await PvPTestUtility.GenericPvPTest(
                     pvpTestContext,
                     turns,
-                    () => {}
+                    () =>
+                    {
+                        // FIXME: references to the players are nulled immediately after the game ends,
+                        // so we can't assert the state at that moment?
+                        //Assert.AreEqual(0, pvpTestContext.GetOpponentPlayer().Defense);
+                    }
                 );
             });
         }

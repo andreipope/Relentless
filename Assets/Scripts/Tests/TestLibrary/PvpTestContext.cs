@@ -23,6 +23,16 @@ namespace Loom.ZombieBattleground.Test
             Player2Deck = player2Deck;
         }
 
+        public Player GetOpponentPlayer()
+        {
+            return IsReversed ? TestHelper.Instance.GetCurrentPlayer() : TestHelper.Instance.GetOpponentPlayer();
+        }
+
+        public Player GetCurrentPlayer()
+        {
+            return !IsReversed ? TestHelper.Instance.GetCurrentPlayer() : TestHelper.Instance.GetOpponentPlayer();
+        }
+
         public InstanceId GetCardIdByName(Deck deck, string name) {
             AssertKnownDeck(deck);
 
