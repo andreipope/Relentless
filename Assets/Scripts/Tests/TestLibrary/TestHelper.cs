@@ -3642,7 +3642,7 @@ namespace Loom.ZombieBattleground.Test
                     chainClient.Configuration.StaticCallTimeout = 10000;
                     chainClient.Configuration.CallTimeout = 10000;
                 },
-                enabledLogs: true);
+                enabledLogs: false);
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }
