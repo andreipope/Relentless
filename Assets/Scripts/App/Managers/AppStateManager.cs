@@ -100,24 +100,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.PACK_OPENER:
                     if (Constants.EnableShopPage)
                     {
-                        if (string.IsNullOrEmpty(
-                            _backendDataControlMediator.UserDataModel.AccessToken
-                        ))
-                        {
-                            _uiManager.DrawPopup<WarningPopup>($"Please login\nbefore open packs");
-                            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                            popup.ConfirmationReceived += () =>
-                            {
-                                LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
-                                loginPopup.Show();
-                            };
-                            return;
-                        }
-                        else
-                        {
-                            _uiManager.SetPage<PackOpenerPage2>();
-                            break;
-                        }
+                        _uiManager.SetPage<PackOpenerPage2>();
+                        break;
                     }
                     else
                     {

@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade = GameClient.Get<BackendFacade>();
             
-            _abiTutorialReward = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/TutorialRewardABI");            
+            _abiTutorialReward = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/TutorialRewardABI");                       
         }
         
         public void Update()
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        public async Task CallRewardTutorialFlow()
+        public async Task CallRewardTutorialFlow(bool displayRewardPopup)
         {
             _uiManager.DrawPopup<LoadingFiatPopup>("CallRewardTutorialComplete...");
             TutorialRewardManager tutorialRewardManager = GameClient.Get<TutorialRewardManager>();
@@ -89,7 +89,8 @@ namespace Loom.ZombieBattleground
             }            
                
             _uiManager.HidePopup<LoadingFiatPopup>();
-            _uiManager.DrawPopup<RewardPopup>();
+            if(displayRewardPopup)
+                _uiManager.DrawPopup<RewardPopup>();            
         }
 
         public async Task<RewardTutorialCompletedResponse> CallRewardTutorialComplete()

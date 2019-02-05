@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
@@ -50,6 +51,8 @@ namespace Loom.ZombieBattleground
         private Transform _packTray, _trayStart, _trayEnd, _panelCollect, _greenPoolVFX;
         
         private SpriteRenderer _vignetteCollectCard;
+
+        private Sprite _packHolderSelectedSprite, _packHolderNormalSprite;
         
         private Animator _gooPoolAnimator;
         
@@ -164,7 +167,7 @@ namespace Loom.ZombieBattleground
             _vfxMinionPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_MinionPackOpenerV2");
             _vfxOfficerPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_OfficerPackOpenerV2");
             _vfxCommanderPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_CommanderPackOpenerV2");
-            _vfxGeneralPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_GeneralPackOpenerV2");            
+            _vfxGeneralPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_GeneralPackOpenerV2");   
             
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _buttonBuyPack = _selfPage.transform.Find("Header/Button_BuyPacks").GetComponent<Button>();
@@ -182,6 +185,8 @@ namespace Loom.ZombieBattleground
             _panelCollect = _selfPage.transform.Find("Panel_Collect").GetComponent<Transform>();
             _panelCollect.SetParent(_uiManager.Canvas2.transform);
             
+            _packHolderSelectedSprite = _selfPage.transform.Find("pack_holder_tray/sprite_pack_holder_selected").GetComponent<Image>().sprite; 
+            _packHolderNormalSprite = _selfPage.transform.Find("pack_holder_tray/sprite_pack_holder_normal").GetComponent<Image>().sprite;       
         
             _rightPanelLight = _selfPage.transform.Find("Pack_Panel/Glowing/Panel_right").GetComponent<Image>();
             _leftPanelLight = _selfPage.transform.Find("Pack_Panel/Glowing/Panel_left").GetComponent<Image>();
@@ -193,8 +198,10 @@ namespace Loom.ZombieBattleground
             InitObjects();
             InitCardPositions();
             InitState();
+            InitPackTypeButtons();
             await RetrievePackBalanceAmount();           
-            InitPackTypeButtons();     
+            SetPackTypeButtonsAmount(); 
+            ChangeSelectedPackType(0);   
         }
         
         public void Hide()
@@ -271,7 +278,6 @@ namespace Loom.ZombieBattleground
         {
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
             int amountOfPackType = packTypes.Length;            
-            List<Transform> buttonParentList = new List<Transform>();
             _packTypeNames = new TextMeshProUGUI[amountOfPackType];
             _packTypeAmounts = new TextMeshProUGUI[amountOfPackType];
             _packTypeButtons = new Button[amountOfPackType];
@@ -281,7 +287,7 @@ namespace Loom.ZombieBattleground
                 _packTypeNames[i] = buttonParent.Find("text_name").GetComponent<TextMeshProUGUI>();
                 _packTypeNames[i].text = $"{packTypes[i].ToString().ToUpper()} PACK";
                 _packTypeAmounts[i] = buttonParent.Find("text_amount").GetComponent<TextMeshProUGUI>();
-                _packTypeAmounts[i].text = _packBalanceAmounts[i].ToString();
+                _packTypeAmounts[i].text = "0";
                 _packTypeButtons[i] = buttonParent.GetComponent<Button>();
                 int id = i;
                 _packTypeButtons[i].onClick.AddListener( ()=> {
@@ -289,6 +295,15 @@ namespace Loom.ZombieBattleground
                  });
             }
         }
+        
+        private void SetPackTypeButtonsAmount()
+        {
+            for (int i = 0; i < _packTypeAmounts.Length; ++i)
+            {
+                _packTypeAmounts[i].text = _packBalanceAmounts[i].ToString();
+            }
+        }
+
 
         private void CreateCardsToDisplay()
         {
@@ -309,6 +324,7 @@ namespace Loom.ZombieBattleground
                 boardCard.Transform.parent = _cardPositions[i];
                 boardCard.Transform.localPosition = Vector3.zero;
                 boardCard.Transform.localRotation = Quaternion.identity;
+                boardCard.Transform.localScale *= 0.8f;
                 _createdBoardCards.Add(boardCard);
             }
         }
@@ -756,6 +772,7 @@ namespace Loom.ZombieBattleground
                     else if (newState == STATE.READY)
                     {
                         SetPackToOpenAmount(0);
+                        SetPackTypeButtonsAmount();
                         SetButtonInteractable(true);
                         _isTransitioningState = false;
                         _packTray.position = _trayStart.position;                          
@@ -777,7 +794,10 @@ namespace Loom.ZombieBattleground
         {
             _selectedPackTypeIndex = id;
             _packsAmountText.text = _packBalanceAmounts[_selectedPackTypeIndex].ToString();
-            
+            for(int i=0;i<_packTypeButtons.Length;++i)
+            {
+                _packTypeButtons[i].GetComponent<Image>().sprite = (i == _selectedPackTypeIndex ? _packHolderSelectedSprite : _packHolderNormalSprite);
+            }
         }
         
         #endregion
