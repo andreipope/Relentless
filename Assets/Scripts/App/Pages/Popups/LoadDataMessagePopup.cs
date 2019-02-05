@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private ITutorialManager _tutorialManager;
+
         private TextMeshProUGUI _text;
 
         private ButtonShiftingContent _gotItButton;
@@ -29,6 +31,7 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
@@ -112,6 +115,12 @@ namespace Loom.ZombieBattleground
             if (success)
             {
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                if (_tutorialManager.IsTutorial)
+                {
+                    _tutorialManager.UnfinishedTutorial = true;
+                    _tutorialManager.StopTutorial();
+                    _tutorialManager.CheckNextTutorial();
+                }
             }
         }
     }
