@@ -653,10 +653,17 @@ namespace Loom.ZombieBattleground
                 {
                     Data.Deck savedTutorialDeck = GameClient.Get<IDataManager>().CachedUserLocalData.TutorialSavedDeck;
 
-                    if (GameClient.Get<IDataManager>().CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
+                    if (savedTutorialDeck != null)
                     {
-                        GameClient.Get<IDataManager>().CachedDecksData.Decks.Add(savedTutorialDeck);
-                        await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                        if (GameClient.Get<IDataManager>().CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
+                        {
+                            GameClient.Get<IDataManager>().CachedDecksData.Decks.Add(savedTutorialDeck);
+                            await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                        }
+                    }
+                    else
+                    {
+                        savedTutorialDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
                     }
 
                     _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
