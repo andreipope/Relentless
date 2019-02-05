@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
 
         void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
+        void PlayTutorialSound(string sound, float delay = 0f);
+
         TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
 
         SpecificTurnInfo GetCurrentTurnInfo();

@@ -57,16 +57,40 @@ namespace Loom.ZombieBattleground
         public void DrawOverlordSayPopup(string description,
                                         Enumerators.TooltipAlign align,
                                         Enumerators.TutorialObjectOwner owner,
-                                        float duration = Constants.OverlordTalkingPopupDuration)
+                                        float duration = Constants.OverlordTalkingPopupDuration,
+                                        string soundToPlay = Constants.Empty,
+                                        float soundToPlayBeginDelay = 0,
+                                        Enumerators.TutorialActivityAction actionToHideThisPopup = Enumerators.TutorialActivityAction.Undefined,
+                                        float minimumShowTime = Constants.OverlordTalkingPopupMinimumShowTime)
         {
             if (_overlordSayPopups.Find(x => x.Description == description) != null)
                 return;
 
-            OverlordSayPopup overlordSayPopup = new OverlordSayPopup(description, align, owner, _overlordsChatContainer, duration);
+            OverlordSayPopup overlordSayPopup = new OverlordSayPopup(description,
+                                                                    align,
+                                                                    owner,
+                                                                    _overlordsChatContainer,
+                                                                    duration,
+                                                                    soundToPlay,
+                                                                    soundToPlayBeginDelay,
+                                                                    actionToHideThisPopup,
+                                                                    minimumShowTime);
             overlordSayPopup.OverlordSayPopupHided += OverlordSayPopupHided;
             _overlordSayPopups.Add(overlordSayPopup);
             UpdatePopupsPositions();
             SortPopups();
+        }
+
+        public void UpdatePopupsByReportActivityAction(Enumerators.TutorialActivityAction action)
+        {
+            List<OverlordSayPopup> sortingPopups = _overlordSayPopups.FindAll(popup => popup.ActionToHideThisPopup == action);
+            if(sortingPopups.Count > 0)
+            {
+                foreach (OverlordSayPopup sayPopup in sortingPopups)
+                {
+                    sayPopup.Close();
+                }
+            }
         }
 
         private void OverlordSayPopupHided(OverlordSayPopup popup)
@@ -110,6 +134,8 @@ namespace Loom.ZombieBattleground
 
             public Enumerators.TutorialObjectOwner Owner;
 
+            public Enumerators.TutorialActivityAction ActionToHideThisPopup;
+
             public float HeightPopup;
 
             public string Description { get; private set; }
@@ -126,17 +152,24 @@ namespace Loom.ZombieBattleground
 
             private TextMeshPro _textDescription;
 
+            private bool _canBeClosed = false;
+
             public OverlordSayPopup(string description,
                                     Enumerators.TooltipAlign align,
                                     Enumerators.TutorialObjectOwner owner,
                                     Transform parent,
-                                    float drawDuration = Constants.OverlordTalkingPopupDuration)
+                                    float drawDuration = Constants.OverlordTalkingPopupDuration,
+                                    string soundToPlay = Constants.Empty,
+                                    float soundToPlayBeginDelay = 0,
+                                    Enumerators.TutorialActivityAction actionToHideThisPopup = Enumerators.TutorialActivityAction.Undefined,
+                                    float minimumShowTime = Constants.OverlordTalkingPopupMinimumShowTime)
             {
                 _tutorialManager = GameClient.Get<ITutorialManager>();
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
                 this.Align = align;
                 this.Owner = owner;
+                ActionToHideThisPopup = actionToHideThisPopup;
 
                 _selfObject = MonoBehaviour.Instantiate(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/OverlordSayTooltip"), parent, false);
@@ -161,11 +194,25 @@ namespace Loom.ZombieBattleground
 
                 HeightPopup = _currentBattleground.sprite.bounds.size.y * _selfObject.transform.localScale.y;
 
-                InternalTools.DoActionDelayed(() =>
+                if (actionToHideThisPopup == Enumerators.TutorialActivityAction.Undefined)
                 {
-                    _textDescription.DOFade(0, DurationOfHide);
-                    _currentBattleground.DOFade(0, DurationOfHide).OnComplete(Hide);
-                }, drawDuration);
+                    UpdatePossibilityForClose();
+                    InternalTools.DoActionDelayed(Close, drawDuration);
+                }
+                else
+                {
+                    InternalTools.DoActionDelayed(UpdatePossibilityForClose, minimumShowTime);
+                }
+
+                if(!string.IsNullOrEmpty(soundToPlay))
+                {
+                    _tutorialManager.PlayTutorialSound(soundToPlay, soundToPlayBeginDelay);
+                }
+            }
+
+            private void UpdatePossibilityForClose()
+            {
+                _canBeClosed = true;
             }
 
             public void UpdatePosition(float height)
@@ -200,6 +247,15 @@ namespace Loom.ZombieBattleground
                 }
 
                 _selfObject.transform.position = position;
+            }
+
+            public void Close()
+            {
+                if (!_canBeClosed)
+                    return;
+
+                _textDescription.DOFade(0, DurationOfHide);
+                _currentBattleground.DOFade(0, DurationOfHide).OnComplete(Hide);
             }
 
             public void Hide()

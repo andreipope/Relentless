@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         public List<TutorialDescriptionTooltip> TutorialDescriptionTooltips;
 
+        public TutorialReward TutorialReward;
+
         [JsonConverter(typeof(TutorialStepConverter))]
         public List<TutorialStep> TutorialSteps;
 
@@ -35,6 +37,8 @@ namespace Loom.ZombieBattleground
             ActionActivityHandlers = new List<ActionActivityHandler>();
 
             TutorialDescriptionTooltips = new List<TutorialDescriptionTooltip>();
+
+            TutorialReward = new TutorialReward();
 
             TutorialSteps = new List<TutorialStep>();
         }
@@ -240,9 +244,13 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.TooltipAlign TutorialTooltipAlign;
         public Enumerators.TutorialObjectOwner TutorialTooltipOwner;
+        public Enumerators.TutorialActivityAction ActionToHideThisPopup;
         public string Description;
+        public string SoundToPlay;
         public float AppearDelay;
         public float Duration = Constants.OverlordTalkingPopupDuration;
+        public float SoundToPlayBeginDelay;
+        public float MinimumShowTime = Constants.OverlordTalkingPopupMinimumShowTime;
     }
 
     public class DrawDescriptionTooltipsInfo : TutorialActivityActionHandlerData
@@ -274,6 +282,7 @@ namespace Loom.ZombieBattleground
         public bool Resizable;
         public bool DynamicPosition;
         public float AppearDelay;
+        public float MinimumShowTime = Constants.DescriptionTooltipMinimumShowTime;
         public Enumerators.TutorialObjectLayer TutorialTooltipLayer;
 
         public TutorialDescriptionTooltip()
@@ -351,6 +360,16 @@ namespace Loom.ZombieBattleground
         public SpecificHordeInfo()
         {
             CardsForArmy = new List<Data.CollectionCardData>();
+        }
+    }
+
+    public class TutorialReward
+    {
+        public List<OverlordExperienceManager.LevelReward.UnitRewardItem> UnitRewards;
+
+        public TutorialReward()
+        {
+            UnitRewards = new List<OverlordExperienceManager.LevelReward.UnitRewardItem>();
         }
     }
 
