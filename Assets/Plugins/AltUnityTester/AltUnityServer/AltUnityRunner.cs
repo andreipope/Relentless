@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -924,7 +924,7 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
             try
             {
                 List<AltUnityObject> foundObjects = new List<AltUnityObject>();
-                foreach (GameObject testableObject in FindObjectsInScene(objectName, true))
+                foreach (GameObject testableObject in FindObjectsInScene(objectName, enabled))
                 {
                     if (cameraName == null)
                         foundObjects.Add(GameObjectToAltUnityObject(testableObject));
@@ -1353,6 +1353,7 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
 
     private void CloseConnection(AltClientSocketHandler handler)
     {
+        Debug.Log("Close connection event handler!");
         _socketServer.StartListeningForConnections();
 
     }
@@ -2141,11 +2142,17 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
     private void GetAllCameras(AltClientSocketHandler handler)
     {
         _responseQueue.ScheduleResponse(delegate
-        {
+        {   
             var cameras = FindObjectsOfType<Camera>();
-            handler.SendResponse(JsonConvert.SerializeObject(cameras));
+            List<string> cameraNames = new List<string>();
+            foreach (Camera camera in cameras)
+            {
+                cameraNames.Add(camera.name);
+            }
+            handler.SendResponse(JsonConvert.SerializeObject(cameraNames));
         });
     }
+
     private void HightObjectFromCoordinates(Vector2 screenCoordinates, string ColorAndWidth, Vector2 size, AltClientSocketHandler handler)
     {
         _responseQueue.ScheduleResponse(delegate
@@ -2200,6 +2207,7 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
             Color color = new Color(red, green, blue, alpha);
             float width = float.Parse(pieces[1]);
             var gameObject = GetGameObject(id);
+            
             if (gameObject != null)
             {
                 StartCoroutine(HighLightSelectedObjectCorutine(gameObject, color, width, size, handler));
@@ -2268,8 +2276,12 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
                     height = width * screenshot.height / screenshot.width;
                 }
             }
-            handler.SendResponse(JsonConvert.SerializeObject(new Vector2(screenshot.width, screenshot.height)));
+            string[] fullResponse = new string[5];
 
+            fullResponse[0] = JsonConvert.SerializeObject(new Vector2(screenshot.width, screenshot.height),new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
 
             TextureScale.Bilinear(screenshot, width, height);
             screenshot.Apply(true);
@@ -2278,25 +2290,24 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
 
 
             var screenshotSerialized = screenshot.GetRawTextureData();
-            using (var msi = new MemoryStream(screenshotSerialized))
-            using (var mso = new MemoryStream())
-            {
-                using (var gs = new GZipStream(mso, CompressionMode.Compress))
-                {
-                    CopyTo(msi, gs);
-                }
+            var length =screenshotSerialized.LongLength;
+            fullResponse[1] = length.ToString();
 
-                screenshotSerialized = mso.ToArray();
-            }
-            var length=screenshotSerialized.LongLength;
-            handler.SendResponse(length.ToString());
+            var format = screenshot.format;
+            fullResponse[2] = format.ToString();
+
             var newSize=new Vector3(screenshot.width,screenshot.height);
-            handler.SendResponse(JsonConvert.SerializeObject(newSize));
-            handler.SendResponse(screenshotSerialized);
+            fullResponse[3] = JsonConvert.SerializeObject(newSize,new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            fullResponse[4] = JsonConvert.SerializeObject(screenshotSerialized);
+            handler.SendResponse(JsonConvert.SerializeObject(fullResponse));
             Destroy(screenshot);
         });
 
     }
+    
     public static void CopyTo(Stream src, Stream dest)
     {
         byte[] bytes = new byte[4096];

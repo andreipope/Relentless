@@ -19,13 +19,28 @@ class CZBPlayTests(CZBTests):
 
     def setUp(self):
         super(CZBPlayTests, self).setUp()
-        self.altdriver.wait_for_element('Button_Skip').mobile_tap()
+       
+        self.altdriver.wait_for_element('HiddenUI')
+        self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','true','UnityEngine.CoreModule')
+        self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
+        self.altdriver.wait_for_element('EndTurnButton/_1_btn_endturn')
+        time.sleep(5)
+        # self.altdriver.wait_for_element('MainPanel/Panel/EnableCheats').mobile_tap(500)
+        self.altdriver.wait_for_element("SkipTutorial").tap()
+        # self.driver.swipe(int(skipTutorialButton.x),int(skipTutorialButton.mobileY)+100,int(skipTutorialButton.x),int(skipTutorialButton.mobileY),4000)
+        # self.driver.tap([(int(skipTutorialButton.x)-50,int(skipTutorialButton.mobileY)+50)],1000)
         time.sleep(1)
-        self.altdriver.wait_for_element("Button_Yes").mobile_tap()
-        self.altdriver.wait_for_element_to_not_be_present(
-            "LoadingGameplayPopup(Clone)")
-        self.altdriver.wait_for_element('Button_Back').mobile_tap()
+        self.altdriver.find_element('Root',enabled=True).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
 
+        self.altdriver.wait_for_element('Button_Play').mobile_tap()
+        self.altdriver.wait_for_element('Button_SoloMode').mobile_tap()
+        self.altdriver.wait_for_element('Button_Battle').mobile_tap()
+        self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
+        time.sleep(2)
+        self.altdriver.wait_for_element('GameplayPage(Clone)/Button_Back').tap()
+        self.altdriver.wait_for_element('Button_Yes').mobile_tap()
+        
+       
     def test_start_match_versus_ai(self):
         global logs
         # enter Deck Selection
@@ -44,8 +59,8 @@ class CZBPlayTests(CZBTests):
         logs.append(str(datetime.datetime.now())+' Start new game')
         self.altdriver.wait_for_element('Button_Battle').mobile_tap()
         self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-        # self.mulligan_cards()
-        self.altdriver.wait_for_element('Button_Keep').mobile_tap()
+        self.mulligan_cards()
+        # self.altdriver.wait_for_element('Button_Keep').mobile_tap()
 
         while self.game_not_ended():
             self.your_turn()
@@ -123,6 +138,7 @@ class CZBPlayTests(CZBTests):
             logs.append(datetime.datetime.now(
             )+' Player has 6 zombies on the battlefield there is no more room to play a zombie.')
             return
+        print(str(self.get_player_board_monster_count())+' monsters on board')
         handCards = []
         handCards = self.altdriver.find_elements(
             "CreatureCard(Clone)", 'MainCamera')
@@ -171,17 +187,33 @@ class CZBPlayTests(CZBTests):
 
         # Horde Edititing Page
         self.altdriver.wait_for_element('HordeEditingPage(Clone)')
+        isLastPage=False
 
-        creatureCards = self.altdriver.find_elements(
-            'Horde/Cards/CreatureCard(Clone)/TitleText', enabled=False)
-        for cardName in creatureCards:
-            cards.append(cardName.get_component_property(
-                'TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro'))
-        itemCards = self.altdriver.find_elements(
-            'Horde/Cards/ItemCard(Clone)/TitleText', enabled=False)
-        for cardName in itemCards:
-            cards.append(cardName.get_component_property(
-                'TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro'))
+        while isLastPage==False:
+
+            creatureCards = self.altdriver.find_elements(
+                'Horde/Cards/CreatureCard(Clone)/TitleText', enabled=False)
+            for card in creatureCards:
+                cardName=card.get_component_property(
+                        'TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro')
+                if cardName in cards:
+                    isLastPage=True
+                    break
+                else:
+                    cards.append(cardName)
+            if isLastPage:
+                break
+            itemCards = self.altdriver.find_elements(
+                'Horde/Cards/ItemCard(Clone)/TitleText', enabled=False)
+            for cardName in itemCards:
+                cardName=card.get_component_property(
+                        'TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro')
+                if cardName in cards:
+                    isLastPage=True
+                    break
+                else:
+                    cards.append(cardName)
+            self.altdriver.wait_for_element('Horde/ArrowRightButton').mobile_tap()
 
         self.altdriver.wait_for_element('Button_Save').mobile_tap()
         return cards
@@ -210,7 +242,6 @@ class CZBPlayTests(CZBTests):
         return True
 
     def play_card(self, card):
-        print('Play card')
 
         global cards
         cardGoo = self.altdriver.wait_for_element(
@@ -240,21 +271,23 @@ class CZBPlayTests(CZBTests):
         replacePanel = self.altdriver.wait_for_element('Replace_Panel')
         mulliganCards = self.altdriver.find_elements(
             'MulliganCard_Unit(Clone)/Text_Title')
-        mulliganCards = mulliganCards + \
-            self.altdriver.find_elements(
+        mulliganCards = mulliganCards + self.altdriver.find_elements(
                 'MulliganCard_Spell(Clone)/Text_Title')
         for mulliganCard in mulliganCards:
             cardName = mulliganCard.get_component_property(
-                'TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro')
+                'TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
             if self.is_card_in_the_list(cardName, cards):
                 mulliganCard.mobile_dragToElement(replacePanel)
         self.altdriver.wait_for_element('Button_Keep').mobile_tap()
 
     def select_target_for_spell_or_entry(self, cardText):
+        global logs
         try:
             self.altdriver.wait_for_element(
                 'AttackArrowVFX_Object(Clone)', timeout=2)
+            logs.append(cardText)
             if 'Destroy a Frozen zombie' in cardText:
+                logs.append("Frozen")
                 creatures = self.altdriver.find_elements(
                     'BoardCreature(Clone)')
                 for creature in creatures:
@@ -264,17 +297,20 @@ class CZBPlayTests(CZBTests):
                     logs.append(str(color)+" color")  # delete after
                     if color == 1:
                         creature.mobile_tap()
-            if 'Destroy a Heavy zombie' in cardText:
-                creatures = self.altdriver.find_elements(
-                    'BoardCreature(Clone)')
-                for creature in creatures:
-                    try:
-                        self.altdriver.find_element(
-                            'id('+creature.id+')/Heavy_Arrival_VFX(Clone)')
-                        creature.mobile_tap()
-                    except:
-                        pass
-            self.altdriver.find_element('BoardCreature(Clone)').mobile_tap()
+            else: 
+                if 'Destroy a Heavy zombie' in cardText:
+                    logs.append("Heavy")
+                    creatures = self.altdriver.find_elements(
+                        'BoardCreature(Clone)')
+                    for creature in creatures:
+                        try:
+                            self.altdriver.find_element(
+                                'id('+creature.id+')/Heavy_Arrival_VFX(Clone)')
+                            creature.mobile_tap()
+                        except:
+                            pass
+                else:
+                    self.altdriver.find_element('BoardCreature(Clone)').mobile_tap()
         except:
             pass
 
