@@ -68,6 +68,7 @@ namespace Loom.ZombieBattleground
 
         public List<string> BlockedButtons { get; private set; }
 
+        public event Action OnMenuStepUpdated;
 
         public bool BattleShouldBeWonBlocker;
 
@@ -322,7 +323,7 @@ namespace Loom.ZombieBattleground
             _activitiesDoneDuringThisTurn.Clear();
         }
 
-        public void StopTutorial()
+        public void StopTutorial(bool isManual = false)
         {
             if (!IsTutorial)
                 return;
@@ -339,7 +340,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
-            if (BattleShouldBeWonBlocker)
+            if (BattleShouldBeWonBlocker && !isManual)
                 return;
 
             ClearToolTips();
@@ -844,6 +845,8 @@ namespace Loom.ZombieBattleground
                     {
                         BattleShouldBeWonBlocker = true;
                     }
+
+                    OnMenuStepUpdated?.Invoke();
 
                     break;
             }
