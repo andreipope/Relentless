@@ -324,7 +324,6 @@ namespace Loom.ZombieBattleground
                 boardCard.Transform.parent = _cardPositions[i];
                 boardCard.Transform.localPosition = Vector3.zero;
                 boardCard.Transform.localRotation = Quaternion.identity;
-                boardCard.Transform.localScale *= 0.8f;
                 _createdBoardCards.Add(boardCard);
             }
         }
@@ -825,7 +824,7 @@ namespace Loom.ZombieBattleground
             boardCard.Init(card);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
-            boardCard.Transform.localScale = Vector3.one * 0.32f;
+            boardCard.Transform.localScale = Vector3.one * 0.32f * 0.72f;
             boardCard.Transform.Find("Amount").gameObject.SetActive(false);
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
