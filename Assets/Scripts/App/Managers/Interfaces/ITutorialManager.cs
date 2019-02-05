@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         void SetupTutorialById(int id);
 
-        void StopTutorial();
+        void StopTutorial(bool isManual = false);
 
         void ActivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
 
@@ -44,5 +45,7 @@ namespace Loom.ZombieBattleground
 
         List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
         Data.CollectionCardData GetCardData(string id);
+
+        event Action OnMenuStepUpdated;
     }
 }

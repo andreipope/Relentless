@@ -636,7 +636,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SuccessfulLogin()
+        private async void SuccessfulLogin()
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
             {
@@ -651,8 +651,23 @@ namespace Loom.ZombieBattleground
 
                 if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
                 {
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)GameClient.Get<IDataManager>().CachedDecksData.Decks.Last().Id;
-                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
+                    Data.Deck savedTutorialDeck = GameClient.Get<IDataManager>().CachedUserLocalData.TutorialSavedDeck;
+
+                    if (savedTutorialDeck != null)
+                    {
+                        if (GameClient.Get<IDataManager>().CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
+                        {
+                            GameClient.Get<IDataManager>().CachedDecksData.Decks.Add(savedTutorialDeck);
+                            await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                        }
+                    }
+                    else
+                    {
+                        savedTutorialDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
+                    }
+
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
                     GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                 }

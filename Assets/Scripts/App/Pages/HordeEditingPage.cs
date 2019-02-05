@@ -88,6 +88,8 @@ namespace Loom.ZombieBattleground
 
         private ToggleGroup _toggleGroup;
 
+        private CanvasGroup _elementsCanvasGroup;
+
         private RectTransform _armyCardsContainer;
 
         private RectTransform _hordeCardsContainer;
@@ -163,6 +165,7 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
+            _elementsCanvasGroup = _toggleGroup.GetComponent<CanvasGroup>();
             _airToggle = _selfPage.transform.Find("ElementsToggles/Air").GetComponent<Toggle>();
             _lifeToggle = _selfPage.transform.Find("ElementsToggles/Life").GetComponent<Toggle>();
             _waterToggle = _selfPage.transform.Find("ElementsToggles/Water").GetComponent<Toggle>();
@@ -296,6 +299,12 @@ namespace Loom.ZombieBattleground
 
             _hordeAreaObject = _selfPage.transform.Find("Horde/ScrollArea").gameObject;
             _armyAreaObject = _selfPage.transform.Find("Army/ScrollArea").gameObject;
+
+            if(_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.OnMenuStepUpdated += OnMenuStepUpdatedHandler;
+                OnMenuStepUpdatedHandler();
+            }
         }
 
         public void Hide()
@@ -322,6 +331,10 @@ namespace Loom.ZombieBattleground
             ResetArmyCards();
             ResetHordeItems();
             _uiManager.GetPopup<WarningPopup>().PopupHiding -= OnCloseAlertDialogEventHandler;
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.OnMenuStepUpdated -= OnMenuStepUpdatedHandler;
+            }
 
             _cardInfoPopupHandler.Dispose();
         }
@@ -789,6 +802,12 @@ namespace Loom.ZombieBattleground
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
                     _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+
+                    if(_tutorialManager.IsTutorial)
+                    {
+                        _dataManager.CachedUserLocalData.TutorialSavedDeck = _currentDeck;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1183,6 +1202,11 @@ namespace Loom.ZombieBattleground
             _draggingObject.transform.position = position;
         }
 
+        private void OnMenuStepUpdatedHandler()
+        {
+            _elementsCanvasGroup.blocksRaycasts = !_tutorialManager.IsButtonBlockedInTutorial(_toggleGroup.name);
+        }
+
         #region button handlers
 
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
@@ -1269,6 +1293,12 @@ namespace Loom.ZombieBattleground
 
         private void ArmyArrowLeftButtonHandler()
         {
+            if (_tutorialManager.IsButtonBlockedInTutorial(_buttonArmyArrowLeft.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(-1);
@@ -1276,6 +1306,12 @@ namespace Loom.ZombieBattleground
 
         private void ArmyArrowRightButtonHandler()
         {
+            if (_tutorialManager.IsButtonBlockedInTutorial(_buttonArmyArrowRight.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(1);
