@@ -267,7 +267,7 @@ namespace Loom.ZombieBattleground
 
                         if (_tutorialManager.CurrentTutorial.Id == 5)
                         {
-                            GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow(true);
+                            GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
                         }                       
                     }
                 };

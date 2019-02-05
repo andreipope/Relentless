@@ -61,18 +61,23 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        public async Task CallRewardTutorialFlow(bool displayRewardPopup)
+        public async Task CallRewardTutorialFlow()
         {
             _uiManager.DrawPopup<LoadingFiatPopup>("CallRewardTutorialComplete...");
             TutorialRewardManager tutorialRewardManager = GameClient.Get<TutorialRewardManager>();
-
+            
             RewardTutorialCompletedResponse response = null;
             try
             {
                 response = await tutorialRewardManager.CallRewardTutorialComplete();
-            }catch
+            }catch(Exception e)
             {
-                Debug.Log("CallRewardTutorialComplete failed");
+                Debug.Log($"CallRewardTutorialComplete failed {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"CallRewardTutorialComplete failed failed\n{e.Message}\nPlease try again");
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupConfirmationReceived;
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                return;
             }
             if (response != null)
             {
@@ -82,15 +87,27 @@ namespace Loom.ZombieBattleground
                     _uiManager.DrawPopup<LoadingFiatPopup>("CallTutorialRewardContract...");
                     await tutorialRewardManager.CallTutorialRewardContract(response);
                 }
-                catch
+                catch(Exception e)
                 {
-                    Debug.Log("CallTutorialRewardContract failed");
+                    Debug.Log($"CallTutorialRewardContract failed {e.Message}");
+                    _uiManager.DrawPopup<WarningPopup>($"CallTutorialRewardContract failed failed\n{e.Message}\nPlease try again");
+                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                    popup.ConfirmationReceived += WarningPopupConfirmationReceived;
+                    _uiManager.HidePopup<LoadingFiatPopup>();
+                    return;
                 }
             }            
                
             _uiManager.HidePopup<LoadingFiatPopup>();
-            if(displayRewardPopup)
-                _uiManager.DrawPopup<RewardPopup>();            
+            _uiManager.DrawPopup<RewardPopup>();  
+        }
+        
+        private void WarningPopupConfirmationReceived()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupConfirmationReceived;
+
+            CallRewardTutorialFlow();
         }
 
         public async Task<RewardTutorialCompletedResponse> CallRewardTutorialComplete()

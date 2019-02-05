@@ -79,11 +79,7 @@ namespace Loom.ZombieBattleground
                         {   
                             _uiManager.DrawPopup<WarningPopup>($"Please login\nbefore entering a shop");
                             WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                            popup.ConfirmationReceived += () =>
-                            {
-                                LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
-                                loginPopup.Show();
-                            };
+                            popup.ConfirmationReceived += WarningPopupConfirmationNavigateToLogin;
                             return;
                         }
                         else
@@ -288,6 +284,15 @@ namespace Loom.ZombieBattleground
             popup.ConfirmationReceived -= WarningPopupConfirmationReceived;
 
             UpdateConnectionStatus();
+        }
+        
+        private void WarningPopupConfirmationNavigateToLogin()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupConfirmationNavigateToLogin;
+
+            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+            loginPopup.Show();
         }
 
         private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)
