@@ -893,7 +893,6 @@ namespace Loom.ZombieBattleground
                         target = GetAbilityTarget(card);
                     }
                 }
-
                 switch (card.LibraryCard.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:

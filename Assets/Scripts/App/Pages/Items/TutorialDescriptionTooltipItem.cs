@@ -236,7 +236,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        if (_ownerUnit != null && !_ownerUnit.Model.IsDead && _ownerUnit.GameObject != null)
+                        if (_ownerUnit != null && !_ownerUnit.Model.IsDead && _ownerUnit.GameObject != null && _ownerUnit.GameObject)
                         {
                             _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
                         }
