@@ -81,10 +81,10 @@ namespace Loom.ZombieBattleground.Test
             throw new NotImplementedException();
         }
 
-        public Task CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
+        public Task CardAttack(InstanceId attacker, InstanceId target)
         {
             BoardUnitModel boardUnitModel = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer).Model;
-            boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetById(target, type));
+            boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetById(target));
 
             return Task.CompletedTask;
         }

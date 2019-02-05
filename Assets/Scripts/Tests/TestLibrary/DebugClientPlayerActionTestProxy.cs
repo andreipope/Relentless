@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -39,10 +40,30 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
         {
-            if (entryAbilityTarget != null)
-                throw new Exception($"'{nameof(entryAbilityTarget)}' not supported for {nameof(DebugClientPlayerActionTestProxy)}. Use CardPlay + CardAbilityUsed instead.");
-
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(card, position.GetIndex(int.MaxValue)));
+
+            BoardObject entryAbilityTargetBoardObject = null;
+            if (entryAbilityTarget != null)
+            {
+                entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectById(entryAbilityTarget.Value);
+                if (entryAbilityTargetBoardObject == null)
+                    throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
+
+                WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardById(card);
+                AbilityData entryAbility =
+                    workingCard.LibraryCard.Abilities
+                    .FirstOrDefault(x => _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
+
+                if (entryAbility == null)
+                    throw new Exception("not entry ability found");
+
+                Enumerators.AbilityType abilityType = entryAbility.AbilityType;
+                await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
+                    card,
+                    abilityType,
+                    new []{new ParametrizedAbilityInstanceId(entryAbilityTarget.Value) }
+                    ));
+            }
         }
 
         public async Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
@@ -63,9 +84,9 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, affectObjectType, targetInstanceId));
         }
 
-        public async Task CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
+        public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            await SendPlayerAction(_client.PlayerActionFactory.CardAttack(attacker, type, target));
+            await SendPlayerAction(_client.PlayerActionFactory.CardAttack(attacker, target));
         }
 
         public async Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)

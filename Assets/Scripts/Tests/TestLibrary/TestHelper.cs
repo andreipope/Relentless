@@ -94,6 +94,8 @@ namespace Loom.ZombieBattleground.Test
 
         public BackendDataControlMediator BackendDataControlMediator => _backendDataControlMediator;
 
+        public AbilitiesController AbilitiesController => _abilitiesController;
+
         GameplayQueueAction<object> _callAbilityAction;
 
         private Player _currentPlayer, _opponentPlayer;
@@ -235,7 +237,7 @@ namespace Loom.ZombieBattleground.Test
             }
             else
             {
-                await TearDown_GoBackToMainScreen();
+                await TearDown();
             }
 
             await new WaitForUpdate();
@@ -298,7 +300,16 @@ namespace Loom.ZombieBattleground.Test
         /// TearDown method to be used to go back to MainMenuPage, so that other tests can take it from there and go further.
         /// </summary>
         /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
-        public async Task TearDown_GoBackToMainScreen()
+        public async Task TearDown()
+        {
+            await GoBackToMainScreen();
+        }
+
+        /// <summary>
+        /// TearDown method to be used to go back to MainMenuPage, so that other tests can take it from there and go further.
+        /// </summary>
+        /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
+        public async Task GoBackToMainScreen()
         {
             while (_lastCheckedAppState != Enumerators.AppState.MAIN_MENU)
             {
@@ -1291,7 +1302,6 @@ namespace Loom.ZombieBattleground.Test
                             {
                                 unit.OwnerPlayer.ThrowCardAttacked(
                                     unit.Card,
-                                    Enumerators.AffectObjectType.Character,
                                     attackedUnit.Card.InstanceId);
 
                                 /* if (target == SelectedPlayer)
@@ -1340,8 +1350,7 @@ namespace Loom.ZombieBattleground.Test
 
                         unit.OwnerPlayer.ThrowCardAttacked(
                             unit.Card,
-                            Enumerators.AffectObjectType.Player,
-                            null);
+                            _gameplayManager.CurrentPlayer.InstanceId);
 
                         await LetsThink();
                     }
@@ -1364,8 +1373,7 @@ namespace Loom.ZombieBattleground.Test
 
                             unit.OwnerPlayer.ThrowCardAttacked(
                                 unit.Card,
-                                Enumerators.AffectObjectType.Player,
-                                null);
+                                _gameplayManager.CurrentPlayer.InstanceId);
 
                             await LetsThink();
                         }
@@ -1381,7 +1389,6 @@ namespace Loom.ZombieBattleground.Test
 
                                 unit.OwnerPlayer.ThrowCardAttacked(
                                     unit.Card,
-                                    Enumerators.AffectObjectType.Character,
                                     attackedCreature.Card.InstanceId);
 
                                 await LetsThink();
@@ -1394,8 +1401,7 @@ namespace Loom.ZombieBattleground.Test
 
                                 unit.OwnerPlayer.ThrowCardAttacked(
                                     unit.Card,
-                                    Enumerators.AffectObjectType.Player,
-                                    null);
+                                    _gameplayManager.CurrentPlayer.InstanceId);
 
                                 await LetsThink();
                             }
@@ -1632,7 +1638,8 @@ namespace Loom.ZombieBattleground.Test
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        BoardCard boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.WorkingCard.Equals(card));
+                        Assert.NotNull(boardCard, $"Card {card} not found in local player hand");
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -3605,6 +3612,16 @@ namespace Loom.ZombieBattleground.Test
         /// <returns></returns>
         public async Task CreateAndConnectOpponentDebugClient()
         {
+            if (_opponentDebugClient != null)
+            {
+                await _opponentDebugClient.Reset();
+            }
+
+            if (_opponentDebugClientOwner != null)
+            {
+                Object.Destroy(_opponentDebugClientOwner);
+            }
+
             GameObject owner = new GameObject("_OpponentDebugClient");
             owner.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
             OnBehaviourHandler onBehaviourHandler = owner.AddComponent<OnBehaviourHandler>();

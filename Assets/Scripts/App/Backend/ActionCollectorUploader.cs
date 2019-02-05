@@ -243,12 +243,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, Data.InstanceId instanceId)
             {
-                if (type != Enumerators.AffectObjectType.Player && instanceId == null)
-                    throw new ArgumentNullException(nameof(instanceId));
-
-                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId ?? new Data.InstanceId(-1)));
+                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, instanceId));
             }
 
             private void AbilityUsedHandler(

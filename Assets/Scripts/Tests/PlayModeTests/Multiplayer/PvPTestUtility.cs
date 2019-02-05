@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Loom.ZombieBattleground.Test
 {
-    public class PvPTestHelper
+    public static class PvPTestUtility
     {
-        public WorkingCard GetCardOnBoard(Player player, string name)
+        public static WorkingCard GetCardOnBoard(Player player, string name)
         {
             WorkingCard workingCard =
                 player
@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground.Test
             return workingCard;
         }
 
-        public WorkingCard GetCardInHand(Player player, string name)
+        public static WorkingCard GetCardInHand(Player player, string name)
         {
             WorkingCard workingCard =
                 player
@@ -37,9 +37,14 @@ namespace Loom.ZombieBattleground.Test
             return workingCard;
         }
 
-        private static bool CardNameEqual(string name, WorkingCard card)
+        public static bool CardNameEqual(string name1, string name2)
         {
-            return String.Equals(name, card.LibraryCard.Name, StringComparison.InvariantCultureIgnoreCase);
+            return String.Equals(name1, name2, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static bool CardNameEqual(string name, WorkingCard card)
+        {
+            return CardNameEqual(name, card.LibraryCard.Name);
         }
     }
 }

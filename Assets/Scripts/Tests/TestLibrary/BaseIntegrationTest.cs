@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground.Test
                 }
                 else
                 {
-                    await TestHelper.TearDown_GoBackToMainScreen();
+                    await TestHelper.TearDown();
                 }
 
                 /*await _testHelper.PerTestTearDown();

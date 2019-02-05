@@ -72,9 +72,9 @@ namespace Loom.ZombieBattleground.Test
             Queue.Enqueue(() => Proxy.OverlordSkillUsed(skillId, affectObjectType, targetInstanceId));
         }
 
-        public void CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
+        public void CardAttack(InstanceId attacker, InstanceId target)
         {
-            Queue.Enqueue(() => Proxy.CardAttack(attacker, type, target));
+            Queue.Enqueue(() => Proxy.CardAttack(attacker, target));
         }
 
         public void CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
