@@ -769,7 +769,7 @@ namespace Loom.ZombieBattleground
                 if (_battlegroundController.OpponentHandCards.Count <= 0)
                     return;
 
-                opponentHandCard = _battlegroundController.OpponentHandCards[Random.Range(0, _battlegroundController.OpponentHandCards.Count)];
+                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.WorkingCard.InstanceId == cardId);
             }
 
             if(opponentHandCard == null || opponentHandCard is default(OpponentHandCard))
