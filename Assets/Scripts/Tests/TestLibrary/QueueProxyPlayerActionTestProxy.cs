@@ -67,9 +67,9 @@ namespace Loom.ZombieBattleground.Test
             Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityType, targets));
         }
 
-        public void OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
+        public void OverlordSkillUsed(SkillId skillId, InstanceId targetInstanceId)
         {
-            Queue.Enqueue(() => Proxy.OverlordSkillUsed(skillId, affectObjectType, targetInstanceId));
+            Queue.Enqueue(() => Proxy.OverlordSkillUsed(skillId, targetInstanceId));
         }
 
         public void CardAttack(InstanceId attacker, InstanceId target)

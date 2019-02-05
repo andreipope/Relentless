@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await StartOnlineMatch(createOpponent: false);
+                await PvPTestUtility.StartOnlineMatch(createOpponent: false);
 
                 await TestHelper.LetsThink(5, true);
 
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await StartOnlineMatch(createOpponent: false);
+                await PvPTestUtility.StartOnlineMatch(createOpponent: false);
 
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
                     () =>
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await StartOnlineMatch();
+                await PvPTestUtility.StartOnlineMatch();
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
                     null,
                     () =>
@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await StartOnlineMatch();
+                await PvPTestUtility.StartOnlineMatch();
 
                 await TestHelper.MatchmakeOpponentDebugClient();
 
@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await StartOnlineMatch();
+                await PvPTestUtility.StartOnlineMatch();
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
                     null,
                     () =>
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await StartOnlineMatch();
+                await PvPTestUtility.StartOnlineMatch();
                 await TestHelper.AssertPvPStartedOrMatchmakingFailed(
                     null,
                     () =>

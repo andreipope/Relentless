@@ -184,7 +184,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId target)
+        public PlayerAction OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
             return new PlayerAction
             {

@@ -3615,11 +3615,13 @@ namespace Loom.ZombieBattleground.Test
             if (_opponentDebugClient != null)
             {
                 await _opponentDebugClient.Reset();
+                _opponentDebugClient = null;
             }
 
             if (_opponentDebugClientOwner != null)
             {
                 Object.Destroy(_opponentDebugClientOwner);
+                _opponentDebugClientOwner = null;
             }
 
             GameObject owner = new GameObject("_OpponentDebugClient");

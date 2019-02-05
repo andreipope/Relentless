@@ -79,9 +79,9 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, targets));
         }
 
-        public async Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
+        public async Task OverlordSkillUsed(SkillId skillId, InstanceId targetInstanceId)
         {
-            await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, affectObjectType, targetInstanceId));
+            await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, targetInstanceId));
         }
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)
@@ -96,6 +96,9 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task<bool> GetIsCurrentTurn()
         {
+            if (_client.BackendFacade == null)
+                return false;
+
             GetGameStateResponse gameStateResponse = await _client.BackendFacade.GetGameState(_client.MatchMakingFlowController.MatchMetadata.Id);
             GameState gameState = gameStateResponse.GameState;
             return gameState.PlayerStates[gameState.CurrentPlayerIndex].Id == _client.UserDataModel.UserId;

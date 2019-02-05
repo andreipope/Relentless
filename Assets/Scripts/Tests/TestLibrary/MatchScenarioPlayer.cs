@@ -28,6 +28,7 @@ namespace Loom.ZombieBattleground.Test
 
         private int _currentTurn;
         private bool _aborted;
+        private bool _completed;
         private QueueProxyPlayerActionTestProxy _lastQueueProxy;
 
         public MatchScenarioPlayer(TestHelper testHelper, IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns)
@@ -60,6 +61,7 @@ namespace Loom.ZombieBattleground.Test
 #endif
 
             await _testHelper.PlayMoves(LocalPlayerTurnTaskGenerator);
+            _completed = true;
 
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log("[ScenarioPlayer]: Play 3 - Finished");
@@ -78,6 +80,9 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task HandleOpponentClientTurn(bool isFirstTurn)
         {
+            if (_completed)
+                return;
+
             try
             {
                 await _opponentClientTurnSemaphore.WaitAsync();
@@ -135,7 +140,10 @@ namespace Loom.ZombieBattleground.Test
                 throw new Exception("Multiple turns in a row from the same player are not allowed");
 
             if (!isOpponent && _currentTurn >= _turns.Count)
+            {
+                _completed = true;
                 return false;
+            }
 
             if (_aborted)
                 return false;
@@ -147,6 +155,7 @@ namespace Loom.ZombieBattleground.Test
                 // If the last turn happens to be by the opponent, local player task runner will get stuck waiting for its turn.
                 // So just end the opponent turn to hand control to the local player runner.
                 turnAction = proxy => {};
+                _completed = true;
             }
             else
             {
@@ -185,6 +194,9 @@ namespace Loom.ZombieBattleground.Test
             // Switch to main thread
             await new WaitForUpdate();
 
+            if (_completed)
+                return;
+
             try
             {
                 MultiplayerDebugClient opponentClient = _testHelper.GetOpponentDebugClient();
@@ -200,7 +212,6 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
                 Debug.LogException(e);
             }
         }

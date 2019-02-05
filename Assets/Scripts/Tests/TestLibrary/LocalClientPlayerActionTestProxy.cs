@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground.Test
         private readonly IQueueManager _queueManager;
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
-        private Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
+        private readonly Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
 
         public LocalClientPlayerActionTestProxy(TestHelper testHelper)
         {
@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
+        public Task OverlordSkillUsed(SkillId skillId, InstanceId targetInstanceId)
         {
             throw new NotImplementedException();
         }
