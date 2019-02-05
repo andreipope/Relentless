@@ -171,14 +171,14 @@ namespace Loom.ZombieBattleground
             
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _buttonBuyPack = _selfPage.transform.Find("Header/Button_BuyPacks").GetComponent<Button>();
-            _buttonPlus = _selfPage.transform.Find("Pack_Panel/Pack_Tray/pack_screen/ButtonPlus").GetComponent<Button>();
-            _buttonMinus = _selfPage.transform.Find("Pack_Panel/Pack_Tray/pack_screen/ButtonMinus").GetComponent<Button>();
-            _buttonMax = _selfPage.transform.Find("Pack_Panel/Pack_Tray/pack_screen/ButtonMax").GetComponent<Button>();
+            _buttonPlus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonPlus").GetComponent<Button>();
+            _buttonMinus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonMinus").GetComponent<Button>();
+            _buttonMax = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonMax").GetComponent<Button>();
             _buttonOpenPack = _selfPage.transform.Find("Pack_Panel/RightPanel/ButtonOpenPacks").GetComponent<Button>();
             _butttonPanelCollect = _selfPage.transform.Find("Panel_Collect").GetComponent<Button>();
             _buttonCollect = _selfPage.transform.Find("Panel_Collect/ButtonCollect").GetComponent<Button>();
             
-            _packsAmountText = _selfPage.transform.Find("Pack_Panel/Pack_Tray/pack_screen/TextAmount").GetComponent<TextMeshProUGUI>();
+            _packsAmountText = _selfPage.transform.Find("Pack_Panel/pack_screen/TextAmount").GetComponent<TextMeshProUGUI>();
             _packTray = _selfPage.transform.Find("Pack_Panel/Pack_Tray").GetComponent<Transform>();
             _trayStart =  _selfPage.transform.Find("Pack_Panel/tray_start").GetComponent<Transform>();
             _trayEnd =  _selfPage.transform.Find("Pack_Panel/tray_end").GetComponent<Transform>();

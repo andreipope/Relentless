@@ -162,9 +162,13 @@ namespace Loom.ZombieBattleground
             if(_tutorialManager.IsTutorial)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupOpened);
-                if(_tutorialManager.CurrentTutorial.Id == 0)
+                if(_tutorialManager.CurrentTutorial.Id == 0)                
                 {
                     _message.gameObject.SetActive(false);
+                }
+                if( _tutorialManager.CurrentTutorial.Id == 5)
+                {
+                    _message.text = "Congratulations!\nReward would be automatically claimed.";
                 }
             }
         }
