@@ -1867,7 +1867,7 @@ namespace Loom.ZombieBattleground
             _battleController.HealPlayerBySkill(owner, boardSkill, owner);
 
             Vector3 position = owner.AvatarObject.transform.position;
-            position -= Vector3.up * 3.5f;
+            position -= new Vector3(0.07f, 4f, 0f);
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),
                 position, isIgnoreCastVfx: true);
