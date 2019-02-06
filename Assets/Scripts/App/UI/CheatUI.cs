@@ -70,6 +70,7 @@ namespace Loom.ZombieBattleground
             GUILayout.EndArea();
 
             pvpCheatsRect.y += pvpCheatsRect.height + 15;
+            pvpCheatsRect.height = 75;
             GUILayout.BeginArea(pvpCheatsRect, "PvP Options", Styles.OpaqueWindow);
             {
                 _pvpManager.UseBackendGameLogic = GUILayout.Toggle(_pvpManager.UseBackendGameLogic, "Use Backend Logic");

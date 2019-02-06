@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public async void FindMatch()
+        public async Task FindMatch()
         {
             switch (MatchType)
             {
@@ -114,38 +114,6 @@ namespace Loom.ZombieBattleground
             matchMakingPopup.SetUIState(state);
         }
 
-        public async void DebugFindPvPMatch(Deck deck)
-        {
-            /*
-            try
-            {
-                _uiManager.DrawPopup<ConnectionPopup>();
-
-                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-                connectionPopup.ShowLookingForMatch();
-                connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
-
-                bool success = await _pvpManager.DebugFindMatch(deck);
-                if (!success)
-                    return;
-
-                if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
-                {
-                    StartPvPMatch();
-                }
-                else
-                {
-                    _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
-                }
-            }
-            catch (Exception e) {
-                Debug.LogWarning(e);
-                _uiManager.GetPopup<ConnectionPopup>().Hide();
-                _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
-            }
-            */
-        }
-
         private async void MatchMakingPopupOnCancelMatchmakingClicked()
         {
             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
@@ -169,10 +137,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void FindMatch(Enumerators.MatchType matchType)
+        public async Task FindMatch(Enumerators.MatchType matchType)
         {
             MatchType = matchType;
-            FindMatch();
+            await FindMatch();
         }
 
         public void Dispose()

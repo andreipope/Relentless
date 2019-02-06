@@ -69,7 +69,8 @@ namespace Loom.ZombieBattleground.Test
 
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
-            GameClient.Get<IMatchManager>().FindMatch();
+            await GameClient.Get<IMatchManager>().FindMatch();
+            GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
 
             MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
