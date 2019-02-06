@@ -132,10 +132,10 @@ namespace Loom.ZombieBattleground.Test
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerSlabId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 2);
-                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 2);
-                InstanceId playerCyndermanId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 0);
-                InstanceId opponentCyndermanId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 0);
+                InstanceId playerSlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Slab", 1);
+                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 1);
+                InstanceId playerCyndermanId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Cynderman", 1);
+                InstanceId opponentCyndermanId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Cynderman", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},

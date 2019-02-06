@@ -105,7 +105,6 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new NotImplementedException(MatchType + " not implemented yet.");
             }
-
         }
 
         private void MatchMakingFlowControllerOnStateChanged(MatchMakingFlowController.MatchMakingState state)

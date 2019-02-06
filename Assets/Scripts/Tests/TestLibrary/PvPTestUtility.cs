@@ -21,7 +21,8 @@ namespace Loom.ZombieBattleground.Test
         {
             async Task ExecuteTest()
             {
-                await GenericPvPTest(turns,
+                await GenericPvPTest(
+                    turns,
                     pvpTestContext.Player1Deck,
                     () =>
                     {
