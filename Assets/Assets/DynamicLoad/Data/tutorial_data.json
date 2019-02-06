@@ -910,9 +910,6 @@
         {
           "ConnectedTurnIndex": 1,
           "TutorialObjectIdStepOwner": 51,
-          "TutorialDescriptionTooltipsToActivate": [
-            1
-          ],
           "ActionToEndThisStep": "BattleframeAttacked"
         },
         {
@@ -922,6 +919,9 @@
               "TutorialTooltipOwner": "PlayerOverlord",
               "Description": "Pesky Ferals..."
             }
+          ],
+          "TutorialDescriptionTooltipsToActivate": [
+            1
           ],
           "ActionToEndThisStep": "EndTurn"
         },
@@ -980,7 +980,7 @@
                 "Z": 0.0
               },
               "TutorialHandPointerType": "Single",
-              "AppearDelay": 2.0
+              "AppearDelay": 5.0
             }
           ],
           "ActionToEndThisStep": "EndTurn"
@@ -999,9 +999,11 @@
           "ActionToEndThisStep": "EndTurn"
         },
         {
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
           "ConnectedTurnIndex": 4,
           "TutorialDescriptionTooltipsToActivate": [
-            4
+            4,
+            7
           ],
           "ActionToEndThisStep": "TapOnScreen"
         },
@@ -1015,6 +1017,10 @@
               "Description": "Time to end this.",
               "AppearDelay": 1.0
             }
+          ],
+          "SelectableTargets": [
+            "OPPONENT",
+            "OPPONENT_CARD"
           ],
           "HandPointers": [
             {
@@ -1069,6 +1075,7 @@
               },
               "TutorialObjectIdStepOwner": 2,
               "TargetTutorialObjectId": 52,
+              "AppearDelay": 5.0,
               "TutorialHandPointerType": "Animated"
             }
           ],
@@ -1103,6 +1110,7 @@
                 "Z": 0.0
               },
               "TutorialObjectIdStepOwner": 1,
+              "AppearDelay": 5.0,
               "TutorialHandPointerType": "Animated"
             }
           ],
@@ -1113,8 +1121,8 @@
           "ActionToEndThisStep": "BattleframeAttacked"
         },
         {
+          "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
-          "PlayerOverlordAbilityShouldBeUnlocked": true,
           "SelectableTargets": [
             "OPPONENT"
           ],
@@ -1141,10 +1149,7 @@
               "TutorialHandPointerOwner": "PlayerOverlordAbility"
             }
           ],
-          "TutorialDescriptionTooltipsToActivate": [
-            7
-          ],
-          "ActionToEndThisStep": "EnemyOverlordDied"
+          "ActionToEndThisStep": "PlayerOverlordAbilityUsed"
         },
         {
           "TutorialAvatar": {
@@ -1283,6 +1288,12 @@
               "TargetType": "OPPONENT"
             }
           ],
+          "UseOverlordSkillsSequence": [
+            {
+              "SkillType": "PRIMARY",
+              "TargetType": "OPPONENT",
+            },
+          ],
           "RequiredActivitiesToDoneDuringTurn": [
             "PlayerOverlordCardPlayed",
             "BattleframeAttacked",
@@ -1305,7 +1316,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterRight",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "END IT!"
+                "Description": "No, not that! We can end it this turn!"
               }
             }
           ]
@@ -1321,13 +1332,13 @@
       "TutorialDescriptionTooltips": [
         {
           "Id": 1,
-          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwnerId": 1,
           "TutorialTooltipOwner": "PlayerBattleframe",
           "Description": "For Toxic, the Rank Buff gives zombies +1 Atk and the Destroy ability.",
           "Position": {
-            "X": 1.15,
-            "Y": 0.3,
+            "X": 0.0,
+            "Y": -1.3,
             "Z": 0.0
           },
           "DynamicPosition": true
@@ -1498,7 +1509,7 @@
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialObjectIdStepOwner": 1,
               "TargetTutorialObjectId": 52,
-              "AppearDelay": 1.0,
+              "AppearDelay": 5.0,
               "AdditionalObjectIdOwners": [
                 20
               ],
@@ -1539,7 +1550,7 @@
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialObjectIdStepOwner": 1,
               "TargetTutorialObjectId": 52,
-              "AppearDelay": 1.0,
+              "AppearDelay": 5.0,
               "AdditionalObjectIdOwners": [
                 20
               ],
@@ -1869,7 +1880,8 @@
             "X": 1.85,
             "Y": 0.3,
             "Z": 0.0
-          }
+          },
+          "MinimumShowTime": 0.0
         },
         {
           "Id": 3,
@@ -1898,12 +1910,21 @@
           "ActionToEndThisStep": "EnemyOverlordCardPlayed"
         },
         {
+          "RequiredActivitiesToDoneDuringStep": [
+          ],
           "ActionToEndThisStep": "EnemyOverlordCardPlayed"
         },
         {
+          "RequiredActivitiesToDoneDuringStep": [
+          ],
           "TutorialObjectIdStepOwner": 52,
           "TutorialDescriptionTooltipsToActivate": [
             1
+          ],
+          "ActionToEndThisStep": "DescriptionTooltipClosed"
+        },
+        {
+          "RequiredActivitiesToDoneDuringStep": [
           ],
           "ActionToEndThisStep": "EndTurn"
         },
@@ -2867,8 +2888,12 @@
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
-          "ActionToEndThisStep": "PopupClosed",
+          "PlayerOrderScreenCloseManually": true,
+          "ActionToEndThisStep": "DescriptionTooltipClosed",
           "BeginGameplayFlowManually": true
+        },
+        {
+          "ActionToEndThisStep": "PopupClosed",        
         },
         {
           "TutorialDescriptionTooltipsToActivate": [

@@ -196,7 +196,6 @@ namespace Loom.ZombieBattleground
                 switch (_aiBrainType)
                 {
                     case Enumerators.AiBrainType.Tutorial:
-                        await LetsThink(_aiBrainCancellationTokenSource.Token);
                         await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
                         break;
                     default:
@@ -326,7 +325,7 @@ namespace Loom.ZombieBattleground
             await LetsWaitForQueue(cancellationToken);
 
             List<Enumerators.TutorialActivityAction> requiredActivitiesToDoneDuringTurn = step.ToGameplayStep().RequiredActivitiesToDoneDuringStep;
-            if(requiredActivitiesToDoneDuringTurn.Count == 0)
+            if(requiredActivitiesToDoneDuringTurn == null)
             {
                 requiredActivitiesToDoneDuringTurn = _tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn;
             }
@@ -370,8 +369,6 @@ namespace Loom.ZombieBattleground
 
             if (step.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn)
             {
-                await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
                 _battlegroundController.StopTurn();
             }
         }

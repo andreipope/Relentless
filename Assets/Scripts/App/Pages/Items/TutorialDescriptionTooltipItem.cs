@@ -174,15 +174,36 @@ namespace Loom.ZombieBattleground
 
                         distance = Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x);
 
-                        if ((_align == tooltip.Align && distance < Width + AdditionalInterval) ||
-                            (_align != tooltip.Align && distance < MinIntervalFromDifferentAlign))
+                        if (tooltip.Align == Enumerators.TooltipAlign.CenterLeft ||
+                            tooltip.Align == Enumerators.TooltipAlign.CenterRight)
                         {
-                            _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
+
+                            if ((_align == tooltip.Align && distance < Width + AdditionalInterval) ||
+                                (_align != tooltip.Align && distance < MinIntervalFromDifferentAlign))
+                            {
+                                _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
+                                SetBackgroundType(_align);
+                                _currentPosition.x *= -1f;
+                                UpdateTextPosition();
+                                SetPosition();
+                                Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
+                            }
+                        }
+                        else
+                        {
+                            if(_selfObject.transform.position.x > tooltip._selfObject.transform.position.x)
+                            {
+                                _align = Enumerators.TooltipAlign.CenterLeft;
+                                _currentPosition.x = Mathf.Abs(_currentPosition.x);
+                            }
+                            else
+                            {
+                                _align = Enumerators.TooltipAlign.CenterRight;
+                                _currentPosition.x = -Mathf.Abs(_currentPosition.x);
+                            }
                             SetBackgroundType(_align);
-                            _currentPosition.x *= -1f;
                             UpdateTextPosition();
                             SetPosition();
-                            Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
                         }
                     }
                 }
@@ -228,6 +249,8 @@ namespace Loom.ZombieBattleground
         {
             if (!_isDrawing || !_canBeClosed)
                 return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.DescriptionTooltipClosed);
 
             _selfObject?.SetActive(false);
 
@@ -277,7 +300,14 @@ namespace Loom.ZombieBattleground
         private void StartShowTimer()
         {
             _canBeClosed = false;
-            _showingSequence = InternalTools.DoActionDelayed(UpdatePossibilityForClose, _minimumShowTime);
+            if (_minimumShowTime > 0f)
+            {
+                _showingSequence = InternalTools.DoActionDelayed(UpdatePossibilityForClose, _minimumShowTime);
+            }
+            else
+            {
+                UpdatePossibilityForClose();
+            }
         }
 
         private void UpdatePossibilityForClose()

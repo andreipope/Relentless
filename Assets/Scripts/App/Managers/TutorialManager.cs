@@ -61,6 +61,8 @@ namespace Loom.ZombieBattleground
 
         private List<TutorialDescriptionTooltipItem> _ingameTutorialActiveTooltips;
 
+        private bool _playerOrderScreenCloseManually;
+
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialStep CurrentTutorialStep { get; private set; }
 
@@ -821,6 +823,12 @@ namespace Loom.ZombieBattleground
                         GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
                     }
 
+                    if(!gameStep.PlayerOrderScreenCloseManually && _playerOrderScreenCloseManually)
+                    {
+                        _uiManager.GetPopup<PlayerOrderPopup>().AnimationEnded();
+                    }
+                    _playerOrderScreenCloseManually = gameStep.PlayerOrderScreenCloseManually;
+
                     if (CurrentTutorial.TutorialContent.ToGameplayContent().GameplayFlowBeginsManually && gameStep.BeginGameplayFlowManually)
                     {
                         (_gameplayManager as GameplayManager).TutorialStartAction?.Invoke();
@@ -938,7 +946,6 @@ namespace Loom.ZombieBattleground
                 (tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.EnemyBattleframe ||
                 tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.PlayerBattleframe));
 
-            Debug.LogError(ownerId + " ||| " + tooltips.Count);
             foreach (TutorialDescriptionTooltip tooltip in tooltips)
             {
                 step = CurrentTutorial.TutorialContent.TutorialSteps.Find(info => info.ToGameplayStep().TutorialDescriptionTooltipsToActivate.Exists(id => id == tooltip.Id));

@@ -807,6 +807,7 @@ namespace Loom.ZombieBattleground.Common
 
             TapOnScreen,
             AvatarTooltipClosed,
+            DescriptionTooltipClosed,
 
             OverlordSayPopupHided,
 
