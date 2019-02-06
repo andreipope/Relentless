@@ -64,12 +64,11 @@ namespace Loom.ZombieBattleground
         public async Task CallRewardTutorialFlow()
         {
             _uiManager.DrawPopup<LoadingFiatPopup>("CallRewardTutorialComplete...");
-            TutorialRewardManager tutorialRewardManager = GameClient.Get<TutorialRewardManager>();
             
             RewardTutorialCompletedResponse response = null;
             try
             {
-                response = await tutorialRewardManager.CallRewardTutorialComplete();
+                response = await CallRewardTutorialComplete();
             }catch(Exception e)
             {
                 Debug.Log($"CallRewardTutorialComplete failed {e.Message}");
@@ -85,7 +84,7 @@ namespace Loom.ZombieBattleground
                 {
                     _uiManager.HidePopup<LoadingFiatPopup>();
                     _uiManager.DrawPopup<LoadingFiatPopup>("CallTutorialRewardContract...");
-                    await tutorialRewardManager.CallTutorialRewardContract(response);
+                    await CallTutorialRewardContract(response);
                 }
                 catch(Exception e)
                 {
@@ -99,7 +98,8 @@ namespace Loom.ZombieBattleground
             }            
                
             _uiManager.HidePopup<LoadingFiatPopup>();
-            _uiManager.DrawPopup<RewardPopup>();  
+            _uiManager.DrawPopup<RewardPopup>();
+            _uiManager.GetPage<PackOpenerPage2>().RetrievePackBalanceAmount();
         }
         
         private void WarningPopupConfirmationReceived()

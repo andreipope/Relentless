@@ -43,99 +43,62 @@ namespace Loom.ZombieBattleground
             return false;
         }
         
-        public async Task<FiatValidationResponse> CallFiatValidation(string productId, string purchaseToken, string storeTxId, string storeName)
+        public async Task<FiatValidationResponse> CallFiatValidationGoogle(string productId, string purchaseToken, string storeTxId, string storeName)
         {  
-            Debug.Log("CallFiatValidation");
+            Debug.Log($"{nameof(CallFiatValidationGoogle)}");
+
+            UnityWebRequest request = null;
+            FiatValidationResponse response = null;
             
             WWWForm form = new WWWForm();
             form.AddField("productId", productId);       
             form.AddField("purchaseToken", purchaseToken);       
             form.AddField("transactionId", storeTxId);       
             form.AddField("storeName", storeName);
-
-            UnityWebRequest request = null;
-
-            int count = 0;
-            while (true)
-            {
-                if (request != null)
-                    request.Dispose();
-                request = UnityWebRequest.Post(PlasmaChainEndpointsContainer.FiatValidationURL,form);
-                AddAuthorizationHeader(request);
-                request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                request.downloadHandler = new DownloadHandlerBuffer();
-                try
-                {
-                    await request.SendWebRequest();
-
-                    if (IsSuccess(request))
-                        break;
-                    Debug.Log("FiatValidation request connection error");
-                }
-                catch
-                {
-                    Debug.Log("Catch FiatValidation request connection error");
-                    await Task.Delay(TimeSpan.FromSeconds(1));                  
-                }
-                ++count;
-                Debug.Log($"Retry FiatValidation: {count}");
-            }      
-
-            string json = request.downloadHandler.text;          
-            Debug.Log(json);        
-            FiatValidationResponse response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
             
-            Debug.Log("Finish CallFiatValidation");
-            return response;
+            request = UnityWebRequest.Post(PlasmaChainEndpointsContainer.FiatValidationURL,form);
+            AddAuthorizationHeader(request);
+            request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.downloadHandler = new DownloadHandlerBuffer();
+            
+            await request.SendWebRequest();
+            if (IsSuccess(request))
+            {
+                string json = request.downloadHandler.text;          
+                Debug.Log(json);        
+                response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
+                Debug.Log($"Finish {nameof(CallFiatValidationGoogle)}");
+                return response;        
+            }
+            throw new Exception($"{nameof(CallFiatValidationGoogle)} failed with error code {request.responseCode}");
         }
         
         public async Task<FiatValidationResponse> CallFiatValidationApple(string productId, string transactionId, string receiptData, string storeName)
         {  
-            Debug.Log("CallFiatValidationApple");
+            Debug.Log($"{nameof(CallFiatValidationApple)}");
+
+            UnityWebRequest request = null;
+            FiatValidationResponse response = null;
             
             WWWForm form = new WWWForm();
             form.AddField("productId", productId);       
             form.AddField("transactionId", transactionId);       
             form.AddField("receiptData", receiptData);       
             form.AddField("storeName", storeName);
-
-            UnityWebRequest request = null;
-
-            int count = 0;
-            while (true)
-            {
-                if (request != null)
-                    request.Dispose();
-                request = UnityWebRequest.Post(PlasmaChainEndpointsContainer.FiatValidationURL,form);
-                AddAuthorizationHeader(request);
-                request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                request.downloadHandler = new DownloadHandlerBuffer();
-                try
-                {
-                    await request.SendWebRequest();
-
-                    //if (IsSuccess(request))
-                    //break;
-                    //Debug.Log("FiatValidation request connection error");
-                    
-                    Debug.Log($"FiatValidation responseCode: {request.responseCode}");
-                    break;
-                }
-                catch
-                {
-                    Debug.Log("Catch FiatValidation request connection error");
-                    await Task.Delay(TimeSpan.FromSeconds(1));                  
-                }
-                ++count;
-                Debug.Log($"Retry FiatValidation: {count}");
-            }      
+            
+            request = UnityWebRequest.Post(PlasmaChainEndpointsContainer.FiatValidationURL,form);
+            AddAuthorizationHeader(request);
+            request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.downloadHandler = new DownloadHandlerBuffer();
+           
+            await request.SendWebRequest();
+            Debug.Log($"{nameof(CallFiatValidationApple)} responseCode: {request.responseCode}");
 
             string json = request.downloadHandler.text;          
             Debug.Log(json);        
-            FiatValidationResponse response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
-            
-            Debug.Log("Finish CallFiatValidation");
-            return response;
+            response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
+            Debug.Log($"Finish {nameof(CallFiatValidationApple)}");
+            return response;            
         }
         
         public async Task<List<FiatTransactionResponse>> CallFiatTransaction()

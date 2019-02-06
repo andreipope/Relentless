@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
@@ -16,7 +17,7 @@ namespace Loom.ZombieBattleground
 {
     public class PackOpenerPage2 : IUIElement
     {      
-        private TextMeshProUGUI[] _packTypeAmounts, _packTypeNames;
+        private TextMeshProUGUI[] _packTypeAmountLabels, _packTypeNames;
 
         private Button[] _packTypeButtons;
     
@@ -25,6 +26,8 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
         
         private OpenPackPlasmaManager _openPackPlasmaManager;
+        
+        private BackendDataControlMediator _backendDataControlMediator;
         
         private CardInfoPopupHandler _cardInfoPopupHandler;
         
@@ -68,6 +71,8 @@ namespace Loom.ZombieBattleground
 
         private int _selectedPackTypeIndex;
         
+        private bool _dataLoading = false;
+        
         private enum STATE
         {
             NONE,
@@ -89,6 +94,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _openPackPlasmaManager = GameClient.Get<OpenPackPlasmaManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -102,6 +108,16 @@ namespace Loom.ZombieBattleground
         
         public void Update()
         {
+            if (!_dataLoading)
+            {
+                if (_backendDataControlMediator.UserDataModel != null)
+                    if (_backendDataControlMediator.UserDataModel.PrivateKey != null)
+                    {
+                        RetrievePackBalanceAmount();
+                        _dataLoading = true;
+                    }
+            }
+        
             if (_selfPage == null || !_selfPage.activeInHierarchy)
                 return;
             
@@ -149,7 +165,7 @@ namespace Loom.ZombieBattleground
             }            
         }
         
-        public async void Show()
+        public void Show()
         {
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/PackOpenerPage_2"));
@@ -198,8 +214,7 @@ namespace Loom.ZombieBattleground
             InitObjects();
             InitCardPositions();
             InitState();
-            InitPackTypeButtons();
-            await RetrievePackBalanceAmount();           
+            InitPackTypeButtons();          
             SetPackTypeButtonsAmount(); 
             ChangeSelectedPackType(0);   
         }
@@ -279,15 +294,15 @@ namespace Loom.ZombieBattleground
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
             int amountOfPackType = packTypes.Length;            
             _packTypeNames = new TextMeshProUGUI[amountOfPackType];
-            _packTypeAmounts = new TextMeshProUGUI[amountOfPackType];
+            _packTypeAmountLabels = new TextMeshProUGUI[amountOfPackType];
             _packTypeButtons = new Button[amountOfPackType];
             for(int i=0; i<amountOfPackType; ++i)
             {   
                 Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContect/Group/pack_holder_normal_{i}");
                 _packTypeNames[i] = buttonParent.Find("text_name").GetComponent<TextMeshProUGUI>();
                 _packTypeNames[i].text = $"{packTypes[i].ToString().ToUpper()} PACK";
-                _packTypeAmounts[i] = buttonParent.Find("text_amount").GetComponent<TextMeshProUGUI>();
-                _packTypeAmounts[i].text = "0";
+                _packTypeAmountLabels[i] = buttonParent.Find("text_amount").GetComponent<TextMeshProUGUI>();
+                _packTypeAmountLabels[i].text = "0";
                 _packTypeButtons[i] = buttonParent.GetComponent<Button>();
                 int id = i;
                 _packTypeButtons[i].onClick.AddListener( ()=> {
@@ -298,12 +313,20 @@ namespace Loom.ZombieBattleground
         
         private void SetPackTypeButtonsAmount()
         {
-            for (int i = 0; i < _packTypeAmounts.Length; ++i)
+            for (int i = 0; i < _packTypeAmountLabels.Length; ++i)
             {
-                _packTypeAmounts[i].text = _packBalanceAmounts[i].ToString();
+                SetPackTypeButtonsAmount(i);
             }
         }
 
+        private void SetPackTypeButtonsAmount(int typeId)
+        {
+            if (_selfPage == null || !_selfPage.activeInHierarchy)
+                return;
+            if (_packTypeAmountLabels == null || _packBalanceAmounts == null)
+                return;
+            _packTypeAmountLabels[typeId].text = _packBalanceAmounts[typeId].ToString();
+        }
 
         private void CreateCardsToDisplay()
         {
@@ -388,16 +411,15 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        private async Task RetrievePackBalanceAmount()
+        public async Task RetrievePackBalanceAmount()
         {            
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
             _packBalanceAmounts = new int[packTypes.Length];
             for(int i=0; i<packTypes.Length;++i)
             {
-                _uiManager.DrawPopup<LoadingFiatPopup>( $"Loading {packTypes[i].ToString()} pack amount . . ." );
                 _packBalanceAmounts[i] = await _openPackPlasmaManager.CallPackBalanceContract((int)packTypes[i]);
-                _uiManager.HidePopup<LoadingFiatPopup>();
-            }                      
+                SetPackTypeButtonsAmount(i);
+            }              
         }
         private async Task RetriveCardsFromPack(int packTypeId)
         {
@@ -406,7 +428,7 @@ namespace Loom.ZombieBattleground
             _cardsToDisplayQueqe = cards;
             _uiManager.HidePopup<LoadingFiatPopup>(); 
         }
-        
+
         private async void ProcessOpenPackLogic()
         {
             if(_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)

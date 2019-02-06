@@ -96,6 +96,9 @@ namespace Loom.ZombieBattleground
 
         private Sequence _shopSelectScrollSequence;
 
+        private FiatValidationDataGoogleStore _fiatValidationDataGoogleStore;
+        private FiatValidationDataAppleStore _fiatValidationDataAppleStore;        
+
         event Action _finishRequestPack;
 
         public void Init()
@@ -432,38 +435,99 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void RequestFiatValidation(string productId, string purchaseToken, string storeTxId, string storeName)
-        {
-            _uiManager.DrawPopup<LoadingFiatPopup>("Request Fiat Validation");
-            FiatBackendManager.FiatValidationResponse response = await _fiatBackendManager.CallFiatValidation
-            (
-                productId,
-                purchaseToken,
-                storeTxId,
-                storeName
-            );
+        private async void RequestFiatValidationGoogle()
+        {            
+            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationGoogle)}");
+            
+            FiatBackendManager.FiatValidationResponse response = null;
+            try
+            {
+                response = await _fiatBackendManager.CallFiatValidationGoogle
+                (
+                    _fiatValidationDataGoogleStore.productId,
+                    _fiatValidationDataGoogleStore.purchaseToken,
+                    _fiatValidationDataGoogleStore.storeTxId,
+                    _fiatValidationDataGoogleStore.storeName
+                );        
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"{nameof(RequestFiatValidationGoogle)} failed: {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationGoogle)} failed\n{e.Message}\nPlease try again");
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupRequestFiatValidationGoogle;
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                return;
+            }  
+            
             _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestFiatTransaction();           
+            RequestFiatTransaction();         
+        }
+        
+        private void WarningPopupRequestFiatValidationGoogle()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupRequestFiatValidationGoogle;
+
+            RequestFiatValidationGoogle();
         }
 
-        private async void RequestFiatValidationApple(string productId, string transactionId, string receiptData, string storeName)
+        private async void RequestFiatValidationApple()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>("Request Fiat Validation");
-            FiatBackendManager.FiatValidationResponse response = await _fiatBackendManager.CallFiatValidationApple
-            (
-                productId,
-                transactionId,
-                receiptData,
-                storeName
-            );
+            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationApple)}");
+            
+            FiatBackendManager.FiatValidationResponse response = null;
+            try
+            {
+                response = await _fiatBackendManager.CallFiatValidationApple
+                (
+                    _fiatValidationDataAppleStore.productId,
+                    _fiatValidationDataAppleStore.transactionId,
+                    _fiatValidationDataAppleStore.receiptData,
+                    _fiatValidationDataAppleStore.storeName
+                );    
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"{nameof(RequestFiatValidationApple)} failed: {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationApple)} failed\n{e.Message}\nPlease try again");
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupRequestFiatValidationApple;
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                return;
+            }  
+            
             _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestFiatTransaction(); 
+            RequestFiatTransaction();     
+        }
+        
+        private void WarningPopupRequestFiatValidationApple()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupRequestFiatValidationApple;
+
+            RequestFiatValidationApple();
         }
         
         private async void RequestFiatTransaction()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>("Request Fiat Transaction");
-            List<FiatBackendManager.FiatTransactionResponse> recordList = await _fiatBackendManager.CallFiatTransaction();
+            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatTransaction)}");
+            
+            List<FiatBackendManager.FiatTransactionResponse> recordList = null;
+            try
+            {
+                recordList = await _fiatBackendManager.CallFiatTransaction();
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatTransaction)} failed\n{e.Message}\nPlease try again");
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupRequestFiatTransaction;
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                return;
+            }
+            
             recordList.Sort( (FiatBackendManager.FiatTransactionResponse resA, FiatBackendManager.FiatTransactionResponse resB)=>
             {
                 return resB.TxID - resA.TxID;
@@ -473,9 +537,17 @@ namespace Loom.ZombieBattleground
             {
                 log += i.TxID + ", ";
             }
-            Debug.Log(log);
+            Debug.Log(log);                        
             _uiManager.HidePopup<LoadingFiatPopup>();
             RequestPack(recordList);            
+        }
+        
+        private void WarningPopupRequestFiatTransaction()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupRequestFiatTransaction;
+
+            RequestFiatTransaction();
         }
         
         private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> sortedRecordList)
@@ -519,6 +591,7 @@ namespace Loom.ZombieBattleground
         private void OnFinishRequestPack()
         {
             Debug.Log("SUCCESSFULLY REQUEST for packs");
+            _uiManager.GetPage<PackOpenerPage2>().RetrievePackBalanceAmount();
             PackMoveAnimation();
         }
 
@@ -536,34 +609,20 @@ namespace Loom.ZombieBattleground
 
 
             #if UNITY_ANDROID
-            string productId = product.definition.id;
-            string purchaseToken = ParsePurchaseTokenFromPlayStoreReceipt(args.purchasedProduct.receipt);
-            string storeTxId = product.transactionID;
-            string storeName = product.definition.storeSpecificId;            
+            _fiatValidationDataGoogleStore = new FiatValidationDataGoogleStore();      
+            _fiatValidationDataGoogleStore.productId = product.definition.id;
+            _fiatValidationDataGoogleStore.purchaseToken = ParsePurchaseTokenFromPlayStoreReceipt(args.purchasedProduct.receipt);
+            _fiatValidationDataGoogleStore.storeTxId = product.transactionID;
+            _fiatValidationDataGoogleStore.storeName = "GooglePlay";
 
-            RequestFiatValidation
-            (
-                productId,
-                purchaseToken,
-                storeTxId,
-                storeName                
-            );  
+            RequestFiatValidationGoogle();  
             #elif UNITY_IOS
-            string productId = product.definition.id;
-            string transactionId = ParseTransactionIdentifierFromAppStoreReceipt(args);
-            string receiptData = ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
-            string storeName = "AppleStore";
-            Debug.Log($"productId: {productId}");
-            Debug.Log($"transactionId: {transactionId}");
-            Debug.Log($"receiptData: {receiptData}");
-            Debug.Log($"storeName: {storeName}");
-            RequestFiatValidationApple
-            (
-                productId,
-                transactionId,
-                receiptData,
-                storeName
-            );
+            _fiatValidationDataAppleStore = new FiatValidationDataAppleStore();
+            _fiatValidationDataAppleStore.productId = product.definition.id;
+            _fiatValidationDataAppleStore.transactionId = ParseTransactionIdentifierFromAppStoreReceipt(args);
+            _fiatValidationDataAppleStore.receiptData = ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
+            _fiatValidationDataAppleStore.storeName = "AppleStore";
+            RequestFiatValidationApple();
             #endif                   
         }
         
@@ -695,6 +754,22 @@ namespace Loom.ZombieBattleground
             }
 
             return purchaseToken;
+        }
+        
+        public class FiatValidationDataGoogleStore
+        {
+            public string productId;
+            public string purchaseToken;
+            public string storeTxId;
+            public string storeName;
+        }
+        
+        public class FiatValidationDataAppleStore
+        {
+            public string productId;
+            public string transactionId;
+            public string receiptData;
+            public string storeName;
         }
 
         public class IAPReceipt
