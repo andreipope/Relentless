@@ -226,7 +226,7 @@ namespace Loom.ZombieBattleground
 
         private void SettingsButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSettings.name) || _isReturnToTutorial)
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSettings.name))
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;

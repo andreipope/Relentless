@@ -138,18 +138,15 @@ namespace Loom.ZombieBattleground
 
             StopGameplay();
 
-            CurrentTurnPlayer = null;
-            CurrentPlayer = null;
-            OpponentPlayer = null;
             StartingTurn = Enumerators.StartingTurn.UnDecided;
-            PlayerMoves = null;
-
+            
 
             _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
             //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
+            
         }
 
         public void StartGameplay()
@@ -234,6 +231,8 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _matchManager.MatchFinished += MatchFinishedHandler;
 
             InitControllers();
 
@@ -437,6 +436,14 @@ namespace Loom.ZombieBattleground
             IsGameEnded = false;
 
             GameInitialized?.Invoke();
+        }
+
+        private void MatchFinishedHandler()
+        {
+            CurrentPlayer = null;
+            OpponentPlayer = null;
+            CurrentTurnPlayer = null;
+            PlayerMoves = null;
         }
     }
 }
